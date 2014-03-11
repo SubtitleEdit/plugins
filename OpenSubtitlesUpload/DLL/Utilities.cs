@@ -4,7 +4,6 @@ namespace Nikse.SubtitleEdit.Logic
 {
     public static class Utilities
     {
-
         private static int GetCount(string text,
                             string word1,
                             string word2,
@@ -28,7 +27,7 @@ namespace Nikse.SubtitleEdit.Logic
             return count;
         }
 
- public static string AutoDetectGoogleLanguage(string text, int bestCount)
+        public static string AutoDetectGoogleLanguage(string text, int bestCount)
         {
             int count = GetCount(text, "we", "are", "and", "you", "your", "what");
             if (count > bestCount)
@@ -200,28 +199,28 @@ namespace Nikse.SubtitleEdit.Logic
             return "en";
         }
 
-         private static int GetCountContains(string text,
-                           string word1,
-                           string word2,
-                           string word3,
-                           string word4,
-                           string word5,
-                           string word6)
-         {
-             var regEx1 = new Regex(word1);
-             var regEx2 = new Regex(word2);
-             var regEx3 = new Regex(word3);
-             var regEx4 = new Regex(word4);
-             var regEx5 = new Regex(word5);
-             var regEx6 = new Regex(word6);
-             int count = regEx1.Matches(text).Count;
-             count += regEx2.Matches(text).Count;
-             count += regEx3.Matches(text).Count;
-             count += regEx4.Matches(text).Count;
-             count += regEx5.Matches(text).Count;
-             count += regEx6.Matches(text).Count;
-             return count;
-         }
+        private static int GetCountContains(string text,
+                          string word1,
+                          string word2,
+                          string word3,
+                          string word4,
+                          string word5,
+                          string word6)
+        {
+            var regEx1 = new Regex(word1);
+            var regEx2 = new Regex(word2);
+            var regEx3 = new Regex(word3);
+            var regEx4 = new Regex(word4);
+            var regEx5 = new Regex(word5);
+            var regEx6 = new Regex(word6);
+            int count = regEx1.Matches(text).Count;
+            count += regEx2.Matches(text).Count;
+            count += regEx3.Matches(text).Count;
+            count += regEx4.Matches(text).Count;
+            count += regEx5.Matches(text).Count;
+            count += regEx6.Matches(text).Count;
+            return count;
+        }
 
         public static string AutoDetectGoogleLanguage(string text)
         {
@@ -232,6 +231,5 @@ namespace Nikse.SubtitleEdit.Logic
 
             return languageId;
         }
-
     }
 }

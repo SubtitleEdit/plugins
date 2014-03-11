@@ -1,12 +1,11 @@
-﻿using System.IO;
+﻿using OpenSubtitlesUpload;
+using System.IO;
 using System.Windows.Forms;
-using OpenSubtitlesUpload;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class OpenSubtitlesUpload : IPlugin // dll file name must "<classname>.dll" - e.g. "SyncViaOtherSubtitle.dll"
     {
-
         string IPlugin.Name
         {
             get { return "Upload subtitle to OpenSubtitles.org"; } // name

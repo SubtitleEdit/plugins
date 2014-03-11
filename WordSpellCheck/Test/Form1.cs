@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
+﻿using Nikse.SubtitleEdit.PluginLogic;
 using System.Windows.Forms;
-using Nikse.SubtitleEdit.PluginLogic;
 
 namespace WordSpellCheckTester
 {
@@ -17,7 +11,6 @@ namespace WordSpellCheckTester
             IPlugin plugin = new Nikse.SubtitleEdit.PluginLogic.WordSpellCheck();
             string subtitleFileName = @"C:\Users\Nikse\Desktop\spellcheck.srt";
             plugin.DoAction(null, System.IO.File.ReadAllText(subtitleFileName), 25, "<br />", subtitleFileName, @"C:\Users\Nikse\Desktop\Trailers\Game Of Thrones Season Trailer.mp4", System.IO.File.ReadAllText(subtitleFileName));
-
         }
     }
 }

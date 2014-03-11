@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Nikse.SubtitleEdit.Logic;
+using OpenSubtitles;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -6,25 +8,25 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using Nikse.SubtitleEdit.Logic;
-using OpenSubtitles;
 
 namespace OpenSubtitlesUpload
 {
     public partial class PluginForm : Form
     {
-        string _subtitleFileName;
-        string _videoFileName;
-        string _rawText;
-        OpenSubtitlesApi _api;
+        private string _subtitleFileName;
+        private string _videoFileName;
+        private string _rawText;
+        private OpenSubtitlesApi _api;
 
         public class LanguageItem
         {
             public CultureInfo CI { private set; get; }
+
             public LanguageItem(CultureInfo ci)
             {
                 CI = ci;
             }
+
             public override string ToString()
             {
                 return CI.EnglishName;
@@ -115,7 +117,6 @@ namespace OpenSubtitlesUpload
                 comboBoxLanguage.Items.Add(new LanguageItem(x));
                 if (x.Name.ToLower() == twoLetterLanguageId.ToLower())
                     comboBoxLanguage.SelectedIndex = comboBoxLanguage.Items.Count - 1;
-
             }
             textBoxUserName.Text = string.Empty;
             textBoxPassword.Text = string.Empty;
@@ -232,7 +233,6 @@ namespace OpenSubtitlesUpload
                 return;
             }
 
-
             if (textBoxImdbId.Text.Trim().Length == 0)
             {
                 MessageBox.Show("Please enter IMDB id");
@@ -295,7 +295,7 @@ namespace OpenSubtitlesUpload
         }
 
         private void linkLabelSearchImdb_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {                  
+        {
             System.Diagnostics.Process.Start("http://www.opensubtitles.org/en/imdblook/short-on");
         }
 
@@ -347,14 +347,12 @@ namespace OpenSubtitlesUpload
                 textBoxMovieFileName.Text = Path.GetFileName(openFileDialogVideo.FileName);
                 _videoFileName = openFileDialogVideo.FileName;
             }
-
         }
 
         private void buttonSearchIMDb_Click(object sender, EventArgs e)
         {
             if (CheckLogin())
             {
-
                 try
                 {
                     string s = string.Empty;
@@ -378,6 +376,5 @@ namespace OpenSubtitlesUpload
         {
             System.Diagnostics.Process.Start("http://www.opensubtitles.org/en/newuser");
         }
-        
     }
 }
