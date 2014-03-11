@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenSubtitlesUploadTester",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinesUnbreaker", "LinesUnbreaker\LinesUnbreaker.csproj", "{7B7C681E-960E-414F-B5EA-1B9BEBA71B09}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HI2UC", "HI2UC\HI2UC.csproj", "{16B4BE52-050A-4161-B0E3-9B07AA5F650B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +99,16 @@ Global
 		{7B7C681E-960E-414F-B5EA-1B9BEBA71B09}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{7B7C681E-960E-414F-B5EA-1B9BEBA71B09}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{7B7C681E-960E-414F-B5EA-1B9BEBA71B09}.Release|x86.ActiveCfg = Release|Any CPU
+		{16B4BE52-050A-4161-B0E3-9B07AA5F650B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16B4BE52-050A-4161-B0E3-9B07AA5F650B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16B4BE52-050A-4161-B0E3-9B07AA5F650B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{16B4BE52-050A-4161-B0E3-9B07AA5F650B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{16B4BE52-050A-4161-B0E3-9B07AA5F650B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{16B4BE52-050A-4161-B0E3-9B07AA5F650B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16B4BE52-050A-4161-B0E3-9B07AA5F650B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16B4BE52-050A-4161-B0E3-9B07AA5F650B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{16B4BE52-050A-4161-B0E3-9B07AA5F650B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{16B4BE52-050A-4161-B0E3-9B07AA5F650B}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
