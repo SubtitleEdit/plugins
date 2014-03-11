@@ -180,7 +180,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return s;
             else if (Regex.IsMatch(t, @"[\[\{\(]|[\}\]\)]") && checkBoxMoods.Checked)
                 return s;
-            else if (Regex.IsMatch(t, "\\w+:\\B") && checkBoxSkipNarrator.Checked)
+            else if (Regex.IsMatch(t, "\\w:\\B") && checkBoxSkipNarrator.Checked)
                 return s;
             else
             {

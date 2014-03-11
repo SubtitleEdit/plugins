@@ -33,9 +33,12 @@
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOK = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.buttonCheckAll = new System.Windows.Forms.Button();
+            this.buttonInvertCheck = new System.Windows.Forms.Button();
             this.checkBoxMoods = new System.Windows.Forms.CheckBox();
             this.checkBoxSkipNarrator = new System.Windows.Forms.CheckBox();
             this.checkBoxSkipDialog = new System.Windows.Forms.CheckBox();
@@ -43,9 +46,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.labelTotal = new System.Windows.Forms.Label();
-            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.buttonInvertCheck = new System.Windows.Forms.Button();
-            this.buttonCheckAll = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
@@ -74,7 +74,7 @@
             // columnHeader1
             // 
             this.columnHeader1.Text = "Apply";
-            this.columnHeader1.Width = 45;
+            this.columnHeader1.Width = 38;
             // 
             // columnHeader2
             // 
@@ -92,6 +92,12 @@
             this.columnHeader4.DisplayIndex = 4;
             this.columnHeader4.Text = "After";
             this.columnHeader4.Width = 258;
+            // 
+            // columnHeader5
+            // 
+            this.columnHeader5.DisplayIndex = 2;
+            this.columnHeader5.Text = "Length";
+            this.columnHeader5.Width = 45;
             // 
             // buttonCancel
             // 
@@ -133,6 +139,28 @@
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             // 
+            // buttonCheckAll
+            // 
+            this.buttonCheckAll.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.buttonCheckAll.Location = new System.Drawing.Point(482, 101);
+            this.buttonCheckAll.Name = "buttonCheckAll";
+            this.buttonCheckAll.Size = new System.Drawing.Size(75, 23);
+            this.buttonCheckAll.TabIndex = 10;
+            this.buttonCheckAll.Text = "Select all";
+            this.buttonCheckAll.UseVisualStyleBackColor = true;
+            this.buttonCheckAll.Click += new System.EventHandler(this.SelectionHandler);
+            // 
+            // buttonInvertCheck
+            // 
+            this.buttonInvertCheck.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.buttonInvertCheck.Location = new System.Drawing.Point(563, 101);
+            this.buttonInvertCheck.Name = "buttonInvertCheck";
+            this.buttonInvertCheck.Size = new System.Drawing.Size(95, 23);
+            this.buttonInvertCheck.TabIndex = 9;
+            this.buttonInvertCheck.Text = "Inverse selection";
+            this.buttonInvertCheck.UseVisualStyleBackColor = true;
+            this.buttonInvertCheck.Click += new System.EventHandler(this.SelectionHandler);
+            // 
             // checkBoxMoods
             // 
             this.checkBoxMoods.AutoSize = true;
@@ -158,9 +186,9 @@
             this.checkBoxSkipDialog.AutoSize = true;
             this.checkBoxSkipDialog.Location = new System.Drawing.Point(9, 61);
             this.checkBoxSkipDialog.Name = "checkBoxSkipDialog";
-            this.checkBoxSkipDialog.Size = new System.Drawing.Size(78, 17);
+            this.checkBoxSkipDialog.Size = new System.Drawing.Size(80, 17);
             this.checkBoxSkipDialog.TabIndex = 6;
-            this.checkBoxSkipDialog.Text = "Skip dialog";
+            this.checkBoxSkipDialog.Text = "Skip Dialog";
             this.checkBoxSkipDialog.UseVisualStyleBackColor = true;
             // 
             // buttonUpdate
@@ -209,34 +237,6 @@
             this.labelTotal.Size = new System.Drawing.Size(51, 13);
             this.labelTotal.TabIndex = 4;
             this.labelTotal.Text = "Total: {0}";
-            // 
-            // columnHeader5
-            // 
-            this.columnHeader5.DisplayIndex = 2;
-            this.columnHeader5.Text = "Length";
-            this.columnHeader5.Width = 45;
-            // 
-            // buttonInvertCheck
-            // 
-            this.buttonInvertCheck.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.buttonInvertCheck.Location = new System.Drawing.Point(563, 101);
-            this.buttonInvertCheck.Name = "buttonInvertCheck";
-            this.buttonInvertCheck.Size = new System.Drawing.Size(95, 23);
-            this.buttonInvertCheck.TabIndex = 9;
-            this.buttonInvertCheck.Text = "Inverse selection";
-            this.buttonInvertCheck.UseVisualStyleBackColor = true;
-            this.buttonInvertCheck.Click += new System.EventHandler(this.SelectionHandler);
-            // 
-            // buttonCheckAll
-            // 
-            this.buttonCheckAll.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.buttonCheckAll.Location = new System.Drawing.Point(482, 101);
-            this.buttonCheckAll.Name = "buttonCheckAll";
-            this.buttonCheckAll.Size = new System.Drawing.Size(75, 23);
-            this.buttonCheckAll.TabIndex = 10;
-            this.buttonCheckAll.Text = "Select all";
-            this.buttonCheckAll.UseVisualStyleBackColor = true;
-            this.buttonCheckAll.Click += new System.EventHandler(this.SelectionHandler);
             // 
             // PluginForm
             // 

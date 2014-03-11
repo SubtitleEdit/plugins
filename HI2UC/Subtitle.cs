@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Linq;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal class Subtitle
     {
-        List<Paragraph> _paragraphs;
-        SubtitleFormat _format;
-        bool _wasLoadedWithFrameNumbers;
+        private List<Paragraph> _paragraphs;
+        private SubtitleFormat _format;
+        private bool _wasLoadedWithFrameNumbers;
 
         internal string Header { get; set; }
         internal string Footer { get; set; }
