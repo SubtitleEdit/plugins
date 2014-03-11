@@ -1,11 +1,12 @@
-﻿using System;
+﻿using SubtitleEdit;
+using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class Haxor : IPlugin // dll file name must "<classname>.dll" - e.g. "Haxor.dll"
     {
-
         string IPlugin.Name
         {
             get { return "Haxor"; }
@@ -18,7 +19,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         decimal IPlugin.Version
         {
-            get { return 1.0M; }
+            get { return 1.2M; }
         }
 
         string IPlugin.Description
@@ -38,28 +39,30 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
+            subtitle = subtitle.Trim();
             if (!string.IsNullOrEmpty(subtitle))
             {
-                string from = "abcdefghijlkmnopqrstuvwxyz";
-                string to = "4b©d3fgH!jlKmñ0pqr$tuvwx¥z";
-                for (int i = 0; i < subtitle.Length; i++)
-                {
-                    int index = from.IndexOf(subtitle[i].ToString().ToLower());
-                    try
-                    {
-                        if (index >= 0)
-                        {
-                            subtitle = subtitle.Remove(i, 1).Insert(i, to[index].ToString());
-                        }
-                    }
-                    catch (Exception exception)
-                    {
-                        MessageBox.Show(exception.Message + "  i=" + i.ToString() + "  index="+ index);
-                    }
-                }
-            }
-            return subtitle;
-        }
+                if (!string.IsNullOrEmpty(listViewLineSeparatorString))
+                    Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
 
+                var list = new List<string>();
+                foreach (string line in subtitle.Replace(Environment.NewLine, "|").Split("|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
+                    list.Add(line);
+
+                Subtitle sub = new Subtitle();
+                SubRip srt = new SubRip();
+                srt.LoadSubtitle(sub, list, subtitleFileName);
+                using (var form = new MainForm(sub, (this as IPlugin).Name, (this as IPlugin).Description, parentForm))
+                {
+                    if (form.ShowDialog(parentForm) == DialogResult.OK)
+                        return form.FixedSubtitle;
+                }
+                return string.Empty;
+            }
+
+            MessageBox.Show("No subtitle loaded", parentForm.Text,
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return string.Empty;
+        }
     }
 }

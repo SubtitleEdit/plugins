@@ -275,9 +275,7 @@ namespace OpenSubtitles
             {
                 System.IO.File.Delete(tempFileName);
             }
-            catch
-            { 
-            }
+            catch { }
             return bytes;
         }
 
