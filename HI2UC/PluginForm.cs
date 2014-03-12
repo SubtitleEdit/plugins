@@ -34,7 +34,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this._parentForm = parentForm;
             this._subtitle = subtitle;
             label1.Text = "Description: " + description;
-            FindDialogueAndListFixes();
+            FindHearinImpairedText();
         }
 
         private enum HIStyle { UpperCase, LowerCase, FirstUppercase, UpperLowerCase }
@@ -61,7 +61,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             Cursor = Cursors.WaitCursor;
             _allowFixes = true;
-            FindDialogueAndListFixes();
+            FindHearinImpairedText();
             if (_deleteLine)
             {
                 foreach (ListViewItem item in this.listViewFixes.Items)
@@ -82,7 +82,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (_subtitle.Paragraphs.Count <= 0)
                 return;
             listViewFixes.Items.Clear();
-            FindDialogueAndListFixes();
+            FindHearinImpairedText();
         }
 
         private void CheckTypeStyle(object sender, EventArgs e)
@@ -129,45 +129,29 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 _hiStyle = (HIStyle)comboBox1.SelectedIndex;
                 listViewFixes.Items.Clear();
-                FindDialogueAndListFixes();
+                FindHearinImpairedText();
             }
         }
 
-        private void FindDialogueAndListFixes()
+        private void FindHearinImpairedText()
         {
-            string openPattern = @"[\{\[\(]";
-            string closePattern = @"[\}\]\)]";
-            char _char = '\u0028';
-
+            //char _char = '\u0028'; // (
             _totalChanged = 0;
             listViewFixes.BeginUpdate();
             foreach (Paragraph p in _subtitle.Paragraphs)
             {
-                if (Regex.IsMatch(p.Text, REGEXHEARINGIMPAIRED, RegexOptions.Compiled) || Regex.IsMatch(p.Text, ":\\B"))
+                if (Regex.IsMatch(p.Text, REGEXHEARINGIMPAIRED, RegexOptions.Compiled) || Regex.IsMatch(p.Text, @"\b[A-Z]\w+:\B"))
                 {
                     string oldText = p.Text;
                     string text = p.Text;
 
                     // (Moods and feelings)
-                    if (Regex.IsMatch(p.Text, openPattern, RegexOptions.Compiled) &&
-                        Regex.IsMatch(p.Text, closePattern, RegexOptions.Compiled))
-                    {
-                        string openMatch = Regex.Match(text, openPattern).Value;
-                        string closeMatch = Regex.Match(text, closePattern).Value;
-                        int startIndex = text.IndexOf(openMatch);
-                        int endindex = text.IndexOf(closeMatch);
-                        if (startIndex < endindex)
-                            text = ConvertMoodsFeelings(text);
-                    }
+                    if (Regex.IsMatch(p.Text, REGEXHEARINGIMPAIRED, RegexOptions.Compiled))
+                        text = ConvertMoodsFeelings(text);
 
                     // Narrator:
-                    if (checkBoxNames.Checked && Regex.IsMatch(text, ":\\B"))
-                    {
-                        string s = Utilities.RemoveHtmlTags(text).Trim();
-                        int index = s.IndexOf(":");
-                        if (index < s.Length - 1)
-                            text = NamesOfPeoples(text);
-                    }
+                    if (checkBoxNames.Checked && Regex.IsMatch(text, @"\b[A-Z]\w+:\B"))
+                        text = NamesOfPeoples(text);
 
                     if (text != oldText)
                     {
@@ -302,8 +286,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     _namesMatched = true;
                     text = Regex.Replace(text, pattern, delegate(Match match)
                     {
-                        if (match.Value.Length > 15)
-                            return match.Value.ToUpper();
                         return match.Value.ToUpper();
                     });
                     break;
