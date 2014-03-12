@@ -38,7 +38,7 @@
 	<Plugin>
 		<Name>Haxor</Name>
 		<Description>Translates subtitle to haxor</Description>
-		<Version>1.1</Version>
+		<Version>1.2</Version>
 		<Date>2013-09-11</Date>
 		<Url>http://www.nikse.dk/Content/SubtitleEdit/Plugins/Haxor.zip</Url>
 	</Plugin>
