@@ -6,6 +6,5 @@ You can write your own plugins for Subtitle Edit in any .NET language.
 ### Download plugins using Subtitle Edit:
 
 Subtitle Edit\File\Plugins\Get Plugins\.
-Or:
-
+*Or*:
 https://github.com/SubtitleEdit/plugins/releases.
