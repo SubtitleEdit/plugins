@@ -8,6 +8,7 @@ What can be done with plugins
 =============================
 
 At the momemnt plugins can be made in these menus: file, tool, sync, translate, spellcheck
+
 A new subtitle format can also be added via a plugin.
 
 If you want to extend SE somewhere else do open an issue.
