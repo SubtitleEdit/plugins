@@ -18,4 +18,4 @@ Compiling
 =========
 
 Please compile plugins to "any cpu" (if possible).
-Framework version: If possible, please provide both a version compiled with .net 2 (can be used with 2-3.5) and a version compiled with .net 4 (can be used with (4+).
+Framework version: If possible, please provide both a version compiled with .net 2 (can be used with 2-3.5) and a version compiled with .net 4 (can be used with 4+).
