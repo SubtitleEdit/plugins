@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinesUnbreaker", "LinesUnbr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HI2UC", "HI2UC\HI2UC.csproj", "{16B4BE52-050A-4161-B0E3-9B07AA5F650B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tmdb casing", "tmdb casing\tmdb casing.csproj", "{9CEA8239-F445-430B-BE3B-76A5EF8488FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +111,16 @@ Global
 		{16B4BE52-050A-4161-B0E3-9B07AA5F650B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{16B4BE52-050A-4161-B0E3-9B07AA5F650B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{16B4BE52-050A-4161-B0E3-9B07AA5F650B}.Release|x86.ActiveCfg = Release|Any CPU
+		{9CEA8239-F445-430B-BE3B-76A5EF8488FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CEA8239-F445-430B-BE3B-76A5EF8488FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CEA8239-F445-430B-BE3B-76A5EF8488FB}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9CEA8239-F445-430B-BE3B-76A5EF8488FB}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9CEA8239-F445-430B-BE3B-76A5EF8488FB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9CEA8239-F445-430B-BE3B-76A5EF8488FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CEA8239-F445-430B-BE3B-76A5EF8488FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CEA8239-F445-430B-BE3B-76A5EF8488FB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9CEA8239-F445-430B-BE3B-76A5EF8488FB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9CEA8239-F445-430B-BE3B-76A5EF8488FB}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
