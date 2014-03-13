@@ -7,7 +7,7 @@ You can write your own plugins for Subtitle Edit in any .net language.
 What can be done with plugins
 =============================
 
-At the momemnt plugins can be made in these menus: file, tool, sync, translate, spellcheck
+At the momemnt plugins can be made in these menus: file, tools, sync, translate, spellcheck
 
 A new subtitle format can also be added via a plugin.
 
