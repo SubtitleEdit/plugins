@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Linq;
-
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class Subtitle
@@ -297,7 +295,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
             int startNumber = _paragraphs[0].Number;
             if (lineNumber >= 0)
             {
-                _paragraphs.Remove(_paragraphs.Single(p => p.Number == lineNumber));
+                for (int i = _paragraphs.Count - 1; i >= 0; i--)
+                {
+                    if (_paragraphs[i].Number == lineNumber)
+                        _paragraphs.RemoveAt(i);
+                }
+//                _paragraphs.Remove(_paragraphs.Single(p => p.Number == lineNumber)); //TODO: Use in newer .net versions
             }
             Renumber(startNumber);
         }
