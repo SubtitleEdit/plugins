@@ -169,6 +169,8 @@
             this.Controls.Add(this.listView1);
             this.KeyPreview = true;
             this.Name = "MainForm";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "MainForm";
             this.ResumeLayout(false);

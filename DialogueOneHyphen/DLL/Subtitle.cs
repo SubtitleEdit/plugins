@@ -2,17 +2,19 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    public class Subtitle
+    internal class Subtitle
     {
         List<Paragraph> _paragraphs;
         SubtitleFormat _format;
         bool _wasLoadedWithFrameNumbers;
         internal string Header { get; set; }
         internal string Footer { get; set; }
+
         internal string FileName { get; set; }
-        internal bool IsHearingImpaired { get; private set; }
+
         internal const int MaximumHistoryItems = 100;
 
         internal SubtitleFormat OriginalFormat
@@ -27,7 +29,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             _paragraphs = new List<Paragraph>();
             FileName = "Untitled";
-            //_format = new SubRip();
         }
 
         /// <summary>
@@ -56,8 +57,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (_paragraphs == null || _paragraphs.Count <= index || index < 0)
                 return null;
+
             return _paragraphs[index];
         }
+
+            
 
         internal string ToText(SubtitleFormat format)
         {
@@ -143,6 +147,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 double endFrame = p.EndTime.TotalMilliseconds / 1000.0 * oldFramerate;
                 p.StartTime.TotalMilliseconds = startFrame * (1000.0 / newFramerate);
                 p.EndTime.TotalMilliseconds = endFrame * (1000.0 / newFramerate);
+
                 p.CalculateFrameNumbersFromTimeCodes(newFramerate);
             }
         }
@@ -209,11 +214,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         internal void Renumber(int startNumber)
         {
-            int i;
-            if (startNumber < 0)
-                i = 0;
-            else
-                i = startNumber;
+            int i = startNumber;
             foreach (Paragraph p in _paragraphs)
             {
                 p.Number = i;
@@ -276,7 +277,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 for (int i = _paragraphs.Count - 1; i >= 0; i--)
                 {
                     Paragraph p = _paragraphs[i];
-                    if (string.IsNullOrEmpty(p.Text.Trim()))
+                    string s = p.Text.Trim();
+
+                    if (s.Length == 0)
                     {
                         _paragraphs.RemoveAt(i);
                         count++;
@@ -285,29 +288,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 Renumber(firstNumber);
             }
             return count;
-        }
-
-        internal void RemoveLine(int lineNumber)
-        {
-            if (_paragraphs == null)
-                return;
-
-            int startNumber = _paragraphs[0].Number;
-            if (lineNumber >= 0)
-            {
-                for (int i = _paragraphs.Count - 1; i >= 0; i--)
-                {
-                    if (_paragraphs[i].Number == lineNumber)
-                        _paragraphs.RemoveAt(i);
-                }
-//                _paragraphs.Remove(_paragraphs.Single(p => p.Number == lineNumber)); //TODO: Use in newer .net versions
-            }
-            Renumber(startNumber);
-        }
+        }      
 
         internal void InsertParagraphInCorrectTimeOrder(Paragraph newParagraph)
         {
-            for (int i = 0; i < Paragraphs.Count; i++)
+            for (int i=0; i<Paragraphs.Count; i++)
             {
                 Paragraph p = Paragraphs[i];
                 if (newParagraph.StartTime.TotalMilliseconds < p.StartTime.TotalMilliseconds)
