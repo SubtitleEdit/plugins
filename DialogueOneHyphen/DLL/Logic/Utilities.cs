@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -12,7 +13,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (int.TryParse(s, out i))
                 return true;
             return false;
-        }       
+        }
 
         public static string RemoveHtmlTags(string s)
         {
@@ -21,31 +22,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             if (!s.Contains("<"))
                 return s;
-
-            s = s.Replace("<i>", string.Empty);
-            s = s.Replace("</i>", string.Empty);
-            s = s.Replace("<b>", string.Empty);
-            s = s.Replace("</b>", string.Empty);
-            s = s.Replace("<u>", string.Empty);
-            s = s.Replace("</u>", string.Empty);
-            s = s.Replace("<I>", string.Empty);
-            s = s.Replace("</I>", string.Empty);
-            s = s.Replace("<B>", string.Empty);
-            s = s.Replace("</B>", string.Empty);
-            s = s.Replace("<U>", string.Empty);
-            s = s.Replace("</U>", string.Empty);
+            s = Regex.Replace(s, "(?i)</?[iub]>", string.Empty);
             s = RemoveParagraphTag(s);
             return RemoveHtmlFontTag(s);
         }
 
         internal static string RemoveHtmlFontTag(string s)
         {
-            s = s.Replace("</font>", string.Empty);
-            s = s.Replace("</FONT>", string.Empty);
-            s = s.Replace("</Font>", string.Empty);
-            s = s.Replace("<font>", string.Empty);
-            s = s.Replace("<FONT>", string.Empty);
-            s = s.Replace("<Font>", string.Empty);
+            s = Regex.Replace(s, "(?i)</?font>", string.Empty);
             while (s.ToLower().Contains("<font"))
             {
                 int startIndex = s.ToLower().IndexOf("<font");
@@ -57,10 +41,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         internal static string RemoveParagraphTag(string s)
         {
-            s = s.Replace("</p>", string.Empty);
-            s = s.Replace("</P>", string.Empty);
-            s = s.Replace("<P>", string.Empty);
-            s = s.Replace("<P>", string.Empty);
+            s = Regex.Replace(s, "</?p>", string.Empty);
             while (s.ToLower().Contains("<p "))
             {
                 int startIndex = s.ToLower().IndexOf("<p ");
@@ -69,7 +50,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             return s;
         }
-     
+
         public static string AssemblyVersion
         {
             get

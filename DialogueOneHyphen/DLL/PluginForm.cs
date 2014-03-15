@@ -8,7 +8,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         internal string FixedSubtitle { get; private set; }
         private Subtitle _subtitle;
         private int _totalFixes = 0;
-        bool _allowFixes = false;
+        private bool _allowFixes = false;
 
         internal PluginForm(Subtitle subtitle, string name, string description)
         {
@@ -54,23 +54,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void FindDialogueAndListFixes()
         {
             string fixAction = "Remove first hyphen in dialogues";
-            int iFixes = 0;
             for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
             {
                 Paragraph p = _subtitle.Paragraphs[i];
                 string text = p.Text;
 
-                if ((text.Trim().StartsWith("-") ||
-                    text.Trim().StartsWith("<i>-") ||
-                    text.Trim().StartsWith("<i> -") ||
-                    text.Trim().StartsWith("<I>-") ||
-                    text.Trim().StartsWith("<I> -")) &&
-                    (text.Contains(Environment.NewLine + "-") ||
-                    text.Contains(Environment.NewLine + " -") ||
-                    text.Contains(Environment.NewLine + "<i>-") ||
-                    text.Contains(Environment.NewLine + "<i> -") ||
-                    text.Contains(Environment.NewLine + "<I>-") ||
-                    text.Contains(Environment.NewLine + "<I> -")))
+                if (AnalyzeText(text))
                 {
                     Paragraph prev = _subtitle.GetParagraphOrDefault(i - 1);
 
@@ -93,15 +82,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
                                 }
                                 else
                                 {
-                                    iFixes++;
                                     _totalFixes++;
+                                    // clean both text before adding them to Listview
+                                    text = Utilities.RemoveHtmlTags(text);
+                                    oldText = Utilities.RemoveHtmlTags(oldText);
                                     AddFixToListView(p, fixAction, oldText, text);
                                 }
                             }
                         }
                     }
                 }
-
             }
         }
 
@@ -119,5 +109,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return false;
         }
 
+        private bool AnalyzeText(string s)
+        {
+            s = Utilities.RemoveHtmlTags(s).Trim();
+            s = s.Replace("  ", " ");
+
+            if (s.StartsWith("-") && s.Contains(Environment.NewLine + "-"))
+                return true;
+            return false;
+        }
     }
 }
