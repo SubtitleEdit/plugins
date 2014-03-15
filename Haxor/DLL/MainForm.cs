@@ -2,11 +2,12 @@
 using System;
 using System.Text;
 using System.Windows.Forms;
-
+using System.Collections.Generic;
 namespace SubtitleEdit
 {
     public partial class MainForm : Form
     {
+        private Dictionary<int, string> _dicChanged;
         private Subtitle _subtitle;
         private Form _mainForm;
         private bool _allowFix = false;
@@ -59,22 +60,23 @@ namespace SubtitleEdit
             if (_subtitle == null)
                 return;
             this.listView1.BeginUpdate();
+            if (this._dicChanged == null)
+                this._dicChanged = new Dictionary<int, string>();
             foreach (Paragraph p in _subtitle.Paragraphs)
             {
-                // Todo: check of paragraph is null
-                var before = Utilities.RemoveHtmlTags(p.Text).ToLower();
-                var after = string.Empty;
-                after = TranslateToHaxor(before);
-
-                if (after != before)
+                if (_allowFix && _dicChanged.ContainsKey(p.Number))
                 {
-                    if (_allowFix)
-                    {
-                        p.Text = after;
-                    }
-                    else
+                    p.Text = _dicChanged[p.Number];
+                }
+                else
+                {
+                    var before = Utilities.RemoveHtmlTags(p.Text).ToLower();
+                    var after = string.Empty;
+                    after = TranslateToHaxor(before);
+                    if (after != before)
                     {
                         AddToListView(p, before, after);
+                        _dicChanged.Add(p.Number, after);
                     }
                 }
             }
@@ -122,31 +124,9 @@ namespace SubtitleEdit
             to = textBoxTo.Text.Trim();
             to = to.Replace(" ", string.Empty);
 
-            if (string.IsNullOrEmpty(from) || string.IsNullOrEmpty(to))
+            if (string.IsNullOrEmpty(to) || to.Length != from.Length)
             {
-                MessageBox.Show("Neither one of textbox can be null");
                 this.textBoxTo.Focus();
-                return false;
-            }
-
-            if (from.Length > 27 || to.Length > 27)
-            {
-                MessageBox.Show("Length can't be longer than 27");
-                this.textBoxTo.Focus();
-                return false;
-            }
-
-            if (from.Length > to.Length)
-            {
-                MessageBox.Show("FROM can't be longer than TO!");
-                textBoxFrom.Focus();
-                return false;
-            }
-
-            if (from.Length < to.Length)
-            {
-                MessageBox.Show("TO can't be longer than FROM!");
-                textBoxTo.Focus();
                 return false;
             }
             return true;
