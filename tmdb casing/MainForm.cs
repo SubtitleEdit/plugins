@@ -38,10 +38,6 @@ namespace tmdb_casing
             {
                 if (searchForm.ShowDialog() == DialogResult.OK)
                 {
-                    if (searchForm.Names.Count > 0)
-                    {
-                        this.Names = searchForm.Names;
-                    }
                 }
             }
         }

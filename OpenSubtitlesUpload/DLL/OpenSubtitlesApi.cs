@@ -35,18 +35,13 @@ namespace OpenSubtitles
             using (Stream requeststream = webRequest.GetRequestStream())
             {
                 requeststream.Write(bytes, 0, bytes.Length);
-                requeststream.Close();
             }
 
             string response;
             using (var webResponse = (HttpWebResponse)webRequest.GetResponse())
+            using (var sr = new StreamReader(webResponse.GetResponseStream()))
             {
-                using (var sr = new StreamReader(webResponse.GetResponseStream()))
-                {
-                    response = sr.ReadToEnd().Trim();
-                    sr.Close();
-                }
-                webResponse.Close();
+                response = sr.ReadToEnd().Trim();
             }
             return response;
         }
@@ -125,7 +120,7 @@ namespace OpenSubtitles
             doc.LoadXml(response);
             LastStatus = doc.DocumentElement.SelectSingleNode("params/param/value/struct/member/name[text()='status']/../value/string").InnerText;
             return LastStatus == "200 OK";
-        }     
+        }
 
         public bool TryUploadSubtitles(string subtitle, string subtitleFileName, string movieFileName, string movieFileNameFull, string language, Encoding encoding)
         {
@@ -284,7 +279,7 @@ namespace OpenSubtitles
             if (string.IsNullOrEmpty(language))
                 language = "eng";
             byte[] buffer = GetBytesWithChosenEncoding(subtitle, encoding);
-            string subtitleContent = System.Convert.ToBase64String(GZLib(buffer));           
+            string subtitleContent = System.Convert.ToBase64String(GZLib(buffer));
             string movieByteSize = new FileInfo(movieFileNameFull).Length.ToString();
             string movieTimeMilliseconds = string.Empty;
             string movieFrames = string.Empty;
@@ -394,8 +389,8 @@ namespace OpenSubtitles
             doc.DocumentElement.SelectSingleNode("params/param[2]/value/struct/member/value/struct/member/name[text()='hearingimpaired']/../value/string").InnerText = hearingImpaired;
             doc.DocumentElement.SelectSingleNode("params/param[2]/value/struct/member/value/struct/member/name[text()='highdefinition']/../value/string").InnerText = hd;
             doc.DocumentElement.SelectSingleNode("params/param[2]/value/struct/member/value/struct/member/name[text()='moviereleasename']/../value/string").InnerText = releaseName;
-            doc.DocumentElement.SelectSingleNode("params/param[2]/value/struct/member/value/struct/member/name[text()='subauthorcomment']/../value/string").InnerText = comment;            
-            
+            doc.DocumentElement.SelectSingleNode("params/param[2]/value/struct/member/value/struct/member/name[text()='subauthorcomment']/../value/string").InnerText = comment;
+
             doc.DocumentElement.SelectSingleNode("params/param[2]/value/struct/member/value/struct/member/name[text()='subhash']/../value/string").InnerText = subtitleHash;
             doc.DocumentElement.SelectSingleNode("params/param[2]/value/struct/member/value/struct/member/name[text()='subfilename']/../value/string").InnerText = subtitleFileName;
             doc.DocumentElement.SelectSingleNode("params/param[2]/value/struct/member/value/struct/member/name[text()='moviehash']/../value/string").InnerText = movieHash;
@@ -438,9 +433,9 @@ namespace OpenSubtitles
                 return dic;
 
             foreach (XmlNode node in doc.DocumentElement.SelectNodes("params/param/value/struct/member[2]/value/array/data/value"))
-            { 
+            {
                 XmlNode id = node.SelectSingleNode("struct/member/name[text()='id']/../value/string");
-                XmlNode title =  node.SelectSingleNode("struct/member/name[text()='title']/../value/string");
+                XmlNode title = node.SelectSingleNode("struct/member/name[text()='title']/../value/string");
                 if (id != null && title != null)
                     dic.Add(id.InnerText, title.InnerText);
             }
@@ -457,7 +452,7 @@ namespace OpenSubtitles
 
             string movieByteSize = new FileInfo(movieFileNameFull).Length.ToString();
             string movieHash = CalculateHash(movieFileNameFull);
-        
+
 
             string xml = "<?xml version=\"1.0\"?>" + Environment.NewLine +
 @"<methodCall>

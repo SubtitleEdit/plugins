@@ -1,14 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using WatTmdb.V3;
-using WatTmdb;
-using RestSharp;
 
 namespace tmdb_casing
 {
@@ -18,9 +11,9 @@ namespace tmdb_casing
         private Tmdb tmdb;
         private TmdbMovie _movie;
         private SearchType _searchType = SearchType.TMDBID;
-        public List<string> Names { get; private set; }
+        private WatTmdb.V3.Cast _cast;
 
-        enum SearchType
+        private enum SearchType
         {
             TMDBID,
             IMDBID,
@@ -78,7 +71,7 @@ namespace tmdb_casing
             {
                 var item = new ListViewItem(movieR.id.ToString());
                 var subItem = new ListViewItem.ListViewSubItem(item, movieR.title);
-                item.Tag = movieR.id;
+                item.Tag = movieR.id; // stores the movie for later use
                 listView1.Items.Add(item);
             }
         }
@@ -88,10 +81,7 @@ namespace tmdb_casing
             var cast = tmdb.GetMovieCast((int)listView1.FocusedItem.Tag);
             if (cast.cast.Count > 0)
             {
-                foreach (var castInfo in cast.cast)
-                {
-                    Names.Add(castInfo.name);
-                }
+                MessageBox.Show("Test");
             }
             DialogResult = DialogResult.OK;
         }

@@ -7,36 +7,36 @@ using System.Windows.Forms;
 
 namespace tmdb_casing
 {
-    public class Plugin  : IPlugin
+    public class TMDBCASING : IPlugin
     {
         string IPlugin.Name
         {
-            get { throw new NotImplementedException(); }
+            get { return "TMDBCASING"; }
         }
 
         string IPlugin.Text
         {
-            get { throw new NotImplementedException(); }
+            get { return "TMDBCASING"; }
         }
 
         decimal IPlugin.Version
         {
-            get { throw new NotImplementedException(); }
+            get { return 0.1M; }
         }
 
         string IPlugin.Description
         {
-            get { throw new NotImplementedException(); }
+            get { return "Change names chansing by TMDB"; }
         }
 
         string IPlugin.ActionType
         {
-            get { throw new NotImplementedException(); }
+            get { return "tool"; }
         }
 
         string IPlugin.Shortcut
         {
-            get { throw new NotImplementedException(); }
+            get { return string.Empty; }
         }
 
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)

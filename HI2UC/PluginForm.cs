@@ -161,7 +161,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         });
                     }
 
-                    // Narrator:
+                    // Narrator: switch ♪ :
                     if (checkBoxNames.Checked && Regex.IsMatch(text, @"\b[A-Z]\w+:\B"))
                         text = NamesOfPeoples(text);
 
@@ -289,8 +289,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string NamesOfPeoples(string text)
         {
-            if (!text.Contains(":"))
-                return text;
             foreach (string pattern in _listPatternNames)
             {
                 if (Regex.IsMatch(text, pattern))
@@ -298,7 +296,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     _namesMatched = true;
                     text = Regex.Replace(text, pattern, delegate(Match match)
                     {
-                        return match.Value.ToUpper();
+                        // Note this will not match ♪: swap : ♪
+                        if (Regex.IsMatch(match.Value, @"\b[A-Z]\w+:\B", RegexOptions.Compiled))
+                            return match.Value.ToUpper();
+                        else
+                            return match.Value;
                     });
                     break;
                 }
