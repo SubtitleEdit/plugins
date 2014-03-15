@@ -135,7 +135,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void FindHearinImpairedText()
         {
-            //char _char = '\u0028'; // (
             _totalChanged = 0;
             listViewFixes.BeginUpdate();
             foreach (Paragraph p in _subtitle.Paragraphs)
@@ -296,7 +295,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     _namesMatched = true;
                     text = Regex.Replace(text, pattern, delegate(Match match)
                     {
-                        // Note this will not match ♪: swap : ♪
+                        //Todo: Won't match like: '♪:'
                         if (Regex.IsMatch(match.Value, @"\b[A-Z]\w+:\B", RegexOptions.Compiled))
                             return match.Value.ToUpper();
                         else
@@ -305,7 +304,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     break;
                 }
             }
-            return text;
+            return text.Trim();
         }
     }
 }
