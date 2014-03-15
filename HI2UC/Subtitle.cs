@@ -115,7 +115,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
 
             FixEqualOrJustOverlappingFrameNumbers();
-
             return true;
         }
 
