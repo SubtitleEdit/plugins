@@ -60,9 +60,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                 var form = new PluginForm(sub, (this as IPlugin).Name, (this as IPlugin).Description);
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
-                {
                     return form.FixedSubtitle;
-                }
+                return string.Empty;
             }
             MessageBox.Show("No subtitle loaded", parentForm.Text,
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
