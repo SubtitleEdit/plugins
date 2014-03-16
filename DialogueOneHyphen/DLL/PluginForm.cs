@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
@@ -69,7 +70,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         if (index >= 0)
                         {
                             string oldText = text;
-                            text = text.Remove(index, 1);
+                            text = text.Remove(index, 1).Trim();
+                            if (index > 0)
+                                text = RemoveExtraSpaces(text, index - 1);
+
 
                             if (text != oldText)
                             {
@@ -93,6 +97,21 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     }
                 }
             }
+            if (!_allowFixes)
+            {
+                labelTotal.Text = "Total: " + _totalFixes.ToString();
+                labelTotal.ForeColor = _totalFixes > 0 ? Color.Blue : Color.Red;
+            }
+        }
+
+        private string RemoveExtraSpaces(string text, int index)
+        {
+            //<i>- Word => <i> Word
+            var temp = text.Substring(0, index);
+            temp = temp.Trim();
+            text = text.Remove(0, index).Trim();
+            text = temp + text;
+            return text;
         }
 
         private bool AllowFix(Paragraph p, string action)

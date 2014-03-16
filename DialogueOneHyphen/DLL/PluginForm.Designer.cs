@@ -37,6 +37,7 @@
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.labelTotal = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // buttonOK
@@ -117,11 +118,21 @@
             this.columnHeader8.Text = "After";
             this.columnHeader8.Width = 318;
             // 
+            // labelTotal
+            // 
+            this.labelTotal.AutoSize = true;
+            this.labelTotal.Location = new System.Drawing.Point(9, 451);
+            this.labelTotal.Name = "labelTotal";
+            this.labelTotal.Size = new System.Drawing.Size(34, 13);
+            this.labelTotal.TabIndex = 102;
+            this.labelTotal.Text = "Total:";
+            // 
             // PluginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(963, 489);
+            this.Controls.Add(this.labelTotal);
             this.Controls.Add(this.listViewFixes);
             this.Controls.Add(this.labelDescription);
             this.Controls.Add(this.button1);
@@ -147,6 +158,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.ColumnHeader columnHeader7;
         private System.Windows.Forms.ColumnHeader columnHeader8;
+        private System.Windows.Forms.Label labelTotal;
 
     }
 }
