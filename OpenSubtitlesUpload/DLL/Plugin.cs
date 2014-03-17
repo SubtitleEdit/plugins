@@ -39,10 +39,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
             if (!string.IsNullOrEmpty(subtitleFileName))
+            {
                 subtitleFileName = Path.GetFileName(subtitleFileName);
-
-            var form = new PluginForm(subtitleFileName, rawText, videoFileName, (this as IPlugin).Name, (this as IPlugin).Description);
-            form.ShowDialog(parentForm);
+                var form = new PluginForm(subtitleFileName, rawText, videoFileName, (this as IPlugin).Name, (this as IPlugin).Description);
+                form.ShowDialog(parentForm);
+            }
+            else
+            {
+                MessageBox.Show("No subtitle loaded", parentForm.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
             return string.Empty;
         }
     }

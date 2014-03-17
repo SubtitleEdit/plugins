@@ -7,7 +7,6 @@ using System.Xml;
 
 namespace OpenSubtitles
 {
-
     /// <summary>
     /// OpenSubtitles.org API
     /// Docs: http://trac.opensubtitles.org/projects/opensubtitles/wiki/XmlRpcIntro
@@ -90,7 +89,7 @@ namespace OpenSubtitles
   <params>
     <param>
       <value><string></string></value>
-    </param>             
+    </param>
   </params>
 </methodCall>";
             var doc = new XmlDocument();
@@ -130,6 +129,7 @@ namespace OpenSubtitles
             string movieFps = string.Empty;
             string subtitleHash = CalculateMD5Hash(GetBytesWithChosenEncoding(subtitle, encoding));
             string movieHash = CalculateHash(movieFileNameFull);
+
             string xml = "<?xml version=\"1.0\"?>" + Environment.NewLine +
 @"<methodCall>
  <methodName>TryUploadSubtitles</methodName>
@@ -198,7 +198,7 @@ namespace OpenSubtitles
             if (LastStatus == "200 OK")
             {
                 string alreadyInDb = doc.DocumentElement.SelectSingleNode("params/param/value/struct/member/name[text()='alreadyindb']/../value/int").InnerText;
-                return alreadyInDb == "0"; // 0 == not in db (upload can continue) 
+                return alreadyInDb == "0"; // 0 == not in db (upload can continue)
             }
             return false;
         }
@@ -406,6 +406,7 @@ namespace OpenSubtitles
         public System.Collections.Generic.Dictionary<string, string> SearchMoviesOnIMDB(string query)
         {
             var dic = new System.Collections.Generic.Dictionary<string, string>();
+            query = query.Trim();
             if (string.IsNullOrEmpty(query))
                 return dic;
 
@@ -443,7 +444,6 @@ namespace OpenSubtitles
             return dic;
         }
 
-
         public System.Collections.Generic.Dictionary<string, string> SearchSubtitles(string movieFileNameFull, string language)
         {
             var dic = new System.Collections.Generic.Dictionary<string, string>();
@@ -452,7 +452,6 @@ namespace OpenSubtitles
 
             string movieByteSize = new FileInfo(movieFileNameFull).Length.ToString();
             string movieHash = CalculateHash(movieFileNameFull);
-
 
             string xml = "<?xml version=\"1.0\"?>" + Environment.NewLine +
 @"<methodCall>
@@ -512,8 +511,8 @@ namespace OpenSubtitles
             return dic;
         }
 
-
         #region Movie Hasher
+
         public static string CalculateHash(string videofileName)
         {
             return ToHexadecimal(ComputeMovieHash(videofileName));
@@ -564,7 +563,7 @@ namespace OpenSubtitles
             }
             return hexBuilder.ToString();
         }
-        #endregion
 
+        #endregion Movie Hasher
     }
 }
