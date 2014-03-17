@@ -1,8 +1,9 @@
 ﻿using Nikse.SubtitleEdit.PluginLogic;
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
-using System.Collections.Generic;
+
 namespace SubtitleEdit
 {
     public partial class MainForm : Form
@@ -71,8 +72,7 @@ namespace SubtitleEdit
                 else
                 {
                     var before = Utilities.RemoveHtmlTags(p.Text).ToLower();
-                    var after = string.Empty;
-                    after = TranslateToHaxor(before);
+                    var after = TranslateToHaxor(before);
                     if (after != before)
                     {
                         AddToListView(p, before, after);
