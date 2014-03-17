@@ -39,27 +39,32 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
-            // set frame rate
-            Configuration.CurrentFrameRate = frameRate;
-
-            // set newline visualizer for listviews
-            if (!string.IsNullOrEmpty(listViewLineSeparatorString))
-                Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
-
-            // load subtitle text into object
-            var list = new List<string>();
-            foreach (string line in subtitle.Replace(Environment.NewLine, "|").Split("|".ToCharArray(), StringSplitOptions.None))
-                list.Add(line);
-            Subtitle sub = new Subtitle();
-            SubRip srt = new SubRip();
-            srt.LoadSubtitle(sub, list, subtitleFileName);
-
-
-            var form = new PluginForm(sub, (this as IPlugin).Name, (this as IPlugin).Description);
-            if (form.ShowDialog(parentForm) == DialogResult.OK)
+            subtitle = subtitle.Trim();
+            if (!string.IsNullOrEmpty(subtitle))
             {
-                return form.FixedSubtitle;
+                // set frame rate
+                Configuration.CurrentFrameRate = frameRate;
+
+                // set newline visualizer for listviews
+                if (!string.IsNullOrEmpty(listViewLineSeparatorString))
+                    Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
+
+                // load subtitle text into object
+                var list = new List<string>();
+                foreach (string line in subtitle.Replace(Environment.NewLine, "|").Split("|".ToCharArray(), StringSplitOptions.None))
+                    list.Add(line);
+                Subtitle sub = new Subtitle();
+                SubRip srt = new SubRip();
+                srt.LoadSubtitle(sub, list, subtitleFileName);
+
+
+                var form = new PluginForm(sub, (this as IPlugin).Name, (this as IPlugin).Description);
+                if (form.ShowDialog(parentForm) == DialogResult.OK)
+                    return form.FixedSubtitle;
+                return string.Empty;
             }
+            MessageBox.Show("No subtitle loaded", parentForm.Text,
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return string.Empty;
         }
     }

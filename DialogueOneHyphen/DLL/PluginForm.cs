@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
@@ -8,7 +9,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         internal string FixedSubtitle { get; private set; }
         private Subtitle _subtitle;
         private int _totalFixes = 0;
-        bool _allowFixes = false;
+        private bool _allowFixes = false;
 
         internal PluginForm(Subtitle subtitle, string name, string description)
         {
@@ -54,23 +55,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void FindDialogueAndListFixes()
         {
             string fixAction = "Remove first hyphen in dialogues";
-            int iFixes = 0;
             for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
             {
                 Paragraph p = _subtitle.Paragraphs[i];
                 string text = p.Text;
 
-                if ((text.Trim().StartsWith("-") ||
-                    text.Trim().StartsWith("<i>-") ||
-                    text.Trim().StartsWith("<i> -") ||
-                    text.Trim().StartsWith("<I>-") ||
-                    text.Trim().StartsWith("<I> -")) &&
-                    (text.Contains(Environment.NewLine + "-") ||
-                    text.Contains(Environment.NewLine + " -") ||
-                    text.Contains(Environment.NewLine + "<i>-") ||
-                    text.Contains(Environment.NewLine + "<i> -") ||
-                    text.Contains(Environment.NewLine + "<I>-") ||
-                    text.Contains(Environment.NewLine + "<I> -")))
+                if (AnalyzeText(text))
                 {
                     Paragraph prev = _subtitle.GetParagraphOrDefault(i - 1);
 
@@ -80,7 +70,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         if (index >= 0)
                         {
                             string oldText = text;
-                            text = text.Remove(index, 1);
+                            text = text.Remove(index, 1).Trim();
+                            if (index > 0)
+                                text = RemoveExtraSpaces(text, index - 1);
+
 
                             if (text != oldText)
                             {
@@ -93,16 +86,32 @@ namespace Nikse.SubtitleEdit.PluginLogic
                                 }
                                 else
                                 {
-                                    iFixes++;
                                     _totalFixes++;
+                                    // clean both text before adding them to Listview
+                                    text = Utilities.RemoveHtmlTags(text);
+                                    oldText = Utilities.RemoveHtmlTags(oldText);
                                     AddFixToListView(p, fixAction, oldText, text);
                                 }
                             }
                         }
                     }
                 }
-
             }
+            if (!_allowFixes)
+            {
+                labelTotal.Text = "Total: " + _totalFixes.ToString();
+                labelTotal.ForeColor = _totalFixes > 0 ? Color.Blue : Color.Red;
+            }
+        }
+
+        private string RemoveExtraSpaces(string text, int index)
+        {
+            //<i>- Word => <i> Word
+            var temp = text.Substring(0, index);
+            temp = temp.Trim();
+            text = text.Remove(0, index).Trim();
+            text = temp + text;
+            return text;
         }
 
         private bool AllowFix(Paragraph p, string action)
@@ -119,5 +128,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return false;
         }
 
+        private bool AnalyzeText(string s)
+        {
+            s = Utilities.RemoveHtmlTags(s).Trim();
+            s = s.Replace("  ", " ");
+
+            if (s.StartsWith("-") && s.Contains(Environment.NewLine + "-"))
+                return true;
+            return false;
+        }
     }
 }

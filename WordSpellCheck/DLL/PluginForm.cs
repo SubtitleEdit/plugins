@@ -14,20 +14,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         internal string FixedSubtitle { get; private set; }
         private Subtitle _subtitle;
-        Microsoft.Office.Interop.Word.Application _wordApp = new Microsoft.Office.Interop.Word.Application();
-        List<Microsoft.Office.Interop.Word.Language> _spellCheckLanguages = new List<Microsoft.Office.Interop.Word.Language>();
-        Microsoft.Office.Interop.Word.ProofreadingErrors _currentSpellCollection;
-        int _currentSpellCollectionIndex = -1;
-        Paragraph _currentParagraph;
-        int _currentStartIndex = -1;
-        List<string> _skipAllList = new List<string>();
-        Dictionary<string, string> _useAlwaysList = new Dictionary<string, string>();
-        List<string> _namesEtcList = new List<string>();
-        List<string> _namesEtcMultiWordList = new List<string>();
-        string _namesEtcLocalFileName;
-        bool _abort = false;
-        string _currentErrorText = string.Empty;
-        int _currentErrorStart = 0;
+        private Microsoft.Office.Interop.Word.Application _wordApp = new Microsoft.Office.Interop.Word.Application();
+        private List<Microsoft.Office.Interop.Word.Language> _spellCheckLanguages = new List<Microsoft.Office.Interop.Word.Language>();
+        private Microsoft.Office.Interop.Word.ProofreadingErrors _currentSpellCollection;
+        private int _currentSpellCollectionIndex = -1;
+        private Paragraph _currentParagraph;
+        private int _currentStartIndex = -1;
+        private List<string> _skipAllList = new List<string>();
+        private Dictionary<string, string> _useAlwaysList = new Dictionary<string, string>();
+        private List<string> _namesEtcList = new List<string>();
+        private List<string> _namesEtcMultiWordList = new List<string>();
+        private string _namesEtcLocalFileName;
+        private bool _abort = false;
+        private string _currentErrorText = string.Empty;
+        private int _currentErrorStart = 0;
 
         internal PluginForm(Subtitle subtitle, string name, string description)
         {
@@ -67,7 +67,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             item.SubItems.Add(subItem);
 
             item.Tag = p; // save paragraph in Tag
-
             listViewSubtitle.Items.Add(item);
         }
 
@@ -81,7 +80,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             if (listViewSubtitle.Items.Count > 0)
                 listViewSubtitle.Items[0].Selected = true;
-        }        
+        }
 
         private void DoStartSpellCheck()
         {
@@ -91,7 +90,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             while (index < listViewSubtitle.Items.Count)
             {
-                Text = "Word spell check - line " + (index + 1).ToString() + " of " + listViewSubtitle.Items.Count.ToString();                
+                Text = "Word spell check - line " + (index + 1).ToString() + " of " + listViewSubtitle.Items.Count.ToString();
                 _currentParagraph = (listViewSubtitle.Items[index].Tag as Paragraph);
                 string text = _currentParagraph.Text;
                 Application.DoEvents();
@@ -102,7 +101,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 index++;
                 if (index < listViewSubtitle.Items.Count)
                 {
-                    listViewSubtitle.Items[index-1].Selected = false;
+                    listViewSubtitle.Items[index - 1].Selected = false;
                     listViewSubtitle.Items[index].Selected = true;
                     listViewSubtitle.EnsureVisible(index);
                 }
@@ -155,7 +154,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         _wordApp.ActiveDocument.Content.DetectLanguage();
                     }
                     catch
-                    { 
+                    {
                     }
                 }
             }
@@ -247,8 +246,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 _currentSpellCollectionIndex++;
                 if (_currentSpellCollectionIndex < _currentSpellCollection.Count)
-                {                    
-                    var spell = _currentSpellCollection[_currentSpellCollectionIndex+1];
+                {
+                    var spell = _currentSpellCollection[_currentSpellCollectionIndex + 1];
                     if (_useAlwaysList.ContainsKey(spell.Text))
                     {
                         FixWord(spell.Text, _useAlwaysList[spell.Text]);
@@ -285,7 +284,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             int index = 0;
             if (listViewSubtitle.SelectedIndices.Count > 0)
-                index = listViewSubtitle.SelectedIndices[0];                
+                index = listViewSubtitle.SelectedIndices[0];
             listViewSubtitle.Items[index].Selected = false;
             index++;
             if (index >= listViewSubtitle.Items.Count)
@@ -296,7 +295,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewSubtitle.Items[index].Selected = true;
             listViewSubtitle.EnsureVisible(index);
             DoStartSpellCheck();
-        }       
+        }
 
         private void listViewSubtitle_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -340,19 +339,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
             ShowNextSpellingError();
         }
 
-        private void PluginForm_Load(object sender, EventArgs e)
-        {
-        }
-
         private void buttonChange_Click(object sender, EventArgs e)
-        {        
+        {
             string newText = textBoxWord.Text;
             if (newText.Trim().Length == 0)
                 return;
             labelActionInfo.Text = "Change '" + _currentSpellCollection[_currentSpellCollectionIndex + 1].Text + "' to '" + newText + "'...";
             if (_currentSpellCollection[_currentSpellCollectionIndex + 1].Text != newText)
                 FixWord(_currentSpellCollection[_currentSpellCollectionIndex + 1], newText);
-            ShowNextSpellingError(); 
+            ShowNextSpellingError();
         }
 
         private void UpdateWholeText()
@@ -403,8 +398,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (listBoxSuggestions.SelectedItems.Count == 1)
             {
                 string newText = listBoxSuggestions.Items[listBoxSuggestions.SelectedIndex].ToString();
-                labelActionInfo.Text = "Used suggestion '" + newText + "'...";    
-                FixWord(_currentSpellCollection[_currentSpellCollectionIndex+1], newText);
+                labelActionInfo.Text = "Used suggestion '" + newText + "'...";
+                FixWord(_currentSpellCollection[_currentSpellCollectionIndex + 1], newText);
                 ShowNextSpellingError();
             }
         }
@@ -433,7 +428,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (startIndex >= 0 && startIndex < _currentParagraph.Text.Length && _currentParagraph.Text.Substring(startIndex).Contains(oldWord)) // while
                 {
                     bool startOk = (startIndex == 0) || (" <>-[]/()-¿¡\"'‘`´♪—”“`´¶♪:…" + Environment.NewLine).Contains(_currentParagraph.Text[startIndex - 1].ToString());
-                    
+
                     if (startOk)
                     {
                         int end = startIndex + oldWord.Length;
@@ -442,7 +437,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                             if ((end == _currentParagraph.Text.Length) || ((" ,.!?:;')<-[]/\"%'‘`´♪—”“`´¶♪:…" + Environment.NewLine).Contains(_currentParagraph.Text[end].ToString())))
                             {
                                 _currentParagraph.Text = _currentParagraph.Text.Remove(startIndex, oldWord.Length).Insert(startIndex, changeWord);
-                                _currentErrorStart = startIndex+1;
+                                _currentErrorStart = startIndex + 1;
                             }
                         }
                     }
@@ -457,9 +452,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (listBoxSuggestions.SelectedItems.Count == 1)
             {
                 string newText = listBoxSuggestions.Items[listBoxSuggestions.SelectedIndex].ToString();
-                labelActionInfo.Text = "Use allways suggestion '" + newText + "'...";    
+                labelActionInfo.Text = "Use allways suggestion '" + newText + "'...";
                 _useAlwaysList.Add(_currentSpellCollection[_currentSpellCollectionIndex + 1].Text, newText);
-                FixWord(_currentSpellCollection[_currentSpellCollectionIndex+1], newText);
+                FixWord(_currentSpellCollection[_currentSpellCollectionIndex + 1], newText);
                 ShowNextSpellingError();
             }
         }
@@ -507,9 +502,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         {
                             if ((end == _currentParagraph.Text.Length) || ((" ,.!?:;')" + Environment.NewLine).Contains(_currentParagraph.Text[end].ToString())))
                                 _currentParagraph.Text = _currentParagraph.Text.Remove(startIndex, oldWord.Length);
-                            if (startIndex > 0 && _currentParagraph.Text[startIndex-1] == ' ')
-                                _currentParagraph.Text = _currentParagraph.Text.Remove(startIndex-1, 1);
-                            else if (_currentParagraph.Text.Length > startIndex+1 && _currentParagraph.Text[startIndex] == ' ')
+                            if (startIndex > 0 && _currentParagraph.Text[startIndex - 1] == ' ')
+                                _currentParagraph.Text = _currentParagraph.Text.Remove(startIndex - 1, 1);
+                            else if (_currentParagraph.Text.Length > startIndex + 1 && _currentParagraph.Text[startIndex] == ' ')
                                 _currentParagraph.Text = _currentParagraph.Text.Remove(startIndex, 1);
                         }
                     }
@@ -583,7 +578,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _namesEtcList = new List<string>();
             _namesEtcMultiWordList = new List<string>();
             string namesEtcFileName = GetNamesEtcFileName();
-            LoadNamesEtc(_namesEtcList, _namesEtcMultiWordList, namesEtcFileName);            
+            LoadNamesEtc(_namesEtcList, _namesEtcMultiWordList, namesEtcFileName);
             _namesEtcLocalFileName = null;
             if (comboBoxDictionaries.SelectedIndex > 0)
             {
@@ -628,7 +623,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
             }
             catch
-            { 
+            {
             }
         }
 
@@ -651,14 +646,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             if (_wordApp.Application.CustomDictionaries.ActiveCustomDictionary != null)
             {
-                labelActionInfo.Text = "Added '" + newText + "' to user dictionary...";    
+                labelActionInfo.Text = "Added '" + newText + "' to user dictionary...";
                 string fileName = Path.Combine(_wordApp.Application.CustomDictionaries.ActiveCustomDictionary.Path, _wordApp.Application.CustomDictionaries.ActiveCustomDictionary.Name);
                 File.AppendAllText(fileName, newText + Environment.NewLine, Encoding.Unicode);
             }
             _skipAllList.Add(newText);
             _skipAllList.Add(newText.ToUpper());
             if (newText.Length > 1)
-                _skipAllList.Add(newText.Substring(0, 1).ToUpper() + newText.Substring(1));            
+                _skipAllList.Add(newText.Substring(0, 1).ToUpper() + newText.Substring(1));
 
             ShowNextSpellingError();
         }
@@ -674,7 +669,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (newText.Trim().Length == 0)
                 return;
 
-            labelActionInfo.Text = "Added '" + newText + "' to names/noise list...";    
+            labelActionInfo.Text = "Added '" + newText + "' to names/noise list...";
             if (!string.IsNullOrEmpty(_namesEtcLocalFileName))
             {
                 var localNamesEtc = new List<string>();
@@ -729,6 +724,5 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             textBoxWord_TextChanged(sender, e);
         }
-
     }
 }

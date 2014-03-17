@@ -452,7 +452,6 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "PluginForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PluginForm_FormClosing);
-            this.Load += new System.EventHandler(this.PluginForm_Load);
             this.Shown += new System.EventHandler(this.PluginForm_Shown);
             this.ResizeEnd += new System.EventHandler(this.PluginForm_ResizeEnd);
             this.contextMenuStrip1.ResumeLayout(false);

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
+﻿using Nikse.SubtitleEdit.PluginLogic;
+using System;
 using System.Windows.Forms;
-using Nikse.SubtitleEdit.PluginLogic;
 
 namespace HaxorTester
 {
@@ -14,11 +9,39 @@ namespace HaxorTester
         public Form1()
         {
             InitializeComponent();
+        }
 
-            InitializeComponent();
+        private static void Tester(string s)
+        {
             IPlugin plugin = new Nikse.SubtitleEdit.PluginLogic.Haxor();
-            string subtitleFileName = @"C:\Users\Nikse\Desktop\spellcheck.srt";
-            MessageBox.Show(plugin.DoAction(null, System.IO.File.ReadAllText(subtitleFileName), 25, "<br />", subtitleFileName, @"C:\Users\Nikse\Desktop\Trailers\Game Of Thrones Season Trailer.mp4", System.IO.File.ReadAllText(subtitleFileName)));           
+            MessageBox.Show(plugin.DoAction(null, s, 25, "<br />", null, @"C:\Users\Nikse\Desktop\Trailers\Game Of Thrones Season Trailer.mp4", s));
+        }
+
+        private void buttonTest_Click(object sender, EventArgs e)
+        {
+            if (radioButtonWithFile.Checked)
+            {
+                using (var op = new OpenFileDialog() { Filter = "Subrip|*.srt" })
+                {
+                    if (op.ShowDialog() == DialogResult.OK)
+                    {
+                        string rawTExt = System.IO.File.ReadAllText(op.FileName);
+                        Tester(op.FileName);
+                    }
+                }
+            }
+            else
+            {
+                string str = textBox1.Text.Trim();
+                if (str.Length > 0)
+                {
+                    string p = @"
+1
+00:00:26,763 --> 00:00:29,381";
+                    p += Environment.NewLine + str;
+                    Tester(p);
+                }
+            }
         }
     }
 }

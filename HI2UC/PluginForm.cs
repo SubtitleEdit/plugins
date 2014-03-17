@@ -11,9 +11,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         // TODO: MAKE THIS LOOK AROUND PATTERN
         private const string REGEXHEARINGIMPAIRED = @"\B([\{\(\[])\s*([♪'""#]*\w+[\s\w,'""#\-&,♪/<>\.]*)([\)\]\}])\B|\B([\{\(\[])([♪'""#\s]*\w+[\s\w,'""#\-&,♪/<>\.]*[^\)\]\}]\r\n['""#\s]*\w+[\s\w,'""#\-&,♪/<>\.]*)\s*([\)\]\}])\B";
 
-        private readonly IList<string> regexNames = new List<string>
+        private readonly IList<string> _listPatternNames = new List<string>
 		{
-            @"(?(?<=[\->\.!\?♪]) |)\b\w+[\s\w'""\-#♪]*\s([\{\(\[])(['""#\-♪]*\s*\w+[\s\w\-',#""&\.:♪]*)([\)\]\}])(?=:)",
+            @"(?(?<=[\->\.!\?♪])\s*)\b\w+[\s\w'""\-#♪]*\s([\{\(\[])(['""#\-♪]*\s*\w+[\s\w\-',#""&\.:♪]*)([\)\]\}])(?=:)",
 			@"(?(?<=[>\.!\?♪] )|)\b\w+[\s\w'""\-#&]*:(?=\s)",
             @"(?<=\r\n)\b\w+[\s\w'""\-#&♪]*:(?=\s)",
             @"(?i)(mrs|mr)?\.\s*(\w+[\s\w'""\-#&♪]*):(?=\s)" // TODO
@@ -135,12 +135,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void FindHearinImpairedText()
         {
-            //char _char = '\u0028'; // (
             _totalChanged = 0;
             listViewFixes.BeginUpdate();
             foreach (Paragraph p in _subtitle.Paragraphs)
             {
-                if (Regex.IsMatch(p.Text, REGEXHEARINGIMPAIRED, RegexOptions.Compiled) || Regex.IsMatch(p.Text, @"\b[A-Z]\w+:\B"))
+                if (Regex.IsMatch(p.Text, REGEXHEARINGIMPAIRED, RegexOptions.Compiled) || Regex.IsMatch(p.Text, ":\\B"))
                 {
                     string oldText = p.Text;
                     string text = p.Text;
@@ -149,7 +148,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     if (Regex.IsMatch(p.Text, REGEXHEARINGIMPAIRED, RegexOptions.Compiled))
                         text = ConvertMoodsFeelings(text);
 
-                    // Narrator:
+                    if (Regex.IsMatch(text, _listPatternNames[0], RegexOptions.Compiled))
+                    {
+                        // WOMAN (on phone): => WOMAN ON PHONE:
+                        // <i>Ella (on phone): It's not about money.</i>
+                        text = Regex.Replace(text, _listPatternNames[0], delegate(Match match)
+                        {
+                            string brackets = @"[\(\[\{]|[\)\]\}]";
+                            string newname = Regex.Replace(match.Value, brackets, string.Empty);
+                            return newname.ToUpper();
+                        });
+                    }
+
+                    // Narrator: switch ♪ :
                     if (checkBoxNames.Checked && Regex.IsMatch(text, @"\b[A-Z]\w+:\B"))
                         text = NamesOfPeoples(text);
 
@@ -277,21 +288,23 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string NamesOfPeoples(string text)
         {
-            if (!text.Contains(":"))
-                return text;
-            foreach (string pattern in regexNames)
+            foreach (string pattern in _listPatternNames)
             {
                 if (Regex.IsMatch(text, pattern))
                 {
                     _namesMatched = true;
                     text = Regex.Replace(text, pattern, delegate(Match match)
                     {
-                        return match.Value.ToUpper();
+                        //Todo: Won't match like: '♪:'
+                        if (Regex.IsMatch(match.Value, @"\b[A-Z]\w+:\B", RegexOptions.Compiled))
+                            return match.Value.ToUpper();
+                        else
+                            return match.Value;
                     });
                     break;
                 }
             }
-            return text;
+            return text.Trim();
         }
     }
 }

@@ -66,9 +66,7 @@ namespace OpenSubtitlesUpload
                 textBoxUserName.Text = DecodeFrom64(doc.DocumentElement.SelectSingleNode("Username").InnerText);
                 textBoxPassword.Text = DecodeFrom64(doc.DocumentElement.SelectSingleNode("Password").InnerText);
             }
-            catch
-            {
-            }
+            catch { }
         }
 
         private void SaveLogin(string userName, string password)
@@ -82,9 +80,7 @@ namespace OpenSubtitlesUpload
                 doc.DocumentElement.SelectSingleNode("Password").InnerText = EncodeTo64(password);
                 doc.Save(fileName);
             }
-            catch
-            {
-            }
+            catch { }
         }
 
         public string GetLanguageCode()
@@ -168,11 +164,10 @@ namespace OpenSubtitlesUpload
                 Cursor = Cursors.WaitCursor;
                 try
                 {
+                    // TODO: HASH TO USER PASSWORD
                     SaveLogin(textBoxUserName.Text, textBoxPassword.Text);
                 }
-                catch
-                {
-                }
+                catch { }
 
                 labelStatus.Text = "Logging in...";
                 this.Refresh();
