@@ -148,6 +148,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     if (Regex.IsMatch(p.Text, REGEXHEARINGIMPAIRED, RegexOptions.Compiled))
                         text = ConvertMoodsFeelings(text);
 
+                    // TODO: USER OPTION
                     if (Regex.IsMatch(text, _listPatternNames[0], RegexOptions.Compiled))
                     {
                         // WOMAN (on phone): => WOMAN ON PHONE:
@@ -166,8 +167,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                     if (text != oldText)
                     {
-                        text = text.Replace(" " + Environment.NewLine, Environment.NewLine).Trim();
-                        text = text.Replace(Environment.NewLine + " ", Environment.NewLine).Trim();
+                        text = Regex.Replace(text, "\\s+" + Environment.NewLine, Environment.NewLine);
+                        text = Regex.Replace(text, Environment.NewLine + "\\s+", Environment.NewLine);
 
                         if (AllowFix(p))
                         {
@@ -212,7 +213,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void AddFixToListView(Paragraph p, string before, string after)
         {
-            var item = new ListViewItem() { Checked = true, UseItemStyleForSubItems = true };
+            var item = new ListViewItem() { Checked = true, UseItemStyleForSubItems = true, Tag = p };
             var subItem = new ListViewItem.ListViewSubItem(item, p.Number.ToString());
             item.SubItems.Add(subItem);
 
@@ -230,8 +231,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             subItem = new ListViewItem.ListViewSubItem(item, after.Replace(Environment.NewLine,
                 Configuration.ListViewLineSeparatorString));
             item.SubItems.Add(subItem);
-            item.Tag = p; // save paragraph in Tag
-            // Note: sinde the 'after' doesn't contain <html tags> it safe to check this way!
             if (after.IndexOf(": ") > 14 || after.IndexOf(":\r\n") > 14)
                 item.BackColor = Color.Pink;
             listViewFixes.Items.Add(item);
