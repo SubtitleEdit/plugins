@@ -16,16 +16,16 @@ namespace SeSkydriveSave
         private const string ClientSecret = "CLIENT_SECRET";
         private string ClientWebsite = "http://www.nikse.dk".Replace(" ", "%20").Replace(":", "%3A").Replace("/", "%2F");
         public string AccessToken { get; set; }
-        
-        public string Scope { get; set;} 
 
-        public string LoginUrl 
-        { 
+        public string Scope { get; set; }
+
+        public string LoginUrl
+        {
             get
             {
                 return string.Format("https://login.live.com/oauth20_authorize.srf?client_id={0}&scope={1}&response_type=token&redirect_uri={2}", ClientId, Scope, ClientWebsite);
             }
-        } 
+        }
 
         public SkydriveApi(string scope)
         {
@@ -109,7 +109,7 @@ namespace SeSkydriveSave
         }
 
         public void UploadFile(string folder, string fileName, string content)
-        { 
+        {
             var uri = new Uri(string.Format("https://apis.live.net/v5.0/{0}/files/{1}?access_token={2}", folder, fileName, AccessToken));
             var request = (HttpWebRequest)WebRequest.Create(uri);
             request.Method = WebRequestMethods.Http.Put;
@@ -132,6 +132,5 @@ namespace SeSkydriveSave
                 System.Windows.Forms.MessageBox.Show(excetion.Message);
             }
         }
-      
     }
 }

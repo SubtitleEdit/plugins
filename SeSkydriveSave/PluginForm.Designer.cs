@@ -69,7 +69,7 @@
             // columnHeaderName
             // 
             this.columnHeaderName.Text = "Name";
-            this.columnHeaderName.Width = 250;
+            this.columnHeaderName.Width = 360;
             // 
             // columnHeaderDateModified
             // 
@@ -164,7 +164,7 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "PluginForm";
+            this.Text = "SeSkydriveSave";
             this.Shown += new System.EventHandler(this.PluginForm_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PluginForm_KeyDown);
             this.ResumeLayout(false);
