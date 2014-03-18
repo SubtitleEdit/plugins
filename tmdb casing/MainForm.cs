@@ -33,13 +33,23 @@ namespace tmdb_casing
             this._name = name;
             this._description = description;
             this._subtitleEditForm = parentForm;
+            
+            SearchFormMovie();
+        }
 
+        private void SearchFormMovie()
+        {
             using (var searchForm = new MovieSeacher())
             {
                 if (searchForm.ShowDialog() == DialogResult.OK)
                 {
                 }
             }
+        }
+
+        private void AddResultToListview()
+        {
+
         }
 
         private void ChangeNames()

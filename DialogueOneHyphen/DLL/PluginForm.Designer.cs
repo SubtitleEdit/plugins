@@ -120,6 +120,7 @@
             // 
             // labelTotal
             // 
+            this.labelTotal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelTotal.AutoSize = true;
             this.labelTotal.Location = new System.Drawing.Point(9, 451);
             this.labelTotal.Name = "labelTotal";

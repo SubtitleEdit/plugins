@@ -56,7 +56,7 @@ namespace SeSkydriveLoad
             var request = (HttpWebRequest)WebRequest.Create(uri);
             request.Method = WebRequestMethods.Http.Get;
             try
-            {                
+            {
                 var response = request.GetResponse();
                 Stream reader = response.GetResponseStream();
                 MemoryStream ms = new MemoryStream();
@@ -132,6 +132,5 @@ namespace SeSkydriveLoad
                 System.Windows.Forms.MessageBox.Show(excetion.Message);
             }
         }
-
     }
 }

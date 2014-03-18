@@ -203,77 +203,6 @@ namespace OpenSubtitles
             return false;
         }
 
-        public static void CopyTo(Stream src, Stream dest)
-        {
-            byte[] bytes = new byte[4096];
-            int cnt;
-            while ((cnt = src.Read(bytes, 0, bytes.Length)) != 0)
-            {
-                dest.Write(bytes, 0, cnt);
-            }
-        }
-
-        public static byte[] GZLib(byte[] bytes)
-        {
-            using (var msi = new MemoryStream(bytes))
-            {
-                using (var mso = new MemoryStream())
-                {
-                    using (var gs = new ComponentAce.Compression.Libs.zlib.ZOutputStream(mso, ComponentAce.Compression.Libs.zlib.zlibConst.Z_DEFAULT_COMPRESSION))
-                    {
-                        CopyTo(msi, gs);
-                    }
-                    return mso.ToArray();
-                }
-            }
-        }
-
-        //public static byte[] GZip(string str)
-        //{
-        //    var bytes = Encoding.UTF8.GetBytes(str);
-
-        //    using (var msi = new MemoryStream(bytes))
-        //    {
-        //        using (var mso = new MemoryStream())
-        //        {
-        //            using (var gs = new GZipStream(mso, CompressionMode.Compress))
-        //            {
-        //                CopyTo(msi, gs);
-        //            }
-        //            return mso.ToArray();
-        //        }
-        //    }
-        //}
-
-        //public static byte[] Remove10ByteHeaderAnd8ByteFooter(byte[] buffer)
-        //{
-        //    byte[] newBuffer = new byte[buffer.Length - (10 + 8)];
-        //    Buffer.BlockCopy(buffer, 10, newBuffer, 0, newBuffer.Length);
-        //    return newBuffer;
-        //}
-
-        public static string CalculateMD5Hash(byte[] buffer)
-        {
-            var md5 = MD5.Create();
-            var sb = new StringBuilder();
-            foreach (var b in md5.ComputeHash(buffer))
-                sb.Append(b.ToString("x2").ToLower());
-            return sb.ToString();
-        }
-
-        public static byte[] GetBytesWithChosenEncoding(string subtitle, Encoding encoding)
-        {
-            string tempFileName = Path.GetTempFileName();
-            System.IO.File.WriteAllText(tempFileName, subtitle, encoding);
-            var bytes = System.IO.File.ReadAllBytes(tempFileName);
-            try
-            {
-                System.IO.File.Delete(tempFileName);
-            }
-            catch { }
-            return bytes;
-        }
-
         public bool UploadSubtitles(string subtitle, string subtitleFileName, string movieFileName, string movieFileNameFull, string language, string releaseName, string idMovieImdb, string comment, string hearingImpaired, string hd, Encoding encoding)
         {
             if (string.IsNullOrEmpty(language))
@@ -401,6 +330,77 @@ namespace OpenSubtitles
             doc.LoadXml(response);
             LastStatus = doc.DocumentElement.SelectSingleNode("params/param/value/struct/member/name[text()='status']/../value/string").InnerText;
             return LastStatus == "200 OK";
+        }
+
+        public static void CopyTo(Stream src, Stream dest)
+        {
+            byte[] bytes = new byte[4096];
+            int cnt;
+            while ((cnt = src.Read(bytes, 0, bytes.Length)) != 0)
+            {
+                dest.Write(bytes, 0, cnt);
+            }
+        }
+
+        public static byte[] GZLib(byte[] bytes)
+        {
+            using (var msi = new MemoryStream(bytes))
+            {
+                using (var mso = new MemoryStream())
+                {
+                    using (var gs = new ComponentAce.Compression.Libs.zlib.ZOutputStream(mso, ComponentAce.Compression.Libs.zlib.zlibConst.Z_DEFAULT_COMPRESSION))
+                    {
+                        CopyTo(msi, gs);
+                    }
+                    return mso.ToArray();
+                }
+            }
+        }
+
+        //public static byte[] GZip(string str)
+        //{
+        //    var bytes = Encoding.UTF8.GetBytes(str);
+
+        //    using (var msi = new MemoryStream(bytes))
+        //    {
+        //        using (var mso = new MemoryStream())
+        //        {
+        //            using (var gs = new GZipStream(mso, CompressionMode.Compress))
+        //            {
+        //                CopyTo(msi, gs);
+        //            }
+        //            return mso.ToArray();
+        //        }
+        //    }
+        //}
+
+        //public static byte[] Remove10ByteHeaderAnd8ByteFooter(byte[] buffer)
+        //{
+        //    byte[] newBuffer = new byte[buffer.Length - (10 + 8)];
+        //    Buffer.BlockCopy(buffer, 10, newBuffer, 0, newBuffer.Length);
+        //    return newBuffer;
+        //}
+
+        public static string CalculateMD5Hash(byte[] buffer)
+        {
+            var md5 = MD5.Create();
+            var sb = new StringBuilder();
+            foreach (var b in md5.ComputeHash(buffer))
+                sb.Append(b.ToString("x2").ToLower());
+            return sb.ToString();
+        }
+
+        public static byte[] GetBytesWithChosenEncoding(string subtitle, Encoding encoding)
+        {
+            string tempFileName = Path.GetTempFileName();
+            System.IO.File.WriteAllText(tempFileName, subtitle, encoding);
+            var bytes = System.IO.File.ReadAllBytes(tempFileName);
+            try
+            {
+                System.IO.File.Delete(tempFileName);
+            }
+            catch { }
+            return bytes;
         }
 
         public System.Collections.Generic.Dictionary<string, string> SearchMoviesOnIMDB(string query)

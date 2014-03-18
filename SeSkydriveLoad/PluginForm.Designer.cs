@@ -34,11 +34,11 @@
             this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderDateModified = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.labelDescription = new System.Windows.Forms.Label();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOK = new System.Windows.Forms.Button();
             this.labelInfo = new System.Windows.Forms.Label();
-            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.SuspendLayout();
             // 
             // listViewFiles
@@ -66,7 +66,7 @@
             // columnHeaderName
             // 
             this.columnHeaderName.Text = "Name";
-            this.columnHeaderName.Width = 250;
+            this.columnHeaderName.Width = 363;
             // 
             // columnHeaderDateModified
             // 
@@ -77,6 +77,13 @@
             // 
             this.columnHeaderSize.Text = "Size";
             this.columnHeaderSize.Width = 100;
+            // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "document.ico");
+            this.imageList1.Images.SetKeyName(1, "Folder.ico");
             // 
             // labelDescription
             // 
@@ -118,13 +125,6 @@
             this.labelInfo.Size = new System.Drawing.Size(47, 13);
             this.labelInfo.TabIndex = 9;
             this.labelInfo.Text = "labelInfo";
-            // 
-            // imageList1
-            // 
-            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
-            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageList1.Images.SetKeyName(0, "document.ico");
-            this.imageList1.Images.SetKeyName(1, "Folder.ico");
             // 
             // PluginForm
             // 

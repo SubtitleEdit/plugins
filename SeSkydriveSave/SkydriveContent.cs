@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SeSkydriveSave
 {
@@ -16,6 +14,7 @@ namespace SeSkydriveSave
         public SkydriveContent()
         {
         }
+
         public SkydriveContent(string id, string name, string size, string updatedTime)
         {
             Id = id;
@@ -24,7 +23,7 @@ namespace SeSkydriveSave
             UpdatedTime = Convert.ToDateTime(updatedTime);
         }
 
-        public bool IsFolder 
+        public bool IsFolder
         {
             get
             {
@@ -39,6 +38,5 @@ namespace SeSkydriveSave
                 return Type.ToLower() == "file";
             }
         }
-
     }
 }

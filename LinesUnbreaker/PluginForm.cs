@@ -38,7 +38,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 LoadSettingsIfThereIs(false); // the setting will be stored in xml file.
             };
             LoadSettingsIfThereIs(true);
-            FindDialogueAndListFixes();
+            FindLines();
         }
 
         private void LoadSettingsIfThereIs(bool load)
@@ -93,11 +93,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return Path.Combine(path, "SeLinesUnbreaker.xml");
         }
 
-        private void FindDialogueAndListFixes()
+        private void FindLines()
         {
             _totalFixed = 0;
             listView1.BeginUpdate();
-            int shorterThan = (int)numericUpDown1.Value;
+            int val = (int)numericUpDown1.Value;
             foreach (Paragraph p in _subtitle.Paragraphs)
             {
                 if (p.NumberOfLines < 2)
@@ -105,11 +105,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 string oldText = p.Text;
                 string text = p.Text;
 
-                text = UnbreakLines(text, shorterThan);
-                if (text.Length < shorterThan && text != oldText)
+                text = UnbreakLines(text, val);
+                if (text != oldText)
                 {
-                    text = text.Replace(" " + Environment.NewLine, Environment.NewLine).Trim();
-                    text = text.Replace(Environment.NewLine + " ", Environment.NewLine).Trim();
+                    text = Regex.Replace(text, "\\s+" + Environment.NewLine, Environment.NewLine).Trim();
+                    text = Regex.Replace(text, Environment.NewLine + "\\s+", Environment.NewLine).Trim();
 
                     if (AllowFix(p))
                     {
@@ -171,11 +171,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string UnbreakLines(string s, int lineLength)
         {
-            // check if lines isn't dialog - ivandro </br> - ismael!
             var t = Utilities.RemoveHtmlTags(s);
             t = t.Replace("  ", " ").Trim();
 
-            // for one line dialog :)
             if ((t.StartsWith("-") || t.Contains("\r\n-")) && checkBoxSkipDialog.Checked)
                 return s;
             else if (Regex.IsMatch(t, @"[\[\{\(]|[\}\]\)]") && checkBoxMoods.Checked)
@@ -200,7 +198,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             listView1.Items.Clear();
             _totalFixed = 0;
-            FindDialogueAndListFixes();
+            FindLines();
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -211,7 +209,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void buttonOK_Click(object sender, EventArgs e)
         {
             _allowFixes = true;
-            FindDialogueAndListFixes();
+            FindLines();
             FixedSubtitle = _subtitle.ToText(new SubRip());
             DialogResult = DialogResult.OK;
         }

@@ -75,6 +75,11 @@
             this.columnHeader2.Text = "Title";
             this.columnHeader2.Width = 384;
             // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Year";
+            this.columnHeader3.Width = 0;
+            // 
             // buttonOK
             // 
             this.buttonOK.Location = new System.Drawing.Point(389, 293);

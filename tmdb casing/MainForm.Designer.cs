@@ -42,7 +42,7 @@
             // 
             // listView2
             // 
-            this.listView2.Location = new System.Drawing.Point(12, 12);
+            this.listView2.Location = new System.Drawing.Point(12, 33);
             this.listView2.Name = "listView2";
             this.listView2.Size = new System.Drawing.Size(651, 203);
             this.listView2.TabIndex = 1;

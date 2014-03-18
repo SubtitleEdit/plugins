@@ -7,22 +7,16 @@ namespace tmdb_casing
 {
     public partial class MovieSeacher : Form
     {
-        private const string _key = ""; // this is secret!
+        private const string _key = "9ca57d5af5c9f182fc0dfe32dcdca40f"; // this is secret!
         private Tmdb tmdb;
         private TmdbMovie _movie;
         private SearchType _searchType = SearchType.TMDBID;
         private WatTmdb.V3.Cast _cast;
 
-        private enum SearchType
-        {
-            TMDBID,
-            IMDBID,
-            Title
-        }
-
         public MovieSeacher()
         {
             InitializeComponent();
+            tmdb = new Tmdb(_key);
         }
 
         private void buttonSeach_Click(object sender, EventArgs e)
@@ -38,9 +32,8 @@ namespace tmdb_casing
 
         private void GetMovieID(string patten)
         {
-            tmdb = new Tmdb(_key);
             var movieSearch = tmdb.SearchMovie(patten, 1);
-            if (movieSearch != null)
+            if (movieSearch.results != null)
             {
                 AddToListView(movieSearch.results);
             }
