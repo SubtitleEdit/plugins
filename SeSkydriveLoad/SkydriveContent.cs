@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SeSkydriveLoad
 {
@@ -13,9 +11,8 @@ namespace SeSkydriveLoad
         public string ParentId { get; set; }
         public string Type { get; set; }
 
-        public SkydriveContent()
-        {
-        }
+        public SkydriveContent() { }
+
         public SkydriveContent(string id, string name, string size, string updatedTime)
         {
             Id = id;
@@ -24,21 +21,8 @@ namespace SeSkydriveLoad
             UpdatedTime = Convert.ToDateTime(updatedTime);
         }
 
-        public bool IsFolder 
-        {
-            get
-            {
-                return Type.ToLower() == "folder";
-            }
-        }
+        public bool IsFolder { get { return Type.ToLower() == "folder"; } }
 
-        public bool IsFile
-        {
-            get
-            {
-                return Type.ToLower() == "file";
-            }
-        }
-
+        public bool IsFile { get { return Type.ToLower() == "file"; } }
     }
 }
