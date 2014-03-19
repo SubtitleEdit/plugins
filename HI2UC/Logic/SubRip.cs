@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Nikse.SubtitleEdit.PluginLogic
+namespace Nikse.SubtitleEdit.PluginLogic.HI2UC
 {
     internal class SubRip : SubtitleFormat
     {

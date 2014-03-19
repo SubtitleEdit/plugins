@@ -1,8 +1,8 @@
 ﻿using System.Windows.Forms;
 
-namespace Nikse.SubtitleEdit.PluginLogic
+namespace Nikse.SubtitleEdit.PluginLogic.HI2UC
 {
-    interface IPlugin
+    public interface IPlugin
     {
         /// <summary>
         /// Name of the plug-in

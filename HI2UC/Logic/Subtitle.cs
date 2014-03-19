@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Nikse.SubtitleEdit.PluginLogic
+namespace Nikse.SubtitleEdit.PluginLogic.HI2UC
 {
     internal class Subtitle
     {

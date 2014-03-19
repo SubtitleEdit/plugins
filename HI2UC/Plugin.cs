@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace Nikse.SubtitleEdit.PluginLogic
+namespace Nikse.SubtitleEdit.PluginLogic.HI2UC
 {
     public class HI2UC : IPlugin // dll file name must "<classname>.dll" - e.g. "Haxor.dll"
     {
@@ -52,7 +52,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 Subtitle sub = new Subtitle();
                 SubRip srt = new SubRip();
                 srt.LoadSubtitle(sub, list, subtitleFileName);
-                using (var form = new PluginForm(sub, (this as IPlugin).Name, (this as IPlugin).Description, parentForm))
+                using (var form = new PluginForm(parentForm, sub, (this as IPlugin).Name, (this as IPlugin).Description))
                 {
                     if (form.ShowDialog(parentForm) == DialogResult.OK)
                         return form.FixedSubtitle;

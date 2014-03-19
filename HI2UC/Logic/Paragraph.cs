@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Nikse.SubtitleEdit.PluginLogic
+namespace Nikse.SubtitleEdit.PluginLogic.HI2UC
 {
     internal class Paragraph
     {

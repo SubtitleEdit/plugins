@@ -8,7 +8,7 @@
     <ProjectGuid>{16B4BE52-050A-4161-B0E3-9B07AA5F650B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Nikse</RootNamespace>
+    <RootNamespace>Nikse.SubtitleEdit.PluginLogic.HI2UC</RootNamespace>
     <AssemblyName>HI2UC</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -41,6 +41,9 @@
     <StartupObject />
   </PropertyGroup>
   <PropertyGroup />
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration.Install" />

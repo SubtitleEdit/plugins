@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace Nikse.SubtitleEdit.PluginLogic
+namespace Nikse.SubtitleEdit.PluginLogic.LinesUnbreaker
 {
     public static class Utilities
     {

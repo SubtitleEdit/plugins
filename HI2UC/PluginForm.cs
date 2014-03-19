@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-namespace Nikse.SubtitleEdit.PluginLogic
+namespace Nikse.SubtitleEdit.PluginLogic.HI2UC
 {
     internal partial class PluginForm : Form
     {
@@ -28,7 +28,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private Subtitle _subtitle;
         private int _totalChanged;
 
-        public PluginForm(Subtitle subtitle, string name, string description, Form parentForm)
+        public PluginForm(Form parentForm, Subtitle subtitle, string name, string description)
         {
             InitializeComponent();
             this._parentForm = parentForm;

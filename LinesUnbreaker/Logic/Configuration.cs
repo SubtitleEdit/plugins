@@ -1,5 +1,5 @@
 ﻿
-namespace Nikse.SubtitleEdit.PluginLogic
+namespace Nikse.SubtitleEdit.PluginLogic.LinesUnbreaker
 {
     class Configuration
     {

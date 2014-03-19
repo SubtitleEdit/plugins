@@ -1,5 +1,5 @@
 ﻿
-namespace Nikse.SubtitleEdit.PluginLogic
+namespace Nikse.SubtitleEdit.PluginLogic.HI2UC
 {
     class Configuration
     {
