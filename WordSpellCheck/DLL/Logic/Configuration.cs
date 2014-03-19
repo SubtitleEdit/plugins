@@ -1,7 +1,6 @@
-﻿
-namespace Nikse.SubtitleEdit.PluginLogic
+﻿namespace Nikse.SubtitleEdit.PluginLogic
 {
-    class Configuration
+    internal class Configuration
     {
         public static double CurrentFrameRate = 30;
         public static string ListViewLineSeparatorString = "<br />";
