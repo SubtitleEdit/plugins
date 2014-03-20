@@ -72,8 +72,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                             string oldText = text;
                             text = text.Remove(index, 1).Trim();
                             if (index > 0)
-                                text = RemoveExtraSpaces(text, index - 1);
-
+                                text = RemoveExtraSpaces(text, index - 1); //<i> Word => <i>Word
 
                             if (text != oldText)
                             {
@@ -87,7 +86,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                                 else
                                 {
                                     _totalFixes++;
-                                    // clean both text before adding them to Listview
+                                    // remove html tags before adding to listview
                                     text = Utilities.RemoveHtmlTags(text);
                                     oldText = Utilities.RemoveHtmlTags(oldText);
                                     AddFixToListView(p, fixAction, oldText, text);
@@ -106,11 +105,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string RemoveExtraSpaces(string text, int index)
         {
-            //<i>- Word => <i> Word
             var temp = text.Substring(0, index);
             temp = temp.Trim();
-            text = text.Remove(0, index).Trim();
-            text = temp + text;
+            text = text.Remove(0, index).TrimStart();
+            text = temp + " " + text;
             return text;
         }
 
