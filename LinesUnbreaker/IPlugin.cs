@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace Nikse.SubtitleEdit.PluginLogic.LinesUnbreaker
+namespace Nikse.SubtitleEdit.PluginLogic
 {
     public interface IPlugin
     {

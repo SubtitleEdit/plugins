@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Nikse.SubtitleEdit.PluginLogic.LinesUnbreaker
+namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal class Paragraph
     {

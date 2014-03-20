@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
-namespace Nikse.SubtitleEdit.PluginLogic.LinesUnbreaker
+namespace Nikse.SubtitleEdit.PluginLogic
 {
     public partial class PluginForm : Form
     {

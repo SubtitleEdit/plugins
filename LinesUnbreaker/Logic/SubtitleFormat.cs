@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Nikse.SubtitleEdit.PluginLogic.LinesUnbreaker
+namespace Nikse.SubtitleEdit.PluginLogic
 {
     public abstract class SubtitleFormat
     {
