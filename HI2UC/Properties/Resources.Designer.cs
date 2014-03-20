@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Nikse.SubtitleEdit.PluginLogic.HI2UC.Properties {
+namespace Nikse.SubtitleEdit.PluginLogic {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.HI2UC.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Nikse.SubtitleEdit.PluginLogic.HI2UC.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Nikse.SubtitleEdit.PluginLogic.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

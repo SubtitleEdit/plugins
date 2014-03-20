@@ -1,4 +1,4 @@
-﻿namespace Nikse.SubtitleEdit.PluginLogic.HI2UC
+﻿namespace Nikse.SubtitleEdit.PluginLogic
 {
     partial class PluginForm
     {

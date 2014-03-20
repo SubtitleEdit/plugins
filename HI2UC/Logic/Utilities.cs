@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace Nikse.SubtitleEdit.PluginLogic.HI2UC
+namespace Nikse.SubtitleEdit.PluginLogic
 {
     public static class Utilities
     {

@@ -4,10 +4,14 @@ using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-namespace Nikse.SubtitleEdit.PluginLogic.HI2UC
+namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form
     {
+        private enum HIStyle { UpperCase, LowerCase, FirstUppercase, UpperLowerCase }
+
+        internal string FixedSubtitle { get; private set; }
+
         // TODO: MAKE THIS LOOK AROUND PATTERN
         private const string REGEXHEARINGIMPAIRED = @"\B([\{\(\[])\s*([♪'""#]*\w+[\s\w,'""#\-&,♪/<>\.]*)([\)\]\}])\B|\B([\{\(\[])([♪'""#\s]*\w+[\s\w,'""#\-&,♪/<>\.]*[^\)\]\}]\r\n['""#\s]*\w+[\s\w,'""#\-&,♪/<>\.]*)\s*([\)\]\}])\B";
 
@@ -36,10 +40,6 @@ namespace Nikse.SubtitleEdit.PluginLogic.HI2UC
             label1.Text = "Description: " + description;
             FindHearinImpairedText();
         }
-
-        private enum HIStyle { UpperCase, LowerCase, FirstUppercase, UpperLowerCase }
-
-        internal string FixedSubtitle { get; private set; }
 
         private void PluginForm_Load(object sender, EventArgs e)
         {
@@ -139,7 +139,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.HI2UC
             listViewFixes.BeginUpdate();
             foreach (Paragraph p in _subtitle.Paragraphs)
             {
-                if (Regex.IsMatch(p.Text, REGEXHEARINGIMPAIRED, RegexOptions.Compiled) || Regex.IsMatch(p.Text, ":\\B"))
+                if (Regex.IsMatch(p.Text, @"[\[\(\{]|:\B"))
                 {
                     string oldText = p.Text;
                     string text = p.Text;
@@ -149,20 +149,20 @@ namespace Nikse.SubtitleEdit.PluginLogic.HI2UC
                         text = ConvertMoodsFeelings(text);
 
                     // TODO: USER OPTION
-                    if (Regex.IsMatch(text, _listPatternNames[0], RegexOptions.Compiled))
-                    {
-                        // WOMAN (on phone): => WOMAN ON PHONE:
-                        // <i>Ella (on phone): It's not about money.</i>
-                        text = Regex.Replace(text, _listPatternNames[0], delegate(Match match)
-                        {
-                            string brackets = @"[\(\[\{]|[\)\]\}]";
-                            string newname = Regex.Replace(match.Value, brackets, string.Empty);
-                            return newname.ToUpper();
-                        });
-                    }
+                    //if (Regex.IsMatch(text, _listPatternNames[0], RegexOptions.Compiled))
+                    //{
+                    //    // WOMAN (on phone): => WOMAN ON PHONE:
+                    //    // <i>Ella (on phone): It's not about money.</i>
+                    //    text = Regex.Replace(text, _listPatternNames[0], delegate(Match match)
+                    //    {
+                    //        string brackets = @"[\(\[\{]|[\)\]\}]";
+                    //        string newname = Regex.Replace(match.Value, brackets, string.Empty);
+                    //        return newname.ToUpper();
+                    //    });
+                    //}
 
-                    // Narrator: switch ♪ :
-                    if (checkBoxNames.Checked && Regex.IsMatch(text, @"\b[A-Z]\w+:\B"))
+                    // Narrator:
+                    if (checkBoxNames.Checked && Regex.IsMatch(text, @":\B"))
                         text = NamesOfPeoples(text);
 
                     if (text != oldText)
@@ -231,7 +231,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.HI2UC
             subItem = new ListViewItem.ListViewSubItem(item, after.Replace(Environment.NewLine,
                 Configuration.ListViewLineSeparatorString));
             item.SubItems.Add(subItem);
-            if (after.IndexOf(": ") > 14 || after.IndexOf(":\r\n") > 14)
+            if (after.IndexOf(": ") > 14 || after.IndexOf(":" + Environment.NewLine) > 10)
                 item.BackColor = Color.Pink;
             listViewFixes.Items.Add(item);
         }
@@ -287,6 +287,10 @@ namespace Nikse.SubtitleEdit.PluginLogic.HI2UC
 
         private string NamesOfPeoples(string text)
         {
+            string temp = Utilities.RemoveHtmlTags(text).Trim();
+            if (temp.LastIndexOf(":") == temp.Length - 1)
+                return text;
+
             foreach (string pattern in _listPatternNames)
             {
                 if (Regex.IsMatch(text, pattern))
@@ -294,11 +298,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.HI2UC
                     _namesMatched = true;
                     text = Regex.Replace(text, pattern, delegate(Match match)
                     {
-                        //Todo: Won't match like: '♪:'
-                        if (Regex.IsMatch(match.Value, @"\b[A-Z]\w+:\B", RegexOptions.Compiled))
-                            return match.Value.ToUpper();
-                        else
-                            return match.Value;
+                        return match.Value.ToUpper();
                     });
                     break;
                 }

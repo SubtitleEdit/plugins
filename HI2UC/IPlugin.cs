@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace Nikse.SubtitleEdit.PluginLogic.HI2UC
+namespace Nikse.SubtitleEdit.PluginLogic
 {
     public interface IPlugin
     {

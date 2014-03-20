@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Nikse.SubtitleEdit.PluginLogic.HI2UC
+namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal class TimeCode
     {

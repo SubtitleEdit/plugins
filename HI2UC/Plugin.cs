@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace Nikse.SubtitleEdit.PluginLogic.HI2UC
+namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class HI2UC : IPlugin // dll file name must "<classname>.dll" - e.g. "Haxor.dll"
     {
