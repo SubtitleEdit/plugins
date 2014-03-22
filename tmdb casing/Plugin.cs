@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Nikse.SubtitleEdit.PluginLogic;
 using System.Windows.Forms;
 
-namespace tmdb_casing
+namespace Nikse.SubtitleEdit.PluginLogic
 {
-    public class TMDBCASING : IPlugin
+    public class TmdbCasing : IPlugin
     {
         string IPlugin.Name
         {
-            get { return "TMDBCASING"; }
+            get { return "TmdbCasing"; }
         }
 
         string IPlugin.Text
         {
-            get { return "TMDBCASING"; }
+            get { return "TmdbCasing"; }
         }
 
         decimal IPlugin.Version
@@ -26,7 +23,7 @@ namespace tmdb_casing
 
         string IPlugin.Description
         {
-            get { return "Change names chansing by TMDB"; }
+            get { return "Change TmdbCasing using TMDB"; }
         }
 
         string IPlugin.ActionType
@@ -54,14 +51,29 @@ namespace tmdb_casing
                 Subtitle sub = new Subtitle();
                 SubRip srt = new SubRip();
                 srt.LoadSubtitle(sub, list, subtitleFileName);
-                using (var form = new MainForm(sub, (this as IPlugin).Name, (this as IPlugin).Description, parentForm))
+                try
                 {
-                    if (form.ShowDialog(parentForm) == DialogResult.OK)
-                        return form.FixedSubtitle;
+                    using (var form = new MovieSeacher())
+                    {
+                        if (form.ShowDialog(parentForm) == DialogResult.OK || form.Characters.Count > 0)
+                        {
+                            using (var mForm = new MainForm(sub, (this as IPlugin).Name, (this as IPlugin).Description, parentForm, form.Characters))
+                            {
+                                if (mForm.ShowDialog() == DialogResult.OK)
+                                {
+                                    return mForm.FixedSubtitle;
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    
+                    throw;
                 }
                 return string.Empty;
             }
-
             MessageBox.Show("No subtitle loaded", parentForm.Text,
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return string.Empty;

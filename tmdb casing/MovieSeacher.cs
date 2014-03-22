@@ -1,87 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using RestSharp;
 using WatTmdb.V3;
 
-namespace tmdb_casing
+namespace Nikse
 {
     public partial class MovieSeacher : Form
     {
-        private const string _key = ""; // this is secret!
-        private Tmdb tmdb;
-        private TmdbMovie _movie;
-        private SearchType _searchType = SearchType.TMDBID;
-        private WatTmdb.V3.Cast _cast;
-
-        private enum SearchType
-        {
-            TMDBID,
-            IMDBID,
-            Title
-        }
+        public List<string> Characters { get; set; }
+        private Tmdb _tmdb;
+        private string _apiKey = "";
 
         public MovieSeacher()
         {
             InitializeComponent();
+            _tmdb = new Tmdb(_apiKey); // TODO: If dll wasn't found in Subtitle\Plugins\ this will bow up!
         }
 
         private void buttonSeach_Click(object sender, EventArgs e)
         {
             string pattern = textBoxMovieInfo.Text.Trim();
-            if (string.IsNullOrEmpty(pattern))
-            {
-                MessageBox.Show("Nothing entered make sure you entered movie title or code!");
-                return;
-            }
-            GetMovieID(pattern);
+            if (pattern.Length > 0)
+                GetMovieID(pattern);
         }
 
         private void GetMovieID(string patten)
         {
-            tmdb = new Tmdb(_key);
-            var movieSearch = tmdb.SearchMovie(patten, 1);
-            if (movieSearch != null)
+            var movieSearch = _tmdb.SearchMovie(patten, 1);
+            if (movieSearch.total_results > 0)
             {
                 AddToListView(movieSearch.results);
             }
-
-            //switch (_searchType)
-            //{
-            //    case SearchType.TMDBID:
-            //        break;
-            //    case SearchType.IMDBID:
-            //        var movie = tmdb.GetMovieByIMDB("19237498172");
-            //        break;
-            //    case SearchType.Title:
-            //        var movieSearch = tmdb.SearchMovie(searchPattern, 1);
-            //        _listMovieResult = movieSearch.results;
-
-            //        if (_listMovieResult != null)
-            //            AddToListView();
-
-            //        break;
-            //    default:
-            //        break;
-            //}
         }
 
-        private void AddToListView(List<MovieResult> _movieResult)
+        private void AddToListView(List<MovieResult> results)
         {
-            foreach (MovieResult movieR in _movieResult)
+            foreach (MovieResult movieR in results)
             {
-                var item = new ListViewItem(movieR.id.ToString());
+                var item = new ListViewItem(movieR.id.ToString()) { Tag = movieR.id };
                 var subItem = new ListViewItem.ListViewSubItem(item, movieR.title);
-                item.Tag = movieR.id; // stores the movie for later use
+                item.SubItems.Add(subItem);
+                subItem = new ListViewItem.ListViewSubItem(item, movieR.release_date);
+                item.SubItems.Add(subItem);
                 listView1.Items.Add(item);
             }
         }
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            var cast = tmdb.GetMovieCast((int)listView1.FocusedItem.Tag);
+            var cast = _tmdb.GetMovieCast((int)listView1.FocusedItem.Tag);
             if (cast.cast.Count > 0)
             {
-                MessageBox.Show("Test");
+                this.Characters = new List<string>();
+                foreach (var c in cast.cast)
+                {
+                    this.Characters.Add(c.character);
+                }
             }
             DialogResult = DialogResult.OK;
         }

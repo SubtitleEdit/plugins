@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TmdbCasingTester
@@ -16,7 +15,7 @@ namespace TmdbCasingTester
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new IvandroflyTester());
+            Application.Run(new Form1());
         }
     }
 }
