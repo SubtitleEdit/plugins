@@ -44,42 +44,43 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void LoadSettingsIfThereIs(bool load)
         {
             string path = GetSettingsFileName();
-            if (!path.EndsWith("Plugins"))
-                return;
-            if (load)
+            if (File.Exists(path))
             {
-                if (File.Exists(path))
+                if (load)
                 {
-                    _xmlSetting = XElement.Load(path);
-                    decimal val;
-                    decimal.TryParse(_xmlSetting.Element("Shorterthan").Value, out val);
-                    if (val > 0)
-                        numericUpDown1.Value = val;
+                    if (File.Exists(path))
+                    {
+                        _xmlSetting = XElement.Load(path);
+                        decimal val;
+                        decimal.TryParse(_xmlSetting.Element("Shorterthan").Value, out val);
+                        if (val > 0)
+                            numericUpDown1.Value = val;
 
-                    checkBoxSkipDialog.Checked = bool.Parse(_xmlSetting.Element("SkipDialog").Value);
-                    checkBoxSkipNarrator.Checked = bool.Parse(_xmlSetting.Element("SkipNarrator").Value);
-                    checkBoxMoods.Checked = bool.Parse(_xmlSetting.Element("SkipMoods").Value);
+                        checkBoxSkipDialog.Checked = bool.Parse(_xmlSetting.Element("SkipDialog").Value);
+                        checkBoxSkipNarrator.Checked = bool.Parse(_xmlSetting.Element("SkipNarrator").Value);
+                        checkBoxMoods.Checked = bool.Parse(_xmlSetting.Element("SkipMoods").Value);
+                    }
+                    else
+                    {
+                        _xmlSetting = new XElement("SeLinesUnbreaker",
+                            new XElement("Shorterthan", numericUpDown1.Value),
+                            new XElement("SkipDialog", true),
+                            new XElement("SkipNarrator", true),
+                            new XElement("SkipMoods", false)
+                            );
+                        _xmlSetting.Save(path);
+                    }
                 }
                 else
                 {
-                    _xmlSetting = new XElement("SeLinesUnbreaker",
-                        new XElement("Shorterthan", numericUpDown1.Value),
-                        new XElement("SkipDialog", true),
-                        new XElement("SkipNarrator", true),
-                        new XElement("SkipMoods", false)
-                        );
+                    if (_xmlSetting == null)
+                        return;
+                    _xmlSetting.Element("Shorterthan").Value = numericUpDown1.Value.ToString();
+                    _xmlSetting.Element("SkipMoods").Value = checkBoxMoods.Checked.ToString();
+                    _xmlSetting.Element("SkipNarrator").Value = checkBoxSkipNarrator.Checked.ToString();
+                    _xmlSetting.Element("SkipDialog").Value = checkBoxSkipDialog.Checked.ToString();
                     _xmlSetting.Save(path);
                 }
-            }
-            else
-            {
-                if (_xmlSetting == null)
-                    return;
-                _xmlSetting.Element("Shorterthan").Value = numericUpDown1.Value.ToString();
-                _xmlSetting.Element("SkipMoods").Value = checkBoxMoods.Checked.ToString();
-                _xmlSetting.Element("SkipNarrator").Value = checkBoxSkipNarrator.Checked.ToString();
-                _xmlSetting.Element("SkipDialog").Value = checkBoxSkipDialog.Checked.ToString();
-                _xmlSetting.Save(path);
             }
         }
 
