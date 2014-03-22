@@ -1,11 +1,10 @@
-﻿using System.Windows.Forms;
-using SeSkydriveSave;
+﻿using SeSkydriveSave;
+using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class SeSkydriveSave : IPlugin // dll file name must "<classname>.dll" - e.g. "SyncViaOtherSubtitle.dll"
     {
-
         string IPlugin.Name
         {
             get { return "Save to Skydrive"; }
@@ -38,9 +37,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
-            var form = new PluginForm((this as IPlugin).Name, (this as IPlugin).Description, subtitleFileName, rawText);
-            if (form.ShowDialog(parentForm) == DialogResult.OK)
+            subtitleFileName = subtitleFileName.Trim();
+            if (!string.IsNullOrEmpty(subtitleFileName))
             {
+                var form = new PluginForm((this as IPlugin).Name, (this as IPlugin).Description, subtitleFileName, rawText);
+                if (form.ShowDialog(parentForm) == DialogResult.OK)
+                {
+                }
+            }
+            else
+            {
+                MessageBox.Show("No subtitle loaded", parentForm.Text,
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             return string.Empty;
         }

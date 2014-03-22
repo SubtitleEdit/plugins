@@ -40,7 +40,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
-            subtitle = subtitle.Trim();
+            subtitle = subtitle.Trim(); // if subtitle was send null this will rise exception!
             if (!string.IsNullOrEmpty(subtitle))
             {
                 if (!string.IsNullOrEmpty(listViewLineSeparatorString))

@@ -123,6 +123,7 @@
             this.labelMovieFileName.Size = new System.Drawing.Size(81, 13);
             this.labelMovieFileName.TabIndex = 9;
             this.labelMovieFileName.Text = "Movie file name";
+            this.labelMovieFileName.Click += new System.EventHandler(this.labelMovieFileName_Click);
             // 
             // textBoxMovieFileName
             // 
@@ -132,6 +133,7 @@
             this.textBoxMovieFileName.Name = "textBoxMovieFileName";
             this.textBoxMovieFileName.Size = new System.Drawing.Size(287, 20);
             this.textBoxMovieFileName.TabIndex = 7;
+            this.textBoxMovieFileName.TextChanged += new System.EventHandler(this.textBoxMovieFileName_TextChanged);
             // 
             // labelPassword
             // 

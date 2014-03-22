@@ -184,6 +184,8 @@
             // checkBoxSkipDialog
             // 
             this.checkBoxSkipDialog.AutoSize = true;
+            this.checkBoxSkipDialog.Checked = true;
+            this.checkBoxSkipDialog.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxSkipDialog.Location = new System.Drawing.Point(9, 61);
             this.checkBoxSkipDialog.Name = "checkBoxSkipDialog";
             this.checkBoxSkipDialog.Size = new System.Drawing.Size(80, 17);

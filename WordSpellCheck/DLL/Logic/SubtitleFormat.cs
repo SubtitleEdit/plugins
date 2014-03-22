@@ -4,7 +4,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal abstract class SubtitleFormat
     {
-       
         protected int _errorCount;
 
         abstract internal string Extension
@@ -78,6 +77,5 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return false;
             }
         }
-
     }
 }

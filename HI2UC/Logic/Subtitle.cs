@@ -18,13 +18,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         internal const int MaximumHistoryItems = 100;
 
-        internal SubtitleFormat OriginalFormat
-        {
-            get
-            {
-                return _format;
-            }
-        }
+        internal SubtitleFormat OriginalFormat { get { return _format; } }
+        internal List<Paragraph> Paragraphs { get { return _paragraphs; } }
 
         internal Subtitle()
         {
@@ -47,13 +42,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _wasLoadedWithFrameNumbers = subtitle.WasLoadedWithFrameNumbers;
         }
 
-        internal List<Paragraph> Paragraphs
-        {
-            get
-            {
-                return _paragraphs;
-            }
-        }
 
         internal Paragraph GetParagraphOrDefault(int index)
         {
@@ -149,17 +137,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        internal bool WasLoadedWithFrameNumbers
-        {
-            get
-            {
-                return _wasLoadedWithFrameNumbers;
-            }
-            set
-            {
-                _wasLoadedWithFrameNumbers = value;
-            }
-        }
+        internal bool WasLoadedWithFrameNumbers { get { return _wasLoadedWithFrameNumbers; } set { _wasLoadedWithFrameNumbers = value; } }
 
         internal void AdjustDisplayTimeUsingPercent(double percent, System.Windows.Forms.ListView.SelectedIndexCollection selectedIndexes)
         {

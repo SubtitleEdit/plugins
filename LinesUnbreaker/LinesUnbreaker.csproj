@@ -7,7 +7,7 @@
     <ProjectGuid>{7B7C681E-960E-414F-B5EA-1B9BEBA71B09}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LinesUnbreaker</RootNamespace>
+    <RootNamespace>Nikse.SubtitleEdit.PluginLogic</RootNamespace>
     <AssemblyName>LinesUnbreaker</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

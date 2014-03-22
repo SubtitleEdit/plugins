@@ -1,12 +1,35 @@
 ﻿using System;
-using System.Drawing;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     public static class Utilities
     {
+        public static string UppercaseLetters = GetLetters(true, false, false);
+        public static string LowercaseLetters = GetLetters(false, true, false);
+        public static string LowercaseLettersWithNumbers = GetLetters(false, true, false);
+        public static string AllLetters = GetLetters(true, true, false);
+        public static string AllLettersAndNumbers = GetLetters(true, true, false);
+
+        //"ABCDEFGHIJKLMNOPQRSTUVWZYXÆØÃÅÄÖÉÈÁÂÀÇÊÍÓÔÕÚŁАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯĞİŞÜÙÁÌÑÎ";
+        private static string GetLetters(bool uppercase, bool lowercase, bool numbers)
+        {
+            var sb = new StringBuilder();
+
+            if (uppercase)
+                sb.Append("ABCDEFGHIJKLMNOPQRSTUVWZYXÆØÃÅÄÖÉÈÁÂÀÇÊÍÓÔÕÚŁАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯĞİŞÜÙÁÌÑÎ");
+
+            if (lowercase)
+                sb.Append("abcdefghijklmnopqrstuvwzyxæøãåäöéèáâàçêíóôõúłабвгдеёжзийклмнопрстуфхцчшщъыьэюяğişüùáìñî");
+
+            if (numbers)
+                sb.Append("0123456789");
+
+            return sb.ToString();
+        }
+
         internal static string AssemblyVersion
         {
             get
@@ -25,7 +48,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static string RemoveHtmlFontTag(string s)
         {
-            s = Regex.Replace(s, "(?i)</?font>", string.Empty);
+            s = s.Replace("(?i)</?font>", string.Empty);
+
             while (s.ToLower().Contains("<font"))
             {
                 int startIndex = s.ToLower().IndexOf("<font");
@@ -41,19 +65,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return null;
             if (!s.Contains("<"))
                 return s;
-            s = Regex.Replace(s, "(?i)</?[ibu]>", string.Empty);
+            s = Regex.Replace(s, "(?i)</?[uib]>", string.Empty);
             s = RemoveParagraphTag(s);
             return RemoveHtmlFontTag(s).Trim();
-        }
-
-        internal static string GetHtmlColorCode(Color color)
-        {
-            return string.Format("#{0:x2}{1:x2}{2:x2}", color.R, color.G, color.B);
         }
 
         internal static string RemoveParagraphTag(string s)
         {
             s = Regex.Replace(s, "(?i)</?p>", string.Empty);
+
             while (s.ToLower().Contains("<p "))
             {
                 int startIndex = s.ToLower().IndexOf("<p ");

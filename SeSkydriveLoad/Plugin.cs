@@ -1,11 +1,10 @@
-﻿using System.Windows.Forms;
-using SeSkydriveLoad;
+﻿using SeSkydriveLoad;
+using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class SeSkydriveLoad : IPlugin // dll file name must "<classname>.dll" - e.g. "SyncViaOtherSubtitle.dll"
     {
-
         string IPlugin.Name
         {
             get { return "Load from Skydrive"; }
@@ -41,7 +40,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var form = new PluginForm((this as IPlugin).Name, (this as IPlugin).Description);
             if (form.ShowDialog(parentForm) == DialogResult.OK)
             {
-                return form.LoadedSubtitle;
+                if (!string.IsNullOrEmpty(form.LoadedSubtitle))
+                    return form.LoadedSubtitle;
             }
             return string.Empty;
         }

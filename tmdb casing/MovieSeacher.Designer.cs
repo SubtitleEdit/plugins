@@ -1,4 +1,4 @@
-﻿namespace tmdb_casing
+﻿namespace Nikse
 {
     partial class MovieSeacher
     {
@@ -36,9 +36,7 @@
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.textBoxMovieInfo = new System.Windows.Forms.TextBox();
-            this.radioButtonTMDB = new System.Windows.Forms.RadioButton();
-            this.radioButtonIMDB = new System.Windows.Forms.RadioButton();
-            this.radioButtonTitle = new System.Windows.Forms.RadioButton();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // buttonSeach
@@ -73,7 +71,12 @@
             // columnHeader2
             // 
             this.columnHeader2.Text = "Title";
-            this.columnHeader2.Width = 384;
+            this.columnHeader2.Width = 357;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Year";
+            this.columnHeader3.Width = 106;
             // 
             // buttonOK
             // 
@@ -101,47 +104,21 @@
             this.textBoxMovieInfo.Size = new System.Drawing.Size(452, 20);
             this.textBoxMovieInfo.TabIndex = 10;
             // 
-            // radioButtonTMDB
+            // label1
             // 
-            this.radioButtonTMDB.AutoSize = true;
-            this.radioButtonTMDB.Location = new System.Drawing.Point(13, 6);
-            this.radioButtonTMDB.Name = "radioButtonTMDB";
-            this.radioButtonTMDB.Size = new System.Drawing.Size(84, 17);
-            this.radioButtonTMDB.TabIndex = 11;
-            this.radioButtonTMDB.TabStop = true;
-            this.radioButtonTMDB.Text = "TMDB Code";
-            this.radioButtonTMDB.UseVisualStyleBackColor = true;
-            // 
-            // radioButtonIMDB
-            // 
-            this.radioButtonIMDB.AutoSize = true;
-            this.radioButtonIMDB.Location = new System.Drawing.Point(105, 6);
-            this.radioButtonIMDB.Name = "radioButtonIMDB";
-            this.radioButtonIMDB.Size = new System.Drawing.Size(80, 17);
-            this.radioButtonIMDB.TabIndex = 12;
-            this.radioButtonIMDB.TabStop = true;
-            this.radioButtonIMDB.Text = "IMDB Code";
-            this.radioButtonIMDB.UseVisualStyleBackColor = true;
-            // 
-            // radioButtonTitle
-            // 
-            this.radioButtonTitle.AutoSize = true;
-            this.radioButtonTitle.Location = new System.Drawing.Point(196, 6);
-            this.radioButtonTitle.Name = "radioButtonTitle";
-            this.radioButtonTitle.Size = new System.Drawing.Size(45, 17);
-            this.radioButtonTitle.TabIndex = 13;
-            this.radioButtonTitle.TabStop = true;
-            this.radioButtonTitle.Text = "Title";
-            this.radioButtonTitle.UseVisualStyleBackColor = true;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(9, 13);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(44, 13);
+            this.label1.TabIndex = 11;
+            this.label1.Text = "Find ID:";
             // 
             // MovieSeacher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(557, 322);
-            this.Controls.Add(this.radioButtonTitle);
-            this.Controls.Add(this.radioButtonIMDB);
-            this.Controls.Add(this.radioButtonTMDB);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.textBoxMovieInfo);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
@@ -161,11 +138,9 @@
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.TextBox textBoxMovieInfo;
-        private System.Windows.Forms.RadioButton radioButtonTMDB;
-        private System.Windows.Forms.RadioButton radioButtonIMDB;
-        private System.Windows.Forms.RadioButton radioButtonTitle;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.Label label1;
     }
 }

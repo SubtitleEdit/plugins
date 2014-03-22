@@ -371,5 +371,15 @@ namespace OpenSubtitlesUpload
         {
             System.Diagnostics.Process.Start("http://www.opensubtitles.org/en/newuser");
         }
+
+        private void textBoxMovieFileName_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void labelMovieFileName_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

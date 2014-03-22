@@ -10,9 +10,9 @@ namespace SeSkydriveLoad
 {
     public partial class PluginForm : Form
     {
-        SkydriveApi _api;
-        public string LoadedSubtitle { get; set; }
-        System.Collections.Generic.Stack<string> _roots;
+        private SkydriveApi _api;
+        public string LoadedSubtitle { get; private set; }
+        private System.Collections.Generic.Stack<string> _roots;
 
         public PluginForm(string name, string description)
         {
@@ -69,7 +69,7 @@ namespace SeSkydriveLoad
                 DateTime expires = Convert.ToDateTime(DecodeFrom64(doc.DocumentElement.SelectSingleNode("Expires").InnerText));
                 if (expires.AddMinutes(5) < DateTime.Now)
                     return null; // token expired
-                string token = DecodeFrom64(doc.DocumentElement.SelectSingleNode("Token").InnerText);                
+                string token = DecodeFrom64(doc.DocumentElement.SelectSingleNode("Token").InnerText);
                 return token;
             }
             catch
@@ -150,14 +150,14 @@ namespace SeSkydriveLoad
                 item.ImageIndex = 1;
                 listViewFiles.Items.Add(item);
             }
+
             foreach (SkydriveContent f in _api.GetFiles(path))
             {
                 if (f.IsFile || f.IsFolder)
                 {
-                    ListViewItem item = new ListViewItem(f.Name);
+                    ListViewItem item = new ListViewItem(f.Name) { Tag = f };
                     item.SubItems.Add(f.UpdatedTime.ToShortDateString() + " " + f.UpdatedTime.ToShortTimeString());
                     item.SubItems.Add(FormatBytesToDisplayFileSize(f.Size));
-                    item.Tag = f;
                     if (f.IsFile)
                         item.ImageIndex = 0;
                     else
@@ -179,7 +179,7 @@ namespace SeSkydriveLoad
             if (listViewFiles.SelectedItems.Count < 1)
                 return;
 
-            SkydriveContent sc = (SkydriveContent)listViewFiles.SelectedItems[0].Tag;           
+            SkydriveContent sc = (SkydriveContent)listViewFiles.SelectedItems[0].Tag;
             try
             {
                 if (listViewFiles.SelectedItems[0].Text == "..")
@@ -204,7 +204,7 @@ namespace SeSkydriveLoad
                     this.Refresh();
                     Cursor = Cursors.WaitCursor;
                     var fileDown = _api.DownloadFile(sc);
-                    LoadedSubtitle = Encoding.UTF8.GetString(fileDown);
+                    LoadedSubtitle = Encoding.UTF8.GetString(fileDown).Trim();
                     DialogResult = DialogResult.OK;
                 }
                 Cursor = Cursors.Default;
@@ -229,6 +229,5 @@ namespace SeSkydriveLoad
             if (e.KeyCode == Keys.Escape)
                 DialogResult = DialogResult.Cancel;
         }
-    
     }
 }
