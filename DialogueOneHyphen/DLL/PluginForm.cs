@@ -66,13 +66,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                     if (prev == null || !Utilities.RemoveHtmlTags(prev.Text).Trim().EndsWith("-"))
                     {
+                        // <i>- You delusional?
+                        //- I counted.</i>
                         int index = text.IndexOf('-');
                         if (index >= 0)
                         {
                             string oldText = text;
                             text = text.Remove(index, 1).Trim();
-                            if (index > 0)
-                                text = RemoveExtraSpaces(text, index - 1); //<i> Word => <i>Word
+                            if (text[index] == 0x14)
+                                text = RemoveExtraSpaces(text, index); //<i> Word => <i>Word
 
                             if (text != oldText)
                             {
