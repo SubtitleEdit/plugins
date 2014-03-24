@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Windows.Forms;
-using RestSharp;
 using WatTmdb.V3;
 
 namespace Nikse
@@ -10,12 +10,16 @@ namespace Nikse
     {
         public List<string> Characters { get; set; }
         private Tmdb _tmdb;
-        private string _apiKey = "";
+        private string _apiKey = "9ca57d5af5c9f182fc0dfe32dcdca40f";
 
         public MovieSeacher()
         {
             InitializeComponent();
             _tmdb = new Tmdb(_apiKey); // TODO: If dll wasn't found in Subtitle\Plugins\ this will bow up!
+            this.Resize += (s, e) =>
+            {
+                this.listView1.Columns[2].Width = -2;
+            };
         }
 
         private void buttonSeach_Click(object sender, EventArgs e)
@@ -27,11 +31,14 @@ namespace Nikse
 
         private void GetMovieID(string patten)
         {
-            var movieSearch = _tmdb.SearchMovie(patten, 1);
-            if (movieSearch.total_results > 0)
+            TmdbMovieSearch _movieSearch;
+            if (this.listView1.Items != null)
+                this.listView1.Items.Clear();
+            ThreadPool.QueueUserWorkItem((state) =>
             {
-                AddToListView(movieSearch.results);
-            }
+                _movieSearch = _tmdb.SearchMovie(patten, 1);
+                listView1.BeginInvoke(new MethodInvoker(() => AddToListView(_movieSearch.results)));
+            });
         }
 
         private void AddToListView(List<MovieResult> results)
@@ -45,6 +52,7 @@ namespace Nikse
                 item.SubItems.Add(subItem);
                 listView1.Items.Add(item);
             }
+            this.OnResize(null);
         }
 
         private void buttonOK_Click(object sender, EventArgs e)
@@ -59,6 +67,11 @@ namespace Nikse
                 }
             }
             DialogResult = DialogResult.OK;
+        }
+
+        private void buttonCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
     }
 }
