@@ -166,12 +166,13 @@
             // 
             // buttonUpdate
             // 
-            this.buttonUpdate.Location = new System.Drawing.Point(172, 151);
+            this.buttonUpdate.Location = new System.Drawing.Point(187, 151);
             this.buttonUpdate.Name = "buttonUpdate";
             this.buttonUpdate.Size = new System.Drawing.Size(106, 23);
             this.buttonUpdate.TabIndex = 15;
             this.buttonUpdate.Text = "Update";
             this.buttonUpdate.UseVisualStyleBackColor = true;
+            this.buttonUpdate.Click += new System.EventHandler(this.buttonUpdate_Click);
             // 
             // label1
             // 
@@ -193,6 +194,8 @@
             // 
             // label3
             // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(22, 436);
             this.label3.Name = "label3";
@@ -212,29 +215,28 @@
             // radioButtonRegex
             // 
             this.radioButtonRegex.AutoSize = true;
-            this.radioButtonRegex.Location = new System.Drawing.Point(107, 116);
+            this.radioButtonRegex.Location = new System.Drawing.Point(9, 162);
             this.radioButtonRegex.Name = "radioButtonRegex";
             this.radioButtonRegex.Size = new System.Drawing.Size(116, 17);
             this.radioButtonRegex.TabIndex = 20;
-            this.radioButtonRegex.TabStop = true;
             this.radioButtonRegex.Text = "Regular Expression";
             this.radioButtonRegex.UseVisualStyleBackColor = true;
             // 
             // radioButtonCaseSensitive
             // 
             this.radioButtonCaseSensitive.AutoSize = true;
-            this.radioButtonCaseSensitive.Location = new System.Drawing.Point(6, 116);
+            this.radioButtonCaseSensitive.Location = new System.Drawing.Point(9, 116);
             this.radioButtonCaseSensitive.Name = "radioButtonCaseSensitive";
             this.radioButtonCaseSensitive.Size = new System.Drawing.Size(95, 17);
             this.radioButtonCaseSensitive.TabIndex = 21;
-            this.radioButtonCaseSensitive.TabStop = true;
             this.radioButtonCaseSensitive.Text = "Case Sensitive";
             this.radioButtonCaseSensitive.UseVisualStyleBackColor = true;
             // 
             // radioButtonNormal
             // 
             this.radioButtonNormal.AutoSize = true;
-            this.radioButtonNormal.Location = new System.Drawing.Point(6, 139);
+            this.radioButtonNormal.Checked = true;
+            this.radioButtonNormal.Location = new System.Drawing.Point(9, 139);
             this.radioButtonNormal.Name = "radioButtonNormal";
             this.radioButtonNormal.Size = new System.Drawing.Size(58, 17);
             this.radioButtonNormal.TabIndex = 22;
@@ -244,6 +246,7 @@
             // 
             // groupBoxReplaceOptions
             // 
+            this.groupBoxReplaceOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxReplaceOptions.Controls.Add(this.radioButtonRegex);
             this.groupBoxReplaceOptions.Controls.Add(this.radioButtonNormal);
             this.groupBoxReplaceOptions.Controls.Add(this.textBoxFindwhat);

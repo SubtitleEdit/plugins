@@ -40,12 +40,14 @@ namespace Nikse
         {
             if (_subtitle.Paragraphs.Count < 1)
                 throw new InvalidOperationException();
-            //foreach (Paragraph p in _subtitle.Paragraphs)
-            //{
-            //    string after = p.Text;
-            //    AddtoListViewParagraps(p, after);
-            //}
-            //Application.DoEvents();
+            /*
+            foreach (Paragraph p in _subtitle.Paragraphs)
+            {
+                string after = p.Text;
+                AddtoListViewParagraps(p, after);
+            }
+             */
+            Application.DoEvents();
 
             if (this.Characters.Count > 0)
                 foreach (var name in Characters)
@@ -155,6 +157,53 @@ namespace Nikse
             listViewParagraphs.EndUpdate();
             if (listViewParagraphs.SelectedItems.Count > 0)
                 listViewParagraphs.EnsureVisible(listViewParagraphs.SelectedItems[0].Index);
+        }
+
+        private void buttonUpdate_Click(object sender, EventArgs e)
+        {
+            string findWhat = string.Empty;
+            string replaceWith = string.Empty;
+
+            if (this.listViewNames.Items != null)
+            {
+                foreach (ListViewItem item in this.listViewNames.Items)
+                {
+                    if (radioButtonCaseSensitive.Checked)
+                    {
+                        if (item.SubItems[1].Text == this.textBoxFindwhat.Text)
+                            item.SubItems[1].Text = this.textBoxReplacewith.Text;
+                    }
+                    else if (radioButtonNormal.Checked)
+                    {
+                        findWhat = textBoxFindwhat.Text.ToLower();
+                        replaceWith = textBoxReplacewith.Text;
+
+                        /*
+                        string text = item.SubItems[1].Text;
+                        string lowerText = item.SubItems[1].Text.ToLower();
+                        int index = lowerText.IndexOf(findWhat);
+                        if (index > -1)
+                        {
+                            text = text.Remove(index, findWhat.Length).Insert(index, replaceWith);
+                            item.SubItems[1].Text = text;
+                        }
+                         */
+
+                        if(item.SubItems[1].Text.ToLower() == findWhat.ToLower())
+                        {
+                            item.SubItems[1].Text = replaceWith;
+                        }
+                    }
+                    else // regex
+                    {
+                        findWhat = this.textBoxFindwhat.Text;
+                        replaceWith = this.textBoxReplacewith.Text;
+                        // TODO: check validation.
+                        // update listCharacters <optional>
+                        item.SubItems[1].Text = System.Text.RegularExpressions.Regex.Replace(item.SubItems[1].Text, findWhat, replaceWith);
+                    }
+                }
+            }
         }
     }
 }

@@ -51,26 +51,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 Subtitle sub = new Subtitle();
                 SubRip srt = new SubRip();
                 srt.LoadSubtitle(sub, list, subtitleFileName);
-                try
+                using (var form = new MovieSeacher())
                 {
-                    using (var form = new MovieSeacher())
+                    if (form.ShowDialog(parentForm) == DialogResult.OK && form.Characters != null)
                     {
-                        if (form.ShowDialog(parentForm) == DialogResult.OK || form.Characters.Count > 0)
+                        using (var mForm = new MainForm(sub, (this as IPlugin).Name, (this as IPlugin).Description, parentForm, form.Characters))
                         {
-                            using (var mForm = new MainForm(sub, (this as IPlugin).Name, (this as IPlugin).Description, parentForm, form.Characters))
-                            {
-                                if (mForm.ShowDialog() == DialogResult.OK)
-                                {
-                                    return mForm.FixedSubtitle;
-                                }
-                            }
+                            if (mForm.ShowDialog() == DialogResult.OK && mForm.FixedSubtitle.Length != 0)
+                                return mForm.FixedSubtitle;
                         }
                     }
-                }
-                catch (Exception)
-                {
-                    
-                    throw;
                 }
                 return string.Empty;
             }
