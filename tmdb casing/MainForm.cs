@@ -23,6 +23,7 @@ namespace Nikse
             : this()
         {
             // TODO: Complete member initialization
+            this.Text = "TMDB Casing";
             this._subtitle = sub;
             this._name = name;
             this._description = description;
@@ -32,6 +33,8 @@ namespace Nikse
 
         private void MainForm_Shown(object sender, EventArgs e)
         {
+            this.labelTotalNames.Text = string.Format("Total names: {0}", 0);
+            this.labelTotalParagraphs.Text = string.Format("Total paragraphs: {0}", 0);
             FillListView();
             GeneratePreview();
         }
@@ -50,10 +53,13 @@ namespace Nikse
             Application.DoEvents();
 
             if (this.Characters.Count > 0)
+            {
+                this.labelTotalNames.Text = string.Format("Total names: {0}", this.Characters.Count);
                 foreach (var name in Characters)
                 {
                     AddToListViewNames(name);
                 }
+            }
         }
 
         private void AddtoListViewParagraps(Paragraph p, string after)
@@ -119,6 +125,9 @@ namespace Nikse
             }
             listViewParagraphs.EndUpdate();
             Cursor = Cursors.Default;
+
+            if (this.listViewParagraphs.Items != null)
+                this.labelTotalParagraphs.Text = string.Format("Total paragraphs: {0}", listViewParagraphs.Items.Count);
         }
 
         private void listViewNames_SelectedIndexChanged(object sender, EventArgs e)
@@ -189,7 +198,7 @@ namespace Nikse
                         }
                          */
 
-                        if(item.SubItems[1].Text.ToLower() == findWhat.ToLower())
+                        if (item.SubItems[1].Text.ToLower() == findWhat.ToLower())
                         {
                             item.SubItems[1].Text = replaceWith;
                         }
