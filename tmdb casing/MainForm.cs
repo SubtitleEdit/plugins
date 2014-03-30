@@ -187,27 +187,29 @@ namespace Nikse
                         findWhat = textBoxFindwhat.Text.ToLower();
                         replaceWith = textBoxReplacewith.Text;
 
-                        /*
-                        string text = item.SubItems[1].Text;
-                        string lowerText = item.SubItems[1].Text.ToLower();
-                        int index = lowerText.IndexOf(findWhat);
-                        if (index > -1)
-                        {
-                            text = text.Remove(index, findWhat.Length).Insert(index, replaceWith);
-                            item.SubItems[1].Text = text;
-                        }
-                         */
-
-                        if (item.SubItems[1].Text.ToLower() == findWhat.ToLower())
+                        string itemText = item.SubItems[1].Text;
+                        if (item.Text.ToLower() == findWhat.ToLower())
                         {
                             item.SubItems[1].Text = replaceWith;
+                        }
+                        else if (itemText.Contains(findWhat.ToLower()))
+                        {
+                            string rawText = item.SubItems[1].Text.ToLower();
+                            string lowerText = rawText.ToLower();
+                            string lowerFindWhat = findWhat.ToLower();
+
+                            int index = lowerText.IndexOf(lowerFindWhat, 0);
+                            if(index > -1)
+                            {
+                                itemText = itemText.Remove(index, findWhat.Length).Insert(index, replaceWith);
+                                item.SubItems[1].Text = itemText;
+                            }
                         }
                     }
                     else // regex
                     {
                         findWhat = this.textBoxFindwhat.Text;
                         replaceWith = this.textBoxReplacewith.Text;
-                        // TODO: check validation.
 
                         try
                         {
