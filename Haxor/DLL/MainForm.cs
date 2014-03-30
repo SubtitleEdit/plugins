@@ -26,22 +26,8 @@ namespace SubtitleEdit
             {
                 if (e.KeyCode == Keys.Escape)
                     DialogResult = DialogResult.Cancel;
-            };
-
-            this.buttonOk.Click += (s, e) =>
-            {
-                _allowFix = true;
-                GeneratePreview();
-                this.FixedSubtitle = _subtitle.ToText(new SubRip());
-                DialogResult = DialogResult.OK;
-            };
-
-            this.buttonReset.Click += (s, e) =>
-            {
-                this.to = "4b©d3fgH!jlKmñ0pqr$tuvwx¥z";
-                this.textBoxTo.Text = to;
-                this.listView1.Items.Clear();
-                GeneratePreview();
+                else if (e.KeyCode == Keys.Enter)
+                    this.OnClick(EventArgs.Empty);
             };
         }
 
@@ -61,8 +47,7 @@ namespace SubtitleEdit
             if (_subtitle == null)
                 return;
             this.listView1.BeginUpdate();
-            if (this._dicChanged == null)
-                this._dicChanged = new Dictionary<int, string>();
+            this._dicChanged = new Dictionary<int, string>();
             foreach (Paragraph p in _subtitle.Paragraphs)
             {
                 if (_allowFix && _dicChanged.ContainsKey(p.Number))
@@ -126,10 +111,31 @@ namespace SubtitleEdit
 
             if (string.IsNullOrEmpty(to) || to.Length != from.Length)
             {
+                textBoxTo.SelectAll();
+                //textBoxTo.SelectionStart = 0;
+                //textBoxTo.SelectionLength = textBoxTo.Text.Length;
                 this.textBoxTo.Focus();
                 return false;
             }
             return true;
+        }
+
+        private void buttonReset_Click(object sender, EventArgs e)
+        {
+            this.to = "4b©d3fgH!jlKmñ0pqr$tuvwx¥z"; // this are the default haxor char
+            this.textBoxTo.Text = to;
+            this.listView1.Items.Clear();
+
+            GeneratePreview();
+            Application.DoEvents();
+        }
+
+        private void buttonOk_Click(object sender, EventArgs e)
+        {
+            _allowFix = true;
+            GeneratePreview();
+            this.FixedSubtitle = _subtitle.ToText(new SubRip());
+            DialogResult = DialogResult.OK;
         }
     }
 }

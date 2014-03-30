@@ -38,6 +38,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HIColorer", "HIColorer\HICo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TmdbCasingTester", "TmdbCasingTester\TmdbCasingTester.csproj", "{386F1279-A654-4140-9F74-0F5789669D39}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DialogueAutoMarker", "DialogueAutoMarker\DialogueAutoMarker.csproj", "{9E25EE45-E764-444F-9756-FE5479F4914D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -188,6 +190,16 @@ Global
 		{386F1279-A654-4140-9F74-0F5789669D39}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{386F1279-A654-4140-9F74-0F5789669D39}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{386F1279-A654-4140-9F74-0F5789669D39}.Release|x86.ActiveCfg = Release|Any CPU
+		{9E25EE45-E764-444F-9756-FE5479F4914D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E25EE45-E764-444F-9756-FE5479F4914D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E25EE45-E764-444F-9756-FE5479F4914D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9E25EE45-E764-444F-9756-FE5479F4914D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9E25EE45-E764-444F-9756-FE5479F4914D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9E25EE45-E764-444F-9756-FE5479F4914D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E25EE45-E764-444F-9756-FE5479F4914D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E25EE45-E764-444F-9756-FE5479F4914D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9E25EE45-E764-444F-9756-FE5479F4914D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9E25EE45-E764-444F-9756-FE5479F4914D}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -207,5 +219,6 @@ Global
 		{7B7C681E-960E-414F-B5EA-1B9BEBA71B09} = {21BBD88D-F935-419F-A68B-E8DA9F08E9C1}
 		{705BE92D-37FF-4320-85FD-90133C009C8C} = {21BBD88D-F935-419F-A68B-E8DA9F08E9C1}
 		{386F1279-A654-4140-9F74-0F5789669D39} = {21BBD88D-F935-419F-A68B-E8DA9F08E9C1}
+		{9E25EE45-E764-444F-9756-FE5479F4914D} = {21BBD88D-F935-419F-A68B-E8DA9F08E9C1}
 	EndGlobalSection
 EndGlobal
