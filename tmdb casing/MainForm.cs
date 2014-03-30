@@ -208,11 +208,28 @@ namespace Nikse
                         findWhat = this.textBoxFindwhat.Text;
                         replaceWith = this.textBoxReplacewith.Text;
                         // TODO: check validation.
+
+                        try
+                        {
+                            System.Text.RegularExpressions.Regex.IsMatch("", findWhat);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Invalid regex");
+                            this.textBoxFindwhat.Focus();
+                            return;
+                        }
+
                         // update listCharacters <optional>
                         item.SubItems[1].Text = System.Text.RegularExpressions.Regex.Replace(item.SubItems[1].Text, findWhat, replaceWith);
                     }
                 }
             }
+        }
+
+        private void buttonCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
         }
     }
 }
