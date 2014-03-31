@@ -124,11 +124,34 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonPrev_Click(object sender, EventArgs e)
         {
+            if (_subtitle.Paragraphs.Count > 0)
+            {
+                int firstSelectedIndex = 1;
+                if (listViewDialogue.SelectedItems.Count > 0)
+                    firstSelectedIndex = listViewDialogue.SelectedItems[0].Index;
 
+                firstSelectedIndex--;
+                Paragraph p = _subtitle.GetParagraphOrDefault(firstSelectedIndex);
+                if (p != null)
+                    SelectIndexAndEnsureVisible(firstSelectedIndex);
+            }
         }
 
         private void buttonNext_Click(object sender, EventArgs e)
         {
+            if (_subtitle.Paragraphs.Count > 0)
+            {
+                int firstSelectedIndex = 0;
+                if (listViewDialogue.SelectedItems.Count > 0)
+                    firstSelectedIndex = listViewDialogue.SelectedItems[0].Index;
+
+                firstSelectedIndex++;
+                Paragraph p = _subtitle.GetParagraphOrDefault(firstSelectedIndex);
+                if (p != null)
+                    SelectIndexAndEnsureVisible(firstSelectedIndex);
+            }
+
+            /*
             int index = 0;
             if (listViewDialogue.Visible && listViewDialogue.Items.Count > 0)
             {
@@ -138,6 +161,60 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 this.listViewDialogue.Items[index].Focused = true;
                 this.listViewDialogue.Items[index].EnsureVisible();
             }
+             */
+        }
+
+        public void SelectIndexAndEnsureVisible(int index)
+        {
+            SelectIndexAndEnsureVisible(index, false);
+        }
+
+        public void SelectIndexAndEnsureVisible(int index, bool focus)
+        {
+            if (index < 0 || index >= listViewDialogue.Items.Count || listViewDialogue.Items.Count == 0)
+                return;
+            if (listViewDialogue.TopItem == null)
+                return;
+
+            int bottomIndex = listViewDialogue.TopItem.Index + ((Height - 25) / 16);
+            int itemsBeforeAfterCount = ((bottomIndex - listViewDialogue.TopItem.Index) / 2) - 1;
+            if (itemsBeforeAfterCount < 0)
+                itemsBeforeAfterCount = 1;
+
+            int beforeIndex = index - itemsBeforeAfterCount;
+            if (beforeIndex < 0)
+                beforeIndex = 0;
+
+            int afterIndex = index + itemsBeforeAfterCount;
+            if (afterIndex >= listViewDialogue.Items.Count)
+                afterIndex = listViewDialogue.Items.Count - 1;
+
+            SelectNone();
+            if (listViewDialogue.TopItem.Index <= beforeIndex && bottomIndex > afterIndex)
+            {
+                listViewDialogue.Items[index].Selected = true;
+                listViewDialogue.Items[index].EnsureVisible();
+                if (focus)
+                    listViewDialogue.Items[index].Focused = true;
+                return;
+            }
+
+            listViewDialogue.Items[beforeIndex].EnsureVisible();
+            listViewDialogue.EnsureVisible(beforeIndex);
+            listViewDialogue.Items[afterIndex].EnsureVisible();
+            listViewDialogue.EnsureVisible(afterIndex);
+            listViewDialogue.Items[index].Selected = true;
+            listViewDialogue.Items[index].EnsureVisible();
+            if (focus)
+                listViewDialogue.Items[index].Focused = true;
+        }
+
+        public void SelectNone()
+        {
+            if (listViewDialogue.SelectedItems == null)
+                return;
+            foreach (ListViewItem item in listViewDialogue.SelectedItems)
+                item.Selected = false;
         }
 
         private bool IsThereText()
