@@ -129,7 +129,7 @@
             // buttonPrev
             // 
             this.buttonPrev.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonPrev.Location = new System.Drawing.Point(456, 475);
+            this.buttonPrev.Location = new System.Drawing.Point(456, 504);
             this.buttonPrev.Name = "buttonPrev";
             this.buttonPrev.Size = new System.Drawing.Size(75, 23);
             this.buttonPrev.TabIndex = 5;
@@ -140,7 +140,7 @@
             // buttonNext
             // 
             this.buttonNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonNext.Location = new System.Drawing.Point(456, 504);
+            this.buttonNext.Location = new System.Drawing.Point(456, 475);
             this.buttonNext.Name = "buttonNext";
             this.buttonNext.Size = new System.Drawing.Size(75, 23);
             this.buttonNext.TabIndex = 6;

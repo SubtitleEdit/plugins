@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
@@ -89,6 +90,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             if (!string.IsNullOrEmpty(text))
             {
+                string temp = Utilities.RemoveHtmlTags(old).Trim();
+
+                if (temp.StartsWith("-") || temp.Contains(Environment.NewLine + "-"))
+                {
+                    text = Regex.Replace(old, @"\B-\B", string.Empty);
+                    text = Regex.Replace(old, Environment.NewLine + @"\B-\B", Environment.NewLine);
+                }
+
                 text = "- " + text.Replace(Environment.NewLine, Environment.NewLine + "- ");
                 this.textBox1.Text = text;
 
@@ -101,7 +110,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonItalic_Click(object sender, EventArgs e)
         {
+            if (IsThereText())
+            {
+                string text = this.textBox1.Text.Trim();
+                // TODO: Use regex to remove italic tags
+                text = text.Replace("<i>", string.Empty);
+                text = text.Replace("</i>", string.Empty);
 
+                text = "<i>" + text + "</i>";
+                this.textBox1.Text = text;
+            }
         }
 
         private void buttonPrev_Click(object sender, EventArgs e)
@@ -111,7 +129,29 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonNext_Click(object sender, EventArgs e)
         {
+            int index = 0;
+            if (listViewDialogue.Visible && listViewDialogue.Items.Count > 0)
+            {
+                index = listViewDialogue.SelectedIndices[0];
+                index = index + 1;
+                this.listViewDialogue.Items[index].Selected = true;
+                this.listViewDialogue.Items[index].Focused = true;
+                this.listViewDialogue.Items[index].EnsureVisible();
+            }
+        }
 
+        private bool IsThereText()
+        {
+            string text = this.textBox1.Text.Trim();
+            if (!string.IsNullOrEmpty(text))
+            {
+                text = Utilities.RemoveHtmlTags(text);
+                if (text.Length > 0)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
@@ -126,7 +166,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
-
+            DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
     }
 }
