@@ -131,9 +131,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     firstSelectedIndex = listViewDialogue.SelectedItems[0].Index;
 
                 firstSelectedIndex--;
-                Paragraph p = _subtitle.GetParagraphOrDefault(firstSelectedIndex);
-                if (p != null)
-                    SelectIndexAndEnsureVisible(firstSelectedIndex);
+                //Paragraph p = _subtitle.GetParagraphOrDefault(firstSelectedIndex);
+                //if (p != null)
+                SelectIndexAndEnsureVisible(firstSelectedIndex);
             }
         }
 
@@ -146,9 +146,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     firstSelectedIndex = listViewDialogue.SelectedItems[0].Index;
 
                 firstSelectedIndex++;
-                Paragraph p = _subtitle.GetParagraphOrDefault(firstSelectedIndex);
-                if (p != null)
-                    SelectIndexAndEnsureVisible(firstSelectedIndex);
+                //Paragraph p = _subtitle.GetParagraphOrDefault(firstSelectedIndex);
+                //if (p != null)
+                SelectIndexAndEnsureVisible(firstSelectedIndex);
             }
 
             /*
@@ -166,7 +166,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public void SelectIndexAndEnsureVisible(int index)
         {
-            SelectIndexAndEnsureVisible(index, false);
+            this.listViewDialogue.Focus();
+            SelectIndexAndEnsureVisible(index, true);
         }
 
         public void SelectIndexAndEnsureVisible(int index, bool focus)
