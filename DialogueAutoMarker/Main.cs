@@ -54,7 +54,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void AddToListDialogue(Paragraph p, string after)
         {
-            // Checked 
+            // Checked
             ListViewItem item = new ListViewItem(string.Empty) { Checked = true, Tag = p };
 
             // Line #
@@ -75,36 +75,73 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void listViewDialogue_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
-            var paragraph = e.Item.Tag as Paragraph;
-            if (paragraph != null)
+            // this event will occur two times!
+            if (e.IsSelected)
             {
-                this.textBox1.Text = paragraph.Text;
-                this.textBox1.Tag = e.Item.Tag;
+                var paragraph = e.Item.Tag as Paragraph;
+                if (paragraph != null)
+                {
+                    this.textBox1.Text = paragraph.Text;
+                    this.textBox1.Tag = e.Item.Tag;
+                }
+            }
+            else
+            {
+                if (e.Item.Text != this.textBox1.Text)
+                {
+                    var p = e.Item.Tag as Paragraph;
+                    p.Text = textBox1.Text;
+                    e.Item.SubItems[3].Text = p.Text;
+                }
             }
         }
 
         private void buttonDash_Click(object sender, EventArgs e)
         {
-            string old = textBox1.Text.Trim();
-            string text = old;
+            AddDash(2);
+        }
 
-            if (!string.IsNullOrEmpty(text))
-            {
-                string temp = Utilities.RemoveHtmlTags(old).Trim();
 
-                if (temp.StartsWith("-") || temp.Contains(Environment.NewLine + "-"))
+        private void buttonSingleDash_Click(object sender, EventArgs e)
+        {
+            AddDash(1);
+        }
+
+        private void AddDash(int num)
+        {
+            if (num < 1)
+                return;
+            string text = textBox1.Text.Trim();
+
+            if (num < 1)
+                if (!string.IsNullOrEmpty(text))
                 {
-                    text = Regex.Replace(old, @"\B-\B", string.Empty);
-                    text = Regex.Replace(old, Environment.NewLine + @"\B-\B", Environment.NewLine);
+                    string temp = Utilities.RemoveHtmlTags(text).Trim();
+
+                    if (temp.StartsWith("-"))
+                    {
+
+                        text = Regex.Replace(text, @"\B-\B", string.Empty);
+                        text = Regex.Replace(text, Environment.NewLine + @"\B-\B", Environment.NewLine);
+                    }
                 }
+
+            if (num == 1)
+            {
+                text = "- " + text;
+                this.textBox1.Text = text;
+            }
+            else if (num == 2)
+            {
+
 
                 text = "- " + text.Replace(Environment.NewLine, Environment.NewLine + "- ");
                 this.textBox1.Text = text;
 
-                if (text != old)
-                {
-                    ((Paragraph)textBox1.Tag).Text = text;
-                }
+                //if (text != old)
+                //{
+                //    ((Paragraph)textBox1.Tag).Text = text;
+                //}
             }
         }
 
@@ -167,7 +204,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public void SelectIndexAndEnsureVisible(int index)
         {
             this.listViewDialogue.Focus();
-            SelectIndexAndEnsureVisible(index, true);
+            SelectIndexAndEnsureVisible(index, false);
         }
 
         public void SelectIndexAndEnsureVisible(int index, bool focus)
@@ -177,7 +214,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (listViewDialogue.TopItem == null)
                 return;
 
-            int bottomIndex = listViewDialogue.TopItem.Index + ((Height - 25) / 16);
+            int bottomIndex = listViewDialogue.TopItem.Index + ((listViewDialogue.Height - 25) / 16);
             int itemsBeforeAfterCount = ((bottomIndex - listViewDialogue.TopItem.Index) / 2) - 1;
             if (itemsBeforeAfterCount < 0)
                 itemsBeforeAfterCount = 1;
@@ -246,5 +283,26 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
+
+        private void buttonClear_Click(object sender, EventArgs e)
+        {
+            string text = this.textBox1.Text;
+            if (!string.IsNullOrEmpty(text))
+            {
+                text = Utilities.RemoveHtmlTags(text).Trim();
+
+                if (text.Length > 2)
+                {
+                    text = Regex.Replace(text, @"\B-\B", string.Empty).Trim();
+
+                    while (text.Contains(Environment.NewLine + " "))
+                    {
+                        text = text.Replace(Environment.NewLine + " ", Environment.NewLine);
+                    }
+                    this.textBox1.Text = text.Trim();
+                }
+            }
+        }
     }
+
 }
