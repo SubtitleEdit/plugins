@@ -54,15 +54,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void AddToListDialogue(Paragraph p, string after)
         {
-            // Checked
-            ListViewItem item = new ListViewItem(string.Empty) { Checked = true, Tag = p };
-
             // Line #
-            var subItem = new ListViewItem.ListViewSubItem(item, p.Number.ToString());
-            item.SubItems.Add(subItem);
+            ListViewItem item = new ListViewItem(p.Number.ToString()) { Tag = p };
 
             // Before
-            subItem = new ListViewItem.ListViewSubItem(item, p.Text.Replace(Environment.NewLine, "<br />"));
+            var subItem = new ListViewItem.ListViewSubItem(item, p.Text.Replace(Environment.NewLine, "<br />"));
             item.SubItems.Add(subItem);
 
             // After
@@ -91,16 +87,65 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     var p = e.Item.Tag as Paragraph;
                     p.Text = textBox1.Text;
-                    e.Item.SubItems[3].Text = p.Text;
+                    e.Item.SubItems[2].Text = p.Text;
                 }
             }
+        }
+
+        private void buttonLower_Click(object sender, EventArgs e)
+        {
+            if (IsThereText())
+            {
+                string text = this.textBox1.Text.Trim();
+                if (Utilities.RemoveHtmlTags(text).Length > 0)
+                    this.textBox1.Text = text.ToLower();
+            }
+
+            // Todo: fix tag chasing before proceed
+        }
+
+        private void buttonUpper_Click(object sender, EventArgs e)
+        {
+            if (IsThereText())
+            {
+                string text = this.textBox1.Text.Trim();
+                text = text.ToUpper();
+                if (text.Contains("<"))
+                    text = FixTag(text);
+                this.textBox1.Text = text;
+            }
+        }
+
+        private string FixTag(string text)
+        {
+            text = Regex.Replace(text, "(?i)(?<=<)/?([ibu])(?=>)", x => x.Groups[1].Value.ToLower());
+
+            if (text.Contains("<FONT"))
+            {
+                text = text.Replace("</FONT>", "</font>"); // not finished...
+                int index = text.IndexOf("<FONT");
+                if (index > -1)
+                {
+                    int closeTag = Math.Max(index + 6, text.IndexOf(">"));
+
+                    while (text.Contains("<FONT"))
+                    {
+                        text = text.Remove(index, (closeTag - index) + 1);
+                        index = text.IndexOf("<FONT");
+                        closeTag = Math.Max(index + 6, text.IndexOf(">"));
+                    }
+                }
+            }
+            // Todo: this operation may cause <<'  '>>!
+
+            text = text.Replace("  ", " ");
+            return text;
         }
 
         private void buttonDash_Click(object sender, EventArgs e)
         {
             AddDash(2);
         }
-
 
         private void buttonSingleDash_Click(object sender, EventArgs e)
         {
@@ -120,7 +165,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                     if (temp.StartsWith("-"))
                     {
-
                         text = Regex.Replace(text, @"\B-\B", string.Empty);
                         text = Regex.Replace(text, Environment.NewLine + @"\B-\B", Environment.NewLine);
                     }
@@ -133,15 +177,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             else if (num == 2)
             {
-
-
                 text = "- " + text.Replace(Environment.NewLine, Environment.NewLine + "- ");
                 this.textBox1.Text = text;
-
-                //if (text != old)
-                //{
-                //    ((Paragraph)textBox1.Tag).Text = text;
-                //}
             }
         }
 
@@ -171,6 +208,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 //Paragraph p = _subtitle.GetParagraphOrDefault(firstSelectedIndex);
                 //if (p != null)
                 SelectIndexAndEnsureVisible(firstSelectedIndex);
+            }
+        }
+
+        private void buttonBold_Click(object sender, EventArgs e)
+        {
+            if (IsThereText())
+            {
+                string text = this.textBox1.Text.Trim();
+                // TODO: Use regex to remove italic tags
+                text = Regex.Replace(text, "(?i)</?b>", string.Empty);
+
+                text = "<b>" + text + "</b>";
+                this.textBox1.Text = text;
             }
         }
 
@@ -271,12 +321,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
+            buttonNext_Click(null, null);
             this.FixedSubtitle = _subtitle.ToText(new SubRip());
-            if (!string.IsNullOrEmpty(FixedSubtitle.Trim()))
+            if (!string.IsNullOrEmpty(this.FixedSubtitle.Trim()))
             {
                 DialogResult = System.Windows.Forms.DialogResult.OK;
             }
-            DialogResult = DialogResult.Cancel;
+            else
+                DialogResult = DialogResult.Cancel;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -304,5 +356,4 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
     }
-
 }

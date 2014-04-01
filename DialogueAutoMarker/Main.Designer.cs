@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.listViewDialogue = new System.Windows.Forms.ListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -39,9 +38,13 @@
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonPrev = new System.Windows.Forms.Button();
             this.buttonNext = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
             this.buttonDash = new System.Windows.Forms.Button();
             this.buttonItalic = new System.Windows.Forms.Button();
+            this.buttonClear = new System.Windows.Forms.Button();
+            this.buttonSingleDash = new System.Windows.Forms.Button();
+            this.buttonBold = new System.Windows.Forms.Button();
+            this.buttonUpper = new System.Windows.Forms.Button();
+            this.buttonLower = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listViewDialogue
@@ -49,9 +52,7 @@
             this.listViewDialogue.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.listViewDialogue.CheckBoxes = true;
             this.listViewDialogue.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
             this.columnHeader2,
             this.columnHeader3,
             this.columnHeader4});
@@ -65,29 +66,25 @@
             this.listViewDialogue.View = System.Windows.Forms.View.Details;
             this.listViewDialogue.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.listViewDialogue_ItemSelectionChanged);
             // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "Apply";
-            this.columnHeader1.Width = 44;
-            // 
             // columnHeader2
             // 
             this.columnHeader2.Text = "Line #";
-            this.columnHeader2.Width = 58;
+            this.columnHeader2.Width = 52;
             // 
             // columnHeader3
             // 
             this.columnHeader3.Text = "Before";
-            this.columnHeader3.Width = 419;
+            this.columnHeader3.Width = 433;
             // 
             // columnHeader4
             // 
             this.columnHeader4.Text = "After";
-            this.columnHeader4.Width = 410;
+            this.columnHeader4.Width = 433;
             // 
             // textBox1
             // 
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox1.Location = new System.Drawing.Point(12, 461);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
@@ -140,7 +137,7 @@
             // buttonNext
             // 
             this.buttonNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonNext.Location = new System.Drawing.Point(456, 475);
+            this.buttonNext.Location = new System.Drawing.Point(537, 504);
             this.buttonNext.Name = "buttonNext";
             this.buttonNext.Size = new System.Drawing.Size(75, 23);
             this.buttonNext.TabIndex = 6;
@@ -148,47 +145,99 @@
             this.buttonNext.UseVisualStyleBackColor = true;
             this.buttonNext.Click += new System.EventHandler(this.buttonNext_Click);
             // 
-            // button1
-            // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(874, 12);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
             // buttonDash
             // 
             this.buttonDash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonDash.Location = new System.Drawing.Point(366, 434);
+            this.buttonDash.Location = new System.Drawing.Point(186, 435);
             this.buttonDash.Name = "buttonDash";
             this.buttonDash.Size = new System.Drawing.Size(39, 23);
             this.buttonDash.TabIndex = 1;
-            this.buttonDash.Text = "-";
+            this.buttonDash.Text = "- \\n -";
             this.buttonDash.UseVisualStyleBackColor = true;
             this.buttonDash.Click += new System.EventHandler(this.buttonDash_Click);
             // 
             // buttonItalic
             // 
             this.buttonItalic.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonItalic.Location = new System.Drawing.Point(411, 434);
+            this.buttonItalic.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonItalic.Location = new System.Drawing.Point(366, 435);
             this.buttonItalic.Name = "buttonItalic";
             this.buttonItalic.Size = new System.Drawing.Size(39, 23);
             this.buttonItalic.TabIndex = 2;
-            this.buttonItalic.Text = "<i>";
+            this.buttonItalic.Text = "I";
             this.buttonItalic.UseVisualStyleBackColor = true;
             this.buttonItalic.Click += new System.EventHandler(this.buttonItalic_Click);
+            // 
+            // buttonClear
+            // 
+            this.buttonClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonClear.ForeColor = System.Drawing.Color.Red;
+            this.buttonClear.Location = new System.Drawing.Point(141, 435);
+            this.buttonClear.Name = "buttonClear";
+            this.buttonClear.Size = new System.Drawing.Size(39, 23);
+            this.buttonClear.TabIndex = 7;
+            this.buttonClear.Text = "C";
+            this.buttonClear.UseVisualStyleBackColor = true;
+            this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
+            // 
+            // buttonSingleDash
+            // 
+            this.buttonSingleDash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonSingleDash.Location = new System.Drawing.Point(231, 435);
+            this.buttonSingleDash.Name = "buttonSingleDash";
+            this.buttonSingleDash.Size = new System.Drawing.Size(39, 23);
+            this.buttonSingleDash.TabIndex = 8;
+            this.buttonSingleDash.Text = "-";
+            this.buttonSingleDash.UseVisualStyleBackColor = true;
+            this.buttonSingleDash.Click += new System.EventHandler(this.buttonSingleDash_Click);
+            // 
+            // buttonBold
+            // 
+            this.buttonBold.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonBold.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonBold.Location = new System.Drawing.Point(411, 435);
+            this.buttonBold.Name = "buttonBold";
+            this.buttonBold.Size = new System.Drawing.Size(39, 23);
+            this.buttonBold.TabIndex = 9;
+            this.buttonBold.Text = "B";
+            this.buttonBold.UseVisualStyleBackColor = true;
+            this.buttonBold.Click += new System.EventHandler(this.buttonBold_Click);
+            // 
+            // buttonUpper
+            // 
+            this.buttonUpper.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonUpper.Location = new System.Drawing.Point(276, 435);
+            this.buttonUpper.Name = "buttonUpper";
+            this.buttonUpper.Size = new System.Drawing.Size(39, 23);
+            this.buttonUpper.TabIndex = 10;
+            this.buttonUpper.Text = "U";
+            this.buttonUpper.UseVisualStyleBackColor = true;
+            this.buttonUpper.Click += new System.EventHandler(this.buttonUpper_Click);
+            // 
+            // buttonLower
+            // 
+            this.buttonLower.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonLower.Location = new System.Drawing.Point(321, 435);
+            this.buttonLower.Name = "buttonLower";
+            this.buttonLower.Size = new System.Drawing.Size(39, 23);
+            this.buttonLower.TabIndex = 11;
+            this.buttonLower.Text = "L";
+            this.buttonLower.UseVisualStyleBackColor = true;
+            this.buttonLower.Click += new System.EventHandler(this.buttonLower_Click);
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(961, 534);
+            this.Controls.Add(this.buttonLower);
+            this.Controls.Add(this.buttonUpper);
+            this.Controls.Add(this.buttonBold);
+            this.Controls.Add(this.buttonSingleDash);
+            this.Controls.Add(this.buttonClear);
             this.Controls.Add(this.buttonItalic);
             this.Controls.Add(this.buttonDash);
             this.Controls.Add(this.buttonNext);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.buttonPrev);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOk);
@@ -205,7 +254,6 @@
         #endregion
 
         private System.Windows.Forms.ListView listViewDialogue;
-        private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.ColumnHeader columnHeader4;
@@ -217,7 +265,11 @@
         private System.Windows.Forms.Button buttonNext;
         private System.Windows.Forms.Button buttonItalic;
         private System.Windows.Forms.Button buttonDash;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button buttonClear;
+        private System.Windows.Forms.Button buttonSingleDash;
+        private System.Windows.Forms.Button buttonBold;
+        private System.Windows.Forms.Button buttonUpper;
+        private System.Windows.Forms.Button buttonLower;
     }
 }
 

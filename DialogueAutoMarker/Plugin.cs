@@ -15,7 +15,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Description
         {
-            get { return ""; }
+            get { return "[Beta]"; }
         }
 
         string IPlugin.Name
