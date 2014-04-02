@@ -3,9 +3,9 @@
 	<Plugin>
 		<Name>Dialogue one hyphen only</Name>
 		<Description>Removes hyphens from second line in dialogues</Description>
-		<Version>0.3</Version>
+		<Version>0.4</Version>
 		<Date>2012-10-13</Date>
-		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.0/DiaOneHyphen-v0.3.zip</Url>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.0/DiaOneHyphen-v0.4.zip</Url>
 	</Plugin>
 	<Plugin>
 		<Name>Hearing Impaired to Uppercase</Name>
