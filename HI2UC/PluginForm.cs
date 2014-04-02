@@ -48,7 +48,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.Resize += (s, arg) =>
             {
                 listViewFixes.Columns[listViewFixes.Columns.Count - 1].Width = -2;
-                //this.listViewFixes.Columns.Count -1
             };
         }
 
@@ -194,6 +193,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 groupBox1.ForeColor = _totalChanged <= 0 ? Color.Red : Color.Green;
                 groupBox1.Text = "Total Found: " + _totalChanged;
+                this.listViewFixes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                this.listViewFixes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+                Application.DoEvents();
             }
             listViewFixes.EndUpdate();
         }
