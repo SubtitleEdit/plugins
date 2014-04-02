@@ -11,7 +11,7 @@ namespace Nikse
     {
         public List<string> Characters { get; set; }
         private Tmdb _tmdb;
-        private string _apiKey = "";
+        private string _apiKey = "9ca57d5af5c9f182fc0dfe32dcdca40f";
 
         public MovieSeacher()
         {

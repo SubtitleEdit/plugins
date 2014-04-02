@@ -16,7 +16,8 @@ namespace TmdbCasingTester
 
         private void button1_Click(object sender, EventArgs e)
         {
-            IPlugin plugin = new TmdbCasing();
+            //IPlugin plugin = new TmdbCasing();
+            IPlugin plugin = new DialogueAutoMarker();
             string content = @"1
 00:01:02,939 --> 00:01:05,349
 (THUNDER RUMBLING)

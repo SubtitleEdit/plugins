@@ -3,9 +3,9 @@
 	<Plugin>
 		<Name>Dialogue one hyphen only</Name>
 		<Description>Removes hyphens from second line in dialogues</Description>
-		<Version>0.3</Version>
+		<Version>0.4</Version>
 		<Date>2012-10-13</Date>
-		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.0/DiaOneHyphen-v0.3.zip</Url>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.0/DiaOneHyphen-v0.4.zip</Url>
 	</Plugin>
 	<Plugin>
 		<Name>Hearing Impaired to Uppercase</Name>
@@ -76,5 +76,12 @@
 		<Version>0.4</Version> 
 		<Date>2013-11-16</Date>
 		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.0/AviWriter-v0.4.zip</Url>
+	</Plugin>
+	<Plugin>
+		<Name>Dialogue AutoMarker</Name>
+		<Description>Helps find and format dialogue (by Ivandrofly)</Description>
+		<Version>0.1</Version> 
+		<Date>2014-02-04</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.0/DialogueAutoMarker-v0.1.zip</Url>
 	</Plugin>
 </Plugins>

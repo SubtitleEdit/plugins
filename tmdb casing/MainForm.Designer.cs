@@ -44,8 +44,8 @@
             this.buttonUpdate = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.labelTotalParagraphs = new System.Windows.Forms.Label();
+            this.labelTotalNames = new System.Windows.Forms.Label();
             this.radioButtonRegex = new System.Windows.Forms.RadioButton();
             this.radioButtonCaseSensitive = new System.Windows.Forms.RadioButton();
             this.radioButtonNormal = new System.Windows.Forms.RadioButton();
@@ -149,6 +149,7 @@
             this.buttonCancel.TabIndex = 12;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
+            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
             // textBoxFindwhat
             // 
@@ -192,40 +193,40 @@
             this.label2.TabIndex = 17;
             this.label2.Text = "Replace with:";
             // 
-            // label3
+            // labelTotalParagraphs
             // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.labelTotalParagraphs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(22, 436);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(107, 13);
-            this.label3.TabIndex = 18;
-            this.label3.Text = "Total paragraphs: {0}";
+            this.labelTotalParagraphs.AutoSize = true;
+            this.labelTotalParagraphs.Location = new System.Drawing.Point(22, 436);
+            this.labelTotalParagraphs.Name = "labelTotalParagraphs";
+            this.labelTotalParagraphs.Size = new System.Drawing.Size(107, 13);
+            this.labelTotalParagraphs.TabIndex = 18;
+            this.labelTotalParagraphs.Text = "Total paragraphs: {0}";
             // 
-            // label4
+            // labelTotalNames
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(22, 9);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(85, 13);
-            this.label4.TabIndex = 19;
-            this.label4.Text = "Total names: {0}";
+            this.labelTotalNames.AutoSize = true;
+            this.labelTotalNames.Location = new System.Drawing.Point(22, 9);
+            this.labelTotalNames.Name = "labelTotalNames";
+            this.labelTotalNames.Size = new System.Drawing.Size(85, 13);
+            this.labelTotalNames.TabIndex = 19;
+            this.labelTotalNames.Text = "Total names: {0}";
             // 
             // radioButtonRegex
             // 
             this.radioButtonRegex.AutoSize = true;
-            this.radioButtonRegex.Location = new System.Drawing.Point(9, 162);
+            this.radioButtonRegex.Location = new System.Drawing.Point(177, 116);
             this.radioButtonRegex.Name = "radioButtonRegex";
-            this.radioButtonRegex.Size = new System.Drawing.Size(116, 17);
+            this.radioButtonRegex.Size = new System.Drawing.Size(56, 17);
             this.radioButtonRegex.TabIndex = 20;
-            this.radioButtonRegex.Text = "Regular Expression";
+            this.radioButtonRegex.Text = "Regex";
             this.radioButtonRegex.UseVisualStyleBackColor = true;
             // 
             // radioButtonCaseSensitive
             // 
             this.radioButtonCaseSensitive.AutoSize = true;
-            this.radioButtonCaseSensitive.Location = new System.Drawing.Point(9, 116);
+            this.radioButtonCaseSensitive.Location = new System.Drawing.Point(76, 116);
             this.radioButtonCaseSensitive.Name = "radioButtonCaseSensitive";
             this.radioButtonCaseSensitive.Size = new System.Drawing.Size(95, 17);
             this.radioButtonCaseSensitive.TabIndex = 21;
@@ -236,7 +237,7 @@
             // 
             this.radioButtonNormal.AutoSize = true;
             this.radioButtonNormal.Checked = true;
-            this.radioButtonNormal.Location = new System.Drawing.Point(9, 139);
+            this.radioButtonNormal.Location = new System.Drawing.Point(12, 116);
             this.radioButtonNormal.Name = "radioButtonNormal";
             this.radioButtonNormal.Size = new System.Drawing.Size(58, 17);
             this.radioButtonNormal.TabIndex = 22;
@@ -268,8 +269,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(839, 469);
             this.Controls.Add(this.groupBoxReplaceOptions);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
+            this.Controls.Add(this.labelTotalNames);
+            this.Controls.Add(this.labelTotalParagraphs);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.labelStatus);
@@ -304,8 +305,8 @@
         private System.Windows.Forms.Button buttonUpdate;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label labelTotalParagraphs;
+        private System.Windows.Forms.Label labelTotalNames;
         private System.Windows.Forms.RadioButton radioButtonRegex;
         private System.Windows.Forms.RadioButton radioButtonCaseSensitive;
         private System.Windows.Forms.RadioButton radioButtonNormal;

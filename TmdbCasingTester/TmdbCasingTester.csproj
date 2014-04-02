@@ -79,9 +79,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\tmdb casing\TmdbCasing.csproj">
-      <Project>{9cea8239-f445-430b-be3b-76a5ef8488fb}</Project>
-      <Name>TmdbCasing</Name>
+    <ProjectReference Include="..\DialogueAutoMarker\DialogueAutoMarker.csproj">
+      <Project>{9e25ee45-e764-444f-9756-fe5479f4914d}</Project>
+      <Name>DialogueAutoMarker</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
