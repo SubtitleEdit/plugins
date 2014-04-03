@@ -47,7 +47,8 @@ namespace SubtitleEdit
             if (_subtitle == null)
                 return;
             this.listView1.BeginUpdate();
-            this._dicChanged = new Dictionary<int, string>();
+            if (this._dicChanged == null)
+                this._dicChanged = new Dictionary<int, string>();
             foreach (Paragraph p in _subtitle.Paragraphs)
             {
                 if (_allowFix && _dicChanged.ContainsKey(p.Number))
@@ -66,6 +67,7 @@ namespace SubtitleEdit
                 }
             }
             this.listView1.EndUpdate();
+            Application.DoEvents();
         }
 
         private string TranslateToHaxor(string text)
