@@ -12,9 +12,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         internal string FixedSubtitle { get; private set; }
 
-        // TODO: MAKE THIS LOOK AROUND PATTERN
-        private const string REGEXHEARINGIMPAIRED = @"\B([\{\(\[])\s*([♪'""#]*\w+[\s\w,'""#\-&,♪/<>\.]*)([\)\]\}])\B|\B([\{\(\[])([♪'""#\s]*\w+[\s\w,'""#\-&,♪/<>\.]*[^\)\]\}]\r\n['""#\s]*\w+[\s\w,'""#\-&,♪/<>\.]*)\s*([\)\]\}])\B";
-
         private readonly IList<string> _listPatternNames = new List<string>
 		{
             @"(?(?<=[\->\.!\?♪])\s*)\b\w+[\s\w'""\-#♪]*\s([\{\(\[])(['""#\-♪]*\s*\w+[\s\w\-',#""&\.:♪]*)([\)\]\}])(?=:)",
@@ -144,21 +141,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     string text = p.Text;
 
                     // (Moods and feelings)
-                    if (Regex.IsMatch(p.Text, REGEXHEARINGIMPAIRED, RegexOptions.Compiled))
-                        text = ConvertMoodsFeelings(text);
-
-                    // TODO: USER OPTION
-                    //if (Regex.IsMatch(text, _listPatternNames[0], RegexOptions.Compiled))
-                    //{
-                    //    // WOMAN (on phone): => WOMAN ON PHONE:
-                    //    // <i>Ella (on phone): It's not about money.</i>
-                    //    text = Regex.Replace(text, _listPatternNames[0], delegate(Match match)
-                    //    {
-                    //        string brackets = @"[\(\[\{]|[\)\]\}]";
-                    //        string newname = Regex.Replace(match.Value, brackets, string.Empty);
-                    //        return newname.ToUpper();
-                    //    });
-                    //}
+                    if (Regex.IsMatch(p.Text, @"[\(\[\{]", RegexOptions.Compiled))
+                        text = FindMoods(text);
 
                     // Narrator:
                     if (checkBoxNames.Checked && Regex.IsMatch(text, @":\B"))
@@ -238,47 +222,110 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.Items.Add(item);
         }
 
+        private string FindMoods(string text)
+        {
+            int index = text.IndexOf("(");
+            if (index > -1)
+            {
+                int endIdx = text.IndexOf(")", index + 2);
+                while (index > -1 && endIdx > index)
+                {
+                    string mood = text.Substring(index, (endIdx - index) + 1);
+                    mood = ConvertMoodsFeelings(mood);
+                    if (_moodsMatched)
+                    {
+                        text = text.Remove(index, (endIdx - index) + 1).Insert(index, mood);
+                        index = text.IndexOf("(", endIdx + 1);
+                        if (index > -1)
+                            endIdx = text.IndexOf(")", index + 2);
+                    }
+                    else
+                    {
+                        index = -1;
+                    }
+                }
+            }
+
+            index = text.IndexOf("[");
+            if (index > -1)
+            {
+                int endIdx = text.IndexOf("]", index + 2);
+                while (index > -1 && endIdx > index)
+                {
+                    string mood = text.Substring(index, (endIdx - index) + 1);
+                    mood = ConvertMoodsFeelings(mood);
+                    if (_moodsMatched)
+                    {
+                        text = text.Remove(index, (endIdx - index) + 1).Insert(index, mood);
+                        index = text.IndexOf("[", endIdx + 1);
+                        if (index > -1)
+                            endIdx = text.IndexOf("]", index + 2);
+                    }
+                    else
+                    {
+                        index = -1;
+                    }
+                }
+            }
+
+            index = text.IndexOf("{");
+            if (index > -1)
+            {
+                int endIdx = text.IndexOf("}", index + 2);
+                while (index > -1 && endIdx > index)
+                {
+                    string mood = text.Substring(index, (endIdx - index) + 1);
+                    mood = ConvertMoodsFeelings(mood);
+                    if (_moodsMatched)
+                    {
+                        text = text.Remove(index, (endIdx - index) + 1).Insert(index, mood);
+                        index = text.IndexOf("{", endIdx + 1);
+                        if (index > -1)
+                            endIdx = text.IndexOf("}", index + 2);
+                    }
+                    else
+                    {
+                        index = -1;
+                    }
+                }
+            }
+
+            text = text.Replace("  ", " ");
+            text = text.Replace(Environment.NewLine + " ", Environment.NewLine);
+            text = text.Replace(" " + Environment.NewLine, Environment.NewLine);
+            return text;
+        }
+
         private string ConvertMoodsFeelings(string text)
         {
-            if (!Regex.IsMatch(text, REGEXHEARINGIMPAIRED))
+            if (!Regex.IsMatch(text, @"[\(\[\{]"))
                 return text;
-
             string before = text;
-            string helper = string.Empty;
+
             switch (_hiStyle)
             {
                 case HIStyle.UpperLowerCase:
-                    text = Regex.Replace(text, REGEXHEARINGIMPAIRED, delegate(Match match)
+                    string helper = string.Empty;
+                    helper = string.Empty;
+                    bool isUpperTime = true;
+                    foreach (char myChar in text)
                     {
-                        helper = string.Empty;
-                        bool isUpperTime = true;
-                        foreach (char myChar in match.Value)
-                        {
-                            helper += isUpperTime ? char.ToUpper(myChar) : char.ToLower(myChar);
-                            isUpperTime = !isUpperTime;
-                        }
-                        return helper;
-                    }, RegexOptions.Compiled);
+                        helper += isUpperTime ? char.ToUpper(myChar) : char.ToLower(myChar);
+                        isUpperTime = !isUpperTime;
+                    }
+                    text = helper;
                     break;
 
                 case HIStyle.FirstUppercase:
-                    text = Regex.Replace(text, REGEXHEARINGIMPAIRED, delegate(Match match)
-                    {
-                        helper = match.Value.ToLower();
-                        helper = Regex.Replace(helper, @"\b\w", x => x.Value.ToUpper());
-                        return helper;
-                    }, RegexOptions.Compiled);
+                    text = Regex.Replace(text.ToLower(), @"\b\w", x => x.Value.ToUpper());
                     break;
 
                 case HIStyle.UpperCase:
-                    text = Regex.Replace(text, REGEXHEARINGIMPAIRED, delegate(Match match)
-                    {
-                        return match.Value.ToUpper();
-                    }, RegexOptions.Compiled);
+                    text = text.ToUpper();
                     break;
 
                 case HIStyle.LowerCase:
-                    text = Regex.Replace(text, REGEXHEARINGIMPAIRED, delegate(Match match) { return match.Value.ToLower(); }, RegexOptions.Compiled);
+                    text = text.ToLower();
                     break;
             }
 
