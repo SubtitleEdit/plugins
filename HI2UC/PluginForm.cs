@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -8,17 +7,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form
     {
-        private enum HIStyle { UpperCase, LowerCase, FirstUppercase, UpperLowerCase }
-
         internal string FixedSubtitle { get; private set; }
 
-        private readonly IList<string> _listPatternNames = new List<string>
-		{
-            @"(?(?<=[\->\.!\?♪])\s*)\b\w+[\s\w'""\-#♪]*\s([\{\(\[])(['""#\-♪]*\s*\w+[\s\w\-',#""&\.:♪]*)([\)\]\}])(?=:)",
-			@"(?(?<=[>\.!\?♪] )|)\b\w+[\s\w'""\-#&]*:(?=\s)",
-            @"(?<=\r\n)\b\w+[\s\w'""\-#&♪]*:(?=\s)",
-            @"(?i)(mrs|mr)?\.\s*(\w+[\s\w'""\-#&♪]*):(?=\s)" // TODO
-		};
+        private enum HIStyle { UpperCase, LowerCase, FirstUppercase, UpperLowerCase }
 
         private bool _allowFixes = false;
         private bool _deleteLine = false;
@@ -146,7 +137,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                     // Narrator:
                     if (checkBoxNames.Checked && Regex.IsMatch(text, @":\B"))
-                        text = NamesOfPeoples(text);
+                        text = NarratorToUpper(text);
 
                     if (text != oldText)
                     {
@@ -231,6 +222,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 while (index > -1 && endIdx > index)
                 {
                     string mood = text.Substring(index, (endIdx - index) + 1);
+                    if (mood.Trim().Length < 0)
+                        return text;
+
                     mood = ConvertMoodsFeelings(mood);
                     if (_moodsMatched)
                     {
@@ -254,6 +248,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     string mood = text.Substring(index, (endIdx - index) + 1);
                     mood = ConvertMoodsFeelings(mood);
+                    if (mood.Trim().Length < 0)
+                        return text;
                     if (_moodsMatched)
                     {
                         text = text.Remove(index, (endIdx - index) + 1).Insert(index, mood);
@@ -276,6 +272,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     string mood = text.Substring(index, (endIdx - index) + 1);
                     mood = ConvertMoodsFeelings(mood);
+                    if (mood.Trim().Length < 0)
+                        return text;
                     if (_moodsMatched)
                     {
                         text = text.Remove(index, (endIdx - index) + 1).Insert(index, mood);
@@ -334,25 +332,101 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return text;
         }
 
-        private string NamesOfPeoples(string text)
+        private string NarratorToUpper(string text)
         {
-            string temp = Utilities.RemoveHtmlTags(text).Trim();
-            if (temp.LastIndexOf(":") == temp.Length - 1)
-                return text;
-
-            foreach (string pattern in _listPatternNames)
+            int index = text.IndexOfAny(new char[] { '(', '[' });
+            if (index > -1)
             {
-                if (Regex.IsMatch(text, pattern))
+                int indexColon = text.IndexOf(":");
+                if (indexColon > index)
                 {
-                    _namesMatched = true;
-                    text = Regex.Replace(text, pattern, delegate(Match match)
+                    int end = text.IndexOfAny(new char[] { ')', ']' });
+                    if (end > indexColon)
                     {
-                        return match.Value.ToUpper();
-                    });
-                    break;
+                        return text;
+                    }
                 }
             }
-            return text.Trim();
+
+            var t = Utilities.RemoveHtmlTags(text);
+            index = t.IndexOf(":");
+            if (index == t.Length - 1)
+            {
+                // like: "Ivandro Says:"
+                return text;
+            }
+
+            if (text.Replace(Environment.NewLine, string.Empty).Length != text.Length)
+            {
+                var lines = text.Replace(Environment.NewLine, "|").Split('|');
+                text = string.Empty;
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    index = lines[i].IndexOf(":");
+                    if (index > 0)
+                    {
+                        string temp = lines[i];
+                        string pre = temp.Substring(0, index);
+                        if (Utilities.RemoveHtmlTags(pre).Trim().Length > 0)
+                        {
+                            string firstChr = Regex.Match(pre, "(?<!<)\\w", RegexOptions.Compiled).Value;
+                            int idx = pre.IndexOf(firstChr);
+                            string narrator = pre.Substring(idx, index - idx);
+
+                            if (narrator.ToUpper() == narrator)
+                                continue;
+                            narrator = narrator.ToUpper();
+                            if (narrator.Contains("<"))
+                                narrator = FixUpperTagInNarrator(narrator);
+
+                            pre = pre.Remove(idx, index - idx).Insert(idx, narrator);
+                            temp = temp.Remove(0, index).Insert(0, pre);
+                            if (temp != lines[i])
+                                lines[i] = temp;
+                        }
+                    }
+                }
+                text = string.Join(Environment.NewLine, lines);
+            }
+            else
+            {
+                index = text.IndexOf(":");
+                if (index > 0)
+                {
+                    string pre = text.Substring(0, index);
+                    if (Utilities.RemoveHtmlTags(pre).Trim().Length > 0)
+                    {
+                        string firstChr = Regex.Match(pre, "(?<!<)\\w", RegexOptions.Compiled).Value;
+                        int idx = pre.IndexOf(firstChr);
+                        string narrator = pre.Substring(idx, index - idx);
+                        if (narrator.ToUpper() == narrator)
+                            return text;
+                        narrator = narrator.ToUpper();
+                        if (narrator.Contains("<"))
+                            narrator = FixUpperTagInNarrator(narrator);
+                        pre = pre.Remove(idx, index - idx).Insert(idx, narrator);
+                        text = text.Remove(0, index).Insert(0, pre);
+                    }
+                }
+            }
+            return text;
+        }
+
+        private string FixUpperTagInNarrator(string narrator)
+        {
+            // Fix Upper tag
+            int tagIndex = narrator.IndexOf("<");
+            while (tagIndex > -1)
+            {
+                int closeIndex = narrator.IndexOf(">", tagIndex + 1);
+                if (closeIndex > -1 && closeIndex > tagIndex)
+                {
+                    string temp = narrator.Substring(tagIndex, (closeIndex - tagIndex)).ToLower();
+                    narrator = narrator.Remove(tagIndex, (closeIndex - tagIndex)).Insert(tagIndex, temp);
+                }
+                tagIndex = narrator.IndexOf("<", closeIndex);
+            }
+            return narrator;
         }
     }
 }
