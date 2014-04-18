@@ -50,6 +50,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.buttonApply = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -190,11 +191,11 @@
             this.checkBoxNames.AutoSize = true;
             this.checkBoxNames.Checked = true;
             this.checkBoxNames.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxNames.Location = new System.Drawing.Point(731, 40);
+            this.checkBoxNames.Location = new System.Drawing.Point(776, 40);
             this.checkBoxNames.Name = "checkBoxNames";
-            this.checkBoxNames.Size = new System.Drawing.Size(112, 17);
+            this.checkBoxNames.Size = new System.Drawing.Size(67, 17);
             this.checkBoxNames.TabIndex = 3;
-            this.checkBoxNames.Text = "Names of Peoples";
+            this.checkBoxNames.Text = "Narrator:";
             this.toolTip1.SetToolTip(this.checkBoxNames, "This will change the Narrator Text\r\nEx: Harry: Hello! -> HARRY: Hello!");
             this.checkBoxNames.UseVisualStyleBackColor = true;
             this.checkBoxNames.CheckedChanged += new System.EventHandler(this.checkBoxNarrator_CheckedChanged);
@@ -215,7 +216,7 @@
             "Lowercase (hello)",
             "First Char in Word (Hello Hello)",
             "UpperLower (HeLlO)"});
-            this.comboBox1.Location = new System.Drawing.Point(572, 36);
+            this.comboBox1.Location = new System.Drawing.Point(617, 36);
             this.comboBox1.MaxDropDownItems = 5;
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(153, 21);
@@ -227,7 +228,7 @@
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(569, 20);
+            this.label2.Location = new System.Drawing.Point(614, 20);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(131, 13);
             this.label2.TabIndex = 4;
@@ -257,6 +258,16 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "groupBox1";
             // 
+            // buttonApply
+            // 
+            this.buttonApply.Location = new System.Drawing.Point(531, 500);
+            this.buttonApply.Name = "buttonApply";
+            this.buttonApply.Size = new System.Drawing.Size(100, 23);
+            this.buttonApply.TabIndex = 8;
+            this.buttonApply.Text = "Apply";
+            this.buttonApply.UseVisualStyleBackColor = true;
+            this.buttonApply.Click += new System.EventHandler(this.buttonApply_Click);
+            // 
             // PluginForm
             // 
             this.AcceptButton = this.buttonConvert;
@@ -264,6 +275,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btn_Cancel;
             this.ClientSize = new System.Drawing.Size(855, 535);
+            this.Controls.Add(this.buttonApply);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.checkBoxNames);
@@ -309,6 +321,7 @@
         private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteLineToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader columnHeader5;
+        private System.Windows.Forms.Button buttonApply;
 
     }
 }

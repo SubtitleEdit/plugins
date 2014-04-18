@@ -208,8 +208,28 @@ namespace Nikse.SubtitleEdit.PluginLogic
             subItem = new ListViewItem.ListViewSubItem(item, after.Replace(Environment.NewLine,
                 Configuration.ListViewLineSeparatorString));
             item.SubItems.Add(subItem);
-            if (after.IndexOf(": ") > 14 || after.IndexOf(":" + Environment.NewLine) > 10)
-                item.BackColor = Color.Pink;
+
+            if (after.Replace(Environment.NewLine, string.Empty).Length != after.Length)
+            {
+                int idx = after.IndexOf(Environment.NewLine);
+                if (idx > 2)
+                {
+                    string firstLine = after.Substring(0, idx).Trim();
+                    string secondLine = after.Substring(idx).Trim();
+                    int idx1 = firstLine.IndexOf(":");
+                    int idx2 = secondLine.IndexOf(":");
+                    if (idx1 > 14 || idx2 > 14)
+                    {
+                        item.BackColor = Color.Pink;
+                    }
+                }
+            }
+            else
+            {
+                if (after.IndexOf(":") > 14)
+                    item.BackColor = Color.Pink;
+            }
+
             listViewFixes.Items.Add(item);
         }
 
@@ -437,6 +457,28 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 tagIndex = narrator.IndexOf("<", closeIndex);
             }
             return narrator;
+        }
+
+        private void buttonApply_Click(object sender, EventArgs e)
+        {
+            Cursor = Cursors.WaitCursor;
+            _allowFixes = true;
+            FindHearinImpairedText();
+            if (_deleteLine)
+            {
+                foreach (ListViewItem item in this.listViewFixes.Items)
+                {
+                    if (item.BackColor != Color.Red)
+                        continue;
+                    _subtitle.RemoveLine(((Paragraph)item.Tag).Number);
+                }
+            }
+
+            FixedSubtitle = _subtitle.ToText(new SubRip());
+            Cursor = Cursors.Default;
+            this.listViewFixes.Items.Clear();
+            _allowFixes = !_allowFixes;
+            FindHearinImpairedText();
         }
     }
 }
