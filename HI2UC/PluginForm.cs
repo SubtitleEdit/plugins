@@ -362,27 +362,32 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 text = string.Empty;
                 for (int i = 0; i < lines.Length; i++)
                 {
-                    index = lines[i].IndexOf(":");
-                    if (index > 0)
+                    string cleanText = Utilities.RemoveHtmlTags(lines[i]).Trim();
+                    index = cleanText.IndexOf(":");
+                    if (index < cleanText.Length - 1)
                     {
-                        string temp = lines[i];
-                        string pre = temp.Substring(0, index);
-                        if (Utilities.RemoveHtmlTags(pre).Trim().Length > 0)
+                        index = lines[i].IndexOf(":");
+                        if (index > 0)
                         {
-                            string firstChr = Regex.Match(pre, "(?<!<)\\w", RegexOptions.Compiled).Value;
-                            int idx = pre.IndexOf(firstChr);
-                            string narrator = pre.Substring(idx, index - idx);
-
-                            if (narrator.ToUpper() == narrator)
-                                continue;
-                            narrator = narrator.ToUpper();
-                            if (narrator.Contains("<"))
-                                narrator = FixUpperTagInNarrator(narrator);
-
-                            pre = pre.Remove(idx, index - idx).Insert(idx, narrator);
-                            temp = temp.Remove(0, index).Insert(0, pre);
-                            if (temp != lines[i])
-                                lines[i] = temp;
+                            string temp = lines[i];
+                            string pre = temp.Substring(0, index);
+                            if (Utilities.RemoveHtmlTags(pre).Trim().Length > 0)
+                            {
+                                string firstChr = Regex.Match(pre, "(?<!<)\\w", RegexOptions.Compiled).Value;
+                                int idx = pre.IndexOf(firstChr);
+                                string narrator = pre.Substring(idx, index - idx);
+                                if (narrator.ToUpper() == narrator)
+                                    continue;
+                                narrator = narrator.ToUpper();
+                                pre = pre.Remove(idx, index - idx).Insert(idx, narrator);
+                                temp = temp.Remove(0, index).Insert(0, pre);
+                                if (temp != lines[i])
+                                {
+                                    if (narrator.Contains("<"))
+                                        temp = FixUpperTagInNarrator(temp);
+                                    lines[i] = temp;
+                                }
+                            }
                         }
                     }
                 }
@@ -398,14 +403,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     {
                         string firstChr = Regex.Match(pre, "(?<!<)\\w", RegexOptions.Compiled).Value;
                         int idx = pre.IndexOf(firstChr);
-                        string narrator = pre.Substring(idx, index - idx);
-                        if (narrator.ToUpper() == narrator)
-                            return text;
-                        narrator = narrator.ToUpper();
-                        if (narrator.Contains("<"))
-                            narrator = FixUpperTagInNarrator(narrator);
-                        pre = pre.Remove(idx, index - idx).Insert(idx, narrator);
-                        text = text.Remove(0, index).Insert(0, pre);
+                        if (idx > -1)
+                        {
+                            string narrator = pre.Substring(idx, index - idx);
+                            if (narrator.ToUpper() == narrator)
+                                return text;
+                            narrator = narrator.ToUpper();
+                            if (narrator.Contains("<"))
+                                narrator = FixUpperTagInNarrator(narrator);
+                            pre = pre.Remove(idx, index - idx).Insert(idx, narrator);
+                            if (pre.Contains("<"))
+                                pre = FixUpperTagInNarrator(pre);
+                            text = text.Remove(0, index).Insert(0, pre);
+                        }
                     }
                 }
             }
