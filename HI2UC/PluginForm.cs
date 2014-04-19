@@ -194,6 +194,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var subItem = new ListViewItem.ListViewSubItem(item, p.Number.ToString());
             item.SubItems.Add(subItem);
 
+            // TODO: Bugs! paragraph numbers is been added in Moods & Names's place
             if (_moodsMatched && _namesMatched)
                 subItem = new ListViewItem.ListViewSubItem(item, "Name & Mood");
             else if (_moodsMatched && !_namesMatched)
@@ -218,7 +219,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     string secondLine = after.Substring(idx).Trim();
                     int idx1 = firstLine.IndexOf(":");
                     int idx2 = secondLine.IndexOf(":");
-                    if (idx1 > 14 || idx2 > 14)
+                    if (idx1 > 0xE || idx2 > 0xE)
                     {
                         item.BackColor = Color.Pink;
                     }
@@ -226,7 +227,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             else
             {
-                if (after.IndexOf(":") > 14)
+                if (after.IndexOf(":") > 0xE)
                     item.BackColor = Color.Pink;
             }
 
@@ -384,7 +385,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     string cleanText = Utilities.RemoveHtmlTags(lines[i]).Trim();
                     index = cleanText.IndexOf(":");
-                    if (index < cleanText.Length - 1)
+
+                    if ((index + 1 < cleanText.Length - 1) && char.IsDigit(cleanText[index + 1]))
+                    {
+                        continue;
+                    }
+
+                    if (i > 0 && index == cleanText.Length - 1)
+                    {
+                        continue;
+                    }
+
+                    if (index > 0)
                     {
                         index = lines[i].IndexOf(":");
                         if (index > 0)
