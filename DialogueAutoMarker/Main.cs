@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    private enum DialogueType
+    internal enum DialogueType
     {
         SingleDash,
         DoubleDash
@@ -440,13 +440,26 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (IsThereText())
             {
                 int index = textBox1.SelectionStart;
-                if (index > 1)
+                int newLineIdx = textBox1.Text.IndexOf(Environment.NewLine);
+
+                if (index > 1 && index < newLineIdx && index + 1 < textBox1.Text.Length - 1)
                 {
-                    //MessageBox.Show(index.ToString());
                     string str = this.textBox1.Text;
                     str = str.Replace(Environment.NewLine, " ");
+                    int len = str.Length;
                     str = str.Replace("  ", " ");
-                    //index--; // this has to be executed if cursor where set in second line!
+                    index = -index + (len - str.Length);
+                    str = str.Substring(0, index).Trim() + Environment.NewLine + str.Substring(index).Trim();
+                    textBox1.Text = str;
+                }
+                else if (index > 1 && index > newLineIdx & index + 1 < textBox1.Text.Length - 1)
+                {
+                    string str = this.textBox1.Text;
+                    str = str.Replace(Environment.NewLine, " ");
+                    int len = str.Length;
+                    str = str.Replace("  ", " ");
+                    //index--; // this has to be executed if cursor were set in second line!
+                    index = -index + (len - str.Length);
                     str = str.Substring(0, index).Trim() + Environment.NewLine + str.Substring(index).Trim();
                     textBox1.Text = str;
                 }
@@ -470,7 +483,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (listViewDialogue.SelectedItems != null && listViewDialogue.SelectedItems.Count > 0)
             {
                 lastSelectedIndex = listViewDialogue.SelectedItems[0].Index;
-                var myColor = new System.Drawing.Color();
+                //var myColor = new System.Drawing.Color();
                 //myColor = System.Drawing.Color.Blue;
                 //myColor = Color.FromArgb(255, Color.Blue.R - 10, Color.Blue.G - 100, Color.Blue.B - 100);
                 backColor = listViewDialogue.SelectedItems[0].BackColor;
