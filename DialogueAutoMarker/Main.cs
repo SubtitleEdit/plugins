@@ -1,9 +1,17 @@
 ﻿using System;
+using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
+
+    enum DialogueType
+    {
+        SingleDash,
+        DoubleDash
+    }
+
     public partial class Main : Form
     {
         public string FixedSubtitle { get; private set; }
@@ -49,6 +57,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var s = Utilities.RemoveHtmlTags(text);
             if (s.StartsWith("-") && s.Contains(Environment.NewLine + "-"))
                 return false;
+            int index = text.IndexOf(Environment.NewLine);
+
+            if (index > 0)
+            {
+                string firstLine = text.Substring(0, index).Trim();
+                string secondLine = text.Substring(index).Trim();
+                firstLine = Utilities.RemoveHtmlTags(firstLine).Trim();
+                secondLine = Utilities.RemoveHtmlTags(secondLine).Trim();
+                if (!firstLine.Contains(".") && !firstLine.Contains("!") && !firstLine.Contains("?"))
+                { return false; }
+            }
             return true;
         }
 
@@ -83,36 +102,54 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             else
             {
-                if (e.Item.Text != this.textBox1.Text)
+                var p = e.Item.Tag as Paragraph;
+                if (p.Text != this.textBox1.Text)
                 {
-                    var p = e.Item.Tag as Paragraph;
                     p.Text = textBox1.Text;
                     e.Item.SubItems[2].Text = p.Text;
+                    e.Item.BackColor = System.Drawing.Color.GreenYellow;
+                    //e.Item.ForeColor = System.Drawing.Color.Green;
                 }
             }
         }
 
         private void buttonLower_Click(object sender, EventArgs e)
         {
+            // TODO: ADD UNDO feature CTRL+Z
             if (IsThereText())
             {
-                string text = this.textBox1.Text.Trim();
-                if (Utilities.RemoveHtmlTags(text).Length > 0)
-                    this.textBox1.Text = text.ToLower();
+                string selected = this.textBox1.SelectedText;
+                if (!string.IsNullOrEmpty(selected))
+                {
+                    textBox1.Text = textBox1.Text.Replace(selected, selected.ToLower());
+                }
+                else
+                {
+                    string text = this.textBox1.Text.Trim();
+                    if (Utilities.RemoveHtmlTags(text).Length > 0)
+                        this.textBox1.Text = text.ToLower();
+                }
             }
-
-            // Todo: fix tag chasing before proceed
+            // TODO: fix tag chasing before proceed
         }
 
         private void buttonUpper_Click(object sender, EventArgs e)
         {
             if (IsThereText())
             {
-                string text = this.textBox1.Text.Trim();
-                text = text.ToUpper();
-                if (text.Contains("<"))
-                    text = FixTag(text);
-                this.textBox1.Text = text;
+                string selected = this.textBox1.SelectedText;
+                if (!string.IsNullOrEmpty(selected))
+                {
+                    textBox1.Text = textBox1.Text.Replace(selected, selected.ToUpper());
+                }
+                else
+                {
+                    string text = this.textBox1.Text.Trim();
+                    text = text.ToUpper();
+                    if (text.Contains("<"))
+                        text = FixTag(text);
+                    this.textBox1.Text = text;
+                }
             }
         }
 
@@ -144,41 +181,74 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonDash_Click(object sender, EventArgs e)
         {
-            AddDash(2);
+            AddDash(DialogueType.DoubleDash);
         }
 
         private void buttonSingleDash_Click(object sender, EventArgs e)
         {
-            AddDash(1);
+            AddDash(DialogueType.SingleDash);
         }
 
-        private void AddDash(int num)
+        private void AddDash(DialogueType dialogueStyle)
         {
-            if (num < 1)
-                return;
             string text = textBox1.Text.Trim();
 
-            if (num < 1)
-                if (!string.IsNullOrEmpty(text))
+            if (text.Replace(Environment.NewLine, string.Empty).Length != text.Length)
+            {
+                string temp = string.Empty;
+                // TODO: REMOVE
+                /*
+                if (num < 1)
                 {
-                    string temp = Utilities.RemoveHtmlTags(text).Trim();
-
-                    if (temp.StartsWith("-"))
+                    if (!string.IsNullOrEmpty(text))
                     {
-                        text = Regex.Replace(text, @"\B-\B", string.Empty);
-                        text = Regex.Replace(text, Environment.NewLine + @"\B-\B", Environment.NewLine);
-                    }
-                }
+                        temp = Utilities.RemoveHtmlTags(text).Trim();
 
-            if (num == 1)
-            {
-                text = "- " + text;
-                this.textBox1.Text = text;
-            }
-            else if (num == 2)
-            {
-                text = "- " + text.Replace(Environment.NewLine, Environment.NewLine + "- ");
-                this.textBox1.Text = text;
+                        if (temp.StartsWith("-"))
+                        {
+                            text = Regex.Replace(text, @"\B-\B", string.Empty);
+                            text = Regex.Replace(text, Environment.NewLine + @"\B-\B", Environment.NewLine);
+                        }
+                    }
+                }*/
+                switch (dialogueStyle)
+                {
+                    case DialogueType.SingleDash:
+                        // removes the first dash
+                        temp = Utilities.RemoveHtmlTags(text).Trim();
+                        var val = text.Substring(0, text.IndexOf(Environment.NewLine));
+                        if (Utilities.RemoveHtmlTags(val).Trim().Length > 2 && val.StartsWith("-"))
+                        {
+                            int index = text.IndexOf("-");
+                            text = text.Remove(index, 1);
+                            if (text.Length > index && text[index] == 0x20)
+                            {
+                                text = text.Remove(index, 1);
+                            }
+                        }
+
+                        // add a new dash
+                        if (!temp.Contains(Environment.NewLine + "-"))
+                        {
+                            text = text.Replace(Environment.NewLine, Environment.NewLine + "- ");
+                            this.textBox1.Text = text;
+                        }
+                        break;
+
+                    case DialogueType.DoubleDash:
+                        temp = Utilities.RemoveHtmlTags(text);
+                        if (!temp.StartsWith("-"))
+                        {
+                            text = text.Insert(0, "- ");
+                        }
+
+                        if (!temp.Contains(Environment.NewLine + "-"))
+                        {
+                            text = text.Replace(Environment.NewLine, Environment.NewLine + "- ");
+                        }
+                        this.textBox1.Text = text;
+                        break;
+                }
             }
         }
 
@@ -186,13 +256,21 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (IsThereText())
             {
-                string text = this.textBox1.Text.Trim();
-                // TODO: Use regex to remove italic tags
-                text = text.Replace("<i>", string.Empty);
-                text = text.Replace("</i>", string.Empty);
+                string selected = this.textBox1.SelectedText;
+                if (!string.IsNullOrEmpty(selected))
+                {
+                    textBox1.Text = textBox1.Text.Replace(selected, "<i>" + selected + "</i>");
+                }
+                else
+                {
+                    string text = this.textBox1.Text.Trim();
+                    // TODO: Use regex to remove italic tags
+                    text = text.Replace("<i>", string.Empty);
+                    text = text.Replace("</i>", string.Empty);
 
-                text = "<i>" + text + "</i>";
-                this.textBox1.Text = text;
+                    text = "<i>" + text + "</i>";
+                    this.textBox1.Text = text;
+                }
             }
         }
 
@@ -286,15 +364,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     listViewDialogue.Items[index].Focused = true;
                 return;
             }
-
             listViewDialogue.Items[beforeIndex].EnsureVisible();
             listViewDialogue.EnsureVisible(beforeIndex);
             listViewDialogue.Items[afterIndex].EnsureVisible();
             listViewDialogue.EnsureVisible(afterIndex);
             listViewDialogue.Items[index].Selected = true;
             listViewDialogue.Items[index].EnsureVisible();
-            if (focus)
-                listViewDialogue.Items[index].Focused = true;
+            //if (focus)
+            //    listViewDialogue.Items[index].Focused = true;
         }
 
         public void SelectNone()
@@ -353,6 +430,61 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     }
                     this.textBox1.Text = text.Trim();
                 }
+            }
+        }
+
+        private void buttonBreakCursorPos_Click(object sender, EventArgs e)
+        {
+            if (IsThereText())
+            {
+                int index = textBox1.SelectionStart;
+                if (index > 1)
+                {
+                    //MessageBox.Show(index.ToString());
+                    string str = this.textBox1.Text;
+                    str = str.Replace(Environment.NewLine, " ");
+                    str = str.Replace("  ", " ");
+                    //index--; // this has to be executed if cursor where set in second line!
+                    str = str.Substring(0, index).Trim() + Environment.NewLine + str.Substring(index).Trim();
+                    textBox1.Text = str;
+                }
+            }
+        }
+
+        private void buttonUnBreak_Click(object sender, EventArgs e)
+        {
+            if (IsThereText())
+            {
+                string text = Utilities.RemoveHtmlTags(textBox1.Text).Trim();
+                if (text.Length > 0 && text.Length < 46)
+                {
+                    textBox1.Text = textBox1.Text.Replace(Environment.NewLine, " ");
+                }
+            }
+        }
+
+        int lastSelectedIndex = -1;
+        Color backColor;
+        private void listViewDialogue_Leave(object sender, EventArgs e)
+        {
+            if (listViewDialogue.SelectedItems != null && listViewDialogue.SelectedItems.Count > 0)
+            {
+                lastSelectedIndex = listViewDialogue.SelectedItems[0].Index;
+                var myColor = new System.Drawing.Color();
+                myColor = System.Drawing.Color.Blue;
+                //myColor = Color.FromArgb(255, Color.Blue.R - 10, Color.Blue.G - 100, Color.Blue.B - 100);
+                backColor = listViewDialogue.SelectedItems[0].BackColor;
+                listViewDialogue.SelectedItems[0].BackColor = Color.CadetBlue;
+            }
+        }
+
+        private void listViewDialogue_Enter(object sender, EventArgs e)
+        {
+            if (lastSelectedIndex > -1)
+            {
+                listViewDialogue.Items[lastSelectedIndex].BackColor = backColor;
+                //listViewDialogue.Items[lastSelectedIndex].Selected = true;
+                listViewDialogue.EnsureVisible(lastSelectedIndex);
             }
         }
     }
