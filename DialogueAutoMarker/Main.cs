@@ -441,14 +441,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 int index = textBox1.SelectionStart;
                 int newLineIdx = textBox1.Text.IndexOf(Environment.NewLine);
-
+                int len = 0;
                 if (index > 1 && index < newLineIdx && index + 1 < textBox1.Text.Length - 1)
                 {
                     string str = this.textBox1.Text;
                     str = str.Replace(Environment.NewLine, " ");
-                    int len = str.Length;
+                    len = str.Length;
                     str = str.Replace("  ", " ");
-                    index = -index + (len - str.Length);
+                    index = (index--) + (len - str.Length);
                     str = str.Substring(0, index).Trim() + Environment.NewLine + str.Substring(index).Trim();
                     textBox1.Text = str;
                 }
@@ -456,10 +456,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     string str = this.textBox1.Text;
                     str = str.Replace(Environment.NewLine, " ");
-                    int len = str.Length;
+                    len = str.Length;
                     str = str.Replace("  ", " ");
                     //index--; // this has to be executed if cursor were set in second line!
-                    index = -index + (len - str.Length);
+                    index = (index--) + (len - str.Length);
                     str = str.Substring(0, index).Trim() + Environment.NewLine + str.Substring(index).Trim();
                     textBox1.Text = str;
                 }
