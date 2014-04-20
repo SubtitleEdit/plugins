@@ -5,8 +5,7 @@ using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-
-    enum DialogueType
+    private enum DialogueType
     {
         SingleDash,
         DoubleDash
@@ -15,10 +14,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
     public partial class Main : Form
     {
         public string FixedSubtitle { get; private set; }
+
         private Subtitle _subtitle;
         private Form _parentForm;
         private string _name;
         private string _description;
+        private int lastSelectedIndex = -1;
+        private Color backColor;
 
         public Main()
         {
@@ -463,15 +465,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        int lastSelectedIndex = -1;
-        Color backColor;
         private void listViewDialogue_Leave(object sender, EventArgs e)
         {
             if (listViewDialogue.SelectedItems != null && listViewDialogue.SelectedItems.Count > 0)
             {
                 lastSelectedIndex = listViewDialogue.SelectedItems[0].Index;
                 var myColor = new System.Drawing.Color();
-                myColor = System.Drawing.Color.Blue;
+                //myColor = System.Drawing.Color.Blue;
                 //myColor = Color.FromArgb(255, Color.Blue.R - 10, Color.Blue.G - 100, Color.Blue.B - 100);
                 backColor = listViewDialogue.SelectedItems[0].BackColor;
                 listViewDialogue.SelectedItems[0].BackColor = Color.CadetBlue;

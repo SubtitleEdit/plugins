@@ -45,6 +45,8 @@
             this.buttonBold = new System.Windows.Forms.Button();
             this.buttonUpper = new System.Windows.Forms.Button();
             this.buttonLower = new System.Windows.Forms.Button();
+            this.buttonBreakCursorPos = new System.Windows.Forms.Button();
+            this.buttonUnBreak = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listViewDialogue
@@ -65,6 +67,8 @@
             this.listViewDialogue.UseCompatibleStateImageBehavior = false;
             this.listViewDialogue.View = System.Windows.Forms.View.Details;
             this.listViewDialogue.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.listViewDialogue_ItemSelectionChanged);
+            this.listViewDialogue.Enter += new System.EventHandler(this.listViewDialogue_Enter);
+            this.listViewDialogue.Leave += new System.EventHandler(this.listViewDialogue_Leave);
             // 
             // columnHeader2
             // 
@@ -84,11 +88,11 @@
             // textBox1
             // 
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox1.Location = new System.Drawing.Point(12, 461);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(438, 66);
+            this.textBox1.Size = new System.Drawing.Size(629, 66);
             this.textBox1.TabIndex = 1;
             // 
             // label1
@@ -126,7 +130,7 @@
             // buttonPrev
             // 
             this.buttonPrev.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonPrev.Location = new System.Drawing.Point(456, 504);
+            this.buttonPrev.Location = new System.Drawing.Point(485, 435);
             this.buttonPrev.Name = "buttonPrev";
             this.buttonPrev.Size = new System.Drawing.Size(75, 23);
             this.buttonPrev.TabIndex = 5;
@@ -137,7 +141,7 @@
             // buttonNext
             // 
             this.buttonNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonNext.Location = new System.Drawing.Point(537, 504);
+            this.buttonNext.Location = new System.Drawing.Point(566, 435);
             this.buttonNext.Name = "buttonNext";
             this.buttonNext.Size = new System.Drawing.Size(75, 23);
             this.buttonNext.TabIndex = 6;
@@ -187,7 +191,7 @@
             this.buttonSingleDash.Name = "buttonSingleDash";
             this.buttonSingleDash.Size = new System.Drawing.Size(39, 23);
             this.buttonSingleDash.TabIndex = 8;
-            this.buttonSingleDash.Text = "-";
+            this.buttonSingleDash.Text = "\\n-";
             this.buttonSingleDash.UseVisualStyleBackColor = true;
             this.buttonSingleDash.Click += new System.EventHandler(this.buttonSingleDash_Click);
             // 
@@ -225,11 +229,35 @@
             this.buttonLower.UseVisualStyleBackColor = true;
             this.buttonLower.Click += new System.EventHandler(this.buttonLower_Click);
             // 
+            // buttonBreakCursorPos
+            // 
+            this.buttonBreakCursorPos.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonBreakCursorPos.Location = new System.Drawing.Point(96, 435);
+            this.buttonBreakCursorPos.Name = "buttonBreakCursorPos";
+            this.buttonBreakCursorPos.Size = new System.Drawing.Size(39, 23);
+            this.buttonBreakCursorPos.TabIndex = 12;
+            this.buttonBreakCursorPos.Text = "<br>";
+            this.buttonBreakCursorPos.UseVisualStyleBackColor = true;
+            this.buttonBreakCursorPos.Click += new System.EventHandler(this.buttonBreakCursorPos_Click);
+            // 
+            // buttonUnBreak
+            // 
+            this.buttonUnBreak.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonUnBreak.Location = new System.Drawing.Point(51, 435);
+            this.buttonUnBreak.Name = "buttonUnBreak";
+            this.buttonUnBreak.Size = new System.Drawing.Size(39, 23);
+            this.buttonUnBreak.TabIndex = 13;
+            this.buttonUnBreak.Text = "Unbr";
+            this.buttonUnBreak.UseVisualStyleBackColor = true;
+            this.buttonUnBreak.Click += new System.EventHandler(this.buttonUnBreak_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(961, 534);
+            this.Controls.Add(this.buttonUnBreak);
+            this.Controls.Add(this.buttonBreakCursorPos);
             this.Controls.Add(this.buttonLower);
             this.Controls.Add(this.buttonUpper);
             this.Controls.Add(this.buttonBold);
@@ -270,6 +298,8 @@
         private System.Windows.Forms.Button buttonBold;
         private System.Windows.Forms.Button buttonUpper;
         private System.Windows.Forms.Button buttonLower;
+        private System.Windows.Forms.Button buttonBreakCursorPos;
+        private System.Windows.Forms.Button buttonUnBreak;
     }
 }
 
