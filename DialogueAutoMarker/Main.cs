@@ -100,6 +100,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     this.textBox1.Text = paragraph.Text;
                     this.textBox1.Tag = e.Item.Tag;
+                    SetLinesLength(textBox1.Text);
                 }
             }
             else
@@ -108,10 +109,36 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (p.Text != this.textBox1.Text)
                 {
                     p.Text = textBox1.Text;
-                    e.Item.SubItems[2].Text = p.Text;
+                    e.Item.SubItems[2].Text = p.Text.Replace(Environment.NewLine, "<br />");
                     e.Item.BackColor = System.Drawing.Color.GreenYellow;
                     //e.Item.ForeColor = System.Drawing.Color.Green;
                 }
+            }
+        }
+
+        private void SetLinesLength(string text)
+        {
+            string formatTotal = "Total lines length: {0}";
+            string formatSingle = "Single line length: {0}";
+
+            if (text.Contains(Environment.NewLine))
+            {
+                var vector = text.Replace(Environment.NewLine, "|").Split('|');
+                int totalNewLine = (text.Length - text.Replace(Environment.NewLine, string.Empty).Length);
+                string[] lengths = new string[totalNewLine];
+
+                for (int i = 0; i < vector.Length; i++)
+                {
+                    lengths[i] = vector[i].Length.ToString();
+                }
+
+                labelLinesTotalLength.Text = string.Format(formatSingle, string.Join("/", lengths));
+                labelSingleLineLength.Text = string.Format(formatTotal, text.Length);
+            }
+            else
+            {
+                labelLinesTotalLength.Text = string.Format(formatTotal, text.Length);
+                labelSingleLineLength.Text = string.Format(formatSingle, text.Length);
             }
         }
 
@@ -439,12 +466,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (IsThereText())
             {
-                int index = textBox1.SelectionStart;
                 int newLineIdx = textBox1.Text.IndexOf(Environment.NewLine);
+                int index = textBox1.SelectionStart;
                 int len = 0;
+                string str = this.textBox1.Text; ;
+
                 if (index > 1 && index < newLineIdx && index + 1 < textBox1.Text.Length - 1)
                 {
-                    string str = this.textBox1.Text;
                     str = str.Replace(Environment.NewLine, " ");
                     len = str.Length;
                     str = str.Replace("  ", " ");
@@ -454,7 +482,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
                 else if (index > 1 && index > newLineIdx & index + 1 < textBox1.Text.Length - 1)
                 {
-                    string str = this.textBox1.Text;
+                    // ivnadro ismael gomes jao!
                     str = str.Replace(Environment.NewLine, " ");
                     len = str.Length;
                     str = str.Replace("  ", " ");
@@ -471,9 +499,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (IsThereText())
             {
                 string text = Utilities.RemoveHtmlTags(textBox1.Text).Trim();
-                if (text.Length > 0 && text.Length < 46)
+                if (text.Length > 0 && text.Length < 47)
                 {
                     textBox1.Text = textBox1.Text.Replace(Environment.NewLine, " ");
+                }
+                else
+                {
+                    MessageBox.Show("You are trying to unbreak line > 46 chars");
                 }
             }
         }
