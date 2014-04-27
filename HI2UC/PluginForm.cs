@@ -133,7 +133,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                     // (Moods and feelings)
                     if (Regex.IsMatch(p.Text, @"[\(\[\{]", RegexOptions.Compiled))
-                        text = FindMoods(text);
+                        text = FindMoods(text, p);
 
                     // Narrator:
                     if (checkBoxNames.Checked && Regex.IsMatch(text, @":\B"))
@@ -194,7 +194,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var subItem = new ListViewItem.ListViewSubItem(item, p.Number.ToString());
             item.SubItems.Add(subItem);
 
-            // TODO: Bugs! paragraph numbers is been added in Moods & Names's place
             if (_moodsMatched && _namesMatched)
                 subItem = new ListViewItem.ListViewSubItem(item, "Name & Mood");
             else if (_moodsMatched && !_namesMatched)
@@ -234,25 +233,25 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.Items.Add(item);
         }
 
-        private string FindMoods(string text)
+        private string FindMoods(string text, Paragraph p)
         {
             int index = text.IndexOf("(");
             if (index > -1)
             {
-                int endIdx = text.IndexOf(")", index + 2);
+                int endIdx = text.IndexOf(")", index + 1);
+                if (endIdx < 0)
+                    PrintErrorMessage(p);
+
                 while (index > -1 && endIdx > index)
                 {
                     string mood = text.Substring(index, (endIdx - index) + 1);
-                    if (mood.Trim().Length < 0)
-                        return text;
-
                     mood = ConvertMoodsFeelings(mood);
                     if (_moodsMatched)
                     {
                         text = text.Remove(index, (endIdx - index) + 1).Insert(index, mood);
                         index = text.IndexOf("(", endIdx + 1);
                         if (index > -1)
-                            endIdx = text.IndexOf(")", index + 2);
+                            endIdx = text.IndexOf(")", index + 1);
                     }
                     else
                     {
@@ -264,19 +263,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
             index = text.IndexOf("[");
             if (index > -1)
             {
-                int endIdx = text.IndexOf("]", index + 2);
+                int endIdx = text.IndexOf("]", index + 1);
+                if (endIdx < 0)
+                    PrintErrorMessage(p);
+
                 while (index > -1 && endIdx > index)
                 {
                     string mood = text.Substring(index, (endIdx - index) + 1);
                     mood = ConvertMoodsFeelings(mood);
-                    if (mood.Trim().Length < 0)
-                        return text;
                     if (_moodsMatched)
                     {
                         text = text.Remove(index, (endIdx - index) + 1).Insert(index, mood);
                         index = text.IndexOf("[", endIdx + 1);
                         if (index > -1)
-                            endIdx = text.IndexOf("]", index + 2);
+                            endIdx = text.IndexOf("]", index + 1);
                     }
                     else
                     {
@@ -288,19 +288,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
             index = text.IndexOf("{");
             if (index > -1)
             {
-                int endIdx = text.IndexOf("}", index + 2);
+                int endIdx = text.IndexOf("}", index + 1);
+                if (endIdx < 0)
+                    PrintErrorMessage(p);
+
                 while (index > -1 && endIdx > index)
                 {
                     string mood = text.Substring(index, (endIdx - index) + 1);
                     mood = ConvertMoodsFeelings(mood);
-                    if (mood.Trim().Length < 0)
-                        return text;
                     if (_moodsMatched)
                     {
                         text = text.Remove(index, (endIdx - index) + 1).Insert(index, mood);
                         index = text.IndexOf("{", endIdx + 1);
                         if (index > -1)
-                            endIdx = text.IndexOf("}", index + 2);
+                            endIdx = text.IndexOf("}", index + 1);
                     }
                     else
                     {
@@ -315,6 +316,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return text;
         }
 
+        private void PrintErrorMessage(Paragraph p)
+        {
+            MessageBox.Show(string.Format("Error while reading Line#: {0}", p.Number.ToString()),
+                "Error!!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
         private string ConvertMoodsFeelings(string text)
         {
             if (!Regex.IsMatch(text, @"[\(\[\{]"))
@@ -325,7 +332,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 case HIStyle.UpperLowerCase:
                     string helper = string.Empty;
-                    helper = string.Empty;
                     bool isUpperTime = true;
                     foreach (char myChar in text)
                     {
@@ -355,46 +361,29 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string NarratorToUpper(string text)
         {
-            int index = text.IndexOfAny(new char[] { '(', '[' });
-            if (index > -1)
-            {
-                int indexColon = text.IndexOf(":");
-                if (indexColon > index)
-                {
-                    int end = text.IndexOfAny(new char[] { ')', ']' });
-                    if (end > indexColon)
-                    {
-                        return text;
-                    }
-                }
-            }
-
+            string before = text;
             var t = Utilities.RemoveHtmlTags(text);
-            index = t.IndexOf(":");
+            int index = t.IndexOf(":");
+
+            // like: "Ivandro Says:"
             if (index == t.Length - 1)
-            {
-                // like: "Ivandro Says:"
                 return text;
-            }
 
             if (text.Replace(Environment.NewLine, string.Empty).Length != text.Length)
             {
                 var lines = text.Replace(Environment.NewLine, "|").Split('|');
-                text = string.Empty;
                 for (int i = 0; i < lines.Length; i++)
                 {
                     string cleanText = Utilities.RemoveHtmlTags(lines[i]).Trim();
                     index = cleanText.IndexOf(":");
 
                     if ((index + 1 < cleanText.Length - 1) && char.IsDigit(cleanText[index + 1]))
-                    {
                         continue;
-                    }
 
+                    // Ivandro ismael:
+                    // hello world!
                     if (i > 0 && index == cleanText.Length - 1)
-                    {
                         continue;
-                    }
 
                     if (index > 0)
                     {
@@ -403,6 +392,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         {
                             string temp = lines[i];
                             string pre = temp.Substring(0, index);
+
+                            // (Adele: ...)
+                            if (pre.Contains("(") || pre.Contains("[") || pre.Contains("{"))
+                                continue;
+
                             if (Utilities.RemoveHtmlTags(pre).Trim().Length > 0)
                             {
                                 string firstChr = Regex.Match(pre, "(?<!<)\\w", RegexOptions.Compiled).Value;
@@ -410,8 +404,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
                                 string narrator = pre.Substring(idx, index - idx);
                                 if (narrator.ToUpper() == narrator)
                                     continue;
+
+                                // You don't want to change http to uppercase :)!
+                                if (narrator.Trim() != null && narrator.Trim().Length > 4 && narrator.EndsWith("https") || narrator.Trim().EndsWith("http"))
+                                    continue;
+
                                 narrator = narrator.ToUpper();
-                                pre = pre.Remove(idx, index - idx).Insert(idx, narrator);
+                                pre = pre.Remove(idx, (index - idx)).Insert(idx, narrator);
                                 temp = temp.Remove(0, index).Insert(0, pre);
                                 if (temp != lines[i])
                                 {
@@ -431,6 +430,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (index > 0)
                 {
                     string pre = text.Substring(0, index);
+                    if (pre.Contains("(") || pre.Contains("[") || pre.Contains("{"))
+                        return text;
+
                     if (Utilities.RemoveHtmlTags(pre).Trim().Length > 0)
                     {
                         string firstChr = Regex.Match(pre, "(?<!<)\\w", RegexOptions.Compiled).Value;
@@ -440,6 +442,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                             string narrator = pre.Substring(idx, index - idx);
                             if (narrator.ToUpper() == narrator)
                                 return text;
+
+                            // You don't want to change http to uppercase :)!
+                            if (narrator.ToLower().Trim().EndsWith("https") || narrator.ToLower().Trim().EndsWith("http"))
+                                return text;
+
                             narrator = narrator.ToUpper();
                             if (narrator.Contains("<"))
                                 narrator = FixUpperTagInNarrator(narrator);
@@ -451,7 +458,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     }
                 }
             }
+
+            if (before != text)
+                _namesMatched = true;
             return text;
+        }
+
+        private string Converter(params string[] obj)
+        {
+            //obj.Length
+            return string.Empty;
         }
 
         private string FixUpperTagInNarrator(string narrator)
