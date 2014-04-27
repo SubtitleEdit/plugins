@@ -464,12 +464,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return text;
         }
 
-        private string Converter(params string[] obj)
-        {
-            //obj.Length
-            return string.Empty;
-        }
-
         private string FixUpperTagInNarrator(string narrator)
         {
             // Fix Upper tag
