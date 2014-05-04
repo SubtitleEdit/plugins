@@ -47,6 +47,9 @@
             this.buttonLower = new System.Windows.Forms.Button();
             this.buttonBreakCursorPos = new System.Windows.Forms.Button();
             this.buttonUnBreak = new System.Windows.Forms.Button();
+            this.labelSingleLineLength = new System.Windows.Forms.Label();
+            this.labelLinesTotalLength = new System.Windows.Forms.Label();
+            this.checkBoxColorChanged = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // listViewDialogue
@@ -108,7 +111,7 @@
             // buttonOk
             // 
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOk.Location = new System.Drawing.Point(755, 504);
+            this.buttonOk.Location = new System.Drawing.Point(855, 474);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(94, 23);
             this.buttonOk.TabIndex = 3;
@@ -119,6 +122,7 @@
             // buttonCancel
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Location = new System.Drawing.Point(855, 504);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(94, 23);
@@ -251,11 +255,48 @@
             this.buttonUnBreak.UseVisualStyleBackColor = true;
             this.buttonUnBreak.Click += new System.EventHandler(this.buttonUnBreak_Click);
             // 
+            // labelSingleLineLength
+            // 
+            this.labelSingleLineLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.labelSingleLineLength.AutoSize = true;
+            this.labelSingleLineLength.Location = new System.Drawing.Point(647, 491);
+            this.labelSingleLineLength.Name = "labelSingleLineLength";
+            this.labelSingleLineLength.Size = new System.Drawing.Size(90, 13);
+            this.labelSingleLineLength.TabIndex = 14;
+            this.labelSingleLineLength.Text = "Single line length:";
+            this.labelSingleLineLength.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labelLinesTotalLength
+            // 
+            this.labelLinesTotalLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.labelLinesTotalLength.AutoSize = true;
+            this.labelLinesTotalLength.Location = new System.Drawing.Point(647, 512);
+            this.labelLinesTotalLength.Name = "labelLinesTotalLength";
+            this.labelLinesTotalLength.Size = new System.Drawing.Size(90, 13);
+            this.labelLinesTotalLength.TabIndex = 15;
+            this.labelLinesTotalLength.Text = "Lines total length:";
+            this.labelLinesTotalLength.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // checkBoxColorChanged
+            // 
+            this.checkBoxColorChanged.AutoSize = true;
+            this.checkBoxColorChanged.Location = new System.Drawing.Point(12, 15);
+            this.checkBoxColorChanged.Name = "checkBoxColorChanged";
+            this.checkBoxColorChanged.Size = new System.Drawing.Size(115, 17);
+            this.checkBoxColorChanged.TabIndex = 16;
+            this.checkBoxColorChanged.Text = "Color changed text";
+            this.checkBoxColorChanged.UseVisualStyleBackColor = true;
+            // 
             // Main
             // 
+            this.AcceptButton = this.buttonOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(961, 534);
+            this.Controls.Add(this.checkBoxColorChanged);
+            this.Controls.Add(this.labelLinesTotalLength);
+            this.Controls.Add(this.labelSingleLineLength);
             this.Controls.Add(this.buttonUnBreak);
             this.Controls.Add(this.buttonBreakCursorPos);
             this.Controls.Add(this.buttonLower);
@@ -273,6 +314,7 @@
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.listViewDialogue);
             this.Name = "Main";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Dialogue AutoMarker";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -300,6 +342,9 @@
         private System.Windows.Forms.Button buttonLower;
         private System.Windows.Forms.Button buttonBreakCursorPos;
         private System.Windows.Forms.Button buttonUnBreak;
+        private System.Windows.Forms.Label labelSingleLineLength;
+        private System.Windows.Forms.Label labelLinesTotalLength;
+        private System.Windows.Forms.CheckBox checkBoxColorChanged;
     }
 }
 

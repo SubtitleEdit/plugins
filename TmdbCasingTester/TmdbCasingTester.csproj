@@ -79,9 +79,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DialogueAutoMarker\DialogueAutoMarker.csproj">
-      <Project>{9e25ee45-e764-444f-9756-fe5479f4914d}</Project>
-      <Name>DialogueAutoMarker</Name>
+    <ProjectReference Include="..\HI2UC\HI2UC.csproj">
+      <Project>{16b4be52-050a-4161-b0e3-9b07aa5f650b}</Project>
+      <Name>HI2UC</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

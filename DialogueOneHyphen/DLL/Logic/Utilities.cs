@@ -6,7 +6,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public static class Utilities
     {
-
         public static bool IsInteger(string s)
         {
             int i;
@@ -22,9 +21,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             if (!s.Contains("<"))
                 return s;
+            string lowerText = s.ToLower();
+
             s = Regex.Replace(s, "(?i)</?[iub]>", string.Empty);
-            s = RemoveParagraphTag(s);
-            return RemoveHtmlFontTag(s);
+            if (lowerText.Contains("<p"))
+                s = RemoveParagraphTag(s);
+            if (lowerText.Contains("<font"))
+                s = RemoveHtmlFontTag(s);
+
+            return s.Trim();
         }
 
         internal static string RemoveHtmlFontTag(string s)
@@ -41,7 +46,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         internal static string RemoveParagraphTag(string s)
         {
-            s = Regex.Replace(s, "</?p>", string.Empty);
+            s = Regex.Replace(s, "(?i)</?p>", string.Empty);
             while (s.ToLower().Contains("<p "))
             {
                 int startIndex = s.ToLower().IndexOf("<p ");
@@ -58,6 +63,5 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return Assembly.GetExecutingAssembly().GetName().Version.ToString();
             }
         }
-
     }
 }

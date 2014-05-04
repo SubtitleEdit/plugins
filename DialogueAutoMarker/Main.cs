@@ -133,7 +133,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
 
                 labelLinesTotalLength.Text = string.Format(formatSingle, string.Join("/", lengths));
-                labelSingleLineLength.Text = string.Format(formatTotal, text.Length);
+                labelSingleLineLength.Text = string.Format(formatTotal, text.Length - 2); // \r\n == 2
             }
             else
             {

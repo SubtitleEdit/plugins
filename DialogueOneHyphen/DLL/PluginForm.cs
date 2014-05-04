@@ -47,8 +47,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             subItem = new ListViewItem.ListViewSubItem(item, after.Replace(Environment.NewLine, "<br />"));
             item.SubItems.Add(subItem);
 
-            item.Tag = p; // save paragraph in Tag
-
             listViewFixes.Items.Add(item);
         }
 
