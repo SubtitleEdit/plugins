@@ -122,6 +122,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void FindHearinImpairedText()
         {
+            Func<Paragraph, bool> AllowFix = (p) =>
+            {
+                if (!_allowFixes)
+                    return false;
+                string ln = p.Number.ToString();
+                foreach (ListViewItem item in listViewFixes.Items)
+                {
+                    if (item.SubItems[1].Text == ln)
+                        return item.Checked;
+                }
+                return false;
+            };
+
             _totalChanged = 0;
             listViewFixes.BeginUpdate();
             foreach (Paragraph p in _subtitle.Paragraphs)
@@ -173,19 +186,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 Application.DoEvents();
             }
             listViewFixes.EndUpdate();
-        }
-
-        private bool AllowFix(Paragraph p)
-        {
-            if (!_allowFixes)
-                return false;
-            string ln = p.Number.ToString();
-            foreach (ListViewItem item in listViewFixes.Items)
-            {
-                if (item.SubItems[1].Text == ln)
-                    return item.Checked;
-            }
-            return false;
         }
 
         private void AddFixToListView(Paragraph p, string before, string after)
