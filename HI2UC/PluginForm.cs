@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -8,20 +7,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form
     {
-        private enum HIStyle { UpperCase, LowerCase, FirstUppercase, UpperLowerCase }
-
         internal string FixedSubtitle { get; private set; }
 
-        // TODO: MAKE THIS LOOK AROUND PATTERN
-        private const string REGEXHEARINGIMPAIRED = @"\B([\{\(\[])\s*([♪'""#]*\w+[\s\w,'""#\-&,♪/<>\.]*)([\)\]\}])\B|\B([\{\(\[])([♪'""#\s]*\w+[\s\w,'""#\-&,♪/<>\.]*[^\)\]\}]\r\n['""#\s]*\w+[\s\w,'""#\-&,♪/<>\.]*)\s*([\)\]\}])\B";
-
-        private readonly IList<string> _listPatternNames = new List<string>
-		{
-            @"(?(?<=[\->\.!\?♪])\s*)\b\w+[\s\w'""\-#♪]*\s([\{\(\[])(['""#\-♪]*\s*\w+[\s\w\-',#""&\.:♪]*)([\)\]\}])(?=:)",
-			@"(?(?<=[>\.!\?♪] )|)\b\w+[\s\w'""\-#&]*:(?=\s)",
-            @"(?<=\r\n)\b\w+[\s\w'""\-#&♪]*:(?=\s)",
-            @"(?i)(mrs|mr)?\.\s*(\w+[\s\w'""\-#&♪]*):(?=\s)" // TODO
-		};
+        private enum HIStyle { UpperCase, LowerCase, FirstUppercase, UpperLowerCase }
 
         private bool _allowFixes = false;
         private bool _deleteLine = false;
@@ -48,7 +36,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.Resize += (s, arg) =>
             {
                 listViewFixes.Columns[listViewFixes.Columns.Count - 1].Width = -2;
-                //this.listViewFixes.Columns.Count -1
             };
         }
 
@@ -145,25 +132,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     string text = p.Text;
 
                     // (Moods and feelings)
-                    if (Regex.IsMatch(p.Text, REGEXHEARINGIMPAIRED, RegexOptions.Compiled))
-                        text = ConvertMoodsFeelings(text);
-
-                    // TODO: USER OPTION
-                    //if (Regex.IsMatch(text, _listPatternNames[0], RegexOptions.Compiled))
-                    //{
-                    //    // WOMAN (on phone): => WOMAN ON PHONE:
-                    //    // <i>Ella (on phone): It's not about money.</i>
-                    //    text = Regex.Replace(text, _listPatternNames[0], delegate(Match match)
-                    //    {
-                    //        string brackets = @"[\(\[\{]|[\)\]\}]";
-                    //        string newname = Regex.Replace(match.Value, brackets, string.Empty);
-                    //        return newname.ToUpper();
-                    //    });
-                    //}
+                    if (Regex.IsMatch(p.Text, @"[\(\[\{]", RegexOptions.Compiled))
+                        text = FindMoods(text, p);
 
                     // Narrator:
                     if (checkBoxNames.Checked && Regex.IsMatch(text, @":\B"))
-                        text = NamesOfPeoples(text);
+                        text = NarratorToUpper(text);
 
                     if (text != oldText)
                     {
@@ -194,6 +168,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 groupBox1.ForeColor = _totalChanged <= 0 ? Color.Red : Color.Green;
                 groupBox1.Text = "Total Found: " + _totalChanged;
+                this.listViewFixes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                this.listViewFixes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+                Application.DoEvents();
             }
             listViewFixes.EndUpdate();
         }
@@ -231,52 +208,149 @@ namespace Nikse.SubtitleEdit.PluginLogic
             subItem = new ListViewItem.ListViewSubItem(item, after.Replace(Environment.NewLine,
                 Configuration.ListViewLineSeparatorString));
             item.SubItems.Add(subItem);
-            if (after.IndexOf(": ") > 14 || after.IndexOf(":" + Environment.NewLine) > 10)
-                item.BackColor = Color.Pink;
+
+            if (after.Replace(Environment.NewLine, string.Empty).Length != after.Length)
+            {
+                int idx = after.IndexOf(Environment.NewLine);
+                if (idx > 2)
+                {
+                    string firstLine = after.Substring(0, idx).Trim();
+                    string secondLine = after.Substring(idx).Trim();
+                    int idx1 = firstLine.IndexOf(":");
+                    int idx2 = secondLine.IndexOf(":");
+                    if (idx1 > 0xE || idx2 > 0xE)
+                    {
+                        item.BackColor = Color.Pink;
+                    }
+                }
+            }
+            else
+            {
+                if (after.IndexOf(":") > 0xE)
+                    item.BackColor = Color.Pink;
+            }
+
             listViewFixes.Items.Add(item);
+        }
+
+        private string FindMoods(string text, Paragraph p)
+        {
+            int index = text.IndexOf("(");
+            if (index > -1)
+            {
+                int endIdx = text.IndexOf(")", index + 1);
+                if (endIdx < 0)
+                    PrintErrorMessage(p);
+
+                while (index > -1 && endIdx > index)
+                {
+                    string mood = text.Substring(index, (endIdx - index) + 1);
+                    mood = ConvertMoodsFeelings(mood);
+                    if (_moodsMatched)
+                    {
+                        text = text.Remove(index, (endIdx - index) + 1).Insert(index, mood);
+                        index = text.IndexOf("(", endIdx + 1);
+                        if (index > -1)
+                            endIdx = text.IndexOf(")", index + 1);
+                    }
+                    else
+                    {
+                        index = -1;
+                    }
+                }
+            }
+
+            index = text.IndexOf("[");
+            if (index > -1)
+            {
+                int endIdx = text.IndexOf("]", index + 1);
+                if (endIdx < 0)
+                    PrintErrorMessage(p);
+
+                while (index > -1 && endIdx > index)
+                {
+                    string mood = text.Substring(index, (endIdx - index) + 1);
+                    mood = ConvertMoodsFeelings(mood);
+                    if (_moodsMatched)
+                    {
+                        text = text.Remove(index, (endIdx - index) + 1).Insert(index, mood);
+                        index = text.IndexOf("[", endIdx + 1);
+                        if (index > -1)
+                            endIdx = text.IndexOf("]", index + 1);
+                    }
+                    else
+                    {
+                        index = -1;
+                    }
+                }
+            }
+
+            index = text.IndexOf("{");
+            if (index > -1)
+            {
+                int endIdx = text.IndexOf("}", index + 1);
+                if (endIdx < 0)
+                    PrintErrorMessage(p);
+
+                while (index > -1 && endIdx > index)
+                {
+                    string mood = text.Substring(index, (endIdx - index) + 1);
+                    mood = ConvertMoodsFeelings(mood);
+                    if (_moodsMatched)
+                    {
+                        text = text.Remove(index, (endIdx - index) + 1).Insert(index, mood);
+                        index = text.IndexOf("{", endIdx + 1);
+                        if (index > -1)
+                            endIdx = text.IndexOf("}", index + 1);
+                    }
+                    else
+                    {
+                        index = -1;
+                    }
+                }
+            }
+
+            text = text.Replace("  ", " ");
+            text = text.Replace(Environment.NewLine + " ", Environment.NewLine);
+            text = text.Replace(" " + Environment.NewLine, Environment.NewLine);
+            return text;
+        }
+
+        private void PrintErrorMessage(Paragraph p)
+        {
+            MessageBox.Show(string.Format("Error while reading Line#: {0}", p.Number.ToString()),
+                "Error!!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private string ConvertMoodsFeelings(string text)
         {
-            if (!Regex.IsMatch(text, REGEXHEARINGIMPAIRED))
+            if (!Regex.IsMatch(text, @"[\(\[\{]"))
                 return text;
-
             string before = text;
-            string helper = string.Empty;
+
             switch (_hiStyle)
             {
                 case HIStyle.UpperLowerCase:
-                    text = Regex.Replace(text, REGEXHEARINGIMPAIRED, delegate(Match match)
+                    string helper = string.Empty;
+                    bool isUpperTime = true;
+                    foreach (char myChar in text)
                     {
-                        helper = string.Empty;
-                        bool isUpperTime = true;
-                        foreach (char myChar in match.Value)
-                        {
-                            helper += isUpperTime ? char.ToUpper(myChar) : char.ToLower(myChar);
-                            isUpperTime = !isUpperTime;
-                        }
-                        return helper;
-                    }, RegexOptions.Compiled);
+                        helper += isUpperTime ? char.ToUpper(myChar) : char.ToLower(myChar);
+                        isUpperTime = !isUpperTime;
+                    }
+                    text = helper;
                     break;
 
                 case HIStyle.FirstUppercase:
-                    text = Regex.Replace(text, REGEXHEARINGIMPAIRED, delegate(Match match)
-                    {
-                        helper = match.Value.ToLower();
-                        helper = Regex.Replace(helper, @"\b\w", x => x.Value.ToUpper());
-                        return helper;
-                    }, RegexOptions.Compiled);
+                    text = Regex.Replace(text.ToLower(), @"\b\w", x => x.Value.ToUpper());
                     break;
 
                 case HIStyle.UpperCase:
-                    text = Regex.Replace(text, REGEXHEARINGIMPAIRED, delegate(Match match)
-                    {
-                        return match.Value.ToUpper();
-                    }, RegexOptions.Compiled);
+                    text = text.ToUpper();
                     break;
 
                 case HIStyle.LowerCase:
-                    text = Regex.Replace(text, REGEXHEARINGIMPAIRED, delegate(Match match) { return match.Value.ToLower(); }, RegexOptions.Compiled);
+                    text = text.ToLower();
                     break;
             }
 
@@ -285,25 +359,148 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return text;
         }
 
-        private string NamesOfPeoples(string text)
+        private string NarratorToUpper(string text)
         {
-            string temp = Utilities.RemoveHtmlTags(text).Trim();
-            if (temp.LastIndexOf(":") == temp.Length - 1)
+            string before = text;
+            var t = Utilities.RemoveHtmlTags(text);
+            int index = t.IndexOf(":");
+
+            // like: "Ivandro Says:"
+            if (index == t.Length - 1)
                 return text;
 
-            foreach (string pattern in _listPatternNames)
+            if (text.Replace(Environment.NewLine, string.Empty).Length != text.Length)
             {
-                if (Regex.IsMatch(text, pattern))
+                var lines = text.Replace(Environment.NewLine, "|").Split('|');
+                for (int i = 0; i < lines.Length; i++)
                 {
-                    _namesMatched = true;
-                    text = Regex.Replace(text, pattern, delegate(Match match)
+                    string cleanText = Utilities.RemoveHtmlTags(lines[i]).Trim();
+                    index = cleanText.IndexOf(":");
+
+                    if ((index + 1 < cleanText.Length - 1) && char.IsDigit(cleanText[index + 1]))
+                        continue;
+
+                    // Ivandro ismael:
+                    // hello world!
+                    if (i > 0 && index == cleanText.Length - 1)
+                        continue;
+
+                    if (index > 0)
                     {
-                        return match.Value.ToUpper();
-                    });
-                    break;
+                        index = lines[i].IndexOf(":");
+                        if (index > 0)
+                        {
+                            string temp = lines[i];
+                            string pre = temp.Substring(0, index);
+
+                            // (Adele: ...)
+                            if (pre.Contains("(") || pre.Contains("[") || pre.Contains("{"))
+                                continue;
+
+                            if (Utilities.RemoveHtmlTags(pre).Trim().Length > 0)
+                            {
+                                string firstChr = Regex.Match(pre, "(?<!<)\\w", RegexOptions.Compiled).Value;
+                                int idx = pre.IndexOf(firstChr);
+                                string narrator = pre.Substring(idx, index - idx);
+                                if (narrator.ToUpper() == narrator)
+                                    continue;
+
+                                // You don't want to change http to uppercase :)!
+                                if (narrator.Trim() != null && narrator.Trim().Length > 4 && narrator.EndsWith("https") || narrator.Trim().EndsWith("http"))
+                                    continue;
+
+                                narrator = narrator.ToUpper();
+                                pre = pre.Remove(idx, (index - idx)).Insert(idx, narrator);
+                                temp = temp.Remove(0, index).Insert(0, pre);
+                                if (temp != lines[i])
+                                {
+                                    if (narrator.Contains("<"))
+                                        temp = FixUpperTagInNarrator(temp);
+                                    lines[i] = temp;
+                                }
+                            }
+                        }
+                    }
+                }
+                text = string.Join(Environment.NewLine, lines);
+            }
+            else
+            {
+                index = text.IndexOf(":");
+                if (index > 0)
+                {
+                    string pre = text.Substring(0, index);
+                    if (pre.Contains("(") || pre.Contains("[") || pre.Contains("{"))
+                        return text;
+
+                    if (Utilities.RemoveHtmlTags(pre).Trim().Length > 0)
+                    {
+                        string firstChr = Regex.Match(pre, "(?<!<)\\w", RegexOptions.Compiled).Value;
+                        int idx = pre.IndexOf(firstChr);
+                        if (idx > -1)
+                        {
+                            string narrator = pre.Substring(idx, index - idx);
+                            if (narrator.ToUpper() == narrator)
+                                return text;
+
+                            // You don't want to change http to uppercase :)!
+                            if (narrator.ToLower().Trim().EndsWith("https") || narrator.ToLower().Trim().EndsWith("http"))
+                                return text;
+
+                            narrator = narrator.ToUpper();
+                            if (narrator.Contains("<"))
+                                narrator = FixUpperTagInNarrator(narrator);
+                            pre = pre.Remove(idx, index - idx).Insert(idx, narrator);
+                            if (pre.Contains("<"))
+                                pre = FixUpperTagInNarrator(pre);
+                            text = text.Remove(0, index).Insert(0, pre);
+                        }
+                    }
                 }
             }
-            return text.Trim();
+
+            if (before != text)
+                _namesMatched = true;
+            return text;
+        }
+
+        private string FixUpperTagInNarrator(string narrator)
+        {
+            // Fix Upper tag
+            int tagIndex = narrator.IndexOf("<");
+            while (tagIndex > -1)
+            {
+                int closeIndex = narrator.IndexOf(">", tagIndex + 1);
+                if (closeIndex > -1 && closeIndex > tagIndex)
+                {
+                    string temp = narrator.Substring(tagIndex, (closeIndex - tagIndex)).ToLower();
+                    narrator = narrator.Remove(tagIndex, (closeIndex - tagIndex)).Insert(tagIndex, temp);
+                }
+                tagIndex = narrator.IndexOf("<", closeIndex);
+            }
+            return narrator;
+        }
+
+        private void buttonApply_Click(object sender, EventArgs e)
+        {
+            Cursor = Cursors.WaitCursor;
+            _allowFixes = true;
+            FindHearinImpairedText();
+            if (_deleteLine)
+            {
+                foreach (ListViewItem item in this.listViewFixes.Items)
+                {
+                    if (item.BackColor != Color.Red)
+                        continue;
+                    _subtitle.RemoveLine(((Paragraph)item.Tag).Number);
+                }
+            }
+
+            FixedSubtitle = _subtitle.ToText(new SubRip());
+            Cursor = Cursors.Default;
+            this.listViewFixes.Items.Clear();
+            _allowFixes = !_allowFixes;
+            FindHearinImpairedText();
         }
     }
 }

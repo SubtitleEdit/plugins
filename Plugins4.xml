@@ -1,3 +1,85 @@
+<<<<<<< HEAD
+<Plugins>
+	<SubtitleEditVersion>3.3</SubtitleEditVersion>
+	<Plugin>
+		<Name>Dialogue one hyphen only</Name>
+		<Description>Removes hyphens from second line in dialogues</Description>
+		<Version>0.3</Version>
+		<Date>2012-10-13</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.x/DiaOneHyphen-v0.3.zip</Url>
+	</Plugin>
+	<Plugin>
+		<Name>Hearing Impaired to Uppercase</Name>
+		<Description>Changes all the text inside: "[]", "()" and "{}" to Uppercase (by Ivandrofly)</Description>
+		<Version>2.8</Version>
+		<Date>2014-01-19</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.x/HI2UC-v2.8.zip</Url>
+	</Plugin>
+	<Plugin>
+		<Name>Lines Unbreaker</Name>
+		<Description>Helps breaking short lines (by Ivandrofly)</Description>
+		<Version>1.1</Version>
+		<Date>2014-03-09</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.x/LinesUnbreaker-v1.1.zip</Url>
+	</Plugin>
+	<Plugin>
+		<Name>Load from Dropbox</Name>
+		<Description>Load subtitles from Dropbox</Description>
+		<Version>1.0</Version>
+		<Date>2013-05-29</Date>
+		<Url>http://www.nikse.dk/Content/SubtitleEdit/Plugins/SeDropBoxLoad.zip</Url>
+	</Plugin>
+	<Plugin>
+		<Name>Save to Dropbox</Name>
+		<Description>Save subtitles to Dropbox</Description>
+		<Version>1.0</Version>
+		<Date>2013-05-29</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.x/SeDropBoxSave-v1.0.zip</Url>
+	</Plugin>
+	<Plugin>
+		<Name>Haxor</Name>
+		<Description>Translates subtitle to haxor</Description>
+		<Version>1.2</Version>
+		<Date>2013-09-11</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.x/Haxor-v1.2.zip</Url>
+	</Plugin>
+	<Plugin>
+		<Name>Upload subtitle to OpenSubtitles.org</Name>
+		<Description>Upload a subtitle quickly to OpenSubtitles.Org</Description>
+		<Version>1.7</Version>
+		<Date>2014-02-02</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.x/OpenSubtitlesUpload-v1.7.zip</Url>
+	</Plugin>
+	<Plugin>
+		<Name>Save to Skydrive</Name>
+		<Description>Upload a subtitle quickly to Skydrive</Description>
+		<Version>0.2</Version>
+		<Date>2013-05-29</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.x/SeSkydriveSave-v0.2.zip</Url>
+	</Plugin>
+	<Plugin>
+		<Name>Load from Skydrive</Name>
+		<Description>Save a subtitle quickly to Skydrive</Description>
+		<Version>0.2</Version>
+		<Date>2013-05-29</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.x/SeSkydriveLoad-v0.2.zip</Url>
+	</Plugin>
+	<Plugin>
+		<Name>Word spell check</Name>
+		<Description>Word spell check (requires Microsoft Word)</Description>
+		<Version>1.0</Version> 
+		<Date>2013-12-26</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.x/WordSpellCheck-v1.0.zip</Url>
+	</Plugin>
+	<Plugin>
+		<Name>Avi Writer</Name>
+		<Description>Generate avi file with only subtitle (based on FFMPEG)</Description>
+		<Version>0.4</Version> 
+		<Date>2013-11-16</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.x/AviWriter-v0.4.zip</Url>
+	</Plugin>
+</Plugins>
+=======
 <Plugins>
 	<SubtitleEditVersion>3.3</SubtitleEditVersion>
 	<Plugin>
@@ -78,3 +160,4 @@
 		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.x/AviWriter-v0.4.zip</Url>
 	</Plugin>
 </Plugins>
+>>>>>>> upstream/master

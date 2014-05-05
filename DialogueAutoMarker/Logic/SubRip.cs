@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    internal class SubRip : SubtitleFormat
+    public class SubRip : SubtitleFormat
     {
         private static Regex _regexTimeCodes = new Regex(@"^-?\d+:-?\d+:-?\d+[:,]-?\d+\s*-->\s*-?\d+:-?\d+:-?\d+[:,]-?\d+$", RegexOptions.Compiled);
         private static Regex _regexTimeCodes2 = new Regex(@"^\d+:\d+:\d+,\d+\s*-->\s*\d+:\d+:\d+,\d+$", RegexOptions.Compiled);
@@ -95,6 +95,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             foreach (Paragraph p in subtitle.Paragraphs)
             {
                 p.Text = p.Text.Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
+                //if (Regex.IsMatch(p.Text, Utilities.REGEXHEARINGIMPAIRED))
+                //    p.HearingImpaired = true;
+                //p.GetHearingImpairedText(Paragraph.HearingImpairedType.FeelingsAndMoods);
             }
 
             if (_errorCount < 100)
@@ -104,7 +107,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Errors = _errorCount.ToString();
         }
 
-        internal override string ToText(Subtitle subtitle, string title)
+        internal override string ToText(Subtitle subtitle, string fileName)
         {
             const string paragraphWriteFormat = "{0}\r\n{1} --> {2}\r\n{3}\r\n\r\n";
             var sb = new StringBuilder();
@@ -197,6 +200,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return line;
         }
 
+        // TODO:
         private bool TryReadTimeCodesLine(string line, Paragraph paragraph)
         {
             line = line.Replace("،", ",");
@@ -211,6 +215,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             line = line.Replace(" - -> ", " --> ");
             line = line.Replace(" -->> ", " --> ");
             line = line.Replace(" ---> ", " --> ");
+
 
             // Removed stuff after timecodes - like subtitle position
             // - example of position info: 00:02:26,407 --> 00:02:31,356  X1:100 X2:100 Y1:100 Y2:100
