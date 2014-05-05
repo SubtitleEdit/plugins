@@ -7,18 +7,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form
     {
+        private enum HIStyle { UpperCase, LowerCase, FirstUppercase, UpperLowerCase }
         internal string FixedSubtitle { get; private set; }
 
-        private enum HIStyle { UpperCase, LowerCase, FirstUppercase, UpperLowerCase }
-
+        private HIStyle _hiStyle = HIStyle.UpperCase;
         private bool _allowFixes = false;
         private bool _deleteLine = false;
-        private HIStyle _hiStyle = HIStyle.UpperCase;
         private bool _moodsMatched;
         private bool _namesMatched;
+        private int _totalChanged;
         private Form _parentForm;
         private Subtitle _subtitle;
-        private int _totalChanged;
 
         public PluginForm(Form parentForm, Subtitle subtitle, string name, string description)
         {
@@ -26,7 +25,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this._parentForm = parentForm;
             this._subtitle = subtitle;
             label1.Text = "Description: " + description;
-            FindHearinImpairedText();
+            FindHearingImpairedText();
+
+            //this.KeyDown += (s, e) =>
+            //{
+            //    if (e.KeyCode == Keys.Escape)
+            //        this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            //};
         }
 
         private void PluginForm_Load(object sender, EventArgs e)
@@ -48,7 +53,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             Cursor = Cursors.WaitCursor;
             _allowFixes = true;
-            FindHearinImpairedText();
+            FindHearingImpairedText();
             if (_deleteLine)
             {
                 foreach (ListViewItem item in this.listViewFixes.Items)
@@ -69,7 +74,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (_subtitle.Paragraphs.Count <= 0)
                 return;
             listViewFixes.Items.Clear();
-            FindHearinImpairedText();
+            FindHearingImpairedText();
         }
 
         private void CheckTypeStyle(object sender, EventArgs e)
@@ -116,11 +121,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 _hiStyle = (HIStyle)comboBox1.SelectedIndex;
                 listViewFixes.Items.Clear();
-                FindHearinImpairedText();
+                FindHearingImpairedText();
             }
         }
 
-        private void FindHearinImpairedText()
+        private void FindHearingImpairedText()
         {
             Func<Paragraph, bool> AllowFix = (p) =>
             {
@@ -146,7 +151,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                     // (Moods and feelings)
                     if (Regex.IsMatch(p.Text, @"[\(\[\{]", RegexOptions.Compiled))
+                    {
+                        //Remove Extra Spaces
+                        if (checkBoxRemoveSpaces.Checked)
+                            text = Regex.Replace(text, "(?<=[\\(\\[\\{]) +| +(?=[\\)\\]\\}])", String.Empty, RegexOptions.Compiled);
                         text = FindMoods(text, p);
+                    }
 
                     // Narrator:
                     if (checkBoxNames.Checked && Regex.IsMatch(text, @":\B"))
@@ -235,81 +245,51 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string FindMoods(string text, Paragraph p)
         {
-            int index = text.IndexOf("(");
-            if (index > -1)
+            Action<Char> FindBrackets = delegate(char openBracket)
             {
-                int endIdx = text.IndexOf(")", index + 1);
-                if (endIdx < 0)
-                    PrintErrorMessage(p);
-
-                while (index > -1 && endIdx > index)
+                int index = text.IndexOf(openBracket);
+                if (index > -1)
                 {
-                    string mood = text.Substring(index, (endIdx - index) + 1);
-                    mood = ConvertMoodsFeelings(mood);
-                    if (_moodsMatched)
+                    //char? closeBracket = null;
+                    char closeBracket = '\0';
+                    if (openBracket == '(')
+                        closeBracket = ')';
+                    else if (openBracket == '[')
+                        closeBracket = ')';
+                    else if (openBracket == '{')
+                        closeBracket = '}';
+
+                    int endIdx = text.IndexOf(closeBracket, index + 1);
+                    if (endIdx < 0)
+                        PrintErrorMessage(p);
+
+                    while (index > -1 && endIdx > index)
                     {
-                        text = text.Remove(index, (endIdx - index) + 1).Insert(index, mood);
-                        index = text.IndexOf("(", endIdx + 1);
-                        if (index > -1)
-                            endIdx = text.IndexOf(")", index + 1);
-                    }
-                    else
-                    {
-                        index = -1;
+                        string mood = text.Substring(index, (endIdx - index) + 1);
+                        mood = ConvertMoodsFeelings(mood);
+                        if (_moodsMatched)
+                        {
+                            text = text.Remove(index, (endIdx - index) + 1).Insert(index, mood);
+                            index = text.IndexOf(openBracket, endIdx + 1);
+                            if (index > -1)
+                                endIdx = text.IndexOf(closeBracket, index + 1);
+                        }
+                        else
+                        {
+                            index = -1;
+                        }
                     }
                 }
-            }
-
-            index = text.IndexOf("[");
-            if (index > -1)
-            {
-                int endIdx = text.IndexOf("]", index + 1);
-                if (endIdx < 0)
-                    PrintErrorMessage(p);
-
-                while (index > -1 && endIdx > index)
-                {
-                    string mood = text.Substring(index, (endIdx - index) + 1);
-                    mood = ConvertMoodsFeelings(mood);
-                    if (_moodsMatched)
-                    {
-                        text = text.Remove(index, (endIdx - index) + 1).Insert(index, mood);
-                        index = text.IndexOf("[", endIdx + 1);
-                        if (index > -1)
-                            endIdx = text.IndexOf("]", index + 1);
-                    }
-                    else
-                    {
-                        index = -1;
-                    }
-                }
-            }
-
-            index = text.IndexOf("{");
-            if (index > -1)
-            {
-                int endIdx = text.IndexOf("}", index + 1);
-                if (endIdx < 0)
-                    PrintErrorMessage(p);
-
-                while (index > -1 && endIdx > index)
-                {
-                    string mood = text.Substring(index, (endIdx - index) + 1);
-                    mood = ConvertMoodsFeelings(mood);
-                    if (_moodsMatched)
-                    {
-                        text = text.Remove(index, (endIdx - index) + 1).Insert(index, mood);
-                        index = text.IndexOf("{", endIdx + 1);
-                        if (index > -1)
-                            endIdx = text.IndexOf("}", index + 1);
-                    }
-                    else
-                    {
-                        index = -1;
-                    }
-                }
-            }
-
+            };
+            FindBrackets('(');
+            /*
+            if (text.Contains("("))
+                text = FindBrackets('(');
+            else if (text.Contains("["))
+                text = FindBrackets('[');
+            else
+                text = FindBrackets('{');
+            */
             text = text.Replace("  ", " ");
             text = text.Replace(Environment.NewLine + " ", Environment.NewLine);
             text = text.Replace(" " + Environment.NewLine, Environment.NewLine);
@@ -485,7 +465,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             Cursor = Cursors.WaitCursor;
             _allowFixes = true;
-            FindHearinImpairedText();
+            FindHearingImpairedText();
             if (_deleteLine)
             {
                 foreach (ListViewItem item in this.listViewFixes.Items)
@@ -497,10 +477,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
 
             FixedSubtitle = _subtitle.ToText(new SubRip());
-            Cursor = Cursors.Default;
             this.listViewFixes.Items.Clear();
             _allowFixes = !_allowFixes;
-            FindHearinImpairedText();
+            FindHearingImpairedText();
+            Cursor = Cursors.Default;
+        }
+
+        private void checkBoxRemoveSpaces_CheckedChanged(object sender, EventArgs e)
+        {
+            if ((listViewFixes.Items.Count < 1) || (_subtitle == null) || (_subtitle.Paragraphs) == null)
+                return;
+            listViewFixes.Items.Clear();
+            FindHearingImpairedText();
         }
     }
 }

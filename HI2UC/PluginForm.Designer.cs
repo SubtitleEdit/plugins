@@ -51,6 +51,7 @@
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.buttonApply = new System.Windows.Forms.Button();
+            this.checkBoxRemoveSpaces = new System.Windows.Forms.CheckBox();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -59,7 +60,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 497);
+            this.label1.Location = new System.Drawing.Point(12, 524);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(83, 13);
             this.label1.TabIndex = 6;
@@ -69,7 +70,7 @@
             // 
             this.btn_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btn_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btn_Cancel.Location = new System.Drawing.Point(743, 500);
+            this.btn_Cancel.Location = new System.Drawing.Point(806, 527);
             this.btn_Cancel.Name = "btn_Cancel";
             this.btn_Cancel.Size = new System.Drawing.Size(100, 23);
             this.btn_Cancel.TabIndex = 1;
@@ -80,7 +81,8 @@
             // buttonConvert
             // 
             this.buttonConvert.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonConvert.Location = new System.Drawing.Point(637, 500);
+            this.buttonConvert.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.buttonConvert.Location = new System.Drawing.Point(700, 527);
             this.buttonConvert.Name = "buttonConvert";
             this.buttonConvert.Size = new System.Drawing.Size(100, 23);
             this.buttonConvert.TabIndex = 0;
@@ -108,7 +110,7 @@
             this.listViewFixes.Location = new System.Drawing.Point(3, 16);
             this.listViewFixes.Name = "listViewFixes";
             this.listViewFixes.ShowGroups = false;
-            this.listViewFixes.Size = new System.Drawing.Size(828, 419);
+            this.listViewFixes.Size = new System.Drawing.Size(891, 446);
             this.listViewFixes.TabIndex = 0;
             this.listViewFixes.UseCompatibleStateImageBehavior = false;
             this.listViewFixes.View = System.Windows.Forms.View.Details;
@@ -131,12 +133,12 @@
             // columnHeader2
             // 
             this.columnHeader2.Text = "Actual Status";
-            this.columnHeader2.Width = 322;
+            this.columnHeader2.Width = 371;
             // 
             // columnHeader3
             // 
             this.columnHeader3.Text = "After";
-            this.columnHeader3.Width = 324;
+            this.columnHeader3.Width = 341;
             // 
             // contextMenuStrip1
             // 
@@ -186,16 +188,14 @@
             // 
             // checkBoxNames
             // 
-            this.checkBoxNames.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBoxNames.AutoSize = true;
             this.checkBoxNames.Checked = true;
             this.checkBoxNames.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxNames.Location = new System.Drawing.Point(620, 40);
+            this.checkBoxNames.Location = new System.Drawing.Point(15, 10);
             this.checkBoxNames.Name = "checkBoxNames";
-            this.checkBoxNames.Size = new System.Drawing.Size(67, 17);
+            this.checkBoxNames.Size = new System.Drawing.Size(146, 17);
             this.checkBoxNames.TabIndex = 3;
-            this.checkBoxNames.Text = "Narrator:";
+            this.checkBoxNames.Text = "Narrator. John: => JOHN:";
             this.toolTip1.SetToolTip(this.checkBoxNames, "This will change the Narrator Text\r\nEx: Harry: Hello! -> HARRY: Hello!");
             this.checkBoxNames.UseVisualStyleBackColor = true;
             this.checkBoxNames.CheckedChanged += new System.EventHandler(this.checkBoxNarrator_CheckedChanged);
@@ -216,7 +216,7 @@
             "Lowercase (hello)",
             "First Char in Word (Hello Hello)",
             "UpperLower (HeLlO)"});
-            this.comboBox1.Location = new System.Drawing.Point(693, 38);
+            this.comboBox1.Location = new System.Drawing.Point(756, 38);
             this.comboBox1.MaxDropDownItems = 5;
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(153, 21);
@@ -228,7 +228,7 @@
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(689, 21);
+            this.label2.Location = new System.Drawing.Point(752, 21);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(131, 13);
             this.label2.TabIndex = 4;
@@ -238,7 +238,7 @@
             // 
             this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(12, 513);
+            this.linkLabel1.Location = new System.Drawing.Point(12, 540);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(236, 13);
             this.linkLabel1.TabIndex = 7;
@@ -253,7 +253,7 @@
             this.groupBox1.Controls.Add(this.listViewFixes);
             this.groupBox1.Location = new System.Drawing.Point(12, 56);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(834, 438);
+            this.groupBox1.Size = new System.Drawing.Size(897, 465);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "groupBox1";
@@ -261,7 +261,8 @@
             // buttonApply
             // 
             this.buttonApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonApply.Location = new System.Drawing.Point(531, 500);
+            this.buttonApply.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.buttonApply.Location = new System.Drawing.Point(594, 527);
             this.buttonApply.Name = "buttonApply";
             this.buttonApply.Size = new System.Drawing.Size(100, 23);
             this.buttonApply.TabIndex = 8;
@@ -269,13 +270,25 @@
             this.buttonApply.UseVisualStyleBackColor = true;
             this.buttonApply.Click += new System.EventHandler(this.buttonApply_Click);
             // 
+            // checkBoxRemoveSpaces
+            // 
+            this.checkBoxRemoveSpaces.AutoSize = true;
+            this.checkBoxRemoveSpaces.Location = new System.Drawing.Point(15, 33);
+            this.checkBoxRemoveSpaces.Name = "checkBoxRemoveSpaces";
+            this.checkBoxRemoveSpaces.Size = new System.Drawing.Size(229, 17);
+            this.checkBoxRemoveSpaces.TabIndex = 9;
+            this.checkBoxRemoveSpaces.Text = "Remove Extra Spaces \'( music )\' => (music)";
+            this.checkBoxRemoveSpaces.UseVisualStyleBackColor = true;
+            this.checkBoxRemoveSpaces.CheckedChanged += new System.EventHandler(this.checkBoxRemoveSpaces_CheckedChanged);
+            // 
             // PluginForm
             // 
             this.AcceptButton = this.buttonConvert;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btn_Cancel;
-            this.ClientSize = new System.Drawing.Size(855, 535);
+            this.ClientSize = new System.Drawing.Size(918, 562);
+            this.Controls.Add(this.checkBoxRemoveSpaces);
             this.Controls.Add(this.buttonApply);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.linkLabel1);
@@ -323,6 +336,7 @@
         private System.Windows.Forms.ToolStripMenuItem deleteLineToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.Button buttonApply;
+        private System.Windows.Forms.CheckBox checkBoxRemoveSpaces;
 
     }
 }
