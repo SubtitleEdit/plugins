@@ -48,11 +48,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return string.Empty;
             }
 
-            if (!subtitle.Contains("(") || !subtitle.Contains("["))
+            if (!subtitle.Contains("(") && !subtitle.Contains("["))
             {
                 var result = MessageBox.Show("Subtitle doesn't contians Hearing Imapired notations!" + Environment.NewLine +
                     "Do you want to continue?",
-                    "Hearing Imapired not found!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    "Hearing Impaired not found!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.No)
                     return string.Empty;
             }
