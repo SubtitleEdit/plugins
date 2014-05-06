@@ -476,8 +476,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
             }
 
-            FixedSubtitle = _subtitle.ToText(new SubRip());
             this.listViewFixes.Items.Clear();
+            FixedSubtitle = _subtitle.ToText(new SubRip());
             _allowFixes = !_allowFixes;
             FindHearingImpairedText();
             Cursor = Cursors.Default;
@@ -487,6 +487,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if ((listViewFixes.Items.Count < 1) || (_subtitle == null) || (_subtitle.Paragraphs) == null)
                 return;
+
+            _allowFixes = false;
             listViewFixes.Items.Clear();
             FindHearingImpairedText();
         }
