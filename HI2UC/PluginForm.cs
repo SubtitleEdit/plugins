@@ -8,6 +8,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
     internal partial class PluginForm : Form
     {
         private enum HIStyle { UpperCase, LowerCase, FirstUppercase, UpperLowerCase }
+
         internal string FixedSubtitle { get; private set; }
 
         private HIStyle _hiStyle = HIStyle.UpperCase;
@@ -18,6 +19,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private int _totalChanged;
         private Form _parentForm;
         private Subtitle _subtitle;
+        private bool _onFirstShow = true;
 
         public PluginForm(Form parentForm, Subtitle subtitle, string name, string description)
         {
@@ -26,12 +28,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this._subtitle = subtitle;
             label1.Text = "Description: " + description;
             FindHearingImpairedText();
+            _onFirstShow = false;
 
-            //this.KeyDown += (s, e) =>
-            //{
-            //    if (e.KeyCode == Keys.Escape)
-            //        this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            //};
+            /*
+            this.KeyDown += (s, e) =>
+            {
+                if (e.KeyCode == Keys.Escape)
+                    this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            };
+             */
         }
 
         private void PluginForm_Load(object sender, EventArgs e)
@@ -243,6 +248,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.Items.Add(item);
         }
 
+        bool _ignoreError = false;
+        bool _abortError = false;
         private string FindMoods(string text, Paragraph p)
         {
             Action<Char> FindBrackets = delegate(char openBracket)
@@ -255,13 +262,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     if (openBracket == '(')
                         closeBracket = ')';
                     else if (openBracket == '[')
-                        closeBracket = ')';
+                        closeBracket = ']';
                     else if (openBracket == '{')
                         closeBracket = '}';
 
                     int endIdx = text.IndexOf(closeBracket, index + 1);
-                    if (endIdx < 0)
-                        PrintErrorMessage(p);
+                    if (endIdx < 0 && _ignoreError == false)
+                    {
+                        var dialogResult = PrintErrorMessage(p);
+                        if (dialogResult == System.Windows.Forms.DialogResult.Ignore)
+                            _ignoreError = true;
+                        else if (dialogResult == System.Windows.Forms.DialogResult.Abort)
+                            _abortError = true;
+                    }
 
                     while (index > -1 && endIdx > index)
                     {
@@ -281,25 +294,25 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     }
                 }
             };
-            FindBrackets('(');
-            /*
+
             if (text.Contains("("))
-                text = FindBrackets('(');
-            else if (text.Contains("["))
-                text = FindBrackets('[');
-            else
-                text = FindBrackets('{');
-            */
+                FindBrackets('(');
+            if (text.Contains("["))
+                FindBrackets('[');
+            if (text.Contains("{"))
+                FindBrackets('{');
+
             text = text.Replace("  ", " ");
             text = text.Replace(Environment.NewLine + " ", Environment.NewLine);
             text = text.Replace(" " + Environment.NewLine, Environment.NewLine);
             return text;
         }
 
-        private void PrintErrorMessage(Paragraph p)
+        private DialogResult PrintErrorMessage(Paragraph p)
         {
-            MessageBox.Show(string.Format("Error while reading Line#: {0}", p.Number.ToString()),
-                "Error!!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            var diagResult = MessageBox.Show(string.Format("Error while reading Line#: {0}", p.Number.ToString()),
+                "Error!!!", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Error);
+            return diagResult;
         }
 
         private string ConvertMoodsFeelings(string text)
@@ -339,6 +352,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return text;
         }
 
+        //delegate void RefAction<in T>(ref T obj);
         private string NarratorToUpper(string text)
         {
             string before = text;
@@ -348,6 +362,40 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // like: "Ivandro Says:"
             if (index == t.Length - 1)
                 return text;
+
+            Func<string, string> ToUpper = (string s) =>
+            {
+                string pre = s.Substring(0, index);
+
+                // (Adele: ...)
+                if (pre.Contains("(") || pre.Contains("[") || pre.Contains("{"))
+                    return s;
+
+                if (Utilities.RemoveHtmlTags(pre).Trim().Length > 0)
+                {
+                    string firstChr = Regex.Match(pre, "(?<!<)\\w", RegexOptions.Compiled).Value;
+                    int idx = pre.IndexOf(firstChr);
+                    if (idx > -1)
+                    {
+                        string narrator = pre.Substring(idx, index - idx);
+                        if (narrator.ToUpper() == narrator)
+                            return s;
+
+                        // You don't want to change http to uppercase :)!
+                        if (narrator.ToLower().Trim().EndsWith("https") || narrator.ToLower().Trim().EndsWith("http"))
+                            return s;
+
+                        narrator = narrator.ToUpper();
+                        if (narrator.Contains("<"))
+                            narrator = FixUpperTagInNarrator(narrator);
+                        pre = pre.Remove(idx, index - idx).Insert(idx, narrator);
+                        if (pre.Contains("<"))
+                            pre = FixUpperTagInNarrator(pre);
+                        s = s.Remove(0, index).Insert(0, pre);
+                    }
+                }
+                return s;
+            };
 
             if (text.Replace(Environment.NewLine, string.Empty).Length != text.Length)
             {
@@ -370,35 +418,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         index = lines[i].IndexOf(":");
                         if (index > 0)
                         {
-                            string temp = lines[i];
-                            string pre = temp.Substring(0, index);
-
-                            // (Adele: ...)
-                            if (pre.Contains("(") || pre.Contains("[") || pre.Contains("{"))
-                                continue;
-
-                            if (Utilities.RemoveHtmlTags(pre).Trim().Length > 0)
-                            {
-                                string firstChr = Regex.Match(pre, "(?<!<)\\w", RegexOptions.Compiled).Value;
-                                int idx = pre.IndexOf(firstChr);
-                                string narrator = pre.Substring(idx, index - idx);
-                                if (narrator.ToUpper() == narrator)
-                                    continue;
-
-                                // You don't want to change http to uppercase :)!
-                                if (narrator.Trim() != null && narrator.Trim().Length > 4 && narrator.EndsWith("https") || narrator.Trim().EndsWith("http"))
-                                    continue;
-
-                                narrator = narrator.ToUpper();
-                                pre = pre.Remove(idx, (index - idx)).Insert(idx, narrator);
-                                temp = temp.Remove(0, index).Insert(0, pre);
-                                if (temp != lines[i])
-                                {
-                                    if (narrator.Contains("<"))
-                                        temp = FixUpperTagInNarrator(temp);
-                                    lines[i] = temp;
-                                }
-                            }
+                            lines[i] = ToUpper(lines[i]);
                         }
                     }
                 }
@@ -409,33 +429,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 index = text.IndexOf(":");
                 if (index > 0)
                 {
-                    string pre = text.Substring(0, index);
-                    if (pre.Contains("(") || pre.Contains("[") || pre.Contains("{"))
-                        return text;
-
-                    if (Utilities.RemoveHtmlTags(pre).Trim().Length > 0)
-                    {
-                        string firstChr = Regex.Match(pre, "(?<!<)\\w", RegexOptions.Compiled).Value;
-                        int idx = pre.IndexOf(firstChr);
-                        if (idx > -1)
-                        {
-                            string narrator = pre.Substring(idx, index - idx);
-                            if (narrator.ToUpper() == narrator)
-                                return text;
-
-                            // You don't want to change http to uppercase :)!
-                            if (narrator.ToLower().Trim().EndsWith("https") || narrator.ToLower().Trim().EndsWith("http"))
-                                return text;
-
-                            narrator = narrator.ToUpper();
-                            if (narrator.Contains("<"))
-                                narrator = FixUpperTagInNarrator(narrator);
-                            pre = pre.Remove(idx, index - idx).Insert(idx, narrator);
-                            if (pre.Contains("<"))
-                                pre = FixUpperTagInNarrator(pre);
-                            text = text.Remove(0, index).Insert(0, pre);
-                        }
-                    }
+                    text = ToUpper(text);
                 }
             }
 
