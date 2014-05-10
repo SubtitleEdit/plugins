@@ -131,6 +131,8 @@
             // 
             // comboBoxFileName
             // 
+            this.comboBoxFileName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxFileName.FormattingEnabled = true;
             this.comboBoxFileName.Location = new System.Drawing.Point(73, 260);
             this.comboBoxFileName.Name = "comboBoxFileName";

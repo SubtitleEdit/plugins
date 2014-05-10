@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -10,11 +9,13 @@ namespace SeSkydriveSave
 {
     public partial class PluginForm : Form
     {
-        SkydriveApi _api;
+        private SkydriveApi _api;
+
         public string LoadedSubtitle { get; set; }
-        System.Collections.Generic.Stack<string> _roots;
-        string _fileName;
-        string _content;
+
+        private System.Collections.Generic.Stack<string> _roots;
+        private string _fileName;
+        private string _content;
 
         public PluginForm(string name, string description, string fileName, string content)
         {
@@ -30,15 +31,13 @@ namespace SeSkydriveSave
 
         public static string FormatBytesToDisplayFileSize(long fileSize)
         {
-            {
-                if (fileSize <= 1024)
-                    return string.Format("{0} bytes", fileSize);
-                if (fileSize <= 1024 * 1024)
-                    return string.Format("{0} kb", fileSize / 1024);
-                if (fileSize <= 1024 * 1024 * 1024)
-                    return string.Format("{0:0.0} mb", (float)fileSize / (1024 * 1024));
-                return string.Format("{0:0.0} gb", (float)fileSize / (1024 * 1024 * 1024));
-            }
+            if (fileSize <= 1024)
+                return string.Format("{0} bytes", fileSize);
+            if (fileSize <= 1024 * 1024)
+                return string.Format("{0} kb", fileSize / 1024);
+            if (fileSize <= 1024 * 1024 * 1024)
+                return string.Format("{0:0.0} mb", (float)fileSize / (1024 * 1024));
+            return string.Format("{0:0.0} gb", (float)fileSize / (1024 * 1024 * 1024));
         }
 
         private string GetSettingsFileName()
@@ -74,7 +73,7 @@ namespace SeSkydriveSave
                 DateTime expires = Convert.ToDateTime(DecodeFrom64(doc.DocumentElement.SelectSingleNode("Expires").InnerText));
                 if (expires.AddMinutes(-5) < DateTime.Now)
                     return null; // token expired
-                string token = DecodeFrom64(doc.DocumentElement.SelectSingleNode("Token").InnerText);                
+                string token = DecodeFrom64(doc.DocumentElement.SelectSingleNode("Token").InnerText);
                 return token;
             }
             catch
@@ -212,7 +211,7 @@ namespace SeSkydriveSave
 
         private void listViewFiles_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-              if (listViewFiles.SelectedItems.Count < 1)
+            if (listViewFiles.SelectedItems.Count < 1)
                 return;
 
             SkydriveContent sc = (SkydriveContent)listViewFiles.SelectedItems[0].Tag;
@@ -268,6 +267,5 @@ namespace SeSkydriveSave
                 comboBoxFileName.Text = sc.Name;
             }
         }
-    
     }
 }

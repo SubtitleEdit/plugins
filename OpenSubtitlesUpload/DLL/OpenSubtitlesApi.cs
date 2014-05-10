@@ -334,7 +334,7 @@ namespace OpenSubtitles
 
         public static void CopyTo(Stream src, Stream dest)
         {
-            byte[] bytes = new byte[4096];
+            byte[] bytes = new byte[src.Length]; // 4096
             int cnt;
             while ((cnt = src.Read(bytes, 0, bytes.Length)) != 0)
             {

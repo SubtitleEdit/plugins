@@ -1,39 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    public class TmdbCasing : IPlugin
+    public class DialogueAutoMarker : IPlugin
     {
-        string IPlugin.Name
+        string IPlugin.ActionType // Can be one of these: file, tool, sync, translate, spellcheck
         {
-            get { return "TmdbCasing"; }
-        }
-
-        string IPlugin.Text
-        {
-            get { return "TmdbCasing"; }
-        }
-
-        decimal IPlugin.Version
-        {
-            get { return 0.1M; }
+            get { return "tool"; }
         }
 
         string IPlugin.Description
         {
-            get { return "Change TmdbCasing using TMDB"; }
+            get { return "[Beta]"; }
         }
 
-        string IPlugin.ActionType
+        string IPlugin.Name
         {
-            get { return "tool"; }
+            get { return "Dialogue AutoMarker"; }
         }
 
         string IPlugin.Shortcut
         {
             get { return string.Empty; }
+        }
+
+        string IPlugin.Text
+        {
+            get { return "Dialogue AutoMarker"; }
+        }
+
+        //Gets or sets the major, minor, build, and revision numbers of the assembly.
+        decimal IPlugin.Version
+        {
+            get { return 0.1M; }
         }
 
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
@@ -51,29 +54,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 Subtitle sub = new Subtitle();
                 SubRip srt = new SubRip();
                 srt.LoadSubtitle(sub, list, subtitleFileName);
-                try
+                using (var form = new Main(parentForm, sub, (this as IPlugin).Name, (this as IPlugin).Description))
                 {
-                    using (var form = new MovieSeacher())
-                    {
-                        if (form.ShowDialog(parentForm) == DialogResult.OK || form.Characters.Count > 0)
-                        {
-                            using (var mForm = new MainForm(sub, (this as IPlugin).Name, (this as IPlugin).Description, parentForm, form.Characters))
-                            {
-                                if (mForm.ShowDialog() == DialogResult.OK)
-                                {
-                                    return mForm.FixedSubtitle;
-                                }
-                            }
-                        }
-                    }
-                }
-                catch (Exception)
-                {
-                    
-                    throw;
+                    if (form.ShowDialog(parentForm) == DialogResult.OK)
+                        return form.FixedSubtitle;
                 }
                 return string.Empty;
             }
+
             MessageBox.Show("No subtitle loaded", parentForm.Text,
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return string.Empty;

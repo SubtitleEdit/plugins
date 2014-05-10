@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("HIREmover")]
+[assembly: AssemblyTitle("DialogueAutoMarker")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("HIREmover")]
+[assembly: AssemblyProduct("DialogueAutoMarker")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("2f02cd27-0d75-472b-8863-5f396e730218")]
+[assembly: Guid("ec28bae9-b900-400e-aaae-622e67736795")]
 
 // Version information for an assembly consists of the following four values:
 //

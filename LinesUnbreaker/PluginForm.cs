@@ -137,6 +137,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 labelTotal.ForeColor = _totalFixed <= 0 ? Color.Red : Color.Green;
             }
             listView1.EndUpdate();
+            listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
         private bool AllowFix(Paragraph p)

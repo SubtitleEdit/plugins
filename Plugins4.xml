@@ -10,9 +10,9 @@
 	<Plugin>
 		<Name>Hearing Impaired to Uppercase</Name>
 		<Description>Changes all the text inside: "[]", "()" and "{}" to Uppercase (by Ivandrofly)</Description>
-		<Version>2.8</Version>
-		<Date>2014-01-19</Date>
-		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.x/HI2UC-v2.8.zip</Url>
+		<Version>2.9</Version>
+		<Date>2014-04-27</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.0/HI2UC-v2.9.zip</Url>
 	</Plugin>
 	<Plugin>
 		<Name>Lines Unbreaker</Name>
@@ -78,3 +78,4 @@
 		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.x/AviWriter-v0.4.zip</Url>
 	</Plugin>
 </Plugins>
+>>>>>>> upstream/master
