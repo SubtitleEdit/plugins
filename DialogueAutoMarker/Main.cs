@@ -123,7 +123,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             if (text.Contains(Environment.NewLine))
             {
-                var vector = text.Replace(Environment.NewLine, "|").Split('|');
+                var vector = text.Replace(Environment.NewLine, "\n").Split('\n');
                 int totalNewLine = (text.Length - text.Replace(Environment.NewLine, string.Empty).Length);
                 string[] lengths = new string[totalNewLine];
 
