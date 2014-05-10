@@ -76,9 +76,12 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DLL\Haxor.csproj">
-      <Project>{cf9b9ba5-4798-4c56-bf54-73ca4387bdc1}</Project>
-      <Name>Haxor</Name>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\HI2UC\HI2UC.csproj">
+      <Project>{16b4be52-050a-4161-b0e3-9b07aa5f650b}</Project>
+      <Name>HI2UC</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
