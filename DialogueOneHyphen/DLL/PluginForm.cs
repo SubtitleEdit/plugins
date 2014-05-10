@@ -56,12 +56,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
             {
                 Paragraph p = _subtitle.Paragraphs[i];
-                string text = p.Text;
+                string text = p.Text.Trim();
 
                 if (AnalyzeText(text))
                 {
                     Paragraph prev = _subtitle.GetParagraphOrDefault(i - 1);
-
                     if (prev == null || !Utilities.RemoveHtmlTags(prev.Text).Trim().EndsWith("-"))
                     {
                         // <i>- You delusional?
@@ -70,7 +69,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         if (index >= 0)
                         {
                             string oldText = text;
-                            text = text.Remove(index, 1).Trim();
+                            text = text.Remove(index, 1);
                             if (text[index] == 0x14)
                                 text = RemoveExtraSpaces(text, index); //<i> Word => <i>Word
 
@@ -131,8 +130,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             s = Utilities.RemoveHtmlTags(s).Trim();
             s = s.Replace("  ", " ");
 
+            s = s.Replace(Environment.NewLine + " ", Environment.NewLine);
             if (s.StartsWith("-") && s.Contains(Environment.NewLine + "-"))
+            {
                 return true;
+            }
             return false;
         }
     }

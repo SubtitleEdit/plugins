@@ -55,13 +55,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         internal Paragraph GetParagraphOrDefault(int index)
         {
-            if (_paragraphs == null || _paragraphs.Count <= index || index < 0)
+            if (_paragraphs == null || index < 0 || _paragraphs.Count <= index)
                 return null;
 
             return _paragraphs[index];
         }
 
-            
+
 
         internal string ToText(SubtitleFormat format)
         {
@@ -288,11 +288,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 Renumber(firstNumber);
             }
             return count;
-        }      
+        }
 
         internal void InsertParagraphInCorrectTimeOrder(Paragraph newParagraph)
         {
-            for (int i=0; i<Paragraphs.Count; i++)
+            for (int i = 0; i < Paragraphs.Count; i++)
             {
                 Paragraph p = Paragraphs[i];
                 if (newParagraph.StartTime.TotalMilliseconds < p.StartTime.TotalMilliseconds)

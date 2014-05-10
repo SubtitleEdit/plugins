@@ -23,7 +23,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return s;
             string lowerText = s.ToLower();
 
-            s = Regex.Replace(s, "(?i)</?[iub]>", string.Empty);
+            s = Regex.Replace(s, "(?i)</?[buiі]>", string.Empty); // Basic Latin: i, Cyrillic: і
             if (lowerText.Contains("<p"))
                 s = RemoveParagraphTag(s);
             if (lowerText.Contains("<font"))
