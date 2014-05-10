@@ -48,7 +48,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
 
                 var list = new List<string>();
-                foreach (string line in subtitle.Replace(Environment.NewLine, "|").Split("|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
+                foreach (string line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
                     list.Add(line);
 
                 Subtitle sub = new Subtitle();

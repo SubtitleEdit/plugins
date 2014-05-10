@@ -399,7 +399,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             if (text.Replace(Environment.NewLine, string.Empty).Length != text.Length)
             {
-                var lines = text.Replace(Environment.NewLine, "|").Split('|');
+                var lines = text.Replace(Environment.NewLine, "\n").Split('\n');
                 for (int i = 0; i < lines.Length; i++)
                 {
                     string cleanText = Utilities.RemoveHtmlTags(lines[i]).Trim();
