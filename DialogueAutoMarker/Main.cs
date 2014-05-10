@@ -144,7 +144,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonLower_Click(object sender, EventArgs e)
         {
-            // TODO: ADD UNDO feature CTRL+Z
             if (IsThereText())
             {
                 string selected = this.textBox1.SelectedText;
