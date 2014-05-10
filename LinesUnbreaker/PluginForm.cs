@@ -10,13 +10,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public partial class PluginForm : Form
     {
+        public string FixedSubtitle { get; set; }
         //private string path = Path.Combine("Plugins", "SeLinesUnbreaker.xml");
         private Subtitle _subtitle;
-
         private XElement _xmlSetting = null;
         private bool _allowFixes;
         private int _totalFixed;
-        public string FixedSubtitle { get; set; }
+        private int _maxLineLength;
 
         public PluginForm()
         {
@@ -44,15 +44,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void LoadSettingsIfThereIs(bool load)
         {
             string path = GetSettingsFileName();
-            if (File.Exists(path))
+            if (!File.Exists(path))
+                return;
+            try
             {
                 if (load)
                 {
                     if (File.Exists(path))
                     {
                         _xmlSetting = XElement.Load(path);
-                        decimal val;
-                        decimal.TryParse(_xmlSetting.Element("Shorterthan").Value, out val);
+                        int val;
+                        int.TryParse(_xmlSetting.Element("Shorterthan").Value, out val);
                         if (val > 0)
                             numericUpDown1.Value = val;
 
@@ -82,6 +84,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     _xmlSetting.Save(path);
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private string GetSettingsFileName()
@@ -100,7 +106,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             _totalFixed = 0;
             listView1.BeginUpdate();
-            int val = (int)numericUpDown1.Value;
+            _maxLineLength = (int)numericUpDown1.Value;
             foreach (Paragraph p in _subtitle.Paragraphs)
             {
                 if (p.NumberOfLines < 2)
@@ -108,11 +114,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 string oldText = p.Text;
                 string text = p.Text;
 
-                text = UnbreakLines(text, val);
+                text = UnbreakLines(text);
                 if (text != oldText)
                 {
-                    text = Regex.Replace(text, "\\s+" + Environment.NewLine, Environment.NewLine).Trim();
-                    text = Regex.Replace(text, Environment.NewLine + "\\s+", Environment.NewLine).Trim();
+                    text = Regex.Replace(text, " +" + Environment.NewLine, Environment.NewLine).Trim();
+                    text = Regex.Replace(text, Environment.NewLine + " +", Environment.NewLine).Trim();
 
                     if (AllowFix(p))
                     {
@@ -134,11 +140,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (!_allowFixes)
             {
                 labelTotal.Text = string.Format("Total: {0}", _totalFixed);
-                labelTotal.ForeColor = _totalFixed <= 0 ? Color.Red : Color.Green;
+                labelTotal.ForeColor = _totalFixed < 1 ? Color.Red : Color.Green;
             }
             listView1.EndUpdate();
-            listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-            listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            //listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            //listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
         private bool AllowFix(Paragraph p)
@@ -156,7 +162,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void AddFixToListView(Paragraph p, string before, string after, string lineLength)
         {
-            var item = new ListViewItem() { Checked = true, UseItemStyleForSubItems = true };
+            var item = new ListViewItem() { Checked = true, UseItemStyleForSubItems = true, Tag = p };
             var subItem = new ListViewItem.ListViewSubItem(item, p.Number.ToString());
             item.SubItems.Add(subItem);
 
@@ -170,33 +176,35 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             subItem = new ListViewItem.ListViewSubItem(item, lineLength);
             item.SubItems.Add(subItem);
-            item.Tag = p; // save paragraph in Tag
             listView1.Items.Add(item);
         }
 
-        private string UnbreakLines(string s, int lineLength)
+        private string UnbreakLines(string s)
         {
             var t = Utilities.RemoveHtmlTags(s);
             t = t.Replace("  ", " ").Trim();
 
             if ((t.StartsWith("-") || t.Contains("\r\n-")) && checkBoxSkipDialog.Checked)
-                return s;
-            else if (Regex.IsMatch(t, @"[\[\{\(]|[\}\]\)]") && checkBoxMoods.Checked)
-                return s;
-            else if (Regex.IsMatch(t, "\\w:\\B") && checkBoxSkipNarrator.Checked)
-                return s;
-            else
             {
-                t = t.Replace(Environment.NewLine, " ").Trim();
-                t = t.Replace("  ", " ");
-
-                if (t.Length < lineLength)
-                {
-                    s = s.Replace(Environment.NewLine, " ").Trim();
-                    s = s.Replace("  ", " ");
-                }
+                return s;
             }
-            return s.Trim();
+            else if (Regex.IsMatch(t, @"[\[\{\(]|[\}\]\)]") && checkBoxMoods.Checked)
+            {
+                return s;
+            }
+            else if (Regex.IsMatch(t, ":\\B") && checkBoxSkipNarrator.Checked)
+            {
+                return s;
+            }
+
+            t = t.Replace(Environment.NewLine, " ").Trim();
+            t = t.Replace("  ", " ");
+
+            if (t.Length < _maxLineLength)
+            {
+                s = s.Replace(Environment.NewLine, " ").Trim();
+            }
+            return s;
         }
 
         private void buttonUpdate_Click(object sender, EventArgs e)
