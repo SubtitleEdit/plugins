@@ -250,7 +250,7 @@
             this.groupBoxWordNotFound.Controls.Add(this.textBoxWord);
             this.groupBoxWordNotFound.Controls.Add(this.buttonSkipAll);
             this.groupBoxWordNotFound.Controls.Add(this.buttonChange);
-            this.groupBoxWordNotFound.Location = new System.Drawing.Point(16, 323);
+            this.groupBoxWordNotFound.Location = new System.Drawing.Point(12, 323);
             this.groupBoxWordNotFound.Name = "groupBoxWordNotFound";
             this.groupBoxWordNotFound.Size = new System.Drawing.Size(292, 209);
             this.groupBoxWordNotFound.TabIndex = 6;
@@ -259,7 +259,7 @@
             // 
             // buttonAddToNamesEtcList
             // 
-            this.buttonAddToNamesEtcList.Location = new System.Drawing.Point(20, 156);
+            this.buttonAddToNamesEtcList.Location = new System.Drawing.Point(21, 156);
             this.buttonAddToNamesEtcList.Name = "buttonAddToNamesEtcList";
             this.buttonAddToNamesEtcList.Size = new System.Drawing.Size(250, 21);
             this.buttonAddToNamesEtcList.TabIndex = 8;
@@ -270,9 +270,9 @@
             // 
             // buttonGoogleIt
             // 
-            this.buttonGoogleIt.Location = new System.Drawing.Point(151, 102);
+            this.buttonGoogleIt.Location = new System.Drawing.Point(149, 102);
             this.buttonGoogleIt.Name = "buttonGoogleIt";
-            this.buttonGoogleIt.Size = new System.Drawing.Size(119, 21);
+            this.buttonGoogleIt.Size = new System.Drawing.Size(122, 21);
             this.buttonGoogleIt.TabIndex = 6;
             this.buttonGoogleIt.Text = "&Google it";
             this.buttonGoogleIt.UseVisualStyleBackColor = true;
@@ -283,7 +283,7 @@
             this.checkBoxUseNamesEtc.AutoSize = true;
             this.checkBoxUseNamesEtc.Checked = true;
             this.checkBoxUseNamesEtc.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxUseNamesEtc.Location = new System.Drawing.Point(20, 183);
+            this.checkBoxUseNamesEtc.Location = new System.Drawing.Point(21, 183);
             this.checkBoxUseNamesEtc.Name = "checkBoxUseNamesEtc";
             this.checkBoxUseNamesEtc.Size = new System.Drawing.Size(164, 17);
             this.checkBoxUseNamesEtc.TabIndex = 9;
@@ -292,7 +292,7 @@
             // 
             // buttonDelete
             // 
-            this.buttonDelete.Location = new System.Drawing.Point(20, 102);
+            this.buttonDelete.Location = new System.Drawing.Point(21, 102);
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.Size = new System.Drawing.Size(122, 21);
             this.buttonDelete.TabIndex = 5;
@@ -302,7 +302,7 @@
             // 
             // buttonAddToDictionary
             // 
-            this.buttonAddToDictionary.Location = new System.Drawing.Point(20, 129);
+            this.buttonAddToDictionary.Location = new System.Drawing.Point(21, 129);
             this.buttonAddToDictionary.Name = "buttonAddToDictionary";
             this.buttonAddToDictionary.Size = new System.Drawing.Size(250, 21);
             this.buttonAddToDictionary.TabIndex = 7;
@@ -312,7 +312,7 @@
             // 
             // buttonSkipOnce
             // 
-            this.buttonSkipOnce.Location = new System.Drawing.Point(20, 75);
+            this.buttonSkipOnce.Location = new System.Drawing.Point(21, 75);
             this.buttonSkipOnce.Name = "buttonSkipOnce";
             this.buttonSkipOnce.Size = new System.Drawing.Size(122, 21);
             this.buttonSkipOnce.TabIndex = 3;
@@ -322,7 +322,7 @@
             // 
             // buttonChangeAll
             // 
-            this.buttonChangeAll.Location = new System.Drawing.Point(148, 47);
+            this.buttonChangeAll.Location = new System.Drawing.Point(150, 47);
             this.buttonChangeAll.Name = "buttonChangeAll";
             this.buttonChangeAll.Size = new System.Drawing.Size(122, 21);
             this.buttonChangeAll.TabIndex = 2;
@@ -332,7 +332,7 @@
             // 
             // textBoxWord
             // 
-            this.textBoxWord.Location = new System.Drawing.Point(20, 20);
+            this.textBoxWord.Location = new System.Drawing.Point(21, 20);
             this.textBoxWord.Name = "textBoxWord";
             this.textBoxWord.Size = new System.Drawing.Size(250, 20);
             this.textBoxWord.TabIndex = 0;
@@ -342,7 +342,7 @@
             // 
             // buttonSkipAll
             // 
-            this.buttonSkipAll.Location = new System.Drawing.Point(148, 75);
+            this.buttonSkipAll.Location = new System.Drawing.Point(149, 75);
             this.buttonSkipAll.Name = "buttonSkipAll";
             this.buttonSkipAll.Size = new System.Drawing.Size(122, 21);
             this.buttonSkipAll.TabIndex = 4;
@@ -352,7 +352,7 @@
             // 
             // buttonChange
             // 
-            this.buttonChange.Location = new System.Drawing.Point(20, 47);
+            this.buttonChange.Location = new System.Drawing.Point(22, 47);
             this.buttonChange.Name = "buttonChange";
             this.buttonChange.Size = new System.Drawing.Size(122, 21);
             this.buttonChange.TabIndex = 1;
@@ -364,7 +364,7 @@
             // 
             this.richTextBoxParagraph.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.richTextBoxParagraph.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.richTextBoxParagraph.Location = new System.Drawing.Point(15, 257);
+            this.richTextBoxParagraph.Location = new System.Drawing.Point(12, 258);
             this.richTextBoxParagraph.Name = "richTextBoxParagraph";
             this.richTextBoxParagraph.ReadOnly = true;
             this.richTextBoxParagraph.Size = new System.Drawing.Size(292, 54);
@@ -374,7 +374,7 @@
             // buttonEditWholeText
             // 
             this.buttonEditWholeText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonEditWholeText.Location = new System.Drawing.Point(313, 282);
+            this.buttonEditWholeText.Location = new System.Drawing.Point(314, 291);
             this.buttonEditWholeText.Name = "buttonEditWholeText";
             this.buttonEditWholeText.Size = new System.Drawing.Size(128, 21);
             this.buttonEditWholeText.TabIndex = 5;
@@ -386,7 +386,7 @@
             // 
             this.labelFullText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelFullText.AutoSize = true;
-            this.labelFullText.Location = new System.Drawing.Point(13, 241);
+            this.labelFullText.Location = new System.Drawing.Point(9, 241);
             this.labelFullText.Name = "labelFullText";
             this.labelFullText.Size = new System.Drawing.Size(43, 13);
             this.labelFullText.TabIndex = 108;
@@ -395,7 +395,7 @@
             // buttonEditWord
             // 
             this.buttonEditWord.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonEditWord.Location = new System.Drawing.Point(313, 255);
+            this.buttonEditWord.Location = new System.Drawing.Point(314, 264);
             this.buttonEditWord.Name = "buttonEditWord";
             this.buttonEditWord.Size = new System.Drawing.Size(128, 21);
             this.buttonEditWord.TabIndex = 3;
@@ -406,7 +406,7 @@
             // 
             // textBoxWholeText
             // 
-            this.textBoxWholeText.Location = new System.Drawing.Point(524, 257);
+            this.textBoxWholeText.Location = new System.Drawing.Point(506, 257);
             this.textBoxWholeText.Multiline = true;
             this.textBoxWholeText.Name = "textBoxWholeText";
             this.textBoxWholeText.Size = new System.Drawing.Size(292, 54);
@@ -416,7 +416,7 @@
             // buttonUpdateWholeText
             // 
             this.buttonUpdateWholeText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonUpdateWholeText.Location = new System.Drawing.Point(447, 255);
+            this.buttonUpdateWholeText.Location = new System.Drawing.Point(503, 233);
             this.buttonUpdateWholeText.Name = "buttonUpdateWholeText";
             this.buttonUpdateWholeText.Size = new System.Drawing.Size(128, 21);
             this.buttonUpdateWholeText.TabIndex = 4;

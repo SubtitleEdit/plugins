@@ -13,6 +13,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
     internal partial class PluginForm : Form
     {
         internal string FixedSubtitle { get; private set; }
+
         private Subtitle _subtitle;
         private Microsoft.Office.Interop.Word.Application _wordApp = new Microsoft.Office.Interop.Word.Application();
         private List<Microsoft.Office.Interop.Word.Language> _spellCheckLanguages = new List<Microsoft.Office.Interop.Word.Language>();
@@ -55,7 +56,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void AddParagraphToSubtitleListView(Paragraph p)
         {
-            var item = new ListViewItem(p.Number.ToString());
+            var item = new ListViewItem(p.Number.ToString()) { Tag = p };
 
             var subItem = new ListViewItem.ListViewSubItem(item, p.StartTime.ToShortString());
             item.SubItems.Add(subItem);
@@ -63,10 +64,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             item.SubItems.Add(subItem);
             subItem = new ListViewItem.ListViewSubItem(item, p.Duration.ToShortString());
             item.SubItems.Add(subItem);
-            subItem = new ListViewItem.ListViewSubItem(item, p.Text.Replace(Environment.NewLine, "<br/>"));
+            subItem = new ListViewItem.ListViewSubItem(item, p.Text.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
             item.SubItems.Add(subItem);
-
-            item.Tag = p; // save paragraph in Tag
             listViewSubtitle.Items.Add(item);
         }
 
@@ -149,13 +148,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
                 else
                 {
-                    try
-                    {
-                        _wordApp.ActiveDocument.Content.DetectLanguage();
-                    }
-                    catch
-                    {
-                    }
+                    try { _wordApp.ActiveDocument.Content.DetectLanguage(); }
+                    catch { }
                 }
             }
             _currentSpellCollection = range.SpellingErrors;
@@ -476,7 +470,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             string text = textBoxWord.Text;
             if (text.Trim().Length > 0)
             {
-                labelActionInfo.Text = "Google '" + text + "'...";
+                labelActionInfo.Text = "Googling '" + text + "'...";
                 System.Diagnostics.Process.Start("http://www.google.com/search?q=" + System.Uri.EscapeDataString(text));
             }
         }
@@ -601,30 +595,27 @@ namespace Nikse.SubtitleEdit.PluginLogic
             try
             {
                 var namesEtcDoc = new XmlDocument();
-                if (File.Exists(namesEtcFileName))
-                {
-                    namesEtcDoc.Load(namesEtcFileName);
+                if (!File.Exists(namesEtcFileName))
+                    return;
+                namesEtcDoc.Load(namesEtcFileName);
 
-                    if (namesEtcDoc.DocumentElement != null)
-                        foreach (XmlNode node in namesEtcDoc.DocumentElement.SelectNodes("name"))
+                if (namesEtcDoc.DocumentElement != null)
+                    foreach (XmlNode node in namesEtcDoc.DocumentElement.SelectNodes("name"))
+                    {
+                        string s = node.InnerText.Trim();
+                        if (s.Contains(" "))
                         {
-                            string s = node.InnerText.Trim();
-                            if (s.Contains(" "))
-                            {
-                                if (!namesEtcMultiWordList.Contains(s))
-                                    namesEtcMultiWordList.Add(s);
-                            }
-                            else
-                            {
-                                if (!namesEtcList.Contains(s))
-                                    namesEtcList.Add(s);
-                            }
+                            if (!namesEtcMultiWordList.Contains(s))
+                                namesEtcMultiWordList.Add(s);
                         }
-                }
+                        else
+                        {
+                            if (!namesEtcList.Contains(s))
+                                namesEtcList.Add(s);
+                        }
+                    }
             }
-            catch
-            {
-            }
+            catch { }
         }
 
         private string GetCustomDicFileName()
