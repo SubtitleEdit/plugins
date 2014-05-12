@@ -10,32 +10,32 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         string IPlugin.Name
         {
-            get { throw new NotImplementedException(); }
+            get { return "HIColorer"; }
         }
 
         string IPlugin.Text
         {
-            get { throw new NotImplementedException(); }
+            get { return "HI-Colorer"; }
         }
 
         decimal IPlugin.Version
         {
-            get { throw new NotImplementedException(); }
+            get { return 0.1M; }
         }
 
         string IPlugin.Description
         {
-            get { throw new NotImplementedException(); }
+            get { return string.Empty; }
         }
 
         string IPlugin.ActionType
         {
-            get { throw new NotImplementedException(); }
+            get { return "tool"; }
         }
 
         string IPlugin.Shortcut
         {
-            get { throw new NotImplementedException(); }
+            get { return string.Empty; }
         }
 
         string IPlugin.DoAction(System.Windows.Forms.Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
