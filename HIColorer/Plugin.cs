@@ -60,7 +60,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 return string.Empty;
             }
-            using (var mainForm = new MainForm(sub, subtitleFileName))
+            using (var mainForm = new MainForm(sub, subtitleFileName, (this as IPlugin).Version.ToString()))
             {
                 if (mainForm.ShowDialog() == DialogResult.OK)
                 {
