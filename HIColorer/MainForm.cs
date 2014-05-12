@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
+using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -17,16 +16,31 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private Color _narratorColor = Color.Empty;
         private Color _moodsColor = Color.Empty;
         private Subtitle _subtitle;
+        private string _settingFile;
 
         public MainForm()
         {
             InitializeComponent();
         }
 
-        internal MainForm(Subtitle sub, string name)
+        internal MainForm(Subtitle sub, string name, string ver)
             : this()
         {
             this._subtitle = sub;
+            this.Text = "Hearing Impaired Colorer ver" + ver;
+
+            _settingFile = GetSettingsFileName();
+            if (File.Exists(_settingFile))
+            {
+                var fs = new StreamReader(_settingFile, Encoding.UTF8);
+                fs.ReadLine();
+                string narratorColor = fs.ReadLine();
+                string moodsColor = fs.ReadLine();
+            }
+            else
+            {
+                //FileStream fs = _settingFile
+            }
         }
 
         private void buttonNarratorColor_Click(object sender, EventArgs e)
@@ -46,7 +60,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 _moodsColor = colorDialog1.Color;
                 this.labelMoodsColor.BackColor = _moodsColor;
                 // TODO: When the backcolor is to drak/lighty fix the forecolor
-                this.labelMoodsColor.Text = Utilities.GetHtmlColorCode(_narratorColor);
+                this.labelMoodsColor.Text = Utilities.GetHtmlColorCode(_moodsColor);
             }
         }
 
@@ -54,11 +68,29 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (_subtitle.Paragraphs.Count == 0)
                 return;
-            
-            return;
+            if (!checkBoxNarrator.Checked && !checkBoxMoods.Checked)
+            {
+                // check something to remove color in
+                return;
+            }
+
+            string text = string.Empty;
+            string oldText = string.Empty;
+            var regExNarrator = new Regex(".+?: ");
+            var regExMoods = new Regex("<font.+?>.+</font>");
             foreach (Paragraph p in _subtitle.Paragraphs)
             {
+                if (!p.Text.Contains("<font"))
+                    continue;
+                oldText = text;
+                if (checkBoxMoods.Checked)
+                {
+                    //text = Regex.Replace()
+                }
+                if (checkBoxNarrator.Checked)
+                {
 
+                }
             }
         }
 
@@ -258,6 +290,53 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void RemoveColor(Paragraph p)
         {
 
+        }
+
+        private string GetSettingsFileName()
+        {
+            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+            if (path.StartsWith("file:\\"))
+                path = path.Remove(0, 6);
+            path = Path.Combine(path, "Plugins");
+            if (!Directory.Exists(path))
+                path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Plugins");
+            return Path.Combine(path, "HIColorer.xml");
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveSettings();
+        }
+
+
+        private void GetSetting()
+        {
+            string fileName = GetSettingsFileName();
+            try
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(fileName);
+
+                int argNarrator = Convert.ToInt32(doc.DocumentElement.SelectSingleNode("ColorNarrator").InnerText);
+                int argMoods = Convert.ToInt32(doc.DocumentElement.SelectSingleNode("ColorNarrator").InnerText);
+                _narratorColor = Color.FromArgb(argNarrator);
+                _moodsColor = Color.FromArgb(argMoods);
+            }
+            catch { }
+        }
+
+        private void SaveSettings()
+        {
+            string fileName = GetSettingsFileName();
+            try
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml("<ColorSettings><ColorNarrator/><ColorMoods/></ColorSettings>");
+                doc.DocumentElement.SelectSingleNode("ColorNarrator").InnerText = Convert.ToString(_narratorColor.ToArgb());
+                doc.DocumentElement.SelectSingleNode("ColorMoods").InnerText = Convert.ToString(_moodsColor.ToArgb());
+                doc.Save(fileName);
+            }
+            catch { }
         }
     }
 }
