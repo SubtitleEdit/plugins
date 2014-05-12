@@ -29,21 +29,21 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.checkBoxEnabledMoods = new System.Windows.Forms.CheckBox();
+            this.checkBoxEnabledNarrator = new System.Windows.Forms.CheckBox();
+            this.labelNarratorsColor = new System.Windows.Forms.Label();
+            this.buttonNarratorColor = new System.Windows.Forms.Button();
+            this.buttonMoodsColor = new System.Windows.Forms.Button();
+            this.labelMoodsColor = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonRemove = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.labelMoodsColor = new System.Windows.Forms.Label();
-            this.buttonMoodsColor = new System.Windows.Forms.Button();
-            this.buttonNarratorColor = new System.Windows.Forms.Button();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.labelNarratorsColor = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.checkBoxMoods = new System.Windows.Forms.CheckBox();
             this.checkBoxNarrator = new System.Windows.Forms.CheckBox();
-            this.checkBoxEnabledNarrator = new System.Windows.Forms.CheckBox();
-            this.checkBoxEnabledMoods = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -64,6 +64,90 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Color options:";
+            // 
+            // checkBoxEnabledMoods
+            // 
+            this.checkBoxEnabledMoods.AutoSize = true;
+            this.checkBoxEnabledMoods.Checked = true;
+            this.checkBoxEnabledMoods.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxEnabledMoods.Location = new System.Drawing.Point(307, 91);
+            this.checkBoxEnabledMoods.Name = "checkBoxEnabledMoods";
+            this.checkBoxEnabledMoods.Size = new System.Drawing.Size(65, 17);
+            this.checkBoxEnabledMoods.TabIndex = 8;
+            this.checkBoxEnabledMoods.Text = "Enabled";
+            this.checkBoxEnabledMoods.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxEnabledNarrator
+            // 
+            this.checkBoxEnabledNarrator.AutoSize = true;
+            this.checkBoxEnabledNarrator.Checked = true;
+            this.checkBoxEnabledNarrator.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxEnabledNarrator.Location = new System.Drawing.Point(307, 29);
+            this.checkBoxEnabledNarrator.Name = "checkBoxEnabledNarrator";
+            this.checkBoxEnabledNarrator.Size = new System.Drawing.Size(65, 17);
+            this.checkBoxEnabledNarrator.TabIndex = 7;
+            this.checkBoxEnabledNarrator.Text = "Enabled";
+            this.checkBoxEnabledNarrator.UseVisualStyleBackColor = true;
+            // 
+            // labelNarratorsColor
+            // 
+            this.labelNarratorsColor.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.labelNarratorsColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelNarratorsColor.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.labelNarratorsColor.Location = new System.Drawing.Point(138, 47);
+            this.labelNarratorsColor.Name = "labelNarratorsColor";
+            this.labelNarratorsColor.Size = new System.Drawing.Size(234, 23);
+            this.labelNarratorsColor.TabIndex = 6;
+            this.labelNarratorsColor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // buttonNarratorColor
+            // 
+            this.buttonNarratorColor.Location = new System.Drawing.Point(29, 47);
+            this.buttonNarratorColor.Name = "buttonNarratorColor";
+            this.buttonNarratorColor.Size = new System.Drawing.Size(75, 23);
+            this.buttonNarratorColor.TabIndex = 5;
+            this.buttonNarratorColor.Text = "Pick color";
+            this.buttonNarratorColor.UseVisualStyleBackColor = true;
+            this.buttonNarratorColor.Click += new System.EventHandler(this.buttonNarratorColor_Click);
+            // 
+            // buttonMoodsColor
+            // 
+            this.buttonMoodsColor.Location = new System.Drawing.Point(29, 111);
+            this.buttonMoodsColor.Name = "buttonMoodsColor";
+            this.buttonMoodsColor.Size = new System.Drawing.Size(75, 23);
+            this.buttonMoodsColor.TabIndex = 4;
+            this.buttonMoodsColor.Text = "Pick color";
+            this.buttonMoodsColor.UseVisualStyleBackColor = true;
+            this.buttonMoodsColor.Click += new System.EventHandler(this.buttonMoodsColor_Click);
+            // 
+            // labelMoodsColor
+            // 
+            this.labelMoodsColor.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.labelMoodsColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelMoodsColor.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.labelMoodsColor.Location = new System.Drawing.Point(138, 111);
+            this.labelMoodsColor.Name = "labelMoodsColor";
+            this.labelMoodsColor.Size = new System.Drawing.Size(234, 23);
+            this.labelMoodsColor.TabIndex = 2;
+            this.labelMoodsColor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(26, 95);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(39, 13);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "Moods";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(26, 29);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(45, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Narrator";
             // 
             // buttonCancel
             // 
@@ -94,68 +178,6 @@
             this.buttonRemove.Text = "Remove";
             this.buttonRemove.UseVisualStyleBackColor = true;
             this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(26, 29);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(45, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Narrator";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(26, 95);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(39, 13);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Moods";
-            // 
-            // labelMoodsColor
-            // 
-            this.labelMoodsColor.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.labelMoodsColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelMoodsColor.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.labelMoodsColor.Location = new System.Drawing.Point(138, 111);
-            this.labelMoodsColor.Name = "labelMoodsColor";
-            this.labelMoodsColor.Size = new System.Drawing.Size(234, 23);
-            this.labelMoodsColor.TabIndex = 2;
-            this.labelMoodsColor.Text = "label3";
-            this.labelMoodsColor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // buttonMoodsColor
-            // 
-            this.buttonMoodsColor.Location = new System.Drawing.Point(29, 111);
-            this.buttonMoodsColor.Name = "buttonMoodsColor";
-            this.buttonMoodsColor.Size = new System.Drawing.Size(75, 23);
-            this.buttonMoodsColor.TabIndex = 4;
-            this.buttonMoodsColor.Text = "Choose";
-            this.buttonMoodsColor.UseVisualStyleBackColor = true;
-            this.buttonMoodsColor.Click += new System.EventHandler(this.buttonMoodsColor_Click);
-            // 
-            // buttonNarratorColor
-            // 
-            this.buttonNarratorColor.Location = new System.Drawing.Point(29, 47);
-            this.buttonNarratorColor.Name = "buttonNarratorColor";
-            this.buttonNarratorColor.Size = new System.Drawing.Size(75, 23);
-            this.buttonNarratorColor.TabIndex = 5;
-            this.buttonNarratorColor.Text = "Choose";
-            this.buttonNarratorColor.UseVisualStyleBackColor = true;
-            this.buttonNarratorColor.Click += new System.EventHandler(this.buttonNarratorColor_Click);
-            // 
-            // labelNarratorsColor
-            // 
-            this.labelNarratorsColor.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.labelNarratorsColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelNarratorsColor.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.labelNarratorsColor.Location = new System.Drawing.Point(138, 47);
-            this.labelNarratorsColor.Name = "labelNarratorsColor";
-            this.labelNarratorsColor.Size = new System.Drawing.Size(234, 23);
-            this.labelNarratorsColor.TabIndex = 6;
-            this.labelNarratorsColor.Text = "label4";
-            this.labelNarratorsColor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // groupBox2
             // 
@@ -188,26 +210,6 @@
             this.checkBoxNarrator.TabIndex = 6;
             this.checkBoxNarrator.Text = "Narrator";
             this.checkBoxNarrator.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxEnabledNarrator
-            // 
-            this.checkBoxEnabledNarrator.AutoSize = true;
-            this.checkBoxEnabledNarrator.Location = new System.Drawing.Point(307, 29);
-            this.checkBoxEnabledNarrator.Name = "checkBoxEnabledNarrator";
-            this.checkBoxEnabledNarrator.Size = new System.Drawing.Size(65, 17);
-            this.checkBoxEnabledNarrator.TabIndex = 7;
-            this.checkBoxEnabledNarrator.Text = "Enabled";
-            this.checkBoxEnabledNarrator.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxEnabledMoods
-            // 
-            this.checkBoxEnabledMoods.AutoSize = true;
-            this.checkBoxEnabledMoods.Location = new System.Drawing.Point(307, 91);
-            this.checkBoxEnabledMoods.Name = "checkBoxEnabledMoods";
-            this.checkBoxEnabledMoods.Size = new System.Drawing.Size(65, 17);
-            this.checkBoxEnabledMoods.TabIndex = 8;
-            this.checkBoxEnabledMoods.Text = "Enabled";
-            this.checkBoxEnabledMoods.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
