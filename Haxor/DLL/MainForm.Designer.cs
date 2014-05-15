@@ -171,6 +171,7 @@
             this.Controls.Add(this.textBoxFrom);
             this.Controls.Add(this.listView1);
             this.KeyPreview = true;
+            this.MinimumSize = new System.Drawing.Size(733, 478);
             this.Name = "MainForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
