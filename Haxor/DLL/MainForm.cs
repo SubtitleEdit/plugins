@@ -14,8 +14,8 @@ namespace SubtitleEdit
         private bool _allowFix = false;
         private string description;
         private string name;
-        private const string from = "abcdefghijlkmnopqrstuvwxyz";
-        private string to;
+        private const string _from = "abcdefghijlkmnopqrstuvwxyz";
+        private string _to;
 
         public string FixedSubtitle { get; private set; }
 
@@ -38,7 +38,7 @@ namespace SubtitleEdit
             this.name = name;
             this.description = description;
             this._mainForm = parentForm;
-            to = textBoxTo.Text;
+            _to = textBoxTo.Text;
             GeneratePreview();
         }
 
@@ -78,9 +78,9 @@ namespace SubtitleEdit
             var strBuilder = new StringBuilder(text);
             if (CheckTranslator())
             {
-                for (int i = 0; i < from.Length; i++)
+                for (int i = 0; i < _from.Length; i++)
                 {
-                    strBuilder.Replace(from[i], to[i]);
+                    strBuilder.Replace(_from[i], _to[i]);
                 }
             }
             return strBuilder.ToString();
@@ -108,10 +108,10 @@ namespace SubtitleEdit
 
         private bool CheckTranslator()
         {
-            to = textBoxTo.Text.Trim();
-            to = to.Replace(" ", string.Empty);
+            _to = textBoxTo.Text.Trim();
+            _to = _to.Replace(" ", string.Empty);
 
-            if (string.IsNullOrEmpty(to) || to.Length != from.Length)
+            if (string.IsNullOrEmpty(_to) || _to.Length != _from.Length)
             {
                 textBoxTo.SelectAll();
                 //textBoxTo.SelectionStart = 0;
@@ -124,10 +124,10 @@ namespace SubtitleEdit
 
         private void buttonReset_Click(object sender, EventArgs e)
         {
-            this.to = "4b©d3fgH!jlKmñ0pqr$tuvwx¥z"; // this are the default haxor char
-            this.textBoxTo.Text = to;
+            this._to = "4b©d3fgH!jlKmñ0pqr$tuvwx¥z"; // this are the default haxor char
+            this.textBoxTo.Text = _to;
             this.listView1.Items.Clear();
-
+            this._dicChanged = null;
             GeneratePreview();
             Application.DoEvents();
         }
