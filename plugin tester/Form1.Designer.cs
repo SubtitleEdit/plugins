@@ -50,6 +50,7 @@
             this.buttonFromTextBox.TabIndex = 1;
             this.buttonFromTextBox.Text = "From textbox";
             this.buttonFromTextBox.UseVisualStyleBackColor = true;
+            this.buttonFromTextBox.Click += new System.EventHandler(this.buttonFromTextBox_Click);
             // 
             // buttonWithFile
             // 

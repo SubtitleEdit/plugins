@@ -29,10 +29,20 @@ namespace plugin_tester
             }
         }
 
+        private void buttonFromTextBox_Click(object sender, EventArgs e)
+        {
+            string text = textBox1.Text.Trim();
+            if (text.Length == 0)
+                return;
+            RunPlugin(text);
+        }
+
         private void RunPlugin(string content)
         {
             IPlugin hiColorer = new HIColorer();
-            hiColorer.DoAction(this, content, 23.796, "<br />", Path.GetFileName(_fileName), null, content);
+            string outString = hiColorer.DoAction(this, content, 23.796, "<br />", _fileName.Length > 0 ? Path.GetFileName(_fileName) : null, null, content);
+            if(content.Equals(outString))
+                MessageBox.Show("Nothing changed!!!");
         }
     }
 }
