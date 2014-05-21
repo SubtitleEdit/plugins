@@ -47,5 +47,11 @@ namespace SeSkydriveLoad
                 DialogResult = DialogResult.OK;
             }
         }
+
+        private void Browser_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode ==  Keys.Escape)
+                this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+        }
     }
 }

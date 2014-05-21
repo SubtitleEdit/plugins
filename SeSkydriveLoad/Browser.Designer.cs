@@ -46,10 +46,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1030, 612);
             this.Controls.Add(this.webBrowser1);
+            this.KeyPreview = true;
             this.Name = "Browser";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.Text = "Webbrowser";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Browser_KeyDown);
             this.ResumeLayout(false);
 
         }
