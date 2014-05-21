@@ -42,26 +42,26 @@ namespace Nikse.SubtitleEdit.PluginLogic
             subtitle = subtitle.Trim();
             if (!string.IsNullOrEmpty(subtitle))
             {
-                if (!string.IsNullOrEmpty(listViewLineSeparatorString))
-                    Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
-
-                var list = new List<string>();
-                foreach (string line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
-                    list.Add(line);
-
-                Subtitle sub = new Subtitle();
-                SubRip srt = new SubRip();
-                srt.LoadSubtitle(sub, list, subtitleFileName);
-                using (var form = new MainForm(sub, (this as IPlugin).Name, (this as IPlugin).Description, parentForm))
-                {
-                    if (form.ShowDialog(parentForm) == DialogResult.OK)
-                        return form.FixedSubtitle;
-                }
+                MessageBox.Show("No subtitle loaded", parentForm.Text,
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return string.Empty;
             }
 
-            MessageBox.Show("No subtitle loaded", parentForm.Text,
-                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            if (!string.IsNullOrEmpty(listViewLineSeparatorString))
+                Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
+
+            var list = new List<string>();
+            foreach (string line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
+                list.Add(line);
+
+            Subtitle sub = new Subtitle();
+            SubRip srt = new SubRip();
+            srt.LoadSubtitle(sub, list, subtitleFileName);
+            using (var form = new MainForm(sub, (this as IPlugin).Name, (this as IPlugin).Description, parentForm))
+            {
+                if (form.ShowDialog(parentForm) == DialogResult.OK)
+                    return form.FixedSubtitle;
+            }
             return string.Empty;
         }
     }
