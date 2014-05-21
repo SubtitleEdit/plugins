@@ -41,7 +41,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return null;
             if (!s.Contains("<"))
                 return s;
-            s = Regex.Replace(s, "(?i)</?[ibu]>", string.Empty);
+            s = Regex.Replace(s, "(?i)</?[iіbu]>", string.Empty);
             s = RemoveParagraphTag(s);
             return RemoveHtmlFontTag(s).Trim();
         }
