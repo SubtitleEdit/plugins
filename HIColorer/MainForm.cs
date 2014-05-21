@@ -68,28 +68,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (_subtitle.Paragraphs.Count == 0)
                 return;
-            if (!checkBoxNarrator.Checked && !checkBoxMoods.Checked)
-            {
-                // check something to remove color in
-                return;
-            }
-
             string text = string.Empty;
             string oldText = string.Empty;
-            var regExNarrator = new Regex(".+?: ");
-            var regExMoods = new Regex("<font.+?>.+</font>");
             foreach (Paragraph p in _subtitle.Paragraphs)
             {
                 if (!p.Text.Contains("<font"))
                     continue;
+                text = p.Text;
                 oldText = text;
-                if (checkBoxMoods.Checked)
+                text = Utilities.RemoveHtmlFontTag(text);
+                if (!text.Equals(oldText))
                 {
-                    //text = Regex.Replace()
-                }
-                if (checkBoxNarrator.Checked)
-                {
-
+                    p.Text = text;
                 }
             }
         }

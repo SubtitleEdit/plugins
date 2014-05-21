@@ -41,11 +41,8 @@
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonRemove = new System.Windows.Forms.Button();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.checkBoxMoods = new System.Windows.Forms.CheckBox();
-            this.checkBoxNarrator = new System.Windows.Forms.CheckBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -151,7 +148,7 @@
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Location = new System.Drawing.Point(342, 216);
+            this.buttonCancel.Location = new System.Drawing.Point(341, 186);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 1;
@@ -161,7 +158,7 @@
             // 
             // buttonOK
             // 
-            this.buttonOK.Location = new System.Drawing.Point(261, 216);
+            this.buttonOK.Location = new System.Drawing.Point(260, 186);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 2;
@@ -171,7 +168,7 @@
             // 
             // buttonRemove
             // 
-            this.buttonRemove.Location = new System.Drawing.Point(6, 19);
+            this.buttonRemove.Location = new System.Drawing.Point(179, 186);
             this.buttonRemove.Name = "buttonRemove";
             this.buttonRemove.Size = new System.Drawing.Size(75, 23);
             this.buttonRemove.TabIndex = 3;
@@ -179,44 +176,22 @@
             this.buttonRemove.UseVisualStyleBackColor = true;
             this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_Click);
             // 
-            // groupBox2
+            // label3
             // 
-            this.groupBox2.Controls.Add(this.checkBoxMoods);
-            this.groupBox2.Controls.Add(this.buttonRemove);
-            this.groupBox2.Controls.Add(this.checkBoxNarrator);
-            this.groupBox2.Location = new System.Drawing.Point(13, 184);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(242, 55);
-            this.groupBox2.TabIndex = 6;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Strip Color";
-            // 
-            // checkBoxMoods
-            // 
-            this.checkBoxMoods.AutoSize = true;
-            this.checkBoxMoods.Location = new System.Drawing.Point(96, 19);
-            this.checkBoxMoods.Name = "checkBoxMoods";
-            this.checkBoxMoods.Size = new System.Drawing.Size(58, 17);
-            this.checkBoxMoods.TabIndex = 7;
-            this.checkBoxMoods.Text = "Moods";
-            this.checkBoxMoods.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxNarrator
-            // 
-            this.checkBoxNarrator.AutoSize = true;
-            this.checkBoxNarrator.Location = new System.Drawing.Point(160, 19);
-            this.checkBoxNarrator.Name = "checkBoxNarrator";
-            this.checkBoxNarrator.Size = new System.Drawing.Size(64, 17);
-            this.checkBoxNarrator.TabIndex = 6;
-            this.checkBoxNarrator.Text = "Narrator";
-            this.checkBoxNarrator.UseVisualStyleBackColor = true;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 196);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(40, 13);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Status:";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(429, 250);
-            this.Controls.Add(this.groupBox2);
+            this.ClientSize = new System.Drawing.Size(429, 217);
+            this.Controls.Add(this.buttonRemove);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.groupBox1);
@@ -227,9 +202,8 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -246,10 +220,8 @@
         private System.Windows.Forms.Button buttonRemove;
         private System.Windows.Forms.Label labelNarratorsColor;
         private System.Windows.Forms.ColorDialog colorDialog1;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.CheckBox checkBoxMoods;
-        private System.Windows.Forms.CheckBox checkBoxNarrator;
         private System.Windows.Forms.CheckBox checkBoxEnabledMoods;
         private System.Windows.Forms.CheckBox checkBoxEnabledNarrator;
+        private System.Windows.Forms.Label label3;
     }
 }
