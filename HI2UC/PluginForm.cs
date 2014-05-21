@@ -479,7 +479,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void checkBoxRemoveSpaces_CheckedChanged(object sender, EventArgs e)
         {
-            if ((listViewFixes.Items.Count < 1) || (_subtitle == null) || (_subtitle.Paragraphs) == null)
+            if (listViewFixes.Items.Count < 1 || _subtitle.Paragraphs.Count == 0)
                 return;
 
             _allowFixes = false;
