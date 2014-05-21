@@ -28,12 +28,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             // TODO: Complete member initialization
             this._subtitle = subtitle;
-            this.Resize += (s, arg) =>
+            this.Resize += delegate
             {
                 listView1.Columns[listView1.Columns.Count - 1].Width = -2;
                 //this.listViewFixes.Columns.Count -1
             };
-            this.FormClosing += (sender, e) =>
+            this.FormClosing += delegate
             {
                 LoadSettingsIfThereIs(false); // the setting will be stored in xml file.
             };
@@ -70,7 +70,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                             new XElement("SkipNarrator", true),
                             new XElement("SkipMoods", false)
                             );
-                        _xmlSetting.Save(path);
+                        try
+                        {
+                            _xmlSetting.Save(path);
+                        }
+                        catch { }
                     }
                 }
                 else
@@ -81,7 +85,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     _xmlSetting.Element("SkipMoods").Value = checkBoxMoods.Checked.ToString();
                     _xmlSetting.Element("SkipNarrator").Value = checkBoxSkipNarrator.Checked.ToString();
                     _xmlSetting.Element("SkipDialog").Value = checkBoxSkipDialog.Checked.ToString();
-                    _xmlSetting.Save(path);
+                    try
+                    {
+                        _xmlSetting.Save(path);
+                    }
+                    catch { }
                 }
             }
             catch (Exception ex)
