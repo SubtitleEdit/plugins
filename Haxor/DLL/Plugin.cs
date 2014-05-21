@@ -40,7 +40,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
             subtitle = subtitle.Trim();
-            if (!string.IsNullOrEmpty(subtitle))
+            if (string.IsNullOrEmpty(subtitle))
             {
                 MessageBox.Show("No subtitle loaded", parentForm.Text,
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
