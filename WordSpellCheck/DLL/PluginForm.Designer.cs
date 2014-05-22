@@ -406,6 +406,7 @@
             // 
             // textBoxWholeText
             // 
+            this.textBoxWholeText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.textBoxWholeText.Location = new System.Drawing.Point(506, 257);
             this.textBoxWholeText.Multiline = true;
             this.textBoxWholeText.Name = "textBoxWholeText";
@@ -416,7 +417,7 @@
             // buttonUpdateWholeText
             // 
             this.buttonUpdateWholeText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonUpdateWholeText.Location = new System.Drawing.Point(503, 233);
+            this.buttonUpdateWholeText.Location = new System.Drawing.Point(506, 233);
             this.buttonUpdateWholeText.Name = "buttonUpdateWholeText";
             this.buttonUpdateWholeText.Size = new System.Drawing.Size(128, 21);
             this.buttonUpdateWholeText.TabIndex = 4;
