@@ -25,12 +25,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static string RemoveHtmlFontTag(string s)
         {
-            s = Regex.Replace(s, "(?i)</?font>", string.Empty);
+            s = Regex.Replace(s, "(?i)</?font>", string.Empty, RegexOptions.Compiled);
             while (s.ToLower().Contains("<font"))
             {
                 int startIndex = s.ToLower().IndexOf("<font");
-                int endIndex = Math.Max(s.IndexOf(">"), startIndex + 6);
-                s = s.Remove(startIndex, (endIndex - startIndex) + 1);
+                int endIndex = s.IndexOf('>', startIndex);
+                //int endIndex = Math.Max(s.IndexOf(">", startIndex), startIndex + 6);
+                if (endIndex > startIndex)
+                    s = s.Remove(startIndex, (endIndex - startIndex) + 1);
+                else
+                    s = s.Remove(startIndex, 5);
+                s = s.Replace("  ", " ");
             }
             return s;
         }
@@ -54,28 +59,29 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         internal static string RemoveHtmlColorTags(string s)
         {
-            if (!s.ToLower().Contains("<font "))
+            if (!s.ToLower().Contains("<font"))
                 return s;
             //<font color="#008040" face="Niagara Solid">(Ivandro Ismael)</font>
             bool removeEndTag = true;
-            int startIndex = -1;
+            int startIndex = s.ToLower().IndexOf("<font");
             int endIndex = -1;
-            if (s.Contains("face=\""))
+            if (startIndex > -1 && s.Contains("face=\""))
             {
                 endIndex = s.IndexOf('>', startIndex + 1);
+                if (endIndex < 0)
+                    return s;
                 //s.Substring(startIndex, (endIndex - startIndex) + 1).Contains("face=")
                 removeEndTag = false;
                 while (startIndex > -1)
                 {
-                    string coloredText = s.Substring(startIndex, (endIndex - startIndex) + 1);
-                    string oldText = coloredText;
-                    coloredText = ContainsFaceTags(s, out removeEndTag);
-                    if (oldText != coloredText)
+                    string fontTag = s.Substring(startIndex, (endIndex - startIndex) + 1);
+                    string oldFontTag = fontTag;
+                    fontTag = StripColorAnnotation(fontTag, out removeEndTag);
+                    if (oldFontTag != fontTag)
                     {
                         s = s.Remove(startIndex, (endIndex - startIndex) + 1);
-                        s = s.Insert(startIndex, coloredText);
-                        startIndex = s.IndexOf("<font ", startIndex);
-
+                        s = s.Insert(startIndex, fontTag);
+                        startIndex = s.IndexOf("<font", startIndex + 6);
                         if (removeEndTag)
                         {
                             int fontClose = s.IndexOf("</font>");
@@ -91,35 +97,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             else
             {
-                while (s.ToLower().Contains("<font"))
-                {
-                    startIndex = s.ToLower().IndexOf("<font");
-                    endIndex = s.IndexOf('>', startIndex + 6);
-                    if (endIndex > startIndex)
-                    {
-                        s = s.Remove(startIndex, (endIndex - startIndex) + 1);
-                        s = s.Replace("  ", " ").Trim();
-                    }
-                }
-            }
-
-            if (removeEndTag)
-            {
-                s = Regex.Replace(s, "(?i)</?font>", string.Empty, RegexOptions.Compiled);
+                s = RemoveHtmlFontTag(s);
             }
             return s.Trim();
         }
 
-        private static string ContainsFaceTags(string s, out bool removeEndTag)
+        private static string StripColorAnnotation(string s, out bool removeEndTag)
         {
             removeEndTag = false;
             int colorStart = s.IndexOf("color=\"");
             if (colorStart < 0)
-            {
                 return s;
-            }
-            int colorEnd = s.IndexOf('\"', colorStart + 8);
-            s = s.Remove(colorEnd, (colorEnd - colorStart) + 1);
+            int colorEnd = s.IndexOf('\"', colorStart + 7);
+            s = s.Remove(colorStart, (colorEnd - colorStart) + 1);
             s = s.Replace("  ", "_@_");
             s = s.Replace(" _@_ ", " ");
             s = s.Replace("_@_ ", " ");
@@ -135,7 +125,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 // <font> is removed and </font> remains there
                 int closeIndex = s.IndexOf('>', index);
                 if (closeIndex > index)
+                {
                     s = s.Remove(index, (closeIndex - index) + 1);
+                    s = s.Replace("  ", " ");
+                }
             }
             return s;
         }
