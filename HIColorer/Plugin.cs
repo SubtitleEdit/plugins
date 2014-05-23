@@ -25,7 +25,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Description
         {
-            get { return "Set color for Hearing Impaired annotations"; }
+            get { return "Set color for Hearing Impaired annotations (by Ivandrofly)"; }
         }
 
         string IPlugin.ActionType
