@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("HIColorer")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Subtitle Edit")]
-[assembly: AssemblyProduct("HIColorer")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyCompany("Subtitle Edit (@Ivandrofly)")]
+[assembly: AssemblyProduct("HI Colorer")]
+[assembly: AssemblyCopyright("SubtitleEdit ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
