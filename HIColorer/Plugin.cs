@@ -15,7 +15,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text
         {
-            get { return "HI-Colorer"; }
+            get { return "HI Colorer"; }
         }
 
         decimal IPlugin.Version
@@ -25,7 +25,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Description
         {
-            get { return string.Empty; }
+            get { return "Set color for Hearing Impaired annotations"; }
         }
 
         string IPlugin.ActionType
