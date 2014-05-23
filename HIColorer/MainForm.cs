@@ -16,7 +16,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private Color _narratorColor = Color.Empty;
         private Color _moodsColor = Color.Empty;
         private Subtitle _subtitle;
-        private string _settingFile;
 
         public MainForm()
         {
@@ -28,19 +27,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             this._subtitle = sub;
             this.Text = "Hearing Impaired Colorer ver" + ver;
-
-            _settingFile = GetSettingsFileName();
-            if (File.Exists(_settingFile))
-            {
-                var fs = new StreamReader(_settingFile, Encoding.UTF8);
-                fs.ReadLine();
-                string narratorColor = fs.ReadLine();
-                string moodsColor = fs.ReadLine();
-            }
-            else
-            {
-                //FileStream fs = _settingFile
-            }
+            GetSetting();
         }
 
         private void buttonNarratorColor_Click(object sender, EventArgs e)
@@ -111,7 +98,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     string text = p.Text;
                     string oldText = text;
-
+                    if (text.Contains("<font"))
+                        Utilities.RemoveHtmlColorTags(text);
                     if (Regex.IsMatch(text, ":\\B") && checkBoxEnabledNarrator.Checked)
                     {
                         text = SetColorForNarrator(text, p);
@@ -302,15 +290,27 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void GetSetting()
         {
             string fileName = GetSettingsFileName();
+            if (!Path.IsPathRooted(fileName))
+                return;
             try
             {
                 XmlDocument doc = new XmlDocument();
                 doc.Load(fileName);
 
                 int argNarrator = Convert.ToInt32(doc.DocumentElement.SelectSingleNode("ColorNarrator").InnerText);
-                int argMoods = Convert.ToInt32(doc.DocumentElement.SelectSingleNode("ColorNarrator").InnerText);
-                _narratorColor = Color.FromArgb(argNarrator);
+                int argMoods = Convert.ToInt32(doc.DocumentElement.SelectSingleNode("ColorMoods").InnerText);
                 _moodsColor = Color.FromArgb(argMoods);
+                _narratorColor = Color.FromArgb(argNarrator);
+                if (!_moodsColor.IsEmpty)
+                {
+                    this.labelMoodsColor.BackColor = _moodsColor;
+                    this.labelMoodsColor.Text = Utilities.GetHtmlColorCode(_moodsColor);
+                }
+                if (!_narratorColor.IsEmpty)
+                {
+                    this.labelNarratorsColor.BackColor = _narratorColor;
+                    this.labelNarratorsColor.Text = Utilities.GetHtmlColorCode(_narratorColor);
+                }
             }
             catch { }
         }
