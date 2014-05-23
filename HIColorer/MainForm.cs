@@ -26,28 +26,42 @@ namespace Nikse.SubtitleEdit.PluginLogic
             : this()
         {
             this._subtitle = sub;
-            this.Text = "Hearing Impaired Colorer ver" + ver;
+            this.Text = "Hearing Impaired Colorer";
             GetSetting();
         }
 
         private void buttonNarratorColor_Click(object sender, EventArgs e)
         {
-            if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                _narratorColor = colorDialog1.Color;
-                this.labelNarratorsColor.BackColor = _narratorColor;
-                this.labelNarratorsColor.Text = Utilities.GetHtmlColorCode(_narratorColor);
-            }
+            SetColor(sender);
         }
+
 
         private void buttonMoodsColor_Click(object sender, EventArgs e)
         {
-            if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            SetColor(sender);
+        }
+
+        private void SetColor(object sender)
+        {
+            if (sender == null) return;
+            if (sender == buttonNarratorColor || sender == labelNarratorsColor)
             {
-                _moodsColor = colorDialog1.Color;
-                this.labelMoodsColor.BackColor = _moodsColor;
-                // TODO: When the backcolor is to drak/lighty fix the forecolor
-                this.labelMoodsColor.Text = Utilities.GetHtmlColorCode(_moodsColor);
+                if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    _narratorColor = colorDialog1.Color;
+                    this.labelNarratorsColor.BackColor = _narratorColor;
+                    this.labelNarratorsColor.Text = Utilities.GetHtmlColorCode(_narratorColor);
+                }
+            }
+            else
+            {
+                if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    _moodsColor = colorDialog1.Color;
+                    this.labelMoodsColor.BackColor = _moodsColor;
+                    // TODO: When the backcolor is to drak/lighty fix the forecolor
+                    this.labelMoodsColor.Text = Utilities.GetHtmlColorCode(_moodsColor);
+                }
             }
         }
 
@@ -63,7 +77,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     continue;
                 text = p.Text;
                 oldText = text;
-                text = Utilities.RemoveHtmlFontTag(text);
+                text = Utilities.RemoveHtmlColorTags(text);
                 if (!text.Equals(oldText))
                 {
                     p.Text = text;
@@ -93,55 +107,58 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (_subtitle == null || _subtitle.Paragraphs.Count == 0)
                 return;
+            Func<string , char, char, string> brackesType = (text, bOpen, bClose) =>
+            {
+                int startBraces = text.IndexOf(bOpen);
+                if (startBraces > -1)
+                {
+                    int endBraces = text.IndexOf(bClose, startBraces + 1);
+                    if (endBraces < startBraces + 1)
+                    {
+                        // don't continue this if text contains something like <(i> and - Ivandro: hello world! it won't change the narrator
+                        return text;
+                    }
+                    // ( ( )
+                    int next = text.IndexOf(bOpen, startBraces + 1);
+                    if ((next > -1) && (next < endBraces))
+                    {
+                        startBraces = Math.Max(next, startBraces);
+                    }
+
+                    endBraces = -1;
+                    while (startBraces > -1)
+                    {
+                        endBraces = text.IndexOf(bClose, startBraces + 1);
+                        if (endBraces > startBraces && startBraces > -1)
+                        {
+                            string t = text.Substring(startBraces, (endBraces - startBraces) + 1);
+                            t = SetHtmlColorCode(_moodsColor, t);
+                            text = text.Remove(startBraces, (endBraces - startBraces) + 1).Insert(startBraces, t);
+                        }
+                        startBraces = text.IndexOf(bOpen, (endBraces + 30)); // HACKED: Warning!
+                    }
+                }
+                return text;
+            };
+
             for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
             {
                 Paragraph p = _subtitle.Paragraphs[i];
                 string text = p.Text;
                 string oldText = text;
-                text = Utilities.RemoveHtmlColorTags(text);
+                if (text.ToLower().Contains("<font"))
+                    text = Utilities.RemoveHtmlFontTag(text);
 
                 if (Regex.IsMatch(text, ":\\B") && checkBoxEnabledNarrator.Checked)
                 {
                     text = SetColorForNarrator(text, p);
                 }
-                int count = 0;
-                if ((text.Contains("(") || text.Contains("[")) && checkBoxEnabledMoods.Checked)
+                if (checkBoxEnabledMoods.Checked)
                 {
-                    int startBraces = text.IndexOf('(');
-                    if (startBraces > -1)
-                    {
-                        int endBraces = text.IndexOf(')', startBraces + 1);
-                        if (endBraces < startBraces + 1)
-                        {
-                            // don't continue this if text contains something like <(i> and - Ivandro: hello world! it won't change the narrator
-                            goto End_Point;
-                        }
-                        // ( ( )
-                        int next = text.IndexOf('(', startBraces + 1);
-                        if ((next > -1) && (next < endBraces))
-                        {
-                            startBraces = Math.Max(next, startBraces);
-                        }
-
-                        endBraces = -1;
-                        while (startBraces > -1)
-                        {
-                            count++;
-                            endBraces = text.IndexOf(')', startBraces + 1);
-                            if (endBraces > startBraces && startBraces > -1)
-                            {
-                                string t = text.Substring(startBraces, (endBraces - startBraces) + 1);
-                                t = SetHtmlColorCode(_moodsColor, t);
-                                text = text.Remove(startBraces, (endBraces - startBraces) + 1).Insert(startBraces, t);
-                            }
-                            startBraces = text.IndexOf("(", (endBraces + 30)); // HACKED: Warning!
-                        }
-                    }
-
-                    if (count > 4)
-                    {
-                        MessageBox.Show("Verify line#: {0}", p.Number.ToString());
-                    }
+                    if (text.Contains("("))
+                        text = brackesType.Invoke(text, '(', ')');
+                    if (text.Contains("["))
+                        text = brackesType.Invoke(text, '[', ']');
                 }
 
             End_Point:
@@ -284,7 +301,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             SaveSettings();
         }
 
-
         private void GetSetting()
         {
             string fileName = GetSettingsFileName();
@@ -325,6 +341,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 doc.Save(fileName);
             }
             catch { }
+        }
+
+        private void labelColor_DoubleClick(object sender, EventArgs e)
+        {
+            SetColor(sender);
+        }
+
+        private void linkLabelIvandrofly_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(linkLabelIvandrofly.Tag.ToString());
         }
     }
 }
