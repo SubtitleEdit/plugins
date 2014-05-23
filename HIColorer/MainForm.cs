@@ -69,6 +69,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     p.Text = text;
                 }
             }
+            FixedSubtitle = _subtitle.ToText(new SubRip());
+            DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
         private void buttonOK_Click(object sender, EventArgs e)
@@ -94,64 +96,60 @@ namespace Nikse.SubtitleEdit.PluginLogic
             for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
             {
                 Paragraph p = _subtitle.Paragraphs[i];
-                if (Regex.IsMatch(p.Text, @"[\{\(\[]|:\B"))
+                string text = p.Text;
+                string oldText = text;
+                text = Utilities.RemoveHtmlColorTags(text);
+
+                if (Regex.IsMatch(text, ":\\B") && checkBoxEnabledNarrator.Checked)
                 {
-                    string text = p.Text;
-                    string oldText = text;
-                    if (text.Contains("<font"))
-                        Utilities.RemoveHtmlColorTags(text);
-                    if (Regex.IsMatch(text, ":\\B") && checkBoxEnabledNarrator.Checked)
+                    text = SetColorForNarrator(text, p);
+                }
+                int count = 0;
+                if ((text.Contains("(") || text.Contains("[")) && checkBoxEnabledMoods.Checked)
+                {
+                    int startBraces = text.IndexOf('(');
+                    if (startBraces > -1)
                     {
-                        text = SetColorForNarrator(text, p);
-                    }
-
-                    int count = 0;
-                    if ((text.Contains("(") || text.Contains("[")) && checkBoxEnabledMoods.Checked)
-                    {
-                        int startBraces = text.IndexOf('(');
-                        if (startBraces > -1)
+                        int endBraces = text.IndexOf(')', startBraces + 1);
+                        if (endBraces < startBraces + 1)
                         {
-                            int endBraces = text.IndexOf(')', startBraces + 1);
-                            if (endBraces < startBraces + 1)
-                            {
-                                // don't continue this if text contains something like <(i> and - Ivandro: hello world! it won't change the narrator
-                                goto End_Point;
-                            }
-                            // ( ( )
-                            int next = text.IndexOf('(', startBraces + 1);
-                            if ((next > -1) && (next < endBraces))
-                            {
-                                startBraces = Math.Max(next, startBraces);
-                            }
-
-                            endBraces = -1;
-                            while (startBraces > -1)
-                            {
-                                count++;
-                                endBraces = text.IndexOf(')', startBraces + 1);
-                                if (endBraces > startBraces && startBraces > -1)
-                                {
-                                    string t = text.Substring(startBraces, (endBraces - startBraces) + 1);
-                                    t = SetHtmlColorCode(_moodsColor, t);
-                                    text = text.Remove(startBraces, (endBraces - startBraces) + 1).Insert(startBraces, t);
-                                }
-                                startBraces = text.IndexOf("(", (endBraces + 30)); // HACKED: Warning!
-                            }
+                            // don't continue this if text contains something like <(i> and - Ivandro: hello world! it won't change the narrator
+                            goto End_Point;
+                        }
+                        // ( ( )
+                        int next = text.IndexOf('(', startBraces + 1);
+                        if ((next > -1) && (next < endBraces))
+                        {
+                            startBraces = Math.Max(next, startBraces);
                         }
 
-                        if (count > 4)
+                        endBraces = -1;
+                        while (startBraces > -1)
                         {
-                            MessageBox.Show("Verify line#: {0}", p.Number.ToString());
+                            count++;
+                            endBraces = text.IndexOf(')', startBraces + 1);
+                            if (endBraces > startBraces && startBraces > -1)
+                            {
+                                string t = text.Substring(startBraces, (endBraces - startBraces) + 1);
+                                t = SetHtmlColorCode(_moodsColor, t);
+                                text = text.Remove(startBraces, (endBraces - startBraces) + 1).Insert(startBraces, t);
+                            }
+                            startBraces = text.IndexOf("(", (endBraces + 30)); // HACKED: Warning!
                         }
                     }
 
-                End_Point:
-                    if (text != oldText)
+                    if (count > 4)
                     {
-                        text = text.Replace(" " + Environment.NewLine, Environment.NewLine).Trim();
-                        text = text.Replace(Environment.NewLine + " ", Environment.NewLine).Trim();
-                        p.Text = text;
+                        MessageBox.Show("Verify line#: {0}", p.Number.ToString());
                     }
+                }
+
+            End_Point:
+                if (text != oldText)
+                {
+                    text = text.Replace(" " + Environment.NewLine, Environment.NewLine).Trim();
+                    text = text.Replace(Environment.NewLine + " ", Environment.NewLine).Trim();
+                    p.Text = text;
                 }
             }
         }
