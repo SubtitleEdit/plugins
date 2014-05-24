@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
@@ -19,7 +20,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         decimal IPlugin.Version
         {
-            get { return 1.0M; }
+            get { return 1.1M; }
         }
 
         string IPlugin.Description
@@ -40,34 +41,49 @@ namespace Nikse.SubtitleEdit.PluginLogic
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
             subtitle = subtitle.Trim();
-            if (!string.IsNullOrEmpty(subtitle))
+            if (string.IsNullOrEmpty(subtitle))
             {
-                // set frame rate
-                Configuration.CurrentFrameRate = frameRate;
-
-                // set newline visualizer for listviews
-                if (!string.IsNullOrEmpty(listViewLineSeparatorString))
-                    Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
-
-                // load subtitle text into object
-                var list = new List<string>();
-                foreach (string line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
-                    list.Add(line);
-                Subtitle sub = new Subtitle();
-                SubRip srt = new SubRip();
-                srt.LoadSubtitle(sub, list, subtitleFileName);
-
-
-                var form = new PluginForm(sub, (this as IPlugin).Name, (this as IPlugin).Description);
-                if (form.ShowDialog(parentForm) == DialogResult.OK)
-                {
-                    return form.FixedSubtitle;
-                }
+                MessageBox.Show("No subtitle loaded", parentForm.Text,
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return string.Empty;
             }
-            MessageBox.Show("No subtitle loaded", parentForm.Text,
-                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            if (!this.IsOfficeInstalled())
+            {
+                MessageBox.Show(@"Microsoft Office is not installed in this system, make sure you
+have Office installed in this system and try to re-run.", "Office not installed!!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return string.Empty;
+            }
+
+            // set frame rate
+            Configuration.CurrentFrameRate = frameRate;
+
+            // set newline visualizer for listviews
+            if (!string.IsNullOrEmpty(listViewLineSeparatorString))
+                Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
+
+            // load subtitle text into object
+            var list = new List<string>();
+            foreach (string line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
+                list.Add(line);
+            Subtitle sub = new Subtitle();
+            SubRip srt = new SubRip();
+            srt.LoadSubtitle(sub, list, subtitleFileName);
+            var form = new PluginForm(sub, (this as IPlugin).Name, (this as IPlugin).Description);
+            if (form.ShowDialog(parentForm) == DialogResult.OK)
+            {
+                return form.FixedSubtitle;
+            }
             return string.Empty;
+        }
+
+        private bool IsOfficeInstalled()
+        {
+            RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\Winword.exe");
+            if (key != null)
+            {
+                key.Close();
+            }
+            return key != null;
         }
     }
 }
