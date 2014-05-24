@@ -22,7 +22,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (!s.Contains("<"))
                 return s;
 
-            s = Regex.Replace(s, "(?i)</?[ubi>", string.Empty);
+            s = Regex.Replace(s, "(?i)</?[ubi]>", string.Empty);
             s = RemoveParagraphTag(s);
             return RemoveHtmlFontTag(s);
         }
@@ -33,8 +33,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             while (s.ToLower().Contains("<font"))
             {
                 int startIndex = s.ToLower().IndexOf("<font");
-                int endIndex = Math.Max(s.IndexOf(">"), startIndex + 4);
-                s = s.Remove(startIndex, (endIndex - startIndex) + 1);
+                int endIndex = s.IndexOf(">", startIndex);
+                if (endIndex > -1)
+                    s = s.Remove(startIndex, (endIndex - startIndex) + 1);
+                else
+                    break;
             }
             return s;
         }
