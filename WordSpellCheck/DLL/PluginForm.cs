@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
-
+using Word = Microsoft.Office.Interop.Word;
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form
@@ -15,9 +16,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         internal string FixedSubtitle { get; private set; }
 
         private Subtitle _subtitle;
-        private Microsoft.Office.Interop.Word.Application _wordApp = new Microsoft.Office.Interop.Word.Application();
-        private List<Microsoft.Office.Interop.Word.Language> _spellCheckLanguages = new List<Microsoft.Office.Interop.Word.Language>();
-        private Microsoft.Office.Interop.Word.ProofreadingErrors _currentSpellCollection;
+        private Word.Application _wordApp = new Word.Application();
+        private List<Word.Language> _spellCheckLanguages = new List<Word.Language>();
+        private Word.ProofreadingErrors _currentSpellCollection;
         private int _currentSpellCollectionIndex = -1;
         private Paragraph _currentParagraph;
         private int _currentStartIndex = -1;
@@ -93,9 +94,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 _currentParagraph = (listViewSubtitle.Items[index].Tag as Paragraph);
                 string text = _currentParagraph.Text;
                 Application.DoEvents();
-                if (_abort)
-                    return;
-                if (StartSpellCheckParagraph(text) || _abort)
+                if (_abort || StartSpellCheckParagraph(text))
                     return;
                 index++;
                 if (index < listViewSubtitle.Items.Count)
@@ -121,7 +120,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             //var cdic =  _wordApp.Application.CustomDictionaries.Add(GetCustomDicFileName());
             //_wordApp.Application.CustomDictionaries.ActiveCustomDictionary = cdic;
-            Microsoft.Office.Interop.Word.Range range;
+            Word.Range range;
             range = _wordApp.ActiveDocument.Range();
             range.Text = string.Empty;
 
@@ -137,7 +136,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
             }
             text = Utilities.RemoveHtmlTags(text);
-            text.Replace("  ", " ");
+            text = text.Replace("  ", " ");
             range.InsertAfter(text);
 
             if (comboBoxDictionaries.Visible)
@@ -162,6 +161,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void AutoDetectLanguage()
         {
+            string cleanText = string.Empty;
             try
             {
                 int min = 2;
@@ -172,14 +172,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     i++;
                     if (i >= min)
-                        sb.AppendLine(p.Text);
+                    {
+                        if (Utilities.RemoveHtmlTags(p.Text).Trim().Length > 0)
+                            sb.AppendLine(p.Text);
+                        else
+                            i--;
+                    }
                     if (i > max)
                         break;
                 }
-
-                Microsoft.Office.Interop.Word.Range range;
+                cleanText = Utilities.RemoveHtmlTags(sb.ToString().Trim());
+                Word.Range range;
                 range = _wordApp.ActiveDocument.Range();
-                range.Text = Utilities.RemoveHtmlTags(sb.ToString().Trim());
+                range.Text = cleanText;
                 range.LanguageDetected = false;
                 range.DetectLanguage();
                 if (range.LanguageDetected)
@@ -187,7 +192,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     labelLanguage.Visible = true;
                     comboBoxDictionaries.Visible = true;
                     comboBoxDictionaries.Items.Add("Auto");
-                    foreach (Microsoft.Office.Interop.Word.Language language in _spellCheckLanguages)
+                    foreach (Word.Language language in _spellCheckLanguages)
                     {
                         comboBoxDictionaries.Items.Add(language.NameLocal);
                         if (language.ID == range.LanguageID)
@@ -196,11 +201,43 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     if (comboBoxDictionaries.SelectedIndex < 0)
                         comboBoxDictionaries.SelectedIndex = 0;
                 }
+                else
+                {
+                    UseGoogleLangDetec(cleanText);
+                }
             }
             catch
             {
-                labelLanguage.Visible = false;
-                comboBoxDictionaries.Visible = false;
+                UseGoogleLangDetec(cleanText);
+                //labelLanguage.Visible = false;
+                //comboBoxDictionaries.Visible = false;
+            }
+        }
+
+        private void UseGoogleLangDetec(string text)
+        {
+            var twoLetterLanguageId = Utilities.AutoDetectGoogleLanguage(text);
+            var cultureInfo = CultureInfo.GetCultureInfo(twoLetterLanguageId);
+            if (cultureInfo != null)
+            {
+                Microsoft.Office.Interop.Word.WdLanguageID langId;
+                labelLanguage.Visible = true;
+                comboBoxDictionaries.Visible = true;
+                comboBoxDictionaries.Items.Add("Auto");
+                foreach (Word.Language language in _spellCheckLanguages)
+                {
+                    comboBoxDictionaries.Items.Add(language.NameLocal);
+                    langId = (Word.WdLanguageID)cultureInfo.TextInfo.LCID;
+                    if (language.ID == langId)
+                    {
+                        comboBoxDictionaries.SelectedIndex = comboBoxDictionaries.Items.Count - 1;
+                        _wordApp.ActiveDocument.Content.LanguageID = langId;
+                        _wordApp.ActiveDocument.Content.LanguageDetected = true;
+                    }
+
+                }
+                if (comboBoxDictionaries.SelectedIndex < 0)
+                    comboBoxDictionaries.SelectedIndex = 0;
             }
         }
 
@@ -262,7 +299,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         else if (spell.GrammaticalErrors.Count > 0)
                             labelActionInfo.Text = "Found gramitical error regarding '" + spell.Text + "'...";
 
-                        foreach (Microsoft.Office.Interop.Word.SpellingSuggestion suggestion in _wordApp.GetSpellingSuggestions(spell.Text))
+                        foreach (Word.SpellingSuggestion suggestion in _wordApp.GetSpellingSuggestions(spell.Text))
                         {
                             listBoxSuggestions.Items.Add(suggestion.Name);
                         }
@@ -371,7 +408,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             textBoxWord.Focus();
             labelActionInfo.Text = "Starting spell && grammer check...";
             _wordApp.Documents.Add();
-            foreach (Microsoft.Office.Interop.Word.Language language in _wordApp.Languages)
+            foreach (Word.Language language in _wordApp.Languages)
             {
                 if (language.ActiveSpellingDictionary != null && language.ActiveGrammarDictionary != null)
                     _spellCheckLanguages.Add(language);
@@ -398,7 +435,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        private void FixWord(Microsoft.Office.Interop.Word.Range range, string newText)
+        private void FixWord(Word.Range range, string newText)
         {
             FixWord(range.Text, newText);
         }
@@ -460,7 +497,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void PluginForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            object saveOptionsObject = Microsoft.Office.Interop.Word.WdSaveOptions.wdDoNotSaveChanges;
+            object saveOptionsObject = Word.WdSaveOptions.wdDoNotSaveChanges;
             _wordApp.ActiveDocument.Close(ref saveOptionsObject);
             _wordApp.Quit(ref saveOptionsObject);
         }
@@ -522,6 +559,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             textBoxWholeText.Visible = true;
             richTextBoxParagraph.Visible = false;
             textBoxWholeText.Focus();
+            buttonUpdateWholeText.Left = buttonEditWholeText.Left;
+            buttonUpdateWholeText.Top = buttonEditWholeText.Top;
             buttonUpdateWholeText.Visible = true;
             groupBoxSuggestions.Enabled = false;
             groupBoxWordNotFound.Enabled = false;
