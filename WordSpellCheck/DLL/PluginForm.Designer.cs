@@ -417,7 +417,7 @@
             // buttonUpdateWholeText
             // 
             this.buttonUpdateWholeText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonUpdateWholeText.Location = new System.Drawing.Point(506, 233);
+            this.buttonUpdateWholeText.Location = new System.Drawing.Point(448, 291);
             this.buttonUpdateWholeText.Name = "buttonUpdateWholeText";
             this.buttonUpdateWholeText.Size = new System.Drawing.Size(128, 21);
             this.buttonUpdateWholeText.TabIndex = 4;
@@ -450,6 +450,7 @@
             this.MinimumSize = new System.Drawing.Size(820, 525);
             this.Name = "PluginForm";
             this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "PluginForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PluginForm_FormClosing);
