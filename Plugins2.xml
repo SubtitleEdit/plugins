@@ -66,9 +66,9 @@
   <Plugin>
     <Name>Word spell check</Name>
     <Description>Word spell check (requires Microsoft Word)</Description>
-    <Version>1.0</Version>
-    <Date>2013-12-26</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.0/WordSpellCheck-v1.0.zip</Url>
+    <Version>1.1</Version>
+    <Date>2014-05-25</Date>
+    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.0/WordSpellCheck-v1.1.zip</Url>
   </Plugin>
   <Plugin>
     <Name>Avi Writer</Name>
