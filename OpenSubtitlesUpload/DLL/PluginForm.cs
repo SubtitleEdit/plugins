@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -103,8 +104,9 @@ namespace OpenSubtitlesUpload
             _videoFileName = videoFileName;
             _rawText = rawText;
 
+            string videoFileSafeName = System.IO.Path.GetFileName(videoFileName);
             textBoxSubtitleFileName.Text = System.IO.Path.GetFileName(subtitleFileName);
-            textBoxMovieFileName.Text = System.IO.Path.GetFileName(videoFileName);
+            textBoxMovieFileName.Text = videoFileSafeName;
             textBoxReleaseName.Text = string.Empty;
 
             string twoLetterLanguageId = Utilities.AutoDetectGoogleLanguage(rawText);
@@ -121,7 +123,13 @@ namespace OpenSubtitlesUpload
 
             string temp = rawText.Replace("[", string.Empty).Replace("]", string.Empty).Replace("(", string.Empty).Replace(")", string.Empty).Replace(": ", string.Empty);
             if (temp.Length + 18 < rawText.Length)
+            {
                 checkBoxTextForHI.Checked = true;
+            }
+            if (System.Text.RegularExpressions.Regex.IsMatch(videoFileSafeName, @"\B\d+p\b", System.Text.RegularExpressions.RegexOptions.IgnoreCase))
+            {
+                checkBoxHD.Checked = true;
+            }
 
             comboBoxEncoding.Items.Clear();
             int encodingSelectedIndex = 0;
@@ -317,7 +325,7 @@ namespace OpenSubtitlesUpload
         public static string GetVideoFileFilter()
         {
             var sb = new StringBuilder();
-            sb.Append("video files|");
+            sb.Append("Video files|");
             int i = 0;
             foreach (string extension in GetMovieFileExtensions())
             {
@@ -350,10 +358,14 @@ namespace OpenSubtitlesUpload
             {
                 try
                 {
-                    string s = string.Empty;
+                    string title = string.Empty;
                     if (!string.IsNullOrEmpty(_videoFileName))
-                        s = System.IO.Path.GetFileNameWithoutExtension(_videoFileName).Replace(".", " ");
-                    var form = new ImdbSearch(s, _api);
+                    {
+                        title = System.IO.Path.GetFileNameWithoutExtension(_videoFileName).Replace(".", " ");
+                        title = ConvertToTitle(title);
+
+                    }
+                    var form = new ImdbSearch(title, _api);
                     if (form.ShowDialog(this) == DialogResult.OK)
                     {
                         textBoxImdbId.Text = form.ImdbId;
@@ -367,19 +379,49 @@ namespace OpenSubtitlesUpload
             }
         }
 
+        private string ConvertToTitle(string release)
+        {
+            // Minority Report 2002
+            //Better.Living.Through.Chemistry.2014.1080p.BluRay.x264.AAC.Ozlem
+            // Veep - 03x05 - Fishing Subtitle
+            release = release.Replace("[", " ");
+            release = release.Replace("]", " ");
+            release = release.Replace("_", " ");
+            release = release.Replace(" - ", " ");
+            release = release.Replace("-", " ");
+            release = release.Replace("  ", " ");
+            release = release.Replace("  ", " ");
+            release = release.Replace(":", string.Empty);
+            release = release.Replace("(", " ");
+            release = release.Replace(")", " ");
+
+            var regexMovie = new Regex("(.+\\d{4}\\b)");
+            var regexTvShow1 = new Regex("(.+[Ss]\\d{2}[eE]\\d{2})");
+            var regexTvShow2 = new Regex("(.+\\d{2}[xX]\\d{2})");
+
+            // Californication.S07E01.HDTV.x264-EXCELLENCE
+            // Zulu.2013.1080p.BluRay.x264-Friday11th [PublicHD]
+            // Zulu (2013) 720p BrRip x264 - YIFY
+            // Tv show
+            if (regexTvShow1.IsMatch(release)) // Californication.S07E01.HDTV.x264-EXCELLENCE
+            {
+                release = Regex.Match(release, "(.+)[Ss]\\d{2}[eE]\\d{2}", RegexOptions.Compiled).Groups[1].Value;
+            }
+            else if (Regex.IsMatch(release, "\\d{2}[xX]\\d{2}"))
+            {
+                release = Regex.Match(release, "(.+)\\d{2}[xX]\\d{2}", RegexOptions.Compiled).Groups[1].Value;
+            }
+            else if (Regex.IsMatch(release, "(.+)\\d{4}\\b")) // Zulu.2013.1080p.BluRay.x264-Friday11th [PublicHD]
+            {
+                release = Regex.Match(release, "(.+\\d{4}\\b)", RegexOptions.Compiled).Groups[1].Value;
+            }
+            release = release.Trim().Replace("  ", " ");
+            return release;
+        }
+
         private void linkLabelRegister_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start("http://www.opensubtitles.org/en/newuser");
-        }
-
-        private void textBoxMovieFileName_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void labelMovieFileName_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

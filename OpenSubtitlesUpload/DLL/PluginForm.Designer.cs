@@ -123,7 +123,6 @@
             this.labelMovieFileName.Size = new System.Drawing.Size(81, 13);
             this.labelMovieFileName.TabIndex = 9;
             this.labelMovieFileName.Text = "Movie file name";
-            this.labelMovieFileName.Click += new System.EventHandler(this.labelMovieFileName_Click);
             // 
             // textBoxMovieFileName
             // 
@@ -133,7 +132,6 @@
             this.textBoxMovieFileName.Name = "textBoxMovieFileName";
             this.textBoxMovieFileName.Size = new System.Drawing.Size(287, 20);
             this.textBoxMovieFileName.TabIndex = 7;
-            this.textBoxMovieFileName.TextChanged += new System.EventHandler(this.textBoxMovieFileName_TextChanged);
             // 
             // labelPassword
             // 
@@ -252,7 +250,7 @@
             // checkBoxHD
             // 
             this.checkBoxHD.AutoSize = true;
-            this.checkBoxHD.Location = new System.Drawing.Point(116, 307);
+            this.checkBoxHD.Location = new System.Drawing.Point(227, 284);
             this.checkBoxHD.Name = "checkBoxHD";
             this.checkBoxHD.Size = new System.Drawing.Size(118, 17);
             this.checkBoxHD.TabIndex = 11;
@@ -378,7 +376,7 @@
             // 
             this.labelStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelStatus.AutoSize = true;
-            this.labelStatus.Location = new System.Drawing.Point(12, 444);
+            this.labelStatus.Location = new System.Drawing.Point(14, 445);
             this.labelStatus.Name = "labelStatus";
             this.labelStatus.Size = new System.Drawing.Size(59, 13);
             this.labelStatus.TabIndex = 3;
