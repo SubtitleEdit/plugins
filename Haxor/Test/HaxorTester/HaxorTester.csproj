@@ -76,9 +76,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\..\HI2UC\HI2UC.csproj">
       <Project>{16b4be52-050a-4161-b0e3-9b07aa5f650b}</Project>
       <Name>HI2UC</Name>
