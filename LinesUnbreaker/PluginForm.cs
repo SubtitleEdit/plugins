@@ -189,26 +189,25 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string UnbreakLines(string s)
         {
-            var t = Utilities.RemoveHtmlTags(s);
-            t = t.Replace("  ", " ").Trim();
+            var temp = Utilities.RemoveHtmlTags(s);
+            temp = temp.Replace("  ", " ").Trim();
 
-            if ((t.StartsWith("-") || t.Contains("\r\n-")) && checkBoxSkipDialog.Checked)
+            if ((temp.StartsWith("-") || temp.Contains("\r\n-")) && checkBoxSkipDialog.Checked)
             {
                 return s;
             }
-            else if (Regex.IsMatch(t, @"[\[\{\(]|[\}\]\)]") && checkBoxMoods.Checked)
+            if ((temp.Contains("(") || temp.Contains("[") || temp.Contains("{")) && checkBoxMoods.Checked)
             {
                 return s;
             }
-            else if (Regex.IsMatch(t, ":\\B") && checkBoxSkipNarrator.Checked)
+            if (Regex.IsMatch(temp, ":\\B") && checkBoxSkipNarrator.Checked)
             {
                 return s;
             }
 
-            t = t.Replace(Environment.NewLine, " ").Trim();
-            t = t.Replace("  ", " ");
-
-            if (t.Length < _maxLineLength)
+            temp = temp.Replace(Environment.NewLine, " ").Trim();
+            temp = temp.Replace("  ", " ");
+            if (temp.Length < _maxLineLength)
             {
                 s = s.Replace(Environment.NewLine, " ").Trim();
             }
@@ -219,7 +218,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             listView1.Items.Clear();
             _totalFixed = 0;
+            buttonUpdate.Enabled = false;
             FindLines();
+            buttonUpdate.Enabled = true;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -245,13 +246,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (this.listView1.Items.Count <= 0)
                 return;
-
+            listView1.BeginUpdate();
             if ((sender as Button).Text == "Select all")
                 foreach (ListViewItem item in this.listView1.Items)
                     item.Checked = true;
             else
                 foreach (ListViewItem item in this.listView1.Items)
                     item.Checked = !item.Checked;
+            listView1.EndUpdate();
         }
     }
 }
