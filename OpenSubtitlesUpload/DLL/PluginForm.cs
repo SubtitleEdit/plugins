@@ -120,17 +120,15 @@ namespace OpenSubtitlesUpload
             textBoxPassword.Text = string.Empty;
             LoadLogin();
             _api = new OpenSubtitlesApi("SubtitleEdit");
-
             string temp = rawText.Replace("[", string.Empty).Replace("]", string.Empty).Replace("(", string.Empty).Replace(")", string.Empty).Replace(": ", string.Empty);
             if (temp.Length + 18 < rawText.Length)
             {
                 checkBoxTextForHI.Checked = true;
             }
-            if (System.Text.RegularExpressions.Regex.IsMatch(videoFileSafeName, @"\B\d+p\b", System.Text.RegularExpressions.RegexOptions.IgnoreCase))
+            if (!string.IsNullOrEmpty(videoFileSafeName) && System.Text.RegularExpressions.Regex.IsMatch(videoFileSafeName, @"\B\d+p\b", System.Text.RegularExpressions.RegexOptions.IgnoreCase))
             {
                 checkBoxHD.Checked = true;
             }
-
             comboBoxEncoding.Items.Clear();
             int encodingSelectedIndex = 0;
             comboBoxEncoding.Items.Add(Encoding.UTF8.EncodingName);
