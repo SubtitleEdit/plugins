@@ -43,7 +43,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             //SizeLastColumn();
             comboBox1.SelectedIndex = 0;
-            this.Resize += (s, arg) =>
+            this.Resize += delegate
             {
                 listViewFixes.Columns[listViewFixes.Columns.Count - 1].Width = -2;
             };
@@ -169,8 +169,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                     if (text != oldText)
                     {
-                        text = Regex.Replace(text, "\\s+" + Environment.NewLine, Environment.NewLine);
-                        text = Regex.Replace(text, Environment.NewLine + "\\s+", Environment.NewLine);
+                        text = Regex.Replace(text, " +" + Environment.NewLine, Environment.NewLine);
+                        text = Regex.Replace(text, Environment.NewLine + " +", Environment.NewLine);
 
                         if (AllowFix(p))
                         {
@@ -201,6 +201,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 Application.DoEvents();
             }
             listViewFixes.EndUpdate();
+            listViewFixes.Refresh();
         }
 
         private void AddFixToListView(Paragraph p, string before, string after)
@@ -248,10 +249,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.Items.Add(item);
         }
 
-        bool _ignoreError = false;
-        bool _abortError = false;
         private string FindMoods(string text, Paragraph p)
         {
+            bool ignoreError = false;
+            bool abortError = false;
             Action<Char> FindBrackets = delegate(char openBracket)
             {
                 int index = text.IndexOf(openBracket);
@@ -267,13 +268,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         closeBracket = '}';
 
                     int endIdx = text.IndexOf(closeBracket, index + 1);
-                    if (endIdx < 0 && _ignoreError == false)
+                    if (endIdx < 0 && ignoreError == false)
                     {
                         var dialogResult = PrintErrorMessage(p);
                         if (dialogResult == System.Windows.Forms.DialogResult.Ignore)
-                            _ignoreError = true;
+                            ignoreError = true;
                         else if (dialogResult == System.Windows.Forms.DialogResult.Abort)
-                            _abortError = true;
+                            abortError = true;
                     }
 
                     while (index > -1 && endIdx > index)
@@ -319,29 +320,26 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (!Regex.IsMatch(text, @"[\(\[\{]"))
                 return text;
-            string before = text;
 
+            string before = text;
             switch (_hiStyle)
             {
                 case HIStyle.UpperLowerCase:
-                    string helper = string.Empty;
+                    var helper = new System.Text.StringBuilder();
                     bool isUpperTime = true;
                     foreach (char myChar in text)
                     {
-                        helper += isUpperTime ? char.ToUpper(myChar) : char.ToLower(myChar);
+                        helper.Append(isUpperTime ? char.ToUpper(myChar) : char.ToLower(myChar));
                         isUpperTime = !isUpperTime;
                     }
-                    text = helper;
+                    text = helper.ToString();
                     break;
-
                 case HIStyle.FirstUppercase:
                     text = Regex.Replace(text.ToLower(), @"\b\w", x => x.Value.ToUpper());
                     break;
-
                 case HIStyle.UpperCase:
                     text = text.ToUpper();
                     break;
-
                 case HIStyle.LowerCase:
                     text = text.ToLower();
                     break;
@@ -397,7 +395,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return s;
             };
 
-            if (text.Replace(Environment.NewLine, string.Empty).Length != text.Length)
+            if (text.Contains(Environment.NewLine))
             {
                 var lines = text.Replace(Environment.NewLine, "\n").Split('\n');
                 for (int i = 0; i < lines.Length; i++)
@@ -450,7 +448,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     string temp = narrator.Substring(tagIndex, (closeIndex - tagIndex)).ToLower();
                     narrator = narrator.Remove(tagIndex, (closeIndex - tagIndex)).Insert(tagIndex, temp);
                 }
-                tagIndex = narrator.IndexOf("<", closeIndex);
+                if (closeIndex > -1)
+                    tagIndex = narrator.IndexOf("<", closeIndex);
+                else
+                    tagIndex = -1;
             }
             return narrator;
         }
