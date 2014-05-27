@@ -50,7 +50,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             if (!subtitle.Contains("(") && !subtitle.Contains("["))
             {
-                var result = MessageBox.Show("Subtitle doesn't contians Hearing Imapired notations!" + Environment.NewLine +
+                var result = MessageBox.Show("Subtitle doesn't contians Hearing Impaired anotations!" + Environment.NewLine +
                     "Do you want to continue?",
                     "Hearing Impaired not found!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.No)
