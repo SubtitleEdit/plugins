@@ -18,6 +18,7 @@ namespace OpenSubtitlesUpload
         public ImdbSearch(string title, OpenSubtitlesApi api)
         {
             InitializeComponent();
+            labelStatus.Text = string.Empty;
             _api = api;
             textBoxSearchQuery.Text = title;
         }
@@ -35,16 +36,14 @@ namespace OpenSubtitlesUpload
         {
             try
             {
-                Cursor = Cursors.WaitCursor;
+                labelStatus.Text = "Searching...";
                 var backGroundWoker = new BackgroundWorker();
                 backGroundWoker.DoWork += (s, ev) =>
                 {
-                    this.buttonSearch.BeginInvoke(new MethodInvoker(() => buttonSearch.Enabled = false));
+                    //this.buttonSearch.BeginInvoke(new MethodInvoker(() => buttonSearch.Enabled = false));
+                    this.Invoke(new MethodInvoker(() => buttonSearch.Enabled = false));
                     string query = ev.Argument as string;
                     Dictionary<string, string> dic = null;
-                    //ThreadPool.QueueUserWorkItem(_ =>
-                    //{
-                    //});
                     dic = _api.SearchMoviesOnIMDB(textBoxSearchQuery.Text);
                     ev.Result = dic;
                 };
@@ -55,8 +54,7 @@ namespace OpenSubtitlesUpload
                     if (dic.Count == 0)
                     {
                         MessageBox.Show("Movie/Tv-Show not found!!!", "Not fond", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        Cursor = Cursors.Default;
-                        this.buttonSearch.BeginInvoke(new MethodInvoker(() => buttonSearch.Enabled = true));
+                        this.Invoke(new MethodInvoker(() => buttonSearch.Enabled = true));
                         return;
                     }
 
@@ -67,7 +65,8 @@ namespace OpenSubtitlesUpload
                         item.SubItems.Add(kvp.Value);
                         listViewSearchResults.Items.Add(item);
                     }
-                    this.buttonSearch.BeginInvoke(new MethodInvoker(() => buttonSearch.Enabled = true));
+                    this.Invoke(new MethodInvoker(() => buttonSearch.Enabled = true));
+                    labelStatus.Text = string.Empty;
                 };
 
                 backGroundWoker.RunWorkerAsync(textBoxSearchQuery.Text);
@@ -75,8 +74,8 @@ namespace OpenSubtitlesUpload
             catch (Exception exception)
             {
                 MessageBox.Show(exception.Message);
+                labelStatus.Text = string.Empty;
             }
-            Cursor = Cursors.Default;
         }
 
         private void listViewSearchResults_MouseDoubleClick(object sender, MouseEventArgs e)
