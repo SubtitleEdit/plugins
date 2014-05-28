@@ -5,13 +5,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
     internal class Paragraph
     {
         internal int Number { get; set; }
-
         internal string Text { get; set; }
-
         internal TimeCode StartTime { get; set; }
-
         internal TimeCode EndTime { get; set; }
-
         internal TimeCode Duration
         {
             get
@@ -21,17 +17,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return timeCode;
             }
         }
-
         internal int StartFrame { get; set; }
-
         internal int EndFrame { get; set; }
-
         internal bool Forced { get; set; }
-
         internal string Extra { get; set; }
-
         internal bool IsComment { get; set; }
-
         internal string Actor { get; set; }
 
         internal Paragraph()
