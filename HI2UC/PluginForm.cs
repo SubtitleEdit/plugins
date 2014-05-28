@@ -56,7 +56,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void btn_Run_Click(object sender, EventArgs e)
         {
-            Cursor = Cursors.WaitCursor;
+            Cursor.Current = Cursors.WaitCursor;
             _allowFixes = true;
             FindHearingImpairedText();
             if (_deleteLine)
@@ -198,10 +198,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 groupBox1.Text = "Total Found: " + _totalChanged;
                 this.listViewFixes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
                 this.listViewFixes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-                Application.DoEvents();
+                //Application.DoEvents();
             }
             listViewFixes.EndUpdate();
-            listViewFixes.Refresh();
+            this.Refresh();
         }
 
         private void AddFixToListView(Paragraph p, string before, string after)
