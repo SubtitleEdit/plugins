@@ -29,7 +29,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             while (s.ToLower().Contains("<font"))
             {
                 int startIndex = s.ToLower().IndexOf("<font");
-                int endIndex = Math.Max(s.IndexOf(">"), startIndex + 4);
+                int endIndex = Math.Max(s.IndexOf(">", startIndex), startIndex + 4);
                 s = s.Remove(startIndex, (endIndex - startIndex) + 1);
             }
             return s;
@@ -64,7 +64,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             while (s.ToLower().Contains("<p "))
             {
                 int startIndex = s.ToLower().IndexOf("<p ");
-                int endIndex = Math.Max(s.IndexOf(">"), startIndex + 4);
+                int endIndex = Math.Max(s.IndexOf(">", startIndex), startIndex + 4);
                 s = s.Remove(startIndex, (endIndex - startIndex) + 1);
             }
             return s;
