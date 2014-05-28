@@ -18,6 +18,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.Text = name;
             labelDescription.Text = description;
             _subtitle = subtitle;
+            this.Resize += delegate
+            {
+                int idx = listViewFixes.Columns.Count - 1;
+                this.listViewFixes.Columns[idx].Width = -2;
+            };
             FindDialogueAndListFixes();
         }
 
@@ -25,7 +30,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             _allowFixes = true;
             FindDialogueAndListFixes();
-            FixedSubtitle = _subtitle.ToText(new SubRip()); ;
+            FixedSubtitle = _subtitle.ToText(new SubRip());
             DialogResult = DialogResult.OK;
         }
 
@@ -84,6 +89,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                                 }
                                 else
                                 {
+                                    if (_allowFixes)
+                                        continue;
                                     _totalFixes++;
                                     // remove html tags before adding to listview
                                     text = Utilities.RemoveHtmlTags(text);
@@ -136,6 +143,38 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return true;
             }
             return false;
+        }
+
+        private void buttonSelectAll_Click(object sender, EventArgs e)
+        {
+            if (!SubtitleLoaded())
+                return;
+            DoSelection(true);
+        }
+
+        private void buttonInverseSelection_Click(object sender, EventArgs e)
+        {
+            if (!SubtitleLoaded())
+                return;
+            DoSelection(false);
+        }
+
+        private bool SubtitleLoaded()
+        {
+            if (_subtitle == null)
+                return false;
+            if (_subtitle.Paragraphs.Count < 1)
+                return false;
+            return true;
+        }
+
+        private void DoSelection(bool selectAll)
+        {
+            listViewFixes.BeginUpdate();
+            foreach (ListViewItem item in listViewFixes.Items)
+                item.Checked = selectAll ? selectAll : !item.Checked;
+            listViewFixes.EndUpdate();
+            this.Refresh();
         }
     }
 }

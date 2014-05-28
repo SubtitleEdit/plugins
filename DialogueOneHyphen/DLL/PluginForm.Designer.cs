@@ -38,6 +38,8 @@
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.labelTotal = new System.Windows.Forms.Label();
+            this.buttonInverseSelection = new System.Windows.Forms.Button();
+            this.buttonSelectAll = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttonOK
@@ -128,19 +130,46 @@
             this.labelTotal.TabIndex = 102;
             this.labelTotal.Text = "Total:";
             // 
+            // buttonInverseSelection
+            // 
+            this.buttonInverseSelection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonInverseSelection.Location = new System.Drawing.Point(846, 3);
+            this.buttonInverseSelection.Name = "buttonInverseSelection";
+            this.buttonInverseSelection.Size = new System.Drawing.Size(105, 23);
+            this.buttonInverseSelection.TabIndex = 103;
+            this.buttonInverseSelection.Text = "Inverse selection";
+            this.buttonInverseSelection.UseVisualStyleBackColor = true;
+            this.buttonInverseSelection.Click += new System.EventHandler(this.buttonInverseSelection_Click);
+            // 
+            // buttonSelectAll
+            // 
+            this.buttonSelectAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonSelectAll.Location = new System.Drawing.Point(765, 3);
+            this.buttonSelectAll.Name = "buttonSelectAll";
+            this.buttonSelectAll.Size = new System.Drawing.Size(75, 23);
+            this.buttonSelectAll.TabIndex = 104;
+            this.buttonSelectAll.Text = "Select all";
+            this.buttonSelectAll.UseVisualStyleBackColor = true;
+            this.buttonSelectAll.Click += new System.EventHandler(this.buttonSelectAll_Click);
+            // 
             // PluginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(963, 489);
+            this.Controls.Add(this.buttonSelectAll);
+            this.Controls.Add(this.buttonInverseSelection);
             this.Controls.Add(this.labelTotal);
             this.Controls.Add(this.listViewFixes);
             this.Controls.Add(this.labelDescription);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.buttonOK);
             this.KeyPreview = true;
+            this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(979, 528);
             this.Name = "PluginForm";
             this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "PluginForm";
             this.ResumeLayout(false);
@@ -160,6 +189,8 @@
         private System.Windows.Forms.ColumnHeader columnHeader7;
         private System.Windows.Forms.ColumnHeader columnHeader8;
         private System.Windows.Forms.Label labelTotal;
+        private System.Windows.Forms.Button buttonInverseSelection;
+        private System.Windows.Forms.Button buttonSelectAll;
 
     }
 }
