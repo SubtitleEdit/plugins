@@ -16,19 +16,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static string RemoveHtmlTags(string s)
         {
-            if (s == null)
-                return null;
+            if (string.IsNullOrEmpty(s))
+                return string.Empty;
 
             if (!s.Contains("<"))
                 return s;
-            string lowerText = s.ToLower();
-
             s = Regex.Replace(s, "(?i)</?[buiі]>", string.Empty); // Basic Latin: i, Cyrillic: і
-            if (lowerText.Contains("<p"))
-                s = RemoveParagraphTag(s);
-            if (lowerText.Contains("<font"))
-                s = RemoveHtmlFontTag(s);
-
+            s = RemoveParagraphTag(s);
+            s = RemoveHtmlFontTag(s);
             return s.Trim();
         }
 
@@ -38,7 +33,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             while (s.ToLower().Contains("<font"))
             {
                 int startIndex = s.ToLower().IndexOf("<font");
-                int endIndex = Math.Max(s.IndexOf(">"), startIndex + 4);
+                int endIndex = Math.Max(s.IndexOf(">", startIndex: startIndex), startIndex + 4);
                 s = s.Remove(startIndex, (endIndex - startIndex) + 1);
             }
             return s;
@@ -50,7 +45,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             while (s.ToLower().Contains("<p "))
             {
                 int startIndex = s.ToLower().IndexOf("<p ");
-                int endIndex = Math.Max(s.IndexOf(">"), startIndex + 4);
+                int endIndex = Math.Max(s.IndexOf(">", startIndex: startIndex), startIndex + 4);
                 s = s.Remove(startIndex, (endIndex - startIndex) + 1);
             }
             return s;
