@@ -108,11 +108,11 @@ namespace SeSkydriveLoad
                     {
                         if (!string.IsNullOrEmpty(b.Token))
                         {
-                            Cursor = Cursors.WaitCursor;
+                            Cursor.Current = Cursors.WaitCursor;
                             _api.AccessToken = b.Token;
                             SaveToken(_api.AccessToken, b.Expires);
                             LoadFiles("me/skydrive");
-                            Cursor = Cursors.Default;
+                            Cursor.Current = Cursors.Default;
                         }
                         else
                         {
@@ -132,7 +132,7 @@ namespace SeSkydriveLoad
             }
             catch (Exception exception)
             {
-                Cursor = Cursors.Default;
+                Cursor.Current = Cursors.Default;
                 MessageBox.Show(exception.Message);
                 DialogResult = DialogResult.Cancel;
             }
