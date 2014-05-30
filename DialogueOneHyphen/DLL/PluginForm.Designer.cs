@@ -67,7 +67,7 @@
             // labelDescription
             // 
             this.labelDescription.AutoSize = true;
-            this.labelDescription.Location = new System.Drawing.Point(13, 13);
+            this.labelDescription.Location = new System.Drawing.Point(12, 27);
             this.labelDescription.Name = "labelDescription";
             this.labelDescription.Size = new System.Drawing.Size(82, 13);
             this.labelDescription.TabIndex = 2;
@@ -88,9 +88,9 @@
             this.listViewFixes.FullRowSelect = true;
             this.listViewFixes.GridLines = true;
             this.listViewFixes.HideSelection = false;
-            this.listViewFixes.Location = new System.Drawing.Point(12, 29);
+            this.listViewFixes.Location = new System.Drawing.Point(12, 46);
             this.listViewFixes.Name = "listViewFixes";
-            this.listViewFixes.Size = new System.Drawing.Size(939, 419);
+            this.listViewFixes.Size = new System.Drawing.Size(939, 402);
             this.listViewFixes.TabIndex = 101;
             this.listViewFixes.UseCompatibleStateImageBehavior = false;
             this.listViewFixes.View = System.Windows.Forms.View.Details;
@@ -133,7 +133,7 @@
             // buttonInverseSelection
             // 
             this.buttonInverseSelection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonInverseSelection.Location = new System.Drawing.Point(846, 3);
+            this.buttonInverseSelection.Location = new System.Drawing.Point(846, 17);
             this.buttonInverseSelection.Name = "buttonInverseSelection";
             this.buttonInverseSelection.Size = new System.Drawing.Size(105, 23);
             this.buttonInverseSelection.TabIndex = 103;
@@ -144,7 +144,7 @@
             // buttonSelectAll
             // 
             this.buttonSelectAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSelectAll.Location = new System.Drawing.Point(765, 3);
+            this.buttonSelectAll.Location = new System.Drawing.Point(765, 17);
             this.buttonSelectAll.Name = "buttonSelectAll";
             this.buttonSelectAll.Size = new System.Drawing.Size(75, 23);
             this.buttonSelectAll.TabIndex = 104;
