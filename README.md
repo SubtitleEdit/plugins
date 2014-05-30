@@ -19,3 +19,9 @@ Compiling
 
 Please compile plugins to "any cpu" (if possible).
 Framework version: If possible, please provide both a version compiled with .net 2 (can be used with 2-3.5) and a version compiled with .net 4 (can be used with 4+).
+
+Requirements
+=============
+Use `Nikse.SubtitleEdit.PluginLogic` as Entry point namespce, take a look: https://github.com/SubtitleEdit/plugins/blob/master/LinesUnbreaker/Plugin.cs
+
+dll file name must "<classname>.dll" - e.g. "SyncViaOtherSubtitle.dll"
