@@ -181,12 +181,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private string SetColorForNarrator(string text, Paragraph p)
         {
             var t = Utilities.RemoveHtmlTags(text);
-            int index = t.IndexOf(":");
+            int index = t.IndexOf(":", System.StringComparison.Ordinal);
             if (index == t.Length - 1)
                 return text;
 
             string htmlColor = string.Format("#{0:x2}{1:x2}{2:x2}", _narratorColor.R, _narratorColor.G, _narratorColor.B);
-            string writeFormat = "<font color=\"{0}\">{1}</font>";
+            const string writeFormat = "<font color=\"{0}\">{1}</font>";
             Func<string, string> SetColor = (narrator) =>
             {
                 if (narrator.ToLower().Contains("by") || narrator.ToLower().Contains("http"))
@@ -201,7 +201,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     //TODO: if text contains 2 hearing text
                     string cleanText = Utilities.RemoveHtmlTags(lines[i]);
-                    index = cleanText.IndexOf(":");
+                    index = cleanText.IndexOf(":", System.StringComparison.Ordinal);
 
                     if ((index + 1 < cleanText.Length - 1) && char.IsDigit(cleanText[index + 1])) // filtered above \B
                     {
@@ -214,7 +214,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     }
                     else
                     {
-                        index = lines[i].IndexOf(":");
+                        index = lines[i].IndexOf(":", System.StringComparison.Ordinal);
                         if (index > 0)
                         {
                             string temp = lines[i];
@@ -230,7 +230,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                                 string firstChr = Regex.Match(pre, "(?<!<)\\w", RegexOptions.Compiled).Value;
                                 if (string.IsNullOrEmpty(firstChr))
                                     continue;
-                                int idx = pre.IndexOf(firstChr);
+                                int idx = pre.IndexOf(firstChr, System.StringComparison.Ordinal);
                                 string narrator = pre.Substring(idx, (index - idx));
 
                                 // if it's not uppercase so skip it!
@@ -242,8 +242,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                                 narrator = SetColor(narrator);
                                 pre = pre.Remove(idx, (index - idx)).Insert(idx, narrator);
                                 temp = temp.Remove(0, index).Insert(0, pre);
-                                if (temp != lines[i])
-                                    lines[i] = temp;
+                                if (temp == lines[i]) continue;
+                                lines[i] = temp;
                             }
                         }
                     }
@@ -253,10 +253,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             else
             {
                 string cleanText = Utilities.RemoveHtmlTags(text).Trim();
-                index = cleanText.IndexOf(":");
+                index = cleanText.IndexOf(":", System.StringComparison.Ordinal);
                 if (index < cleanText.Length - 1)
                 {
-                    index = text.IndexOf(":");
+                    index = text.IndexOf(":", System.StringComparison.Ordinal);
                     if (index > 0)
                     {
                         string pre = text.Substring(0, index);
@@ -268,7 +268,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         {
                             // <i>i shall be \w that is way (?<!<)
                             string firstChr = Regex.Match(pre, "(?<!<)\\w", RegexOptions.Compiled).Value;
-                            int idx = pre.IndexOf(firstChr);
+                            int idx = pre.IndexOf(firstChr, System.StringComparison.Ordinal);
                             string narrator = pre.Substring(idx, (index - idx));
                             narrator = SetColor(narrator);
                             pre = pre.Remove(idx, index - idx).Insert(idx, narrator);
