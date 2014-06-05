@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
@@ -18,7 +19,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         decimal IPlugin.Version
         {
-            get { return 1.1M; }
+            get { return 1.2M; }
         }
 
         string IPlugin.Description
@@ -38,7 +39,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
-            subtitle = subtitle.Trim(); // if subtitle was send null this will rise exception!
+            subtitle = subtitle.Trim();
             if (string.IsNullOrEmpty(subtitle))
             {
                 MessageBox.Show("No subtitle loaded", parentForm.Text,
@@ -49,12 +50,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (!string.IsNullOrEmpty(listViewLineSeparatorString))
                 Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
 
-            var list = new List<string>();
-            foreach (string line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
-                list.Add(line);
+            var list = subtitle.Replace(Environment.NewLine, "\n").Split('\n').ToList();
 
-            Subtitle sub = new Subtitle();
-            SubRip srt = new SubRip();
+            var sub = new Subtitle();
+            var srt = new SubRip();
             srt.LoadSubtitle(sub, list, subtitleFileName);
             if(srt.ErrorCount > 0)
             {
