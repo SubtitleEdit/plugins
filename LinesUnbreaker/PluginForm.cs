@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
-
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     public partial class PluginForm : Form
@@ -247,7 +246,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (this.listView1.Items.Count <= 0)
                 return;
             listView1.BeginUpdate();
-            if ((sender as Button).Text == "Select all")
+            if (sender == buttonCheckAll)
                 foreach (ListViewItem item in this.listView1.Items)
                     item.Checked = true;
             else
