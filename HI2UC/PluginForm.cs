@@ -252,7 +252,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private string MoodToUpper(string text, Paragraph p)
         {
             bool ignoreError = false;
-            bool abortError = false;
             Action<Char> FindBrackets = delegate(char openBracket)
             {
                 int index = text.IndexOf(openBracket);
@@ -272,9 +271,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     {
                         var dialogResult = PrintErrorMessage(p);
                         if (dialogResult == System.Windows.Forms.DialogResult.Ignore)
+                        {
                             ignoreError = true;
+                        }
                         else if (dialogResult == System.Windows.Forms.DialogResult.Abort)
-                            abortError = true;
+                        {
+                            DialogResult = System.Windows.Forms.DialogResult.Cancel;
+                        }
                     }
 
                     while (index > -1 && endIdx > index)
