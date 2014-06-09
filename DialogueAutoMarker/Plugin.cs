@@ -57,7 +57,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Subtitle sub = new Subtitle();
             SubRip srt = new SubRip();
             srt.LoadSubtitle(sub, list, subtitleFileName);
-            using (var form = new PluginForm(parentForm, sub, (this as IPlugin).Name, (this as IPlugin).Description))
+            using (var form = new Main(parentForm, sub, (this as IPlugin).Name, (this as IPlugin).Description))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
                     return form.FixedSubtitle;

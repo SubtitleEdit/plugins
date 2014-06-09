@@ -160,7 +160,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         //Remove Extra Spaces
                         if (checkBoxRemoveSpaces.Checked)
                             text = Regex.Replace(text, "(?<=[\\(\\[\\{]) +| +(?=[\\)\\]\\}])", String.Empty, RegexOptions.Compiled);
-                        text = FindMoods(text, p);
+                        text = MoodToUpper(text, p);
                     }
 
                     // Narrator:
@@ -195,7 +195,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (!_allowFixes)
             {
                 groupBox1.ForeColor = _totalChanged <= 0 ? Color.Red : Color.Green;
-                groupBox1.Text = "Total Found: " + _totalChanged;
+                groupBox1.Text = string.Format("Total Found: {0}", _totalChanged);
                 this.listViewFixes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
                 this.listViewFixes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
                 //Application.DoEvents();
@@ -227,13 +227,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             if (after.Replace(Environment.NewLine, string.Empty).Length != after.Length)
             {
-                int idx = after.IndexOf(Environment.NewLine);
+                int idx = after.IndexOf(Environment.NewLine, System.StringComparison.Ordinal);
                 if (idx > 2)
                 {
                     string firstLine = after.Substring(0, idx).Trim();
                     string secondLine = after.Substring(idx).Trim();
-                    int idx1 = firstLine.IndexOf(":");
-                    int idx2 = secondLine.IndexOf(":");
+                    int idx1 = firstLine.IndexOf(":", System.StringComparison.Ordinal);
+                    int idx2 = secondLine.IndexOf(":", System.StringComparison.Ordinal);
                     if (idx1 > 0xE || idx2 > 0xE)
                     {
                         item.BackColor = Color.Pink;
@@ -242,17 +242,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             else
             {
-                if (after.IndexOf(":") > 0xE)
+                if (after.IndexOf(":", System.StringComparison.Ordinal) > 0xE)
                     item.BackColor = Color.Pink;
             }
 
             listViewFixes.Items.Add(item);
         }
 
-        private string FindMoods(string text, Paragraph p)
+        private string MoodToUpper(string text, Paragraph p)
         {
             bool ignoreError = false;
-            bool abortError = false;
             Action<Char> FindBrackets = delegate(char openBracket)
             {
                 int index = text.IndexOf(openBracket);
@@ -272,9 +271,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     {
                         var dialogResult = PrintErrorMessage(p);
                         if (dialogResult == System.Windows.Forms.DialogResult.Ignore)
+                        {
                             ignoreError = true;
+                        }
                         else if (dialogResult == System.Windows.Forms.DialogResult.Abort)
-                            abortError = true;
+                        {
+                            DialogResult = System.Windows.Forms.DialogResult.Cancel;
+                        }
                     }
 
                     while (index > -1 && endIdx > index)
@@ -358,15 +361,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
             int index = t.IndexOf(":");
 
             // like: "Ivandro Says:"
-            if (index == t.Length - 1)
+            if (index == t.Length - 1 || text.StartsWith("http"))
+            {
                 return text;
+            }
 
             Func<string, string> ToUpper = (string s) =>
             {
                 string pre = s.Substring(0, index);
 
                 // (Adele: ...)
-                if (pre.Contains("(") || pre.Contains("[") || pre.Contains("{"))
+                if (pre.Contains("(") || pre.Contains("[") || pre.Contains("{") || s.StartsWith("http"))
                     return s;
 
                 if (Utilities.RemoveHtmlTags(pre).Trim().Length > 0)
@@ -439,17 +444,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private string FixUpperTagInNarrator(string narrator)
         {
             // Fix Upper tag
-            int tagIndex = narrator.IndexOf("<");
+            int tagIndex = narrator.IndexOf("<", System.StringComparison.Ordinal);
             while (tagIndex > -1)
             {
-                int closeIndex = narrator.IndexOf(">", tagIndex + 1);
+                int closeIndex = narrator.IndexOf(">", tagIndex + 1, System.StringComparison.Ordinal);
                 if (closeIndex > -1 && closeIndex > tagIndex)
                 {
                     string temp = narrator.Substring(tagIndex, (closeIndex - tagIndex)).ToLower();
                     narrator = narrator.Remove(tagIndex, (closeIndex - tagIndex)).Insert(tagIndex, temp);
                 }
                 if (closeIndex > -1)
-                    tagIndex = narrator.IndexOf("<", closeIndex);
+                    tagIndex = narrator.IndexOf("<", closeIndex, System.StringComparison.Ordinal);
                 else
                     tagIndex = -1;
             }

@@ -531,5 +531,34 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 listViewDialogue.EnsureVisible(lastSelectedIndex);
             }
         }
+
+        private void Main_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode != (Keys.Down | Keys.Up))
+                return;
+            this.listViewDialogue.Focus();
+            if (e.KeyCode == Keys.Up)
+            {
+                buttonPrev_Click(null, EventArgs.Empty);
+            }
+            else
+            {
+                buttonNext_Click(null, EventArgs.Empty);
+            }
+        }
+
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == (Keys.Control | Keys.Up))
+            {
+                listViewDialogue.Focus();
+                buttonPrev_Click(null, EventArgs.Empty);
+            }
+            else if (e.KeyData == (Keys.Control | Keys.Down))
+            {
+                listViewDialogue.Focus();
+                buttonNext_Click(null, EventArgs.Empty);
+            }
+        }
     }
 }
