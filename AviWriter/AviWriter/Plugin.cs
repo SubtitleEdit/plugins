@@ -49,14 +49,21 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
+            subtitle = subtitle.Trim();
+            if (string.IsNullOrEmpty(subtitle))
+            {
+                MessageBox.Show("No subtitle loaded", parentForm.Text,
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return string.Empty;
+            }
             // load subtitle text into object 
             var list = new List<string>();
-            foreach (string line in subtitle.Replace(Environment.NewLine, "|").Split("|".ToCharArray(), StringSplitOptions.None))
+            foreach (string line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
                 list.Add(line);
             Subtitle sub = new Subtitle();
             SubRip srt = new SubRip();
             srt.LoadSubtitle(sub, list, subtitleFileName);
-            
+
             // write subtitle to file
             string tempDir = GetTemporaryDirectory();
             File.WriteAllText(Path.Combine(tempDir, "Subtitle.srt"), srt.ToText(sub, "temp"));
@@ -66,7 +73,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             foreach (var r in asm.GetManifestResourceNames())
             {
                 if (r.EndsWith(".gz"))
-                    WriteAndUnzipRes(asm, r, tempDir); 
+                    WriteAndUnzipRes(asm, r, tempDir);
             }
 
             // Start exe file
@@ -81,13 +88,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 if (r.EndsWith(".gz"))
                 {
-                    try
-                    {
-                        File.Delete(GetFileNameFromRessourceName(r));
-                    }
-                    catch
-                    { 
-                    }
+                    try { File.Delete(GetFileNameFromRessourceName(r)); }
+                    catch { }
                 }
             }
             try
