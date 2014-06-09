@@ -94,7 +94,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                 ReadLine(subtitle, line, next);
             }
-            if (_paragraph.Text.Trim().Length > 0)
+            if (_paragraph.EndTime.TotalMilliseconds > _paragraph.StartTime.TotalMilliseconds)
                 subtitle.Paragraphs.Add(_paragraph);
 
             foreach (Paragraph p in subtitle.Paragraphs)
