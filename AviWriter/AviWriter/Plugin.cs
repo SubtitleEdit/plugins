@@ -9,7 +9,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class AviWriter : IPlugin // dll file name must "<classname>.dll" - e.g. "SyncViaOtherSubtitle.dll"
     {
-
         string IPlugin.Name
         {
             get { return "Avi Writer"; }
@@ -97,11 +96,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 File.Delete(Path.Combine(tempDir, "Subtitle.srt"));
                 Directory.Delete(tempDir);
             }
-            catch
-            {
-            }
-
-
+            catch { }
             return string.Empty;
         }
 
@@ -117,8 +112,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Stream strm = asm.GetManifestResourceStream(resourceName);
             if (strm != null)
             {
-                var rdr = new StreamReader(strm);
-                var fout = new FileStream(Path.Combine(tempDir, GetFileNameFromRessourceName(resourceName)), FileMode.Create, FileAccess.Write);
+                using (var rdr = new BinaryReader(strm))
+                using (var fout = new FileStream(Path.Combine(tempDir, GetFileNameFromRessourceName(resourceName)), FileMode.Create, FileAccess.Write))
                 using (var zip = new GZipStream(rdr.BaseStream, CompressionMode.Decompress))
                 {
                     byte[] data = new byte[4069];
@@ -129,8 +124,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         fout.Write(data, 0, bytesRead);
                     }
                 }
-                fout.Close();
-                rdr.Close();
             }
         }
     }
