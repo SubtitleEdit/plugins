@@ -69,7 +69,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _errorCount = 0;
 
             subtitle.Paragraphs.Clear();
-            for (int i=0; i<lines.Count; i++)
+            for (int i = 0; i < lines.Count; i++)
             {
                 _lineNumber++;
                 string line = lines[i].TrimEnd();
@@ -82,7 +82,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 // A new line is missing between two paragraphs (buggy srt file)
                 if (_expecting == ExpectingLine.Text && i + 1 < lines.Count &&
                     _paragraph != null && !string.IsNullOrEmpty(_paragraph.Text) && Utilities.IsInteger(line) &&
-                    _regexTimeCodes.IsMatch(lines[i+1]))
+                    _regexTimeCodes.IsMatch(lines[i + 1]))
                 {
                     ReadLine(subtitle, string.Empty, string.Empty);
                 }
@@ -94,7 +94,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                 ReadLine(subtitle, line, next);
             }
-            if (_paragraph.Text.Trim().Length > 0)
+            if (_paragraph.EndTime.TotalMilliseconds > _paragraph.StartTime.TotalMilliseconds)
                 subtitle.Paragraphs.Add(_paragraph);
 
             foreach (Paragraph p in subtitle.Paragraphs)
@@ -130,7 +130,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     else if (line.Trim().Length > 0)
                     {
                         _errorCount++;
-                        _expecting = ExpectingLine.Number ; // lets go to next paragraph
+                        _expecting = ExpectingLine.Number; // lets go to next paragraph
                     }
                     break;
                 case ExpectingLine.Text:
