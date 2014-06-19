@@ -89,15 +89,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 ReadLine(subtitle, line, next);
             }
 
-            if (_paragraph.Text.Trim().Length > 0)
+            if (_paragraph.EndTime.TotalMilliseconds > _paragraph.StartTime.TotalMilliseconds)
                 subtitle.Paragraphs.Add(_paragraph);
 
             foreach (Paragraph p in subtitle.Paragraphs)
             {
                 p.Text = p.Text.Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
-                //if (Regex.IsMatch(p.Text, Utilities.REGEXHEARINGIMPAIRED))
-                //    p.HearingImpaired = true;
-                //p.GetHearingImpairedText(Paragraph.HearingImpairedType.FeelingsAndMoods);
             }
 
             if (_errorCount < 100)
