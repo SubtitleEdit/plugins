@@ -121,7 +121,7 @@ namespace OpenSubtitles
             return LastStatus == "200 OK";
         }
 
-        public bool TryUploadSubtitles(string subtitle, string subtitleFileName, string movieFileName, string movieFileNameFull, string language, Encoding encoding)
+        public bool TryUploadSubtitles(string subtitle, string subtitleFileName, string movieFileName, string movieFileNameFull, string language, string fps, Encoding encoding)
         {
             string movieByteSize = new FileInfo(movieFileNameFull).Length.ToString();
             string movieTimeMilliseconds = string.Empty;
@@ -191,6 +191,8 @@ namespace OpenSubtitles
             doc.DocumentElement.SelectSingleNode("params/param[2]/value/struct/member/value/struct/member/name[text()='subfilename']/../value/string").InnerText = subtitleFileName;
             doc.DocumentElement.SelectSingleNode("params/param[2]/value/struct/member/value/struct/member/name[text()='moviehash']/../value/string").InnerText = movieHash;
             doc.DocumentElement.SelectSingleNode("params/param[2]/value/struct/member/value/struct/member/name[text()='moviebytesize']/../value/double").InnerText = movieByteSize;
+            if (!string.IsNullOrEmpty(fps))
+                doc.DocumentElement.SelectSingleNode("params/param[2]/value/struct/member/value/struct/member/name[text()='moviefps']/../value/double").InnerText = fps;
             doc.DocumentElement.SelectSingleNode("params/param[2]/value/struct/member/value/struct/member/name[text()='moviefilename']/../value/string").InnerText = movieFileName;
             string response = SendRequestAndGetResponse(doc.OuterXml);
             doc.LoadXml(response);
@@ -203,7 +205,7 @@ namespace OpenSubtitles
             return false;
         }
 
-        public bool UploadSubtitles(string subtitle, string subtitleFileName, string movieFileName, string movieFileNameFull, string language, string releaseName, string idMovieImdb, string comment, string hearingImpaired, string hd, Encoding encoding)
+        public bool UploadSubtitles(string subtitle, string subtitleFileName, string movieFileName, string movieFileNameFull, string language, string releaseName, string idMovieImdb, string comment, string hearingImpaired, string hd, string fps, Encoding encoding)
         {
             if (string.IsNullOrEmpty(language))
                 language = "eng";
@@ -324,6 +326,8 @@ namespace OpenSubtitles
             doc.DocumentElement.SelectSingleNode("params/param[2]/value/struct/member/value/struct/member/name[text()='subfilename']/../value/string").InnerText = subtitleFileName;
             doc.DocumentElement.SelectSingleNode("params/param[2]/value/struct/member/value/struct/member/name[text()='moviehash']/../value/string").InnerText = movieHash;
             doc.DocumentElement.SelectSingleNode("params/param[2]/value/struct/member/value/struct/member/name[text()='moviebytesize']/../value/double").InnerText = movieByteSize;
+            if (!string.IsNullOrEmpty(fps))
+                doc.DocumentElement.SelectSingleNode("params/param[2]/value/struct/member/value/struct/member/name[text()='moviefps']/../value/double").InnerText = fps;
             doc.DocumentElement.SelectSingleNode("params/param[2]/value/struct/member/value/struct/member/name[text()='moviefilename']/../value/string").InnerText = movieFileName;
             doc.DocumentElement.SelectSingleNode("params/param[2]/value/struct/member/value/struct/member/name[text()='subcontent']/../value/string").InnerText = subtitleContent;
             string response = SendRequestAndGetResponse(doc.OuterXml);

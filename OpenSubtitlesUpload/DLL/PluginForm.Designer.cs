@@ -42,6 +42,8 @@
             this.groupBoxLogin = new System.Windows.Forms.GroupBox();
             this.linkLabelRegister = new System.Windows.Forms.LinkLabel();
             this.groupBoxSubtitleInfo = new System.Windows.Forms.GroupBox();
+            this.comboBoxFrameRate = new System.Windows.Forms.ComboBox();
+            this.labelFrameRate = new System.Windows.Forms.Label();
             this.comboBoxEncoding = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.checkBoxHD = new System.Windows.Forms.CheckBox();
@@ -69,7 +71,7 @@
             this.buttonUpload.Location = new System.Drawing.Point(301, 465);
             this.buttonUpload.Name = "buttonUpload";
             this.buttonUpload.Size = new System.Drawing.Size(75, 23);
-            this.buttonUpload.TabIndex = 3;
+            this.buttonUpload.TabIndex = 4;
             this.buttonUpload.Text = "Upload";
             this.buttonUpload.UseVisualStyleBackColor = true;
             this.buttonUpload.Click += new System.EventHandler(this.UploadClick);
@@ -81,7 +83,7 @@
             this.textBoxSubtitleFileName.Location = new System.Drawing.Point(116, 107);
             this.textBoxSubtitleFileName.Name = "textBoxSubtitleFileName";
             this.textBoxSubtitleFileName.Size = new System.Drawing.Size(317, 20);
-            this.textBoxSubtitleFileName.TabIndex = 5;
+            this.textBoxSubtitleFileName.TabIndex = 9;
             // 
             // linkLabelUploadManually
             // 
@@ -90,7 +92,7 @@
             this.linkLabelUploadManually.Location = new System.Drawing.Point(13, 473);
             this.linkLabelUploadManually.Name = "linkLabelUploadManually";
             this.linkLabelUploadManually.Size = new System.Drawing.Size(85, 13);
-            this.linkLabelUploadManually.TabIndex = 2;
+            this.linkLabelUploadManually.TabIndex = 3;
             this.linkLabelUploadManually.TabStop = true;
             this.linkLabelUploadManually.Text = "Upload manually";
             this.linkLabelUploadManually.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelUploadManually_LinkClicked);
@@ -101,7 +103,7 @@
             this.buttonCancel.Location = new System.Drawing.Point(382, 465);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 4;
+            this.buttonCancel.TabIndex = 5;
             this.buttonCancel.Text = "C&ancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
@@ -112,7 +114,7 @@
             this.labelSubtitleFileName.Location = new System.Drawing.Point(6, 110);
             this.labelSubtitleFileName.Name = "labelSubtitleFileName";
             this.labelSubtitleFileName.Size = new System.Drawing.Size(52, 13);
-            this.labelSubtitleFileName.TabIndex = 5;
+            this.labelSubtitleFileName.TabIndex = 8;
             this.labelSubtitleFileName.Text = "File name";
             // 
             // labelMovieFileName
@@ -121,7 +123,7 @@
             this.labelMovieFileName.Location = new System.Drawing.Point(6, 163);
             this.labelMovieFileName.Name = "labelMovieFileName";
             this.labelMovieFileName.Size = new System.Drawing.Size(81, 13);
-            this.labelMovieFileName.TabIndex = 9;
+            this.labelMovieFileName.TabIndex = 12;
             this.labelMovieFileName.Text = "Movie file name";
             // 
             // textBoxMovieFileName
@@ -131,7 +133,7 @@
             this.textBoxMovieFileName.Location = new System.Drawing.Point(116, 160);
             this.textBoxMovieFileName.Name = "textBoxMovieFileName";
             this.textBoxMovieFileName.Size = new System.Drawing.Size(287, 20);
-            this.textBoxMovieFileName.TabIndex = 7;
+            this.textBoxMovieFileName.TabIndex = 13;
             // 
             // labelPassword
             // 
@@ -139,7 +141,7 @@
             this.labelPassword.Location = new System.Drawing.Point(14, 58);
             this.labelPassword.Name = "labelPassword";
             this.labelPassword.Size = new System.Drawing.Size(53, 13);
-            this.labelPassword.TabIndex = 2;
+            this.labelPassword.TabIndex = 3;
             this.labelPassword.Text = "Password";
             // 
             // textBoxPassword
@@ -150,7 +152,7 @@
             this.textBoxPassword.Name = "textBoxPassword";
             this.textBoxPassword.PasswordChar = '*';
             this.textBoxPassword.Size = new System.Drawing.Size(179, 20);
-            this.textBoxPassword.TabIndex = 2;
+            this.textBoxPassword.TabIndex = 4;
             // 
             // labelUserName
             // 
@@ -168,7 +170,7 @@
             this.textBoxUserName.Location = new System.Drawing.Point(114, 29);
             this.textBoxUserName.Name = "textBoxUserName";
             this.textBoxUserName.Size = new System.Drawing.Size(179, 20);
-            this.textBoxUserName.TabIndex = 0;
+            this.textBoxUserName.TabIndex = 1;
             // 
             // groupBoxLogin
             // 
@@ -193,7 +195,7 @@
             this.linkLabelRegister.Location = new System.Drawing.Point(299, 32);
             this.linkLabelRegister.Name = "linkLabelRegister";
             this.linkLabelRegister.Size = new System.Drawing.Size(95, 13);
-            this.linkLabelRegister.TabIndex = 1;
+            this.linkLabelRegister.TabIndex = 2;
             this.linkLabelRegister.TabStop = true;
             this.linkLabelRegister.Text = "Register  new user";
             this.linkLabelRegister.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelRegister_LinkClicked);
@@ -203,6 +205,8 @@
             this.groupBoxSubtitleInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxSubtitleInfo.Controls.Add(this.comboBoxFrameRate);
+            this.groupBoxSubtitleInfo.Controls.Add(this.labelFrameRate);
             this.groupBoxSubtitleInfo.Controls.Add(this.comboBoxEncoding);
             this.groupBoxSubtitleInfo.Controls.Add(this.label5);
             this.groupBoxSubtitleInfo.Controls.Add(this.checkBoxHD);
@@ -229,6 +233,32 @@
             this.groupBoxSubtitleInfo.TabStop = false;
             this.groupBoxSubtitleInfo.Text = "Subtitle info";
             // 
+            // comboBoxFrameRate
+            // 
+            this.comboBoxFrameRate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxFrameRate.FormattingEnabled = true;
+            this.comboBoxFrameRate.Items.AddRange(new object[] {
+            "Select",
+            "23.976",
+            "23.980",
+            "24.000",
+            "25.000",
+            "29.970",
+            "30.000"});
+            this.comboBoxFrameRate.Location = new System.Drawing.Point(116, 185);
+            this.comboBoxFrameRate.Name = "comboBoxFrameRate";
+            this.comboBoxFrameRate.Size = new System.Drawing.Size(315, 21);
+            this.comboBoxFrameRate.TabIndex = 16;
+            // 
+            // labelFrameRate
+            // 
+            this.labelFrameRate.AutoSize = true;
+            this.labelFrameRate.Location = new System.Drawing.Point(6, 189);
+            this.labelFrameRate.Name = "labelFrameRate";
+            this.labelFrameRate.Size = new System.Drawing.Size(27, 13);
+            this.labelFrameRate.TabIndex = 15;
+            this.labelFrameRate.Text = "FPS";
+            // 
             // comboBoxEncoding
             // 
             this.comboBoxEncoding.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -236,7 +266,7 @@
             this.comboBoxEncoding.Location = new System.Drawing.Point(116, 133);
             this.comboBoxEncoding.Name = "comboBoxEncoding";
             this.comboBoxEncoding.Size = new System.Drawing.Size(317, 21);
-            this.comboBoxEncoding.TabIndex = 6;
+            this.comboBoxEncoding.TabIndex = 11;
             // 
             // label5
             // 
@@ -244,26 +274,26 @@
             this.label5.Location = new System.Drawing.Point(6, 136);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(75, 13);
-            this.label5.TabIndex = 16;
+            this.label5.TabIndex = 10;
             this.label5.Text = "Text encoding";
             // 
             // checkBoxHD
             // 
             this.checkBoxHD.AutoSize = true;
-            this.checkBoxHD.Location = new System.Drawing.Point(227, 284);
+            this.checkBoxHD.Location = new System.Drawing.Point(227, 309);
             this.checkBoxHD.Name = "checkBoxHD";
             this.checkBoxHD.Size = new System.Drawing.Size(118, 17);
-            this.checkBoxHD.TabIndex = 11;
+            this.checkBoxHD.TabIndex = 20;
             this.checkBoxHD.Text = "High-definition (HD)";
             this.checkBoxHD.UseVisualStyleBackColor = true;
             // 
             // checkBoxTextForHI
             // 
             this.checkBoxTextForHI.AutoSize = true;
-            this.checkBoxTextForHI.Location = new System.Drawing.Point(116, 284);
+            this.checkBoxTextForHI.Location = new System.Drawing.Point(116, 309);
             this.checkBoxTextForHI.Name = "checkBoxTextForHI";
             this.checkBoxTextForHI.Size = new System.Drawing.Size(105, 17);
-            this.checkBoxTextForHI.TabIndex = 10;
+            this.checkBoxTextForHI.TabIndex = 19;
             this.checkBoxTextForHI.Text = "Hearing impaired";
             this.checkBoxTextForHI.UseVisualStyleBackColor = true;
             // 
@@ -272,7 +302,7 @@
             this.buttonSearchIMDb.Location = new System.Drawing.Point(207, 53);
             this.buttonSearchIMDb.Name = "buttonSearchIMDb";
             this.buttonSearchIMDb.Size = new System.Drawing.Size(24, 23);
-            this.buttonSearchIMDb.TabIndex = 2;
+            this.buttonSearchIMDb.TabIndex = 4;
             this.buttonSearchIMDb.Text = "...";
             this.buttonSearchIMDb.UseVisualStyleBackColor = true;
             this.buttonSearchIMDb.Click += new System.EventHandler(this.buttonSearchIMDb_Click);
@@ -282,7 +312,7 @@
             this.buttonOpenVideo.Location = new System.Drawing.Point(409, 158);
             this.buttonOpenVideo.Name = "buttonOpenVideo";
             this.buttonOpenVideo.Size = new System.Drawing.Size(24, 23);
-            this.buttonOpenVideo.TabIndex = 8;
+            this.buttonOpenVideo.TabIndex = 14;
             this.buttonOpenVideo.Text = "...";
             this.buttonOpenVideo.UseVisualStyleBackColor = true;
             this.buttonOpenVideo.Click += new System.EventHandler(this.buttonOpenVideo_Click);
@@ -293,7 +323,7 @@
             this.linkLabelSearchImdb.Location = new System.Drawing.Point(236, 58);
             this.linkLabelSearchImdb.Name = "linkLabelSearchImdb";
             this.linkLabelSearchImdb.Size = new System.Drawing.Size(72, 13);
-            this.linkLabelSearchImdb.TabIndex = 3;
+            this.linkLabelSearchImdb.TabIndex = 5;
             this.linkLabelSearchImdb.TabStop = true;
             this.linkLabelSearchImdb.Text = "Search online";
             this.linkLabelSearchImdb.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelSearchImdb_LinkClicked);
@@ -303,19 +333,19 @@
             this.textBoxComment.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxComment.Location = new System.Drawing.Point(116, 186);
+            this.textBoxComment.Location = new System.Drawing.Point(116, 212);
             this.textBoxComment.Multiline = true;
             this.textBoxComment.Name = "textBoxComment";
-            this.textBoxComment.Size = new System.Drawing.Size(317, 87);
-            this.textBoxComment.TabIndex = 9;
+            this.textBoxComment.Size = new System.Drawing.Size(317, 91);
+            this.textBoxComment.TabIndex = 18;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 189);
+            this.label4.Location = new System.Drawing.Point(7, 215);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(51, 13);
-            this.label4.TabIndex = 12;
+            this.label4.TabIndex = 17;
             this.label4.Text = "Comment";
             // 
             // label3
@@ -334,7 +364,7 @@
             this.textBoxReleaseName.Location = new System.Drawing.Point(116, 81);
             this.textBoxReleaseName.Name = "textBoxReleaseName";
             this.textBoxReleaseName.Size = new System.Drawing.Size(317, 20);
-            this.textBoxReleaseName.TabIndex = 4;
+            this.textBoxReleaseName.TabIndex = 7;
             // 
             // label2
             // 
@@ -350,7 +380,7 @@
             this.textBoxImdbId.Location = new System.Drawing.Point(116, 55);
             this.textBoxImdbId.Name = "textBoxImdbId";
             this.textBoxImdbId.Size = new System.Drawing.Size(85, 20);
-            this.textBoxImdbId.TabIndex = 1;
+            this.textBoxImdbId.TabIndex = 3;
             // 
             // comboBoxLanguage
             // 
@@ -361,7 +391,7 @@
             this.comboBoxLanguage.Location = new System.Drawing.Point(116, 28);
             this.comboBoxLanguage.Name = "comboBoxLanguage";
             this.comboBoxLanguage.Size = new System.Drawing.Size(317, 21);
-            this.comboBoxLanguage.TabIndex = 0;
+            this.comboBoxLanguage.TabIndex = 1;
             // 
             // label1
             // 
@@ -379,7 +409,7 @@
             this.labelStatus.Location = new System.Drawing.Point(14, 445);
             this.labelStatus.Name = "labelStatus";
             this.labelStatus.Size = new System.Drawing.Size(59, 13);
-            this.labelStatus.TabIndex = 3;
+            this.labelStatus.TabIndex = 2;
             this.labelStatus.Text = "labelStatus";
             // 
             // openFileDialogVideo
@@ -406,6 +436,7 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Upload to OpenSubtitles.org";
+            this.Load += new System.EventHandler(this.PluginForm_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PluginForm_KeyDown);
             this.groupBoxLogin.ResumeLayout(false);
             this.groupBoxLogin.PerformLayout();
@@ -449,5 +480,7 @@
         private System.Windows.Forms.CheckBox checkBoxHD;
         private System.Windows.Forms.ComboBox comboBoxEncoding;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ComboBox comboBoxFrameRate;
+        private System.Windows.Forms.Label labelFrameRate;
     }
 }

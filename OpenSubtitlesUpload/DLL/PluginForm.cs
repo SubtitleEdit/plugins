@@ -104,6 +104,7 @@ namespace OpenSubtitlesUpload
             _videoFileName = videoFileName;
             _rawText = rawText;
 
+            comboBoxFrameRate.SelectedIndex = 0;
             string videoFileSafeName = System.IO.Path.GetFileName(videoFileName);
             textBoxSubtitleFileName.Text = System.IO.Path.GetFileName(subtitleFileName);
             textBoxMovieFileName.Text = videoFileSafeName;
@@ -248,7 +249,10 @@ namespace OpenSubtitlesUpload
                     Cursor = Cursors.WaitCursor;
                     labelStatus.Text = "Checking db...";
                     this.Refresh();
-                    var res = _api.TryUploadSubtitles(_rawText, textBoxSubtitleFileName.Text, textBoxMovieFileName.Text, _videoFileName, GetLanguageCode(), GetCurrentEncoding());
+                    string fps = null;
+                    if (comboBoxFrameRate.SelectedIndex > 0)
+                        fps = comboBoxFrameRate.SelectedItem.ToString();
+                    var res = _api.TryUploadSubtitles(_rawText, textBoxSubtitleFileName.Text, textBoxMovieFileName.Text, _videoFileName, GetLanguageCode(), fps, GetCurrentEncoding());
                     if (res)
                     {
                         labelStatus.Text = "Uploading subtitle...";
@@ -260,7 +264,7 @@ namespace OpenSubtitlesUpload
                         if (checkBoxHD.Checked)
                             hd = "1";
 
-                        if (_api.UploadSubtitles(_rawText, textBoxSubtitleFileName.Text, textBoxMovieFileName.Text, _videoFileName, GetLanguageCode(), textBoxReleaseName.Text, textBoxImdbId.Text, textBoxComment.Text, textForHi, hd, GetCurrentEncoding()))
+                        if (_api.UploadSubtitles(_rawText, textBoxSubtitleFileName.Text, textBoxMovieFileName.Text, _videoFileName, GetLanguageCode(), textBoxReleaseName.Text, textBoxImdbId.Text, textBoxComment.Text, textForHi, hd, fps, GetCurrentEncoding()))
                         {
                             Cursor = Cursors.Default;
                             labelStatus.Text = "Subtitle uploaded :)";
@@ -347,6 +351,67 @@ namespace OpenSubtitlesUpload
             {
                 textBoxMovieFileName.Text = Path.GetFileName(openFileDialogVideo.FileName);
                 _videoFileName = openFileDialogVideo.FileName;
+                SetFrameRateFromVideoFile();
+            }
+        }
+
+        private void SetFrameRateFromVideoFile()
+        {
+            double frameRate = 0;
+            try
+            {
+                if (!string.IsNullOrEmpty(_videoFileName) && File.Exists(_videoFileName))
+                {
+                    string ext = Path.GetExtension(_videoFileName).ToLower();
+                    if (ext == ".mkv")
+                    {
+                        var mkv = new VideoFormats.Mkv();
+                        bool isValid = false;
+                        bool hasConstantFrameRate = true;
+                        int pixelWidth = 0;
+                        int pixelHeight = 0;
+                        double millisecsDuration = 0;
+                        string videoCodec = string.Empty;
+                        mkv.GetMatroskaInfo(_videoFileName, ref isValid, ref hasConstantFrameRate, ref frameRate, ref pixelWidth, ref pixelHeight, ref millisecsDuration, ref videoCodec);
+                        mkv.Dispose();
+                        if (!isValid)
+                            return;
+                    }
+                    if (frameRate < 1 && (ext == ".mp4" || ext == ".mov" || ext == ".m4v"))
+                    {
+                        var mp4 = new OpenSubtitlesUpload.VideoFormats.MP4(_videoFileName);
+                        frameRate = mp4.FrameRate;
+   
+                    }
+                    if (frameRate < 1)
+                    {
+                        var rp = new VideoFormats.RiffParser();
+                        var dh = new VideoFormats.RiffDecodeHeader(rp);
+                        rp.OpenFile(_videoFileName);
+                        if (VideoFormats.RiffParser.ckidAVI == rp.FileType)
+                            frameRate = dh.FrameRate;
+                        rp.CloseFile();
+                    }
+                }
+
+                double minDiff = 100;
+                for (int i =0; i<comboBoxFrameRate.Items.Count; i++)
+                {
+                    var element = comboBoxFrameRate.Items[i];
+                    double d;
+                    if (double.TryParse(element.ToString(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out d))
+                    {
+                        double diff = Math.Abs(d - frameRate);
+                        if (diff < 0.01 && diff < minDiff)
+                        {
+                            comboBoxFrameRate.SelectedIndex = i;
+                            minDiff = diff;
+                        }
+                    }
+                }
+            }
+            catch
+            { 
             }
         }
 
@@ -421,5 +486,11 @@ namespace OpenSubtitlesUpload
         {
             System.Diagnostics.Process.Start("http://www.opensubtitles.org/en/newuser");
         }
+
+        private void PluginForm_Load(object sender, EventArgs e)
+        {
+            SetFrameRateFromVideoFile();
+        }
+
     }
 }
