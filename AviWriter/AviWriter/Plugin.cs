@@ -55,7 +55,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return string.Empty;
             }
-            // load subtitle text into object 
+            // load subtitle text into object
             var list = new List<string>();
             foreach (string line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
                 list.Add(line);
@@ -100,7 +100,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return string.Empty;
         }
 
-        string GetFileNameFromRessourceName(string resourceName)
+        private string GetFileNameFromRessourceName(string resourceName)
         {
             string fname = resourceName.Substring(resourceName.IndexOf(".DLL.") + 5);
             fname = fname.Substring(0, fname.Length - 3);

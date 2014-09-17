@@ -26,12 +26,12 @@ namespace Dropbox.Api
         {
             var oauth = new OAuth();
             var requestUri = oauth.SignRequest(uri, _consumerKey, _consumerSecret, _accessToken);
-            var request = (HttpWebRequest) WebRequest.Create(requestUri);
+            var request = (HttpWebRequest)WebRequest.Create(requestUri);
             request.Method = WebRequestMethods.Http.Get;
             var response = request.GetResponse();
             var reader = new StreamReader(response.GetResponseStream());
             return reader.ReadToEnd();
-        }      
+        }
 
         //public Account GetAccountInfo()
         //{
@@ -70,7 +70,7 @@ namespace Dropbox.Api
         //public FileSystemInfo CreateFolder(string root, string path)
         //{
         //    var uri = new Uri(new Uri(DropboxRestApi.BaseUri),
-        //        String.Format("fileops/create_folder?root={0}&path={1}", 
+        //        String.Format("fileops/create_folder?root={0}&path={1}",
         //        root, UpperCaseUrlEncode(path)));
         //    var json = GetResponse(uri);
         //    return ParseJson<FileSystemInfo>(json);
@@ -82,7 +82,7 @@ namespace Dropbox.Api
             var oauth = new OAuth();
             var requestUri = oauth.SignRequest(uri, _consumerKey, _consumerSecret, _accessToken);
 
-            var request = (HttpWebRequest) WebRequest.Create(requestUri);
+            var request = (HttpWebRequest)WebRequest.Create(requestUri);
             request.Method = WebRequestMethods.Http.Get;
             var response = request.GetResponse();
 
@@ -93,7 +93,7 @@ namespace Dropbox.Api
             file.Bytes = Convert.ToInt64(o["bytes"]);
             file.Path = o["path"].ToString().TrimStart('/').Trim();
             file.IsDirectory = Convert.ToBoolean(o["is_dir"]);
-            
+
             using (Stream responseStream = response.GetResponseStream())
             using (MemoryStream memoryStream = new MemoryStream())
             {
@@ -101,14 +101,14 @@ namespace Dropbox.Api
                 int bytesRead;
                 do
                 {
-                    bytesRead = responseStream.Read(buffer, 0, buffer.Length);                    
+                    bytesRead = responseStream.Read(buffer, 0, buffer.Length);
                     memoryStream.Write(buffer, 0, bytesRead);
                 } while (bytesRead > 0);
 
                 file.Data = memoryStream.ToArray();
-            }                                    
+            }
 
-            return file;                                    
+            return file;
         }
 
         public DropboxFile UploadFile(string root, string path, byte[] buffer)
@@ -121,7 +121,6 @@ namespace Dropbox.Api
             request.Method = WebRequestMethods.Http.Put;
             request.KeepAlive = true;
 
-        
             request.ContentLength = buffer.Length;
             using (var requestStream = request.GetRequestStream())
             {
@@ -139,8 +138,8 @@ namespace Dropbox.Api
             fsi.Bytes = Convert.ToInt64(o["bytes"]);
             fsi.Path = o["path"].ToString().TrimStart('/');
             fsi.IsDirectory = Convert.ToBoolean(o["is_dir"]);
-            fsi.Size =o["size"].ToString().Trim();
-            return fsi;   
+            fsi.Size = o["size"].ToString().Trim();
+            return fsi;
         }
 
         private static string UpperCaseUrlEncode(string s)

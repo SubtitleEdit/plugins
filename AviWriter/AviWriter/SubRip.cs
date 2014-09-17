@@ -11,17 +11,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private StringBuilder _errors;
         private int _lineNumber;
 
-        enum ExpectingLine
+        private enum ExpectingLine
         {
             Number,
             TimeCodes,
             Text
         }
 
-        Paragraph _paragraph;
-        ExpectingLine _expecting = ExpectingLine.Number;
-        static Regex _regexTimeCodes = new Regex(@"^-?\d+:-?\d+:-?\d+[:,]-?\d+\s*-->\s*-?\d+:-?\d+:-?\d+[:,]-?\d+$", RegexOptions.Compiled);
-        static Regex _regexTimeCodes2 = new Regex(@"^\d+:\d+:\d+,\d+\s*-->\s*\d+:\d+:\d+,\d+$", RegexOptions.Compiled);
+        private Paragraph _paragraph;
+        private ExpectingLine _expecting = ExpectingLine.Number;
+        private static Regex _regexTimeCodes = new Regex(@"^-?\d+:-?\d+:-?\d+[:,]-?\d+\s*-->\s*-?\d+:-?\d+:-?\d+[:,]-?\d+$", RegexOptions.Compiled);
+        private static Regex _regexTimeCodes2 = new Regex(@"^\d+:\d+:\d+,\d+\s*-->\s*\d+:\d+:\d+,\d+$", RegexOptions.Compiled);
 
         internal override string Extension
         {
@@ -69,7 +69,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _errorCount = 0;
 
             subtitle.Paragraphs.Clear();
-            for (int i=0; i<lines.Count; i++)
+            for (int i = 0; i < lines.Count; i++)
             {
                 _lineNumber++;
                 string line = lines[i].TrimEnd();
@@ -82,7 +82,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 // A new line is missing between two paragraphs (buggy srt file)
                 if (_expecting == ExpectingLine.Text && i + 1 < lines.Count &&
                     _paragraph != null && !string.IsNullOrEmpty(_paragraph.Text) && Utilities.IsInteger(line) &&
-                    _regexTimeCodes.IsMatch(lines[i+1]))
+                    _regexTimeCodes.IsMatch(lines[i + 1]))
                 {
                     ReadLine(subtitle, string.Empty, string.Empty);
                 }
@@ -130,7 +130,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     else if (line.Trim().Length > 0)
                     {
                         _errorCount++;
-                        _expecting = ExpectingLine.Number ; // lets go to next paragraph
+                        _expecting = ExpectingLine.Number; // lets go to next paragraph
                     }
                     break;
                 case ExpectingLine.Text:

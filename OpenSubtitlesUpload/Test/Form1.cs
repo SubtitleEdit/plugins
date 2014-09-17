@@ -16,7 +16,7 @@ namespace OpenSubtitlesUploadTest
             IPlugin plugin = new Nikse.SubtitleEdit.PluginLogic.OpenSubtitlesUpload();
             string subtitleFileName = textBox1.Text;
             if (File.Exists(subtitleFileName))
-            plugin.DoAction(null, string.Empty, 25, "<br />", subtitleFileName, Path.GetFullPath(subtitleFileName), System.IO.File.ReadAllText(subtitleFileName));
+                plugin.DoAction(null, string.Empty, 25, "<br />", subtitleFileName, Path.GetFullPath(subtitleFileName), System.IO.File.ReadAllText(subtitleFileName));
         }
 
         private void button2_Click(object sender, EventArgs e)

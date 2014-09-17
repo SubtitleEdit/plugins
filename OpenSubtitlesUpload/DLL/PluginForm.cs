@@ -381,7 +381,7 @@ namespace OpenSubtitlesUpload
                     {
                         var mp4 = new OpenSubtitlesUpload.VideoFormats.MP4(_videoFileName);
                         frameRate = mp4.FrameRate;
-   
+
                     }
                     if (frameRate < 1)
                     {
@@ -395,7 +395,7 @@ namespace OpenSubtitlesUpload
                 }
 
                 double minDiff = 100;
-                for (int i =0; i<comboBoxFrameRate.Items.Count; i++)
+                for (int i = 0; i < comboBoxFrameRate.Items.Count; i++)
                 {
                     var element = comboBoxFrameRate.Items[i];
                     double d;
@@ -411,7 +411,7 @@ namespace OpenSubtitlesUpload
                 }
             }
             catch
-            { 
+            {
             }
         }
 

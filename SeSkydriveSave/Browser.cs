@@ -15,13 +15,13 @@ namespace SeSkydriveSave
             webBrowser1.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(webBrowser1_DocumentCompleted);
         }
 
-        void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             string url = webBrowser1.Url.AbsoluteUri;
             int startOfAccesstoken = url.IndexOf("access_token=");
             if (startOfAccesstoken > 0)
             {
-                url = url.Substring(startOfAccesstoken+13);
+                url = url.Substring(startOfAccesstoken + 13);
                 int endOfAccessToken = url.IndexOf("&");
                 if (endOfAccessToken > 0)
                     url = url.Substring(0, endOfAccessToken);
@@ -45,7 +45,7 @@ namespace SeSkydriveSave
                     Expires = DateTime.Now;
                 }
                 DialogResult = DialogResult.OK;
-            }           
+            }
         }
     }
 }

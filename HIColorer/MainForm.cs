@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.IO;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
@@ -34,7 +33,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             SetColor(sender);
         }
-
 
         private void buttonMoodsColor_Click(object sender, EventArgs e)
         {
@@ -107,7 +105,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (_subtitle == null || _subtitle.Paragraphs.Count == 0)
                 return;
-            Func<string , char, char, string> brackesType = (text, bOpen, bClose) =>
+            Func<string, char, char, string> brackesType = (text, bOpen, bClose) =>
             {
                 int startBraces = text.IndexOf(bOpen);
                 if (startBraces > -1)

@@ -79,7 +79,7 @@ namespace OpenSubtitlesUpload.VideoFormats
                     return new DateTime(1904, 1, 1, 0, 0, 0, DateTimeKind.Utc).Add(TimeSpan.FromSeconds(Moov.Mvhd.CreationTime));
                 return DateTime.Now;
             }
-        }        
+        }
 
         /// <summary>
         /// Resolution of first video track. If not present returns 0.0
@@ -143,7 +143,6 @@ namespace OpenSubtitlesUpload.VideoFormats
             fs.Close();
         }
 
-
         internal double FrameRate
         {
             get
@@ -161,7 +160,7 @@ namespace OpenSubtitlesUpload.VideoFormats
                 }
                 return 0;
             }
-            
+
         }
 
     }

@@ -19,8 +19,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public string LoadedSubtitle { get; private set; }
 
-        DropboxFile _fileList;
-        int _connectTries = 0;
+        private DropboxFile _fileList;
+        private int _connectTries = 0;
 
         private static OAuthToken GetRequestToken()
         {
@@ -168,7 +168,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             labelInfo.Text = "Downloading...";
             this.Refresh();
-            OAuthToken accessToken = GetSavedToken();  
+            OAuthToken accessToken = GetSavedToken();
             try
             {
                 Cursor = Cursors.WaitCursor;
@@ -197,7 +197,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.Refresh();
             OAuthToken accessToken = GetSavedToken();
             if (accessToken == null)
-            {                
+            {
                 try
                 {
                     // Step 1/3: Get request token
@@ -238,10 +238,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 _fileList = api.GetFiles("sandbox", string.Empty);
                 Cursor = Cursors.Default;
             }
-            catch (Exception exception) 
+            catch (Exception exception)
             {
                 Cursor = Cursors.Default;
-                _connectTries++;             
+                _connectTries++;
                 _connectTries++;
                 if (_connectTries < 2)
                 {

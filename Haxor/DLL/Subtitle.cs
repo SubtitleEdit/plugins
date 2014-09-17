@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class Subtitle
     {
-        List<Paragraph> _paragraphs;
-        SubtitleFormat _format;
-        bool _wasLoadedWithFrameNumbers;
+        private List<Paragraph> _paragraphs;
+        private SubtitleFormat _format;
+        private bool _wasLoadedWithFrameNumbers;
         internal string Header { get; set; }
         internal string Footer { get; set; }
         internal string FileName { get; set; }
@@ -300,7 +299,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     if (_paragraphs[i].Number == lineNumber)
                         _paragraphs.RemoveAt(i);
                 }
-//                _paragraphs.Remove(_paragraphs.Single(p => p.Number == lineNumber)); //TODO: Use in newer .net versions
+                //                _paragraphs.Remove(_paragraphs.Single(p => p.Number == lineNumber)); //TODO: Use in newer .net versions
             }
             Renumber(startNumber);
         }

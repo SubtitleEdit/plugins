@@ -1,11 +1,10 @@
 ﻿using System;
-using Nikse.SubtitleEdit.PluginLogic;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal class TimeCode
     {
-        TimeSpan _time;
+        private TimeSpan _time;
 
         internal static double ParseToMilliseconds(string text)
         {
@@ -108,7 +107,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Seconds += seconds;
             Milliseconds += milliseconds;
         }
-
 
         internal void AddTime(long milliseconds)
         {

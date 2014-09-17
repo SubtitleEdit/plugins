@@ -53,7 +53,6 @@ namespace OpenSubtitlesUpload.VideoFormats
         internal string Language { get; set; }
     }
 
-
     internal class Mkv : IDisposable
     {
         private const uint Ebml = 0x1A45DFA3;

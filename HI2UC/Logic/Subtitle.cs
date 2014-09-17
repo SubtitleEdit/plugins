@@ -42,7 +42,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _wasLoadedWithFrameNumbers = subtitle.WasLoadedWithFrameNumbers;
         }
 
-
         internal Paragraph GetParagraphOrDefault(int index)
         {
             if (_paragraphs == null || _paragraphs.Count <= index || index < 0)

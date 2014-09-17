@@ -11,17 +11,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private StringBuilder _errors;
         private int _lineNumber;
 
-        enum ExpectingLine
+        private enum ExpectingLine
         {
             Number,
             TimeCodes,
             Text
         }
 
-        Paragraph _paragraph;
-        ExpectingLine _expecting = ExpectingLine.Number;
-        static Regex _regexTimeCodes = new Regex(@"^-?\d+:-?\d+:-?\d+[:,]-?\d+\s*-->\s*-?\d+:-?\d+:-?\d+[:,]-?\d+$", RegexOptions.Compiled);
-        static Regex _regexTimeCodes2 = new Regex(@"^\d+:\d+:\d+,\d+\s*-->\s*\d+:\d+:\d+,\d+$", RegexOptions.Compiled);
+        private Paragraph _paragraph;
+        private ExpectingLine _expecting = ExpectingLine.Number;
+        private static Regex _regexTimeCodes = new Regex(@"^-?\d+:-?\d+:-?\d+[:,]-?\d+\s*-->\s*-?\d+:-?\d+:-?\d+[:,]-?\d+$", RegexOptions.Compiled);
+        private static Regex _regexTimeCodes2 = new Regex(@"^\d+:\d+:\d+,\d+\s*-->\s*\d+:\d+:\d+,\d+$", RegexOptions.Compiled);
 
         internal override string Extension
         {

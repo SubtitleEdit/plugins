@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using OpenSubtitles;
-using System.Threading;
 
 namespace OpenSubtitlesUpload
 {
     public partial class ImdbSearch : Form
     {
-        OpenSubtitlesApi _api;
+        private OpenSubtitlesApi _api;
         public string ImdbId;
 
         public ImdbSearch(string title, OpenSubtitlesApi api)

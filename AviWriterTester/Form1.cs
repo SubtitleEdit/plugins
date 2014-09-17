@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Nikse.SubtitleEdit.PluginLogic;
 using System.IO;
@@ -26,7 +19,7 @@ namespace AviWriterTester
                 var content = File.ReadAllText(filePath);
                 IPlugin plugins = new Nikse.SubtitleEdit.PluginLogic.AviWriter();
                 var output = plugins.DoAction(null, content, Configuration.CurrentFrameRate, Configuration.ListViewLineSeparatorString, filePath, null, content);
-                if(content != output)
+                if (content != output)
                 {
                     MessageBox.Show("Something changed");
                 }

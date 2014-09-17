@@ -20,7 +20,7 @@ namespace OAuthProtocol
 
             uri = SignRequest(uri, consumerKey, consumerSecret);
 
-            var request = (HttpWebRequest) WebRequest.Create(uri);
+            var request = (HttpWebRequest)WebRequest.Create(uri);
             request.Method = WebRequestMethods.Http.Get;
 
             var response = request.GetResponse();
@@ -47,7 +47,7 @@ namespace OAuthProtocol
 
             uri = SignRequest(uri, consumerKey, consumerSecret, requestToken);
 
-            var request = (HttpWebRequest) WebRequest.Create(uri);
+            var request = (HttpWebRequest)WebRequest.Create(uri);
             request.Method = WebRequestMethods.Http.Get;
 
             var response = request.GetResponse();
@@ -77,7 +77,7 @@ namespace OAuthProtocol
                 nonce, OAuthBase.SignatureTypes.HMACSHA1,
                 out normalizedUrl, out parameters);
 
-            var requestUri = String.Format("{0}?{1}&oauth_signature={2}", 
+            var requestUri = String.Format("{0}?{1}&oauth_signature={2}",
                 normalizedUrl, parameters, HttpUtility.UrlEncode(signature));
 
             return new Uri(requestUri);

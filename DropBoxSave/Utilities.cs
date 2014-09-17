@@ -12,7 +12,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (int.TryParse(s, out i))
                 return true;
             return false;
-        }       
+        }
 
         public static string RemoveHtmlTags(string s)
         {
@@ -69,7 +69,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             return s;
         }
-     
+
         public static string AssemblyVersion
         {
             get

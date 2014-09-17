@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-
 namespace Dropbox.Api
 {
     public class DropboxFile

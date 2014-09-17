@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Nikse.SubtitleEdit.PluginLogic;
 
@@ -41,7 +35,7 @@ namespace plugin_tester
         {
             IPlugin hiColorer = new HIColorer();
             string outString = hiColorer.DoAction(this, content, 23.796, "<br />", _fileName.Length > 0 ? Path.GetFileName(_fileName) : null, null, content);
-            if(content.Equals(outString))
+            if (content.Equals(outString))
                 MessageBox.Show("Nothing changed!!!");
         }
     }

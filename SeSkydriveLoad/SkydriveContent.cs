@@ -11,7 +11,9 @@ namespace SeSkydriveLoad
         public string ParentId { get; set; }
         public string Type { get; set; }
 
-        public SkydriveContent() { }
+        public SkydriveContent()
+        {
+        }
 
         public SkydriveContent(string id, string name, string size, string updatedTime)
         {

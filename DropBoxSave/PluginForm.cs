@@ -17,10 +17,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private const string SeConsumerKey = "CLIENT_KEY";
         private const string SeConsumerSecret = "CLIENT_SECRET";
 
-        string _fileName;
-        string _rawText;
-        DropboxFile _fileList;
-        int _connectTries = 0;
+        private string _fileName;
+        private string _rawText;
+        private DropboxFile _fileList;
+        private int _connectTries = 0;
 
         private static OAuthToken GetRequestToken()
         {
@@ -169,7 +169,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             labelInfo.Text = "Saving...";
             this.Refresh();
-            OAuthToken accessToken = GetSavedToken();  
+            OAuthToken accessToken = GetSavedToken();
             try
             {
                 var api = new DropboxApi(SeConsumerKey, SeConsumerSecret, accessToken);
@@ -231,7 +231,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 _fileList = api.GetFiles("sandbox", string.Empty);
                 Cursor = Cursors.Default;
             }
-            catch (Exception exception) 
+            catch (Exception exception)
             {
                 Cursor = Cursors.Default;
                 _connectTries++;

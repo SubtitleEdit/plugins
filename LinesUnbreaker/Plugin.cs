@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -55,9 +54,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var sub = new Subtitle();
             var srt = new SubRip();
             srt.LoadSubtitle(sub, list, subtitleFileName);
-            if(srt.ErrorCount > 0)
+            if (srt.ErrorCount > 0)
             {
-                MessageBox.Show(srt.Errors + " Errors found while parsing .srt", 
+                MessageBox.Show(srt.Errors + " Errors found while parsing .srt",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             using (var form = new PluginForm(sub, (this as IPlugin).Name, (this as IPlugin).Description, parentForm))

@@ -50,7 +50,7 @@ namespace SeSkydriveLoad
 
         private void Browser_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode ==  Keys.Escape)
+            if (e.KeyCode == Keys.Escape)
                 this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
     }

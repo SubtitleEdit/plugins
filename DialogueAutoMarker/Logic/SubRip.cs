@@ -213,7 +213,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             line = line.Replace(" -->> ", " --> ");
             line = line.Replace(" ---> ", " --> ");
 
-
             // Removed stuff after timecodes - like subtitle position
             // - example of position info: 00:02:26,407 --> 00:02:31,356  X1:100 X2:100 Y1:100 Y2:100
             if (line.Length > 30 && line[29] == ' ')

@@ -13,7 +13,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             get
             {
                 var timeCode = new TimeCode(EndTime.TimeSpan);
-                timeCode.AddTime(- StartTime.TotalMilliseconds);
+                timeCode.AddTime(-StartTime.TotalMilliseconds);
                 return timeCode;
             }
         }
@@ -79,14 +79,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         internal void CalculateFrameNumbersFromTimeCodes(double frameRate)
         {
-            StartFrame = (int) Math.Round((StartTime.TotalMilliseconds / 1000.0 * frameRate));
-            EndFrame = (int) Math.Round((EndTime.TotalMilliseconds / 1000.0 * frameRate));
+            StartFrame = (int)Math.Round((StartTime.TotalMilliseconds / 1000.0 * frameRate));
+            EndFrame = (int)Math.Round((EndTime.TotalMilliseconds / 1000.0 * frameRate));
         }
 
         internal void CalculateTimeCodesFromFrameNumbers(double frameRate)
         {
-           StartTime.TotalMilliseconds = StartFrame * (1000.0 / frameRate);
-           EndTime.TotalMilliseconds = EndFrame * (1000.0 / frameRate);
+            StartTime.TotalMilliseconds = StartFrame * (1000.0 / frameRate);
+            EndTime.TotalMilliseconds = EndFrame * (1000.0 / frameRate);
         }
 
         public override string ToString()
