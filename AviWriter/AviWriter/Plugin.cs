@@ -26,7 +26,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Description
         {
-            get { return "Write subtitle to avi file (via FFMPEG)"; }
+            get { return "Write subtitle to avi file (via FFmpeg)"; }
         }
 
         string IPlugin.ActionType // Can be one of these: file, tool, sync, translate, spellcheck
@@ -77,7 +77,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             // Start exe file
             var info = new ProcessStartInfo();
-            info.FileName = Path.Combine(tempDir, "AviFfmpegWriter.exe");
+            info.FileName = Path.Combine(tempDir, "AviFFmpegWriter.exe");
             info.WorkingDirectory = tempDir;
             var p = Process.Start(info);
             p.WaitForExit();
@@ -102,7 +102,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string GetFileNameFromRessourceName(string resourceName)
         {
-            string fname = resourceName.Substring(resourceName.IndexOf(".DLL.") + 5);
+            string fname = resourceName.Substring(resourceName.IndexOf(".dll.") + 5);
             fname = fname.Substring(0, fname.Length - 3);
             return fname;
         }

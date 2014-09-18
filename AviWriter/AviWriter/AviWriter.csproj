@@ -68,12 +68,12 @@
     </Compile>
     <EmbeddedResource Include="DLL\AForge.dll.gz" />
     <EmbeddedResource Include="DLL\AForge.Video.dll.gz" />
-    <EmbeddedResource Include="DLL\AForge.Video.FFMPEG.dll.gz" />
+    <EmbeddedResource Include="DLL\AForge.Video.FFmpeg.dll.gz" />
     <EmbeddedResource Include="DLL\avcodec-53.dll.gz" />
     <EmbeddedResource Include="DLL\avdevice-53.dll.gz" />
     <EmbeddedResource Include="DLL\avfilter-2.dll.gz" />
     <EmbeddedResource Include="DLL\avformat-53.dll.gz" />
-    <EmbeddedResource Include="DLL\AviFfmpegWriter.exe.gz" />
+    <EmbeddedResource Include="DLL\AviFFmpegWriter.exe.gz" />
     <EmbeddedResource Include="DLL\avutil-51.dll.gz" />
     <EmbeddedResource Include="DLL\swscale-2.dll.gz" />
     <None Include="Properties\Settings.settings">
