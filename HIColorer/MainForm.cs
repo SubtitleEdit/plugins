@@ -159,13 +159,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         text = brackesType.Invoke(text, '[', ']');
                 }
 
-            End_Point:
-                if (text != oldText)
-                {
-                    text = text.Replace(" " + Environment.NewLine, Environment.NewLine).Trim();
-                    text = text.Replace(Environment.NewLine + " ", Environment.NewLine).Trim();
-                    p.Text = text;
-                }
             }
         }
 
