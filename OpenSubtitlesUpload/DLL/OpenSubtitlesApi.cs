@@ -207,6 +207,11 @@ namespace OpenSubtitles
 
         public bool UploadSubtitles(string subtitle, string subtitleFileName, string movieFileName, string movieFileNameFull, string language, string releaseName, string idMovieImdb, string comment, string hearingImpaired, string hd, string fps, Encoding encoding)
         {
+            if (string.IsNullOrEmpty(hearingImpaired))
+                hearingImpaired = "0";
+            if (string.IsNullOrEmpty(hd))
+                hd = "0";
+
             if (string.IsNullOrEmpty(language))
                 language = "eng";
             byte[] buffer = GetBytesWithChosenEncoding(subtitle, encoding);
