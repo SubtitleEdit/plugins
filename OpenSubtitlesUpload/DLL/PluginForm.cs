@@ -389,7 +389,10 @@ namespace OpenSubtitlesUpload
                         var dh = new VideoFormats.RiffDecodeHeader(rp);
                         rp.OpenFile(_videoFileName);
                         if (VideoFormats.RiffParser.ckidAVI == rp.FileType)
+                        {
+                            dh.ProcessMainAVI();
                             frameRate = dh.FrameRate;
+                        }
                         rp.CloseFile();
                     }
                 }
