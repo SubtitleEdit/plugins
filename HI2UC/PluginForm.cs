@@ -132,7 +132,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void FindHearingImpairedText()
         {
-            Func<Paragraph, bool> AllowFix = (p) =>
+            Func<Paragraph, bool> AllowFix = (Paragraph p) =>
             {
                 if (!_allowFixes)
                     return false;
@@ -259,12 +259,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     //char? closeBracket = null;
                     char closeBracket = '\0';
-                    if (openBracket == '(')
-                        closeBracket = ')';
-                    else if (openBracket == '[')
-                        closeBracket = ']';
-                    else if (openBracket == '{')
-                        closeBracket = '}';
+                    switch (openBracket)
+                    {
+                        case '(':
+                            closeBracket = ')';
+                            break;
+                        case '[':
+                            closeBracket = ']';
+                            break;
+                        default:
+                            closeBracket = '}';
+                            break;
+                    }
 
                     int endIdx = text.IndexOf(closeBracket, index + 1);
                     if (endIdx < 0 && ignoreError == false)
@@ -280,7 +286,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         }
                     }
 
-                    while (index > -1 && endIdx > index)
+                    // TODO: Remove if like: ()
+                    while (index > -1 && endIdx > index + 1)
                     {
                         string mood = text.Substring(index, (endIdx - index) + 1);
                         mood = ConvertMoodsFeelings(mood);
@@ -306,7 +313,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (text.Contains("{"))
                 FindBrackets('{');
 
-            text = text.Replace("  ", " ");
+            while (text.Contains("  "))
+                text = text.Replace("  ", " ");
             text = text.Replace(Environment.NewLine + " ", Environment.NewLine);
             text = text.Replace(" " + Environment.NewLine, Environment.NewLine);
             return text;
@@ -374,21 +382,22 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (pre.Contains("(") || pre.Contains("[") || pre.Contains("{") || s.StartsWith("http"))
                     return s;
 
-                if (Utilities.RemoveHtmlTags(pre).Trim().Length > 0)
+                if (Utilities.RemoveHtmlTags(pre).Trim().Length > 1)
                 {
+                    // Do not change HTML tags to upper
                     string firstChr = Regex.Match(pre, "(?<!<)\\w", RegexOptions.Compiled).Value;
                     int idx = pre.IndexOf(firstChr);
                     if (idx > -1)
                     {
                         string narrator = pre.Substring(idx, index - idx);
-                        if (narrator.ToUpper() == narrator)
-                            return s;
-
                         // You don't want to change http to uppercase :)!
-                        if (narrator.ToLower().Trim().EndsWith("https") || narrator.ToLower().Trim().EndsWith("http"))
+                        if (narrator.ToUpper().Trim().EndsWith("HTTPS") || narrator.ToLower().Trim().EndsWith("HTTP"))
                             return s;
 
                         narrator = narrator.ToUpper();
+                        if (narrator == narrator.ToLower())
+                            return s;
+
                         if (narrator.Contains("<"))
                             narrator = FixUpperTagInNarrator(narrator);
                         pre = pre.Remove(idx, index - idx).Insert(idx, narrator);
@@ -418,7 +427,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                     if (index > 0)
                     {
-                        index = lines[i].IndexOf(":");
+                        index = lines[i].IndexOf(':');
                         if (index > 0)
                         {
                             lines[i] = ToUpper(lines[i]);
@@ -443,18 +452,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string FixUpperTagInNarrator(string narrator)
         {
-            // Fix Upper tag
-            int tagIndex = narrator.IndexOf("<", System.StringComparison.Ordinal);
+            // Fix uppercase tags
+            int tagIndex = narrator.IndexOf('<');
             while (tagIndex > -1)
             {
-                int closeIndex = narrator.IndexOf(">", tagIndex + 1, System.StringComparison.Ordinal);
+                int closeIndex = narrator.IndexOf('>', tagIndex + 1);
                 if (closeIndex > -1 && closeIndex > tagIndex)
                 {
                     string temp = narrator.Substring(tagIndex, (closeIndex - tagIndex)).ToLower();
                     narrator = narrator.Remove(tagIndex, (closeIndex - tagIndex)).Insert(tagIndex, temp);
                 }
                 if (closeIndex > -1)
-                    tagIndex = narrator.IndexOf("<", closeIndex, System.StringComparison.Ordinal);
+                    tagIndex = narrator.IndexOf('<', closeIndex);
                 else
                     tagIndex = -1;
             }
