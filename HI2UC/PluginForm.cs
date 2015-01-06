@@ -332,8 +332,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     bool isUpperTime = true;
                     foreach (char myChar in text)
                     {
-                        helper.Append(isUpperTime ? char.ToUpper(myChar) : char.ToLower(myChar));
-                        isUpperTime = !isUpperTime;
+                        if (!char.IsLetter(myChar))
+                        {
+                            helper.Append(myChar);
+                            continue;
+                        }
+                        else
+                        {
+                            helper.Append(isUpperTime ? char.ToUpper(myChar) : char.ToLower(myChar));
+                            isUpperTime = !isUpperTime;
+                        }
                     }
                     text = helper.ToString();
                     break;
