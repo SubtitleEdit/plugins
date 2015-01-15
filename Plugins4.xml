@@ -91,4 +91,11 @@
     <Date>2014-05-23</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/HIColorer.zip</Url>
   </Plugin>
+  <Plugin>
+    <Name>Check Line Width</Name>
+    <Description>Checks maximum line with in pixels</Description>
+    <Version>0.1</Version>
+    <Date>2015-01-15</Date>
+    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/CheckLineWidth.zip</Url>
+  </Plugin>
 </Plugins>
