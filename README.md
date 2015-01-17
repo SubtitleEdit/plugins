@@ -16,7 +16,7 @@ If you want to extend Subtitle Edit somewhere else, please open an issue.
 
 Please compile the plugins for the "Any CPU" platform.
 
-Framework version: If possible, please provide both a version compiled with .NET 2 (can be used with 2-3.5) and a version compiled with .NET 4 (can be used with 4+).
+Framework version: If possible compile with .NET 4.0 (can be used with 4+).
 
 
 ## Requirements
