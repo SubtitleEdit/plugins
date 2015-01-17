@@ -151,7 +151,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             listViewFixes.BeginUpdate();
             foreach (ListViewItem item in listViewFixes.Items)
-                item.Checked = selectAll ? true : !item.Checked;
+                item.Checked = selectAll || !item.Checked;
             listViewFixes.EndUpdate();
             Refresh();
         }
@@ -195,6 +195,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     }
                 }
                 AmericanToBritish();
+                if (listViewFixes.Items.Count > 0)
+                {
+                    listViewFixes.Items[0].Selected = true;
+                    listViewFixes.Items[0].Focused = true;
+                }
+                listViewFixes.Select();
+                listViewFixes.Focus();
             }
             catch (Exception exception)
             {
@@ -212,10 +219,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Process.Start("https://github.com/SubtitleEdit/plugins/issues/new");
         }
 
+        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://github.com/SubtitleEdit/plugins/blob/master/AmericanToBritish/DLL/WordList.xml");
+        }
+
         private void PluginForm_Resize(object sender, EventArgs e)
         {
             listViewFixes.Columns[listViewFixes.Columns.Count-1].Width = -1;
         }
+
 
     }
 }

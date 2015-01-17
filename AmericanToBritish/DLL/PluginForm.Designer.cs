@@ -40,6 +40,7 @@
             this.buttonInverseSelection = new System.Windows.Forms.Button();
             this.buttonSelectAll = new System.Windows.Forms.Button();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
             // buttonOK
@@ -48,7 +49,7 @@
             this.buttonOK.Location = new System.Drawing.Point(698, 437);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
-            this.buttonOK.TabIndex = 0;
+            this.buttonOK.TabIndex = 2;
             this.buttonOK.Text = "&OK";
             this.buttonOK.UseVisualStyleBackColor = true;
             this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
@@ -59,7 +60,7 @@
             this.button1.Location = new System.Drawing.Point(779, 437);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 1;
+            this.button1.TabIndex = 3;
             this.button1.Text = "C&ancel";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.buttonCancel_Click);
@@ -70,7 +71,7 @@
             this.labelDescription.Location = new System.Drawing.Point(12, 27);
             this.labelDescription.Name = "labelDescription";
             this.labelDescription.Size = new System.Drawing.Size(82, 13);
-            this.labelDescription.TabIndex = 2;
+            this.labelDescription.TabIndex = 4;
             this.labelDescription.Text = "labelDescription";
             // 
             // listViewFixes
@@ -90,7 +91,7 @@
             this.listViewFixes.Location = new System.Drawing.Point(12, 46);
             this.listViewFixes.Name = "listViewFixes";
             this.listViewFixes.Size = new System.Drawing.Size(842, 385);
-            this.listViewFixes.TabIndex = 101;
+            this.listViewFixes.TabIndex = 0;
             this.listViewFixes.UseCompatibleStateImageBehavior = false;
             this.listViewFixes.View = System.Windows.Forms.View.Details;
             // 
@@ -121,7 +122,7 @@
             this.labelTotal.Location = new System.Drawing.Point(9, 434);
             this.labelTotal.Name = "labelTotal";
             this.labelTotal.Size = new System.Drawing.Size(34, 13);
-            this.labelTotal.TabIndex = 102;
+            this.labelTotal.TabIndex = 1;
             this.labelTotal.Text = "Total:";
             // 
             // buttonInverseSelection
@@ -130,7 +131,7 @@
             this.buttonInverseSelection.Location = new System.Drawing.Point(749, 17);
             this.buttonInverseSelection.Name = "buttonInverseSelection";
             this.buttonInverseSelection.Size = new System.Drawing.Size(105, 23);
-            this.buttonInverseSelection.TabIndex = 103;
+            this.buttonInverseSelection.TabIndex = 8;
             this.buttonInverseSelection.Text = "Inverse selection";
             this.buttonInverseSelection.UseVisualStyleBackColor = true;
             this.buttonInverseSelection.Click += new System.EventHandler(this.buttonInverseSelection_Click);
@@ -141,7 +142,7 @@
             this.buttonSelectAll.Location = new System.Drawing.Point(668, 17);
             this.buttonSelectAll.Name = "buttonSelectAll";
             this.buttonSelectAll.Size = new System.Drawing.Size(75, 23);
-            this.buttonSelectAll.TabIndex = 104;
+            this.buttonSelectAll.TabIndex = 7;
             this.buttonSelectAll.Text = "Select all";
             this.buttonSelectAll.UseVisualStyleBackColor = true;
             this.buttonSelectAll.Click += new System.EventHandler(this.buttonSelectAll_Click);
@@ -153,16 +154,29 @@
             this.linkLabel1.Location = new System.Drawing.Point(542, 22);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(111, 13);
-            this.linkLabel1.TabIndex = 105;
+            this.linkLabel1.TabIndex = 6;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "Report missing word...";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            // 
+            // linkLabel2
+            // 
+            this.linkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.linkLabel2.AutoSize = true;
+            this.linkLabel2.Location = new System.Drawing.Point(456, 22);
+            this.linkLabel2.Name = "linkLabel2";
+            this.linkLabel2.Size = new System.Drawing.Size(80, 13);
+            this.linkLabel2.TabIndex = 5;
+            this.linkLabel2.TabStop = true;
+            this.linkLabel2.Text = "View word list...";
+            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
             // 
             // PluginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(866, 473);
+            this.Controls.Add(this.linkLabel2);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.buttonSelectAll);
             this.Controls.Add(this.buttonInverseSelection);
@@ -200,6 +214,7 @@
         private System.Windows.Forms.Button buttonInverseSelection;
         private System.Windows.Forms.Button buttonSelectAll;
         private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.LinkLabel linkLabel2;
 
     }
 }
