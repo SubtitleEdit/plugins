@@ -49,6 +49,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -72,7 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DLL\CheckLineWidth.csproj">
-      <Project>{7b7c681e-960e-414f-b5ea-1b9beba71b09}</Project>
+      <Project>{432f9842-3508-440b-bf34-13b25337c2b1}</Project>
       <Name>CheckLineWidth</Name>
     </ProjectReference>
   </ItemGroup>

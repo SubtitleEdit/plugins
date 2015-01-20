@@ -271,7 +271,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             buttonChooseFont.Enabled = radioButtonUseFont.Checked;
             labelFont.Enabled = radioButtonUseFont.Checked;
-            numericUpDown1.Enabled = radioButtonUseFont.Checked;
 
             buttonEditCustomCharWidthList.Enabled = !radioButtonUseFont.Checked;
             RefreshLineWidth();
@@ -284,6 +283,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 subtitleListView1.SetText(_selectedIndex, textBoxText.Text.TrimEnd());
                 _subtitle.Paragraphs[_selectedIndex].Text = textBoxText.Text.TrimEnd();
             }
+            if (Utilities.GetNumberOfLines(textBoxText.Text) > 3)
+                textBoxText.ScrollBars = ScrollBars.Vertical;
+            else
+                textBoxText.ScrollBars = ScrollBars.None;
+            
         }
 
         private void buttonUnBreak_Click(object sender, EventArgs e)

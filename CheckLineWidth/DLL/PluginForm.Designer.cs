@@ -32,6 +32,7 @@
             this.buttonOK = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.textBoxCustomCharNotFound = new System.Windows.Forms.TextBox();
             this.labelCustomCharNotFound = new System.Windows.Forms.Label();
             this.labelLongestLine = new System.Windows.Forms.Label();
             this.labelStatus = new System.Windows.Forms.Label();
@@ -48,7 +49,6 @@
             this.textBoxText = new System.Windows.Forms.TextBox();
             this.labelText = new System.Windows.Forms.Label();
             this.buttonAutoBreak = new System.Windows.Forms.Button();
-            this.textBoxCustomCharNotFound = new System.Windows.Forms.TextBox();
             this.subtitleListView1 = new Nikse.SubtitleEdit.PluginLogic.Controls.SubtitleListView();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -105,6 +105,18 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Status";
             // 
+            // textBoxCustomCharNotFound
+            // 
+            this.textBoxCustomCharNotFound.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxCustomCharNotFound.Location = new System.Drawing.Point(9, 97);
+            this.textBoxCustomCharNotFound.Multiline = true;
+            this.textBoxCustomCharNotFound.Name = "textBoxCustomCharNotFound";
+            this.textBoxCustomCharNotFound.ReadOnly = true;
+            this.textBoxCustomCharNotFound.Size = new System.Drawing.Size(668, 72);
+            this.textBoxCustomCharNotFound.TabIndex = 3;
+            // 
             // labelCustomCharNotFound
             // 
             this.labelCustomCharNotFound.AutoSize = true;
@@ -146,7 +158,7 @@
             this.groupBox2.Location = new System.Drawing.Point(6, 10);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(316, 175);
-            this.groupBox2.TabIndex = 1;
+            this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Settings";
             // 
@@ -164,10 +176,10 @@
             // 
             this.radioButtonUseFont.AutoSize = true;
             this.radioButtonUseFont.Checked = true;
-            this.radioButtonUseFont.Location = new System.Drawing.Point(7, 19);
+            this.radioButtonUseFont.Location = new System.Drawing.Point(7, 54);
             this.radioButtonUseFont.Name = "radioButtonUseFont";
             this.radioButtonUseFont.Size = new System.Drawing.Size(65, 17);
-            this.radioButtonUseFont.TabIndex = 0;
+            this.radioButtonUseFont.TabIndex = 3;
             this.radioButtonUseFont.TabStop = true;
             this.radioButtonUseFont.Text = "Use font";
             this.radioButtonUseFont.UseVisualStyleBackColor = true;
@@ -176,15 +188,15 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(217, 75);
+            this.label2.Location = new System.Drawing.Point(182, 22);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(33, 13);
-            this.label2.TabIndex = 5;
+            this.label2.TabIndex = 2;
             this.label2.Text = "pixels";
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(166, 73);
+            this.numericUpDown1.Location = new System.Drawing.Point(131, 20);
             this.numericUpDown1.Maximum = new decimal(new int[] {
             500,
             0,
@@ -192,7 +204,7 @@
             0});
             this.numericUpDown1.Name = "numericUpDown1";
             this.numericUpDown1.Size = new System.Drawing.Size(45, 20);
-            this.numericUpDown1.TabIndex = 4;
+            this.numericUpDown1.TabIndex = 1;
             this.numericUpDown1.Value = new decimal(new int[] {
             180,
             0,
@@ -203,19 +215,19 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(41, 75);
+            this.label1.Location = new System.Drawing.Point(6, 22);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(119, 13);
-            this.label1.TabIndex = 3;
+            this.label1.TabIndex = 0;
             this.label1.Text = "Highlight lines long than";
             // 
             // labelFont
             // 
             this.labelFont.AutoSize = true;
-            this.labelFont.Location = new System.Drawing.Point(149, 46);
+            this.labelFont.Location = new System.Drawing.Point(149, 79);
             this.labelFont.Name = "labelFont";
             this.labelFont.Size = new System.Drawing.Size(35, 13);
-            this.labelFont.TabIndex = 2;
+            this.labelFont.TabIndex = 5;
             this.labelFont.Text = "label1";
             // 
             // buttonEditCustomCharWidthList
@@ -230,10 +242,10 @@
             // 
             // buttonChooseFont
             // 
-            this.buttonChooseFont.Location = new System.Drawing.Point(36, 41);
+            this.buttonChooseFont.Location = new System.Drawing.Point(36, 76);
             this.buttonChooseFont.Name = "buttonChooseFont";
             this.buttonChooseFont.Size = new System.Drawing.Size(106, 23);
-            this.buttonChooseFont.TabIndex = 1;
+            this.buttonChooseFont.TabIndex = 4;
             this.buttonChooseFont.Text = "Choose font...";
             this.buttonChooseFont.UseVisualStyleBackColor = true;
             this.buttonChooseFont.Click += new System.EventHandler(this.buttonChooseFont_Click);
@@ -241,10 +253,10 @@
             // textBoxText
             // 
             this.textBoxText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.textBoxText.Location = new System.Drawing.Point(232, 544);
+            this.textBoxText.Location = new System.Drawing.Point(232, 536);
             this.textBoxText.Multiline = true;
             this.textBoxText.Name = "textBoxText";
-            this.textBoxText.Size = new System.Drawing.Size(361, 44);
+            this.textBoxText.Size = new System.Drawing.Size(361, 52);
             this.textBoxText.TabIndex = 2;
             this.textBoxText.TextChanged += new System.EventHandler(this.textBoxText_TextChanged);
             // 
@@ -252,7 +264,7 @@
             // 
             this.labelText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelText.AutoSize = true;
-            this.labelText.Location = new System.Drawing.Point(200, 544);
+            this.labelText.Location = new System.Drawing.Point(198, 539);
             this.labelText.Name = "labelText";
             this.labelText.Size = new System.Drawing.Size(28, 13);
             this.labelText.TabIndex = 1;
@@ -261,25 +273,13 @@
             // buttonAutoBreak
             // 
             this.buttonAutoBreak.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonAutoBreak.Location = new System.Drawing.Point(599, 544);
+            this.buttonAutoBreak.Location = new System.Drawing.Point(599, 536);
             this.buttonAutoBreak.Name = "buttonAutoBreak";
             this.buttonAutoBreak.Size = new System.Drawing.Size(115, 21);
             this.buttonAutoBreak.TabIndex = 3;
             this.buttonAutoBreak.Text = "Auto-break";
             this.buttonAutoBreak.UseVisualStyleBackColor = true;
             this.buttonAutoBreak.Click += new System.EventHandler(this.buttonUnBreak_Click);
-            // 
-            // textBoxCustomCharNotFound
-            // 
-            this.textBoxCustomCharNotFound.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxCustomCharNotFound.Location = new System.Drawing.Point(9, 97);
-            this.textBoxCustomCharNotFound.Multiline = true;
-            this.textBoxCustomCharNotFound.Name = "textBoxCustomCharNotFound";
-            this.textBoxCustomCharNotFound.ReadOnly = true;
-            this.textBoxCustomCharNotFound.Size = new System.Drawing.Size(668, 72);
-            this.textBoxCustomCharNotFound.TabIndex = 3;
             // 
             // subtitleListView1
             // 
@@ -291,10 +291,10 @@
             this.subtitleListView1.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.subtitleListView1.FullRowSelect = true;
             this.subtitleListView1.GridLines = true;
-            this.subtitleListView1.Location = new System.Drawing.Point(7, 220);
+            this.subtitleListView1.Location = new System.Drawing.Point(7, 233);
             this.subtitleListView1.Name = "subtitleListView1";
             this.subtitleListView1.OwnerDraw = true;
-            this.subtitleListView1.Size = new System.Drawing.Size(1017, 318);
+            this.subtitleListView1.Size = new System.Drawing.Size(1017, 297);
             this.subtitleListView1.SubtitleFontBold = false;
             this.subtitleListView1.SubtitleFontName = "Tahoma";
             this.subtitleListView1.SubtitleFontSize = 8;
