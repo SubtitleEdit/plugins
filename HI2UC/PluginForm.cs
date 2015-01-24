@@ -17,8 +17,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private bool _moodsMatched;
         private bool _namesMatched;
         private int _totalChanged;
-        private Form _parentForm;
-        private Subtitle _subtitle;
+        private readonly Form _parentForm;
+        private readonly Subtitle _subtitle;
         private bool _onFirstShow = true;
 
         public PluginForm(Form parentForm, Subtitle subtitle, string name, string description)
@@ -27,7 +27,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this._parentForm = parentForm;
             this._subtitle = subtitle;
             label1.Text = "Description: " + description;
-            FindHearingImpairedText();
             _onFirstShow = false;
 
             /*
@@ -41,7 +40,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void PluginForm_Load(object sender, EventArgs e)
         {
-            //SizeLastColumn();
             comboBox1.SelectedIndex = 0;
             this.Resize += delegate
             {
@@ -160,7 +158,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         //Remove Extra Spaces
                         if (checkBoxRemoveSpaces.Checked)
                             text = Regex.Replace(text, "(?<=[\\(\\[\\{]) +| +(?=[\\)\\]\\}])", String.Empty, RegexOptions.Compiled);
-                        text = MoodToUpper(text, p);
+                        text = ChangeMoodsToUppercase(text, p);
                     }
 
                     // Narrator:
@@ -249,71 +247,69 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.Items.Add(item);
         }
 
-        private string MoodToUpper(string text, Paragraph p)
+        private string ChangeMoodsToUppercase(string text, Paragraph p)
         {
-            bool ignoreError = false;
-            Action<Char> FindBrackets = delegate(char openBracket)
+            Action<Char, int> FindBrackets = delegate(char openBracket, int idx)
             {
-                int index = text.IndexOf(openBracket);
-                if (index > -1)
+                bool ignoreError = false;
+                //char? closeBracket = null;
+                char closeBracket = '\0';
+                switch (openBracket)
                 {
-                    //char? closeBracket = null;
-                    char closeBracket = '\0';
-                    switch (openBracket)
-                    {
-                        case '(':
-                            closeBracket = ')';
-                            break;
-                        case '[':
-                            closeBracket = ']';
-                            break;
-                        default:
-                            closeBracket = '}';
-                            break;
-                    }
+                    case '(':
+                        closeBracket = ')';
+                        break;
+                    case '[':
+                        closeBracket = ']';
+                        break;
+                    default:
+                        closeBracket = '}';
+                        break;
+                }
 
-                    int endIdx = text.IndexOf(closeBracket, index + 1);
-                    if (endIdx < 0 && ignoreError == false)
+                int endIdx = text.IndexOf(closeBracket);
+                if (endIdx > -1 && endIdx > idx)
+                {
+                    while (idx > -1 && endIdx > idx + 1)
                     {
-                        var dialogResult = PrintErrorMessage(p);
-                        if (dialogResult == System.Windows.Forms.DialogResult.Ignore)
-                        {
-                            ignoreError = true;
-                        }
-                        else if (dialogResult == System.Windows.Forms.DialogResult.Abort)
-                        {
-                            DialogResult = System.Windows.Forms.DialogResult.Cancel;
-                        }
-                    }
-
-                    // TODO: Remove if like: ()
-                    while (index > -1 && endIdx > index + 1)
-                    {
-                        string mood = text.Substring(index, (endIdx - index) + 1);
-                        mood = ConvertMoodsFeelings(mood);
+                        var moodText = text.Substring(idx, (endIdx - idx) + 1);
+                        moodText = StyleMoodsAndFeelings(moodText);
                         if (_moodsMatched)
                         {
-                            text = text.Remove(index, (endIdx - index) + 1).Insert(index, mood);
-                            index = text.IndexOf(openBracket, endIdx + 1);
-                            if (index > -1)
-                                endIdx = text.IndexOf(closeBracket, index + 1);
+                            text = text.Remove(idx, (endIdx - idx) + 1).Insert(idx, moodText);
+
                         }
-                        else
-                        {
-                            index = -1;
-                        }
+                        idx = text.IndexOf(openBracket, endIdx);
+                        if (idx > -1)
+                            endIdx = text.IndexOf(closeBracket, idx + 1);
+                    }
+                }
+                else
+                {
+                    var dialogResult = PrintErrorMessage(p);
+                    if (dialogResult == System.Windows.Forms.DialogResult.Ignore)
+                    {
+                        ignoreError = true;
+                    }
+                    else if (dialogResult == System.Windows.Forms.DialogResult.Abort)
+                    {
+                        this.DialogResult = System.Windows.Forms.DialogResult.Abort;
                     }
                 }
             };
 
-            if (text.Contains("("))
-                FindBrackets('(');
-            if (text.Contains("["))
-                FindBrackets('[');
-            if (text.Contains("{"))
-                FindBrackets('{');
+            text = text.Replace("()", string.Empty);
+            var bIdx = text.IndexOf('(');
+            if (bIdx > -1)
+                FindBrackets('(', bIdx);
+            bIdx = text.IndexOf('[');
+            if (bIdx > -1)
+                FindBrackets('[', bIdx);
+            bIdx = text.IndexOf('{');
+            if (bIdx > -1)
+                FindBrackets('{', bIdx);
 
-            while (text.Contains("  "))
+            while (text.IndexOf("  ", StringComparison.Ordinal) > -1)
                 text = text.Replace("  ", " ");
             text = text.Replace(Environment.NewLine + " ", Environment.NewLine);
             text = text.Replace(" " + Environment.NewLine, Environment.NewLine);
@@ -327,7 +323,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return diagResult;
         }
 
-        private string ConvertMoodsFeelings(string text)
+        private string StyleMoodsAndFeelings(string text)
         {
             if (!Regex.IsMatch(text, @"[\(\[\{]"))
                 return text;
@@ -336,14 +332,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
             switch (_hiStyle)
             {
                 case HIStyle.UpperLowerCase:
-                    var helper = new System.Text.StringBuilder();
+                    var sb = new System.Text.StringBuilder();
                     bool isUpperTime = true;
                     foreach (char myChar in text)
                     {
-                        helper.Append(isUpperTime ? char.ToUpper(myChar) : char.ToLower(myChar));
+                        if (myChar == 0x20)
+                        {
+                            sb.Append(' ');
+                            continue;
+                        }
+                        sb.Append(isUpperTime ? char.ToUpper(myChar) : char.ToLower(myChar));
                         isUpperTime = !isUpperTime;
                     }
-                    text = helper.ToString();
+                    text = sb.ToString();
                     break;
                 case HIStyle.FirstUppercase:
                     text = Regex.Replace(text.ToLower(), @"\b\w", x => x.Value.ToUpper());
@@ -499,6 +500,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             _allowFixes = false;
             listViewFixes.Items.Clear();
+            FindHearingImpairedText();
+        }
+
+        private void PluginForm_Shown(object sender, EventArgs e)
+        {
             FindHearingImpairedText();
         }
     }
