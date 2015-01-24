@@ -304,6 +304,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Hearing Impaired to Uppercase";
             this.Load += new System.EventHandler(this.PluginForm_Load);
+            this.Shown += new System.EventHandler(this.PluginForm_Shown);
             this.contextMenuStrip1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);

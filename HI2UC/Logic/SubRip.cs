@@ -201,18 +201,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private bool TryReadTimeCodesLine(string line, Paragraph paragraph)
         {
+            const string defaultSeparator = " --> ";
             line = line.Replace("،", ",");
             line = line.Replace("", ",");
             line = line.Replace("¡", ",");
 
             // Fix some badly formatted separator sequences - anything can happen if you manually edit ;)
-            line = line.Replace(" -> ", " --> "); // I've seen this
-            line = line.Replace(" - > ", " --> ");
-            line = line.Replace(" ->> ", " --> ");
-            line = line.Replace(" -- > ", " --> ");
-            line = line.Replace(" - -> ", " --> ");
-            line = line.Replace(" -->> ", " --> ");
-            line = line.Replace(" ---> ", " --> ");
+            line = line.Replace(" -> ", defaultSeparator); // I've seen this
+            line = line.Replace(" - > ", defaultSeparator);
+            line = line.Replace(" ->> ", defaultSeparator);
+            line = line.Replace(" -- > ", defaultSeparator);
+            line = line.Replace(" - -> ", defaultSeparator);
+            line = line.Replace(" -->> ", defaultSeparator);
+            line = line.Replace(" ---> ", defaultSeparator);
 
             // Removed stuff after timecodes - like subtitle position
             // - example of position info: 00:02:26,407 --> 00:02:31,356  X1:100 X2:100 Y1:100 Y2:100
@@ -220,7 +221,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 line = line.Substring(0, 29);
 
             // removes all extra spaces
-            line = line.Replace(" ", string.Empty).Replace("-->", " --> ");
+            line = line.Replace(" ", string.Empty).Replace("-->", defaultSeparator);
             line = line.Trim();
 
             // Fix a few more cases of wrong time codes, seen this: 00.00.02,000 --> 00.00.04,000
