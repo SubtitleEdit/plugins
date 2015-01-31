@@ -24,13 +24,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public static string RemoveHtmlFontTag(string s)
         {
             s = Regex.Replace(s, "(?i)</?font>", string.Empty);
-            while (s.ToLower().Contains("<font"))
-            {
-                int startIndex = s.ToLower().IndexOf("<font");
-                int endIndex = Math.Max(s.IndexOf(">", startIndex), startIndex + 4);
-                s = s.Remove(startIndex, (endIndex - startIndex) + 1);
-            }
-            return s;
+            return RemoveTag(s, "<font");
         }
 
         public static string RemoveHtmlTags(string s)
@@ -45,22 +39,29 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return RemoveHtmlFontTag(s).Trim();
         }
 
+        private static string RemoveTag(string text, string tag)
+        {
+            var idx = text.IndexOf(tag, StringComparison.OrdinalIgnoreCase);
+            while (idx > -1)
+            {
+                var endIndex = text.IndexOf('>', idx + tag.Length);
+                if (endIndex < 0) break;
+                text = text.Remove(idx, (endIndex - idx) + 1);
+                idx = text.IndexOf(tag, StringComparison.OrdinalIgnoreCase);
+            }
+            return text;
+        }
+
         internal static string RemoveBrackets(string inputString)
         {
-            string pattern = @"^[\[\{\(]|[\]\}\)]$";
+            string pattern = @"^[\[\(]|[\]\}\)]$";
             return Regex.Replace(inputString, pattern, string.Empty).Trim();
         }
 
         internal static string RemoveParagraphTag(string s)
         {
             s = Regex.Replace(s, "(?i)</?p>", string.Empty);
-            while (s.ToLower().Contains("<p "))
-            {
-                int startIndex = s.ToLower().IndexOf("<p ");
-                int endIndex = Math.Max(s.IndexOf(">", startIndex), startIndex + 4);
-                s = s.Remove(startIndex, (endIndex - startIndex) + 1);
-            }
-            return s;
+            return RemoveTag(s, "<p");
         }
 
         internal static string TryFixBrokenBrackets(string text, char bracketType, int nextIdx, Subtitle sub)
@@ -68,7 +69,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var before = text;
             var idx = -1;
             // More than one lines
-            if (text.IndexOf("\r\n") > -1)
+            if (text.IndexOf(Environment.NewLine, StringComparison.Ordinal) > -1)
             {
                 var lines = text.Replace("\r\n", "\n").Split('\n');
                 for (int i = 0; i < lines.Length; i++)

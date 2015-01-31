@@ -93,16 +93,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             const string format = "{0}\r\n{1} --> {2}\r\n{3}";
             return string.Format(format, Number, StartTime, EndTime, Text);
-            //return StartTime + " --> " + EndTime + " " + Text;
         }
 
         internal int NumberOfLines
         {
             get
             {
-                if (string.IsNullOrEmpty(Text))
-                    return 0;
-                return Text.Length - Text.Replace(Environment.NewLine, string.Empty).Length;
+                var ln = 0;
+                var idx = -1;
+                while(idx > -1)
+                {
+                    ln++;
+                    idx = this.Text.IndexOf('\n', idx);
+                }
+                return ln;
             }
         }
 
