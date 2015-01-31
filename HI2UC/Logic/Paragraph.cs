@@ -61,34 +61,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Text = text;
         }
 
-        internal Paragraph(string text, double startTotalMilliseconds, double endTotalMilliseconds)
-        {
-            StartTime = new TimeCode(TimeSpan.FromMilliseconds(startTotalMilliseconds));
-            EndTime = new TimeCode(TimeSpan.FromMilliseconds(endTotalMilliseconds));
-            Text = text;
-        }
-
-        internal void Adjust(double factor, double adjust)
-        {
-            double seconds = StartTime.TimeSpan.TotalSeconds * factor + adjust;
-            StartTime.TimeSpan = TimeSpan.FromSeconds(seconds);
-
-            seconds = EndTime.TimeSpan.TotalSeconds * factor + adjust;
-            EndTime.TimeSpan = TimeSpan.FromSeconds(seconds);
-        }
-
-        internal void CalculateFrameNumbersFromTimeCodes(double frameRate)
-        {
-            StartFrame = (int)Math.Round((StartTime.TotalMilliseconds / 1000.0 * frameRate));
-            EndFrame = (int)Math.Round((EndTime.TotalMilliseconds / 1000.0 * frameRate));
-        }
-
-        internal void CalculateTimeCodesFromFrameNumbers(double frameRate)
-        {
-            StartTime.TotalMilliseconds = StartFrame * (1000.0D / frameRate);
-            EndTime.TotalMilliseconds = EndFrame * (1000.0D / frameRate);
-        }
-
         public override string ToString()
         {
             const string format = "{0}\r\n{1} --> {2}\r\n{3}";
@@ -107,17 +79,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     idx = this.Text.IndexOf('\n', idx);
                 }
                 return ln;
-            }
-        }
-
-        internal double WordsPerMinute
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(Text))
-                    return 0;
-                int wordCount = Utilities.RemoveHtmlTags(Text).Split((" ,.!?;:()[]" + Environment.NewLine).ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Length;
-                return (60.0 / Duration.TotalSeconds) * wordCount;
             }
         }
     }

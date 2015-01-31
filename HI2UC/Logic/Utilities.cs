@@ -54,7 +54,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         internal static string RemoveBrackets(string inputString)
         {
-            string pattern = @"^[\[\(]|[\]\}\)]$";
+            string pattern = @"^[\[\(]|[\]\)]$";
             return Regex.Replace(inputString, pattern, string.Empty).Trim();
         }
 
