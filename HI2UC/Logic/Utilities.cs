@@ -45,11 +45,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return RemoveHtmlFontTag(s).Trim();
         }
 
-        internal static string GetHtmlColorCode(Color color)
-        {
-            return string.Format("#{0:x2}{1:x2}{2:x2}", color.R, color.G, color.B);
-        }
-
         internal static string RemoveBrackets(string inputString)
         {
             string pattern = @"^[\[\{\(]|[\]\}\)]$";
@@ -66,6 +61,51 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 s = s.Remove(startIndex, (endIndex - startIndex) + 1);
             }
             return s;
+        }
+
+        internal static string TryFixBrokenBrackets(string text, char bracketType, int nextIdx, Subtitle sub)
+        {
+            var before = text;
+            var idx = -1;
+            // More than one lines
+            if (text.IndexOf("\r\n") > -1)
+            {
+                var lines = text.Replace("\r\n", "\n").Split('\n');
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    CheckForBrackets(ref lines[i], bracketType, nextIdx, sub, ref idx);
+                }
+            }
+            else
+            {
+                CheckForBrackets(ref text, bracketType, nextIdx, sub, ref idx);
+            }
+            return text;
+        }
+
+        private static void CheckForBrackets(ref string text, char bracketType, int nextIdx, Subtitle sub, ref int idx)
+        {
+            var doFix = false;
+            for (int i = nextIdx; i < sub.Paragraphs.Count; i++)
+            {
+                var nextText = sub.Paragraphs[nextIdx].Text;
+                idx = nextText.IndexOf('(');
+                var close = nextText.IndexOf(')', idx);
+                if (idx > -1 && close > idx)
+                {
+                    doFix = true;
+                    break;
+                }
+
+                // do not keep looking... just exit
+                if (nextIdx + 3 == i)
+                    break;
+            }
+
+            if (doFix)
+            {
+                text = text + bracketType;
+            }
         }
     }
 }
