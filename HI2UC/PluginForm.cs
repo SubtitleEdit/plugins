@@ -247,11 +247,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.Items.Add(item);
         }
 
+        bool ignoreError = false;
         private string ChangeMoodsToUppercase(string text, Paragraph p)
         {
             Action<Char, int> FindBrackets = delegate(char openBracket, int idx)
             {
-                bool ignoreError = false;
                 //char? closeBracket = null;
                 char closeBracket = '\0';
                 switch (openBracket)
@@ -284,7 +284,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                             endIdx = text.IndexOf(closeBracket, idx + 1);
                     }
                 }
-                else
+                else if (!ignoreError)
                 {
                     var dialogResult = PrintErrorMessage(p);
                     if (dialogResult == System.Windows.Forms.DialogResult.Ignore)
