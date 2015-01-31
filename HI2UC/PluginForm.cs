@@ -373,7 +373,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             int index = t.IndexOf(":");
 
             // like: "Ivandro Says:"
-            if (index == t.Length - 1 || text.StartsWith("http"))
+            if (index == t.Length - 1 || text.StartsWith("http", StringComparison.OrdinalIgnoreCase))
             {
                 return text;
             }
