@@ -147,17 +147,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.BeginUpdate();
             foreach (Paragraph p in _subtitle.Paragraphs)
             {
-                if (Regex.IsMatch(p.Text, @"[\[\(\{]|:\B"))
+                if (Regex.IsMatch(p.Text, @"[\[\(]|:\B", RegexOptions.Compiled))
                 {
                     string oldText = p.Text;
                     string text = p.Text;
 
                     // (Moods and feelings)
-                    if (Regex.IsMatch(p.Text, @"[\(\[\{]", RegexOptions.Compiled))
+                    if (Regex.IsMatch(p.Text, @"[\(\[]", RegexOptions.Compiled))
                     {
                         //Remove Extra Spaces
                         if (checkBoxRemoveSpaces.Checked)
-                            text = Regex.Replace(text, "(?<=[\\(\\[\\{]) +| +(?=[\\)\\]\\}])", String.Empty, RegexOptions.Compiled);
+                            text = Regex.Replace(text, "(?<=[\\(\\[]) +| +(?=[\\)\\]])", String.Empty, RegexOptions.Compiled);
                         text = ChangeMoodsToUppercase(text, p);
                     }
 
@@ -325,7 +325,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string StyleMoodsAndFeelings(string text)
         {
-            if (!Regex.IsMatch(text, @"[\(\[\{]"))
+            if (!Regex.IsMatch(text, @"[\(\[]"))
                 return text;
 
             string before = text;
@@ -392,7 +392,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     {
                         string narrator = pre.Substring(idx, index - idx);
                         // You don't want to change http to uppercase :)!
-                        if (narrator.ToUpper().Trim().EndsWith("HTTPS") || narrator.ToLower().Trim().EndsWith("HTTP"))
+                        if (narrator.Trim().EndsWith("HTTPS", StringComparison.OrdinalIgnoreCase) || narrator.Trim().EndsWith("HTTP", StringComparison.OrdinalIgnoreCase))
                             return s;
 
                         narrator = narrator.ToUpper();
