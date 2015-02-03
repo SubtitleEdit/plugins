@@ -332,7 +332,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             switch (_hiStyle)
             {
                 case HIStyle.UpperLowerCase:
-                    var sb = new System.Text.StringBuilder();
+                    var helper = new System.Text.StringBuilder();
                     bool isUpperTime = true;
                     foreach (char myChar in text)
                     {
