@@ -7,6 +7,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public static class Utilities
     {
+        internal static int NumberOfLines(string text)
+        {
+            var ln = 0;
+            var idx = -1;
+            do
+            {
+                ln++;
+                idx = text.IndexOf('\n', idx + 1);
+            } while (idx > -1);
+            return ln;
+        }
+
         internal static string AssemblyVersion
         {
             get
@@ -18,7 +30,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public static bool IsInteger(string s)
         {
             int i;
-            return (int.TryParse(s, out i));
+            return int.TryParse(s, out i);
         }
 
         public static string RemoveHtmlFontTag(string s)
@@ -31,8 +43,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (string.IsNullOrEmpty(s))
                 return null;
-
-            if (!s.Contains("<"))
+            if (s.IndexOf('<') < 0)
                 return s;
             s = Regex.Replace(s, "(?i)</?[uib]>", string.Empty);
             s = RemoveParagraphTag(s);
@@ -45,8 +56,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             while (idx > -1)
             {
                 var endIndex = text.IndexOf('>', idx + tag.Length);
-                if (endIndex < 0) break;
-                text = text.Remove(idx, (endIndex - idx) + 1);
+                if (endIndex < idx) break;
+                text = text.Remove(idx, endIndex - idx + 1);
                 idx = text.IndexOf(tag, StringComparison.OrdinalIgnoreCase);
             }
             return text;
@@ -54,8 +65,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         internal static string RemoveBrackets(string inputString)
         {
-            string pattern = @"^[\[\(]|[\]\)]$";
-            return Regex.Replace(inputString, pattern, string.Empty).Trim();
+            return Regex.Replace(inputString, @"^[\[\(]|[\]\)]$", string.Empty).Trim();
         }
 
         internal static string RemoveParagraphTag(string s)

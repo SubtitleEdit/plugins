@@ -34,7 +34,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         //Gets or sets the major, minor, build, and revision numbers of the assembly.
         decimal IPlugin.Version
         {
-            get { return 2.9M; }
+            get { return 3.0M; }
         }
 
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate,
@@ -48,7 +48,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return string.Empty;
             }
 
-            if (!subtitle.Contains("(") && !subtitle.Contains("["))
+            if (subtitle.IndexOf('(') < 0 && subtitle.IndexOf(']') < 0)
             {
                 var result = MessageBox.Show("Subtitle doesn't contians Hearing Impaired anotations!" + Environment.NewLine +
                     "Do you want to continue?",

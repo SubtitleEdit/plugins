@@ -387,7 +387,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     // Do not change HTML tags to upper
                     string firstChr = Regex.Match(pre, "(?<!<)\\w", RegexOptions.Compiled).Value;
-                    int idx = pre.IndexOf(firstChr);
+                    int idx = pre.IndexOf(firstChr, StringComparison.Ordinal);
                     if (idx > -1)
                     {
                         string narrator = pre.Substring(idx, index - idx);
@@ -410,20 +410,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return s;
             };
 
-            if (text.Contains(Environment.NewLine))
+            if (text.IndexOf(Environment.NewLine, StringComparison.Ordinal) > -1)
             {
                 var lines = text.Replace(Environment.NewLine, "\n").Split('\n');
                 for (int i = 0; i < lines.Length; i++)
                 {
-                    string cleanText = Utilities.RemoveHtmlTags(lines[i]).Trim();
-                    index = cleanText.IndexOf(":");
+                    var noTagText = Utilities.RemoveHtmlTags(lines[i]).Trim();
+                    index = noTagText.IndexOf(":");
 
-                    if ((index + 1 < cleanText.Length - 1) && char.IsDigit(cleanText[index + 1]))
+                    if ((index + 1 < noTagText.Length - 1) && char.IsDigit(noTagText[index + 1]))
                         continue;
 
                     // Ivandro ismael:
                     // hello world!
-                    if (i > 0 && index == cleanText.Length - 1)
+                    if (i > 0 && index == noTagText.Length - 1)
                         continue;
 
                     if (index > 0)
@@ -439,7 +439,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             else
             {
-                index = text.IndexOf(":");
+                index = text.IndexOf(':');
                 if (index > 0)
                 {
                     text = ToUpper(text);
