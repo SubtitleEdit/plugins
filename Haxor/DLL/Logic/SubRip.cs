@@ -191,8 +191,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string RemoveBadChars(string line)
         {
-            line = line.Replace("\0", " ");
-            return line;
+            return line.Replace('\0', ' ');
         }
 
         private bool TryReadTimeCodesLine(string line, Paragraph paragraph)

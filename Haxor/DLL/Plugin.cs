@@ -19,7 +19,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         decimal IPlugin.Version
         {
-            get { return 1.2M; }
+            get { return 1.3M; }
         }
 
         string IPlugin.Description
@@ -54,8 +54,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             foreach (string line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
                 list.Add(line);
 
-            Subtitle sub = new Subtitle();
-            SubRip srt = new SubRip();
+            var sub = new Subtitle();
+            var srt = new SubRip();
             srt.LoadSubtitle(sub, list, subtitleFileName);
             using (var form = new MainForm(sub, (this as IPlugin).Name, (this as IPlugin).Description, parentForm))
             {

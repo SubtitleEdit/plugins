@@ -18,49 +18,60 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public static bool IsInteger(string s)
         {
             int i;
-            if (int.TryParse(s, out i))
-                return true;
-            return false;
-        }
-
-        public static string RemoveHtmlFontTag(string s)
-        {
-            s = Regex.Replace(s, "(?i)</?font>", string.Empty);
-            while (s.ToLower().Contains("<font"))
-            {
-                int startIndex = s.ToLower().IndexOf("<font");
-                int endIndex = Math.Max(s.IndexOf(">"), startIndex + 4);
-                s = s.Remove(startIndex, (endIndex - startIndex) + 1);
-            }
-            return s;
+            return int.TryParse(s, out i);
         }
 
         public static string RemoveHtmlTags(string s)
         {
             if (string.IsNullOrEmpty(s))
-                return null;
-            if (!s.Contains("<"))
+                return string.Empty;
+            if (s.IndexOf('<') < 0)
                 return s;
             s = Regex.Replace(s, "(?i)</?[ibu]>", string.Empty);
             s = RemoveParagraphTag(s);
+            while (s.Contains("  ")) s = s.Replace("  ", " ");
             return RemoveHtmlFontTag(s).Trim();
         }
-
-        internal static string GetHtmlColorCode(Color color)
-        {
-            return string.Format("#{0:x2}{1:x2}{2:x2}", color.R, color.G, color.B);
-        }
-
         internal static string RemoveParagraphTag(string s)
         {
             s = Regex.Replace(s, "(?i)</?p>", string.Empty);
-            while (s.ToLower().Contains("<p "))
+            var idx = s.IndexOf("<p", StringComparison.OrdinalIgnoreCase);
+            while (idx >= 0)
             {
-                int startIndex = s.ToLower().IndexOf("<p ");
-                int endIndex = Math.Max(s.IndexOf(">"), startIndex + 4);
-                s = s.Remove(startIndex, (endIndex - startIndex) + 1);
+                var endIdx = s.IndexOf('>', idx + 1);
+                if (endIdx < 1) break;
+                s = s.Remove(idx, endIdx - idx + 1);
+                idx = s.IndexOf("<p", StringComparison.OrdinalIgnoreCase);
             }
             return s;
+        }
+
+        public static string RemoveHtmlFontTag(string s)
+        {
+            s = Regex.Replace(s, "(?i)</?font>", string.Empty);
+            var idx = s.IndexOf("<font", StringComparison.OrdinalIgnoreCase);
+            while (idx >= 0)
+            {
+                var endIdx = s.IndexOf('>', idx + 1);
+                if (endIdx < 0) break;
+                s = s.Remove(idx, endIdx - idx + 1);
+                idx = s.IndexOf("<font", StringComparison.OrdinalIgnoreCase);
+            }
+            return s;
+        }
+
+        internal static int NumberOfLines(string text)
+        {
+            if (text == null || text.Trim().Length == 0)
+                return 0;
+            var ln = 0;
+            var idx = text.IndexOf('\n');
+            while (idx > 0)
+            {
+                ln++;
+                idx = text.IndexOf('\n', idx + 1);
+            }
+            return ln;
         }
     }
 }

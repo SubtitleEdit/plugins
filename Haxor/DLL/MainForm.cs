@@ -58,6 +58,8 @@ namespace SubtitleEdit
                 else
                 {
                     var before = Utilities.RemoveHtmlTags(p.Text).ToLower();
+                    if (before.IndexOf("http", StringComparison.Ordinal) >= 0)
+                        continue;
                     var after = TranslateToHaxor(before);
                     if (after != before)
                     {
@@ -124,7 +126,7 @@ namespace SubtitleEdit
 
         private void buttonReset_Click(object sender, EventArgs e)
         {
-            this._to = "4b©d3fgH!jlKmñ0pqr$tuvwx¥z"; // this are the default haxor char
+            this._to = "4b©d3fgH!jlKmñ0pqr$tuvwx¥z"; // these are the default haxor char
             this.textBoxTo.Text = _to;
             this.listView1.Items.Clear();
             this._dicChanged = null;

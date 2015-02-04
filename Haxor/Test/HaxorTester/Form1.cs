@@ -14,7 +14,7 @@ namespace HaxorTester
         private static void Tester(string s)
         {
             // IPlugin plugin = new Nikse.SubtitleEdit.PluginLogic.Haxor();
-            IPlugin plugin = new Nikse.SubtitleEdit.PluginLogic.HI2UC();
+            IPlugin plugin = new Nikse.SubtitleEdit.PluginLogic.Haxor();
             //MessageBox.Show(plugin.DoAction(null, s, 25, "<br />", null, @"C:\Users\Nikse\Desktop\Trailers\Game Of Thrones Season Trailer.mp4", s));
             plugin.DoAction(null, s, 23, "<br />", null, null, s);
         }
