@@ -45,7 +45,7 @@ namespace OpenSubtitlesUpload.VideoFormats.Boxes
 
                 if (Name == "minf" && IsTextSubtitle || IsVobSubSubtitle || IsClosedCaption || IsVideo)
                 {
-                    UInt32 timeScale = 90000;
+                    uint timeScale = 90000;
                     if (Mdhd != null)
                         timeScale = Mdhd.TimeScale;
                     Minf = new Minf(fs, Position, timeScale, HandlerType, this);

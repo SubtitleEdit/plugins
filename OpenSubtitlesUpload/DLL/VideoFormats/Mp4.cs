@@ -10,10 +10,10 @@ namespace OpenSubtitlesUpload.VideoFormats
     /// </summary>
     internal class MP4 : Box
     {
-        internal string FileName { get; private set; }
-        internal Moov Moov { get; private set; }
+        public string FileName { get; private set; }
+        public Moov Moov { get; private set; }
 
-        internal List<Trak> GetSubtitleTracks()
+        public List<Trak> GetSubtitleTracks()
         {
             var list = new List<Trak>();
             if (Moov != null && Moov.Tracks != null)
@@ -29,7 +29,7 @@ namespace OpenSubtitlesUpload.VideoFormats
             return list;
         }
 
-        internal List<Trak> GetAudioTracks()
+        public List<Trak> GetAudioTracks()
         {
             var list = new List<Trak>();
             if (Moov != null && Moov.Tracks != null)
@@ -45,7 +45,7 @@ namespace OpenSubtitlesUpload.VideoFormats
             return list;
         }
 
-        internal List<Trak> GetVideoTracks()
+        public List<Trak> GetVideoTracks()
         {
             var list = new List<Trak>();
             if (Moov != null && Moov.Tracks != null)
@@ -61,7 +61,7 @@ namespace OpenSubtitlesUpload.VideoFormats
             return list;
         }
 
-        internal TimeSpan Duration
+        public TimeSpan Duration
         {
             get
             {
@@ -71,7 +71,7 @@ namespace OpenSubtitlesUpload.VideoFormats
             }
         }
 
-        internal DateTime CreationDate
+        public DateTime CreationDate
         {
             get
             {
@@ -84,7 +84,7 @@ namespace OpenSubtitlesUpload.VideoFormats
         /// <summary>
         /// Resolution of first video track. If not present returns 0.0
         /// </summary>
-        internal System.Drawing.Point VideoResolution
+        public System.Drawing.Point VideoResolution
         {
             get
             {
@@ -103,15 +103,14 @@ namespace OpenSubtitlesUpload.VideoFormats
             }
         }
 
-        internal MP4(string fileName)
+        public MP4(string fileName)
         {
             FileName = fileName;
-            var fs = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            ParseMp4(fs);
-            fs.Close();
+            using (var fs = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                ParseMp4(fs);
         }
 
-        internal MP4(FileStream fs)
+        public MP4(FileStream fs)
         {
             FileName = null;
             ParseMp4(fs);
@@ -122,28 +121,30 @@ namespace OpenSubtitlesUpload.VideoFormats
             int count = 0;
             Position = 0;
             fs.Seek(0, SeekOrigin.Begin);
-            bool moreBytes = true;
-            while (moreBytes)
+            using (fs)
             {
-                moreBytes = InitializeSizeAndName(fs);
-                if (Size < 8)
-                    return;
+                bool moreBytes = true;
+                while (moreBytes)
+                {
+                    moreBytes = InitializeSizeAndName(fs);
+                    if (Size < 8)
+                        return;
 
-                if (Name == "moov" && Moov == null)
-                    Moov = new Moov(fs, Position);
+                    if (Name == "moov" && Moov == null)
+                        Moov = new Moov(fs, Position);
 
-                count++;
-                if (count > 100)
-                    break;
+                    count++;
+                    if (count > 100)
+                        break;
 
-                if (Position > (ulong)fs.Length)
-                    break;
-                fs.Seek((long)Position, SeekOrigin.Begin);
+                    if (Position > (ulong)fs.Length)
+                        break;
+                    fs.Seek((long)Position, SeekOrigin.Begin);
+                }
             }
-            fs.Close();
         }
 
-        internal double FrameRate
+        public double FrameRate
         {
             get
             {

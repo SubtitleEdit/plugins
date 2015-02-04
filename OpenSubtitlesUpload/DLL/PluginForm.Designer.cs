@@ -292,9 +292,9 @@
             this.checkBoxTextForHI.AutoSize = true;
             this.checkBoxTextForHI.Location = new System.Drawing.Point(116, 309);
             this.checkBoxTextForHI.Name = "checkBoxTextForHI";
-            this.checkBoxTextForHI.Size = new System.Drawing.Size(105, 17);
+            this.checkBoxTextForHI.Size = new System.Drawing.Size(106, 17);
             this.checkBoxTextForHI.TabIndex = 19;
-            this.checkBoxTextForHI.Text = "Hearing impaired";
+            this.checkBoxTextForHI.Text = "Hearing Impaired";
             this.checkBoxTextForHI.UseVisualStyleBackColor = true;
             // 
             // buttonSearchIMDb

@@ -16,13 +16,13 @@ namespace OpenSubtitlesUploadTest
             IPlugin plugin = new Nikse.SubtitleEdit.PluginLogic.OpenSubtitlesUpload();
             string subtitleFileName = textBox1.Text;
             if (File.Exists(subtitleFileName))
-                plugin.DoAction(null, string.Empty, 25, "<br />", subtitleFileName, Path.GetFullPath(subtitleFileName), System.IO.File.ReadAllText(subtitleFileName));
+                plugin.DoAction(null, string.Empty, 25, "<br />", subtitleFileName, Path.GetFullPath(subtitleFileName), File.ReadAllText(subtitleFileName));
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             openFileDialog1.Filter = "Subrip|*.srt";
-            if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 textBox1.Text = openFileDialog1.FileName;
                 button1_Click(null, null);

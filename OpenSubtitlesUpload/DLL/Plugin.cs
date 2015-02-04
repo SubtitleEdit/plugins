@@ -38,7 +38,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
-            if (string.IsNullOrEmpty(subtitleFileName))
+            if (string.IsNullOrWhiteSpace(subtitleFileName))
             {
                 MessageBox.Show("No subtitle loaded", parentForm.Text,
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -46,7 +46,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             if (!File.Exists(subtitleFileName))
             {
-                MessageBox.Show("File not found in location... make sure you saved before running!", parentForm.Text,
+                MessageBox.Show("File not found. Make sure you saved before running!", parentForm.Text,
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return string.Empty;
             }

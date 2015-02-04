@@ -7,6 +7,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -37,7 +38,7 @@ namespace OpenSubtitlesUpload
         private string GetSettingsFileName()
         {
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-            if (path.StartsWith("file:\\"))
+            if (path.StartsWith("file:\\", StringComparison.Ordinal))
                 path = path.Remove(0, 6);
             path = Path.Combine(path, "Plugins");
             if (!Directory.Exists(path))
@@ -47,14 +48,14 @@ namespace OpenSubtitlesUpload
 
         private static string EncodeTo64(string toEncode)
         {
-            byte[] toEncodeAsBytes = System.Text.Encoding.Unicode.GetBytes(toEncode);
-            return System.Convert.ToBase64String(toEncodeAsBytes);
+            byte[] toEncodeAsBytes = Encoding.Unicode.GetBytes(toEncode);
+            return Convert.ToBase64String(toEncodeAsBytes);
         }
 
         public static string DecodeFrom64(string encodedData)
         {
-            byte[] encodedDataAsBytes = System.Convert.FromBase64String(encodedData);
-            return System.Text.Encoding.Unicode.GetString(encodedDataAsBytes);
+            byte[] encodedDataAsBytes = Convert.FromBase64String(encodedData);
+            return Encoding.Unicode.GetString(encodedDataAsBytes);
         }
 
         private void LoadLogin()
@@ -62,7 +63,7 @@ namespace OpenSubtitlesUpload
             string fileName = GetSettingsFileName();
             try
             {
-                XmlDocument doc = new XmlDocument();
+                var doc = new XmlDocument();
                 doc.Load(fileName);
                 textBoxUserName.Text = DecodeFrom64(doc.DocumentElement.SelectSingleNode("Username").InnerText);
                 textBoxPassword.Text = DecodeFrom64(doc.DocumentElement.SelectSingleNode("Password").InnerText);
@@ -72,10 +73,10 @@ namespace OpenSubtitlesUpload
 
         private void SaveLogin(string userName, string password)
         {
-            string fileName = GetSettingsFileName();
+            var fileName = GetSettingsFileName();
             try
             {
-                XmlDocument doc = new XmlDocument();
+                var doc = new XmlDocument();
                 doc.LoadXml("<OpenSubtitles><Username/><Password/></OpenSubtitles>");
                 doc.DocumentElement.SelectSingleNode("Username").InnerText = EncodeTo64(userName);
                 doc.DocumentElement.SelectSingleNode("Password").InnerText = EncodeTo64(password);
@@ -89,7 +90,7 @@ namespace OpenSubtitlesUpload
             int idx = comboBoxLanguage.SelectedIndex;
             if (idx >= 0)
             {
-                LanguageItem li = (LanguageItem)comboBoxLanguage.Items[idx];
+                var li = (LanguageItem)comboBoxLanguage.Items[idx];
                 return li.CI.ThreeLetterISOLanguageName;
             }
             return "eng";
@@ -98,19 +99,27 @@ namespace OpenSubtitlesUpload
         public PluginForm(string subtitleFileName, string rawText, string videoFileName, string name, string description)
         {
             InitializeComponent();
-            this.Text = name;
+            Text = name;
             labelStatus.Text = string.Empty;
             _subtitleFileName = subtitleFileName;
-            _videoFileName = videoFileName;
             _rawText = rawText;
 
-            comboBoxFrameRate.SelectedIndex = 0;
-            string videoFileSafeName = System.IO.Path.GetFileName(videoFileName);
-            textBoxSubtitleFileName.Text = System.IO.Path.GetFileName(subtitleFileName);
-            textBoxMovieFileName.Text = videoFileSafeName;
-            textBoxReleaseName.Text = string.Empty;
+            if (videoFileName != null && File.Exists(videoFileName))
+            {
+                var videoFileSafeName = Path.GetFileName(videoFileName);
+                textBoxMovieFileName.Text = videoFileSafeName;
+                _videoFileName = videoFileName;
+            }
 
-            string twoLetterLanguageId = Utilities.AutoDetectGoogleLanguage(rawText);
+            // 720p | 1080p
+            if (Regex.IsMatch(_subtitleFileName, @"\d{3,4}p\b"))
+                checkBoxHD.Checked = true;
+
+            comboBoxFrameRate.SelectedIndex = 0;
+            textBoxSubtitleFileName.Text = Path.GetFileName(subtitleFileName);
+            textBoxReleaseName.Text = Path.GetFileNameWithoutExtension(_subtitleFileName);
+
+            var twoLetterLanguageId = Utilities.AutoDetectGoogleLanguage(rawText);
             foreach (CultureInfo x in CultureInfo.GetCultures(CultureTypes.NeutralCultures))
             {
                 comboBoxLanguage.Items.Add(new LanguageItem(x));
@@ -125,10 +134,6 @@ namespace OpenSubtitlesUpload
             if (temp.Length + 18 < rawText.Length)
             {
                 checkBoxTextForHI.Checked = true;
-            }
-            if (!string.IsNullOrEmpty(videoFileSafeName) && System.Text.RegularExpressions.Regex.IsMatch(videoFileSafeName, @"\B\d+p\b", System.Text.RegularExpressions.RegexOptions.IgnoreCase))
-            {
-                checkBoxHD.Checked = true;
             }
             comboBoxEncoding.Items.Clear();
             int encodingSelectedIndex = 0;
@@ -155,12 +160,12 @@ namespace OpenSubtitlesUpload
             if (_api != null && !string.IsNullOrEmpty(_api.Token))
                 return true;
 
-            if (textBoxUserName.Text.Trim().Length == 0)
+            if (string.IsNullOrWhiteSpace(textBoxUserName.Text))
             {
                 MessageBox.Show("Please enter username");
                 return false;
             }
-            if (textBoxPassword.Text.Trim().Length == 0)
+            if (string.IsNullOrWhiteSpace(textBoxPassword.Text))
             {
                 MessageBox.Show("Please enter password");
                 return false;
@@ -171,13 +176,13 @@ namespace OpenSubtitlesUpload
                 Cursor = Cursors.WaitCursor;
                 try
                 {
-                    // TODO: HASH TO USER PASSWORD
+                    // TODO: ENCRYPT USER PASSWORD
                     SaveLogin(textBoxUserName.Text, textBoxPassword.Text);
                 }
                 catch { }
 
                 labelStatus.Text = "Logging in...";
-                this.Refresh();
+                Refresh();
                 if (_api.Login(textBoxUserName.Text, textBoxPassword.Text, GetLanguageCode()))
                 {
                     Cursor = Cursors.Default;
@@ -190,7 +195,6 @@ namespace OpenSubtitlesUpload
                     MessageBox.Show("Login failed");
                 }
                 labelStatus.Text = string.Empty;
-                Cursor = Cursors.Default;
             }
             catch (Exception exception)
             {
@@ -248,7 +252,7 @@ namespace OpenSubtitlesUpload
                 {
                     Cursor = Cursors.WaitCursor;
                     labelStatus.Text = "Checking db...";
-                    this.Refresh();
+                    Refresh();
                     string fps = null;
                     if (comboBoxFrameRate.SelectedIndex > 0)
                         fps = comboBoxFrameRate.SelectedItem.ToString();
@@ -256,19 +260,16 @@ namespace OpenSubtitlesUpload
                     if (res)
                     {
                         labelStatus.Text = "Uploading subtitle...";
-                        this.Refresh();
-                        string textForHi = string.Empty;
-                        if (checkBoxTextForHI.Checked)
-                            textForHi = "1";
-                        string hd = string.Empty;
-                        if (checkBoxHD.Checked)
-                            hd = "1";
+                        Refresh();
+
+                        var textForHi = (checkBoxTextForHI.Checked) ? "1" : string.Empty;
+                        var hd = (checkBoxHD.Checked) ? "1" : string.Empty;
 
                         if (_api.UploadSubtitles(_rawText, textBoxSubtitleFileName.Text, textBoxMovieFileName.Text, _videoFileName, GetLanguageCode(), textBoxReleaseName.Text, textBoxImdbId.Text, textBoxComment.Text, textForHi, hd, fps, GetCurrentEncoding()))
                         {
                             Cursor = Cursors.Default;
                             labelStatus.Text = "Subtitle uploaded :)";
-                            this.Refresh();
+                            Refresh();
                             MessageBox.Show("Subtitle uploaded");
                             return;
                         }
@@ -319,7 +320,7 @@ namespace OpenSubtitlesUpload
                 DialogResult = DialogResult.Cancel;
         }
 
-        public static IEnumerable<string> GetMovieFileExtensions()
+        public static ICollection<string> GetMovieFileExtensions()
         {
             return new List<string> { ".avi", ".mkv", ".wmv", ".mpg", ".mpeg", ".divx", ".mp4", ".asf", ".flv", ".mov", ".m4v", ".vob", ".ogv", ".webm", ".ts", ".m2ts" };
         }
@@ -346,76 +347,92 @@ namespace OpenSubtitlesUpload
                 openFileDialogVideo.InitialDirectory = Path.GetDirectoryName(_subtitleFileName);
             openFileDialogVideo.Title = "Open video file...";
             openFileDialogVideo.FileName = string.Empty;
-            openFileDialogVideo.Filter = GetVideoFileFilter();
+            if (string.IsNullOrEmpty(openFileDialogVideo.Filter))
+                openFileDialogVideo.Filter = GetVideoFileFilter();
             if (openFileDialogVideo.ShowDialog() == DialogResult.OK)
             {
                 textBoxMovieFileName.Text = Path.GetFileName(openFileDialogVideo.FileName);
                 _videoFileName = openFileDialogVideo.FileName;
-                SetFrameRateFromVideoFile();
+                labelStatus.Text = "Calculating frame-rate...";
+                Task.Factory.StartNew(SetFrameRateFromVideoFile);
+
+                buttonOpenVideo.Enabled = false;
+                textBoxMovieFileName.Enabled = true;
+                textBoxMovieFileName.ReadOnly = true;
+                //Task.Factory.StartNew(SetFrameRateFromVideoFile).ContinueWith((_) => comboBoxFrameRate.SelectedIndex = idx, TaskScheduler.FromCurrentSynchronizationContext()); // where 'idx' is global volatile
             }
         }
 
         private void SetFrameRateFromVideoFile()
         {
             double frameRate = 0;
+            Cursor = Cursors.WaitCursor;
             try
             {
                 if (!string.IsNullOrEmpty(_videoFileName) && File.Exists(_videoFileName))
                 {
-                    string ext = Path.GetExtension(_videoFileName).ToLower();
+                    var ext = Path.GetExtension(_videoFileName).ToLowerInvariant();
                     if (ext == ".mkv")
                     {
-                        var mkv = new VideoFormats.Mkv();
                         bool isValid = false;
-                        bool hasConstantFrameRate = true;
-                        int pixelWidth = 0;
-                        int pixelHeight = 0;
-                        double millisecsDuration = 0;
-                        string videoCodec = string.Empty;
-                        mkv.GetMatroskaInfo(_videoFileName, ref isValid, ref hasConstantFrameRate, ref frameRate, ref pixelWidth, ref pixelHeight, ref millisecsDuration, ref videoCodec);
-                        mkv.Dispose();
+                        using (var mkv = new VideoFormats.Mkv())
+                        {
+                            bool hasConstantFrameRate = true;
+                            int pixelWidth = 0;
+                            int pixelHeight = 0;
+                            double millisecsDuration = 0;
+                            string videoCodec = string.Empty;
+                            mkv.GetMatroskaInfo(_videoFileName, ref isValid, ref hasConstantFrameRate, ref frameRate, ref pixelWidth, ref pixelHeight, ref millisecsDuration, ref videoCodec);
+                        }
                         if (!isValid)
                             return;
                     }
                     if (frameRate < 1 && (ext == ".mp4" || ext == ".mov" || ext == ".m4v"))
                     {
-                        var mp4 = new OpenSubtitlesUpload.VideoFormats.MP4(_videoFileName);
+                        var mp4 = new VideoFormats.MP4(_videoFileName);
                         frameRate = mp4.FrameRate;
-
                     }
                     if (frameRate < 1)
                     {
-                        var rp = new VideoFormats.RiffParser();
-                        var dh = new VideoFormats.RiffDecodeHeader(rp);
-                        rp.OpenFile(_videoFileName);
-                        if (VideoFormats.RiffParser.ckidAVI == rp.FileType)
+                        using (var rp = new VideoFormats.RiffParser())
                         {
-                            dh.ProcessMainAVI();
-                            frameRate = dh.FrameRate;
+                            var dh = new VideoFormats.RiffDecodeHeader(rp);
+                            rp.OpenFile(_videoFileName);
+                            if (VideoFormats.RiffParser.ckidAVI == rp.FileType)
+                            {
+                                dh.ProcessMainAVI();
+                                frameRate = dh.FrameRate;
+                            }
                         }
-                        rp.CloseFile();
                     }
                 }
-
-                double minDiff = 100;
-                for (int i = 0; i < comboBoxFrameRate.Items.Count; i++)
+                //CheckForIllegalCrossThreadCalls = false;
+                Invoke(new MethodInvoker(() =>
                 {
-                    var element = comboBoxFrameRate.Items[i];
-                    double d;
-                    if (double.TryParse(element.ToString(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out d))
+                    double minDiff = 100;
+                    var index = 0;
+                    for (int i = 1; i < comboBoxFrameRate.Items.Count; i++)
                     {
-                        double diff = Math.Abs(d - frameRate);
-                        if (diff < 0.01 && diff < minDiff)
+                        var element = comboBoxFrameRate.Items[i];
+                        double d;
+                        if (double.TryParse(element.ToString(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out d))
                         {
-                            comboBoxFrameRate.SelectedIndex = i;
-                            minDiff = diff;
+                            double diff = Math.Abs(d - frameRate);
+                            if (diff < 0.01 && diff < minDiff)
+                            {
+                                index = i;
+                                minDiff = diff;
+                            }
                         }
                     }
-                }
+                    comboBoxFrameRate.SelectedIndex = index;
+                }));
             }
             catch
             {
             }
+            Cursor = Cursors.Default;
+            labelStatus.Text = string.Empty;
         }
 
         private void buttonSearchIMDb_Click(object sender, EventArgs e)
@@ -424,17 +441,19 @@ namespace OpenSubtitlesUpload
             {
                 try
                 {
-                    string title = string.Empty;
+                    var title = string.Empty;
                     if (!string.IsNullOrEmpty(_videoFileName))
                     {
-                        title = System.IO.Path.GetFileNameWithoutExtension(_videoFileName).Replace(".", " ");
+                        title = Path.GetFileNameWithoutExtension(_videoFileName).Replace('.', ' ');
                         title = ConvertToTitle(title);
 
                     }
-                    var form = new ImdbSearch(title, _api);
-                    if (form.ShowDialog(this) == DialogResult.OK)
+                    using (var form = new ImdbSearch(title, _api))
                     {
-                        textBoxImdbId.Text = form.ImdbId;
+                        if (form.ShowDialog(this) == DialogResult.OK)
+                        {
+                            textBoxImdbId.Text = form.ImdbId;
+                        }
                     }
                 }
                 catch (Exception exception)
@@ -450,16 +469,16 @@ namespace OpenSubtitlesUpload
             // Minority Report 2002
             //Better.Living.Through.Chemistry.2014.1080p.BluRay.x264.AAC.Ozlem
             // Veep - 03x05 - Fishing Subtitle
-            release = release.Replace("[", " ");
-            release = release.Replace("]", " ");
-            release = release.Replace("_", " ");
+            release = release.Replace('[', ' ');
+            release = release.Replace(']', ' ');
+            release = release.Replace('_', ' ');
             release = release.Replace(" - ", " ");
-            release = release.Replace("-", " ");
-            release = release.Replace("  ", " ");
-            release = release.Replace("  ", " ");
+            release = release.Replace('-', ' ');
+            while (release.Contains("  "))
+                release = release.Replace("  ", " ");
             release = release.Replace(":", string.Empty);
-            release = release.Replace("(", " ");
-            release = release.Replace(")", " ");
+            release = release.Replace('(', ' ');
+            release = release.Replace(')', ' ');
 
             var regexMovie = new Regex("(.+\\d{4}\\b)");
             var regexTvShow1 = new Regex("(.+[Ss]\\d{2}[eE]\\d{2})");
@@ -471,13 +490,13 @@ namespace OpenSubtitlesUpload
             // Tv show
             if (regexTvShow1.IsMatch(release)) // Californication.S07E01.HDTV.x264-EXCELLENCE
             {
-                release = Regex.Match(release, "(.+)[Ss]\\d{2}[eE]\\d{2}", RegexOptions.Compiled).Groups[1].Value;
+                release = Regex.Match(release, "(.+?)[Ss]\\d{2}[eE]\\d{2}", RegexOptions.Compiled).Groups[1].Value;
             }
             else if (Regex.IsMatch(release, "\\d{2}[xX]\\d{2}"))
             {
-                release = Regex.Match(release, "(.+)\\d{2}[xX]\\d{2}", RegexOptions.Compiled).Groups[1].Value;
+                release = Regex.Match(release, "(.+?)\\d{2}[xX]\\d{2}", RegexOptions.Compiled).Groups[1].Value;
             }
-            else if (Regex.IsMatch(release, "(.+)\\d{4}\\b")) // Zulu.2013.1080p.BluRay.x264-Friday11th [PublicHD]
+            else if (Regex.IsMatch(release, "(.+?)\\d{4}\\b")) // Zulu.2013.1080p.BluRay.x264-Friday11th [PublicHD]
             {
                 release = Regex.Match(release, "(.+\\d{4}\\b)", RegexOptions.Compiled).Groups[1].Value;
             }

@@ -4,7 +4,6 @@ namespace OpenSubtitlesUpload.VideoFormats.Boxes
 {
     public class Trak : Box
     {
-
         public Mdia Mdia;
         public Tkhd Tkhd;
 

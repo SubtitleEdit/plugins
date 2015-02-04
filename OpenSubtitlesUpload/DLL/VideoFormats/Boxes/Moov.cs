@@ -6,7 +6,7 @@ namespace OpenSubtitlesUpload.VideoFormats.Boxes
     public class Moov : Box
     {
         public Mvhd Mvhd;
-        public List<Trak> Tracks;
+        public readonly List<Trak> Tracks;
 
         public Moov(FileStream fs, ulong maximumLength)
         {

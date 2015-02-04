@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Nikse.SubtitleEdit.Logic;
 
 namespace OpenSubtitlesUpload.VideoFormats.Boxes
 {
@@ -13,7 +14,7 @@ namespace OpenSubtitlesUpload.VideoFormats.Boxes
         public ulong StszSampleCount = 0;
         private Mdia _mdia;
 
-        public Stbl(FileStream fs, ulong maximumLength, UInt32 timeScale, string handlerType, Mdia mdia)
+        public Stbl(FileStream fs, ulong maximumLength, uint timeScale, string handlerType, Mdia mdia)
         {
             _mdia = mdia;
             Position = (ulong)fs.Position;
@@ -99,7 +100,6 @@ namespace OpenSubtitlesUpload.VideoFormats.Boxes
                     {
                         for (int i = 0; i < numberOfSampleTimes; i++)
                         {
-
                             uint sampleCount = GetUInt(8 + i * 8);
                             uint sampleDelta = GetUInt(12 + i * 8);
                             totalTime += sampleDelta / (double)timeScale;
@@ -173,16 +173,16 @@ namespace OpenSubtitlesUpload.VideoFormats.Boxes
                             if (j % 2 == 1)
                                 sb.Append(" ");
                         }
-                        string hex = sb.ToString();
+                        var hex = sb.ToString();
                         //int errorCount = 0;
                         //text = SubtitleFormats.ScenaristClosedCaptions.GetSccText(hex, ref errorCount);
-                        if (text.StartsWith("n") && text.Length > 1)
+                        if (text.StartsWith('n') && text.Length > 1)
                             text = "<i>" + text.Substring(1) + "</i>";
                         if (text.StartsWith("-n"))
                             text = text.Remove(0, 2);
-                        if (text.StartsWith("-N"))
+                        if (text.StartsWith("-N", StringComparison.Ordinal))
                             text = text.Remove(0, 2);
-                        if (text.StartsWith("-") && !text.Contains(Environment.NewLine + "-"))
+                        if (text.StartsWith('-') && !text.Contains(Environment.NewLine + "-"))
                             text = text.Remove(0, 1);
                     }
                     Texts.Add(text.Replace(Environment.NewLine, "\n").Replace("\n", Environment.NewLine));

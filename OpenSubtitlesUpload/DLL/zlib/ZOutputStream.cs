@@ -61,7 +61,7 @@ namespace ComponentAce.Compression.Libs.zlib
 
             set
             {
-                this.flush_Renamed_Field = value;
+                flush_Renamed_Field = value;
             }
         }
         /// <summary> Returns the total number of bytes input so far.</summary>
@@ -218,24 +218,24 @@ namespace ComponentAce.Compression.Libs.zlib
         }
 
         //UPGRADE_TODO: The following method was automatically generated and it must be implemented in order to preserve the class logic. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1232_3"'
-        public override System.Int32 Read(System.Byte[] buffer, System.Int32 offset, System.Int32 count)
+        public override int Read(byte[] buffer, int offset, int count)
         {
             return 0;
         }
 
         //UPGRADE_TODO: The following method was automatically generated and it must be implemented in order to preserve the class logic. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1232_3"'
-        public override void SetLength(System.Int64 value)
+        public override void SetLength(long value)
         {
         }
 
         //UPGRADE_TODO: The following method was automatically generated and it must be implemented in order to preserve the class logic. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1232_3"'
-        public override System.Int64 Seek(System.Int64 offset, System.IO.SeekOrigin origin)
+        public override long Seek(long offset, System.IO.SeekOrigin origin)
         {
             return 0;
         }
 
         //UPGRADE_TODO: The following property was automatically generated and it must be implemented in order to preserve the class logic. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1232_3"'
-        public override System.Boolean CanRead
+        public override bool CanRead
         {
             get
             {
@@ -243,7 +243,7 @@ namespace ComponentAce.Compression.Libs.zlib
             }
         }
         //UPGRADE_TODO: The following property was automatically generated and it must be implemented in order to preserve the class logic. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1232_3"'
-        public override System.Boolean CanSeek
+        public override bool CanSeek
         {
             get
             {
@@ -251,7 +251,7 @@ namespace ComponentAce.Compression.Libs.zlib
             }
         }
         //UPGRADE_TODO: The following property was automatically generated and it must be implemented in order to preserve the class logic. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1232_3"'
-        public override System.Boolean CanWrite
+        public override bool CanWrite
         {
             get
             {
@@ -259,7 +259,7 @@ namespace ComponentAce.Compression.Libs.zlib
             }
         }
         //UPGRADE_TODO: The following property was automatically generated and it must be implemented in order to preserve the class logic. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1232_3"'
-        public override System.Int64 Length
+        public override long Length
         {
             get
             {
@@ -267,7 +267,7 @@ namespace ComponentAce.Compression.Libs.zlib
             }
         }
         //UPGRADE_TODO: The following property was automatically generated and it must be implemented in order to preserve the class logic. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1232_3"'
-        public override System.Int64 Position
+        public override long Position
         {
             get
             {

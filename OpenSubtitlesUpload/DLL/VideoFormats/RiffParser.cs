@@ -492,11 +492,7 @@ namespace OpenSubtitlesUpload.VideoFormats
         {
             if (disposing)
             {
-                if (m_stream != null)
-                {
-                    m_stream.Dispose();
-                    m_stream = null;
-                }
+                CloseFile();
             }
         }
 

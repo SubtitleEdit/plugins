@@ -46,9 +46,9 @@ namespace ComponentAce.Compression.Libs.zlib
 {
     sealed public class zlibConst
     {
-        private const System.String version_Renamed_Field = "1.0.2";
+        private const string version_Renamed_Field = "1.0.2";
 
-        public static System.String version()
+        public static string version()
         {
             return version_Renamed_Field;
         }

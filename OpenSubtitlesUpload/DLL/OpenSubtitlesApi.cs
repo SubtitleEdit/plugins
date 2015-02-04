@@ -28,7 +28,7 @@ namespace OpenSubtitles
             byte[] bytes = Encoding.UTF8.GetBytes(message);
             var webRequest = (HttpWebRequest)WebRequest.Create(XmlRpcUrl);
             webRequest.ContentType = "text/xml";
-            webRequest.Method = "POST";
+            webRequest.Method = WebRequestMethods.Http.Post;
             webRequest.Timeout = 10000;
             webRequest.ContentLength = bytes.Length;
             using (Stream requeststream = webRequest.GetRequestStream())
@@ -544,13 +544,14 @@ namespace OpenSubtitles
 
             long i = 0;
             var buffer = new byte[sizeof(long)];
-            while (i < 65536 / sizeof(long) && (input.Read(buffer, 0, sizeof(long)) > 0))
+            const int c = 65536;
+            while (i < c / sizeof(long) && (input.Read(buffer, 0, sizeof(long)) > 0))
             {
                 i++;
                 lhash += BitConverter.ToInt64(buffer, 0);
             }
 
-            input.Position = Math.Max(0, streamsize - 65536);
+            input.Position = Math.Max(0, streamsize - c);
             i = 0;
             while (i < 65536 / sizeof(long) && (input.Read(buffer, 0, sizeof(long)) > 0))
             {

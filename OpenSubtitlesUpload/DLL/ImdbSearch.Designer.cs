@@ -139,6 +139,7 @@
             this.Controls.Add(this.buttonSearch);
             this.Controls.Add(this.labelSearch);
             this.Controls.Add(this.textBoxSearchQuery);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(523, 380);

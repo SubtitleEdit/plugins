@@ -51,7 +51,7 @@ namespace ComponentAce.Compression.Libs.zlib
         {
         }
 
-        public ZStreamException(System.String s)
+        public ZStreamException(string s)
             : base(s)
         {
         }
