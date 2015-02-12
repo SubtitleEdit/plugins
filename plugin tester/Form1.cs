@@ -16,11 +16,12 @@ namespace plugin_tester
         private string _fileName = string.Empty;
         private void buttonWithFile_Click(object sender, EventArgs e)
         {
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            /*if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 _fileName = openFileDialog1.FileName;
                 RunPlugin(File.ReadAllText(_fileName, Encoding.UTF8));
-            }
+            }*/
+            RunPlugin(File.ReadAllText(@"C:\Users\Ivandrofly\Subtitles\the-flash-first-season_HI_english-1062301\The.Flash.2014.S01E13.HDTV.x264-LOL.srt", Encoding.UTF8));
         }
 
         private void buttonFromTextBox_Click(object sender, EventArgs e)

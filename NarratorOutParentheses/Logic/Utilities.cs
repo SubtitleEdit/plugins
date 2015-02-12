@@ -11,25 +11,39 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public static class Utilities
     {
-        private static readonly string _settingsFullPath = GetSettingsFileName();
         private static readonly List<string> _listNames = LoadName();
         private static List<string> LoadName()
         {
-            if (File.Exists(_settingsFullPath))
+            var settingFile = GetSettingsFileName();
+            if (File.Exists(settingFile))
             {
-                return (from elem in XElement.Load(_settingsFullPath).Elements()
+                return (from elem in XElement.Load(settingFile).Elements()
                         select elem.Value).ToList();
             }
             else
             {
-                // create file
-                var xdoc = new XDocument(
-                    new XElement("names",
-                        new XElement("name", "CISCO"),
-                        new XElement("name", "JOHN"),
-                        new XElement("name", "MAN")
-                        ));
-                xdoc.Save(_settingsFullPath, SaveOptions.None);
+                try
+                {
+                    // Create file
+                    var xdoc = new XDocument(
+                        new XElement("names",
+                            new XElement("name", "CISCO"),
+                            new XElement("name", "JOHN"),
+                            new XElement("name", "MAN"),
+                            new XElement("name", "WOMAN")
+                            ));
+                    /*
+                    Directory.CreateDirectory(Path.GetDirectoryName(settingFile));
+                    File.Create(settingFile);*/
+
+                    xdoc.Save(settingFile, SaveOptions.None);
+                    return (from elem in xdoc.Root.Elements()
+                            select elem.Value).ToList();
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.Forms.MessageBox.Show(ex.Message);
+                }
             }
             return new List<string>();
         }
@@ -92,7 +106,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public static string RemoveTag(string text, string tag)
         {
             var idx = text.IndexOf(tag, StringComparison.OrdinalIgnoreCase);
-            while (idx > -1)
+            while (idx >= 0)
             {
                 var endIndex = text.IndexOf('>', idx + tag.Length);
                 if (endIndex < idx) break;
@@ -115,7 +129,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static bool FixIfInList(string name)
         {
-            var xml = XElement.Load(_settingsFullPath);
+            var settingFile = GetSettingsFileName();
+            var xml = XElement.Load(settingFile);
             foreach (var item in xml.Elements())
             {
                 if (item.Value == name.ToUpper())
@@ -126,13 +141,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static void AddNameToList(string name)
         {
-            // todo: make this async
+            // Todo: make this async
             if (name == null)
                 return;
 
             name = name.ToUpper();
             if (!_listNames.Contains(name))
+            {
                 _listNames.Add(name);
+                SaveToXmlFile();
+            }
         }
 
 
@@ -140,15 +158,23 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (_listNames == null || _listNames.Count == 0)
                 return;
+            var settingFile = GetSettingsFileName();
 
             // <names></names>
-            XElement xelem = XElement.Load(_settingsFullPath);
+            XElement xelem = XElement.Load(settingFile);
             foreach (var name in _listNames)
             {
                 xelem.Add(new XElement("name", name));
             }
-            // todo: this should be inside try catch
-            xelem.Save(_settingsFullPath);
+            try
+            {
+                // todo: this should be inside try catch
+                xelem.Save(settingFile);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message);
+            }
         }
     }
 }

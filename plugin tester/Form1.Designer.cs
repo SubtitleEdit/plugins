@@ -41,6 +41,8 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(329, 138);
             this.textBox1.TabIndex = 0;
+            this.textBox1.Text = "17\r\n00:00:35,125 --> 00:00:37,393\r\n(Cisco) Ronnie was vaporized\r\nin the accelerat" +
+    "or\r\n";
             // 
             // buttonFromTextBox
             // 

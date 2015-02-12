@@ -61,6 +61,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         mood += ": ";
                         text = text.Remove(idx, endIdx - idx + 1).Insert(idx, mood);
                     }
+                    idx = mood.IndexOf('(');
                 }
 
                 idx = text.IndexOf('[');
@@ -74,10 +75,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     mood = mood.Substring(0, mood.Length - 1);
                     if (Utilities.FixIfInList(mood))
                     {
+                        mood += ": ";
                         text = text.Remove(idx, endIdx - idx + 1).Insert(idx, mood);
                     }
+                    idx = mood.IndexOf('[');
                 }
 
+                text = text.Replace("  ", " ");
                 if (text != before && !AllowFix(p))
                 {
                     AddFixToListView(p, before, text);
@@ -128,6 +132,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
             item.SubItems.Add(subItem);
 
             listViewFixes.Items.Add(item);
+        }
+
+        private void buttonOK_Click(object sender, EventArgs e)
+        {
+            _allowFixes = true;
+            FindNarrators();
+            FixedSubtitle = _subtitle.ToText(new SubRip());
         }
     }
 }
