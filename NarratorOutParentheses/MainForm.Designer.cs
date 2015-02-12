@@ -34,12 +34,12 @@
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.buttonUpdate = new System.Windows.Forms.Button();
             this.buttonToNarrator = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBoxName = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.buttonUpdate = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -90,7 +90,7 @@
             this.groupBox1.Controls.Add(this.buttonUpdate);
             this.groupBox1.Controls.Add(this.buttonToNarrator);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.textBox1);
+            this.groupBox1.Controls.Add(this.textBoxName);
             this.groupBox1.Location = new System.Drawing.Point(8, 13);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(950, 81);
@@ -98,12 +98,24 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Misc:";
             // 
-            // textBox1
+            // buttonUpdate
             // 
-            this.textBox1.Location = new System.Drawing.Point(15, 47);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(176, 20);
-            this.textBox1.TabIndex = 0;
+            this.buttonUpdate.Location = new System.Drawing.Point(847, 52);
+            this.buttonUpdate.Name = "buttonUpdate";
+            this.buttonUpdate.Size = new System.Drawing.Size(97, 23);
+            this.buttonUpdate.TabIndex = 3;
+            this.buttonUpdate.Text = "Update";
+            this.buttonUpdate.UseVisualStyleBackColor = true;
+            // 
+            // buttonToNarrator
+            // 
+            this.buttonToNarrator.Location = new System.Drawing.Point(197, 45);
+            this.buttonToNarrator.Name = "buttonToNarrator";
+            this.buttonToNarrator.Size = new System.Drawing.Size(52, 23);
+            this.buttonToNarrator.TabIndex = 2;
+            this.buttonToNarrator.Text = "A&dd";
+            this.buttonToNarrator.UseVisualStyleBackColor = true;
+            this.buttonToNarrator.Click += new System.EventHandler(this.buttonToNarrator_Click);
             // 
             // label1
             // 
@@ -114,14 +126,12 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "Add to list:";
             // 
-            // buttonToNarrator
+            // textBoxName
             // 
-            this.buttonToNarrator.Location = new System.Drawing.Point(197, 45);
-            this.buttonToNarrator.Name = "buttonToNarrator";
-            this.buttonToNarrator.Size = new System.Drawing.Size(52, 23);
-            this.buttonToNarrator.TabIndex = 2;
-            this.buttonToNarrator.Text = "A&dd";
-            this.buttonToNarrator.UseVisualStyleBackColor = true;
+            this.textBoxName.Location = new System.Drawing.Point(15, 47);
+            this.textBoxName.Name = "textBoxName";
+            this.textBoxName.Size = new System.Drawing.Size(176, 20);
+            this.textBoxName.TabIndex = 0;
             // 
             // button2
             // 
@@ -140,15 +150,6 @@
             this.button3.TabIndex = 3;
             this.button3.Text = "&Cancel";
             this.button3.UseVisualStyleBackColor = true;
-            // 
-            // buttonUpdate
-            // 
-            this.buttonUpdate.Location = new System.Drawing.Point(847, 52);
-            this.buttonUpdate.Name = "buttonUpdate";
-            this.buttonUpdate.Size = new System.Drawing.Size(97, 23);
-            this.buttonUpdate.TabIndex = 3;
-            this.buttonUpdate.Text = "Update";
-            this.buttonUpdate.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -177,7 +178,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button buttonToNarrator;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox textBoxName;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button buttonUpdate;

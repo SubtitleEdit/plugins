@@ -17,7 +17,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         internal const int MaximumHistoryItems = 100;
 
-        internal SubtitleFormat OriginalFormat { get { return _format; } }
         internal List<Paragraph> Paragraphs { get { return _paragraphs; } }
 
         internal Subtitle()

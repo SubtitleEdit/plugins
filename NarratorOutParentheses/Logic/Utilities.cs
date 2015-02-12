@@ -1,13 +1,52 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
+using System.Linq;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    internal static class Utilities
+    public static class Utilities
     {
-        internal static int NumberOfLines(string text)
+        private static readonly string _settingsFullPath = GetSettingsFileName();
+        private static readonly List<string> _listNames = LoadName();
+        private static List<string> LoadName()
+        {
+            if (File.Exists(_settingsFullPath))
+            {
+                return (from elem in XElement.Load(_settingsFullPath).Elements()
+                        select elem.Value).ToList();
+            }
+            else
+            {
+                // create file
+                var xdoc = new XDocument(
+                    new XElement("names",
+                        new XElement("name", "CISCO"),
+                        new XElement("name", "JOHN"),
+                        new XElement("name", "MAN")
+                        ));
+                xdoc.Save(_settingsFullPath, SaveOptions.None);
+            }
+            return new List<string>();
+        }
+
+        private static string GetSettingsFileName()
+        {
+            // "C:\Users\Ivandrofly\Desktop\SubtitleEdit\Plugins\SeLinesUnbreaker.xml"
+            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+            if (path.StartsWith("file:\\"))
+                path = path.Remove(0, 6);
+            path = Path.Combine(path, "Plugins");
+            if (!Directory.Exists(path))
+                path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Plugins");
+            return Path.Combine(path, "NameList.xml");
+        }
+
+        public static int NumberOfLines(string text)
         {
             var ln = 0;
             var idx = -1;
@@ -19,7 +58,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return ln;
         }
 
-        internal static string AssemblyVersion
+        public static string AssemblyVersion
         {
             get
             {
@@ -27,7 +66,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        internal static bool IsInteger(string s)
+        public static bool IsInteger(string s)
         {
             int i;
             return int.TryParse(s, out i);
@@ -39,7 +78,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return RemoveTag(s, "<font");
         }
 
-        internal static string RemoveHtmlTags(string s)
+        public static string RemoveHtmlTags(string s)
         {
             if (string.IsNullOrEmpty(s))
                 return null;
@@ -50,7 +89,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return RemoveHtmlFontTag(s).Trim();
         }
 
-        internal static string RemoveTag(string text, string tag)
+        public static string RemoveTag(string text, string tag)
         {
             var idx = text.IndexOf(tag, StringComparison.OrdinalIgnoreCase);
             while (idx > -1)
@@ -63,15 +102,53 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return text;
         }
 
-        internal static string RemoveBrackets(string inputString)
+        public static string RemoveBrackets(string inputString)
         {
             return Regex.Replace(inputString, @"^[\[\(]|[\]\)]$", string.Empty).Trim();
         }
 
-        internal static string RemoveParagraphTag(string s)
+        public static string RemoveParagraphTag(string s)
         {
             s = Regex.Replace(s, "(?i)</?p>", string.Empty);
             return RemoveTag(s, "<p");
+        }
+
+        public static bool FixIfInList(string name)
+        {
+            var xml = XElement.Load(_settingsFullPath);
+            foreach (var item in xml.Elements())
+            {
+                if (item.Value == name.ToUpper())
+                    return true;
+            }
+            return false;
+        }
+
+        public static void AddNameToList(string name)
+        {
+            // todo: make this async
+            if (name == null)
+                return;
+
+            name = name.ToUpper();
+            if (!_listNames.Contains(name))
+                _listNames.Add(name);
+        }
+
+
+        private static void SaveToXmlFile()
+        {
+            if (_listNames == null || _listNames.Count == 0)
+                return;
+
+            // <names></names>
+            XElement xelem = XElement.Load(_settingsFullPath);
+            foreach (var name in _listNames)
+            {
+                xelem.Add(new XElement("name", name));
+            }
+            // todo: this should be inside try catch
+            xelem.Save(_settingsFullPath);
         }
     }
 }

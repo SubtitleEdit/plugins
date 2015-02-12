@@ -33,8 +33,8 @@ namespace plugin_tester
 
         private void RunPlugin(string content)
         {
-            IPlugin hiColorer = new HIColorer();
-            string outString = hiColorer.DoAction(this, content, 23.796, "<br />", _fileName.Length > 0 ? Path.GetFileName(_fileName) : null, null, content);
+            IPlugin plugin = new NarratorOutParentheses();
+            string outString = plugin.DoAction(this, content, 23.796, "<br />", _fileName.Length > 0 ? Path.GetFileName(_fileName) : null, null, content);
             if (content.Equals(outString))
                 MessageBox.Show("Nothing changed!!!");
         }
