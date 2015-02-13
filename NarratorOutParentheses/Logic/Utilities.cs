@@ -12,6 +12,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
     public static class Utilities
     {
         private static readonly List<string> _listNames = LoadName();
+
+        public static List<string> ListNames
+        {
+            get { return _listNames; }
+        }
+
         private static List<string> LoadName()
         {
             var settingFile = GetSettingsFileName();
@@ -30,12 +36,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
                             new XElement("name", "CISCO"),
                             new XElement("name", "JOHN"),
                             new XElement("name", "MAN"),
-                            new XElement("name", "WOMAN")
+                            new XElement("name", "WOMAN"),
+                            new XElement("name", "CAITLIN")
                             ));
                     /*
                     Directory.CreateDirectory(Path.GetDirectoryName(settingFile));
                     File.Create(settingFile);*/
-
                     xdoc.Save(settingFile, SaveOptions.None);
                     return (from elem in xdoc.Root.Elements()
                             select elem.Value).ToList();

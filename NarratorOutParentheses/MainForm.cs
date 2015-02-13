@@ -108,12 +108,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonToNarrator_Click(object sender, EventArgs e)
         {
+            var len = Utilities.ListNames.Count;
             var name = this.textBoxName.Text;
             name = name.Trim();
             if (name.Length == 0)
                 return;
             Utilities.AddNameToList(name);
 
+            if (len != Utilities.ListNames.Count)
+            {
+                this.listViewFixes.BeginUpdate();
+                this.listViewFixes.Items.Clear();
+                this.listViewFixes.EndUpdate();
+                FindNarrators();
+            }
             //TODO: Update list view after adding new naem
         }
 
@@ -139,6 +147,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _allowFixes = true;
             FindNarrators();
             FixedSubtitle = _subtitle.ToText(new SubRip());
+        }
+
+        private void buttonGetNames_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            using (var formGetName = new GetNames(this, this._subtitle))
+            {
+                formGetName.ShowDialog();
+            }
         }
     }
 }
