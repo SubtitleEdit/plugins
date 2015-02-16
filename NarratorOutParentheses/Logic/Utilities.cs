@@ -11,20 +11,33 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public static class Utilities
     {
-        private static readonly List<string> _listNames = LoadName();
+        //private static readonly List<string> _listNames = LoadName();
+        private static List<string> _listNames = LoadNames(GetSettingsFileName());
 
         public static List<string> ListNames
         {
             get { return _listNames; }
         }
 
-        private static List<string> LoadName()
+        public static void LoadNameFromSubtitleEdit()
         {
-            var settingFile = GetSettingsFileName();
-            if (File.Exists(settingFile))
+            _listNames = LoadNames(GetSubtilteEditNameList());
+        }
+
+        public static void LoadFromListName()
+        {
+            _listNames = LoadNames(GetSettingsFileName());
+        }
+
+        public static List<string> LoadNames(string fileName)
+        {
+            if (_listNames != null)
+                _listNames = null;
+
+            if (File.Exists(fileName))
             {
-                return (from elem in XElement.Load(settingFile).Elements()
-                        select elem.Value).ToList();
+                return (from elem in XElement.Load(fileName).Elements()
+                        select elem.Value.ToUpperInvariant()).ToList();
             }
             else
             {
@@ -42,7 +55,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     /*
                     Directory.CreateDirectory(Path.GetDirectoryName(settingFile));
                     File.Create(settingFile);*/
-                    xdoc.Save(settingFile, SaveOptions.None);
+                    xdoc.Save(fileName, SaveOptions.None);
                     return (from elem in xdoc.Root.Elements()
                             select elem.Value).ToList();
                 }
@@ -58,12 +71,25 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             // "C:\Users\Ivandrofly\Desktop\SubtitleEdit\Plugins\SeLinesUnbreaker.xml"
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-            if (path.StartsWith("file:\\"))
+            if (path.StartsWith("file:\\", StringComparison.Ordinal))
                 path = path.Remove(0, 6);
             path = Path.Combine(path, "Plugins");
             if (!Directory.Exists(path))
                 path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Plugins");
             return Path.Combine(path, "NameList.xml");
+        }
+
+
+        public static string GetSubtilteEditNameList()
+        {
+            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+            if (path.StartsWith("file:\\", StringComparison.Ordinal))
+                path = path.Remove(0, 6);
+            path = Path.Combine(path, "Dictionaries");
+            if (!Directory.Exists(path))
+                path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtiitle Edit", "Dictionary"));
+            var fullPath = Path.Combine(path, "names_etc.xml");
+            return Path.Combine(path, "names_etc.xml");
         }
 
         public static int NumberOfLines(string text)
@@ -135,14 +161,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static bool FixIfInList(string name)
         {
-            var settingFile = GetSettingsFileName();
-            var xml = XElement.Load(settingFile);
-            foreach (var item in xml.Elements())
-            {
-                if (item.Value == name.ToUpper())
-                    return true;
-            }
-            return false;
+            if (_listNames == null)
+                return false;
+            return _listNames.Contains(name.ToUpperInvariant());
         }
 
         public static void AddNameToList(string name)
@@ -158,7 +179,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 SaveToXmlFile();
             }
         }
-
 
         private static void SaveToXmlFile()
         {

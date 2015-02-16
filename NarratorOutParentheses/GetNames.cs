@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
@@ -29,7 +22,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (text.IndexOf('(') < 0 && text.IndexOf('[') < 0)
                     continue;
 
-                text = text.Replace("[", "(").Replace("]", ")");
+                text = text.Replace('[', '(').Replace(']', ')');
                 var idx = text.IndexOf('(');
                 while (idx >= 0)
                 {
@@ -66,7 +59,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 this.textBox1.Text = listBox1.Items[idx].ToString();
                 label2.Text = "Index: " + idx;
             }
-
             // Todo: use regex for names like: (WELLS OVER RADIO)
         }
 

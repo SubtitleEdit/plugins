@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
@@ -156,6 +150,23 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 formGetName.ShowDialog();
             }
+        }
+
+        private void MainForm_Shown(object sender, EventArgs e)
+        {
+            if (System.IO.File.Exists(Utilities.GetSubtilteEditNameList()))
+                this.checkBox1.Enabled = true;
+            else
+                this.checkBox1.Enabled = false;
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox1.Checked)
+                Utilities.LoadNameFromSubtitleEdit();
+            else
+                Utilities.LoadFromListName();
+            FindNarrators();
         }
     }
 }
