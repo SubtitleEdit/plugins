@@ -95,6 +95,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.buttonAddToList);
             this.Controls.Add(this.listBox1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "GetNames";
             this.Text = "GetNames";
             this.ResumeLayout(false);

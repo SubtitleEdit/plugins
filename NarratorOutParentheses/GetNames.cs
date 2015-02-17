@@ -43,8 +43,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void AddToList(string name, ref int totalFound)
         {
             name = name.Substring(1);
-            name = name.Substring(0, name.Length - 1).ToUpper();
-            if (!listBox1.Items.Contains(name) && !Utilities.ListNames.Contains(name))
+            name = name.Substring(0, name.Length - 1);
+            if (name.Length > 2)
+            {
+                name = System.Text.RegularExpressions.Regex.Replace(name, "\\b(\\w)", (x) => x.Value.ToUpper());
+            }
+            if (!listBox1.Items.Contains(name) && !Utilities.ListNames.Contains(name.ToUpperInvariant()))
             {
                 this.listBox1.Items.Add(name);
                 totalFound++;
@@ -79,9 +83,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             else
             {
                 var name = listBox1.Items[idx].ToString();
-                name = name.Substring(1);
-                name = name.Substring(0, name.Length - 1);
-
                 Utilities.AddNameToList(name);
                 listBox1.Items.RemoveAt(idx);
                 if (idx < listBox1.Items.Count)

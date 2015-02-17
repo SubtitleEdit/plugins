@@ -12,22 +12,23 @@ namespace Nikse.SubtitleEdit.PluginLogic
     public static class Utilities
     {
         //private static readonly List<string> _listNames = LoadName();
-        private static List<string> _listNames = LoadNames(GetSettingsFileName());
+        private static List<string> _listNames = LoadNames(GetSubtilteEditNameList());
+        private static List<string> _listNewName = new List<string>();
+
+
+        private static string _filePath;
 
         public static List<string> ListNames
         {
             get { return _listNames; }
         }
 
-        public static void LoadNameFromSubtitleEdit()
-        {
-            _listNames = LoadNames(GetSubtilteEditNameList());
-        }
-
+        /*
         public static void LoadFromListName()
         {
             _listNames = LoadNames(GetSettingsFileName());
-        }
+            _subtitleEditNames = false;
+        }*/
 
         public static List<string> LoadNames(string fileName)
         {
@@ -39,7 +40,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return (from elem in XElement.Load(fileName).Elements()
                         select elem.Value.ToUpperInvariant()).ToList();
             }
-            else
+            /*else
             {
                 try
                 {
@@ -52,9 +53,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                             new XElement("name", "WOMAN"),
                             new XElement("name", "CAITLIN")
                             ));
-                    /*
+                    
                     Directory.CreateDirectory(Path.GetDirectoryName(settingFile));
-                    File.Create(settingFile);*/
+                    //File.Create(settingFile);
                     xdoc.Save(fileName, SaveOptions.None);
                     return (from elem in xdoc.Root.Elements()
                             select elem.Value).ToList();
@@ -63,22 +64,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     System.Windows.Forms.MessageBox.Show(ex.Message);
                 }
-            }
+            }*/
             return new List<string>();
         }
-
-        private static string GetSettingsFileName()
-        {
-            // "C:\Users\Ivandrofly\Desktop\SubtitleEdit\Plugins\SeLinesUnbreaker.xml"
-            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-            if (path.StartsWith("file:\\", StringComparison.Ordinal))
-                path = path.Remove(0, 6);
-            path = Path.Combine(path, "Plugins");
-            if (!Directory.Exists(path))
-                path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Plugins");
-            return Path.Combine(path, "NameList.xml");
-        }
-
 
         public static string GetSubtilteEditNameList()
         {
@@ -89,7 +77,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (!Directory.Exists(path))
                 path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtiitle Edit", "Dictionary"));
             var fullPath = Path.Combine(path, "names_etc.xml");
-            return Path.Combine(path, "names_etc.xml");
+            _filePath = Path.Combine(path, "names_etc.xml");
+            return _filePath;
         }
 
         public static int NumberOfLines(string text)
@@ -131,7 +120,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (s.IndexOf('<') < 0)
                 return s;
             s = Regex.Replace(s, "(?i)</?[uib]>", string.Empty);
-            s = RemoveParagraphTag(s);
             return RemoveHtmlFontTag(s).Trim();
         }
 
@@ -153,49 +141,42 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return Regex.Replace(inputString, @"^[\[\(]|[\]\)]$", string.Empty).Trim();
         }
 
-        public static string RemoveParagraphTag(string s)
-        {
-            s = Regex.Replace(s, "(?i)</?p>", string.Empty);
-            return RemoveTag(s, "<p");
-        }
-
         public static bool FixIfInList(string name)
         {
             if (_listNames == null)
                 return false;
+
+            // _listName is already loaded with all names to UpperCase
             return _listNames.Contains(name.ToUpperInvariant());
         }
 
         public static void AddNameToList(string name)
         {
-            // Todo: make this async
-            if (name == null)
+            if (name == null || name.Trim().Length == 0)
                 return;
 
-            name = name.ToUpper();
-            if (!_listNames.Contains(name))
+            var normalCase = name;
+            name = name.ToUpperInvariant();
+            if (!_listNames.Contains(name) && !_listNewName.Contains(normalCase))
             {
                 _listNames.Add(name);
+                _listNewName.Add(normalCase);
                 SaveToXmlFile();
             }
         }
 
         private static void SaveToXmlFile()
         {
-            if (_listNames == null || _listNames.Count == 0)
+            if (_listNewName == null || _listNewName.Count == 0)
                 return;
-            var settingFile = GetSettingsFileName();
-
-            // <names></names>
-            XElement xelem = XElement.Load(settingFile);
-            foreach (var name in _listNames)
-            {
-                xelem.Add(new XElement("name", name));
-            }
             try
             {
-                // todo: this should be inside try catch
-                xelem.Save(settingFile);
+                var xelem = XDocument.Load(_filePath);
+                foreach (var name in _listNewName)
+                {
+                    xelem.Root.Add(new XElement("name", name));
+                }
+                xelem.Save(_filePath);
             }
             catch (Exception ex)
             {

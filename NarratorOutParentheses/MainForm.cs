@@ -52,10 +52,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     mood = mood.Substring(0, mood.Length - 1);
                     if (Utilities.FixIfInList(mood))
                     {
-                        mood += ": ";
+                        mood += ':';
                         text = text.Remove(idx, endIdx - idx + 1).Insert(idx, mood);
+                        idx = text.IndexOf('(');
                     }
-                    idx = mood.IndexOf('(');
+                    else
+                    {
+                        idx = text.IndexOf('(', endIdx + 1);
+                    }
+
                 }
 
                 idx = text.IndexOf('[');
@@ -69,10 +74,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     mood = mood.Substring(0, mood.Length - 1);
                     if (Utilities.FixIfInList(mood))
                     {
-                        mood += ": ";
+                        mood += ':';
                         text = text.Remove(idx, endIdx - idx + 1).Insert(idx, mood);
+                        idx = text.IndexOf('[');
                     }
-                    idx = mood.IndexOf('[');
+                    else
+                    {
+                        idx = text.IndexOf('[', endIdx + 1);
+                    }
                 }
 
                 text = text.Replace("  ", " ");
@@ -108,7 +117,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (name.Length == 0)
                 return;
             Utilities.AddNameToList(name);
-
             if (len != Utilities.ListNames.Count)
             {
                 this.listViewFixes.BeginUpdate();
@@ -150,23 +158,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 formGetName.ShowDialog();
             }
-        }
-
-        private void MainForm_Shown(object sender, EventArgs e)
-        {
-            if (System.IO.File.Exists(Utilities.GetSubtilteEditNameList()))
-                this.checkBox1.Enabled = true;
-            else
-                this.checkBox1.Enabled = false;
-        }
-
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBox1.Checked)
-                Utilities.LoadNameFromSubtitleEdit();
-            else
-                Utilities.LoadFromListName();
-            FindNarrators();
         }
     }
 }
