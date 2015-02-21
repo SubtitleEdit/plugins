@@ -52,15 +52,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     mood = mood.Substring(0, mood.Length - 1);
                     if (Utilities.FixIfInList(mood))
                     {
-                        mood += ':';
-                        text = text.Remove(idx, endIdx - idx + 1).Insert(idx, mood);
+                        // todo: if name contains <i>:, note there could be a italic tag at begining
+                        text = text.Remove(idx, endIdx - idx + 1);
+                        if (text.Length > idx && text[idx] != ':')
+                            text = text.Insert(idx, mood + ":");
+                        else
+                            text = text.Insert(idx, mood);
                         idx = text.IndexOf('(');
                     }
                     else
                     {
                         idx = text.IndexOf('(', endIdx + 1);
                     }
-
                 }
 
                 idx = text.IndexOf('[');
@@ -74,8 +77,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     mood = mood.Substring(0, mood.Length - 1);
                     if (Utilities.FixIfInList(mood))
                     {
-                        mood += ':';
-                        text = text.Remove(idx, endIdx - idx + 1).Insert(idx, mood);
+                        text = text.Remove(idx, endIdx - idx + 1);
+                        if (text.Length > idx && text[idx] != ':')
+                            text = text.Insert(idx, mood + ":");
+                        else
+                            text = text.Insert(idx, mood);
                         idx = text.IndexOf('[');
                     }
                     else
@@ -158,6 +164,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 formGetName.ShowDialog();
             }
+            FindNarrators();
+        }
+
+        private void buttonApply_Click(object sender, EventArgs e)
+        {
+            _allowFixes = true;
+            FindNarrators();
+
+
+            FixedSubtitle = _subtitle.ToText(new SubRip());
+            _allowFixes = !_allowFixes;
+            this.listViewFixes.Clear();
+            FindNarrators();
         }
     }
 }

@@ -82,9 +82,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NarratorOutParentheses\NarratorOutParentheses.csproj">
-      <Project>{a075780c-6bab-4e78-9fb2-b477219ddd72}</Project>
-      <Name>NarratorOutParentheses</Name>
+    <ProjectReference Include="..\HIColorer\HIColorer.csproj">
+      <Project>{705be92d-37ff-4320-85fd-90133c009c8c}</Project>
+      <Name>HIColorer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

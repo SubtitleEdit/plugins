@@ -40,6 +40,7 @@
             this.textBoxName = new System.Windows.Forms.TextBox();
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
+            this.buttonApply = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -162,12 +163,24 @@
             this.buttonCancel.Text = "&Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             // 
+            // buttonApply
+            // 
+            this.buttonApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonApply.Location = new System.Drawing.Point(637, 460);
+            this.buttonApply.Name = "buttonApply";
+            this.buttonApply.Size = new System.Drawing.Size(103, 23);
+            this.buttonApply.TabIndex = 3;
+            this.buttonApply.Text = "&Apply";
+            this.buttonApply.UseVisualStyleBackColor = true;
+            this.buttonApply.Click += new System.EventHandler(this.buttonApply_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(970, 491);
             this.Controls.Add(this.buttonCancel);
+            this.Controls.Add(this.buttonApply);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.listViewFixes);
@@ -193,6 +206,7 @@
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonGetNames;
+        private System.Windows.Forms.Button buttonApply;
 
     }
 }

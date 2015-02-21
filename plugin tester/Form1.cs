@@ -21,7 +21,8 @@ namespace plugin_tester
                 _fileName = openFileDialog1.FileName;
                 RunPlugin(File.ReadAllText(_fileName, Encoding.UTF8));
             }*/
-            RunPlugin(File.ReadAllText(@"C:\Users\Ivandrofly\Subtitles\the-flash-first-season_HI_english-1062301\The.Flash.2014.S01E13.HDTV.x264-LOL.srt", Encoding.UTF8));
+            var file = @"C:\Users\Ivandrofly\Subtitles\the-world-made-straight_HI_english-1055347\The.World.Made.Straight.2015.720p.BluRay.x264-ROVERS-HI.srt";
+            RunPlugin(File.ReadAllText(file, Encoding.UTF8));
         }
 
         private void buttonFromTextBox_Click(object sender, EventArgs e)
@@ -34,7 +35,7 @@ namespace plugin_tester
 
         private void RunPlugin(string content)
         {
-            IPlugin plugin = new NarratorOutParentheses();
+            IPlugin plugin = new HIColorer();
             string outString = plugin.DoAction(this, content, 23.796, "<br />", _fileName.Length > 0 ? Path.GetFileName(_fileName) : null, null, content);
             if (content.Equals(outString))
                 MessageBox.Show("Nothing changed!!!");
