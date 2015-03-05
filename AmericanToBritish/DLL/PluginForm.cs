@@ -70,6 +70,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 string text = p.Text.Trim();
                 string oldText = text;
                 text = FixText(text);
+
+                var idx = text.IndexOf("<font", StringComparison.OrdinalIgnoreCase);
+                while (idx >= 0) // Fix colour => color
+                {
+                    var endIdx = text.IndexOf('>', idx + 5);
+                    if (endIdx < 5)
+                        break;
+                    var tag = text.Substring(idx, endIdx - idx).Replace("colour", "color");
+                    text = text = text.Remove(idx, endIdx - idx).Insert(idx, tag);
+                    idx = text.IndexOf("<font", endIdx + 1, StringComparison.OrdinalIgnoreCase);
+                }
+
                 if (text != oldText)
                 {
                     if (AllowFix(p))
@@ -185,7 +197,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                                     {
                                         _regexList.Add(new Regex("\\b" + american.Substring(0, 1).ToUpper() + american.Substring(1) + "\\b", RegexOptions.Compiled));
                                         if (british.Length > 1)
-                                            _replaceList.Add(british.Substring(0, 1) .ToUpper() + british.Substring(1));
+                                            _replaceList.Add(british.Substring(0, 1).ToUpper() + british.Substring(1));
                                         else
                                             _replaceList.Add(british.ToUpper());
                                     }
@@ -212,7 +224,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 Cursor = Cursors.Default;
             }
-            
+
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -227,7 +239,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void PluginForm_Resize(object sender, EventArgs e)
         {
-            listViewFixes.Columns[listViewFixes.Columns.Count-1].Width = -1;
+            listViewFixes.Columns[listViewFixes.Columns.Count - 1].Width = -1;
         }
 
 
