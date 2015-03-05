@@ -63,7 +63,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public override string ToString()
         {
-            return StartTime + " --> " + EndTime + " " + Text;
+            return StartTime + " --> " + EndTime + "\r\n" + Text;
         }
 
         internal int NumberOfLines

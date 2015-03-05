@@ -28,11 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.listViewFixes = new System.Windows.Forms.ListView();
             this.columnHeaderApply = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderLine = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderActual = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderAfter = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.checkAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.uncheckAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.invertCheckToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.buttonGetNames = new System.Windows.Forms.Button();
             this.buttonToNarrator = new System.Windows.Forms.Button();
@@ -41,6 +47,7 @@
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonApply = new System.Windows.Forms.Button();
+            this.contextMenuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -57,6 +64,7 @@
             this.columnHeaderLine,
             this.columnHeaderActual,
             this.columnHeaderAfter});
+            this.listViewFixes.ContextMenuStrip = this.contextMenuStrip1;
             this.listViewFixes.FullRowSelect = true;
             this.listViewFixes.GridLines = true;
             this.listViewFixes.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
@@ -88,6 +96,45 @@
             // 
             this.columnHeaderAfter.Text = "After";
             this.columnHeaderAfter.Width = 420;
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.checkAllToolStripMenuItem,
+            this.uncheckAllToolStripMenuItem,
+            this.invertCheckToolStripMenuItem,
+            this.copyToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 114);
+            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
+            // 
+            // checkAllToolStripMenuItem
+            // 
+            this.checkAllToolStripMenuItem.Name = "checkAllToolStripMenuItem";
+            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.checkAllToolStripMenuItem.Text = "Check all";
+            this.checkAllToolStripMenuItem.Click += new System.EventHandler(this.checkAllToolStripMenuItem_Click);
+            // 
+            // uncheckAllToolStripMenuItem
+            // 
+            this.uncheckAllToolStripMenuItem.Name = "uncheckAllToolStripMenuItem";
+            this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.uncheckAllToolStripMenuItem.Text = "Uncheck all";
+            this.uncheckAllToolStripMenuItem.Click += new System.EventHandler(this.checkAllToolStripMenuItem_Click);
+            // 
+            // invertCheckToolStripMenuItem
+            // 
+            this.invertCheckToolStripMenuItem.Name = "invertCheckToolStripMenuItem";
+            this.invertCheckToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.invertCheckToolStripMenuItem.Text = "Invert check";
+            this.invertCheckToolStripMenuItem.Click += new System.EventHandler(this.checkAllToolStripMenuItem_Click);
+            // 
+            // copyToolStripMenuItem
+            // 
+            this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.copyToolStripMenuItem.Text = "Copy";
+            this.copyToolStripMenuItem.Click += new System.EventHandler(this.checkAllToolStripMenuItem_Click);
             // 
             // groupBox1
             // 
@@ -185,8 +232,11 @@
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.listViewFixes);
+            this.KeyPreview = true;
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "MainForm";
+            this.contextMenuStrip1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
@@ -208,6 +258,11 @@
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonGetNames;
         private System.Windows.Forms.Button buttonApply;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem checkAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem uncheckAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem invertCheckToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
 
     }
 }

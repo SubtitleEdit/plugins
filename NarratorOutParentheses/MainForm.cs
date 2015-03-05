@@ -121,6 +121,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 var line = noTagLines[i];
                 var preLine = i - 1 < 0 ? null : noTagLines[i - 1];
                 var idx = line.IndexOf(':');
+                // (John): Day's getting on.
+                // We got work to do.
                 addHyphen = ((idx >= 0 && !Utilities.IsBetweenNumbers(line, idx)) && (preLine == null || endLineChars.IndexOf(preLine[preLine.Length - 1]) >= 0)) ? true : false;
             }
             /*
@@ -136,7 +138,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (noTagLines[0][0] != '-')
                     text = "- " + text;
 
-                if (!noTagLines[1].Contains("\r\n-"))
+                if (noTagLines[1][0] != '-')
                     text = text.Insert(text.IndexOf(Environment.NewLine) + 2, "- ");
             }
             return text;
@@ -216,8 +218,37 @@ namespace Nikse.SubtitleEdit.PluginLogic
             FindNarrators();
             FixedSubtitle = _subtitle.ToText(new SubRip());
             _allowFixes = !_allowFixes;
-            this.listViewFixes.Clear();
+            this.listViewFixes.Items.Clear();
             FindNarrators();
+        }
+
+        private void checkAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var clickedItem = (ToolStripMenuItem)sender;
+            switch (clickedItem.Text)
+            {
+                case "Check all": // Check all
+                    foreach (ListViewItem item in listViewFixes.Items)
+                        item.Checked = true;
+                    break;
+                case "Uncheck all": // Uncheck all
+                    foreach (ListViewItem item in listViewFixes.Items)
+                        item.Checked = false;
+                    break;
+                case "Invert check": // Invert check
+                    foreach (ListViewItem item in listViewFixes.Items)
+                        item.Checked = !item.Checked;
+                    break;
+                case "Copy": // Copy
+                    Clipboard.SetText(listViewFixes.SelectedItems[0].Tag.ToString());
+                    break;
+            }
+        }
+
+        private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (listViewFixes.Items.Count == 0)
+                e.Cancel = true;
         }
     }
 }
