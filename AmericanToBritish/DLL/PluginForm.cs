@@ -27,10 +27,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Text = name;
             labelDescription.Text = description;
             _subtitle = subtitle;
-            Resize += delegate
+            SizeChanged += delegate
             {
-                var idx = listViewFixes.Columns.Count - 1;
-                listViewFixes.Columns[idx].Width = -2;
+                var width = (this.Width - (130 + this.listViewFixes.Left * 2)) / 2;
+                columnHeader7.Width = width;
+                columnHeader8.Width = width;
             };
         }
 
