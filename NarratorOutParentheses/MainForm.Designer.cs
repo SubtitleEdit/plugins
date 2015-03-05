@@ -106,6 +106,7 @@
             // 
             // buttonGetNames
             // 
+            this.buttonGetNames.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.buttonGetNames.Location = new System.Drawing.Point(847, 52);
             this.buttonGetNames.Name = "buttonGetNames";
             this.buttonGetNames.Size = new System.Drawing.Size(97, 23);

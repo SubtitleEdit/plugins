@@ -26,12 +26,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 listViewFixes.Columns[listViewFixes.Columns.Count - 1].Width = -2;
             };
-
+            this.listViewFixes.SizeChanged += delegate
+            {
+                var width = listViewFixes.Width / 2 - 100;
+                columnHeaderActual.Width = width;
+                columnHeaderAfter.Width = width;
+            };
             FindNarrators();
         }
 
         public void FindNarrators()
         {
+            listViewFixes.BeginUpdate();
             for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
             {
                 var p = _subtitle.Paragraphs[i];
@@ -51,9 +57,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     if (Utilities.FixIfInList(mood))
                     {
                         // todo: if name contains <i>:, note there could be a italic tag at begining
-                        text = text.Remove(idx, endIdx - idx + 1);
+                        text = text.Remove(idx, endIdx - idx + 1).TrimStart(':', ' ');
                         if (text.Length > idx && text[idx] != ':')
-                            text = text.Insert(idx, mood + ":");
+                            text = text.Insert(idx, mood + ": ");
                         else
                             text = text.Insert(idx, mood);
                         idx = text.IndexOf('(');
@@ -75,7 +81,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     mood = mood.Substring(0, mood.Length - 1);
                     if (Utilities.FixIfInList(mood))
                     {
-                        text = text.Remove(idx, endIdx - idx + 1);
+                        text = text.Remove(idx, endIdx - idx + 1).TrimStart('(', ' ');
                         if (text.Length > idx && text[idx] != ':')
                             text = text.Insert(idx, mood + ":");
                         else
@@ -87,10 +93,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         idx = text.IndexOf('[', endIdx + 1);
                     }
                 }
-
-                text = text.Replace("  ", " ");
+                text = AddHyphenOnBothLine(text);
                 if (text != before && !AllowFix(p))
                 {
+                    // add hyphen is both contains narrator
                     AddFixToListView(p, before, text);
                 }
                 else
@@ -98,6 +104,42 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     p.Text = text;
                 }
             }
+            listViewFixes.EndUpdate();
+        }
+
+        private string AddHyphenOnBothLine(string text)
+        {
+            if (!text.Contains(Environment.NewLine) || Utilities.CountTagInText(text, ':') < 1)
+                return text;
+
+            const string endLineChars = ".?)]!";
+            var noTagText = Utilities.RemoveHtmlTags(text);
+            bool addHyphen = false;
+            var noTagLines = noTagText.Replace("\r\n", "\n").Split('\n');
+            for (int i = 0; i < noTagLines.Length; i++)
+            {
+                var line = noTagLines[i];
+                var preLine = i - 1 < 0 ? null : noTagLines[i - 1];
+                var idx = line.IndexOf(':');
+                addHyphen = ((idx >= 0 && !Utilities.IsBetweenNumbers(line, idx)) && (preLine == null || endLineChars.IndexOf(preLine[preLine.Length - 1]) >= 0)) ? true : false;
+            }
+            /*
+            foreach (var noTagLine in noTagText.Replace("\r\n", "\n").Split('\n'))
+            {
+                if (noTagLine.Length == 0)
+                    return text;
+                var idx = noTagLine.IndexOf(':');
+                addHyphen = (idx >= 0 && !Utilities.IsBetweenNumbers(noTagLine, idx)) && (endLineChars.IndexOf(noTagLine[noTagLine.Length - 1]) >= 0) ? true : false;
+            }*/
+            if (addHyphen && (noTagLines[0].Length > 2 && noTagLines[1].Length > 2))
+            {
+                if (noTagLines[0][0] != '-')
+                    text = "- " + text;
+
+                if (!noTagLines[1].Contains("\r\n-"))
+                    text = text.Insert(text.IndexOf(Environment.NewLine) + 2, "- ");
+            }
+            return text;
         }
 
         private bool AllowFix(Paragraph p)

@@ -174,5 +174,50 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
+        public static int CountTagInText(string text, char tag)
+        {
+            var total = 0;
+            var idx = text.IndexOf(tag);
+            while (idx >= 0)
+            {
+                total++;
+                idx = text.IndexOf(tag, idx + 1);
+            }
+            return total;
+        }
+
+        public static int CountTagInText(string text, string tag)
+        {
+            var total = 0;
+            var idx = text.IndexOf(tag, StringComparison.Ordinal);
+            while (idx >= 0)
+            {
+                total++;
+                idx = text.IndexOf(tag, idx + 1, StringComparison.Ordinal);
+            }
+            return total;
+        }
+
+        public static bool IsBetweenNumbers(string text, int pos)
+        {
+            if (text.Length <= 2 || pos + 1 >= text.Length || pos - 1 < 0)
+                return false;
+            return (text[pos + 1] >= 0x30 && text[pos + 1] <= 0x39) && (text[pos - 1] >= 0x30 && text[pos - 1] <= 0x39);
+        }
+
+        public static bool IsStartsWithHtmlTag(string text)
+        {
+            if (text == null || text.Trim().Length == 0 || text[0] != '<')
+                return false;
+            return (text[0] == '<' && text[2] == '>');
+        }
+
+        public static bool IsNewLineStartsWithHtml(string text)
+        {
+            if (text == null || text.Trim().Length == 0 || !text.Contains('<') || !text.Contains(Environment.NewLine))
+                return false;
+            var newLine = text.Substring(text.IndexOf("\r\n") + 1);
+            return IsStartsWithHtmlTag(newLine);
+        }
     }
 }
