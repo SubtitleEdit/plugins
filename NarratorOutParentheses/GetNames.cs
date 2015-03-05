@@ -27,7 +27,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 while (idx >= 0)
                 {
                     var endIdx = text.IndexOf(')', idx + 1);
-                    if (endIdx < 0)
+                    if (endIdx < idx)
                         break;
                     var name = text.Substring(idx, endIdx - idx + 1);
                     AddToList(name, ref totalFound);
@@ -42,10 +42,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void AddToList(string name, ref int totalFound)
         {
-            name = name.Substring(1);
-            name = name.Substring(0, name.Length - 1);
+            name = name.Trim('(', ')', '[', ']').Trim();
             if (name.Length > 2)
             {
+                // For listbox
                 name = System.Text.RegularExpressions.Regex.Replace(name, "\\b(\\w)", (x) => x.Value.ToUpper());
             }
             if (!listBox1.Items.Contains(name) && !Utilities.ListNames.Contains(name.ToUpperInvariant()))
@@ -93,6 +93,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 else
                     textBox1.Text = "";
             }
+        }
+
+        private void buttonAddToIgnore_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

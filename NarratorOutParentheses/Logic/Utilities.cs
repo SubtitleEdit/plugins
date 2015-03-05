@@ -11,64 +11,55 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public static class Utilities
     {
-        //private static readonly List<string> _listNames = LoadName();
-        private static List<string> _listNames = LoadNames(GetSubtilteEditNameList());
-        private static List<string> _listNewName = new List<string>();
+        private const string FileName = "narratorNames.xml";
+        private static readonly string DictionaryFolder = GetDicTionaryFolder();
+        private static List<string> _listNames = LoadNames(Path.Combine(DictionaryFolder, "names_etc.xml")); // Uppercase names
+        private static List<string> _listNewName = LoadNames(Path.Combine(DictionaryFolder, "narratorNames.xml"));
 
 
-        private static string _filePath;
-
-        public static List<string> ListNames
+        public static IList<string> ListNames
         {
-            get { return _listNames; }
+            get { return _listNames.Concat(_listNewName).ToList(); }
         }
-
-        /*
-        public static void LoadFromListName()
-        {
-            _listNames = LoadNames(GetSettingsFileName());
-            _subtitleEditNames = false;
-        }*/
 
         public static List<string> LoadNames(string fileName)
         {
-            if (_listNames != null)
-                _listNames = null;
+            if (_listNames != null && fileName.EndsWith("names_etc.xml", StringComparison.OrdinalIgnoreCase))
+                _listNames.Clear();
 
             if (File.Exists(fileName))
             {
                 return (from elem in XElement.Load(fileName).Elements()
                         select elem.Value.ToUpperInvariant()).ToList();
             }
-            /*else
+            else
             {
                 try
                 {
                     // Create file
                     var xdoc = new XDocument(
                         new XElement("names",
-                            new XElement("name", "CISCO"),
                             new XElement("name", "JOHN"),
                             new XElement("name", "MAN"),
                             new XElement("name", "WOMAN"),
                             new XElement("name", "CAITLIN")
                             ));
-                    
-                    Directory.CreateDirectory(Path.GetDirectoryName(settingFile));
-                    //File.Create(settingFile);
-                    xdoc.Save(fileName, SaveOptions.None);
+
+                    if (!Directory.Exists(DictionaryFolder))
+                        Directory.CreateDirectory(DictionaryFolder);
+                    xdoc.Save(Path.Combine(DictionaryFolder, "narratorNames.xml"), SaveOptions.None);
                     return (from elem in xdoc.Root.Elements()
-                            select elem.Value).ToList();
+                            select elem.Value.ToUpperInvariant()).ToList();
                 }
                 catch (Exception ex)
                 {
                     System.Windows.Forms.MessageBox.Show(ex.Message);
                 }
-            }*/
+            }
             return new List<string>();
         }
 
-        public static string GetSubtilteEditNameList()
+        public static string GetDicTionaryFolder()
         {
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
             if (path.StartsWith("file:\\", StringComparison.Ordinal))
@@ -76,15 +67,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
             path = Path.Combine(path, "Dictionaries");
             if (!Directory.Exists(path))
                 path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtiitle Edit", "Dictionary"));
-            var fullPath = Path.Combine(path, "names_etc.xml");
-            _filePath = Path.Combine(path, "names_etc.xml");
-            return _filePath;
+            return path;
         }
 
         public static int NumberOfLines(string text)
         {
             var ln = 0;
-            var idx = -1;
+            var idx = 0;
             do
             {
                 ln++;
@@ -143,24 +132,22 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static bool FixIfInList(string name)
         {
-            if (_listNames == null)
+            if (ListNames == null)
                 return false;
 
-            // _listName is already loaded with all names to UpperCase
-            return _listNames.Contains(name.ToUpperInvariant());
+            // ListNames is already loaded with all names to UpperCase
+            return ListNames.Contains(name.ToUpperInvariant());
         }
 
         public static void AddNameToList(string name)
         {
             if (name == null || name.Trim().Length == 0)
                 return;
-
-            var normalCase = name;
+            //var normalCase = Regex.Replace(name.ToLowerInvariant(), "\\b\\w", x => x.Value.ToUpperInvariant(), RegexOptions.Compiled);
             name = name.ToUpperInvariant();
-            if (!_listNames.Contains(name) && !_listNewName.Contains(normalCase))
+            if (!ListNames.Contains(name))
             {
-                _listNames.Add(name);
-                _listNewName.Add(normalCase);
+                _listNewName.Add(name);
                 SaveToXmlFile();
             }
         }
@@ -169,19 +156,23 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (_listNewName == null || _listNewName.Count == 0)
                 return;
+            var filePath = Path.Combine(DictionaryFolder, FileName);
             try
             {
-                var xelem = XDocument.Load(_filePath);
-                foreach (var name in _listNewName)
-                {
-                    xelem.Root.Add(new XElement("name", name));
-                }
-                xelem.Save(_filePath);
+                var xelem = XDocument.Load(filePath);
+                xelem.Root.ReplaceAll((from name in _listNewName
+                                       select new XElement("name", name)).ToList());
+                /*
+                    foreach (var name in _listNewName)
+                        xelem.Root.Add(new XElement("name", name));*/
+
+                xelem.Save(filePath);
             }
             catch (Exception ex)
             {
                 System.Windows.Forms.MessageBox.Show(ex.Message);
             }
         }
+
     }
 }

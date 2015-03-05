@@ -47,9 +47,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     var endIdx = text.IndexOf(')', idx + 1);
                     if (endIdx < idx)
                         break;
-                    var mood = text.Substring(idx, endIdx - idx + 1);
-                    mood = mood.Substring(1);
-                    mood = mood.Substring(0, mood.Length - 1);
+                    var mood = text.Substring(idx, endIdx - idx + 1).Trim('(', ' ', ')');
                     if (Utilities.FixIfInList(mood))
                     {
                         // todo: if name contains <i>:, note there could be a italic tag at begining
@@ -160,19 +158,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void buttonGetNames_Click(object sender, EventArgs e)
         {
             this.Hide();
-            using (var formGetName = new GetNames(this, this._subtitle))
+            // store the names in list on constructor runtime instead of loading it each time
+            using (var formGetName = new GetNames(this, this._subtitle)) // send the loaded list 
             {
-                formGetName.ShowDialog();
+                if (formGetName.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+                {
+                    FindNarrators();
+                }
             }
-            FindNarrators();
         }
 
         private void buttonApply_Click(object sender, EventArgs e)
         {
             _allowFixes = true;
             FindNarrators();
-
-
             FixedSubtitle = _subtitle.ToText(new SubRip());
             _allowFixes = !_allowFixes;
             this.listViewFixes.Clear();

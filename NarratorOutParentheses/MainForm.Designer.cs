@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             this.listViewFixes = new System.Windows.Forms.ListView();
-            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderApply = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderLine = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderActual = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderAfter = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.buttonGetNames = new System.Windows.Forms.Button();
             this.buttonToNarrator = new System.Windows.Forms.Button();
@@ -53,10 +53,10 @@
             this.listViewFixes.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.listViewFixes.CheckBoxes = true;
             this.listViewFixes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader4,
-            this.columnHeader1,
-            this.columnHeader2,
-            this.columnHeader3});
+            this.columnHeaderApply,
+            this.columnHeaderLine,
+            this.columnHeaderActual,
+            this.columnHeaderAfter});
             this.listViewFixes.FullRowSelect = true;
             this.listViewFixes.GridLines = true;
             this.listViewFixes.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
@@ -69,25 +69,25 @@
             this.listViewFixes.UseCompatibleStateImageBehavior = false;
             this.listViewFixes.View = System.Windows.Forms.View.Details;
             // 
-            // columnHeader4
+            // columnHeaderApply
             // 
-            this.columnHeader4.Text = "Apply";
-            this.columnHeader4.Width = 45;
+            this.columnHeaderApply.Text = "Apply";
+            this.columnHeaderApply.Width = 45;
             // 
-            // columnHeader1
+            // columnHeaderLine
             // 
-            this.columnHeader1.Text = "Line #";
-            this.columnHeader1.Width = 50;
+            this.columnHeaderLine.Text = "Line #";
+            this.columnHeaderLine.Width = 50;
             // 
-            // columnHeader2
+            // columnHeaderActual
             // 
-            this.columnHeader2.Text = "Actual Status";
-            this.columnHeader2.Width = 425;
+            this.columnHeaderActual.Text = "Actual Status";
+            this.columnHeaderActual.Width = 425;
             // 
-            // columnHeader3
+            // columnHeaderAfter
             // 
-            this.columnHeader3.Text = "After";
-            this.columnHeader3.Width = 420;
+            this.columnHeaderAfter.Text = "After";
+            this.columnHeaderAfter.Width = 420;
             // 
             // groupBox1
             // 
@@ -195,10 +195,10 @@
         #endregion
 
         private System.Windows.Forms.ListView listViewFixes;
-        private System.Windows.Forms.ColumnHeader columnHeader4;
-        private System.Windows.Forms.ColumnHeader columnHeader1;
-        private System.Windows.Forms.ColumnHeader columnHeader2;
-        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.ColumnHeader columnHeaderApply;
+        private System.Windows.Forms.ColumnHeader columnHeaderLine;
+        private System.Windows.Forms.ColumnHeader columnHeaderActual;
+        private System.Windows.Forms.ColumnHeader columnHeaderAfter;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button buttonToNarrator;
         private System.Windows.Forms.Label label1;
