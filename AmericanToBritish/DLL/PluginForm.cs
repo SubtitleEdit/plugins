@@ -190,14 +190,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
                                     _regexList.Add(new Regex("\\b" + american + "\\b", RegexOptions.Compiled));
                                     _replaceList.Add(british);
 
-                                    _regexList.Add(new Regex("\\b" + american.ToUpper() + "\\b", RegexOptions.Compiled));
-                                    _replaceList.Add(british.ToUpper());
+                                    _regexList.Add(new Regex("\\b" + american.ToUpperInvariant() + "\\b", RegexOptions.Compiled));
+                                    _replaceList.Add(british.ToUpperInvariant());
 
                                     if (american.Length > 1)
                                     {
-                                        _regexList.Add(new Regex("\\b" + american.Substring(0, 1).ToUpper() + american.Substring(1) + "\\b", RegexOptions.Compiled));
+                                        _regexList.Add(new Regex("\\b" + american.Substring(0, 1).ToUpperInvariant() + american.Substring(1) + "\\b", RegexOptions.Compiled));
                                         if (british.Length > 1)
-                                            _replaceList.Add(british.Substring(0, 1).ToUpper() + british.Substring(1));
+                                            _replaceList.Add(british.Substring(0, 1).ToUpperInvariant() + british.Substring(1));
                                         else
                                             _replaceList.Add(british.ToUpper());
                                     }
@@ -241,7 +241,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             listViewFixes.Columns[listViewFixes.Columns.Count - 1].Width = -1;
         }
-
 
     }
 }
