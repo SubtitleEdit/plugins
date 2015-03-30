@@ -1,57 +1,124 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
+using System.Xml.Linq;
+using System.Collections.Generic;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class GetNames : Form
     {
+        private List<string> _list;
         public GetNames(Form mainForm, Subtitle sub)
         {
             InitializeComponent();
             this.FormClosed += delegate { mainForm.Show(); };
-            FindNames(sub);
+            GeneratePreview(sub);
         }
 
-        private void FindNames(Subtitle sub)
+        private void GeneratePreview(Subtitle sub)
         {
-            var totalFound = 0;
+            if (_list == null)
+                _list = new List<string>();
+            else
+                _list.Clear();
+
+            listBox1.Items.Clear();
             for (int i = 0; i < sub.Paragraphs.Count; i++)
             {
                 var p = sub.Paragraphs[i];
                 var text = p.Text;
-                if (text.IndexOf('(') < 0 && text.IndexOf('[') < 0)
-                    continue;
-
                 text = text.Replace('[', '(').Replace(']', ')');
                 var idx = text.IndexOf('(');
-                while (idx >= 0)
+                if (idx < 0)
+                    continue;
+
+                var noTagLines = Utilities.RemoveHtmlTags(text).Replace(Environment.NewLine, "\n").Split('\n');
+
+                // single line (Sighs)
+                if (noTagLines.Length == 1)
                 {
-                    var endIdx = text.IndexOf(')', idx + 1);
-                    if (endIdx < idx)
-                        break;
-                    var name = text.Substring(idx, endIdx - idx + 1);
-                    AddToList(name, ref totalFound);
-                    idx = text.IndexOf('(', endIdx + 1);
+                    if (IsStartEndBraces(noTagLines[0], idx))
+                        continue;
+
+                    FindNamesInText(text, idx);
+                }
+                else
+                {
+                    //- (SKIPPER) Flaps.
+                    //- KOWALSKI:  Check.
+
+                    //(LIVELY AFRICAN
+                    //TRIBAL THEME PLAYS)
+
+                    //(CLICKING) (SNARLING)
+
+                    //- (CLICKING) UASOIDUFA;
+                    //- Oh! (LAUGHS) (SQUEALS)
+
+                    //- (SKIPPER) initiate warp drive.
+                    //- (WHIRRING)
+
+                    for (int k = 0; k < noTagLines.Length; k++)
+                    {
+                        var noTagLine = noTagLines[k];
+                        idx = noTagLine.IndexOf('(');
+                        if (idx < 0)
+                            continue;
+                        if (IsStartEndBraces(noTagLine, idx))
+                        {
+                            if (k > 0) // continue is second line starts and ends with '(' & ')'
+                                continue;
+                            if (k == 0 && noTagLine.StartsWith("-", StringComparison.Ordinal)) // Continue if it's dialog
+                                continue;
+                        }
+                        FindNamesInText(noTagLine, idx);
+                    }
                 }
             }
-            if (totalFound > 0)
+            if (listBox1.Items.Count > 0)
             {
-                this.label1.Text = "Found Names: " + totalFound;
+                this.label1.Text = "Total found names: " + listBox1.Items.Count; ;
             }
         }
 
-        private void AddToList(string name, ref int totalFound)
+        private bool IsStartEndBraces(string noTagLine, int startIdx)
         {
-            name = name.Trim('(', ')', '[', ']').Trim();
+            noTagLine = noTagLine.TrimEnd(' ', '.', '!', '?', '-', '"');
+            var endIdx = noTagLine.IndexOf(')', startIdx + 1);
+            if (endIdx + 1 == noTagLine.Length)
+                return true;
+            return false;
+        }
+
+        private void FindNamesInText(string text, int idx)
+        {
+            while (idx >= 0)
+            {
+                //(ismael)
+                var endIdx = text.IndexOf(')', idx + 1);
+                if (endIdx < idx)
+                    break; // break while
+                var name = text.Substring(idx, endIdx - idx + 1); // (Jonh)
+                TryAddToListBox(text, name);
+                idx = text.IndexOf('(', endIdx + 1);
+            }
+        }
+
+        private void TryAddToListBox(string text, string name)
+        {
             if (name.Length > 2)
             {
                 // For listbox
-                name = System.Text.RegularExpressions.Regex.Replace(name, "\\b(\\w)", (x) => x.Value.ToUpper());
+                name = System.Text.RegularExpressions.Regex.Replace(name, "\\b(\\w)", (x) => x.Value.ToUpperInvariant());
             }
-            if (!listBox1.Items.Contains(name) && !Utilities.ListNames.Contains(name.ToUpperInvariant()))
+
+            // todo: check if name is in ignore list if: true return
+            var noTagName = name.Trim('(', ')');
+            if (!listBox1.Items.Contains(name) && !Utilities.ListNames.Contains(noTagName.ToUpperInvariant()))
             {
                 this.listBox1.Items.Add(name);
-                totalFound++;
+                _list.Add(text);
             }
         }
 
@@ -60,7 +127,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (listBox1.SelectedIndex >= 0)
             {
                 var idx = listBox1.SelectedIndex;
-                this.textBox1.Text = listBox1.Items[idx].ToString();
+                this.textBox1.Text = _list[idx];
                 label2.Text = "Index: " + idx;
             }
             // Todo: use regex for names like: (WELLS OVER RADIO)
@@ -83,12 +150,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
             else
             {
                 var name = listBox1.Items[idx].ToString();
+                name = name.Trim('(', ')');
                 Utilities.AddNameToList(name);
                 listBox1.Items.RemoveAt(idx);
+                _list.RemoveAt(idx);
                 if (idx < listBox1.Items.Count)
                 {
-                    this.textBox1.Text = listBox1.Items[idx].ToString();
                     listBox1.SelectedIndex = idx;
+                    this.textBox1.Text = listBox1.Items[idx].ToString();
                 }
                 else
                     textBox1.Text = "";
@@ -96,6 +165,45 @@ namespace Nikse.SubtitleEdit.PluginLogic
         }
 
         private void buttonAddToIgnore_Click(object sender, EventArgs e)
+        {
+            if (listBox1.Items.Count <= 0)
+                return;
+
+            // if file doesn't exist create a new one, check iisn't already in list
+            var path = System.IO.Path.Combine(Utilities.GetDicTionaryFolder(), "moodsIgnore.xml");
+            XDocument xdoc = null;
+            if (System.IO.File.Exists(path))
+            {
+                xdoc = XDocument.Load(path);
+            }
+            else
+            {
+                var listIgnore = new List<string>();
+                foreach (var item in listBox1.Items)
+                {
+                    if (!Utilities.ListNames.Contains(item.ToString().ToUpperInvariant()))
+                        listIgnore.Add(item.ToString());
+                }
+
+                if (listIgnore.Count > 0)
+                {
+                    xdoc = new XDocument(new XElement("ignoreList"));
+
+                    foreach (var item in listIgnore)
+                    {
+                        xdoc.Root.Add(new XElement("word", item));
+                    }
+
+                    try
+                    {
+                        xdoc.Save(path, SaveOptions.None);
+                    }
+                    catch { }
+                }
+            }
+        }
+
+        private void StoreItemsIntoXmlFile(string path)
         {
 
         }

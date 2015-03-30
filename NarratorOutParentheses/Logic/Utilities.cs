@@ -17,7 +17,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private static List<string> _listNewName = LoadNames(Path.Combine(DictionaryFolder, "narratorNames.xml"));
 
 
-        public static IList<string> ListNames
+        public static ICollection<string> ListNames
         {
             get { return _listNames.Concat(_listNewName).ToList(); }
         }
@@ -104,9 +104,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static string RemoveHtmlTags(string s)
         {
-            if (string.IsNullOrEmpty(s))
-                return null;
-            if (s.IndexOf('<') < 0)
+            if (string.IsNullOrEmpty(s) || s.IndexOf('<') < 0)
                 return s;
             s = Regex.Replace(s, "(?i)</?[uib]>", string.Empty);
             return RemoveHtmlFontTag(s).Trim();
@@ -207,16 +205,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static bool IsStartsWithHtmlTag(string text)
         {
-            if (text == null || text.Trim().Length == 0 || text[0] != '<')
+            if (string.IsNullOrEmpty(text) || text[0] != '<')
                 return false;
             return (text[0] == '<' && text[2] == '>');
         }
 
         public static bool IsNewLineStartsWithHtml(string text)
         {
-            if (text == null || text.Trim().Length == 0 || !text.Contains('<') || !text.Contains(Environment.NewLine))
+            if (string.IsNullOrEmpty(text) || !text.Contains('<') || !text.Contains(Environment.NewLine))
                 return false;
-            var newLine = text.Substring(text.IndexOf("\r\n") + 1);
+            var newLine = text.Substring(text.IndexOf(Environment.NewLine) + 2);
             return IsStartsWithHtmlTag(newLine);
         }
     }

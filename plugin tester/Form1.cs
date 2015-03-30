@@ -21,7 +21,7 @@ namespace plugin_tester
                 _fileName = openFileDialog1.FileName;
                 RunPlugin(File.ReadAllText(_fileName, Encoding.UTF8));
             }*/
-            var file = @"C:\Users\Ivandrofly\Subtitles\the-world-made-straight_HI_english-1055347\The.World.Made.Straight.2015.720p.BluRay.x264-ROVERS-HI.srt";
+            var file = @"C:\Users\Ivandrofly\Subtitles\madagascar-3-europes-most-wanted_HI_english-846427\Madagascar.3.Europes.Most.Wanted.2012.720p.BluRay.x264-SPARKS.srt";
             RunPlugin(File.ReadAllText(file, Encoding.UTF8));
         }
 
@@ -35,7 +35,7 @@ namespace plugin_tester
 
         private void RunPlugin(string content)
         {
-            IPlugin plugin = new HIColorer();
+            IPlugin plugin = new NarratorOutParentheses();
             string outString = plugin.DoAction(this, content, 23.796, "<br />", _fileName.Length > 0 ? Path.GetFileName(_fileName) : null, null, content);
             if (content.Equals(outString))
                 MessageBox.Show("Nothing changed!!!");

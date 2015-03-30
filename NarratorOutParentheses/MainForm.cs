@@ -44,53 +44,30 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 var text = p.Text;
                 var before = text;
 
-                if (text.IndexOf('(') < 0 && text.IndexOf('[') < 0)
+                var idx = text.IndexOfAny(new[] { '(', '[' });
+                if (idx < 0)
                     continue;
-
-                var idx = text.IndexOf('(');
+                char tagClose = text[idx] == '(' ? ')' : ']';
                 while (idx >= 0)
                 {
-                    var endIdx = text.IndexOf(')', idx + 1);
+                    var endIdx = text.IndexOf(tagClose, idx + 1);
                     if (endIdx < idx)
                         break;
-                    var mood = text.Substring(idx, endIdx - idx + 1).Trim('(', ' ', ')');
+                    char tagOpen = text[idx];
+                    var mood = text.Substring(idx, endIdx - idx + 1).Trim(tagOpen, ' ', tagClose);
                     if (Utilities.FixIfInList(mood))
                     {
-                        // todo: if name contains <i>:, note there could be a italic tag at begining
+                        // Todo: if name contains <i>: note that there may be italic tag at begining
                         text = text.Remove(idx, endIdx - idx + 1).TrimStart(':', ' ');
                         if (text.Length > idx && text[idx] != ':')
                             text = text.Insert(idx, mood + ": ");
                         else
                             text = text.Insert(idx, mood);
-                        idx = text.IndexOf('(');
+                        idx = text.IndexOf(tagOpen, idx);
                     }
                     else
                     {
-                        idx = text.IndexOf('(', endIdx + 1);
-                    }
-                }
-
-                idx = text.IndexOf('[');
-                while (idx >= 0)
-                {
-                    var endIdx = text.IndexOf(']', idx + 1);
-                    if (endIdx < idx)
-                        break;
-                    var mood = text.Substring(idx, endIdx - idx + 1);
-                    mood = mood.Substring(1);
-                    mood = mood.Substring(0, mood.Length - 1);
-                    if (Utilities.FixIfInList(mood))
-                    {
-                        text = text.Remove(idx, endIdx - idx + 1).TrimStart('(', ' ');
-                        if (text.Length > idx && text[idx] != ':')
-                            text = text.Insert(idx, mood + ":");
-                        else
-                            text = text.Insert(idx, mood);
-                        idx = text.IndexOf('[');
-                    }
-                    else
-                    {
-                        idx = text.IndexOf('[', endIdx + 1);
+                        idx = text.IndexOf(tagOpen, endIdx + 1);
                     }
                 }
                 text = AddHyphenOnBothLine(text);
