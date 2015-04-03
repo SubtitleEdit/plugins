@@ -4,7 +4,6 @@ using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using System.Linq;
@@ -30,9 +29,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public PluginForm(Subtitle subtitle, string name, string description, Form parentForm)
             : this()
         {
-            this._subtitle = subtitle;
+            _subtitle = subtitle;
             subtitleListView1.InitializeLanguage();
-            subtitleListView1.MultiSelect = false;
             subtitleListView1.ShowAlternateTextColumn("Line width");
 
             labelStatus.Text = string.Empty;
@@ -116,30 +114,27 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (radioButtonUseFont.Checked)
             {
-                using (var g = this.CreateGraphics())
+                using (var g = CreateGraphics())
                 {
                     return (int)Math.Round(g.MeasureString(line, fontDialog1.Font).Width);
                 }
             }
-            else
+            int totalWidth = 0;
+            foreach (char c in line)
             {
-                int totalWidth = 0;
-                foreach (char c in line)
+                if (_customCharWidths.ContainsKey(c.ToString()))
                 {
-                    if (_customCharWidths.ContainsKey(c.ToString()))
+                    totalWidth += _customCharWidths[c.ToString()];
+                }
+                else
+                { 
+                    if (!_customCharNotFound.Contains(c.ToString()))
                     {
-                        totalWidth += _customCharWidths[c.ToString()];
-                    }
-                    else
-                    { 
-                        if (!_customCharNotFound.Contains(c.ToString()))
-                        {
-                            _customCharNotFound.Add(c.ToString());
-                        }
+                        _customCharNotFound.Add(c.ToString());
                     }
                 }
-                return totalWidth;
             }
+            return totalWidth;
         }
       
         private string GetSettingsFileName()
@@ -286,13 +281,114 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (Utilities.GetNumberOfLines(textBoxText.Text) > 3)
                 textBoxText.ScrollBars = ScrollBars.Vertical;
             else
-                textBoxText.ScrollBars = ScrollBars.None;
-            
+                textBoxText.ScrollBars = ScrollBars.None;            
         }
 
         private void buttonUnBreak_Click(object sender, EventArgs e)
         {
-            textBoxText.Text = Utilities.AutoBreakLine(textBoxText.Text);
+            if (subtitleListView1.SelectedItems.Count >= 1)
+            {
+                subtitleListView1.BeginUpdate();
+                foreach (int index in subtitleListView1.SelectedIndices)
+                {
+                    Paragraph p = _subtitle.GetParagraphOrDefault(index);
+                    if (p != null)
+                    {
+                        p.Text = AutoBreakLine(p.Text);
+                        subtitleListView1.SetText(index, p.Text);
+
+                        if (index == _selectedIndex)
+                        {
+                            textBoxText.Text = p.Text;
+                        }
+                    }
+                }
+                subtitleListView1.EndUpdate();
+            }
+            RefreshLineWidth();
+        }
+
+        private string AutoBreakLine(string text)
+        {
+            if (text == null || text.Length < 3)
+                return text;
+
+            // do not autobreak dialogs
+            if (text.Contains('-') && text.Contains(Environment.NewLine, StringComparison.Ordinal))
+            {
+                var noTagLines = Utilities.RemoveHtmlTags(text).Replace(Environment.NewLine, "\n").Replace("\r", "\n").Split("\n".ToCharArray());
+                if (noTagLines.Length == 2)
+                {
+                    var arr0 = noTagLines[0].Trim().TrimEnd('"').TrimEnd('\'').TrimEnd();
+                    if (arr0.StartsWith('-') && noTagLines[1].TrimStart().StartsWith('-') && arr0.Length > 1 && ".?!)]".Contains(arr0[arr0.Length - 1]) || arr0.EndsWith("--", StringComparison.Ordinal) || arr0.EndsWith('–'))
+                        return text;
+                }
+            }
+
+
+            string noHtml = Utilities.RemoveHtmlTags(text);
+            if (text != noHtml)
+            {
+                return text;
+            }
+
+            var lines = text.Replace(Environment.NewLine, "\n").Replace("\r", "\n").Split("\n".ToCharArray());
+            if (lines.Length != 2)
+            {
+                return text;
+            }
+
+            int initialWidthLine1 = CalcWidth(lines[0]);
+            int initialWidthLine2 = CalcWidth(lines[1]);
+            bool better = true;
+            int widthLine1 = initialWidthLine1;
+            int widthLine2 = initialWidthLine2;
+            while (better)
+            {
+                if (widthLine1 > widthLine2)
+                {
+                    lines = MoveLastWordDown(lines);
+                }
+                else
+                {
+                    lines = MoveLastWordUp(lines);
+                }
+                widthLine1 = CalcWidth(lines[0]);
+                widthLine2 = CalcWidth(lines[1]);
+
+                better = Math.Abs(initialWidthLine1 - initialWidthLine2) > Math.Abs(widthLine1 - widthLine2);
+                if (better)
+                {
+                    text = lines[0] + Environment.NewLine + lines[1];
+                    initialWidthLine1 = widthLine1;
+                    initialWidthLine2 = widthLine2;
+                }
+            }
+            return text;
+        }
+
+        private string[] MoveLastWordUp(string[] lines)
+        {
+            int firstSpace = lines[1].IndexOf(' ');
+            if (firstSpace > 0)
+            {
+                string word = lines[1].Substring(0, firstSpace).Trim();
+                lines[1] = lines[1].Remove(0, firstSpace).Trim();
+                lines[0] = lines[0].Trim() + " " + word;
+            }
+            return lines;            
+        }
+
+        private string[] MoveLastWordDown(string[] lines)
+        {
+            int lastSpace = lines[0].LastIndexOf(' ');
+            if (lastSpace > 0)
+            {
+                string word = lines[0].Substring(lastSpace).Trim();
+                lines[0] = lines[0].Remove(lastSpace).Trim();
+                lines[1] = word + " " + lines[1].Trim();
+            }
+            return lines;
         }
 
     }

@@ -275,9 +275,9 @@
             this.buttonAutoBreak.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonAutoBreak.Location = new System.Drawing.Point(599, 536);
             this.buttonAutoBreak.Name = "buttonAutoBreak";
-            this.buttonAutoBreak.Size = new System.Drawing.Size(115, 21);
+            this.buttonAutoBreak.Size = new System.Drawing.Size(193, 21);
             this.buttonAutoBreak.TabIndex = 3;
-            this.buttonAutoBreak.Text = "Auto-break";
+            this.buttonAutoBreak.Text = "Auto-break via width";
             this.buttonAutoBreak.UseVisualStyleBackColor = true;
             this.buttonAutoBreak.Click += new System.EventHandler(this.buttonUnBreak_Click);
             // 
