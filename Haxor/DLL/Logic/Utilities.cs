@@ -65,10 +65,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var idx = s.IndexOf("<p", StringComparison.OrdinalIgnoreCase);
             while (idx >= 0)
             {
-                var endIdx = s.IndexOf('>', idx + 1);
-                if (endIdx < 1) break;
+                var endIdx = s.IndexOf('>', idx + 2);
+                if (endIdx < idx) break;
                 s = s.Remove(idx, endIdx - idx + 1);
-                idx = s.IndexOf("<p", StringComparison.OrdinalIgnoreCase);
+                idx = s.IndexOf("<p", idx, StringComparison.OrdinalIgnoreCase);
             }
             return s;
         }
@@ -79,10 +79,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var idx = s.IndexOf("<font", StringComparison.OrdinalIgnoreCase);
             while (idx >= 0)
             {
-                var endIdx = s.IndexOf('>', idx + 1);
-                if (endIdx < 0) break;
+                var endIdx = s.IndexOf('>', idx + 5);
+                if (endIdx < idx) break;
                 s = s.Remove(idx, endIdx - idx + 1);
-                idx = s.IndexOf("<font", StringComparison.OrdinalIgnoreCase);
+                idx = s.IndexOf("<font", idx, StringComparison.OrdinalIgnoreCase);
             }
             return s;
         }
