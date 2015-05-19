@@ -57,7 +57,7 @@ namespace SubtitleEdit
                 }
                 else
                 {
-                    var before = Utilities.RemoveHtmlTags(p.Text).ToLower();
+                    var before = Utilities.RemoveHtmlTags(p.Text, true).ToLower();
                     if (before.IndexOf("http", StringComparison.Ordinal) >= 0)
                         continue;
                     var after = TranslateToHaxor(before);

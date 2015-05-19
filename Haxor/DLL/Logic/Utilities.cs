@@ -21,10 +21,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return int.TryParse(s, out i);
         }
 
-        public static string RemoveHtmlTags(string s)
+        public static string RemoveHtmlTags(string s, bool alsoSSA = false)
         {
             if (string.IsNullOrEmpty(s))
                 return string.Empty;
+
+            if (alsoSSA)
+                s = RemoveSsaTags(s);
+
             if (s.IndexOf('<') < 0)
                 return s;
             s = Regex.Replace(s, "(?i)</?[ibu]>", string.Empty);
@@ -32,6 +36,29 @@ namespace Nikse.SubtitleEdit.PluginLogic
             while (s.Contains("  ")) s = s.Replace("  ", " ");
             return RemoveHtmlFontTag(s).Trim();
         }
+
+        public static string RemoveSsaTags(string s)
+        {
+            int k = s.IndexOf('{');
+            while (k >= 0)
+            {
+                int l = s.IndexOf('}', k);
+                if (l > k)
+                {
+                    s = s.Remove(k, l - k + 1);
+                    if (s.Length > 1 && s.Length > k)
+                        k = s.IndexOf('{', k);
+                    else
+                        break;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return s;
+        }
+
         internal static string RemoveParagraphTag(string s)
         {
             s = Regex.Replace(s, "(?i)</?p>", string.Empty);
