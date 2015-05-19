@@ -87,16 +87,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return s;
         }
 
-        internal static int NumberOfLines(string text)
+        internal unsafe static int NumberOfLines(string text)
         {
-            if (text == null || text.Trim().Length == 0)
-                return 0;
-            var ln = 0;
-            var idx = text.IndexOf('\n');
-            while (idx > 0)
+            var ln = 1;
+            fixed (char* tPtr = text)
             {
-                ln++;
-                idx = text.IndexOf('\n', idx + 1);
+                char* ptr = tPtr;
+                while (*ptr != '\0')
+                {
+                    if (*ptr == '\n')
+                        ln++;
+                    ptr++;
+                }
             }
             return ln;
         }
