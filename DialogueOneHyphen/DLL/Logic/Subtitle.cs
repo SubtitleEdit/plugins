@@ -11,7 +11,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private bool _wasLoadedWithFrameNumbers;
         internal string Header { get; set; }
         internal string Footer { get; set; }
-
         internal string FileName { get; set; }
 
         internal const int MaximumHistoryItems = 100;

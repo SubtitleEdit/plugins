@@ -66,7 +66,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (AnalyzeText(text))
                 {
                     Paragraph prev = _subtitle.GetParagraphOrDefault(i - 1);
-                    if (prev == null || !Utilities.RemoveHtmlTags(prev.Text).Trim().EndsWith("-"))
+                    if (prev == null || !Utilities.RemoveHtmlTags(prev.Text).Trim().EndsWith('-'))
                     {
                         // <i>- You delusional?
                         //- I counted.</i>
@@ -138,11 +138,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             s = s.Replace("  ", " ");
 
             s = s.Replace(Environment.NewLine + " ", Environment.NewLine);
-            if (s.StartsWith("-") && s.Contains(Environment.NewLine + "-"))
-            {
-                return true;
-            }
-            return false;
+            return s.StartsWith('-') && s.Contains(Environment.NewLine + "-");
         }
 
         private void buttonSelectAll_Click(object sender, EventArgs e)
@@ -161,9 +157,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private bool SubtitleLoaded()
         {
-            if (_subtitle == null)
-                return false;
-            if (_subtitle.Paragraphs.Count < 1)
+            if (_subtitle == null || _subtitle.Paragraphs.Count < 1)
                 return false;
             return true;
         }

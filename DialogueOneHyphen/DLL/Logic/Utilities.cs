@@ -6,6 +6,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public static class Utilities
     {
+        public static bool StartsWith(this string s, char c)
+        {
+            return s.Length > 0 && s[0] == c;
+        }
+
+        public static bool EndsWith(this string s, char c)
+        {
+            return s.Length > 0 && s[s.Length - 1] == c;
+        }
+
         public static bool IsInteger(string s)
         {
             int i;
