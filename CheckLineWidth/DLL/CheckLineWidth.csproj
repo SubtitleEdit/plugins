@@ -68,9 +68,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Controls\SubtitleListView.resx">
-      <DependentUpon>SubtitleListView.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="CustomCharList.resx">
       <DependentUpon>CustomCharList.cs</DependentUpon>
     </EmbeddedResource>
