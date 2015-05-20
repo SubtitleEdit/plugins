@@ -181,6 +181,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             s = s.Replace("</i> " + Environment.NewLine + "<i>", " ");
             s = s.Replace("</i>" + Environment.NewLine + " <i>", " ");
             s = s.Replace("</i>" + Environment.NewLine + "<i>", " ");
+            s = s.Replace(Environment.NewLine, " ");
             while (s.Contains("  "))
                 s = s.Replace("  ", " ");
 
