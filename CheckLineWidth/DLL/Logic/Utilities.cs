@@ -42,7 +42,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return source.IndexOf(value, comparisonType) >= 0;
         }
 
-
         internal static string AssemblyVersion
         {
             get
@@ -54,30 +53,50 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public static bool IsInteger(string s)
         {
             int i;
-            if (int.TryParse(s, out i))
-                return true;
-            return false;
+            return int.TryParse(s, out i);
         }
 
         public static string RemoveHtmlFontTag(string s)
         {
-            s = Regex.Replace(s, "(?i)</?font>", string.Empty);
-            while (s.ToLower().Contains("<font"))
+            s = Regex.Replace(s, "(?i)</?font>", string.Empty, RegexOptions.Compiled);
+            var idx = s.IndexOf("<font", StringComparison.OrdinalIgnoreCase);
+            while (idx >= 0)
             {
-                int startIndex = s.ToLower().IndexOf("<font");
-                int endIndex = Math.Max(s.IndexOf(">"), startIndex + 4);
-                s = s.Remove(startIndex, (endIndex - startIndex) + 1);
+                var endIdx = s.IndexOf('>', idx + 5);
+                if (endIdx < 5)
+                    break;
+                s = s.Remove(idx, endIdx - idx + 1);
+                idx = s.IndexOf("<font", idx, StringComparison.OrdinalIgnoreCase);
             }
             return s;
         }
 
-        public static string RemoveHtmlTags(string s)
+        public static string RemoveHtmlTags(string s, bool alsoSSA = false)
         {
             if (string.IsNullOrEmpty(s))
                 return null;
+
+            if (alsoSSA)
+            {
+                var idx = s.IndexOf('{');
+                if (idx >= 0)
+                {
+                    var endIdx = s.IndexOf('}', idx + 1);
+                    while (endIdx > idx)
+                    {
+                        s = s.Remove(idx, endIdx - idx + 1);
+                        idx = s.IndexOf('{', idx);
+                        if (idx >= 0)
+                            endIdx = s.IndexOf('}', idx + 1);
+                        else
+                            break;
+                    }
+                }
+            }
+
             if (!s.Contains("<"))
                 return s;
-            s = Regex.Replace(s, "(?i)</?[iіbu]>", string.Empty);
+            s = Regex.Replace(s, "(?i)</?[iіbu]>", string.Empty, RegexOptions.Compiled);
             s = RemoveParagraphTag(s);
             return RemoveHtmlFontTag(s).Trim();
         }
@@ -89,12 +108,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         internal static string RemoveParagraphTag(string s)
         {
-            s = Regex.Replace(s, "(?i)</?p>", string.Empty);
-            while (s.ToLower().Contains("<p "))
+            s = Regex.Replace(s, "(?i)</?p>", string.Empty, RegexOptions.Compiled);
+            var idx = s.IndexOf("<p", StringComparison.OrdinalIgnoreCase);
+            while (idx >= 0)
             {
-                int startIndex = s.ToLower().IndexOf("<p ");
-                int endIndex = Math.Max(s.IndexOf(">"), startIndex + 4);
-                s = s.Remove(startIndex, (endIndex - startIndex) + 1);
+                var endIdx = s.IndexOf('>', idx + 2);
+                if (endIdx < 2)
+                    break;
+                s = s.Remove(idx, endIdx - idx + 1);
+                idx = s.IndexOf("<p", idx, StringComparison.OrdinalIgnoreCase);
             }
             return s;
         }
@@ -117,7 +139,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return false;
         }
 
-
         private static bool CanBreak(string s, int index, string language)
         {
             char nextChar = ' ';
@@ -126,20 +147,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (!"\r\n\t ".Contains(nextChar.ToString()))
                 return false;
 
-            string s2 = s.Substring(0, index);         
+            string s2 = s.Substring(0, index);
             if (s2.EndsWith("? -", StringComparison.Ordinal) || s2.EndsWith("! -", StringComparison.Ordinal) || s2.EndsWith(". -", StringComparison.Ordinal))
                 return false;
 
             return true;
         }
 
-
         internal static string AutoBreakLine(string p)
         {
             return AutoBreakLine(p, 43, 10, "en");
         }
-
-
 
         public static string AutoBreakLine(string text, int maximumLength, int mergeLinesShorterThan, string language)
         {
@@ -163,11 +181,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             s = s.Replace("</i> " + Environment.NewLine + "<i>", " ");
             s = s.Replace("</i>" + Environment.NewLine + " <i>", " ");
             s = s.Replace("</i>" + Environment.NewLine + "<i>", " ");
-            s = s.Replace(Environment.NewLine, " ");
-            s = s.Replace("   ", " ");
-            s = s.Replace("  ", " ");
-            s = s.Replace("  ", " ");
-            s = s.Replace("  ", " ");
+            while (s.Contains("  "))
+                s = s.Replace("  ", " ");
 
             string temp = RemoveHtmlTags(s);
 

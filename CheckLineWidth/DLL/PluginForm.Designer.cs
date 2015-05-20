@@ -49,6 +49,7 @@
             this.textBoxText = new System.Windows.Forms.TextBox();
             this.labelText = new System.Windows.Forms.Label();
             this.buttonAutoBreak = new System.Windows.Forms.Button();
+            this.labelErrorCount = new System.Windows.Forms.Label();
             this.subtitleListView1 = new Nikse.SubtitleEdit.PluginLogic.Controls.SubtitleListView();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -259,6 +260,7 @@
             this.textBoxText.Size = new System.Drawing.Size(361, 52);
             this.textBoxText.TabIndex = 2;
             this.textBoxText.TextChanged += new System.EventHandler(this.textBoxText_TextChanged);
+            this.textBoxText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxText_KeyDown);
             // 
             // labelText
             // 
@@ -280,6 +282,15 @@
             this.buttonAutoBreak.Text = "Auto-break via width";
             this.buttonAutoBreak.UseVisualStyleBackColor = true;
             this.buttonAutoBreak.Click += new System.EventHandler(this.buttonUnBreak_Click);
+            // 
+            // labelErrorCount
+            // 
+            this.labelErrorCount.AutoSize = true;
+            this.labelErrorCount.Location = new System.Drawing.Point(4, 575);
+            this.labelErrorCount.Name = "labelErrorCount";
+            this.labelErrorCount.Size = new System.Drawing.Size(65, 13);
+            this.labelErrorCount.TabIndex = 6;
+            this.labelErrorCount.Text = "Error count: ";
             // 
             // subtitleListView1
             // 
@@ -303,12 +314,14 @@
             this.subtitleListView1.UseSyntaxColoring = true;
             this.subtitleListView1.View = System.Windows.Forms.View.Details;
             this.subtitleListView1.SelectedIndexChanged += new System.EventHandler(this.subtitleListView1_SelectedIndexChanged);
+            this.subtitleListView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.subtitleListView1_KeyDown);
             // 
             // PluginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1036, 595);
+            this.Controls.Add(this.labelErrorCount);
             this.Controls.Add(this.buttonAutoBreak);
             this.Controls.Add(this.textBoxText);
             this.Controls.Add(this.labelText);
@@ -360,5 +373,6 @@
         private System.Windows.Forms.Button buttonAutoBreak;
         private System.Windows.Forms.Label labelCustomCharNotFound;
         private System.Windows.Forms.TextBox textBoxCustomCharNotFound;
+        private System.Windows.Forms.Label labelErrorCount;
     }
 }

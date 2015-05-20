@@ -12,6 +12,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public partial class PluginForm : Form
     {
+        private const string BreakChars = " \".!?,)([]<>:;♪{}-/#*|¿¡\r\n\t";
         public string FixedSubtitle { get; set; }
         private Subtitle _subtitle;
         private SortedDictionary<string, int> _customCharWidths = new SortedDictionary<string, int>();
@@ -26,7 +27,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             InitializeComponent();
         }
 
-        public PluginForm(Subtitle subtitle, string name, string description, Form parentForm)
+        public PluginForm(Subtitle subtitle, string name, string description, Form parentForm, int errorCount)
             : this()
         {
             _subtitle = subtitle;
@@ -45,6 +46,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             if (subtitle.Paragraphs.Count > 0)
                 subtitleListView1.SelectIndexAndEnsureVisible(0);
+            if (errorCount > 0)
+            {
+                labelErrorCount.ForeColor = Color.Red;
+                labelErrorCount.Text += errorCount.ToString();
+            }
+            else
+            {
+                labelErrorCount.ForeColor = Control.DefaultForeColor;
+                labelErrorCount.Text += errorCount.ToString();
+            }
             radioButtonUseFont_CheckedChanged(null, null);
         }
 
@@ -56,7 +67,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (File.Exists(fileName))
             {
                 XDocument doc = XDocument.Parse(File.ReadAllText(fileName));
-                
+
                 string fontName = doc.Root.Element("FontName").Value;
                 float fontSize = (float)Convert.ToDecimal(doc.Root.Element("FontSize").Value);
                 bool fontBold = Convert.ToBoolean(doc.Root.Element("FontBold").Value);
@@ -77,7 +88,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         _customCharWidths.Add(character, value);
                     }
                 }
-            }            
+            }
             labelFont.Text = string.Format("{0}, size {1}", fontDialog1.Font.Name, fontDialog1.Font.Size);
         }
 
@@ -127,7 +138,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     totalWidth += _customCharWidths[c.ToString()];
                 }
                 else
-                { 
+                {
                     if (!_customCharNotFound.Contains(c.ToString()))
                     {
                         _customCharNotFound.Add(c.ToString());
@@ -136,7 +147,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             return totalWidth;
         }
-      
+
         private string GetSettingsFileName()
         {
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
@@ -165,7 +176,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
 
-   
         private void buttonChooseFont_Click(object sender, EventArgs e)
         {
             fontDialog1.ShowEffects = false;
@@ -189,7 +199,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             try
             {
-            var fileName = GetSettingsFileName();
+                var fileName = GetSettingsFileName();
                 XDocument document = new XDocument(
                     new XDeclaration("1.0", "utf8", "yes"),
                     new XComment("This XML file defines the settings for the Subtitle Edit CheckLineWidth plugin"),
@@ -201,7 +211,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         new XElement("MaxPixelLengthForLine", numericUpDown1.Value),
                         new XElement("UseCustomCharWidthList", radioButtonUseFont.Checked),
                         new XElement("CustomCharWidthList",
-                            _customCharWidths.Where(p=>p.Key.Length > 0).Select(kvp => new XElement("Item", 
+                            _customCharWidths.Where(p => p.Key.Length > 0).Select(kvp => new XElement("Item",
                                 new XElement("Char", kvp.Key),
                                 new XElement("Width", kvp.Value))
                             )
@@ -211,7 +221,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 document.Save(fileName);
             }
             catch
-            { 
+            {
             }
         }
 
@@ -229,7 +239,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 ShowLineLengths(i);
             }
-            labelLongestLine.Text = string.Format("Longest line: Line {0} is {1} pixels", _longestLineIndex + 1,  _longestLine);
+            labelLongestLine.Text = string.Format("Longest line: Line {0} is {1} pixels", _longestLineIndex + 1, _longestLine);
             labelStatus.Text = string.Format("{0} lines are longer than {1} pixels", _tooLongCount, numericUpDown1.Value);
             if (radioButtonUseCustom.Checked)
             {
@@ -281,7 +291,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (Utilities.GetNumberOfLines(textBoxText.Text) > 3)
                 textBoxText.ScrollBars = ScrollBars.Vertical;
             else
-                textBoxText.ScrollBars = ScrollBars.None;            
+                textBoxText.ScrollBars = ScrollBars.None;
         }
 
         private void buttonUnBreak_Click(object sender, EventArgs e)
@@ -310,34 +320,30 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string AutoBreakLine(string text)
         {
-            if (text == null || text.Length < 3)
+            if (text == null || text.Length < 3 || Utilities.GetNumberOfLines(text) != 2)
                 return text;
 
+            var noTagText = Utilities.RemoveHtmlTags(text, true);
             // do not autobreak dialogs
-            if (text.Contains('-') && text.Contains(Environment.NewLine, StringComparison.Ordinal))
+            if (noTagText.Contains('-') && noTagText.Contains(Environment.NewLine, StringComparison.Ordinal))
             {
-                var noTagLines = Utilities.RemoveHtmlTags(text).Replace(Environment.NewLine, "\n").Replace("\r", "\n").Split("\n".ToCharArray());
+                var noTagLines = noTagText.Replace(Environment.NewLine, "\n").Replace('\r', '\n').Split('\n');
                 if (noTagLines.Length == 2)
                 {
-                    var arr0 = noTagLines[0].Trim().TrimEnd('"').TrimEnd('\'').TrimEnd();
-                    if (arr0.StartsWith('-') && noTagLines[1].TrimStart().StartsWith('-') && arr0.Length > 1 && ".?!)]".Contains(arr0[arr0.Length - 1]) || arr0.EndsWith("--", StringComparison.Ordinal) || arr0.EndsWith('–'))
+                    var arr0 = noTagLines[0].Trim().TrimEnd('"', '\'').TrimEnd();
+                    if (arr0.StartsWith('-') && noTagLines[1].TrimStart().StartsWith('-') &&
+                       (arr0.Length > 1 && (".?!)]".Contains(arr0[arr0.Length - 1]) || arr0.EndsWith("--", StringComparison.Ordinal) || arr0.EndsWith('–'))))
                         return text;
                 }
             }
 
-
-            string noHtml = Utilities.RemoveHtmlTags(text);
-            if (text != noHtml)
+            // Todo:
+            if (text != noTagText)
             {
                 return text;
             }
 
-            var lines = text.Replace(Environment.NewLine, "\n").Replace("\r", "\n").Split("\n".ToCharArray());
-            if (lines.Length != 2)
-            {
-                return text;
-            }
-
+            var lines = text.Replace(Environment.NewLine, "\n").Replace('\r', '\n').Split('\n');
             int initialWidthLine1 = CalcWidth(lines[0]);
             int initialWidthLine2 = CalcWidth(lines[1]);
             bool better = true;
@@ -376,7 +382,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 lines[1] = lines[1].Remove(0, firstSpace).Trim();
                 lines[0] = lines[0].Trim() + " " + word;
             }
-            return lines;            
+            return lines;
         }
 
         private string[] MoveLastWordDown(string[] lines)
@@ -389,6 +395,53 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 lines[1] = word + " " + lines[1].Trim();
             }
             return lines;
+        }
+
+        private void subtitleListView1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == (Keys.Control | Keys.A))
+            {
+                foreach (ListViewItem item in subtitleListView1.Items)
+                {
+                    item.Selected = true;
+                }
+            }
+        }
+
+        private void textBoxText_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Modifiers == Keys.Control && e.KeyCode == Keys.Back)
+            {
+                int index = textBoxText.SelectionStart;
+                if (textBoxText.SelectionLength == 0)
+                {
+                    string s = textBoxText.Text;
+                    int deleteFrom = index - 1;
+
+                    if (deleteFrom > 0 && deleteFrom < s.Length)
+                    {
+                        if (s[deleteFrom] == ' ')
+                            deleteFrom--;
+                        while (deleteFrom > 0 && !BreakChars.Contains(s[deleteFrom]))
+                        {
+                            deleteFrom--;
+                        }
+                        if (deleteFrom == index - 1)
+                        {
+                            var breakCharsNoSpace = BreakChars.Substring(1);
+                            while (deleteFrom > 0 && breakCharsNoSpace.Contains(s[deleteFrom - 1]))
+                            {
+                                deleteFrom--;
+                            }
+                        }
+                        if (s[deleteFrom] == ' ')
+                            deleteFrom++;
+                        textBoxText.Text = s.Remove(deleteFrom, index - deleteFrom);
+                        textBoxText.SelectionStart = deleteFrom;
+                    }
+                }
+                e.SuppressKeyPress = true;
+            }
         }
 
     }

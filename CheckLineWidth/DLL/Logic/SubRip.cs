@@ -28,8 +28,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        internal string Errors { get; private set; }
-
         internal override string Extension
         {
             get { return ".srt"; }
@@ -103,8 +101,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (_errorCount < 100)
                 if (doRenum)
                     subtitle.Renumber(1);
-
-            Errors = _errorCount.ToString();
         }
 
         internal override string ToText(Subtitle subtitle, string title)

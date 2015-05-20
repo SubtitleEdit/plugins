@@ -18,7 +18,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         decimal IPlugin.Version
         {
-            get { return 0.3M; }
+            get { return 0.4M; }
         }
 
         string IPlugin.Description
@@ -56,10 +56,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             srt.LoadSubtitle(sub, list, subtitleFileName);
             if (srt.ErrorCount > 0)
             {
-                MessageBox.Show(srt.Errors + " Errors found while parsing .srt",
+                MessageBox.Show(srt.ErrorCount + " Errors found while parsing .srt",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-            using (var form = new PluginForm(sub, (this as IPlugin).Name, (this as IPlugin).Description, parentForm))
+            using (var form = new PluginForm(sub, (this as IPlugin).Name, (this as IPlugin).Description, parentForm, srt.ErrorCount))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
                     return form.FixedSubtitle;
