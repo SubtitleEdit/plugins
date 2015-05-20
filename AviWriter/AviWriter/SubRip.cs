@@ -62,7 +62,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             bool doRenum = false;
             _errors = new StringBuilder();
-            _lineNumber = 0;
 
             _paragraph = new Paragraph();
             _expecting = ExpectingLine.Number;
@@ -71,9 +70,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             subtitle.Paragraphs.Clear();
             for (int i = 0; i < lines.Count; i++)
             {
-                _lineNumber++;
                 string line = lines[i].TrimEnd();
-                line = line.Trim(Convert.ToChar(127)); // 127=delete acscii
+                line = line.Trim('\u007F'); // 127=delete acscii
 
                 string next = string.Empty;
                 if (i + 1 < lines.Count)
@@ -168,38 +166,31 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private bool IsText(string text)
         {
-            if (text.Trim().Length == 0)
+            if (text.Trim().Length == 0 || Utilities.IsInteger(text) || _regexTimeCodes.IsMatch(text))
                 return false;
-
-            if (Utilities.IsInteger(text))
-                return false;
-
-            if (_regexTimeCodes.IsMatch(text))
-                return false;
-
             return true;
         }
 
         private string RemoveBadChars(string line)
         {
-            line = line.Replace("\0", " ");
-            return line;
+            return line.Replace('\0', ' ');
         }
 
         private bool TryReadTimeCodesLine(string line, Paragraph paragraph)
         {
-            line = line.Replace("،", ",");
-            line = line.Replace("", ",");
-            line = line.Replace("¡", ",");
+            const string defaultDash = " --> ";
+            line = line.Replace('،', ',');
+            line = line.Replace('', ',');
+            line = line.Replace('¡', ',');
 
             // Fix some badly formatted separator sequences - anything can happen if you manually edit ;)
-            line = line.Replace(" -> ", " --> "); // I've seen this
-            line = line.Replace(" - > ", " --> ");
-            line = line.Replace(" ->> ", " --> ");
-            line = line.Replace(" -- > ", " --> ");
-            line = line.Replace(" - -> ", " --> ");
-            line = line.Replace(" -->> ", " --> ");
-            line = line.Replace(" ---> ", " --> ");
+            line = line.Replace(" -> ", defaultDash); // I've seen this
+            line = line.Replace(" - > ", defaultDash);
+            line = line.Replace(" ->> ", defaultDash);
+            line = line.Replace(" -- > ", defaultDash);
+            line = line.Replace(" - -> ", defaultDash);
+            line = line.Replace(" -->> ", defaultDash);
+            line = line.Replace(" ---> ", defaultDash);
 
             // Removed stuff after timecodes - like subtitle position
             //  - example of position info: 00:02:26,407 --> 00:02:31,356  X1:100 X2:100 Y1:100 Y2:100
@@ -207,7 +198,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 line = line.Substring(0, 29);
 
             // removes all extra spaces
-            line = line.Replace(" ", string.Empty).Replace("-->", " --> ");
+            line = line.Replace(" ", string.Empty).Replace("-->", defaultDash);
             line = line.Trim();
 
             // Fix a few more cases of wrong time codes, seen this: 00.00.02,000 --> 00.00.04,000

@@ -7,22 +7,43 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public static class Utilities
     {
+        public static int GetNumberOfLines(string s)
+        {
+            if (s.Length < 1)
+                return 0;
+            var ln = 0;
+            var idx = s.IndexOf('\n');
+            while (idx >= 0)
+            {
+                ln++;
+                idx = s.IndexOf('\n', idx + 1);
+            }
+            return ln + 1;
+        }
 
         public static bool IsInteger(string s)
         {
             int i;
-            if (int.TryParse(s, out i))
-                return true;
-            return false;
+            return int.TryParse(s, out i);
         }
 
-        public static string RemoveHtmlTags(string s)
+        public static string RemoveHtmlTags(string s, bool alsoSSa = false)
         {
-            if (s == null)
-                return null;
-
-            if (!s.Contains("<"))
+            if (s == null || !s.Contains("<"))
                 return s;
+
+            if (alsoSSa)
+            {
+                var idx = s.IndexOf('{');
+                while (idx >= 0)
+                {
+                    var endIdx = s.IndexOf('}', idx + 1);
+                    if (endIdx < idx)
+                        break;
+                    s = s.Remove(idx, endIdx - idx + 1);
+                    idx = s.IndexOf('{', idx);
+                }
+            }
 
             s = s.Replace("<i>", string.Empty);
             s = s.Replace("</i>", string.Empty);
@@ -45,14 +66,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
             s = s.Replace("</font>", string.Empty);
             s = s.Replace("</FONT>", string.Empty);
             s = s.Replace("</Font>", string.Empty);
-            s = s.Replace("<font>", string.Empty);
-            s = s.Replace("<FONT>", string.Empty);
-            s = s.Replace("<Font>", string.Empty);
-            while (s.ToLower().Contains("<font"))
+            var idx = s.IndexOf("<font", StringComparison.OrdinalIgnoreCase);
+            while (idx >= 0)
             {
-                int startIndex = s.ToLower().IndexOf("<font");
-                int endIndex = Math.Max(s.IndexOf(">"), startIndex + 4);
-                s = s.Remove(startIndex, (endIndex - startIndex) + 1);
+                var endIdx = s.IndexOf('>', idx + 5);
+                if (endIdx < idx)
+                    break;
+                s = s.Remove(idx, endIdx - idx + 1);
+                idx = s.IndexOf("<font", idx, StringComparison.OrdinalIgnoreCase);
             }
             return s;
         }
@@ -61,13 +82,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             s = s.Replace("</p>", string.Empty);
             s = s.Replace("</P>", string.Empty);
-            s = s.Replace("<P>", string.Empty);
-            s = s.Replace("<P>", string.Empty);
-            while (s.ToLower().Contains("<p "))
+            var idx = s.IndexOf("<p", StringComparison.OrdinalIgnoreCase);
+            while (idx >= 0)
             {
-                int startIndex = s.ToLower().IndexOf("<p ");
-                int endIndex = Math.Max(s.IndexOf(">"), startIndex + 4);
-                s = s.Remove(startIndex, (endIndex - startIndex) + 1);
+                var endIdx = s.IndexOf('>', idx + 2);
+                if (endIdx < idx)
+                    break;
+                s = s.Remove(idx, endIdx - idx + 1);
+                idx = s.IndexOf("<p", idx, StringComparison.OrdinalIgnoreCase);
             }
             return s;
         }
