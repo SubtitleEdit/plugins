@@ -25,8 +25,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             : this()
         {
             this._subtitle = sub;
-            this.Text = "Hearing Impaired Colorer";
-            GetSetting();
+            LoadingSettings();
         }
 
         private void buttonNarratorColor_Click(object sender, EventArgs e)
@@ -67,19 +66,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (_subtitle.Paragraphs.Count == 0)
                 return;
-            string text = string.Empty;
-            string oldText = string.Empty;
             foreach (Paragraph p in _subtitle.Paragraphs)
             {
-                if (!p.Text.Contains("<font"))
+                var text = p.Text;
+                if (!text.Contains("<font", StringComparison.OrdinalIgnoreCase))
                     continue;
-                text = p.Text;
-                oldText = text;
+                var oldText = text;
                 text = Utilities.RemoveHtmlColorTags(text);
-                if (!text.Equals(oldText))
-                {
+                if (text != oldText)
                     p.Text = text;
-                }
             }
             FixedSubtitle = _subtitle.ToText(new SubRip());
             DialogResult = System.Windows.Forms.DialogResult.OK;
@@ -107,34 +102,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return;
             Func<string, char, char, string> brackesType = (text, bOpen, bClose) =>
             {
-                int startBraces = text.IndexOf(bOpen);
-                if (startBraces > -1)
+                int idx = text.IndexOf(bOpen);
+                while (idx >= 0)
                 {
-                    int endBraces = text.IndexOf(bClose, startBraces + 1);
-                    if (endBraces < startBraces + 1)
-                    {
-                        // don't continue this if text contains something like <(i> and - Ivandro: hello world! it won't change the narrator
-                        return text;
-                    }
-                    // ( ( )
-                    int next = text.IndexOf(bOpen, startBraces + 1);
-                    if ((next > -1) && (next < endBraces))
-                    {
-                        startBraces = Math.Max(next, startBraces);
-                    }
-
-                    endBraces = -1;
-                    while (startBraces > -1)
-                    {
-                        endBraces = text.IndexOf(bClose, startBraces + 1);
-                        if (endBraces > startBraces && startBraces > -1)
-                        {
-                            string t = text.Substring(startBraces, (endBraces - startBraces) + 1);
-                            t = SetHtmlColorCode(_moodsColor, t);
-                            text = text.Remove(startBraces, (endBraces - startBraces) + 1).Insert(startBraces, t);
-                        }
-                        startBraces = text.IndexOf(bOpen, (endBraces + 30)); // HACKED: Warning!
-                    }
+                    var endIdx = text.IndexOf(bClose, idx + 1);
+                    if (endIdx < idx + 1)
+                        break;
+                    var t = text.Substring(idx, endIdx - idx + 1);
+                    t = SetHtmlColorCode(_moodsColor, t);
+                    text = text.Remove(idx, endIdx - idx + 1).Insert(idx, t);
+                    idx = text.IndexOf(bOpen, idx + t.Length);
                 }
                 return text;
             };
@@ -144,36 +121,38 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 Paragraph p = _subtitle.Paragraphs[i];
                 string text = p.Text;
                 string oldText = text;
-                if (text.ToLower().Contains("<font"))
+                if (text.Contains("<font", StringComparison.OrdinalIgnoreCase))
                     text = Utilities.RemoveHtmlFontTag(text);
 
                 if (Regex.IsMatch(text, ":\\B") && checkBoxEnabledNarrator.Checked)
                 {
-                    text = SetColorForNarrator(text, p);
+                    text = SetColorForNarrator(text);
                 }
                 if (checkBoxEnabledMoods.Checked)
                 {
-                    if (text.Contains("("))
+                    if (text.Contains('('))
                         text = brackesType.Invoke(text, '(', ')');
-                    if (text.Contains("["))
+                    if (text.Contains('['))
                         text = brackesType.Invoke(text, '[', ']');
                 }
 
+                if (text.Length != oldText.Length)
+                    p.Text = text;
             }
         }
 
         internal static string SetHtmlColorCode(Color color, string text)
         {
             string colorCode = string.Format("#{0:x2}{1:x2}{2:x2}", color.R, color.G, color.B);
-            string writeFormat = "<font color=\"{0}\">{1}</font>";
-            return string.Format(writeFormat, colorCode.ToUpper(), text.Trim());
+            const string writeFormat = "<font color=\"{0}\">{1}</font>";
+            return string.Format(writeFormat, colorCode.ToUpperInvariant(), text.Trim());
         }
 
-        private string SetColorForNarrator(string text, Paragraph p)
+        private string SetColorForNarrator(string text)
         {
-            var t = Utilities.RemoveHtmlTags(text);
-            int index = t.IndexOf(":", System.StringComparison.Ordinal);
-            if (index == t.Length - 1)
+            var noTagText = Utilities.RemoveHtmlTags(text);
+            int index = noTagText.IndexOf(':');
+            if (index + 1 == noTagText.Length)
                 return text;
 
             string htmlColor = string.Format("#{0:x2}{1:x2}{2:x2}", _narratorColor.R, _narratorColor.G, _narratorColor.B);
@@ -185,96 +164,66 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return string.Format(writeFormat, htmlColor, narrator.Trim());
             };
 
-            if (text.Contains(Environment.NewLine))
+            var lines = text.Replace(Environment.NewLine, "\n").Split('\n');
+            for (int i = 0; i < lines.Length; i++)
             {
-                var lines = text.Replace(Environment.NewLine, "\n").Split('\n');
-                for (int i = 0; i < lines.Length; i++)
+                //TODO: if text contains 2 hearing text
+                var cleanText = Utilities.RemoveHtmlTags(lines[i], true).TrimEnd('"', '\'').TrimEnd();
+                index = cleanText.IndexOf(':');
+
+                if ((index + 1 < cleanText.Length && char.IsDigit(cleanText[index + 1])) ||// filtered above \B
+                    (i > 0 && index + 1 == cleanText.Length))  // return if : is second line last char
                 {
-                    //TODO: if text contains 2 hearing text
-                    string cleanText = Utilities.RemoveHtmlTags(lines[i]);
-                    index = cleanText.IndexOf(":", System.StringComparison.Ordinal);
+                    continue;
+                }
 
-                    if ((index + 1 < cleanText.Length - 1) && char.IsDigit(cleanText[index + 1])) // filtered above \B
-                    {
+                index = lines[i].IndexOf(':');
+                if (index > 0)
+                {
+                    var line = lines[i];
+                    string pre = line.Substring(0, index).TrimStart();
+                    if (pre.Length == 0 || pre.Contains('(') || pre.Contains('(') || pre.Contains('('))
                         continue;
-                    }
 
-                    if (i > 0 && index == cleanText.Length - 1)
+                    //- MAN: Baby, I put it right over there.
+                    //- JUNE: No, you did not.
+                    if (Utilities.RemoveHtmlTags(pre, true).Trim().Length > 1)
                     {
-                        continue;
+                        // <i> i shall be \w that is way (?<!<)
+                        string firstChr = Regex.Match(pre, "(?<!<)\\w", RegexOptions.Compiled).Value;
+                        if (string.IsNullOrEmpty(firstChr))
+                            continue;
+                        int idx = pre.IndexOf(firstChr, System.StringComparison.Ordinal);
+                        var narrator = pre.Substring(idx, index - idx).Trim();
+
+                        narrator = SetColor(narrator);
+                        pre = pre.Remove(idx, (index - idx)).Insert(idx, narrator);
+                        line = line.Remove(0, index).Insert(0, pre);
+                        if (line == lines[i]) continue;
+                        lines[i] = line;
                     }
-                    else
-                    {
-                        index = lines[i].IndexOf(":", System.StringComparison.Ordinal);
-                        if (index > 0)
-                        {
-                            string temp = lines[i];
-                            string pre = temp.Substring(0, index);
-                            if (pre.Contains("(") || pre.Contains("[") || pre.Contains("{"))
-                                continue;
 
-                            //- MAN: Baby, I put it right over there.
-                            //- JUNE: No, you did not.
-                            if (Utilities.RemoveHtmlTags(pre).Trim().Length > 1)
-                            {
-                                // <i> i shall be \w that is way (?<!<)
-                                string firstChr = Regex.Match(pre, "(?<!<)\\w", RegexOptions.Compiled).Value;
-                                if (string.IsNullOrEmpty(firstChr))
-                                    continue;
-                                int idx = pre.IndexOf(firstChr, System.StringComparison.Ordinal);
-                                string narrator = pre.Substring(idx, (index - idx));
-
-                                // if it's not uppercase so skip it!
-                                // if contains italic tag before the narrator this won't work:
-                                // Readme: this will never match <i> or any other tags with contains one char
-                                if (Utilities.RemoveHtmlTags(narrator).Trim().ToUpper() != Utilities.RemoveHtmlTags(narrator).Trim())
-                                    continue;
-
-                                narrator = SetColor(narrator);
-                                pre = pre.Remove(idx, (index - idx)).Insert(idx, narrator);
-                                temp = temp.Remove(0, index).Insert(0, pre);
-                                if (temp == lines[i]) continue;
-                                lines[i] = temp;
-                            }
-                        }
-                    }
                 }
                 text = string.Join(Environment.NewLine, lines);
-            }
-            else
-            {
-                string cleanText = Utilities.RemoveHtmlTags(text).Trim();
-                index = cleanText.IndexOf(":", System.StringComparison.Ordinal);
-                if (index < cleanText.Length - 1)
-                {
-                    index = text.IndexOf(":", System.StringComparison.Ordinal);
-                    if (index > 0)
-                    {
-                        string pre = text.Substring(0, index);
-                        // (ivandro ismael: djfalsdj)
-                        if (pre.Contains("(") || pre.Contains("[") || pre.Contains("{"))
-                            return text;
-
-                        if (Utilities.RemoveHtmlTags(pre).Trim().Length > 0)
-                        {
-                            // <i>i shall be \w that is way (?<!<)
-                            string firstChr = Regex.Match(pre, "(?<!<)\\w", RegexOptions.Compiled).Value;
-                            int idx = pre.IndexOf(firstChr, System.StringComparison.Ordinal);
-                            string narrator = pre.Substring(idx, (index - idx));
-                            narrator = SetColor(narrator);
-                            pre = pre.Remove(idx, index - idx).Insert(idx, narrator);
-                            text = text.Remove(0, index).Insert(0, pre);
-                        }
-                    }
-                }
             }
             return text;
         }
 
-        private void RemoveColor(Paragraph p)
+        private string MoveClosingTagsToEnd(string pre)
         {
-
+            // <i>Foobar</i> Foobar:
+            var idx = pre.IndexOf("</", StringComparison.Ordinal);
+            if (idx > 1)
+            {
+                var closeIdx = pre.IndexOf('>', idx + 2);
+                if (closeIdx < idx)
+                    return pre;
+                var endTag = pre.Substring(idx, closeIdx - idx + 1);
+                pre = pre.Remove(idx, closeIdx - idx + 1).Insert(pre.Length, endTag);
+            }
+            return pre;
         }
+
 
         private string GetSettingsFileName()
         {
@@ -292,7 +241,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             SaveSettings();
         }
 
-        private void GetSetting()
+        private void LoadingSettings()
         {
             string fileName = GetSettingsFileName();
             if (!Path.IsPathRooted(fileName))
