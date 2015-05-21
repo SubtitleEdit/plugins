@@ -9,7 +9,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         string IPlugin.Name
         {
-            get { return "HIColorer"; }
+            get { return "HI Colorer"; }
         }
 
         string IPlugin.Text
@@ -19,7 +19,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         decimal IPlugin.Version
         {
-            get { return 0.1M; }
+            get { return 0.3M; }
         }
 
         string IPlugin.Description
@@ -47,24 +47,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return string.Empty;
             }
             var lines = new List<String>();
-            lines = subtitle.Replace(Environment.NewLine, "\n").Split('\n').ToList();
-            if (lines.Count < 1)
-            {
-                return string.Empty;
-            }
+            lines = subtitle.Replace(Environment.NewLine, "\n").Replace('\r', '\n').Split('\n').ToList();
             var sub = new Subtitle();
             var subRip = new SubRip();
             subRip.LoadSubtitle(sub, lines, subtitleFileName);
             if (sub.Paragraphs.Count < 1)
-            {
                 return string.Empty;
-            }
+
             using (var mainForm = new MainForm(sub, subtitleFileName, (this as IPlugin).Version.ToString()))
             {
                 if (mainForm.ShowDialog() == DialogResult.OK)
-                {
                     return mainForm.FixedSubtitle;
-                }
             }
             return string.Empty;
         }
