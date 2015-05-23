@@ -13,7 +13,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form
     {
-        internal string FixedSubtitle { get; private set; }
+        public string FixedSubtitle { get; private set; }
 
         private Subtitle _subtitle;
         private Word.Application _wordApp = new Word.Application();
@@ -31,12 +31,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private string _currentErrorText = string.Empty;
         private int _currentErrorStart = 0;
 
-        internal PluginForm(Subtitle subtitle, string name, string description)
+        public PluginForm(Subtitle subtitle, string name, string description)
         {
             InitializeComponent();
 
             this.Text = name;
-            labelDescription.Text = "Microsoft Word spell && grammer checker"; // description;
             _subtitle = subtitle;
             FillSubtitleListView();
             labelActionInfo.Text = string.Empty;
@@ -72,6 +71,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void FillSubtitleListView()
         {
+            listViewSubtitle.BeginUpdate();
             for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
             {
                 Paragraph p = _subtitle.Paragraphs[i];
@@ -80,6 +80,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             if (listViewSubtitle.Items.Count > 0)
                 listViewSubtitle.Items[0].Selected = true;
+            listViewSubtitle.EndUpdate();
         }
 
         private void DoStartSpellCheck()
@@ -173,7 +174,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     i++;
                     if (i >= min)
                     {
-                        if (Utilities.RemoveHtmlTags(p.Text).Trim().Length > 0)
+                        if (!string.IsNullOrWhiteSpace(Utilities.RemoveHtmlTags(p.Text, true)))
                             sb.AppendLine(p.Text);
                         else
                             i--;
@@ -181,7 +182,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     if (i > max)
                         break;
                 }
-                cleanText = Utilities.RemoveHtmlTags(sb.ToString().Trim());
+                cleanText = Utilities.RemoveHtmlTags(sb.ToString().Trim(), true);
                 Word.Range range;
                 range = _wordApp.ActiveDocument.Range();
                 range.Text = cleanText;
@@ -404,6 +405,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void PluginForm_Shown(object sender, EventArgs e)
         {
+            // text column
             listViewSubtitle.Columns[4].Width = -2;
             textBoxWord.Focus();
             labelActionInfo.Text = "Starting spell && grammer check...";

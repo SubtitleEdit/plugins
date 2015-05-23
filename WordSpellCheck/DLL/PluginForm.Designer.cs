@@ -96,9 +96,9 @@
             this.labelDescription.AutoSize = true;
             this.labelDescription.Location = new System.Drawing.Point(13, 13);
             this.labelDescription.Name = "labelDescription";
-            this.labelDescription.Size = new System.Drawing.Size(82, 13);
+            this.labelDescription.Size = new System.Drawing.Size(197, 13);
             this.labelDescription.TabIndex = 2;
-            this.labelDescription.Text = "labelDescription";
+            this.labelDescription.Text = "Microsoft Word spell && grammer checker";
             // 
             // listViewSubtitle
             // 

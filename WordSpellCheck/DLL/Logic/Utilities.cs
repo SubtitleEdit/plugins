@@ -31,7 +31,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static string RemoveHtmlTags(string s, bool alsoSsa = false)
         {
-            if (s == null || !s.Contains("<"))
+            if (s == null)
                 return s;
 
             if (alsoSsa)
@@ -51,7 +51,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     }
                 }
             }
-
+            if (!s.Contains('<'))
+                return s;
             s = Regex.Replace(s, "(?i)</?[ubi]>", string.Empty);
             s = RemoveParagraphTag(s);
             return RemoveHtmlFontTag(s);
