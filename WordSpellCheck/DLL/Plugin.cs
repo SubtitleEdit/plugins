@@ -20,7 +20,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         decimal IPlugin.Version
         {
-            get { return 1.1M; }
+            get { return 1.2M; }
         }
 
         string IPlugin.Description
@@ -41,7 +41,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
             subtitle = subtitle.Trim();
-            if (string.IsNullOrEmpty(subtitle))
+            if (string.IsNullOrWhiteSpace(subtitle))
             {
                 MessageBox.Show("No subtitle loaded", parentForm.Text,
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -49,8 +49,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             if (!this.IsOfficeInstalled())
             {
-                MessageBox.Show(@"Microsoft Office is not installed in this system, make sure you
-have Office installed in this system and try to re-run.", "Office not installed!!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(@"Microsoft Office (Word) is not installed in this system.", "Office is not installed!!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return string.Empty;
             }
 

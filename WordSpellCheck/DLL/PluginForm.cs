@@ -57,7 +57,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void AddParagraphToSubtitleListView(Paragraph p)
         {
-            var item = new ListViewItem(p.Number.ToString()) { Tag = p };
+            var item = new ListViewItem(p.Number.ToString(CultureInfo.InvariantCulture)) { Tag = p };
 
             var subItem = new ListViewItem.ListViewSubItem(item, p.StartTime.ToShortString());
             item.SubItems.Add(subItem);
@@ -90,7 +90,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             while (index < listViewSubtitle.Items.Count)
             {
-                Text = "Word spell check - line " + (index + 1).ToString() + " of " + listViewSubtitle.Items.Count.ToString();
+                Text = "Word spell check - line " + (index + 1).ToString(CultureInfo.InvariantCulture) + " of " + listViewSubtitle.Items.Count.ToString();
                 _currentParagraph = (listViewSubtitle.Items[index].Tag as Paragraph);
                 string text = _currentParagraph.Text;
                 Application.DoEvents();

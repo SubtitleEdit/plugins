@@ -1,25 +1,56 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     public static class Utilities
     {
+        #region Extension Methods
+        public static bool StartsWith(this string s, char c)
+        {
+            return s.Length > 0 && s[0] == c;
+        }
+
+        public static bool EndsWith(this string s, char c)
+        {
+            return s.Length > 0 && s[s.Length - 1] == c;
+        }
+
+        public static bool Contains(this string source, char value)
+        {
+            return source.IndexOf(value) >= 0;
+        }
+        #endregion
+
         public static bool IsInteger(string s)
         {
             int i;
-            if (int.TryParse(s, out i))
-                return true;
-            return false;
+            return int.TryParse(s, out i);
         }
 
-        public static string RemoveHtmlTags(string s)
+        public static string RemoveHtmlTags(string s, bool alsoSsa = false)
         {
-            if (s == null)
-                return null;
-
-            if (!s.Contains("<"))
+            if (s == null || !s.Contains("<"))
                 return s;
+
+            if (alsoSsa)
+            {
+                var idx = s.IndexOf('{');
+                if (idx >= 0)
+                {
+                    var endIdx = s.IndexOf('}', idx + 1);
+                    while (endIdx > idx)
+                    {
+                        s = s.Remove(idx, endIdx - idx + 1);
+                        idx = s.IndexOf('{', idx);
+                        if (idx >= 0)
+                            endIdx = s.IndexOf('}', idx + 1);
+                        else
+                            break;
+                    }
+                }
+            }
 
             s = Regex.Replace(s, "(?i)</?[ubi]>", string.Empty);
             s = RemoveParagraphTag(s);
@@ -70,26 +101,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return new Regex(@"\b" + word, RegexOptions.Compiled);
         }
 
-        private static int GetCount(string text,
-                    string word1,
-                    string word2,
-                    string word3,
-                    string word4,
-                    string word5,
-                    string word6)
+        private static int GetCount(string text, params string[] words)
         {
-            var regEx1 = new Regex("\\b" + word1 + "\\b");
-            var regEx2 = new Regex("\\b" + word2 + "\\b");
-            var regEx3 = new Regex("\\b" + word3 + "\\b");
-            var regEx4 = new Regex("\\b" + word4 + "\\b");
-            var regEx5 = new Regex("\\b" + word5 + "\\b");
-            var regEx6 = new Regex("\\b" + word6 + "\\b");
-            int count = regEx1.Matches(text).Count;
-            count += regEx2.Matches(text).Count;
-            count += regEx3.Matches(text).Count;
-            count += regEx4.Matches(text).Count;
-            count += regEx5.Matches(text).Count;
-            count += regEx6.Matches(text).Count;
+            int count = 0;
+            for (int i = 0; i < words.Length; i++)
+            {
+                var regEx = new Regex("\\b" + words[i] + "\\b", (RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture));
+                count += regEx.Matches(text).Count;
+            }
             return count;
         }
 
@@ -265,37 +284,55 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return "en";
         }
 
-        private static int GetCountContains(string text,
-                          string word1,
-                          string word2,
-                          string word3,
-                          string word4,
-                          string word5,
-                          string word6)
+        private static int GetCountContains(string text, params string[] words)
         {
-            var regEx1 = new Regex(word1);
-            var regEx2 = new Regex(word2);
-            var regEx3 = new Regex(word3);
-            var regEx4 = new Regex(word4);
-            var regEx5 = new Regex(word5);
-            var regEx6 = new Regex(word6);
-            int count = regEx1.Matches(text).Count;
-            count += regEx2.Matches(text).Count;
-            count += regEx3.Matches(text).Count;
-            count += regEx4.Matches(text).Count;
-            count += regEx5.Matches(text).Count;
-            count += regEx6.Matches(text).Count;
+            int count = 0;
+            for (int i = 0; i < words.Length; i++)
+            {
+                //var regEx = new Regex(words[i]);
+                count += CountTagInText(text, words[i]);
+                //count += regEx.Matches(text).Count;
+            }
             return count;
         }
 
         public static string AutoDetectGoogleLanguage(string text)
         {
-            string languageId = AutoDetectGoogleLanguage(text, 10);
-
+            var languageId = AutoDetectGoogleLanguage(text, 10);
             if (string.IsNullOrEmpty(languageId))
                 return "en";
-
             return languageId;
+        }
+
+        public static int CountTagInText(string text, string tag)
+        {
+            int count = 0;
+            int index = text.IndexOf(tag, StringComparison.Ordinal);
+            while (index >= 0)
+            {
+                count++;
+                index = index + tag.Length;
+                if (index >= text.Length)
+                    return count;
+                index = text.IndexOf(tag, index, StringComparison.Ordinal);
+            }
+            return count;
+        }
+
+        public static unsafe int CountTagInText(string text, char tag)
+        {
+            int count = 0;
+            fixed (char* ptrT = text)
+            {
+                char* ptr = ptrT;
+                while (*ptr != '\0')
+                {
+                    if (*ptr == tag)
+                        count++;
+                    ptr++;
+                }
+            }
+            return count;
         }
     }
 }
