@@ -21,6 +21,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             return source.IndexOf(value) >= 0;
         }
+
+        public static string[] SplitToLines(this string source)
+        {
+            return source.Replace(Environment.NewLine, "\n").Replace('\r', '\n').Split('\n');
+        }
         #endregion
 
         public static bool IsInteger(string s)
@@ -334,6 +339,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
             }
             return count;
+        }
+
+        public static int GetNumberOfLines(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return 0;
+            var totalLine = 1;
+            var idx = text.IndexOf(Environment.NewLine, StringComparison.Ordinal);
+            if (idx >= 0)
+            {
+                totalLine++;
+                idx = text.IndexOf(Environment.NewLine, idx + 2, StringComparison.Ordinal);
+            }
+            return totalLine;
         }
     }
 }

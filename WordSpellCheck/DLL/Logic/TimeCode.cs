@@ -52,6 +52,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _time = new TimeSpan(0, hour, minute, seconds, milliseconds);
         }
 
+        public TimeCode(double seconds)
+        {
+            _time = TimeSpan.FromMilliseconds(seconds);
+        }
+
         public int Hours
         {
             get { return _time.Hours; }

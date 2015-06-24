@@ -16,9 +16,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             get
             {
-                var timeCode = new TimeCode(EndTime.TimeSpan);
-                timeCode.AddTime(-StartTime.TotalMilliseconds);
-                return timeCode;
+                return new TimeCode(EndTime.TotalMilliseconds - StartTime.TotalMilliseconds);
             }
         }
 
@@ -78,27 +76,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Text = text;
         }
 
-        public void Adjust(double factor, double adjust)
-        {
-            double seconds = StartTime.TimeSpan.TotalSeconds * factor + adjust;
-            StartTime.TimeSpan = TimeSpan.FromSeconds(seconds);
-
-            seconds = EndTime.TimeSpan.TotalSeconds * factor + adjust;
-            EndTime.TimeSpan = TimeSpan.FromSeconds(seconds);
-        }
-
-        public void CalculateFrameNumbersFromTimeCodes(double frameRate)
-        {
-            StartFrame = (int)Math.Round((StartTime.TotalMilliseconds / 1000.0 * frameRate));
-            EndFrame = (int)Math.Round((EndTime.TotalMilliseconds / 1000.0 * frameRate));
-        }
-
-        public void CalculateTimeCodesFromFrameNumbers(double frameRate)
-        {
-            StartTime.TotalMilliseconds = StartFrame * (1000.0 / frameRate);
-            EndTime.TotalMilliseconds = EndFrame * (1000.0 / frameRate);
-        }
-
         public override string ToString()
         {
             return StartTime + " --> " + EndTime + " " + Text;
@@ -108,9 +85,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             get
             {
-                if (string.IsNullOrEmpty(Text))
-                    return 0;
-                return Text.Length - Text.Replace(Environment.NewLine, string.Empty).Length;
+                return Utilities.GetNumberOfLines(Text);
             }
         }
 
@@ -120,7 +95,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 if (string.IsNullOrEmpty(Text))
                     return 0;
-                int wordCount = Utilities.RemoveHtmlTags(Text).Split((" ,.!?;:()[]" + Environment.NewLine).ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Length;
+                int wordCount = Utilities.RemoveHtmlTags(Text, true).Split(new[] { ' ', ',', '.', '!', '?', ';', ':', '(', ')', '[', ']', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length;
                 return (60.0 / Duration.TotalSeconds) * wordCount;
             }
         }

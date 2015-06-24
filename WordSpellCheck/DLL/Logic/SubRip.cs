@@ -75,7 +75,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 _lineNumber++;
                 string line = lines[i].TrimEnd();
-                line = line.Trim(Convert.ToChar(127)); // 127=delete acscii
+                line = line.Trim('\u007F'); // 127=delete acscii
 
                 string next = string.Empty;
                 if (i + 1 < lines.Count)
@@ -99,11 +99,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (_paragraph.Text.Trim().Length > 0)
                 subtitle.Paragraphs.Add(_paragraph);
 
-            foreach (Paragraph p in subtitle.Paragraphs)
+            foreach (var p in subtitle.Paragraphs)
                 p.Text = p.Text.Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
 
             if (doRenum)
-                subtitle.Renumber(1);
+                subtitle.Renumber();
 
             Errors = _errors.ToString();
         }
