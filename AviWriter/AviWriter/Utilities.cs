@@ -52,7 +52,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     idx = s.IndexOf('{', idx);
                 }
             }
-            s = System.Text.RegularExpressions.Regex.Replace(s, "</?[bip]>", string.Empty, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            s = System.Text.RegularExpressions.Regex.Replace(s, "</?[bipu]>", string.Empty, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             s = RemoveParagraphTag(s);
             return RemoveHtmlFontTag(s);
         }
