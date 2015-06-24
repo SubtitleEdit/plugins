@@ -13,12 +13,12 @@ namespace AviWriterTester
 
         private void buttonRun_Click(object sender, EventArgs e)
         {
-            var filePath = @"C:\Users\ivandro\Subtitles\legendas_tv_20140610074215\Devils.Knot.2013.1080p.BluRay.x264.YIFY.srt";
-            if (File.Exists(filePath))
+            var path = textBoxPath.Text.Trim('\"').Trim();
+            if (File.Exists(path))
             {
-                var content = File.ReadAllText(filePath);
+                var content = File.ReadAllText(path);
                 IPlugin plugins = new Nikse.SubtitleEdit.PluginLogic.AviWriter();
-                var output = plugins.DoAction(null, content, Configuration.CurrentFrameRate, Configuration.ListViewLineSeparatorString, filePath, null, content);
+                var output = plugins.DoAction(null, content, Configuration.CurrentFrameRate, Configuration.ListViewLineSeparatorString, path, null, content);
                 if (content != output)
                 {
                     MessageBox.Show("Something changed");

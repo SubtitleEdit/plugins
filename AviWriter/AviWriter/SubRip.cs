@@ -7,9 +7,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal class SubRip : SubtitleFormat
     {
-        internal string Errors { get; private set; }
+        public string Errors { get; private set; }
         private StringBuilder _errors;
-        private int _lineNumber;
 
         private enum ExpectingLine
         {
@@ -23,42 +22,43 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private static Regex _regexTimeCodes = new Regex(@"^-?\d+:-?\d+:-?\d+[:,]-?\d+\s*-->\s*-?\d+:-?\d+:-?\d+[:,]-?\d+$", RegexOptions.Compiled);
         private static Regex _regexTimeCodes2 = new Regex(@"^\d+:\d+:\d+,\d+\s*-->\s*\d+:\d+:\d+,\d+$", RegexOptions.Compiled);
 
-        internal override string Extension
+        public override string Extension
         {
             get { return ".srt"; }
         }
 
-        internal override string Name
+        public override string Name
         {
             get { return "SubRip"; }
         }
 
-        internal override bool IsTimeBased
+        public override bool IsTimeBased
         {
             get { return true; }
         }
 
-        internal override bool IsMine(List<string> lines, string fileName)
+        public override bool IsMine(List<string> lines, string fileName)
         {
             var subtitle = new Subtitle();
             LoadSubtitle(subtitle, lines, fileName);
             return subtitle.Paragraphs.Count > _errorCount;
         }
 
-        internal override string ToText(Subtitle subtitle, string title)
+        public override string ToText(Subtitle subtitle, string title)
         {
-            const string paragraphWriteFormat = "{0}\r\n{1} --> {2}\r\n{3}\r\n\r\n";
+            const string writeFormat = "{0}\r\n{1} --> {2}\r\n{3}\r\n\r\n";
 
             var sb = new StringBuilder();
-            foreach (Paragraph p in subtitle.Paragraphs)
+            foreach (var p in subtitle.Paragraphs)
             {
-                string s = p.Text.Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine).Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
-                sb.Append(string.Format(paragraphWriteFormat, p.Number, p.StartTime, p.EndTime, s));
+                var s = p.Text.Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine)
+                    .Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
+                sb.AppendFormat(writeFormat, p.Number, p.StartTime, p.EndTime, p.Text);
             }
-            return sb.ToString().Trim();
+            return sb.ToString();
         }
 
-        internal override void LoadSubtitle(Subtitle subtitle, List<string> lines, string fileName)
+        public override void LoadSubtitle(Subtitle subtitle, List<string> lines, string fileName)
         {
             bool doRenum = false;
             _errors = new StringBuilder();
@@ -73,7 +73,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 string line = lines[i].TrimEnd();
                 line = line.Trim('\u007F'); // 127=delete acscii
 
-                string next = string.Empty;
+                var next = string.Empty;
                 if (i + 1 < lines.Count)
                     next = lines[i + 1];
 
@@ -233,7 +233,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return false;
         }
 
-        internal override List<string> AlternateExtensions
+        public override List<string> AlternateExtensions
         {
             get
             {

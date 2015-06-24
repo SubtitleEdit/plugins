@@ -21,7 +21,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         decimal IPlugin.Version
         {
-            get { return 0.4M; }
+            get { return 0.5M; }
         }
 
         string IPlugin.Description
@@ -41,7 +41,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public string GetTemporaryDirectory()
         {
-            string tempDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            var tempDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             Directory.CreateDirectory(tempDirectory);
             return tempDirectory;
         }
@@ -57,38 +57,54 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             // load subtitle text into object
             var list = new List<string>();
-            foreach (string line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
+            foreach (var line in subtitle.SplitToLines())
                 list.Add(line);
-            Subtitle sub = new Subtitle();
-            SubRip srt = new SubRip();
+            var sub = new Subtitle();
+            var srt = new SubRip();
             srt.LoadSubtitle(sub, list, subtitleFileName);
 
             // write subtitle to file
-            string tempDir = GetTemporaryDirectory();
+            var tempDir = GetTemporaryDirectory();
             File.WriteAllText(Path.Combine(tempDir, "Subtitle.srt"), srt.ToText(sub, "temp"));
 
             // write program to temp dir
-            System.Reflection.Assembly asm = System.Reflection.Assembly.GetExecutingAssembly();
+            var asm = System.Reflection.Assembly.GetExecutingAssembly();
             foreach (var r in asm.GetManifestResourceNames())
             {
-                if (r.EndsWith(".gz"))
+                if (r.EndsWith(".gz", StringComparison.Ordinal))
                     WriteAndUnzipRes(asm, r, tempDir);
             }
 
             // Start exe file
-            var info = new ProcessStartInfo();
-            info.FileName = Path.Combine(tempDir, "AviFfmpegWriter.exe");
-            info.WorkingDirectory = tempDir;
-            var p = Process.Start(info);
+            var procInfo = new ProcessStartInfo();
+            procInfo.FileName = Path.Combine(tempDir, "AviFfmpegWriter.exe");
+            procInfo.WorkingDirectory = tempDir;
+            var p = Process.Start(procInfo);
             p.WaitForExit();
 
             // Clean up
+            try
+            {
+                Directory.Delete(tempDir, true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            /*
             foreach (var r in asm.GetManifestResourceNames())
             {
-                if (r.EndsWith(".gz"))
+                if (r.EndsWith(".gz", StringComparison.Ordinal))
                 {
-                    try { File.Delete(GetFileNameFromRessourceName(r)); }
-                    catch { }
+                    try
+                    {
+                        File.Delete(GetFileNameFromRessourceName(r));
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                        Process.Start(procInfo.WorkingDirectory);
+                    }
                 }
             }
             try
@@ -96,33 +112,34 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 File.Delete(Path.Combine(tempDir, "Subtitle.srt"));
                 Directory.Delete(tempDir);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                Process.Start(procInfo.WorkingDirectory);
+            }*/
             return string.Empty;
         }
 
         private string GetFileNameFromRessourceName(string resourceName)
         {
-            string fname = resourceName.Substring(resourceName.IndexOf(".DLL.") + 5);
-            fname = fname.Substring(0, fname.Length - 3);
-            return fname;
+            // AviWriter.DLL.AForge.dll.gz
+            var name = resourceName.Substring(resourceName.IndexOf(".DLL.", StringComparison.Ordinal) + 5);
+            return name.Substring(0, name.Length - 3);
         }
 
         private void WriteAndUnzipRes(System.Reflection.Assembly asm, string resourceName, string tempDir)
         {
-            Stream strm = asm.GetManifestResourceStream(resourceName);
-            if (strm != null)
+            using (Stream strm = asm.GetManifestResourceStream(resourceName))
+            using (var rdr = new BinaryReader(strm))
+            using (var fout = new FileStream(Path.Combine(tempDir, GetFileNameFromRessourceName(resourceName)), FileMode.Create, FileAccess.Write))
+            using (var zip = new GZipStream(rdr.BaseStream, CompressionMode.Decompress))
             {
-                using (var rdr = new BinaryReader(strm))
-                using (var fout = new FileStream(Path.Combine(tempDir, GetFileNameFromRessourceName(resourceName)), FileMode.Create, FileAccess.Write))
-                using (var zip = new GZipStream(rdr.BaseStream, CompressionMode.Decompress))
+                byte[] data = new byte[4069];
+                int bytesRead = 1;
+                while (bytesRead > 0)
                 {
-                    byte[] data = new byte[4069];
-                    int bytesRead = 1;
-                    while (bytesRead > 0)
-                    {
-                        bytesRead = zip.Read(data, 0, data.Length);
-                        fout.Write(data, 0, bytesRead);
-                    }
+                    bytesRead = zip.Read(data, 0, data.Length);
+                    fout.Write(data, 0, bytesRead);
                 }
             }
         }

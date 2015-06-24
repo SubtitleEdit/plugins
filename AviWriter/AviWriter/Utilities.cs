@@ -7,6 +7,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public static class Utilities
     {
+        #region Extension Methods
+        public static string[] SplitToLines(this string source)
+        {
+            return source.Replace(Environment.NewLine, "\n").Replace('\r', '\n').Split('\n');
+        }
+        #endregion
+
+        #region Static Methods
         public static int GetNumberOfLines(string s)
         {
             if (s.Length < 1)
@@ -29,7 +37,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static string RemoveHtmlTags(string s, bool alsoSSa = false)
         {
-            if (s == null || !s.Contains("<"))
+            if (s == null || s.Length < 3)
                 return s;
 
             if (alsoSSa)
@@ -44,19 +52,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     idx = s.IndexOf('{', idx);
                 }
             }
-
-            s = s.Replace("<i>", string.Empty);
-            s = s.Replace("</i>", string.Empty);
-            s = s.Replace("<b>", string.Empty);
-            s = s.Replace("</b>", string.Empty);
-            s = s.Replace("<u>", string.Empty);
-            s = s.Replace("</u>", string.Empty);
-            s = s.Replace("<I>", string.Empty);
-            s = s.Replace("</I>", string.Empty);
-            s = s.Replace("<B>", string.Empty);
-            s = s.Replace("</B>", string.Empty);
-            s = s.Replace("<U>", string.Empty);
-            s = s.Replace("</U>", string.Empty);
+            s = System.Text.RegularExpressions.Regex.Replace(s, "</?[bip]>", string.Empty, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             s = RemoveParagraphTag(s);
             return RemoveHtmlFontTag(s);
         }
@@ -124,6 +120,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             sb.Append("|All files|*.*");
             return sb.ToString();
         }
+        #endregion
 
     }
 }
