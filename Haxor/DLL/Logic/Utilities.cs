@@ -32,7 +32,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (s.IndexOf('<') < 0)
                 return s;
             s = Regex.Replace(s, "(?i)</?[ibu]>", string.Empty);
-            s = RemoveParagraphTag(s);
             while (s.Contains("  ")) s = s.Replace("  ", " ");
             return RemoveHtmlFontTag(s).Trim();
         }
@@ -55,20 +54,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     break;
                 }
-            }
-            return s;
-        }
-
-        internal static string RemoveParagraphTag(string s)
-        {
-            s = Regex.Replace(s, "(?i)</?p>", string.Empty);
-            var idx = s.IndexOf("<p", StringComparison.OrdinalIgnoreCase);
-            while (idx >= 0)
-            {
-                var endIdx = s.IndexOf('>', idx + 2);
-                if (endIdx < idx) break;
-                s = s.Remove(idx, endIdx - idx + 1);
-                idx = s.IndexOf("<p", idx, StringComparison.OrdinalIgnoreCase);
             }
             return s;
         }

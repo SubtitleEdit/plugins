@@ -59,17 +59,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        internal void Renumber(int startNumber)
+        internal void Renumber(int startNumber = 1)
         {
-            int i;
-            if (startNumber < 0)
-                i = 0;
-            else
-                i = startNumber;
+            if (startNumber < 1)
+                startNumber = 1;
             foreach (Paragraph p in _paragraphs)
             {
-                p.Number = i;
-                i++;
+                p.Number = startNumber++;
             }
         }
     }

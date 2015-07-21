@@ -14,12 +14,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text
         {
-            get { return "Translate to haxor"; }
+            get { return "Translate to Haxor"; }
         }
 
         decimal IPlugin.Version
         {
-            get { return 1.3M; }
+            get { return 1.4M; }
         }
 
         string IPlugin.Description
@@ -57,7 +57,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var sub = new Subtitle();
             var srt = new SubRip();
             srt.LoadSubtitle(sub, list, subtitleFileName);
-            using (var form = new MainForm(sub, (this as IPlugin).Name, (this as IPlugin).Description, parentForm))
+            using (var form = new MainForm(sub, (this as IPlugin).Text, (this as IPlugin).Description, parentForm))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
                     return form.FixedSubtitle;

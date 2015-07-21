@@ -1,6 +1,7 @@
 ﻿using Nikse.SubtitleEdit.PluginLogic;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Windows.Forms;
 
@@ -13,7 +14,6 @@ namespace SubtitleEdit
         private Form _mainForm;
         private bool _allowFix = false;
         private string description;
-        private string name;
         private const string _from = "abcdefghijlkmnopqrstuvwxyz";
         private string _to;
 
@@ -29,13 +29,20 @@ namespace SubtitleEdit
                 else if (e.KeyCode == Keys.Enter)
                     this.OnClick(EventArgs.Empty);
             };
+
+            listView1.Columns[2].Width = -2;
+
+            var link = new LinkLabel.Link();
+            link.LinkData = "https://github.com/SubtitleEdit/plugins/issues/new";
+            linkLabel1.Links.Add(link);
+            linkLabel1.Click += delegate { Process.Start(link.LinkData as string); };
         }
 
-        public MainForm(Subtitle sub, string name, string description, Form parentForm)
+        public MainForm(Subtitle sub, string title, string description, Form parentForm)
             : this()
         {
+            this.Text = title;
             this._subtitle = sub;
-            this.name = name;
             this.description = description;
             this._mainForm = parentForm;
             _to = textBoxTo.Text;
@@ -47,8 +54,7 @@ namespace SubtitleEdit
             if (_subtitle == null)
                 return;
             this.listView1.BeginUpdate();
-            if (this._dicChanged == null)
-                this._dicChanged = new Dictionary<int, string>();
+            _dicChanged = new Dictionary<int, string>();
             foreach (Paragraph p in _subtitle.Paragraphs)
             {
                 if (_allowFix && _dicChanged.ContainsKey(p.Number))
@@ -90,12 +96,9 @@ namespace SubtitleEdit
 
         private void AddToListView(Paragraph p, string before, string after)
         {
-            var item = new ListViewItem(p.Number.ToString());
-            var subItem = new ListViewItem.ListViewSubItem(item, before);
-            item.SubItems.Add(subItem);
-            subItem = new ListViewItem.ListViewSubItem(item, after);
-            item.SubItems.Add(subItem);
-            item.Tag = p;
+            var item = new ListViewItem(p.Number.ToString()) { Tag = p };
+            item.SubItems.Add(before);
+            item.SubItems.Add(after);
             listView1.Items.Add(item);
         }
 
@@ -140,6 +143,13 @@ namespace SubtitleEdit
             GeneratePreview();
             this.FixedSubtitle = _subtitle.ToText(new SubRip());
             DialogResult = DialogResult.OK;
+        }
+
+        private void listView1_Resize(object sender, EventArgs e)
+        {
+            var size = (this.listView1.Width - (listView1.Columns[0].Width)) >> 2;
+            listView1.Columns[1].Width = size;
+            listView1.Columns[2].Width = size;
         }
     }
 }
