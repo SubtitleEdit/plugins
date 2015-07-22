@@ -8,7 +8,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
     internal class Subtitle
     {
         private List<Paragraph> _paragraphs;
-        private SubtitleFormat _format;
         private bool _wasLoadedWithFrameNumbers;
 
         public string Header { get; set; }
@@ -18,7 +17,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public const int MaximumHistoryItems = 100;
 
-        public SubtitleFormat OriginalFormat { get { return _format; } }
         public List<Paragraph> Paragraphs { get { return _paragraphs; } }
 
         public Subtitle()
@@ -56,17 +54,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public bool WasLoadedWithFrameNumbers { get { return _wasLoadedWithFrameNumbers; } set { _wasLoadedWithFrameNumbers = value; } }
 
-        public void Renumber(int startNumber)
+        public void Renumber(int startNumber = 1)
         {
-            int i;
-            if (startNumber < 0)
-                i = 0;
-            else
-                i = startNumber;
             foreach (Paragraph p in _paragraphs)
             {
-                p.Number = i;
-                i++;
+                p.Number = startNumber++;
             }
         }
 
@@ -118,15 +110,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public void RemoveLine(int lineNumber)
         {
-            if (_paragraphs == null)
+            if (_paragraphs == null || lineNumber < 0)
                 return;
-
-            int startNumber = _paragraphs[0].Number;
-            if (lineNumber >= 0)
-            {
-                _paragraphs.Remove(_paragraphs.Single(p => p.Number == lineNumber));
-            }
-            Renumber(startNumber);
+            _paragraphs.Remove(_paragraphs.Single(p => p.Number == lineNumber));
+            Renumber();
         }
     }
 }

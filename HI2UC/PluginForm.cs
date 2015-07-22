@@ -19,7 +19,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private int _totalChanged;
         private readonly Form _parentForm;
         private readonly Subtitle _subtitle;
-        private bool _onFirstShow = true;
 
         public PluginForm(Form parentForm, Subtitle subtitle, string name, string description)
         {
@@ -27,8 +26,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this._parentForm = parentForm;
             this._subtitle = subtitle;
             label1.Text = "Description: " + description;
-            _onFirstShow = false;
-
             /*
             this.KeyDown += (s, e) =>
             {

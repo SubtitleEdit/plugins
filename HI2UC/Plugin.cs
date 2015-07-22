@@ -41,6 +41,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
             subtitle = subtitle.Trim();
+
+            // Make sure subtitle isn't null or empty
             if (string.IsNullOrEmpty(subtitle))
             {
                 MessageBox.Show("No subtitle loaded", parentForm.Text,
@@ -48,6 +50,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return string.Empty;
             }
 
+            // Check if subtitle contains Hearing Impaired notations
             if (subtitle.IndexOf('(') < 0 && subtitle.IndexOf(']') < 0)
             {
                 var result = MessageBox.Show("Subtitle doesn't contians Hearing Impaired anotations!" + Environment.NewLine +
@@ -57,15 +60,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     return string.Empty;
             }
 
+            // Use custom separator for list view new lines
             if (!string.IsNullOrEmpty(listViewLineSeparatorString))
                 Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
 
+            // Get subtitle raw lines
             var list = new List<string>();
             foreach (string line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
                 list.Add(line);
 
             var sub = new Subtitle();
             var srt = new SubRip();
+
+            // Load raws subtitle lines into object
             srt.LoadSubtitle(sub, list, subtitleFileName);
             using (var form = new PluginForm(parentForm, sub, (this as IPlugin).Name, (this as IPlugin).Description))
             {

@@ -65,14 +65,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _expecting = ExpectingLine.Number;
             _errorCount = 0;
 
-            subtitle.Paragraphs.Clear();
             for (int i = 0; i < lines.Count; i++)
             {
                 _lineNumber++;
-                string line = lines[i].TrimEnd();
-                line = line.Trim(Convert.ToChar(127)); // 127=delete acscii
+                var line = lines[i].TrimEnd();
+                line = line.Trim('\u007F'); // Strip DEL ASCII
 
-                string next = string.Empty;
+                var next = string.Empty;
                 if (i + 1 < lines.Count)
                     next = lines[i + 1];
 
@@ -101,7 +100,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             if (_errorCount < 100)
                 if (doRenum)
-                    subtitle.Renumber(1);
+                    subtitle.Renumber();
 
             Errors = _errorCount.ToString();
         }
