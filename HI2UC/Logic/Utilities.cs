@@ -5,9 +5,9 @@ using System.Text.RegularExpressions;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    public static class Utilities
+    internal static class Utilities
     {
-        internal static int NumberOfLines(string text)
+        public static int NumberOfLines(string text)
         {
             var ln = 0;
             var idx = -1;
@@ -19,7 +19,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return ln;
         }
 
-        internal static string AssemblyVersion
+        public static string AssemblyVersion
         {
             get
             {
@@ -63,18 +63,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return text;
         }
 
-        internal static string RemoveBrackets(string inputString)
+        public static string RemoveBrackets(string inputString)
         {
             return Regex.Replace(inputString, @"^[\[\(]|[\]\)]$", string.Empty).Trim();
         }
 
-        internal static string RemoveParagraphTag(string s)
+        public static string RemoveParagraphTag(string s)
         {
             s = Regex.Replace(s, "(?i)</?p>", string.Empty);
             return RemoveTag(s, "<p");
         }
 
-        internal static string TryFixBrokenBrackets(string text, char bracketType, int nextIdx, Subtitle sub)
+        public static string TryFixBrokenBrackets(string text, char bracketType, int nextIdx, Subtitle sub)
         {
             var before = text;
             var idx = -1;

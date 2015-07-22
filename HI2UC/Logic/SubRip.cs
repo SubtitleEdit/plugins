@@ -24,7 +24,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Text
         }
 
-        internal override List<string> AlternateExtensions
+        public override List<string> AlternateExtensions
         {
             get
             {
@@ -32,31 +32,31 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        internal string Errors { get; private set; }
+        public string Errors { get; private set; }
 
-        internal override string Extension
+        public override string Extension
         {
             get { return ".srt"; }
         }
 
-        internal override bool IsTimeBased
+        public override bool IsTimeBased
         {
             get { return true; }
         }
 
-        internal override string Name
+        public override string Name
         {
             get { return "SubRip"; }
         }
 
-        internal override bool IsMine(List<string> lines, string fileName)
+        public override bool IsMine(List<string> lines, string fileName)
         {
             var subtitle = new Subtitle();
             LoadSubtitle(subtitle, lines, fileName);
             return subtitle.Paragraphs.Count > _errorCount;
         }
 
-        internal override void LoadSubtitle(Subtitle subtitle, List<string> lines, string fileName)
+        public override void LoadSubtitle(Subtitle subtitle, List<string> lines, string fileName)
         {
             bool doRenum = false;
             _lineNumber = 0;
@@ -106,7 +106,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Errors = _errorCount.ToString();
         }
 
-        internal override string ToText(Subtitle subtitle, string title)
+        public override string ToText(Subtitle subtitle, string title)
         {
             const string paragraphWriteFormat = "{0}\r\n{1} --> {2}\r\n{3}\r\n\r\n";
             var sb = new StringBuilder();

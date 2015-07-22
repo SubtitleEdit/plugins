@@ -11,17 +11,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private SubtitleFormat _format;
         private bool _wasLoadedWithFrameNumbers;
 
-        internal string Header { get; set; }
-        internal string Footer { get; set; }
-        internal string FileName { get; set; }
-        internal bool IsHearingImpaired { get; private set; }
+        public string Header { get; set; }
+        public string Footer { get; set; }
+        public string FileName { get; set; }
+        public bool IsHearingImpaired { get; private set; }
 
-        internal const int MaximumHistoryItems = 100;
+        public const int MaximumHistoryItems = 100;
 
-        internal SubtitleFormat OriginalFormat { get { return _format; } }
-        internal List<Paragraph> Paragraphs { get { return _paragraphs; } }
+        public SubtitleFormat OriginalFormat { get { return _format; } }
+        public List<Paragraph> Paragraphs { get { return _paragraphs; } }
 
-        internal Subtitle()
+        public Subtitle()
         {
             _paragraphs = new List<Paragraph>();
             FileName = "Untitled";
@@ -32,7 +32,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         /// Copy constructor (only paragraphs)
         /// </summary>
         /// <param name="subtitle">Subtitle to copy</param>
-        internal Subtitle(Subtitle subtitle)
+        public Subtitle(Subtitle subtitle)
             : this()
         {
             foreach (Paragraph p in subtitle.Paragraphs)
@@ -42,21 +42,21 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _wasLoadedWithFrameNumbers = subtitle.WasLoadedWithFrameNumbers;
         }
 
-        internal Paragraph GetParagraphOrDefault(int index)
+        public Paragraph GetParagraphOrDefault(int index)
         {
             if (_paragraphs == null || _paragraphs.Count <= index || index < 0)
                 return null;
             return _paragraphs[index];
         }
 
-        internal string ToText(SubtitleFormat format)
+        public string ToText(SubtitleFormat format)
         {
             return format.ToText(this, Path.GetFileNameWithoutExtension(FileName));
         }
 
-        internal bool WasLoadedWithFrameNumbers { get { return _wasLoadedWithFrameNumbers; } set { _wasLoadedWithFrameNumbers = value; } }
+        public bool WasLoadedWithFrameNumbers { get { return _wasLoadedWithFrameNumbers; } set { _wasLoadedWithFrameNumbers = value; } }
 
-        internal void Renumber(int startNumber)
+        public void Renumber(int startNumber)
         {
             int i;
             if (startNumber < 0)
@@ -70,7 +70,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        internal int GetIndex(Paragraph p)
+        public int GetIndex(Paragraph p)
         {
             if (p == null)
                 return -1;
@@ -94,7 +94,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return -1;
         }
 
-        internal Paragraph GetFirstAlike(Paragraph p)
+        public Paragraph GetFirstAlike(Paragraph p)
         {
             foreach (Paragraph item in _paragraphs)
             {
@@ -106,7 +106,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return null;
         }
 
-        internal Paragraph GetFirstParagraphByLineNumber(int number)
+        public Paragraph GetFirstParagraphByLineNumber(int number)
         {
             foreach (Paragraph p in _paragraphs)
             {
@@ -116,7 +116,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return null;
         }
 
-        internal void RemoveLine(int lineNumber)
+        public void RemoveLine(int lineNumber)
         {
             if (_paragraphs == null)
                 return;
