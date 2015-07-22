@@ -7,14 +7,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal class SubRip : SubtitleFormat
     {
-        private static Regex _regexTimeCodes = new Regex(@"^-?\d+:-?\d+:-?\d+[:,]-?\d+\s*-->\s*-?\d+:-?\d+:-?\d+[:,]-?\d+$", RegexOptions.Compiled);
-
-        private static Regex _regexTimeCodes2 = new Regex(@"^\d+:\d+:\d+,\d+\s*-->\s*\d+:\d+:\d+,\d+$", RegexOptions.Compiled);
-
+        private readonly static Regex _regexTimeCodes = new Regex(@"^-?\d+:-?\d+:-?\d+[:,]-?\d+\s*-->\s*-?\d+:-?\d+:-?\d+[:,]-?\d+$", RegexOptions.Compiled);
+        private readonly static Regex _regexTimeCodes2 = new Regex(@"^\d+:\d+:\d+,\d+\s*-->\s*\d+:\d+:\d+,\d+$", RegexOptions.Compiled);
         private ExpectingLine _expecting = ExpectingLine.Number;
-
         private int _lineNumber;
-
         private Paragraph _paragraph;
 
         private enum ExpectingLine
@@ -58,6 +54,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public override void LoadSubtitle(Subtitle subtitle, List<string> lines, string fileName)
         {
+            subtitle.SubFormat = this; // set format to subtip
             bool doRenum = false;
             _lineNumber = 0;
 

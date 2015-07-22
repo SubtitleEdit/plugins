@@ -7,11 +7,37 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal static class Utilities
     {
-
         #region ExtensionMethod
+
         public static string[] SplitToLines(this string s)
         {
             return s.Replace(Environment.NewLine, "\n").Replace('\r', '\n').Split('\n');
+        }
+
+        public static bool Contains(this string s, char c)
+        {
+            return s.Length > 0 && s.IndexOf(c) > 0;
+        }
+
+        public static bool ContainsAny(this string s, char[] chars)
+        {
+            if (s.Length == 0)
+                return false;
+            for (int i = 0; i < chars.Length; i++)
+            {
+                if (s.Contains(chars[i]))
+                    return true;
+            }
+            return false;
+        }
+
+        public static string FixExtraSpaces(this string s)
+        {
+            while (s.Contains("  "))
+                s = s.Replace("  ", " ");
+            s = s.Replace("\r\n ", Environment.NewLine);
+            s = s.Replace(" \r\n", Environment.NewLine);
+            return s;
         }
         #endregion
         public static int NumberOfLines(string text)
@@ -40,10 +66,23 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return int.TryParse(s, out i);
         }
 
-        public static string RemoveHtmlTags(string s)
+        public static string RemoveHtmlTags(string s, bool alsoSSA)
         {
             if (s == null || s.Length < 3 || !s.Contains(s))
                 return s;
+            if (alsoSSA)
+            {
+                const string ssaStart = "{\\";
+                var startIdx = s.IndexOf(ssaStart, StringComparison.Ordinal);
+                while (startIdx >= 0)
+                {
+                    var endIdx = s.IndexOf('}', startIdx + 2);
+                    if (endIdx < startIdx) // Invalid SSA
+                        break;
+                    s = s.Remove(startIdx, endIdx - startIdx + 1);
+                    startIdx = s.IndexOf(ssaStart);
+                }
+            }
             var idx = s.IndexOf('<');
             while (idx >= 0)
             {

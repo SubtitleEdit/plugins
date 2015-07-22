@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -25,6 +27,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private int _totalChanged;
         private readonly Form _parentForm;
         private readonly Subtitle _subtitle;
+
+        private readonly List<Paragraph> _listDeletedParagraphs = new List<Paragraph>();
+        private readonly char[] HIChars = { '(', '[' };
+        private readonly Regex _regexExtraSpaces = new Regex(@"(?<=[\(\[]) +| +(?=[\)\]])", RegexOptions.Compiled);
+        private readonly Regex _regexFirstChar = new Regex(@"\b\w", RegexOptions.Compiled);
+        private readonly StringBuilder SB = new StringBuilder();
 
         public PluginForm(Form parentForm, Subtitle subtitle, string name, string description)
         {
@@ -57,21 +65,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void btn_Run_Click(object sender, EventArgs e)
         {
-            Cursor.Current = Cursors.WaitCursor;
-            _allowFixes = true;
-            FindHearingImpairedText();
-            if (_deleteLine)
+            if (listViewFixes.Items.Count > 0)
             {
-                foreach (ListViewItem item in this.listViewFixes.Items)
-                {
-                    if (item.BackColor != Color.Red)
-                        continue;
-                    _subtitle.RemoveLine(((Paragraph)item.Tag).Number);
-                }
-            }
+                Cursor = Cursors.WaitCursor;
+                _allowFixes = true;
+                listViewFixes.Resize -= listViewFixes_Resize;
+                FindHearingImpairedText();
+                RemoveDeletedParagraphs();
 
-            FixedSubtitle = _subtitle.ToText(new SubRip());
-            //Cursor = Cursors.Default;
+                Cursor = Cursors.Default;
+            }
+            FixedSubtitle = _subtitle.ToText();
             DialogResult = DialogResult.OK;
         }
 
@@ -79,7 +83,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (_subtitle.Paragraphs.Count <= 0)
                 return;
-            listViewFixes.Items.Clear();
             FindHearingImpairedText();
         }
 
@@ -105,13 +108,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             else if (menuItem.Text == "Copy")
             {
-                string text = (listViewFixes.FocusedItem.Tag as Paragraph).ToString();
+                var text = (listViewFixes.FocusedItem.Tag as Paragraph).ToString();
                 Clipboard.SetText(text);
             }
             else
             {
                 if (listViewFixes.FocusedItem.BackColor != Color.Red)
                 {
+                    _listDeletedParagraphs.Add(listViewFixes.FocusedItem.Tag as Paragraph);
                     this.listViewFixes.FocusedItem.UseItemStyleForSubItems = true;
                     this.listViewFixes.FocusedItem.BackColor = Color.Red;
                     _deleteLine = true;
@@ -126,7 +130,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if ((int)_hiStyle != comboBox1.SelectedIndex)
             {
                 _hiStyle = (HIStyle)comboBox1.SelectedIndex;
-                listViewFixes.Items.Clear();
                 FindHearingImpairedText();
             }
         }
@@ -135,48 +138,45 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             _totalChanged = 0;
             listViewFixes.BeginUpdate();
+            if (!_allowFixes)
+                listViewFixes.Items.Clear();
             foreach (Paragraph p in _subtitle.Paragraphs)
             {
-                if (Regex.IsMatch(p.Text, @"[\[\(]|:\B", RegexOptions.Compiled))
+                var text = p.Text;
+                var oldText = p.Text;
+
+                // (Moods and feelings)
+                if (text.ContainsAny(HIChars))
                 {
-                    string oldText = p.Text;
-                    string text = p.Text;
+                    //Remove Extra Spaces inside brackets ( foobar ) to (foobar)
+                    if (checkBoxRemoveSpaces.Checked)
+                        text = _regexExtraSpaces.Replace(text, string.Empty);
+                    text = ChangeMoodsToUppercase(text, p);
+                }
 
-                    // (Moods and feelings)
-                    if (Regex.IsMatch(p.Text, @"[\(\[]", RegexOptions.Compiled))
+                // Narrator:
+                if (checkBoxNames.Checked && text.Contains(':'))
+                    text = NarratorToUpper(text);
+
+                if (text != oldText)
+                {
+                    if (AllowFix(p))
                     {
-                        //Remove Extra Spaces
-                        if (checkBoxRemoveSpaces.Checked)
-                            text = Regex.Replace(text, "(?<=[\\(\\[]) +| +(?=[\\)\\]])", String.Empty, RegexOptions.Compiled);
-                        text = ChangeMoodsToUppercase(text, p);
+                        p.Text = text;
                     }
-
-                    // Narrator:
-                    if (checkBoxNames.Checked && Regex.IsMatch(text, @":\B"))
-                        text = NarratorToUpper(text);
-
-                    if (text != oldText)
+                    else
                     {
-                        text = Regex.Replace(text, " +" + Environment.NewLine, Environment.NewLine);
-                        text = Regex.Replace(text, Environment.NewLine + " +", Environment.NewLine);
-
-                        if (AllowFix(p))
+                        if (!_allowFixes)
                         {
-                            p.Text = text;
+                            oldText = Utilities.RemoveHtmlTags(oldText, true);
+                            text = Utilities.RemoveHtmlTags(text, true);
+                            AddFixToListView(p, oldText, text);
+                            _totalChanged++;
                         }
-                        else
-                        {
-                            if (!_allowFixes)
-                            {
-                                oldText = Utilities.RemoveHtmlTags(oldText);
-                                text = Utilities.RemoveHtmlTags(text);
-                                AddFixToListView(p, oldText, text);
-                                _totalChanged++;
-                            }
-                        }
+                        // Reset
+                        _namesMatched = false;
+                        _moodsMatched = false;
                     }
-                    _namesMatched = false;
-                    _moodsMatched = false;
                 }
             }
 
@@ -184,8 +184,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 groupBox1.ForeColor = _totalChanged <= 0 ? Color.Red : Color.Green;
                 groupBox1.Text = string.Format("Total Found: {0}", _totalChanged);
-                this.listViewFixes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-                this.listViewFixes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+                /*this.listViewFixes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                this.listViewFixes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);*/
                 //Application.DoEvents();
             }
             listViewFixes.EndUpdate();
@@ -236,11 +236,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             listViewFixes.Items.Add(item);
         }
-
-        bool ignoreError = false;
         private string ChangeMoodsToUppercase(string text, Paragraph p)
         {
-            Action<Char, int> FindBrackets = delegate (char openBracket, int idx)
+            Action<char, int> FindBrackets = delegate (char openBracket, int idx)
             {
                 //char? closeBracket = null;
                 char closeBracket = '\0';
@@ -252,58 +250,29 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     case '[':
                         closeBracket = ']';
                         break;
-                    default:
-                        closeBracket = '}';
+                }
+
+                while (idx >= 0)
+                {
+                    int endIdx = text.IndexOf(closeBracket, idx + 1); // ] or )
+                    if (endIdx < idx + 1)
                         break;
-                }
 
-                int endIdx = text.IndexOf(closeBracket);
-                if (endIdx > -1 && endIdx > idx)
-                {
-                    while (idx > -1 && endIdx > idx + 1)
-                    {
-                        var moodText = text.Substring(idx, (endIdx - idx) + 1);
-                        moodText = StyleMoodsAndFeelings(moodText);
-                        if (_moodsMatched)
-                        {
-                            text = text.Remove(idx, (endIdx - idx) + 1).Insert(idx, moodText);
+                    var moodText = text.Substring(idx, endIdx - idx + 1);
+                    moodText = StyleMoodsAndFeelings(moodText);
 
-                        }
-                        idx = text.IndexOf(openBracket, endIdx);
-                        if (idx > -1)
-                            endIdx = text.IndexOf(closeBracket, idx + 1);
-                    }
-                }
-                else if (!ignoreError)
-                {
-                    var dialogResult = PrintErrorMessage(p);
-                    if (dialogResult == System.Windows.Forms.DialogResult.Ignore)
-                    {
-                        ignoreError = true;
-                    }
-                    else if (dialogResult == System.Windows.Forms.DialogResult.Abort)
-                    {
-                        this.DialogResult = System.Windows.Forms.DialogResult.Abort;
-                    }
+                    if (_moodsMatched)
+                        text = text.Remove(idx, endIdx - idx + 1).Insert(idx, moodText);
+
+                    idx = text.IndexOf(openBracket, endIdx + 1); // ( or [
                 }
             };
-
             text = text.Replace("()", string.Empty);
-            var bIdx = text.IndexOf('(');
-            if (bIdx > -1)
-                FindBrackets('(', bIdx);
-            bIdx = text.IndexOf('[');
-            if (bIdx > -1)
-                FindBrackets('[', bIdx);
-            bIdx = text.IndexOf('{');
-            if (bIdx > -1)
-                FindBrackets('{', bIdx);
-
-            while (text.IndexOf("  ", StringComparison.Ordinal) > -1)
-                text = text.Replace("  ", " ");
-            text = text.Replace(Environment.NewLine + " ", Environment.NewLine);
-            text = text.Replace(" " + Environment.NewLine, Environment.NewLine);
-            return text;
+            text = text.Replace("[]", string.Empty);
+            var bIdx = text.IndexOfAny(HIChars);
+            if (bIdx >= 0)
+                FindBrackets(text[bIdx], bIdx);
+            return text.FixExtraSpaces();
         }
 
         private DialogResult PrintErrorMessage(Paragraph p)
@@ -315,32 +284,28 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string StyleMoodsAndFeelings(string text)
         {
-            if (!Regex.IsMatch(text, @"[\(\[]"))
-                return text;
-
-            string before = text;
+            var before = text;
             switch (_hiStyle)
             {
                 case HIStyle.UpperLowerCase:
-                    var helper = new System.Text.StringBuilder();
+                    SB.Clear();
                     bool isUpperTime = true;
                     foreach (char myChar in text)
                     {
                         if (!char.IsLetter(myChar))
                         {
-                            helper.Append(myChar);
-                            continue;
+                            SB.Append(myChar);
                         }
                         else
                         {
-                            helper.Append(isUpperTime ? char.ToUpper(myChar) : char.ToLower(myChar));
+                            SB.Append(isUpperTime ? char.ToUpper(myChar) : char.ToLower(myChar));
                             isUpperTime = !isUpperTime;
                         }
                     }
-                    text = helper.ToString();
+                    text = SB.ToString();
                     break;
                 case HIStyle.FirstUppercase:
-                    text = Regex.Replace(text.ToLower(), @"\b\w", x => x.Value.ToUpper());
+                    text = _regexFirstChar.Replace(text, x => x.Value.ToUpper()); // foobar to Foobar
                     break;
                 case HIStyle.UpperCase:
                     text = text.ToUpper();
@@ -359,8 +324,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private string NarratorToUpper(string text)
         {
             string before = text;
-            var t = Utilities.RemoveHtmlTags(text);
-            int index = t.IndexOf(":");
+            var t = Utilities.RemoveHtmlTags(text, true);
+            var index = t.IndexOf(':');
 
             // like: "Ivandro Says:"
             if (index == t.Length - 1 || text.StartsWith("http", StringComparison.OrdinalIgnoreCase))
@@ -376,7 +341,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (pre.Contains("(") || pre.Contains("[") || pre.Contains("{") || s.StartsWith("http"))
                     return s;
 
-                if (Utilities.RemoveHtmlTags(pre).Trim().Length > 1)
+                if (Utilities.RemoveHtmlTags(pre, true).Trim().Length > 1)
                 {
                     // Do not change HTML tags to upper
                     string firstChr = Regex.Match(pre, "(?<!<)\\w", RegexOptions.Compiled).Value;
@@ -408,7 +373,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 var lines = text.Replace(Environment.NewLine, "\n").Split('\n');
                 for (int i = 0; i < lines.Length; i++)
                 {
-                    var noTagText = Utilities.RemoveHtmlTags(lines[i]).Trim();
+                    var noTagText = Utilities.RemoveHtmlTags(lines[i], true).Trim();
                     index = noTagText.IndexOf(":");
 
                     if ((index + 1 < noTagText.Length - 1) && char.IsDigit(noTagText[index + 1]))
@@ -466,24 +431,32 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonApply_Click(object sender, EventArgs e)
         {
+            if (listViewFixes.Items.Count == 0)
+                return;
             Cursor = Cursors.WaitCursor;
             _allowFixes = true;
-            FindHearingImpairedText();
-            if (_deleteLine)
-            {
-                foreach (ListViewItem item in this.listViewFixes.Items)
-                {
-                    if (item.BackColor != Color.Red)
-                        continue;
-                    _subtitle.RemoveLine(((Paragraph)item.Tag).Number);
-                }
-            }
+            listViewFixes.Resize -= listViewFixes_Resize;
 
-            this.listViewFixes.Items.Clear();
-            FixedSubtitle = _subtitle.ToText(new SubRip());
-            _allowFixes = !_allowFixes;
             FindHearingImpairedText();
+            RemoveDeletedParagraphs();
+
+            _allowFixes = false;
+            FindHearingImpairedText();
+            listViewFixes.Resize += listViewFixes_Resize;
             Cursor = Cursors.Default;
+        }
+
+        private void RemoveDeletedParagraphs()
+        {
+            if (_deleteLine && _listDeletedParagraphs.Count > 0)
+            {
+                for (int i = 0; i < _listDeletedParagraphs.Count; i++)
+                {
+                    var p = _listDeletedParagraphs[i];
+                    _subtitle.Paragraphs.Remove(p);
+                }
+                _listDeletedParagraphs.Clear();
+            }
         }
 
         private void checkBoxRemoveSpaces_CheckedChanged(object sender, EventArgs e)
@@ -492,7 +465,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return;
 
             _allowFixes = false;
-            listViewFixes.Items.Clear();
             FindHearingImpairedText();
         }
 
@@ -512,6 +484,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     return item.Checked;
             }
             return false;
+        }
+
+        private void listViewFixes_Resize(object sender, EventArgs e)
+        {
+            var newWidth = (listViewFixes.Width - (listViewFixes.Columns[0].Width + listViewFixes.Columns[1].Width + listViewFixes.Columns[2].Width)) / 2;
+            listViewFixes.Columns[3].Width = newWidth;
+            listViewFixes.Columns[4].Width = newWidth;
         }
     }
 }

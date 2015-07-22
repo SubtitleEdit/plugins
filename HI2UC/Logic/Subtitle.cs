@@ -9,10 +9,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         private List<Paragraph> _paragraphs;
         private bool _wasLoadedWithFrameNumbers;
-
         public string Header { get; set; }
         public string Footer { get; set; }
         public string FileName { get; set; }
+        public SubtitleFormat SubFormat { get; set; }
 
         public List<Paragraph> Paragraphs { get { return _paragraphs; } }
 
@@ -44,9 +44,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return _paragraphs[index];
         }
 
-        public string ToText(SubtitleFormat format)
+        public string ToText()
         {
-            return format.ToText(this, Path.GetFileNameWithoutExtension(FileName));
+            return SubFormat.ToText(this, Path.GetFileNameWithoutExtension(FileName));
         }
 
         public bool WasLoadedWithFrameNumbers { get { return _wasLoadedWithFrameNumbers; } set { _wasLoadedWithFrameNumbers = value; } }
