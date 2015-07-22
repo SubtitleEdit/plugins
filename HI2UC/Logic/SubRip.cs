@@ -114,19 +114,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 string s = p.Text
                     .Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine)
                     .Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
-                sb.Append(string.Format(paragraphWriteFormat, p.Number, p.StartTime, p.EndTime, s));
+                sb.AppendFormat(paragraphWriteFormat, p.Number, p.StartTime, p.EndTime, s);
             }
             return sb.ToString().Trim();
         }
 
         private bool IsText(string text)
         {
-            if (text.Trim().Length == 0)
+            if (text.Trim().Length == 0 || Utilities.IsInteger(text) || _regexTimeCodes.IsMatch(text))
                 return false;
-
-            if (Utilities.IsInteger(text) || _regexTimeCodes.IsMatch(text))
-                return false;
-
             return true;
         }
 

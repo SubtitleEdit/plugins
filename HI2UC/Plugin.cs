@@ -37,13 +37,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
             get { return 3.0M; }
         }
 
-        string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate,
+        string IPlugin.DoAction(Form parentForm, string subtitleText, double frameRate,
             string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
-            subtitle = subtitle.Trim();
+            subtitleText = subtitleText.Trim();
 
             // Make sure subtitle isn't null or empty
-            if (string.IsNullOrEmpty(subtitle))
+            if (string.IsNullOrEmpty(subtitleText))
             {
                 MessageBox.Show("No subtitle loaded", parentForm.Text,
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -51,7 +51,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
 
             // Check if subtitle contains Hearing Impaired notations
-            if (subtitle.IndexOf('(') < 0 && subtitle.IndexOf(']') < 0)
+            if (subtitleText.IndexOf('(') < 0 && subtitleText.IndexOf(']') < 0)
             {
                 var result = MessageBox.Show("Subtitle doesn't contians Hearing Impaired anotations!" + Environment.NewLine +
                     "Do you want to continue?",
@@ -66,7 +66,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             // Get subtitle raw lines
             var list = new List<string>();
-            foreach (string line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
+            foreach (string line in subtitleText.SplitToLines())
                 list.Add(line);
 
             var sub = new Subtitle();

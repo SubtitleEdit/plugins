@@ -7,6 +7,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal static class Utilities
     {
+
+        #region ExtensionMethod
+        public static string[] SplitToLines(this string s)
+        {
+            return s.Replace(Environment.NewLine, "\n").Replace('\r', '\n').Split('\n');
+        }
+        #endregion
         public static int NumberOfLines(string text)
         {
             var ln = 0;
@@ -33,45 +40,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return int.TryParse(s, out i);
         }
 
-        public static string RemoveHtmlFontTag(string s)
-        {
-            s = Regex.Replace(s, "(?i)</?font>", string.Empty);
-            return RemoveTag(s, "<font");
-        }
-
         public static string RemoveHtmlTags(string s)
         {
-            if (string.IsNullOrEmpty(s))
-                return null;
-            if (s.IndexOf('<') < 0)
+            if (s == null || s.Length < 3 || !s.Contains(s))
                 return s;
-            s = Regex.Replace(s, "(?i)</?[uib]>", string.Empty);
-            s = RemoveParagraphTag(s);
-            return RemoveHtmlFontTag(s).Trim();
-        }
-
-        private static string RemoveTag(string text, string tag)
-        {
-            var idx = text.IndexOf(tag, StringComparison.OrdinalIgnoreCase);
-            while (idx > -1)
+            var idx = s.IndexOf('<');
+            while (idx >= 0)
             {
-                var endIndex = text.IndexOf('>', idx + tag.Length);
-                if (endIndex < idx) break;
-                text = text.Remove(idx, endIndex - idx + 1);
-                idx = text.IndexOf(tag, StringComparison.OrdinalIgnoreCase);
+                var endIdx = s.IndexOf('>', idx + 1);
+                if (endIdx < idx) break;
+                s = s.Remove(idx, endIdx - idx + 1);
+                idx = s.IndexOf('<', idx);
             }
-            return text;
-        }
-
-        public static string RemoveBrackets(string inputString)
-        {
-            return Regex.Replace(inputString, @"^[\[\(]|[\]\)]$", string.Empty).Trim();
-        }
-
-        public static string RemoveParagraphTag(string s)
-        {
-            s = Regex.Replace(s, "(?i)</?p>", string.Empty);
-            return RemoveTag(s, "<p");
+            return s;
         }
 
         public static string TryFixBrokenBrackets(string text, char bracketType, int nextIdx, Subtitle sub)
@@ -81,7 +62,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // More than one lines
             if (text.IndexOf(Environment.NewLine, StringComparison.Ordinal) > -1)
             {
-                var lines = text.Replace("\r\n", "\n").Split('\n');
+                var lines = text.SplitToLines();
                 for (int i = 0; i < lines.Length; i++)
                 {
                     CheckForBrackets(ref lines[i], bracketType, nextIdx, sub, ref idx);

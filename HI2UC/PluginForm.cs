@@ -7,9 +7,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form
     {
-        private enum HIStyle { UpperCase, LowerCase, FirstUppercase, UpperLowerCase }
+        private enum HIStyle
+        {
+            UpperCase,
+            LowerCase,
+            FirstUppercase,
+            UpperLowerCase
+        }
 
-        internal string FixedSubtitle { get; private set; }
+        public string FixedSubtitle { get; private set; }
 
         private HIStyle _hiStyle = HIStyle.UpperCase;
         private bool _allowFixes = false;
@@ -127,19 +133,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void FindHearingImpairedText()
         {
-            Func<Paragraph, bool> AllowFix = (Paragraph p) =>
-            {
-                if (!_allowFixes)
-                    return false;
-                string ln = p.Number.ToString();
-                foreach (ListViewItem item in listViewFixes.Items)
-                {
-                    if (item.SubItems[1].Text == ln)
-                        return item.Checked;
-                }
-                return false;
-            };
-
             _totalChanged = 0;
             listViewFixes.BeginUpdate();
             foreach (Paragraph p in _subtitle.Paragraphs)
@@ -247,7 +240,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         bool ignoreError = false;
         private string ChangeMoodsToUppercase(string text, Paragraph p)
         {
-            Action<Char, int> FindBrackets = delegate(char openBracket, int idx)
+            Action<Char, int> FindBrackets = delegate (char openBracket, int idx)
             {
                 //char? closeBracket = null;
                 char closeBracket = '\0';
@@ -506,6 +499,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void PluginForm_Shown(object sender, EventArgs e)
         {
             FindHearingImpairedText();
+        }
+
+        private bool AllowFix(Paragraph p)
+        {
+            if (!_allowFixes)
+                return false;
+            var ln = p.Number.ToString();
+            foreach (ListViewItem item in listViewFixes.Items)
+            {
+                if (item.SubItems[1].Text == ln)
+                    return item.Checked;
+            }
+            return false;
         }
     }
 }

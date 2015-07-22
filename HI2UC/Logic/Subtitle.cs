@@ -13,9 +13,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public string Header { get; set; }
         public string Footer { get; set; }
         public string FileName { get; set; }
-        public bool IsHearingImpaired { get; private set; }
-
-        public const int MaximumHistoryItems = 100;
 
         public List<Paragraph> Paragraphs { get { return _paragraphs; } }
 

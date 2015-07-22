@@ -58,16 +58,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             get;
         }
 
-        public static int FramesToMilliseconds(double frames)
-        {
-            return (int)System.Math.Round(frames * (1000.0 / Configuration.CurrentFrameRate));
-        }
-
-        public static int MillisecondsToFrames(double milliseconds)
-        {
-            return (int)System.Math.Round(milliseconds / (1000.0 / Configuration.CurrentFrameRate));
-        }
-
         abstract public bool IsMine(List<string> lines, string fileName);
 
         abstract public void LoadSubtitle(Subtitle subtitle, List<string> lines, string fileName);
