@@ -50,16 +50,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return string.Empty;
             }
 
-            // Check if subtitle contains Hearing Impaired notations
-            if (subtitleText.IndexOf('(') < 0 && subtitleText.IndexOf(']') < 0)
-            {
-                var result = MessageBox.Show("Subtitle doesn't contians Hearing Impaired anotations!" + Environment.NewLine +
-                    "Do you want to continue?",
-                    "Hearing Impaired not found!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (result == DialogResult.No)
-                    return string.Empty;
-            }
-
             // Use custom separator for list view new lines
             if (!string.IsNullOrEmpty(listViewLineSeparatorString))
                 Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
@@ -72,7 +62,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var sub = new Subtitle();
             var srt = new SubRip();
 
-            // Load raws subtitle lines into object
+            // Load raws subtitle lines into Subtitle object
             srt.LoadSubtitle(sub, list, subtitleFileName);
             using (var form = new PluginForm(parentForm, sub, (this as IPlugin).Name, (this as IPlugin).Description))
             {

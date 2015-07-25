@@ -16,7 +16,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static bool Contains(this string s, char c)
         {
-            return s.Length > 0 && s.IndexOf(c) > 0;
+            return s.Length > 0 && s.IndexOf(c) >= 0;
         }
 
         public static bool ContainsAny(this string s, char[] chars)
@@ -40,6 +40,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return s;
         }
         #endregion
+
         public static int NumberOfLines(string text)
         {
             var ln = 0;
