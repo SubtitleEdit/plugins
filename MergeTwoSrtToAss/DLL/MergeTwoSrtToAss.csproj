@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Nikse.SubtitleEdit.PluginLogic</RootNamespace>
-    <AssemblyName>CheckLineWidth</AssemblyName>
+    <AssemblyName>MergeTwoSrtToAss</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
