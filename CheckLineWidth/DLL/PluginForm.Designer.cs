@@ -279,7 +279,7 @@
             this.buttonAutoBreak.Name = "buttonAutoBreak";
             this.buttonAutoBreak.Size = new System.Drawing.Size(193, 21);
             this.buttonAutoBreak.TabIndex = 3;
-            this.buttonAutoBreak.Text = "Auto-break via width";
+            this.buttonAutoBreak.Text = "Auto-break via pixel width";
             this.buttonAutoBreak.UseVisualStyleBackColor = true;
             this.buttonAutoBreak.Click += new System.EventHandler(this.buttonUnBreak_Click);
             // 

@@ -63,6 +63,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmericanToBritish", "Americ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmericanToBritishTester", "AmericanToBritish\Test\AmericanToBritishTester.csproj", "{7D3A9768-8A59-4A13-A7BD-AC71F7C60C7B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MergeTwoSrtToAssTester", "MergeTwoSrtToAss\Test\MergeTwoSrtToAssTester.csproj", "{93DE69A7-1B96-4D23-845A-CA83D3A01DF1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MergeTwoSrtToAss", "MergeTwoSrtToAss\DLL\MergeTwoSrtToAss.csproj", "{B4ED58DA-3967-4FEA-999C-191621AF3E4A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -313,6 +317,26 @@ Global
 		{7D3A9768-8A59-4A13-A7BD-AC71F7C60C7B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{7D3A9768-8A59-4A13-A7BD-AC71F7C60C7B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{7D3A9768-8A59-4A13-A7BD-AC71F7C60C7B}.Release|x86.ActiveCfg = Release|Any CPU
+		{93DE69A7-1B96-4D23-845A-CA83D3A01DF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93DE69A7-1B96-4D23-845A-CA83D3A01DF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93DE69A7-1B96-4D23-845A-CA83D3A01DF1}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{93DE69A7-1B96-4D23-845A-CA83D3A01DF1}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{93DE69A7-1B96-4D23-845A-CA83D3A01DF1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{93DE69A7-1B96-4D23-845A-CA83D3A01DF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93DE69A7-1B96-4D23-845A-CA83D3A01DF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93DE69A7-1B96-4D23-845A-CA83D3A01DF1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{93DE69A7-1B96-4D23-845A-CA83D3A01DF1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{93DE69A7-1B96-4D23-845A-CA83D3A01DF1}.Release|x86.ActiveCfg = Release|Any CPU
+		{B4ED58DA-3967-4FEA-999C-191621AF3E4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4ED58DA-3967-4FEA-999C-191621AF3E4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4ED58DA-3967-4FEA-999C-191621AF3E4A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B4ED58DA-3967-4FEA-999C-191621AF3E4A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B4ED58DA-3967-4FEA-999C-191621AF3E4A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B4ED58DA-3967-4FEA-999C-191621AF3E4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4ED58DA-3967-4FEA-999C-191621AF3E4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4ED58DA-3967-4FEA-999C-191621AF3E4A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B4ED58DA-3967-4FEA-999C-191621AF3E4A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B4ED58DA-3967-4FEA-999C-191621AF3E4A}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -342,5 +366,7 @@ Global
 		{4B0FDCD3-4499-4037-B218-610A46315BD0} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 		{204B2CAC-F5D7-4C81-B592-6BD71C798125} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 		{7D3A9768-8A59-4A13-A7BD-AC71F7C60C7B} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
+		{93DE69A7-1B96-4D23-845A-CA83D3A01DF1} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
+		{B4ED58DA-3967-4FEA-999C-191621AF3E4A} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 	EndGlobalSection
 EndGlobal

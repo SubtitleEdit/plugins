@@ -13,12 +13,11 @@ namespace WordSpellCheckTester
 
         private void Form1_Load(object sender, System.EventArgs e)
         {
-            IPlugin plugin = new Nikse.SubtitleEdit.PluginLogic.CheckLineWidth();
+            IPlugin plugin = new MergeTwoSrtToAss();
 
             const string subtitle = @"1
 00:00:24,275 --> 00:00:27,362
-iii iii iii ii ii iiii ii
-WWW WWW WWW ww ww WWWW WW.
+What color is that=
 
 2
 00:02:30,944 --> 00:02:33,279
