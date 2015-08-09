@@ -399,5 +399,55 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             return lines;
         }
 
+        public static int CountTagInText(string text, string tag)
+        {
+            int count = 0;
+            int index = text.IndexOf(tag, StringComparison.Ordinal);
+            while (index >= 0)
+            {
+                count++;
+                index = index + tag.Length;
+                if (index >= text.Length)
+                    return count;
+                index = text.IndexOf(tag, index, StringComparison.Ordinal);
+            }
+            return count;
+        }
+
+        public static int CountTagInText(string text, char tag)
+        {
+            int count = 0;
+            int index = text.IndexOf(tag);
+            while (index >= 0)
+            {
+                count++;
+                if ((index + 1) == text.Length)
+                    return count;
+                index = text.IndexOf(tag, index + 1);
+            }
+            return count;
+        }
+
+
+        private const string UppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWZYXÆØÃÅÄÖÉÈÁÂÀÇÊÍÓÔÕÚŁАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯĞİŞÜÙÁÌÑÎ";
+
+        private static string GetLetters(bool uppercase, bool lowercase, bool numbers)
+        {
+            var sb = new StringBuilder();
+
+            if (uppercase)
+                sb.Append(UppercaseLetters.ToUpper());
+
+            if (lowercase)
+                sb.Append(UppercaseLetters.ToLower());
+
+            if (numbers)
+                sb.Append("0123456789");
+
+            return sb.ToString();
+        }
+
+        public static readonly string AllLetters = GetLetters(true, true, false);
+
     }
 }

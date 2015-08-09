@@ -10,6 +10,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using Nikse.SubtitleEdit.PluginLogic.Logic;
+using Nikse.SubtitleEdit.PluginLogic.Logic.SubtitleFormats;
+using SubRip = Nikse.SubtitleEdit.PluginLogic.Logic.SubRip;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -21,8 +23,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private int _selectedIndex = -1;
         private readonly Timer _previewTimer = new Timer();
         private string _header;
-        private bool _doUpdate;
-        private bool _isSubStationAlpha = false;
+        private bool _doUpdate = true;
+        private bool _isSubStationAlpha;
 
         public PluginForm()
         {
@@ -67,8 +69,7 @@ Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour,
 Style: style1,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,100,0,0,1,2,1,8,10,10,10,1
 Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,100,0,0,1,2,1,2,10,10,10,1
 
-[Events]
-Format: Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text";
+[Events]";
             }
         }
 
@@ -209,23 +210,54 @@ Format: Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text
         private string GetSettingsFileName()
         {
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-            if (path.StartsWith("file:\\"))
+            if (path != null && path.StartsWith("file:\\"))
                 path = path.Remove(0, 6);
-            path = Path.Combine(path, "Plugins");
-            if (!Directory.Exists(path))
+            if (path != null)
+                path = Path.Combine(path, "Plugins");
+            if (path == null || !Directory.Exists(path))
                 path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Plugins");
             return Path.Combine(path, "MergeTwoSrtToAss.xml");
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
+            if (_subtitle1 == null || _subtitle1.Paragraphs.Count == 0 ||
+                _subtitle2 == null || _subtitle1.Paragraphs.Count == 2)
+            {
+                MessageBox.Show("Please load two subtitles");
+                return;
+            }
+            Merge();                
             DialogResult = DialogResult.Cancel;
         }
-
-        private void buttonOK_Click(object sender, EventArgs e)
+       
+        private void Merge()
         {
-            FixedSubtitle = _subtitle1.ToText(new SubRip());
-            DialogResult = DialogResult.OK;
+            var subtitle = new Subtitle();
+            foreach (var paragraph in _subtitle1.Paragraphs)
+            {
+                paragraph.Extra = "style1";
+                subtitle.InsertParagraphInCorrectTimeOrder(paragraph);
+            }
+            foreach (var paragraph in _subtitle2.Paragraphs)
+            {
+                paragraph.Extra = "style2";
+                subtitle.InsertParagraphInCorrectTimeOrder(paragraph);
+            }
+            
+
+            if (_isSubStationAlpha)
+            {
+                var ass = new SubStationAlpha();
+                subtitle.Header = _header;
+                FixedSubtitle = ass.ToText(subtitle, string.Empty);
+            }
+            else
+            {
+                var ass = new AdvancedSubStationAlpha();
+                subtitle.Header = _header;
+                FixedSubtitle = ass.ToText(subtitle, string.Empty);
+            }
         }
 
         private void PluginForm_KeyDown(object sender, KeyEventArgs e)
@@ -386,18 +418,18 @@ Format: Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text
                     }
                 }
 
-                DrawText("File one style example!", g, bmp, comboBoxFontName1, checkBoxFontBold1, radioButtonAlignTop1, checkBoxFontItalic1, checkBoxFontUnderline1, panelPrimaryColor1.BackColor, panelOutlineColor1.BackColor);
-                DrawText("File two style example!", g, bmp, comboBoxFontName2, checkBoxFontBold2, radioButtonAlignTop2, checkBoxFontItalic2, checkBoxFontUnderline2, panelPrimaryColor2.BackColor, panelOutlineColor2.BackColor);
+                DrawText("File one style example!", g, bmp, comboBoxFontName1, numericUpDownFontSize1.Value, checkBoxFontBold1, radioButtonAlignTop1, checkBoxFontItalic1, checkBoxFontUnderline1, panelPrimaryColor1.BackColor, panelOutlineColor1.BackColor);
+                DrawText("File two style example!", g, bmp, comboBoxFontName2, numericUpDownFontSize2.Value, checkBoxFontBold2, radioButtonAlignTop2, checkBoxFontItalic2, checkBoxFontUnderline2, panelPrimaryColor2.BackColor, panelOutlineColor2.BackColor);
             }
             pictureBoxPreview.Image = bmp;
         }
 
-        private void DrawText(string text, Graphics g, Bitmap bmp, ComboBox comboboxfontName, CheckBox checkBoxFontBold, RadioButton radioButtonAlignTop, CheckBox checkBoxFontItalic, CheckBox checkBoxFontUnderline, Color fontColor, Color backColor)
+        private void DrawText(string text, Graphics g, Bitmap bmp, ComboBox comboboxfontName, decimal fontSize, CheckBox checkBoxFontBold, RadioButton radioButtonAlignTop, CheckBox checkBoxFontItalic, CheckBox checkBoxFontUnderline, Color fontColor, Color backColor)
         {
             Font font;
             try
             {
-                font = new Font(comboboxfontName.Text, (float)numericUpDownFontSize1.Value);
+                font = new Font(comboboxfontName.Text, (float)fontSize);
             }
             catch
             {
@@ -493,6 +525,9 @@ Format: Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text
             LoadSettingsIfThereIs();
 
             _doUpdate = true;
+
+            
+
 
             GeneratePreview();
         }
@@ -792,6 +827,12 @@ Format: Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text
         private void comboBoxFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
             _isSubStationAlpha = comboBoxFormat.SelectedIndex == 1;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            FixedSubtitle = string.Empty;
+            DialogResult = DialogResult.Cancel;
         }
        
     }

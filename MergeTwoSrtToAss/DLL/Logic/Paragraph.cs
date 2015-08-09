@@ -2,7 +2,7 @@
 
 namespace Nikse.SubtitleEdit.PluginLogic.Logic
 {
-    internal class Paragraph
+    public class Paragraph
     {
         internal int Number { get; set; }
         internal string Text { get; set; }
@@ -116,5 +116,8 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
                 return (60.0 / Duration.TotalSeconds) * wordCount;
             }
         }
+
+        public string Effect { get; set; }
+        public int Layer { get; set; }
     }
 }
