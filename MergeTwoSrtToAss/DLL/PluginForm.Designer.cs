@@ -34,12 +34,11 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.buttonOpenFile2 = new System.Windows.Forms.Button();
-            this.subtitleListView2 = new Nikse.SubtitleEdit.PluginLogic.Controls.SubtitleListView();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.buttonOpenFile1 = new System.Windows.Forms.Button();
-            this.subtitleListView1 = new Nikse.SubtitleEdit.PluginLogic.Controls.SubtitleListView();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.pictureBoxPreview = new System.Windows.Forms.PictureBox();
             this.groupBoxSettings = new System.Windows.Forms.GroupBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -57,7 +56,7 @@
             this.comboBoxFontName2 = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.radioButtonAlignBottom = new System.Windows.Forms.RadioButton();
+            this.radioButtonAlignBottom2 = new System.Windows.Forms.RadioButton();
             this.radioButtonAlignTop2 = new System.Windows.Forms.RadioButton();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -78,11 +77,16 @@
             this.radioButtonAlignBottom1 = new System.Windows.Forms.RadioButton();
             this.radioButtonAlignTop1 = new System.Windows.Forms.RadioButton();
             this.openFileDialogSubtitle = new System.Windows.Forms.OpenFileDialog();
-            this.pictureBoxPreview = new System.Windows.Forms.PictureBox();
+            this.colorDialogSSAStyle = new System.Windows.Forms.ColorDialog();
+            this.label6 = new System.Windows.Forms.Label();
+            this.comboBoxFormat = new System.Windows.Forms.ComboBox();
+            this.subtitleListView2 = new Nikse.SubtitleEdit.PluginLogic.Controls.SubtitleListView();
+            this.subtitleListView1 = new Nikse.SubtitleEdit.PluginLogic.Controls.SubtitleListView();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).BeginInit();
             this.groupBoxSettings.SuspendLayout();
             this.groupBox6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownShadowWidth2)).BeginInit();
@@ -92,7 +96,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownShadowWidth1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownOutline1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFontSize1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonCancel
@@ -150,43 +153,22 @@
             // 
             this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox2.Location = new System.Drawing.Point(6, 34);
+            this.textBox2.Location = new System.Drawing.Point(6, 23);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(474, 20);
+            this.textBox2.ReadOnly = true;
+            this.textBox2.Size = new System.Drawing.Size(469, 20);
             this.textBox2.TabIndex = 7;
             // 
             // buttonOpenFile2
             // 
             this.buttonOpenFile2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOpenFile2.Location = new System.Drawing.Point(486, 32);
+            this.buttonOpenFile2.Location = new System.Drawing.Point(481, 20);
             this.buttonOpenFile2.Name = "buttonOpenFile2";
             this.buttonOpenFile2.Size = new System.Drawing.Size(27, 23);
             this.buttonOpenFile2.TabIndex = 2;
             this.buttonOpenFile2.Text = "...";
             this.buttonOpenFile2.UseVisualStyleBackColor = true;
             this.buttonOpenFile2.Click += new System.EventHandler(this.buttonOpenFile2_Click);
-            // 
-            // subtitleListView2
-            // 
-            this.subtitleListView2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.subtitleListView2.DisplayExtraFromExtra = false;
-            this.subtitleListView2.FirstVisibleIndex = -1;
-            this.subtitleListView2.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.subtitleListView2.FullRowSelect = true;
-            this.subtitleListView2.GridLines = true;
-            this.subtitleListView2.Location = new System.Drawing.Point(6, 58);
-            this.subtitleListView2.Name = "subtitleListView2";
-            this.subtitleListView2.OwnerDraw = true;
-            this.subtitleListView2.Size = new System.Drawing.Size(507, 321);
-            this.subtitleListView2.SubtitleFontBold = false;
-            this.subtitleListView2.SubtitleFontName = "Tahoma";
-            this.subtitleListView2.SubtitleFontSize = 8;
-            this.subtitleListView2.TabIndex = 6;
-            this.subtitleListView2.UseCompatibleStateImageBehavior = false;
-            this.subtitleListView2.UseSyntaxColoring = true;
-            this.subtitleListView2.View = System.Windows.Forms.View.Details;
             // 
             // groupBox2
             // 
@@ -206,44 +188,22 @@
             // 
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(7, 34);
+            this.textBox1.Location = new System.Drawing.Point(7, 23);
             this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(445, 20);
             this.textBox1.TabIndex = 2;
             // 
             // buttonOpenFile1
             // 
             this.buttonOpenFile1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOpenFile1.Location = new System.Drawing.Point(458, 32);
+            this.buttonOpenFile1.Location = new System.Drawing.Point(458, 21);
             this.buttonOpenFile1.Name = "buttonOpenFile1";
             this.buttonOpenFile1.Size = new System.Drawing.Size(27, 23);
             this.buttonOpenFile1.TabIndex = 1;
             this.buttonOpenFile1.Text = "...";
             this.buttonOpenFile1.UseVisualStyleBackColor = true;
             this.buttonOpenFile1.Click += new System.EventHandler(this.buttonOpenFile1_Click);
-            // 
-            // subtitleListView1
-            // 
-            this.subtitleListView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.subtitleListView1.DisplayExtraFromExtra = false;
-            this.subtitleListView1.FirstVisibleIndex = -1;
-            this.subtitleListView1.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.subtitleListView1.FullRowSelect = true;
-            this.subtitleListView1.GridLines = true;
-            this.subtitleListView1.Location = new System.Drawing.Point(6, 61);
-            this.subtitleListView1.Name = "subtitleListView1";
-            this.subtitleListView1.OwnerDraw = true;
-            this.subtitleListView1.Size = new System.Drawing.Size(484, 318);
-            this.subtitleListView1.SubtitleFontBold = false;
-            this.subtitleListView1.SubtitleFontName = "Tahoma";
-            this.subtitleListView1.SubtitleFontSize = 8;
-            this.subtitleListView1.TabIndex = 0;
-            this.subtitleListView1.UseCompatibleStateImageBehavior = false;
-            this.subtitleListView1.UseSyntaxColoring = true;
-            this.subtitleListView1.View = System.Windows.Forms.View.Details;
-            this.subtitleListView1.SelectedIndexChanged += new System.EventHandler(this.subtitleListView1_SelectedIndexChanged);
             // 
             // groupBox4
             // 
@@ -256,6 +216,15 @@
             this.groupBox4.TabIndex = 1;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Preview";
+            // 
+            // pictureBoxPreview
+            // 
+            this.pictureBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBoxPreview.Location = new System.Drawing.Point(3, 16);
+            this.pictureBoxPreview.Name = "pictureBoxPreview";
+            this.pictureBoxPreview.Size = new System.Drawing.Size(444, 261);
+            this.pictureBoxPreview.TabIndex = 1;
+            this.pictureBoxPreview.TabStop = false;
             // 
             // groupBoxSettings
             // 
@@ -288,14 +257,14 @@
             this.groupBox6.Controls.Add(this.comboBoxFontName2);
             this.groupBox6.Controls.Add(this.label1);
             this.groupBox6.Controls.Add(this.label2);
-            this.groupBox6.Controls.Add(this.radioButtonAlignBottom);
+            this.groupBox6.Controls.Add(this.radioButtonAlignBottom2);
             this.groupBox6.Controls.Add(this.radioButtonAlignTop2);
             this.groupBox6.Location = new System.Drawing.Point(308, 19);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(268, 222);
             this.groupBox6.TabIndex = 3;
             this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "File 2";
+            this.groupBox6.Text = "File two";
             // 
             // label4
             // 
@@ -312,6 +281,12 @@
             this.numericUpDownShadowWidth2.Name = "numericUpDownShadowWidth2";
             this.numericUpDownShadowWidth2.Size = new System.Drawing.Size(44, 20);
             this.numericUpDownShadowWidth2.TabIndex = 26;
+            this.numericUpDownShadowWidth2.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownShadowWidth2.ValueChanged += new System.EventHandler(this.numericUpDownShadowWidth2_ValueChanged);
             // 
             // numericUpDownOutline2
             // 
@@ -319,6 +294,12 @@
             this.numericUpDownOutline2.Name = "numericUpDownOutline2";
             this.numericUpDownOutline2.Size = new System.Drawing.Size(44, 20);
             this.numericUpDownOutline2.TabIndex = 24;
+            this.numericUpDownOutline2.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.numericUpDownOutline2.ValueChanged += new System.EventHandler(this.numericUpDownOutline2_ValueChanged);
             // 
             // label5
             // 
@@ -336,6 +317,7 @@
             this.panelOutlineColor2.Name = "panelOutlineColor2";
             this.panelOutlineColor2.Size = new System.Drawing.Size(21, 20);
             this.panelOutlineColor2.TabIndex = 23;
+            this.panelOutlineColor2.Click += new System.EventHandler(this.buttonOutlineColor2_Click);
             // 
             // buttonOutlineColor2
             // 
@@ -345,6 +327,7 @@
             this.buttonOutlineColor2.TabIndex = 22;
             this.buttonOutlineColor2.Text = "Outline";
             this.buttonOutlineColor2.UseVisualStyleBackColor = true;
+            this.buttonOutlineColor2.Click += new System.EventHandler(this.buttonOutlineColor2_Click);
             // 
             // panelPrimaryColor2
             // 
@@ -353,6 +336,7 @@
             this.panelPrimaryColor2.Name = "panelPrimaryColor2";
             this.panelPrimaryColor2.Size = new System.Drawing.Size(21, 20);
             this.panelPrimaryColor2.TabIndex = 21;
+            this.panelPrimaryColor2.Click += new System.EventHandler(this.buttonPrimaryColor2_Click);
             // 
             // buttonPrimaryColor2
             // 
@@ -362,6 +346,7 @@
             this.buttonPrimaryColor2.TabIndex = 20;
             this.buttonPrimaryColor2.Text = "&Primary";
             this.buttonPrimaryColor2.UseVisualStyleBackColor = true;
+            this.buttonPrimaryColor2.Click += new System.EventHandler(this.buttonPrimaryColor2_Click);
             // 
             // checkBoxFontUnderline2
             // 
@@ -373,6 +358,7 @@
             this.checkBoxFontUnderline2.TabIndex = 19;
             this.checkBoxFontUnderline2.Text = "Underline";
             this.checkBoxFontUnderline2.UseVisualStyleBackColor = true;
+            this.checkBoxFontUnderline2.CheckedChanged += new System.EventHandler(this.checkBoxFontUnderline2_CheckedChanged);
             // 
             // numericUpDownFontSize2
             // 
@@ -385,6 +371,7 @@
             this.numericUpDownFontSize2.Name = "numericUpDownFontSize2";
             this.numericUpDownFontSize2.Size = new System.Drawing.Size(51, 20);
             this.numericUpDownFontSize2.TabIndex = 16;
+            this.numericUpDownFontSize2.ValueChanged += new System.EventHandler(this.numericUpDownFontSize2_ValueChanged);
             // 
             // checkBoxFontItalic2
             // 
@@ -396,6 +383,7 @@
             this.checkBoxFontItalic2.TabIndex = 18;
             this.checkBoxFontItalic2.Text = "Italic";
             this.checkBoxFontItalic2.UseVisualStyleBackColor = true;
+            this.checkBoxFontItalic2.CheckedChanged += new System.EventHandler(this.checkBoxFontItalic2_CheckedChanged);
             // 
             // checkBoxFontBold2
             // 
@@ -407,6 +395,7 @@
             this.checkBoxFontBold2.TabIndex = 17;
             this.checkBoxFontBold2.Text = "Bold";
             this.checkBoxFontBold2.UseVisualStyleBackColor = true;
+            this.checkBoxFontBold2.CheckedChanged += new System.EventHandler(this.checkBoxFontBold2_CheckedChanged);
             // 
             // comboBoxFontName2
             // 
@@ -415,6 +404,7 @@
             this.comboBoxFontName2.Name = "comboBoxFontName2";
             this.comboBoxFontName2.Size = new System.Drawing.Size(147, 21);
             this.comboBoxFontName2.TabIndex = 14;
+            this.comboBoxFontName2.SelectedValueChanged += new System.EventHandler(this.comboBoxFontName2_SelectedValueChanged);
             // 
             // label1
             // 
@@ -434,16 +424,17 @@
             this.label2.TabIndex = 13;
             this.label2.Text = "Font name";
             // 
-            // radioButtonAlignBottom
+            // radioButtonAlignBottom2
             // 
-            this.radioButtonAlignBottom.AutoSize = true;
-            this.radioButtonAlignBottom.Location = new System.Drawing.Point(94, 94);
-            this.radioButtonAlignBottom.Name = "radioButtonAlignBottom";
-            this.radioButtonAlignBottom.Size = new System.Drawing.Size(83, 17);
-            this.radioButtonAlignBottom.TabIndex = 3;
-            this.radioButtonAlignBottom.TabStop = true;
-            this.radioButtonAlignBottom.Text = "Align bottom";
-            this.radioButtonAlignBottom.UseVisualStyleBackColor = true;
+            this.radioButtonAlignBottom2.AutoSize = true;
+            this.radioButtonAlignBottom2.Location = new System.Drawing.Point(94, 94);
+            this.radioButtonAlignBottom2.Name = "radioButtonAlignBottom2";
+            this.radioButtonAlignBottom2.Size = new System.Drawing.Size(83, 17);
+            this.radioButtonAlignBottom2.TabIndex = 3;
+            this.radioButtonAlignBottom2.TabStop = true;
+            this.radioButtonAlignBottom2.Text = "Align bottom";
+            this.radioButtonAlignBottom2.UseVisualStyleBackColor = true;
+            this.radioButtonAlignBottom2.CheckedChanged += new System.EventHandler(this.radioButtonAlignBottom_CheckedChanged);
             // 
             // radioButtonAlignTop2
             // 
@@ -455,6 +446,7 @@
             this.radioButtonAlignTop2.TabStop = true;
             this.radioButtonAlignTop2.Text = "Align top";
             this.radioButtonAlignTop2.UseVisualStyleBackColor = true;
+            this.radioButtonAlignTop2.CheckedChanged += new System.EventHandler(this.radioButtonAlignTop2_CheckedChanged);
             // 
             // groupBox5
             // 
@@ -482,7 +474,7 @@
             this.groupBox5.Size = new System.Drawing.Size(296, 222);
             this.groupBox5.TabIndex = 2;
             this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "File 1";
+            this.groupBox5.Text = "File one";
             // 
             // label3
             // 
@@ -499,6 +491,12 @@
             this.numericUpDownShadowWidth1.Name = "numericUpDownShadowWidth1";
             this.numericUpDownShadowWidth1.Size = new System.Drawing.Size(44, 20);
             this.numericUpDownShadowWidth1.TabIndex = 19;
+            this.numericUpDownShadowWidth1.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownShadowWidth1.ValueChanged += new System.EventHandler(this.numericUpDownShadowWidth1_ValueChanged);
             // 
             // numericUpDownOutline1
             // 
@@ -506,6 +504,12 @@
             this.numericUpDownOutline1.Name = "numericUpDownOutline1";
             this.numericUpDownOutline1.Size = new System.Drawing.Size(44, 20);
             this.numericUpDownOutline1.TabIndex = 17;
+            this.numericUpDownOutline1.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.numericUpDownOutline1.ValueChanged += new System.EventHandler(this.numericUpDownOutline1_ValueChanged);
             // 
             // labelShadow
             // 
@@ -523,6 +527,7 @@
             this.panelOutlineColor1.Name = "panelOutlineColor1";
             this.panelOutlineColor1.Size = new System.Drawing.Size(21, 20);
             this.panelOutlineColor1.TabIndex = 16;
+            this.panelOutlineColor1.Click += new System.EventHandler(this.buttonOutlineColor1_Click);
             // 
             // buttonOutlineColor1
             // 
@@ -532,6 +537,7 @@
             this.buttonOutlineColor1.TabIndex = 15;
             this.buttonOutlineColor1.Text = "Outline";
             this.buttonOutlineColor1.UseVisualStyleBackColor = true;
+            this.buttonOutlineColor1.Click += new System.EventHandler(this.buttonOutlineColor1_Click);
             // 
             // panelPrimaryColor1
             // 
@@ -540,6 +546,7 @@
             this.panelPrimaryColor1.Name = "panelPrimaryColor1";
             this.panelPrimaryColor1.Size = new System.Drawing.Size(21, 20);
             this.panelPrimaryColor1.TabIndex = 14;
+            this.panelPrimaryColor1.Click += new System.EventHandler(this.buttonOutlineColor1_Click);
             // 
             // buttonPrimaryColor1
             // 
@@ -549,6 +556,7 @@
             this.buttonPrimaryColor1.TabIndex = 13;
             this.buttonPrimaryColor1.Text = "&Primary";
             this.buttonPrimaryColor1.UseVisualStyleBackColor = true;
+            this.buttonPrimaryColor1.Click += new System.EventHandler(this.buttonPrimaryColor1_Click);
             // 
             // checkBoxFontUnderline1
             // 
@@ -560,6 +568,7 @@
             this.checkBoxFontUnderline1.TabIndex = 12;
             this.checkBoxFontUnderline1.Text = "Underline";
             this.checkBoxFontUnderline1.UseVisualStyleBackColor = true;
+            this.checkBoxFontUnderline1.CheckedChanged += new System.EventHandler(this.checkBoxFontUnderline1_CheckedChanged);
             // 
             // numericUpDownFontSize1
             // 
@@ -572,6 +581,7 @@
             this.numericUpDownFontSize1.Name = "numericUpDownFontSize1";
             this.numericUpDownFontSize1.Size = new System.Drawing.Size(51, 20);
             this.numericUpDownFontSize1.TabIndex = 9;
+            this.numericUpDownFontSize1.ValueChanged += new System.EventHandler(this.numericUpDownFontSize1_ValueChanged);
             // 
             // checkBoxFontItalic1
             // 
@@ -583,6 +593,7 @@
             this.checkBoxFontItalic1.TabIndex = 11;
             this.checkBoxFontItalic1.Text = "Italic";
             this.checkBoxFontItalic1.UseVisualStyleBackColor = true;
+            this.checkBoxFontItalic1.CheckedChanged += new System.EventHandler(this.checkBoxFontItalic1_CheckedChanged);
             // 
             // checkBoxFontBold1
             // 
@@ -594,6 +605,7 @@
             this.checkBoxFontBold1.TabIndex = 10;
             this.checkBoxFontBold1.Text = "Bold";
             this.checkBoxFontBold1.UseVisualStyleBackColor = true;
+            this.checkBoxFontBold1.CheckedChanged += new System.EventHandler(this.checkBoxFontBold1_CheckedChanged);
             // 
             // comboBoxFontName1
             // 
@@ -602,6 +614,7 @@
             this.comboBoxFontName1.Name = "comboBoxFontName1";
             this.comboBoxFontName1.Size = new System.Drawing.Size(147, 21);
             this.comboBoxFontName1.TabIndex = 7;
+            this.comboBoxFontName1.SelectedValueChanged += new System.EventHandler(this.comboBoxFontName1_SelectedValueChanged);
             // 
             // labelFontSize
             // 
@@ -631,6 +644,7 @@
             this.radioButtonAlignBottom1.TabStop = true;
             this.radioButtonAlignBottom1.Text = "Align bottom";
             this.radioButtonAlignBottom1.UseVisualStyleBackColor = true;
+            this.radioButtonAlignBottom1.CheckedChanged += new System.EventHandler(this.radioButtonAlignBottom1_CheckedChanged);
             // 
             // radioButtonAlignTop1
             // 
@@ -642,25 +656,88 @@
             this.radioButtonAlignTop1.TabStop = true;
             this.radioButtonAlignTop1.Text = "Align top";
             this.radioButtonAlignTop1.UseVisualStyleBackColor = true;
+            this.radioButtonAlignTop1.CheckedChanged += new System.EventHandler(this.radioButtonAlignTop1_CheckedChanged);
             // 
             // openFileDialogSubtitle
             // 
             this.openFileDialogSubtitle.FileName = "openFileDialog1";
             // 
-            // pictureBoxPreview
+            // label6
             // 
-            this.pictureBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBoxPreview.Location = new System.Drawing.Point(3, 16);
-            this.pictureBoxPreview.Name = "pictureBoxPreview";
-            this.pictureBoxPreview.Size = new System.Drawing.Size(444, 261);
-            this.pictureBoxPreview.TabIndex = 1;
-            this.pictureBoxPreview.TabStop = false;
+            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(466, 691);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(71, 13);
+            this.label6.TabIndex = 21;
+            this.label6.Text = "Output format";
+            // 
+            // comboBoxFormat
+            // 
+            this.comboBoxFormat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxFormat.FormattingEnabled = true;
+            this.comboBoxFormat.Items.AddRange(new object[] {
+            "ASS",
+            "SSA"});
+            this.comboBoxFormat.Location = new System.Drawing.Point(543, 688);
+            this.comboBoxFormat.Name = "comboBoxFormat";
+            this.comboBoxFormat.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxFormat.TabIndex = 22;
+            this.comboBoxFormat.SelectedIndexChanged += new System.EventHandler(this.comboBoxFormat_SelectedIndexChanged);
+            // 
+            // subtitleListView2
+            // 
+            this.subtitleListView2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.subtitleListView2.DisplayExtraFromExtra = false;
+            this.subtitleListView2.FirstVisibleIndex = -1;
+            this.subtitleListView2.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.subtitleListView2.FullRowSelect = true;
+            this.subtitleListView2.GridLines = true;
+            this.subtitleListView2.Location = new System.Drawing.Point(6, 50);
+            this.subtitleListView2.Name = "subtitleListView2";
+            this.subtitleListView2.OwnerDraw = true;
+            this.subtitleListView2.Size = new System.Drawing.Size(507, 329);
+            this.subtitleListView2.SubtitleFontBold = false;
+            this.subtitleListView2.SubtitleFontName = "Tahoma";
+            this.subtitleListView2.SubtitleFontSize = 8;
+            this.subtitleListView2.TabIndex = 6;
+            this.subtitleListView2.UseCompatibleStateImageBehavior = false;
+            this.subtitleListView2.UseSyntaxColoring = true;
+            this.subtitleListView2.View = System.Windows.Forms.View.Details;
+            // 
+            // subtitleListView1
+            // 
+            this.subtitleListView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.subtitleListView1.DisplayExtraFromExtra = false;
+            this.subtitleListView1.FirstVisibleIndex = -1;
+            this.subtitleListView1.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.subtitleListView1.FullRowSelect = true;
+            this.subtitleListView1.GridLines = true;
+            this.subtitleListView1.Location = new System.Drawing.Point(6, 50);
+            this.subtitleListView1.Name = "subtitleListView1";
+            this.subtitleListView1.OwnerDraw = true;
+            this.subtitleListView1.Size = new System.Drawing.Size(484, 329);
+            this.subtitleListView1.SubtitleFontBold = false;
+            this.subtitleListView1.SubtitleFontName = "Tahoma";
+            this.subtitleListView1.SubtitleFontSize = 8;
+            this.subtitleListView1.TabIndex = 0;
+            this.subtitleListView1.UseCompatibleStateImageBehavior = false;
+            this.subtitleListView1.UseSyntaxColoring = true;
+            this.subtitleListView1.View = System.Windows.Forms.View.Details;
+            this.subtitleListView1.SelectedIndexChanged += new System.EventHandler(this.subtitleListView1_SelectedIndexChanged);
             // 
             // PluginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1057, 721);
+            this.Controls.Add(this.comboBoxFormat);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.groupBoxSettings);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox1);
@@ -674,13 +751,17 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Merge  two SRT to one ASS";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PluginForm_FormClosing);
+            this.Load += new System.EventHandler(this.PluginForm_Load);
+            this.ResizeEnd += new System.EventHandler(this.PluginForm_ResizeEnd);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PluginForm_KeyDown);
+            this.Resize += new System.EventHandler(this.PluginForm_Resize);
             this.groupBox1.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).EndInit();
             this.groupBoxSettings.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
@@ -692,8 +773,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownShadowWidth1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownOutline1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFontSize1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -728,7 +809,7 @@
         private System.Windows.Forms.ComboBox comboBoxFontName2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.RadioButton radioButtonAlignBottom;
+        private System.Windows.Forms.RadioButton radioButtonAlignBottom2;
         private System.Windows.Forms.RadioButton radioButtonAlignTop2;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Label label3;
@@ -750,5 +831,8 @@
         private System.Windows.Forms.RadioButton radioButtonAlignTop1;
         private System.Windows.Forms.OpenFileDialog openFileDialogSubtitle;
         private System.Windows.Forms.PictureBox pictureBoxPreview;
+        private System.Windows.Forms.ColorDialog colorDialogSSAStyle;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox comboBoxFormat;
     }
 }
