@@ -11,7 +11,6 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using Nikse.SubtitleEdit.PluginLogic.Logic;
 using Nikse.SubtitleEdit.PluginLogic.Logic.SubtitleFormats;
-using SubRip = Nikse.SubtitleEdit.PluginLogic.Logic.SubRip;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -335,12 +334,16 @@ Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,
             {
                 lines.Add(line);
             }
-            var subRip = new SubRip();
-            if (subRip.IsMine(lines, fileName))
+            SubtitleFormat format = new SubRip();
+            if (!format.IsMine(lines, fileName))
+                format = new AdvancedSubStationAlpha();
+            if (!format.IsMine(lines, fileName))
+                format = new SubStationAlpha();
+            if (format.IsMine(lines, fileName))
             {
                 textBox1.Text = fileName;
                 _subtitle1 = new Subtitle();
-                subRip.LoadSubtitle(_subtitle1, lines, fileName);
+                format.LoadSubtitle(_subtitle1, lines, fileName);
                 subtitleListView1.Fill(_subtitle1);
                 if (_subtitle1.Paragraphs.Count > 0)
                     subtitleListView1.SelectIndexAndEnsureVisible(0);
@@ -366,12 +369,17 @@ Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,
             {
                 lines.Add(line);
             }
-            var subRip = new SubRip();
-            if (subRip.IsMine(lines, fileName))
+            SubtitleFormat format = new SubRip();
+            if (!format.IsMine(lines, fileName))
+                format = new AdvancedSubStationAlpha();
+            if (!format.IsMine(lines, fileName))
+                format = new SubStationAlpha();
+
+            if (format.IsMine(lines, fileName))
             {
                 textBox2.Text = fileName;
                 _subtitle2 = new Subtitle();
-                subRip.LoadSubtitle(_subtitle2, lines, fileName);
+                format.LoadSubtitle(_subtitle2, lines, fileName);
                 subtitleListView2.Fill(_subtitle2);
                 if (_subtitle2.Paragraphs.Count > 0)
                     subtitleListView1.SelectIndexAndEnsureVisible(0);

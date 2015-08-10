@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows.Forms;
 using Nikse.SubtitleEdit.PluginLogic.Logic;
+using Nikse.SubtitleEdit.PluginLogic.Logic.SubtitleFormats;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -9,12 +10,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         string IPlugin.Name
         {
-            get { return "MergeTwoSrtToAss"; }
+            get { return "Merge two SRT files to one ASS/SSA"; } // name in plugin window
         }
 
         string IPlugin.Text
         {
-            get { return "Merge two SRT to one ASS"; }
+            get { return "Merge two SRT to one ASS/SSA..."; } // text in tools menu
         }
 
         decimal IPlugin.Version

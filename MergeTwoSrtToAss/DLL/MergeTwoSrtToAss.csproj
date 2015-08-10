@@ -49,9 +49,7 @@
     <Compile Include="Logic\Paragraph.cs" />
     <Compile Include="Logic\SsaStyle.cs" />
     <Compile Include="Logic\StringExtensions.cs" />
-    <Compile Include="Logic\SubRip.cs" />
     <Compile Include="Logic\Subtitle.cs" />
-    <Compile Include="Logic\SubtitleFormat.cs" />
     <Compile Include="Logic\SubtitleFormats\AdvancedSubStationAlpha.cs" />
     <Compile Include="Logic\SubtitleFormats\SubRip.cs" />
     <Compile Include="Logic\SubtitleFormats\SubStationAlpha.cs" />
