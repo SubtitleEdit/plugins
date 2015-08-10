@@ -324,22 +324,27 @@ Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,
             openFileDialogSubtitle.FileName = string.Empty;
             if (openFileDialogSubtitle.ShowDialog(this) == DialogResult.OK)
             {
-                var lines = new List<string>();
-                foreach (var line in File.ReadAllLines(openFileDialogSubtitle.FileName))
-                {
-                    lines.Add(line);
-                }
-                var subRip = new SubRip();
-                if (subRip.IsMine(lines, openFileDialogSubtitle.FileName))
-                {
-                    textBox1.Text = openFileDialogSubtitle.FileName;
-                    _subtitle1 = new Subtitle();
-                    subRip.LoadSubtitle(_subtitle1, lines, openFileDialogSubtitle.FileName);
-                    subtitleListView1.Fill(_subtitle1);
-                    if (_subtitle1.Paragraphs.Count > 0)
-                        subtitleListView1.SelectIndexAndEnsureVisible(0);
-                    GeneratePreview();
-                }
+                OpenFile1(openFileDialogSubtitle.FileName);
+            }
+        }
+
+        private void OpenFile1(string fileName)
+        {
+            var lines = new List<string>();
+            foreach (var line in File.ReadAllLines(fileName))
+            {
+                lines.Add(line);
+            }
+            var subRip = new SubRip();
+            if (subRip.IsMine(lines, fileName))
+            {
+                textBox1.Text = fileName;
+                _subtitle1 = new Subtitle();
+                subRip.LoadSubtitle(_subtitle1, lines, fileName);
+                subtitleListView1.Fill(_subtitle1);
+                if (_subtitle1.Paragraphs.Count > 0)
+                    subtitleListView1.SelectIndexAndEnsureVisible(0);
+                GeneratePreview();
             }
         }
 
@@ -350,22 +355,27 @@ Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,
             openFileDialogSubtitle.FileName = string.Empty;
             if (openFileDialogSubtitle.ShowDialog(this) == DialogResult.OK)
             {
-                var lines = new List<string>();
-                foreach (var line in File.ReadAllLines(openFileDialogSubtitle.FileName))
-                {
-                    lines.Add(line);
-                }
-                var subRip = new SubRip();
-                if (subRip.IsMine(lines, openFileDialogSubtitle.FileName))
-                {
-                    textBox2.Text = openFileDialogSubtitle.FileName;
-                    _subtitle2 = new Subtitle();
-                    subRip.LoadSubtitle(_subtitle2, lines, openFileDialogSubtitle.FileName);
-                    subtitleListView2.Fill(_subtitle2);
-                    if (_subtitle2.Paragraphs.Count > 0)
-                        subtitleListView1.SelectIndexAndEnsureVisible(0);
-                    GeneratePreview();
-                }
+                OpenFile2(openFileDialogSubtitle.FileName);
+            }
+        }
+
+        private void OpenFile2(string fileName)
+        {
+            var lines = new List<string>();
+            foreach (var line in File.ReadAllLines(fileName))
+            {
+                lines.Add(line);
+            }
+            var subRip = new SubRip();
+            if (subRip.IsMine(lines, fileName))
+            {
+                textBox2.Text = fileName;
+                _subtitle2 = new Subtitle();
+                subRip.LoadSubtitle(_subtitle2, lines, fileName);
+                subtitleListView2.Fill(_subtitle2);
+                if (_subtitle2.Paragraphs.Count > 0)
+                    subtitleListView1.SelectIndexAndEnsureVisible(0);
+                GeneratePreview();
             }
         }
 
@@ -885,6 +895,46 @@ Style: style2,tahoma,20,-1,-256,-16777216,-16777216,-1,0,1,2,1,2,10,10,10,0,1
         private void buttonCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+        }
+
+        private void subtitleListView1_DragDrop(object sender, DragEventArgs e)
+        {
+            var dragAndDropFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
+            if (dragAndDropFiles.Length == 1)
+            {
+                OpenFile1(dragAndDropFiles[0]);
+            }
+            else
+            {
+                MessageBox.Show("Drop only one file");
+            }
+        }
+
+        private void subtitleListView2_DragDrop(object sender, DragEventArgs e)
+        {
+            var dragAndDropFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
+            if (dragAndDropFiles.Length == 1)
+            {
+                OpenFile2(dragAndDropFiles[0]);
+            }
+            else
+            {
+                MessageBox.Show("Drop only one file");
+            }
+        }
+
+        private void subtitleListView1_DragEnter(object sender, DragEventArgs e)
+        {
+            // make sure they're actually dropping files (not text or anything else)
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
+                e.Effect = DragDropEffects.All;
+        }
+
+        private void subtitleListView2_DragEnter(object sender, DragEventArgs e)
+        {
+            // make sure they're actually dropping files (not text or anything else)
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
+                e.Effect = DragDropEffects.All;
         }
        
     }
