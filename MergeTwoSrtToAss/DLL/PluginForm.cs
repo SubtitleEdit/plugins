@@ -219,7 +219,7 @@ Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,
             return Path.Combine(path, "MergeTwoSrtToAss.xml");
         }
 
-        private void buttonCancel_Click(object sender, EventArgs e)
+        private void buttonOK_Click(object sender, EventArgs e)
         {
             if (_subtitle1 == null || _subtitle1.Paragraphs.Count == 0 ||
                 _subtitle2 == null || _subtitle1.Paragraphs.Count == 2)
@@ -228,7 +228,7 @@ Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,
                 return;
             }
             Merge();                
-            DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.OK;
         }
        
         private void Merge()
@@ -827,11 +827,63 @@ Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,
         private void comboBoxFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
             _isSubStationAlpha = comboBoxFormat.SelectedIndex == 1;
+            if (!_isSubStationAlpha)
+            {
+                _header = @"[Script Info]
+; This is an Advanced Sub Station Alpha v4+ script.
+Title: 
+ScriptType: v4.00+
+Collisions: Normal
+PlayDepth: 0
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: style1,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,100,0,0,1,2,1,8,10,10,10,1
+Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,100,0,0,1,2,1,2,10,10,10,1
+
+[Events]";
+            }
+            else
+            {
+                _header = @"[Script Info]
+; This is a Sub Station Alpha v4 script.
+Title: a
+ScriptType: v4.00
+Collisions: Normal
+PlayDepth: 0
+
+[V4 Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, TertiaryColour, BackColour, Bold, Italic, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, AlphaLevel, Encoding
+Style: style1,tahoma,20,-1,-256,-16777216,-16777216,-1,0,1,2,1,6,10,10,10,0,1
+Style: style2,tahoma,20,-1,-256,-16777216,-16777216,-1,0,1,2,1,2,10,10,10,0,1
+
+[Events]";
+            }
+            comboBoxFontName1_SelectedValueChanged(null, null);
+            comboBoxFontName2_SelectedValueChanged(null, null);
+            numericUpDownFontSize1_ValueChanged(null, null);
+            numericUpDownFontSize2_ValueChanged(null, null);
+            checkBoxFontBold1_CheckedChanged(null, null);
+            checkBoxFontBold2_CheckedChanged(null, null);
+            checkBoxFontItalic1_CheckedChanged(null, null);
+            checkBoxFontItalic2_CheckedChanged(null, null);
+            checkBoxFontUnderline1_CheckedChanged(null, null);
+            checkBoxFontUnderline2_CheckedChanged(null, null);
+            radioButtonAlignTop1_CheckedChanged(null, null);
+            radioButtonAlignTop2_CheckedChanged(null, null);
+
+            SetSsaStyle("style1", "primarycolour", GetSsaColorString(panelPrimaryColor1.BackColor));
+            SetSsaStyle("style2", "primarycolour", GetSsaColorString(panelPrimaryColor2.BackColor));
+
+            SetSsaStyle("style1", _isSubStationAlpha ? "tertiarycolour" : "outlinecolour", GetSsaColorString(panelOutlineColor1.BackColor));
+            SetSsaStyle("style2", _isSubStationAlpha ? "tertiarycolour" : "outlinecolour", GetSsaColorString(panelOutlineColor2.BackColor));
+
+            numericUpDownOutline1_ValueChanged(null, null);
+            numericUpDownOutline2_ValueChanged(null, null);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonCancel_Click(object sender, EventArgs e)
         {
-            FixedSubtitle = string.Empty;
             DialogResult = DialogResult.Cancel;
         }
        
