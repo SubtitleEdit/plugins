@@ -105,4 +105,11 @@
     <Date>2015-03-05</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/AmericanToBritish.zip</Url>
   </Plugin>
+  <Plugin>
+    <Name>Merge two SRT files to one ASS/SSA</Name>
+    <Description>Merge two SRT subtitles to one ASS (eg. for different languages)</Description>
+    <Version>0.9</Version>
+    <Date>2015-08-11</Date>
+    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/MergeTwoSrtToAss.zip</Url>
+  </Plugin>
 </Plugins>
