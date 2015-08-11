@@ -22,8 +22,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private int _selectedIndex = -1;
         private readonly Timer _previewTimer = new Timer();
         private string _header;
-        private bool _doUpdate = true;
         private bool _isSubStationAlpha;
+        private object _lockObj = new object();
 
         public PluginForm()
         {
@@ -54,22 +54,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 comboBoxFontName2.Items.Add(x.Name);
             }
 
-            if (!_isSubStationAlpha)
-            {
-                _header = @"[Script Info]
-; This is an Advanced Sub Station Alpha v4+ script.
-Title: 
-ScriptType: v4.00+
-Collisions: Normal
-PlayDepth: 0
+            SetHeader();
 
-[V4+ Styles]
-Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: style1,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,100,0,0,1,2,1,8,10,10,10,1
-Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,100,0,0,1,2,1,2,10,10,10,1
-
-[Events]";
-            }
         }
 
         private void LoadSettingsIfThereIs()
@@ -184,7 +170,7 @@ Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,
                         if (!string.IsNullOrEmpty(xElement.Value))
                             panelOutlineColor2.BackColor = ColorTranslator.FromHtml(xElement.Value);
                     }
-                    
+
                     xElement = doc.Root.Element("OutputFormat");
                     if (xElement != null)
                     {
@@ -203,9 +189,10 @@ Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,
                     }
 
                 }
-            }            
+                comboBoxFormat_SelectedIndexChanged(null, null);
+            }
         }
-      
+
         private string GetSettingsFileName()
         {
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
@@ -226,13 +213,13 @@ Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,
                 MessageBox.Show("Please load two subtitles");
                 return;
             }
-            Merge();                
+            Merge();
             DialogResult = DialogResult.OK;
         }
-       
+
         private void Merge()
         {
-            var subtitle = new Subtitle();
+            var subtitle = new Subtitle { Header = _header };
             foreach (var paragraph in _subtitle1.Paragraphs)
             {
                 paragraph.Extra = "style1";
@@ -243,19 +230,15 @@ Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,
                 paragraph.Extra = "style2";
                 subtitle.InsertParagraphInCorrectTimeOrder(paragraph);
             }
-            
+
 
             if (_isSubStationAlpha)
             {
-                var ass = new SubStationAlpha();
-                subtitle.Header = _header;
-                FixedSubtitle = ass.ToText(subtitle, string.Empty);
+                FixedSubtitle = new SubStationAlpha().ToText(subtitle, string.Empty);
             }
             else
             {
-                var ass = new AdvancedSubStationAlpha();
-                subtitle.Header = _header;
-                FixedSubtitle = ass.ToText(subtitle, string.Empty);
+                FixedSubtitle = new AdvancedSubStationAlpha().ToText(subtitle, string.Empty);
             }
         }
 
@@ -265,7 +248,7 @@ Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,
                 DialogResult = DialogResult.Cancel;
         }
 
-  
+
         private void subtitleListView1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (subtitleListView1.SelectedItems.Count == 0)
@@ -283,7 +266,7 @@ Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,
         {
             try
             {
-            var fileName = GetSettingsFileName();
+                var fileName = GetSettingsFileName();
                 var document = new XDocument(
                     new XDeclaration("1.0", "utf8", "yes"),
                     new XComment("This XML file defines the settings for the Subtitle Edit Merge2Srt2Ass plugin"),
@@ -455,7 +438,7 @@ Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,
             }
             g.TextRenderingHint = TextRenderingHint.AntiAlias;
             g.SmoothingMode = SmoothingMode.AntiAlias;
-            var sf = new StringFormat {Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Near};
+            var sf = new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Near };
             var path = new GraphicsPath();
 
             bool newLine = false;
@@ -470,13 +453,13 @@ Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,
             //else if (radioButtonTopRight.Checked || radioButtonMiddleRight.Checked || radioButtonBottomRight.Checked)
             //    left = bmp.Width - (measuredWidth + ((float)numericUpDownMarginRight.Value));
             //else
-            float left = ((float) (bmp.Width - measuredWidth*0.8 + 15)/2);
+            float left = ((float)(bmp.Width - measuredWidth * 0.8 + 15) / 2);
 
             float top;
             if (radioButtonAlignTop.Checked)
                 top = 10;
-                //else if (radioButtonMiddleLeft.Checked || radioButtonMiddleCenter.Checked || radioButtonMiddleRight.Checked)
-                //    top = (bmp.Height - measuredHeight) / 2;
+            //else if (radioButtonMiddleLeft.Checked || radioButtonMiddleCenter.Checked || radioButtonMiddleRight.Checked)
+            //    top = (bmp.Height - measuredHeight) / 2;
             else
                 top = bmp.Height - measuredHeight - 10;
             //top -= (int)numericUpDownShadowWidth.Value;
@@ -493,13 +476,13 @@ Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,
 
             TextDraw.DrawText(font, sf, path, sb, checkBoxFontItalic.Checked, checkBoxFontBold.Checked, checkBoxFontUnderline.Checked, left, top, ref newLine, leftMargin, ref pathPointsStart);
 
-            var outline = (int) numericUpDownOutline1.Value;
+            var outline = (int)numericUpDownOutline1.Value;
 
             // draw shadow
             if (numericUpDownShadowWidth1.Value > 0) // && radioButtonOutline1.Checked)
             {
-                var shadowPath = (GraphicsPath) path.Clone();
-                for (int i = 0; i < (int) numericUpDownShadowWidth1.Value; i++)
+                var shadowPath = (GraphicsPath)path.Clone();
+                for (int i = 0; i < (int)numericUpDownShadowWidth1.Value; i++)
                 {
                     var translateMatrix = new Matrix();
                     translateMatrix.Translate(1, 1);
@@ -541,11 +524,6 @@ Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,
             comboBoxFormat.SelectedIndex = 0;
 
             LoadSettingsIfThereIs();
-
-            _doUpdate = true;
-
-            
-
 
             GeneratePreview();
         }
@@ -596,59 +574,74 @@ Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,
             if (colorDialogSSAStyle.ShowDialog() == DialogResult.OK)
             {
                 panelOutlineColor2.BackColor = colorDialogSSAStyle.Color;
-                SetSsaStyle("style1", _isSubStationAlpha ? "tertiarycolour" : "outlinecolour", GetSsaColorString(colorDialogSSAStyle.Color));
+                SetSsaStyle("style2", _isSubStationAlpha ? "tertiarycolour" : "outlinecolour", GetSsaColorString(colorDialogSSAStyle.Color));
                 GeneratePreview();
             }
         }
 
         private void SetSsaStyle(string styleName, string propertyName, string propertyValue)
         {
-            int propertyIndex = -1;
-            int nameIndex = -1;
-            var sb = new StringBuilder();
-            foreach (var line in _header.Split(Utilities.NewLineChars, StringSplitOptions.None))
+            lock (_lockObj)
             {
-                string s = line.Trim().ToLower();
-                if (s.StartsWith("format:", StringComparison.Ordinal))
+                int propertyIndex = -1;
+                int nameIndex = -1;
+                var sb = new StringBuilder();
+                foreach (var line in _header.Split(Utilities.NewLineChars, StringSplitOptions.None))
                 {
-                    if (line.Length > 10)
+                    string s = line.Trim().ToLower();
+                    if (s.StartsWith("format:", StringComparison.Ordinal))
                     {
-                        var format = line.ToLower().Substring(8).Split(',');
-                        for (int i = 0; i < format.Length; i++)
+                        if (line.Length > 10)
                         {
-                            string f = format[i].Trim().ToLower();
-                            if (f == "name")
-                                nameIndex = i;
-                            if (f == propertyName)
-                                propertyIndex = i;
+                            var format = line.ToLower().Substring(8).Split(',');
+                            for (int i = 0; i < format.Length; i++)
+                            {
+                                string f = format[i].Trim().ToLower();
+                                if (f == "name")
+                                    nameIndex = i;
+                                if (f == propertyName)
+                                    propertyIndex = i;
+                            }
                         }
+                        sb.AppendLine(line);
                     }
-                    sb.AppendLine(line);
-                }
-                else if (s.Replace(" ", string.Empty).StartsWith("style:", StringComparison.Ordinal))
-                {
-                    if (line.Length > 10)
+                    else if (s.Replace(" ", string.Empty).StartsWith("style:", StringComparison.Ordinal))
                     {
-                        bool correctLine = false;
-                        var format = line.Substring(6).Split(',');
-                        for (int i = 0; i < format.Length; i++)
+                        if (line.Length > 10)
                         {
-                            string f = format[i].Trim();
-                            if (i == nameIndex)
-                                correctLine = f.Equals(styleName, StringComparison.OrdinalIgnoreCase);
-                        }
-                        if (correctLine)
-                        {
-                            sb.Append(line.Substring(0, 6) + " ");
-                            format = line.Substring(6).Split(',');
+                            bool correctLine = false;
+                            var format = line.Substring(6).Split(',');
                             for (int i = 0; i < format.Length; i++)
                             {
                                 string f = format[i].Trim();
-                                sb.Append(i == propertyIndex ? propertyValue : f);
-                                if (i < format.Length - 1)
-                                    sb.Append(',');
+                                if (i == nameIndex)
+                                    correctLine = f.Equals(styleName, StringComparison.OrdinalIgnoreCase);
                             }
-                            sb.AppendLine();
+                            if (correctLine)
+                            {
+                                sb.Append(line.Substring(0, 6) + " ");
+                                format = line.Substring(6).Split(',');
+                                for (int i = 0; i < format.Length; i++)
+                                {
+                                    string f = format[i].Trim();
+                                    if (i == propertyIndex)
+                                    {
+//                                        MessageBox.Show("Style:" + styleName + ": changing property " + propertyName + " " + f + " to " + propertyValue);
+                                        sb.Append(propertyValue);
+                                    }
+                                    else
+                                    {
+                                        sb.Append(f);
+                                    }
+                                    if (i < format.Length - 1)
+                                        sb.Append(',');
+                                }
+                                sb.AppendLine();
+                            }
+                            else
+                            {
+                                sb.AppendLine(line);
+                            }
                         }
                         else
                         {
@@ -660,177 +653,134 @@ Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,
                         sb.AppendLine(line);
                     }
                 }
-                else
-                {
-                    sb.AppendLine(line);
-                }
+                _header = sb.ToString().Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
             }
-            _header = sb.ToString().Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
         }
 
         private void checkBoxFontBold1_CheckedChanged(object sender, EventArgs e)
         {
-            if (_doUpdate)
-            {
-                SetSsaStyle("style1", "bold", checkBoxFontBold1.Checked ? "1" : "0");
-                GeneratePreview();
-            }
+            SetSsaStyle("style1", "bold", checkBoxFontBold1.Checked ? "1" : "0");
+            GeneratePreview();
         }
 
-       
+
         private void checkBoxFontItalic1_CheckedChanged(object sender, EventArgs e)
         {
-            if (_doUpdate)
-            {
-                SetSsaStyle("style1", "italic", checkBoxFontBold1.Checked ? "1" : "0");
-                GeneratePreview();
-            }
+            SetSsaStyle("style1", "italic", checkBoxFontItalic1.Checked ? "1" : "0");
+            GeneratePreview();
         }
 
         private void checkBoxFontUnderline1_CheckedChanged(object sender, EventArgs e)
         {
-            if (_doUpdate)
-            {
-                SetSsaStyle("style1", "underline", checkBoxFontBold1.Checked ? "1" : "0");
-                GeneratePreview();
-            }
+            SetSsaStyle("style1", "underline", checkBoxFontUnderline1.Checked ? "1" : "0");
+            GeneratePreview();
         }
 
         private void checkBoxFontBold2_CheckedChanged(object sender, EventArgs e)
         {
-            if (_doUpdate)
-            {
-                SetSsaStyle("style2", "bold", checkBoxFontBold1.Checked ? "1" : "0");
-                GeneratePreview();
-            }
+            SetSsaStyle("style2", "bold", checkBoxFontBold2.Checked ? "1" : "0");
+            GeneratePreview();
         }
 
         private void checkBoxFontItalic2_CheckedChanged(object sender, EventArgs e)
         {
-            if (_doUpdate)
-            {
-                SetSsaStyle("style2", "italic", checkBoxFontBold1.Checked ? "1" : "0");
-                GeneratePreview();
-            }
+            SetSsaStyle("style2", "italic", checkBoxFontItalic2.Checked ? "1" : "0");
+            GeneratePreview();
         }
 
         private void checkBoxFontUnderline2_CheckedChanged(object sender, EventArgs e)
         {
-            if (_doUpdate)
-            {
-                SetSsaStyle("style2", "underline", checkBoxFontBold1.Checked ? "1" : "0");
-                GeneratePreview();
-            }
+            SetSsaStyle("style2", "underline", checkBoxFontUnderline2.Checked ? "1" : "0");
+            GeneratePreview();
         }
 
         private void radioButtonAlignTop1_CheckedChanged(object sender, EventArgs e)
         {
-            if (_doUpdate)
+            if (radioButtonAlignBottom1.Checked)
+            {
+                SetSsaStyle("style1", "alignment", "2");
+            }
+            else
             {
                 SetSsaStyle("style1", "alignment", _isSubStationAlpha ? "6" : "8");
-                GeneratePreview();
             }
+            GeneratePreview();
         }
 
         private void radioButtonAlignBottom1_CheckedChanged(object sender, EventArgs e)
         {
-            if (_doUpdate)
+            if (radioButtonAlignBottom1.Checked)
             {
                 SetSsaStyle("style1", "alignment", "2");
-                GeneratePreview();
             }
+            else
+            {
+                SetSsaStyle("style1", "alignment", _isSubStationAlpha ? "6" : "8");
+            }
+            GeneratePreview();
         }
 
         private void radioButtonAlignTop2_CheckedChanged(object sender, EventArgs e)
         {
-            if (_doUpdate)
+            if (radioButtonAlignBottom2.Checked)
+            {
+                SetSsaStyle("style2", "alignment", "2");
+            }
+            else
             {
                 SetSsaStyle("style2", "alignment", _isSubStationAlpha ? "6" : "8");
-                GeneratePreview();
             }
+            GeneratePreview();
         }
 
         private void radioButtonAlignBottom_CheckedChanged(object sender, EventArgs e)
         {
-            if (_doUpdate)
+            if (radioButtonAlignBottom2.Checked)
             {
                 SetSsaStyle("style2", "alignment", "2");
-                GeneratePreview();
             }
+            else
+            {
+                SetSsaStyle("style2", "alignment", _isSubStationAlpha ? "6" : "8");
+            }
+            GeneratePreview();
         }
 
         private void numericUpDownOutline1_ValueChanged(object sender, EventArgs e)
         {
-            if (_doUpdate)
-            {
-                SetSsaStyle("style1", "outline", numericUpDownOutline1.Value.ToString(CultureInfo.InvariantCulture));
-                GeneratePreview();
-            }
+            SetSsaStyle("style1", "outline", numericUpDownOutline1.Value.ToString(CultureInfo.InvariantCulture));
+            GeneratePreview();
         }
 
         private void numericUpDownShadowWidth1_ValueChanged(object sender, EventArgs e)
         {
-            if (_doUpdate)
-            {
-                SetSsaStyle("style1", "shadow", numericUpDownShadowWidth1.Value.ToString(CultureInfo.InvariantCulture));
-                GeneratePreview();
-            }
+            SetSsaStyle("style1", "shadow", numericUpDownShadowWidth1.Value.ToString(CultureInfo.InvariantCulture));
+            GeneratePreview();
         }
 
         private void numericUpDownOutline2_ValueChanged(object sender, EventArgs e)
         {
-            if (_doUpdate)
-            {
-                SetSsaStyle("style2", "outline", numericUpDownOutline1.Value.ToString(CultureInfo.InvariantCulture));
-                GeneratePreview();
-            }
+            SetSsaStyle("style2", "outline", numericUpDownOutline2.Value.ToString(CultureInfo.InvariantCulture));
+            GeneratePreview();
         }
 
         private void numericUpDownShadowWidth2_ValueChanged(object sender, EventArgs e)
         {
-            if (_doUpdate)
-            {
-                SetSsaStyle("style2", "shadow", numericUpDownShadowWidth1.Value.ToString(CultureInfo.InvariantCulture));
-                GeneratePreview();
-            }
+            SetSsaStyle("style2", "shadow", numericUpDownShadowWidth2.Value.ToString(CultureInfo.InvariantCulture));
+            GeneratePreview();
         }
 
         private void numericUpDownFontSize1_ValueChanged(object sender, EventArgs e)
         {
-            if (_doUpdate)
-            {
-                SetSsaStyle("style1", "fontsize", numericUpDownFontSize1.Value.ToString(CultureInfo.InvariantCulture));
-                GeneratePreview();
-            }
+            SetSsaStyle("style1", "fontsize", numericUpDownFontSize1.Value.ToString(CultureInfo.InvariantCulture));
+            GeneratePreview();
         }
 
         private void numericUpDownFontSize2_ValueChanged(object sender, EventArgs e)
         {
-            if (_doUpdate)
-            {
-                SetSsaStyle("style2", "fontsize", numericUpDownFontSize1.Value.ToString(CultureInfo.InvariantCulture));
-                GeneratePreview();
-            }
-
-        }
-
-        private void comboBoxFontName1_SelectedValueChanged(object sender, EventArgs e)
-        {
-            if (_doUpdate)
-            {
-                SetSsaStyle("style1", "fontname", comboBoxFontName1.SelectedItem.ToString());
-                GeneratePreview();
-            }
-        }
-
-        private void comboBoxFontName2_SelectedValueChanged(object sender, EventArgs e)
-        {
-            if (_doUpdate)
-            {
-                SetSsaStyle("style2", "fontname", comboBoxFontName1.SelectedItem.ToString());
-                GeneratePreview();
-            }
-        }
+            SetSsaStyle("style2", "fontsize", numericUpDownFontSize2.Value.ToString(CultureInfo.InvariantCulture));
+            GeneratePreview();
+        }     
 
         private void PluginForm_ResizeEnd(object sender, EventArgs e)
         {
@@ -845,6 +795,32 @@ Style: style2,Tahoma,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,
         private void comboBoxFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
             _isSubStationAlpha = comboBoxFormat.SelectedIndex == 1;
+            SetHeader();
+            comboBoxFontName1_TextChanged(null, null);
+            comboBoxFontName2_TextChanged(null, null);
+            numericUpDownFontSize1_ValueChanged(null, null);
+            numericUpDownFontSize2_ValueChanged(null, null);
+            checkBoxFontBold1_CheckedChanged(null, null);
+            checkBoxFontBold2_CheckedChanged(null, null);
+            checkBoxFontItalic1_CheckedChanged(null, null);
+            checkBoxFontItalic2_CheckedChanged(null, null);
+            checkBoxFontUnderline1_CheckedChanged(null, null);
+            checkBoxFontUnderline2_CheckedChanged(null, null);
+            radioButtonAlignTop1_CheckedChanged(null, null);
+            radioButtonAlignTop2_CheckedChanged(null, null);
+
+            SetSsaStyle("style1", "primarycolour", GetSsaColorString(panelPrimaryColor1.BackColor));
+            SetSsaStyle("style2", "primarycolour", GetSsaColorString(panelPrimaryColor2.BackColor));
+
+            SetSsaStyle("style1", _isSubStationAlpha ? "tertiarycolour" : "outlinecolour", GetSsaColorString(panelOutlineColor1.BackColor));
+            SetSsaStyle("style2", _isSubStationAlpha ? "tertiarycolour" : "outlinecolour", GetSsaColorString(panelOutlineColor2.BackColor));
+
+            numericUpDownOutline1_ValueChanged(null, null);
+            numericUpDownOutline2_ValueChanged(null, null);
+        }
+
+        private void SetHeader()
+        {
             if (!_isSubStationAlpha)
             {
                 _header = @"[Script Info]
@@ -877,27 +853,6 @@ Style: style2,tahoma,20,-1,-256,-16777216,-16777216,-1,0,1,2,1,2,10,10,10,0,1
 
 [Events]";
             }
-            comboBoxFontName1_SelectedValueChanged(null, null);
-            comboBoxFontName2_SelectedValueChanged(null, null);
-            numericUpDownFontSize1_ValueChanged(null, null);
-            numericUpDownFontSize2_ValueChanged(null, null);
-            checkBoxFontBold1_CheckedChanged(null, null);
-            checkBoxFontBold2_CheckedChanged(null, null);
-            checkBoxFontItalic1_CheckedChanged(null, null);
-            checkBoxFontItalic2_CheckedChanged(null, null);
-            checkBoxFontUnderline1_CheckedChanged(null, null);
-            checkBoxFontUnderline2_CheckedChanged(null, null);
-            radioButtonAlignTop1_CheckedChanged(null, null);
-            radioButtonAlignTop2_CheckedChanged(null, null);
-
-            SetSsaStyle("style1", "primarycolour", GetSsaColorString(panelPrimaryColor1.BackColor));
-            SetSsaStyle("style2", "primarycolour", GetSsaColorString(panelPrimaryColor2.BackColor));
-
-            SetSsaStyle("style1", _isSubStationAlpha ? "tertiarycolour" : "outlinecolour", GetSsaColorString(panelOutlineColor1.BackColor));
-            SetSsaStyle("style2", _isSubStationAlpha ? "tertiarycolour" : "outlinecolour", GetSsaColorString(panelOutlineColor2.BackColor));
-
-            numericUpDownOutline1_ValueChanged(null, null);
-            numericUpDownOutline2_ValueChanged(null, null);
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -944,6 +899,23 @@ Style: style2,tahoma,20,-1,-256,-16777216,-16777216,-1,0,1,2,1,2,10,10,10,0,1
             if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
                 e.Effect = DragDropEffects.All;
         }
-       
+
+        private void comboBoxFontName2_TextChanged(object sender, EventArgs e)
+        {
+            SetSsaStyle("style2", "fontname", comboBoxFontName2.Text);
+            GeneratePreview();
+        }
+
+        private void comboBoxFontName1_TextChanged(object sender, EventArgs e)
+        {
+            SetSsaStyle("style1", "fontname", comboBoxFontName1.Text);
+            GeneratePreview();
+        }
+
+        private void comboBoxFontName2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }

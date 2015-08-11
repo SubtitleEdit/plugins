@@ -33,9 +33,11 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.buttonOpenFile2 = new System.Windows.Forms.Button();
+            this.subtitleListView2 = new Nikse.SubtitleEdit.PluginLogic.Controls.SubtitleListView();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.buttonOpenFile1 = new System.Windows.Forms.Button();
+            this.subtitleListView1 = new Nikse.SubtitleEdit.PluginLogic.Controls.SubtitleListView();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.pictureBoxPreview = new System.Windows.Forms.PictureBox();
             this.groupBoxSettings = new System.Windows.Forms.GroupBox();
@@ -80,8 +82,6 @@
             this.label6 = new System.Windows.Forms.Label();
             this.comboBoxFormat = new System.Windows.Forms.ComboBox();
             this.buttonCancel = new System.Windows.Forms.Button();
-            this.subtitleListView2 = new Nikse.SubtitleEdit.PluginLogic.Controls.SubtitleListView();
-            this.subtitleListView1 = new Nikse.SubtitleEdit.PluginLogic.Controls.SubtitleListView();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -159,6 +159,31 @@
             this.buttonOpenFile2.UseVisualStyleBackColor = true;
             this.buttonOpenFile2.Click += new System.EventHandler(this.buttonOpenFile2_Click);
             // 
+            // subtitleListView2
+            // 
+            this.subtitleListView2.AllowDrop = true;
+            this.subtitleListView2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.subtitleListView2.DisplayExtraFromExtra = false;
+            this.subtitleListView2.FirstVisibleIndex = -1;
+            this.subtitleListView2.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.subtitleListView2.FullRowSelect = true;
+            this.subtitleListView2.GridLines = true;
+            this.subtitleListView2.Location = new System.Drawing.Point(6, 50);
+            this.subtitleListView2.Name = "subtitleListView2";
+            this.subtitleListView2.OwnerDraw = true;
+            this.subtitleListView2.Size = new System.Drawing.Size(507, 329);
+            this.subtitleListView2.SubtitleFontBold = false;
+            this.subtitleListView2.SubtitleFontName = "Tahoma";
+            this.subtitleListView2.SubtitleFontSize = 8;
+            this.subtitleListView2.TabIndex = 6;
+            this.subtitleListView2.UseCompatibleStateImageBehavior = false;
+            this.subtitleListView2.UseSyntaxColoring = true;
+            this.subtitleListView2.View = System.Windows.Forms.View.Details;
+            this.subtitleListView2.DragDrop += new System.Windows.Forms.DragEventHandler(this.subtitleListView2_DragDrop);
+            this.subtitleListView2.DragEnter += new System.Windows.Forms.DragEventHandler(this.subtitleListView2_DragEnter);
+            // 
             // groupBox2
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -193,6 +218,32 @@
             this.buttonOpenFile1.Text = "...";
             this.buttonOpenFile1.UseVisualStyleBackColor = true;
             this.buttonOpenFile1.Click += new System.EventHandler(this.buttonOpenFile1_Click);
+            // 
+            // subtitleListView1
+            // 
+            this.subtitleListView1.AllowDrop = true;
+            this.subtitleListView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.subtitleListView1.DisplayExtraFromExtra = false;
+            this.subtitleListView1.FirstVisibleIndex = -1;
+            this.subtitleListView1.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.subtitleListView1.FullRowSelect = true;
+            this.subtitleListView1.GridLines = true;
+            this.subtitleListView1.Location = new System.Drawing.Point(6, 50);
+            this.subtitleListView1.Name = "subtitleListView1";
+            this.subtitleListView1.OwnerDraw = true;
+            this.subtitleListView1.Size = new System.Drawing.Size(484, 329);
+            this.subtitleListView1.SubtitleFontBold = false;
+            this.subtitleListView1.SubtitleFontName = "Tahoma";
+            this.subtitleListView1.SubtitleFontSize = 8;
+            this.subtitleListView1.TabIndex = 0;
+            this.subtitleListView1.UseCompatibleStateImageBehavior = false;
+            this.subtitleListView1.UseSyntaxColoring = true;
+            this.subtitleListView1.View = System.Windows.Forms.View.Details;
+            this.subtitleListView1.SelectedIndexChanged += new System.EventHandler(this.subtitleListView1_SelectedIndexChanged);
+            this.subtitleListView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.subtitleListView1_DragDrop);
+            this.subtitleListView1.DragEnter += new System.Windows.Forms.DragEventHandler(this.subtitleListView1_DragEnter);
             // 
             // groupBox4
             // 
@@ -393,7 +444,8 @@
             this.comboBoxFontName2.Name = "comboBoxFontName2";
             this.comboBoxFontName2.Size = new System.Drawing.Size(147, 21);
             this.comboBoxFontName2.TabIndex = 14;
-            this.comboBoxFontName2.SelectedValueChanged += new System.EventHandler(this.comboBoxFontName2_SelectedValueChanged);
+            this.comboBoxFontName2.SelectedIndexChanged += new System.EventHandler(this.comboBoxFontName2_SelectedIndexChanged);
+            this.comboBoxFontName2.TextChanged += new System.EventHandler(this.comboBoxFontName2_TextChanged);
             // 
             // label1
             // 
@@ -603,7 +655,7 @@
             this.comboBoxFontName1.Name = "comboBoxFontName1";
             this.comboBoxFontName1.Size = new System.Drawing.Size(147, 21);
             this.comboBoxFontName1.TabIndex = 7;
-            this.comboBoxFontName1.SelectedValueChanged += new System.EventHandler(this.comboBoxFontName1_SelectedValueChanged);
+            this.comboBoxFontName1.TextChanged += new System.EventHandler(this.comboBoxFontName1_TextChanged);
             // 
             // labelFontSize
             // 
@@ -685,57 +737,6 @@
             this.buttonCancel.Text = "C&ancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
-            // 
-            // subtitleListView2
-            // 
-            this.subtitleListView2.AllowDrop = true;
-            this.subtitleListView2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.subtitleListView2.DisplayExtraFromExtra = false;
-            this.subtitleListView2.FirstVisibleIndex = -1;
-            this.subtitleListView2.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.subtitleListView2.FullRowSelect = true;
-            this.subtitleListView2.GridLines = true;
-            this.subtitleListView2.Location = new System.Drawing.Point(6, 50);
-            this.subtitleListView2.Name = "subtitleListView2";
-            this.subtitleListView2.OwnerDraw = true;
-            this.subtitleListView2.Size = new System.Drawing.Size(507, 329);
-            this.subtitleListView2.SubtitleFontBold = false;
-            this.subtitleListView2.SubtitleFontName = "Tahoma";
-            this.subtitleListView2.SubtitleFontSize = 8;
-            this.subtitleListView2.TabIndex = 6;
-            this.subtitleListView2.UseCompatibleStateImageBehavior = false;
-            this.subtitleListView2.UseSyntaxColoring = true;
-            this.subtitleListView2.View = System.Windows.Forms.View.Details;
-            this.subtitleListView2.DragDrop += new System.Windows.Forms.DragEventHandler(this.subtitleListView2_DragDrop);
-            this.subtitleListView2.DragEnter += new System.Windows.Forms.DragEventHandler(this.subtitleListView2_DragEnter);
-            // 
-            // subtitleListView1
-            // 
-            this.subtitleListView1.AllowDrop = true;
-            this.subtitleListView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.subtitleListView1.DisplayExtraFromExtra = false;
-            this.subtitleListView1.FirstVisibleIndex = -1;
-            this.subtitleListView1.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.subtitleListView1.FullRowSelect = true;
-            this.subtitleListView1.GridLines = true;
-            this.subtitleListView1.Location = new System.Drawing.Point(6, 50);
-            this.subtitleListView1.Name = "subtitleListView1";
-            this.subtitleListView1.OwnerDraw = true;
-            this.subtitleListView1.Size = new System.Drawing.Size(484, 329);
-            this.subtitleListView1.SubtitleFontBold = false;
-            this.subtitleListView1.SubtitleFontName = "Tahoma";
-            this.subtitleListView1.SubtitleFontSize = 8;
-            this.subtitleListView1.TabIndex = 0;
-            this.subtitleListView1.UseCompatibleStateImageBehavior = false;
-            this.subtitleListView1.UseSyntaxColoring = true;
-            this.subtitleListView1.View = System.Windows.Forms.View.Details;
-            this.subtitleListView1.SelectedIndexChanged += new System.EventHandler(this.subtitleListView1_SelectedIndexChanged);
-            this.subtitleListView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.subtitleListView1_DragDrop);
-            this.subtitleListView1.DragEnter += new System.Windows.Forms.DragEventHandler(this.subtitleListView1_DragEnter);
             // 
             // PluginForm
             // 
