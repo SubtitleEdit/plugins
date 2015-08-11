@@ -181,6 +181,7 @@
             this.subtitleListView2.UseCompatibleStateImageBehavior = false;
             this.subtitleListView2.UseSyntaxColoring = true;
             this.subtitleListView2.View = System.Windows.Forms.View.Details;
+            this.subtitleListView2.SelectedIndexChanged += new System.EventHandler(this.subtitleListView2_SelectedIndexChanged);
             this.subtitleListView2.DragDrop += new System.Windows.Forms.DragEventHandler(this.subtitleListView2_DragDrop);
             this.subtitleListView2.DragEnter += new System.Windows.Forms.DragEventHandler(this.subtitleListView2_DragEnter);
             // 
@@ -444,7 +445,6 @@
             this.comboBoxFontName2.Name = "comboBoxFontName2";
             this.comboBoxFontName2.Size = new System.Drawing.Size(147, 21);
             this.comboBoxFontName2.TabIndex = 14;
-            this.comboBoxFontName2.SelectedIndexChanged += new System.EventHandler(this.comboBoxFontName2_SelectedIndexChanged);
             this.comboBoxFontName2.TextChanged += new System.EventHandler(this.comboBoxFontName2_TextChanged);
             // 
             // label1
@@ -756,7 +756,7 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Merge  two SRT files to one ASS/SSA file";
+            this.Text = "Merge two SRT files to one ASS/SSA file";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PluginForm_FormClosing);
             this.Load += new System.EventHandler(this.PluginForm_Load);
             this.ResizeEnd += new System.EventHandler(this.PluginForm_ResizeEnd);

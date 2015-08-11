@@ -23,7 +23,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private readonly Timer _previewTimer = new Timer();
         private string _header;
         private bool _isSubStationAlpha;
-        private object _lockObj = new object();
+        private readonly object _lockObj = new object();
+
+        private string _textOne = "File one style example!";
+        private string _textTwo = "File two style example!";
 
         public PluginForm()
         {
@@ -40,8 +43,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             subtitleListView2.MultiSelect = false;
 
             subtitleListView1.Fill(subtitle);
-            if (subtitle.Paragraphs.Count > 0)
-                subtitleListView1.SelectIndexAndEnsureVisible(0);
 
             _previewTimer.Interval = 200;
             _previewTimer.Tick += PreviewTimerTick;
@@ -55,7 +56,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
 
             SetHeader();
-
         }
 
         private void LoadSettingsIfThereIs()
@@ -248,7 +248,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 DialogResult = DialogResult.Cancel;
         }
 
-
         private void subtitleListView1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (subtitleListView1.SelectedItems.Count == 0)
@@ -256,11 +255,26 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             _selectedIndex = subtitleListView1.SelectedItems[0].Index;
             Paragraph p = _subtitle1.GetParagraphOrDefault(_selectedIndex);
-            if (p != null)
+            if (p != null && !string.IsNullOrWhiteSpace(p.Text))
             {
-                //TODO: show preview
+                _textOne = p.Text;
+                GeneratePreview();
             }
         }
+
+        private void subtitleListView2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (subtitleListView2.SelectedItems.Count == 0)
+                return;
+
+            var selectedIndex = subtitleListView2.SelectedItems[0].Index;
+            Paragraph p = _subtitle2.GetParagraphOrDefault(selectedIndex);
+            if (p != null && !string.IsNullOrWhiteSpace(p.Text))
+            {
+                _textTwo = p.Text;
+                GeneratePreview();
+            }
+        }        
 
         private void PluginForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -419,8 +433,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     }
                 }
 
-                DrawText("File one style example!", g, bmp, comboBoxFontName1, numericUpDownFontSize1.Value, checkBoxFontBold1, radioButtonAlignTop1, checkBoxFontItalic1, checkBoxFontUnderline1, panelPrimaryColor1.BackColor, panelOutlineColor1.BackColor);
-                DrawText("File two style example!", g, bmp, comboBoxFontName2, numericUpDownFontSize2.Value, checkBoxFontBold2, radioButtonAlignTop2, checkBoxFontItalic2, checkBoxFontUnderline2, panelPrimaryColor2.BackColor, panelOutlineColor2.BackColor);
+                DrawText(_textOne, g, bmp, comboBoxFontName1, numericUpDownFontSize1.Value, checkBoxFontBold1, radioButtonAlignTop1, checkBoxFontItalic1, checkBoxFontUnderline1, panelPrimaryColor1.BackColor, panelOutlineColor1.BackColor);
+                DrawText(_textTwo, g, bmp, comboBoxFontName2, numericUpDownFontSize2.Value, checkBoxFontBold2, radioButtonAlignTop2, checkBoxFontItalic2, checkBoxFontUnderline2, panelPrimaryColor2.BackColor, panelOutlineColor2.BackColor);
             }
             pictureBoxPreview.Image = bmp;
         }
@@ -912,10 +926,6 @@ Style: style2,tahoma,20,-1,-256,-16777216,-16777216,-1,0,1,2,1,2,10,10,10,0,1
             GeneratePreview();
         }
 
-        private void comboBoxFontName2_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
 
     }
 }
