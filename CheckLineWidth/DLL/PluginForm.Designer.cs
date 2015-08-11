@@ -227,9 +227,9 @@
             this.labelFont.AutoSize = true;
             this.labelFont.Location = new System.Drawing.Point(149, 79);
             this.labelFont.Name = "labelFont";
-            this.labelFont.Size = new System.Drawing.Size(35, 13);
+            this.labelFont.Size = new System.Drawing.Size(50, 13);
             this.labelFont.TabIndex = 5;
-            this.labelFont.Text = "label1";
+            this.labelFont.Text = "labelFont";
             // 
             // buttonEditCustomCharWidthList
             // 
@@ -239,7 +239,7 @@
             this.buttonEditCustomCharWidthList.TabIndex = 7;
             this.buttonEditCustomCharWidthList.Text = "Edit...";
             this.buttonEditCustomCharWidthList.UseVisualStyleBackColor = true;
-            this.buttonEditCustomCharWidthList.Click += new System.EventHandler(this.button1_Click);
+            this.buttonEditCustomCharWidthList.Click += new System.EventHandler(this.buttonEditChars_Click);
             // 
             // buttonChooseFont
             // 
@@ -285,6 +285,7 @@
             // 
             // labelErrorCount
             // 
+            this.labelErrorCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelErrorCount.AutoSize = true;
             this.labelErrorCount.Location = new System.Drawing.Point(4, 575);
             this.labelErrorCount.Name = "labelErrorCount";
