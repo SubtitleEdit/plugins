@@ -5,6 +5,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
     public abstract class SubtitleFormat
     {
         protected int _errorCount;
+        public const double BaseUnit = 1000.0;
 
         internal virtual List<string> AlternateExtensions
         {
@@ -60,12 +61,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         internal static int FramesToMilliseconds(double frames)
         {
-            return (int)System.Math.Round(frames * (1000.0 / Configuration.CurrentFrameRate));
+            return (int)System.Math.Round(frames * (BaseUnit / Configuration.CurrentFrameRate));
         }
 
         internal static int MillisecondsToFrames(double milliseconds)
         {
-            return (int)System.Math.Round(milliseconds / (1000.0 / Configuration.CurrentFrameRate));
+            return (int)System.Math.Round(milliseconds / (BaseUnit / Configuration.CurrentFrameRate));
         }
 
         abstract internal bool IsMine(List<string> lines, string fileName);

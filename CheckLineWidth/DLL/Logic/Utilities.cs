@@ -9,8 +9,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public static class Utilities
     {
-
         internal static readonly char[] NewLineChars = Environment.NewLine.ToCharArray();
+
+        #region Extension Methods
+
+        public static string[] SplitToLines(this string s)
+        {
+            return s.Replace(Environment.NewLine, "\n").Replace('\r', '\n').Split('\n');
+        }
 
         public static bool StartsWith(this string s, char c)
         {
@@ -41,6 +47,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             return source.IndexOf(value, comparisonType) >= 0;
         }
+        #endregion
 
         internal static string AssemblyVersion
         {
@@ -321,29 +328,35 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             if (splitPos == -1)
             {
+                const string expected1 = ".!?, ";
+                const string expected2 = " .!?";
+                const string expected3 = ".!?";
                 for (int j = 0; j < 25; j++)
                 {
                     if (mid + j + 1 < s.Length && mid + j > 0)
                     {
-                        if (@".!?, ".Contains(s[mid + j]) && !IsPartOfNumber(s, mid + j) && s.Length > mid + j + 2 && CanBreak(s, mid + j, language))
+
+                        if (expected1.Contains(s[mid + j]) && !IsPartOfNumber(s, mid + j) && s.Length > mid + j + 2 && CanBreak(s, mid + j, language))
                         {
                             splitPos = mid + j;
-                            if (@" .!?".Contains(s[mid + j + 1]))
+
+                            if (expected2.Contains(s[mid + j + 1]))
                             {
                                 splitPos++;
-                                if (@" .!?".Contains(s[mid + j + 2]))
+                                if (expected2.Contains(s[mid + j + 2]))
                                     splitPos++;
                             }
                             break;
                         }
-                        if (@".!?, ".Contains(s[mid - j]) && !IsPartOfNumber(s, mid - j) && s.Length > mid + j + 2 && CanBreak(s, mid - j, language))
+                        if (expected1.Contains(s[mid - j]) && !IsPartOfNumber(s, mid - j) && s.Length > mid + j + 2 && CanBreak(s, mid - j, language))
                         {
                             splitPos = mid - j;
-                            if (@".!?".Contains(s[splitPos]))
+
+                            if (expected3.Contains(s[splitPos]))
                                 splitPos--;
-                            if (@".!?".Contains(s[splitPos]))
+                            if (expected3.Contains(s[splitPos]))
                                 splitPos--;
-                            if (@".!?".Contains(s[splitPos]))
+                            if (expected3.Contains(s[splitPos]))
                                 splitPos--;
                             break;
                         }
