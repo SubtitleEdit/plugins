@@ -54,7 +54,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 comboBoxFontName1.Items.Add(x.Name);
                 comboBoxFontName2.Items.Add(x.Name);
             }
-
+            openFileDialogSubtitle.Filter = "SubRip/ASS/SSA files|*.srt;*.ass;*.ssa";
             SetHeader();
         }
 
@@ -255,9 +255,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             _selectedIndex = subtitleListView1.SelectedItems[0].Index;
             Paragraph p = _subtitle1.GetParagraphOrDefault(_selectedIndex);
-            if (p != null && !string.IsNullOrWhiteSpace(p.Text))
+            if (p != null && !string.IsNullOrWhiteSpace(Utilities.RemoveHtmlTags(p.Text)))
             {
-                _textOne = p.Text;
+                _textOne = Utilities.RemoveHtmlTags(p.Text);
                 GeneratePreview();
             }
         }
@@ -269,9 +269,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             var selectedIndex = subtitleListView2.SelectedItems[0].Index;
             Paragraph p = _subtitle2.GetParagraphOrDefault(selectedIndex);
-            if (p != null && !string.IsNullOrWhiteSpace(p.Text))
+            if (p != null && !string.IsNullOrWhiteSpace(Utilities.RemoveHtmlTags(p.Text)))
             {
-                _textTwo = p.Text;
+                _textTwo = Utilities.RemoveHtmlTags(p.Text);
                 GeneratePreview();
             }
         }        
@@ -316,7 +316,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void buttonOpenFile1_Click(object sender, EventArgs e)
         {
             openFileDialogSubtitle.Title = "Open subtitle file 1";
-            openFileDialogSubtitle.Filter = "Subrip files|*.srt";
             openFileDialogSubtitle.FileName = string.Empty;
             if (openFileDialogSubtitle.ShowDialog(this) == DialogResult.OK)
             {
@@ -351,7 +350,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void buttonOpenFile2_Click(object sender, EventArgs e)
         {
             openFileDialogSubtitle.Title = "Open subtitle file 2";
-            openFileDialogSubtitle.Filter = "Subrip files|*.srt";
             openFileDialogSubtitle.FileName = string.Empty;
             if (openFileDialogSubtitle.ShowDialog(this) == DialogResult.OK)
             {
