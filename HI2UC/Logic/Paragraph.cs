@@ -4,6 +4,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal class Paragraph
     {
+        public string Id { get; private set; }
         public int Number { get; set; }
         public string Text { get; set; }
         public TimeCode StartTime { get; set; }
@@ -26,6 +27,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public Paragraph()
         {
+            Id = GenerateId();
             StartTime = new TimeCode(TimeSpan.FromSeconds(0));
             EndTime = new TimeCode(TimeSpan.FromSeconds(0));
             Text = string.Empty;
@@ -33,6 +35,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public Paragraph(TimeCode startTime, TimeCode endTime, string text)
         {
+            Id = GenerateId();
             StartTime = startTime;
             EndTime = endTime;
             Text = text;
@@ -40,6 +43,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public Paragraph(Paragraph paragraph)
         {
+            Id = GenerateId();
             Number = paragraph.Number;
             Text = paragraph.Text;
             StartTime = new TimeCode(paragraph.StartTime.TimeSpan);
@@ -54,6 +58,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public Paragraph(int startFrame, int endFrame, string text)
         {
+            Id = GenerateId();
             StartTime = new TimeCode(0, 0, 0, 0);
             EndTime = new TimeCode(0, 0, 0, 0);
             StartFrame = startFrame;
@@ -70,8 +75,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             get
             {
-                return Utilities.NumberOfLines(Text);
+                return Utilities.GetNumberOfLines(Text);
             }
+        }
+
+        private string GenerateId()
+        {
+            return Guid.NewGuid().ToString();
         }
     }
 }

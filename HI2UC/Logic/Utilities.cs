@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Drawing;
 using System.Reflection;
-using System.Text.RegularExpressions;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -41,17 +39,21 @@ namespace Nikse.SubtitleEdit.PluginLogic
         }
         #endregion
 
-        public static int NumberOfLines(string text)
+        public static int GetNumberOfLines(string text)
         {
-            var ln = 0;
-            var idx = -1;
-            do
+            if (string.IsNullOrEmpty(text))
+                return 0;
+
+            int lines = 1;
+            int idx = text.IndexOf('\n');
+            while (idx != -1)
             {
-                ln++;
+                lines++;
                 idx = text.IndexOf('\n', idx + 1);
-            } while (idx > -1);
-            return ln;
+            }
+            return lines;
         }
+
 
         public static string AssemblyVersion
         {
@@ -81,7 +83,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     if (endIdx < startIdx) // Invalid SSA
                         break;
                     s = s.Remove(startIdx, endIdx - startIdx + 1);
-                    startIdx = s.IndexOf(ssaStart);
+                    startIdx = s.IndexOf(ssaStart, startIdx);
                 }
             }
             var idx = s.IndexOf('<');

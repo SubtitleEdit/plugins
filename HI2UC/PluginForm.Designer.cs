@@ -114,6 +114,7 @@
             this.listViewFixes.TabIndex = 0;
             this.listViewFixes.UseCompatibleStateImageBehavior = false;
             this.listViewFixes.View = System.Windows.Forms.View.Details;
+            this.listViewFixes.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listViewFixes_ItemChecked);
             this.listViewFixes.Resize += new System.EventHandler(this.listViewFixes_Resize);
             // 
             // columnHeader4
