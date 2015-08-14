@@ -457,14 +457,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     startIndex = _currentParagraph.Text.IndexOf(oldWord);
                 if (startIndex >= 0 && startIndex < _currentParagraph.Text.Length && _currentParagraph.Text.Substring(startIndex).Contains(oldWord)) // while
                 {
-                    bool startOk = (startIndex == 0) || (" <>-[]/()-¿¡\"'‘`´♪—”“`´¶♪:…" + Environment.NewLine).Contains(_currentParagraph.Text[startIndex - 1].ToString());
+                    bool startOk = (startIndex == 0) || (" <>-[]/()-¿¡\"'‘`´♪—”“`´¶♪:…\r\n").Contains(_currentParagraph.Text[startIndex - 1].ToString());
 
                     if (startOk)
                     {
                         int end = startIndex + oldWord.Length;
                         if (end <= _currentParagraph.Text.Length)
                         {
-                            if ((end == _currentParagraph.Text.Length) || ((" ,.!?:;')<-[]/\"%'‘`´♪—”“`´¶♪:…" + Environment.NewLine).Contains(_currentParagraph.Text[end].ToString())))
+                            if ((end == _currentParagraph.Text.Length) || ((" ,.!?:;')<-[]/\"%'‘`´♪—”“`´¶♪:…\r\n").Contains(_currentParagraph.Text[end].ToString())))
                             {
                                 _currentParagraph.Text = _currentParagraph.Text.Remove(startIndex, oldWord.Length).Insert(startIndex, changeWord);
                                 _currentErrorStart = startIndex + 1;
@@ -503,11 +503,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonGoogleIt_Click(object sender, EventArgs e)
         {
-            string text = textBoxWord.Text;
-            if (text.Trim().Length > 0)
+            var text = textBoxWord.Text;
+            if (!string.IsNullOrWhiteSpace(text))
             {
                 labelActionInfo.Text = "Googling '" + text + "'...";
-                System.Diagnostics.Process.Start("http://www.google.com/search?q=" + System.Uri.EscapeDataString(text));
+                System.Diagnostics.Process.Start("http://www.google.com/search?q=" + Uri.EscapeDataString(text));
             }
         }
 
@@ -597,7 +597,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private string GetNamesEtcFileName()
         {
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-            if (path.StartsWith("file:\\"))
+            if (path.StartsWith("file:\\", StringComparison.Ordinal))
                 path = path.Remove(0, 6);
             path = Path.Combine(path, "Dictionaries");
             if (!Directory.Exists(path))
@@ -659,7 +659,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private string GetCustomDicFileName()
         {
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-            if (path.StartsWith("file:\\"))
+            if (path.StartsWith("file:\\", StringComparison.Ordinal))
                 path = path.Remove(0, 6);
             path = Path.Combine(path, "Plugins");
             if (!Directory.Exists(path))
