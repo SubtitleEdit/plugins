@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
 using Word = Microsoft.Office.Interop.Word;
+
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form
@@ -57,15 +58,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void AddParagraphToSubtitleListView(Paragraph p)
         {
             var item = new ListViewItem(p.Number.ToString(CultureInfo.InvariantCulture)) { Tag = p };
-
-            var subItem = new ListViewItem.ListViewSubItem(item, p.StartTime.ToShortString());
-            item.SubItems.Add(subItem);
-            subItem = new ListViewItem.ListViewSubItem(item, p.EndTime.ToShortString());
-            item.SubItems.Add(subItem);
-            subItem = new ListViewItem.ListViewSubItem(item, p.Duration.ToShortString());
-            item.SubItems.Add(subItem);
-            subItem = new ListViewItem.ListViewSubItem(item, p.Text.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
-            item.SubItems.Add(subItem);
+            item.SubItems.Add(p.StartTime.ToShortString());
+            item.SubItems.Add(p.EndTime.ToShortString());
+            item.SubItems.Add(p.Duration.ToShortString());
+            item.SubItems.Add(p.Text.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
             listViewSubtitle.Items.Add(item);
         }
 
@@ -88,17 +84,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
             int index = 0;
             if (listViewSubtitle.SelectedIndices.Count > 0)
                 index = listViewSubtitle.SelectedIndices[0];
-
+            const string format = "Microsoft Word Spell Check - Line {0} of {1}";
+            var totalItems = listViewSubtitle.Items.Count;
             while (index < listViewSubtitle.Items.Count)
             {
-                Text = "Word spell check - line " + (index + 1).ToString(CultureInfo.InvariantCulture) + " of " + listViewSubtitle.Items.Count.ToString();
+                index++;
+                Text = string.Format(format, (index + 1).ToString(CultureInfo.InvariantCulture), totalItems);
                 _currentParagraph = (listViewSubtitle.Items[index].Tag as Paragraph);
-                string text = _currentParagraph.Text;
+                var text = _currentParagraph.Text;
                 Application.DoEvents();
                 if (_abort || StartSpellCheckParagraph(text))
                     return;
-                index++;
-                if (index < listViewSubtitle.Items.Count)
+                if (index < totalItems)
                 {
                     listViewSubtitle.Items[index - 1].Selected = false;
                     listViewSubtitle.Items[index].Selected = true;
@@ -113,8 +110,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             groupBoxSuggestions.Enabled = false;
             groupBoxWordNotFound.Enabled = false;
             buttonEditWholeText.Enabled = false;
-            MessageBox.Show("Word spell & grammer check completed");
-            labelActionInfo.Text = "Word spell & grammer check completed";
+            MessageBox.Show("Microsoft Word Spell Check & Grammer Check Completed");
+            labelActionInfo.Text = "Microsoft Word Spell Check & grammer Check Completed";
         }
 
         private bool StartSpellCheckParagraph(string text)
@@ -127,11 +124,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             //insert textbox data after the content of range of active document
 
-            var lines = text.Replace(Environment.NewLine, "\n").Split('\n');
+            var lines = text.SplitToLines();
             if (lines.Length == 2 && lines[0].Length > 1)
             {
-                string last = lines[0].Substring(lines[0].Length - 1);
-                if ("ABCDEFGHIJKLMNOPQRSTUVWZYXÆØÃÅÄÖÉÈÁÂÀÇÊÍÓÔÕÚŁАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯĞİŞÜÙÁÌÑ".ToLower().Contains(last.ToLower()))
+                var line = lines[0];
+                if ("abcdefghijklmnopqrstuvwzyxæøãåäöéèáâàçêíóôõúłабвгдеёжзийклмнопрстуфхцчшщъыьэюяğişüùáìñ".Contains(line[line.Length - 1]))
                 {
                     text = text.Replace(Environment.NewLine, " ");
                 }

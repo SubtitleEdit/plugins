@@ -81,7 +81,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             foreach (Paragraph p in _paragraphs)
             {
-                p.Number = startNumber;
+                p.Number = startNumber++;
             }
         }
     }
