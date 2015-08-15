@@ -1,4 +1,13 @@
-bin
-obj
+bin/
+obj/
 *.user
 *.suo
+*.csproj
+
+# Visual Studio 2015
+*.ide
+
+# NuGet
+/src/.nuget/NuGet.exe
+/src/.nuget/NuGet.Config
+/src/packages/
