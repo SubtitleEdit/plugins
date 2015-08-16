@@ -271,6 +271,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void ShowNextSpellingError()
         {
+            // Disable buttons
+            SetButtonState(false); 
             listBoxSuggestions.Items.Clear();
             if (_currentSpellCollection != null && _currentSpellCollection.Count > 0)
             {
@@ -312,6 +314,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
             }
 
+            // Reenable the buttons
+            SetButtonState(true);
+            // TODO:
             int index = 0;
             if (listViewSubtitle.SelectedIndices.Count > 0)
                 index = listViewSubtitle.SelectedIndices[0];
@@ -367,6 +372,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     _skipAllList.Add(s.Substring(0, 1).ToUpper() + s.Substring(1));
             }
             ShowNextSpellingError();
+        }
+
+        private void SetButtonState(bool state)
+        {
+            buttonSkipAll.Enabled = state;
+            buttonSkipOnce.Enabled = state;
+            buttonDelete.Enabled = state;
+            buttonAddToDictionary.Enabled = state;
+            buttonAddToNamesEtcList.Enabled = state;
         }
 
         private void buttonChange_Click(object sender, EventArgs e)
