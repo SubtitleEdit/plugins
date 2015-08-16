@@ -19,7 +19,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static bool Contains(this string source, char value)
         {
-            return source.IndexOf(value) >= 0;
+            return source.Length > 0 && source.IndexOf(value) >= 0;
         }
 
         public static string[] SplitToLines(this string source)
@@ -66,7 +66,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
         }
 
 
-        public static string AssemblyVersion { get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); } }
+        public static string AssemblyVersion
+        {
+            get
+            {
+                return Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            }
+        }
 
         public static Regex MakeWordSearchRegex(string word)
         {
@@ -319,11 +325,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (string.IsNullOrEmpty(text))
                 return 0;
             var totalLine = 1;
-            var idx = text.IndexOf(Environment.NewLine, StringComparison.Ordinal);
+            var idx = text.IndexOf('\n');
             if (idx >= 0)
             {
                 totalLine++;
-                idx = text.IndexOf(Environment.NewLine, idx + 2, StringComparison.Ordinal);
+                idx = text.IndexOf('\n', idx + 1);
             }
             return totalLine;
         }

@@ -6,7 +6,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         private static readonly char[] SplitChars = { ':', ',', '.' };
         private double _totalMilliseconds;
-        private const double BaseUnit = 1000.0;
+        public const double BaseUnit = 1000.0;
 
         public static double ParseToMilliseconds(string text)
         {

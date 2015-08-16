@@ -50,12 +50,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static int MillisecondsToFrames(double milliseconds)
         {
-            return (int)System.Math.Round(milliseconds / (1000.0 / Configuration.CurrentFrameRate));
+            return (int)System.Math.Round(milliseconds / (TimeCode.BaseUnit / Configuration.CurrentFrameRate));
         }
 
         public static int FramesToMilliseconds(double frames)
         {
-            return (int)System.Math.Round(frames * (1000.0 / Configuration.CurrentFrameRate));
+            return (int)System.Math.Round(frames * (TimeCode.BaseUnit / Configuration.CurrentFrameRate));
         }
     }
 }

@@ -35,6 +35,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             get { return FormatName; }
         }
+
         public override bool IsTimeBased
         {
             get { return true; }
@@ -55,7 +56,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             foreach (Paragraph p in subtitle.Paragraphs)
             {
                 string s = p.Text.Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine).Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
-                sb.Append(string.Format(paragraphWriteFormat, p.Number, p.StartTime, p.EndTime, s));
+                sb.AppendFormat(paragraphWriteFormat, p.Number, p.StartTime, p.EndTime, s);
             }
             return sb.ToString().Trim();
         }

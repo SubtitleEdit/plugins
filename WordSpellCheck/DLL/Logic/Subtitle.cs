@@ -7,7 +7,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
     internal class Subtitle
     {
         private List<Paragraph> _paragraphs;
-        private SubtitleFormat _format;
+        private readonly SubtitleFormat _format;
         private bool _wasLoadedWithFrameNumbers;
 
         public string Header { get; set; }
@@ -29,6 +29,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             _paragraphs = new List<Paragraph>();
             FileName = "Untitled";
+            _format = new SubRip();
         }
 
         /// <summary>
@@ -60,9 +61,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return _paragraphs[index];
         }
 
-        public string ToText(SubtitleFormat format)
+        public string ToText()
         {
-            return format.ToText(this, Path.GetFileNameWithoutExtension(FileName));
+            return _format.ToText(this, Path.GetFileNameWithoutExtension(FileName));
         }
 
         public bool WasLoadedWithFrameNumbers

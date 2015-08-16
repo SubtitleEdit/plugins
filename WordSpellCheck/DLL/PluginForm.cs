@@ -23,7 +23,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private int _currentSpellCollectionIndex = -1;
         private Paragraph _currentParagraph;
         private int _currentStartIndex = -1;
-        private List<string> _skipAllList = new List<string>();
+        private readonly HashSet<string> _skipAllList = new HashSet<string>();
         private Dictionary<string, string> _useAlwaysList = new Dictionary<string, string>();
         private List<string> _namesEtcList = new List<string>();
         private List<string> _namesEtcMultiWordList = new List<string>();
@@ -44,7 +44,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            FixedSubtitle = _subtitle.ToText(new SubRip()); ;
+            FixedSubtitle = _subtitle.ToText();
             DialogResult = DialogResult.OK;
         }
 
@@ -88,13 +88,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var totalItems = listViewSubtitle.Items.Count;
             while (index < listViewSubtitle.Items.Count)
             {
-                index++;
                 Text = string.Format(format, (index + 1).ToString(CultureInfo.InvariantCulture), totalItems);
                 _currentParagraph = (listViewSubtitle.Items[index].Tag as Paragraph);
                 var text = _currentParagraph.Text;
                 Application.DoEvents();
                 if (_abort || StartSpellCheckParagraph(text))
                     return;
+                index++;
                 if (index < totalItems)
                 {
                     listViewSubtitle.Items[index - 1].Selected = false;
@@ -133,9 +133,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     text = text.Replace(Environment.NewLine, " ");
                 }
             }
-            text = Utilities.RemoveHtmlTags(text, true);
-            while (text.Contains("  "))
-                text = text.Replace("  ", " ");
+            text = Utilities.RemoveHtmlTags(text);
+            text = text.Replace("  ", " ");
             range.InsertAfter(text);
 
             if (comboBoxDictionaries.Visible)
@@ -146,7 +145,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
                 else
                 {
-                    try { _wordApp.ActiveDocument.Content.DetectLanguage(); }
+                    try
+                    {
+                        _wordApp.ActiveDocument.Content.DetectLanguage();
+                    }
                     catch { }
                 }
             }
@@ -160,7 +162,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void AutoDetectLanguage()
         {
-            string cleanText = string.Empty;
+            var cleanText = string.Empty;
             try
             {
                 int min = 2, max = 4, i = 0;
@@ -244,17 +246,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
             richTextBoxParagraph.SelectionColor = Color.Black;
             richTextBoxParagraph.SelectionLength = 0;
 
+            var text = richTextBoxParagraph.Text;
             var regEx = Utilities.MakeWordSearchRegex(word);
-            Match match = regEx.Match(richTextBoxParagraph.Text, start);
-            if (!match.Success)
-                match = regEx.Match(richTextBoxParagraph.Text);
-            if (!match.Success)
-            {
-                regEx = Utilities.MakeWordSearchEndRegex(word);
-                match = regEx.Match(richTextBoxParagraph.Text, start);
-            }
 
-            if (match.Success)
+            // Note that 'range.Text = cleanText' which means we shouldn't expect start to be <= richTextBoxParagraph.Text.Length
+            Match match = null;
+            if ((text.Length > start))
+                regEx.Match(text, start);
+            if (match == null || !match.Success)
+                match = regEx.Match(richTextBoxParagraph.Text);
+
+            if (match != null && match.Success)
             {
                 richTextBoxParagraph.SelectionStart = match.Index;
                 richTextBoxParagraph.SelectionLength = word.Length;
@@ -383,7 +385,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (listViewSubtitle.SelectedItems.Count > 0)
             {
                 _currentParagraph.Text = textBoxWholeText.Text;
-                listViewSubtitle.SelectedItems[0].SubItems[4].Text = _currentParagraph.Text.Replace(Environment.NewLine, "<br/>");
+                listViewSubtitle.SelectedItems[0].SubItems[4].Text = _currentParagraph.Text.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString);
             }
         }
 
@@ -471,7 +473,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         }
                     }
                 }
-                listViewSubtitle.SelectedItems[0].SubItems[4].Text = _currentParagraph.Text.Replace(Environment.NewLine, "<br/>");
+                listViewSubtitle.SelectedItems[0].SubItems[4].Text = _currentParagraph.Text.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString);
                 richTextBoxParagraph.Text = _currentParagraph.Text;
             }
         }
@@ -480,7 +482,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (listBoxSuggestions.SelectedItems.Count == 1)
             {
-                string newText = listBoxSuggestions.Items[listBoxSuggestions.SelectedIndex].ToString();
+                var newText = listBoxSuggestions.Items[listBoxSuggestions.SelectedIndex].ToString();
                 labelActionInfo.Text = "Use allways suggestion '" + newText + "'...";
                 _useAlwaysList.Add(_currentSpellCollection[_currentSpellCollectionIndex + 1].Text, newText);
                 FixWord(_currentSpellCollection[_currentSpellCollectionIndex + 1], newText);
@@ -540,7 +542,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     //startIndex = _currentParagraph.Text.IndexOf(oldWord, startIndex + 2);
                 }
                 _currentParagraph.Text = _currentParagraph.Text.Replace("  ", " ");
-                listViewSubtitle.SelectedItems[0].SubItems[4].Text = _currentParagraph.Text.Replace(Environment.NewLine, "<br/>");
+                listViewSubtitle.SelectedItems[0].SubItems[4].Text = _currentParagraph.Text.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString);
                 richTextBoxParagraph.Text = _currentParagraph.Text;
             }
 
