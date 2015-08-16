@@ -38,60 +38,33 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (s == null)
                 return s;
-
+            int idx;
             if (alsoSsa)
             {
-                var idx = s.IndexOf('{');
-                if (idx >= 0)
+                const string SsaTag = "{\\";
+                idx = s.IndexOf(SsaTag, StringComparison.Ordinal);
+                while (idx >= 0)
                 {
-                    var endIdx = s.IndexOf('}', idx + 1);
-                    while (endIdx > idx)
-                    {
-                        s = s.Remove(idx, endIdx - idx + 1);
-                        idx = s.IndexOf('{', idx);
-                        if (idx >= 0)
-                            endIdx = s.IndexOf('}', idx + 1);
-                        else
-                            break;
-                    }
+                    var endIdx = s.IndexOf('}', idx + 2);
+                    if (endIdx < idx)
+                        break;
+                    s = s.Remove(idx, endIdx - idx + 1);
+                    idx = s.IndexOf(SsaTag, idx, StringComparison.Ordinal);
                 }
             }
-            if (!s.Contains('<'))
-                return s;
-            s = Regex.Replace(s, "(?i)</?[ubi]>", string.Empty);
-            s = RemoveParagraphTag(s);
-            return RemoveHtmlFontTag(s);
-        }
-
-        internal static string RemoveHtmlFontTag(string s)
-        {
-            s = Regex.Replace(s, "(?i)</?font>", string.Empty);
-            while (s.ToLower().Contains("<font"))
+            //s = Regex.Replace(s, "(?i)</?[ubi]>", string.Empty);
+            idx = s.IndexOf('<');
+            while (idx >= 0)
             {
-                int startIndex = s.ToLower().IndexOf("<font");
-                int endIndex = s.IndexOf(">", startIndex);
-                if (endIndex > -1)
-                    s = s.Remove(startIndex, (endIndex - startIndex) + 1);
-                else
+                var endIdx = s.IndexOf('>', idx + 1);
+                if (endIdx < idx)
                     break;
+                s = s.Remove(idx, endIdx - idx + 1);
+                idx = s.IndexOf('<', idx);
             }
             return s;
         }
 
-        internal static string RemoveParagraphTag(string s)
-        {
-            s = Regex.Replace(s, "(?i)</?p>", string.Empty);
-            while (s.ToLower().Contains("<p "))
-            {
-                int startIndex = s.ToLower().IndexOf("<p ");
-                int endIndex = s.IndexOf(">", startIndex + 1);
-                if (endIndex > -1)
-                    s = s.Remove(startIndex, (endIndex - startIndex) + 1);
-                else
-                    break;
-            }
-            return s;
-        }
 
         public static string AssemblyVersion { get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); } }
 

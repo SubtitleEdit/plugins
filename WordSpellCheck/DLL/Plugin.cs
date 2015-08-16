@@ -39,14 +39,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
-            subtitle = subtitle.Trim();
             if (string.IsNullOrWhiteSpace(subtitle))
             {
                 MessageBox.Show("No subtitle loaded", parentForm.Text,
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return string.Empty;
             }
-            if (!this.IsOfficeInstalled())
+            if (!IsOfficeInstalled())
             {
                 MessageBox.Show(@"Microsoft Office (Word) is not installed in this system.", "Office is not installed!!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return string.Empty;

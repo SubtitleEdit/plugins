@@ -36,7 +36,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             InitializeComponent();
 
-            this.Text = name;
+            Text = name;
             _subtitle = subtitle;
             FillSubtitleListView();
             labelActionInfo.Text = string.Empty;
@@ -133,8 +133,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     text = text.Replace(Environment.NewLine, " ");
                 }
             }
-            text = Utilities.RemoveHtmlTags(text);
-            text = text.Replace("  ", " ");
+            text = Utilities.RemoveHtmlTags(text, true);
+            while (text.Contains("  "))
+                text = text.Replace("  ", " ");
             range.InsertAfter(text);
 
             if (comboBoxDictionaries.Visible)
@@ -162,9 +163,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             string cleanText = string.Empty;
             try
             {
-                int min = 2;
-                int max = 4;
-                int i = 0;
+                int min = 2, max = 4, i = 0;
                 var sb = new StringBuilder();
                 foreach (Paragraph p in _subtitle.Paragraphs)
                 {
@@ -218,7 +217,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var cultureInfo = CultureInfo.GetCultureInfo(twoLetterLanguageId);
             if (cultureInfo != null)
             {
-                Microsoft.Office.Interop.Word.WdLanguageID langId;
+                Word.WdLanguageID langId;
                 labelLanguage.Visible = true;
                 comboBoxDictionaries.Visible = true;
                 comboBoxDictionaries.Items.Add("Auto");
