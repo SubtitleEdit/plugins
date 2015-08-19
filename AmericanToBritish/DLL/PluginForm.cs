@@ -72,8 +72,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     var endIdx = text.IndexOf('>', idx + 5);
                     if (endIdx < 5)
                         break;
-                    var tag = text.Substring(idx, endIdx - idx).Replace("colour", "color");
-                    text = text = text.Remove(idx, endIdx - idx).Insert(idx, tag);
+                    var tag = text.Substring(idx, endIdx - idx);
+                    tag = tag.Replace("colour", "color");
+                    tag = tag.Replace("COLOUR", "COLOR");
+                    tag = tag.Replace("Colour", "Color");
+                    text = text.Remove(idx, endIdx - idx).Insert(idx, tag);
                     idx = text.IndexOf("<font", endIdx + 1, StringComparison.OrdinalIgnoreCase);
                 }
 
