@@ -112,7 +112,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             {
                 if (string.IsNullOrEmpty(Text))
                     return 0;
-                int wordCount = Utilities.RemoveHtmlTags(Text).Split((" ,.!?;:()[]" + Environment.NewLine).ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Length;
+                int wordCount = Utilities.RemoveHtmlTags(Text, true).Split(new[] { ' ', ',', '.', '!', '?', ';', ':', '(', ')', '[', ']', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Length;
                 return (60.0 / Duration.TotalSeconds) * wordCount;
             }
         }
