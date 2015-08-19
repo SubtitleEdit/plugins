@@ -29,7 +29,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _subtitle = subtitle;
             SizeChanged += delegate
             {
-                var width = (this.Width - (130 + this.listViewFixes.Left * 2)) / 2;
+                var width = (Width - (130 + listViewFixes.Left * 2)) / 2;
                 columnHeader7.Width = width;
                 columnHeader8.Width = width;
             };
@@ -51,14 +51,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void AddFixToListView(Paragraph p, string before, string after)
         {
             var item = new ListViewItem(string.Empty) { Checked = true };
-
-            var subItem = new ListViewItem.ListViewSubItem(item, p.Number.ToString(CultureInfo.InvariantCulture));
-            item.SubItems.Add(subItem);
-            subItem = new ListViewItem.ListViewSubItem(item, before.Replace(Environment.NewLine, "<br />"));
-            item.SubItems.Add(subItem);
-            subItem = new ListViewItem.ListViewSubItem(item, after.Replace(Environment.NewLine, "<br />"));
-            item.SubItems.Add(subItem);
-
+            item.SubItems.Add(p.Number.ToString(CultureInfo.InvariantCulture));
+            item.SubItems.Add(before.Replace(Environment.NewLine, "<br />"));
+            item.SubItems.Add(after.Replace(Environment.NewLine, "<br />"));
             listViewFixes.Items.Add(item);
         }
 
@@ -195,9 +190,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                                     if (american.Length > 1)
                                     {
-                                        _regexList.Add(new Regex("\\b" + american.Substring(0, 1).ToUpperInvariant() + american.Substring(1) + "\\b", RegexOptions.Compiled));
+                                        _regexList.Add(new Regex("\\b" + char.ToUpperInvariant(american[0]) + american.Substring(1) + "\\b", RegexOptions.Compiled));
                                         if (british.Length > 1)
-                                            _replaceList.Add(british.Substring(0, 1).ToUpperInvariant() + british.Substring(1));
+                                            _replaceList.Add(char.ToUpperInvariant(british[0]) + british.Substring(1));
                                         else
                                             _replaceList.Add(british.ToUpper());
                                     }
