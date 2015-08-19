@@ -1,4 +1,10 @@
-﻿using Nikse.SubtitleEdit.PluginLogic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace WordSpellCheckTester
@@ -8,32 +14,6 @@ namespace WordSpellCheckTester
         public Form1()
         {
             InitializeComponent();
-            
-        }
-
-        private void Form1_Load(object sender, System.EventArgs e)
-        {
-            IPlugin plugin = new Nikse.SubtitleEdit.PluginLogic.CheckLineWidth();
-
-            const string subtitle = @"1
-00:00:24,275 --> 00:00:27,362
-iii iii iii ii ii iiii ii
-WWW WWW WWW ww ww WWWW WW.
-
-2
-00:02:30,944 --> 00:02:33,279
-Don't apologize.
-
-3
-00:02:44,833 --> 00:02:47,001
-I favor the flavor!
-
-4
-00:02:47,126 --> 00:02:49,170
-apologize
-apologize";
-            plugin.DoAction(null, subtitle, 25, "<br />", null, @"C:\Users\Nikse\Desktop\Trailers\Game Of Thrones Season Trailer.mp4", subtitle);
-            Application.Exit();
         }
     }
 }
