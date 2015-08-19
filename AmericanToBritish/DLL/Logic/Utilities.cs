@@ -64,6 +64,21 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
         {
             if (string.IsNullOrEmpty(s))
                 return null;
+
+            int idx;
+            if (alsoSsa)
+            {
+                const string SSATAg = "{\\";
+                idx = s.IndexOf(SSATAg, StringComparison.Ordinal);
+                while (idx >= 0)
+                {
+                    var endIdx = s.IndexOf('>', idx + 2);
+                    if (endIdx < idx)
+                        break;
+                    s = s.Remove(idx, endIdx - idx + 1);
+                    idx = s.IndexOf(SSATAg, idx, StringComparison.Ordinal);
+                }
+            }
             if (!s.Contains("<"))
                 return s;
             s = Regex.Replace(s, "(?i)</?[iіbu]>", string.Empty);
