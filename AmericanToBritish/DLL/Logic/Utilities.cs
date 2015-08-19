@@ -9,8 +9,9 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
 {
     public static class Utilities
     {
-
         internal static readonly char[] NewLineChars = Environment.NewLine.ToCharArray();
+
+        #region String Extensions
 
         public static bool StartsWith(this string s, char c)
         {
@@ -41,6 +42,13 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
         {
             return source.IndexOf(value, comparisonType) >= 0;
         }
+
+        public static string[] SplitToLines(this string s)
+        {
+            return s.Replace(Environment.NewLine, "\n").Replace('\r', '\n').Split('\n');
+        }
+
+        #endregion
 
 
         internal static string AssemblyVersion
@@ -179,8 +187,8 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
                     bool isDialog = true;
                     foreach (string line in lines)
                     {
-                        string cleanLine = RemoveHtmlTags(line).Trim();
-                        isDialog = isDialog && (cleanLine.StartsWith("-") || cleanLine.StartsWith("—"));
+                        var cleanLine = RemoveHtmlTags(line, true).Trim();
+                        isDialog = isDialog && (cleanLine.StartsWith('-') || cleanLine.StartsWith('—'));
                     }
                     if (isDialog)
                     {
