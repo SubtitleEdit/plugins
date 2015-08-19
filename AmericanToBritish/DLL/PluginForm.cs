@@ -180,7 +180,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                             {
                                 string american = xElement.Attribute("us").Value;
                                 string british = xElement.Attribute("br").Value;
-                                if (!string.IsNullOrWhiteSpace(american) || !string.IsNullOrWhiteSpace(british))
+                                if (!string.IsNullOrWhiteSpace(american) || !string.IsNullOrWhiteSpace(british) && american != british)
                                 {
                                     _regexList.Add(new Regex("\\b" + american + "\\b", RegexOptions.Compiled));
                                     _replaceList.Add(british);
