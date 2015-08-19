@@ -59,44 +59,29 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             return false;
         }
 
-        public static string RemoveHtmlFontTag(string s)
-        {
-            s = Regex.Replace(s, "(?i)</?font>", string.Empty);
-            while (s.ToLower().Contains("<font"))
-            {
-                int startIndex = s.ToLower().IndexOf("<font");
-                int endIndex = Math.Max(s.IndexOf(">"), startIndex + 4);
-                s = s.Remove(startIndex, (endIndex - startIndex) + 1);
-            }
-            return s;
-        }
 
-        public static string RemoveHtmlTags(string s)
+        public static string RemoveHtmlTags(string s, bool alsoSsa)
         {
             if (string.IsNullOrEmpty(s))
                 return null;
             if (!s.Contains("<"))
                 return s;
             s = Regex.Replace(s, "(?i)</?[iіbu]>", string.Empty);
-            s = RemoveParagraphTag(s);
-            return RemoveHtmlFontTag(s).Trim();
-        }
 
-        internal static string GetHtmlColorCode(Color color)
-        {
-            return string.Format("#{0:x2}{1:x2}{2:x2}", color.R, color.G, color.B);
-        }
-
-        internal static string RemoveParagraphTag(string s)
-        {
-            s = Regex.Replace(s, "(?i)</?p>", string.Empty);
-            while (s.ToLower().Contains("<p "))
+            s = Regex.Replace(s, "</?font>", string.Empty, RegexOptions.IgnoreCase);
+            idx = s.IndexOf("<font", StringComparison.Ordinal);
+            while (idx >= 0)
             {
-                int startIndex = s.ToLower().IndexOf("<p ");
-                int endIndex = Math.Max(s.IndexOf(">"), startIndex + 4);
-                s = s.Remove(startIndex, (endIndex - startIndex) + 1);
+                while (idx >= 0)
+                {
+                    var endIdx = s.IndexOf('>', idx + 5);
+                    if (endIdx < idx)
+                        break;
+                    s = s.Remove(idx, endIdx - idx + 1);
+                    idx = s.IndexOf("<font", idx, StringComparison.Ordinal);
+                }
             }
-            return s;
+            return s.Trim();
         }
 
         private static bool IsPartOfNumber(string s, int position)
@@ -126,7 +111,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             if (!"\r\n\t ".Contains(nextChar.ToString()))
                 return false;
 
-            string s2 = s.Substring(0, index);         
+            string s2 = s.Substring(0, index);
             if (s2.EndsWith("? -", StringComparison.Ordinal) || s2.EndsWith("! -", StringComparison.Ordinal) || s2.EndsWith(". -", StringComparison.Ordinal))
                 return false;
 
@@ -149,7 +134,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             // do not autobreak dialogs
             if (text.Contains("-") && text.Contains(Environment.NewLine))
             {
-                string dialogS = RemoveHtmlTags(text);
+                string dialogS = RemoveHtmlTags(text, true);
                 var arr = dialogS.Replace(Environment.NewLine, "\n").Split('\n');
                 if (arr.Length == 2)
                 {
@@ -169,11 +154,11 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             s = s.Replace("  ", " ");
             s = s.Replace("  ", " ");
 
-            string temp = RemoveHtmlTags(s);
+            var temp = RemoveHtmlTags(s, true);
 
             if (temp.Length < mergeLinesShorterThan)
             {
-                string[] lines = text.Split(NewLineChars, StringSplitOptions.RemoveEmptyEntries);
+                var lines = text.Split(NewLineChars, StringSplitOptions.RemoveEmptyEntries);
                 if (lines.Length > 1)
                 {
                     bool isDialog = true;
