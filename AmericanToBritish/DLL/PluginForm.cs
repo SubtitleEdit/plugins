@@ -242,5 +242,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.Columns[listViewFixes.Columns.Count - 1].Width = -1;
         }
 
+        private void PluginForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+                DialogResult = DialogResult.Cancel;
+        }
     }
 }

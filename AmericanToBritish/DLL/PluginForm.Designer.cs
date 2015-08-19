@@ -194,6 +194,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "PluginForm";
             this.Load += new System.EventHandler(this.PluginForm_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PluginForm_KeyDown);
             this.Resize += new System.EventHandler(this.PluginForm_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();
