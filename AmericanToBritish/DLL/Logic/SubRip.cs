@@ -116,7 +116,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
                 string s = p.Text
                     .Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine)
                     .Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
-                sb.Append(string.Format(paragraphWriteFormat, p.Number, p.StartTime, p.EndTime, s));
+                sb.AppendFormat(paragraphWriteFormat, p.Number, p.StartTime, p.EndTime, s);
             }
             return sb.ToString().Trim();
         }
