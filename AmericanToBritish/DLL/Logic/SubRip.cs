@@ -123,10 +123,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
 
         private bool IsText(string text)
         {
-            if (text.Trim().Length == 0)
-                return false;
-
-            if (Utilities.IsInteger(text) || _regexTimeCodes.IsMatch(text))
+            if (string.IsNullOrWhiteSpace(text) || Utilities.IsInteger(text) || _regexTimeCodes.IsMatch(text))
                 return false;
 
             return true;
