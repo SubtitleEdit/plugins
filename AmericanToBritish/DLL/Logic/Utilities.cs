@@ -268,24 +268,32 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             if (splitPos == maximumLength + 1 && s[maximumLength] != ' ') // only allow space for last char (as it does not count)
                 splitPos = -1;
 
+            // Constant expetected characters
+            const string ExpectedChars1 = @" .!?";
+            const string ExpectedChars2 = @".!?";
+            const string ExpectedChars3 = @".!?0123456789";
+            const string ExpectedChars4 = @".!?, ";
+
             if (splitPos == -1)
             {
                 for (int j = 0; j < 15; j++)
                 {
                     if (mid + j + 1 < s.Length && mid + j > 0)
                     {
-                        if (@".!?".Contains(s[mid + j].ToString()) && !IsPartOfNumber(s, mid + j) && CanBreak(s, mid + j + 1, language))
+                        if (ExpectedChars2.Contains(s[mid + j].ToString()) && !IsPartOfNumber(s, mid + j) && CanBreak(s, mid + j + 1, language))
                         {
                             splitPos = mid + j + 1;
-                            if (@".!?0123456789".Contains(s[splitPos].ToString()))
-                            { // do not break double/tripple end lines like "!!!" or "..."
+
+                            if (ExpectedChars3.Contains(s[splitPos].ToString()))
+                            {
+                                // do not break double/tripple end lines like "!!!" or "..."
                                 splitPos++;
-                                if (@".!?0123456789".Contains(s[mid + j + 1]))
+                                if (ExpectedChars3.Contains(s[mid + j + 1]))
                                     splitPos++;
                             }
                             break;
                         }
-                        if (@".!?".Contains(s[mid - j]) && !IsPartOfNumber(s, mid - j) && CanBreak(s, mid - j, language))
+                        if (ExpectedChars2.Contains(s[mid - j]) && !IsPartOfNumber(s, mid - j) && CanBreak(s, mid - j, language))
                         {
                             splitPos = mid - j;
                             splitPos++;
@@ -311,25 +319,25 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
                 {
                     if (mid + j + 1 < s.Length && mid + j > 0)
                     {
-                        if (@".!?, ".Contains(s[mid + j]) && !IsPartOfNumber(s, mid + j) && s.Length > mid + j + 2 && CanBreak(s, mid + j, language))
+                        if (ExpectedChars4.Contains(s[mid + j]) && !IsPartOfNumber(s, mid + j) && s.Length > mid + j + 2 && CanBreak(s, mid + j, language))
                         {
                             splitPos = mid + j;
-                            if (@" .!?".Contains(s[mid + j + 1]))
+                            if (ExpectedChars1.Contains(s[mid + j + 1]))
                             {
                                 splitPos++;
-                                if (@" .!?".Contains(s[mid + j + 2]))
+                                if (ExpectedChars1.Contains(s[mid + j + 2]))
                                     splitPos++;
                             }
                             break;
                         }
-                        if (@".!?, ".Contains(s[mid - j]) && !IsPartOfNumber(s, mid - j) && s.Length > mid + j + 2 && CanBreak(s, mid - j, language))
+                        if (ExpectedChars4.Contains(s[mid - j]) && !IsPartOfNumber(s, mid - j) && s.Length > mid + j + 2 && CanBreak(s, mid - j, language))
                         {
                             splitPos = mid - j;
-                            if (@".!?".Contains(s[splitPos]))
+                            if (ExpectedChars2.Contains(s[splitPos]))
                                 splitPos--;
-                            if (@".!?".Contains(s[splitPos]))
+                            if (ExpectedChars2.Contains(s[splitPos]))
                                 splitPos--;
-                            if (@".!?".Contains(s[splitPos]))
+                            if (ExpectedChars2.Contains(s[splitPos]))
                                 splitPos--;
                             break;
                         }
