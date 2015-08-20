@@ -81,10 +81,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
         /// <returns>True if times could be calculated</returns>
         internal bool CalculateTimeCodesFromFrameNumbers(double frameRate)
         {
-            if (_format == null)
-                return false;
-
-            if (_format.IsTimeBased)
+            if (_format == null || _format.IsTimeBased)
                 return false;
 
             foreach (Paragraph p in Paragraphs)
@@ -101,10 +98,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
         /// <returns></returns>
         internal bool CalculateFrameNumbersFromTimeCodes(double frameRate)
         {
-            if (_format == null)
-                return false;
-
-            if (_format.IsFrameBased)
+            if (_format == null || _format.IsFrameBased)
                 return false;
 
             foreach (Paragraph p in Paragraphs)
@@ -113,7 +107,6 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             }
 
             FixEqualOrJustOverlappingFrameNumbers();
-
             return true;
         }
 
@@ -208,17 +201,11 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             }
         }
 
-        internal void Renumber(int startNumber)
+        internal void Renumber(int startNumber = 1)
         {
-            int i;
-            if (startNumber < 0)
-                i = 0;
-            else
-                i = startNumber;
             foreach (Paragraph p in _paragraphs)
             {
-                p.Number = i;
-                i++;
+                p.Number = startNumber++;
             }
         }
 
