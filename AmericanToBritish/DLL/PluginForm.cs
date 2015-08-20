@@ -19,6 +19,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private bool _allowFixes;
         private readonly List<Regex> _regexList = new List<Regex>();
         private readonly List<string> _replaceList = new List<string>();
+        private readonly Dictionary<string, string> _fixedText = new Dictionary<string, string>();
 
         internal PluginForm(Subtitle subtitle, string name, string description)
         {
@@ -50,58 +51,69 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void AddFixToListView(Paragraph p, string before, string after)
         {
-            var item = new ListViewItem(string.Empty) { Checked = true };
+            var item = new ListViewItem(string.Empty) { Checked = true, Tag = p };
             item.SubItems.Add(p.Number.ToString(CultureInfo.InvariantCulture));
-            item.SubItems.Add(before.Replace(Environment.NewLine, "<br />"));
-            item.SubItems.Add(after.Replace(Environment.NewLine, "<br />"));
+            item.SubItems.Add(before.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
+            item.SubItems.Add(after.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
             listViewFixes.Items.Add(item);
         }
 
         private void AmericanToBritish()
         {
-            for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
+            if (!_allowFixes)
             {
-                Paragraph p = _subtitle.Paragraphs[i];
-                string text = p.Text.Trim();
-                string oldText = text;
-                text = FixText(text);
-
-                var idx = text.IndexOf("<font", StringComparison.OrdinalIgnoreCase);
-                while (idx >= 0) // Fix colour => color
+                listViewFixes.BeginUpdate();
+                for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
                 {
-                    var endIdx = text.IndexOf('>', idx + 5);
-                    if (endIdx < 5)
-                        break;
-                    var tag = text.Substring(idx, endIdx - idx);
-                    tag = tag.Replace("colour", "color");
-                    tag = tag.Replace("COLOUR", "COLOR");
-                    tag = tag.Replace("Colour", "Color");
-                    text = text.Remove(idx, endIdx - idx).Insert(idx, tag);
-                    idx = text.IndexOf("<font", endIdx + 1, StringComparison.OrdinalIgnoreCase);
-                }
+                    Paragraph p = _subtitle.Paragraphs[i];
+                    var text = p.Text.Trim();
+                    var oldText = text;
+                    text = FixText(text);
 
-                if (text != oldText)
-                {
-                    if (AllowFix(p))
+                    var idx = text.IndexOf("<font", StringComparison.OrdinalIgnoreCase);
+                    while (idx >= 0) // Fix colour => color
                     {
-                        p.Text = text;
+                        var endIdx = text.IndexOf('>', idx + 5);
+                        if (endIdx < 5)
+                            break;
+                        var tag = text.Substring(idx, endIdx - idx);
+                        tag = tag.Replace("colour", "color");
+                        tag = tag.Replace("COLOUR", "COLOR");
+                        tag = tag.Replace("Colour", "Color");
+                        text = text.Remove(idx, endIdx - idx).Insert(idx, tag);
+                        idx = text.IndexOf("<font", endIdx + 1, StringComparison.OrdinalIgnoreCase);
                     }
-                    else
+
+                    if (text != oldText)
                     {
-                        if (_allowFixes)
-                            continue;
                         _totalFixes++;
                         // remove html tags before adding to listview
                         //text = Utilities.RemoveHtmlTags(text);
                         //oldText = Utilities.RemoveHtmlTags(oldText);
+                        _fixedText.Add(p.Id, text);
                         AddFixToListView(p, oldText, text);
+
                     }
                 }
+                listViewFixes.EndUpdate();
+                if (!_allowFixes)
+                {
+                    labelTotal.Text = "Total: " + _totalFixes;
+                    labelTotal.ForeColor = _totalFixes > 0 ? Color.Blue : Color.Red;
+                }
+
+                listViewFixes.EndUpdate();
             }
-            if (!_allowFixes)
+            else
             {
-                labelTotal.Text = "Total: " + _totalFixes;
-                labelTotal.ForeColor = _totalFixes > 0 ? Color.Blue : Color.Red;
+                foreach (ListViewItem item in listViewFixes.Items)
+                {
+                    if (!item.Checked)
+                        continue;
+                    var p = item.Tag as Paragraph;
+                    if (p != null && _fixedText.ContainsKey(p.Id))
+                        p.Text = _fixedText[p.Id];
+                }
             }
         }
 
@@ -167,19 +179,26 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Refresh();
         }
 
+        private readonly System.ComponentModel.BackgroundWorker Worker = new System.ComponentModel.BackgroundWorker();
         private void PluginForm_Load(object sender, EventArgs e)
         {
+            //Cursor = Cursors.WaitCursor;
+            // start the progress bar
+            progressBar1.Style = ProgressBarStyle.Marquee;
+            progressBar1.MarqueeAnimationSpeed = 100;
+
             try
             {
-                Cursor = Cursors.WaitCursor;
-                using (var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Nikse.SubtitleEdit.PluginLogic.WordList.xml"))
+                using (var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Nikse.SubtitleEdit.PluginLogic.UsGb.xml"))
                 {
                     if (stream != null)
                     {
                         using (var reader = new StreamReader(stream))
                         {
+                            var s = string.Empty; // raw xml text
+                            System.Threading.Tasks.Task.Factory.StartNew(() => reader.ReadToEnd());
                             var xdoc = XDocument.Parse(reader.ReadToEnd());
-                            foreach (XElement xElement in xdoc.Descendants("Word"))
+                            foreach (XElement xElement in xdoc.Root.Elements("Word"))
                             {
                                 string american = xElement.Attribute("us").Value;
                                 string british = xElement.Attribute("br").Value;
@@ -205,7 +224,28 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         }
                     }
                 }
+
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
+            /*finally
+            {
+                Cursor = Cursors.Default;
+            }*/
+
+            // Worker
+            Worker.DoWork += delegate
+            {
                 AmericanToBritish();
+            };
+            Worker.RunWorkerCompleted += delegate
+            {
+                // stop progress bar
+                progressBar1.Style = ProgressBarStyle.Continuous;
+                progressBar1.MarqueeAnimationSpeed = 0;
+
                 if (listViewFixes.Items.Count > 0)
                 {
                     listViewFixes.Items[0].Selected = true;
@@ -213,16 +253,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
                 listViewFixes.Select();
                 listViewFixes.Focus();
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message);
-            }
-            finally
-            {
-                Cursor = Cursors.Default;
-            }
-
+            };
+            Worker.RunWorkerAsync();
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

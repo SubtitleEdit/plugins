@@ -4,11 +4,13 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
 {
     internal class Paragraph
     {
-        internal int Number { get; set; }
-        internal string Text { get; set; }
-        internal TimeCode StartTime { get; set; }
-        internal TimeCode EndTime { get; set; }
-        internal TimeCode Duration
+
+        public string Id { get; private set; }
+        public int Number { get; set; }
+        public string Text { get; set; }
+        public TimeCode StartTime { get; set; }
+        public TimeCode EndTime { get; set; }
+        public TimeCode Duration
         {
             get
             {
@@ -17,29 +19,32 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
                 return timeCode;
             }
         }
-        internal int StartFrame { get; set; }
-        internal int EndFrame { get; set; }
-        internal bool Forced { get; set; }
-        internal string Extra { get; set; }
-        internal bool IsComment { get; set; }
-        internal string Actor { get; set; }
+        public int StartFrame { get; set; }
+        public int EndFrame { get; set; }
+        public bool Forced { get; set; }
+        public string Extra { get; set; }
+        public bool IsComment { get; set; }
+        public string Actor { get; set; }
 
-        internal Paragraph()
+        public Paragraph()
         {
             StartTime = new TimeCode(TimeSpan.FromSeconds(0));
             EndTime = new TimeCode(TimeSpan.FromSeconds(0));
             Text = string.Empty;
+            Id = GenerateId();
         }
 
-        internal Paragraph(TimeCode startTime, TimeCode endTime, string text)
+        public Paragraph(TimeCode startTime, TimeCode endTime, string text)
         {
+            Id = GenerateId();
             StartTime = startTime;
             EndTime = endTime;
             Text = text;
         }
 
-        internal Paragraph(Paragraph paragraph)
+        public Paragraph(Paragraph paragraph)
         {
+            Id = GenerateId();
             Number = paragraph.Number;
             Text = paragraph.Text;
             StartTime = new TimeCode(paragraph.StartTime.TimeSpan);
@@ -52,8 +57,9 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             Actor = paragraph.Actor;
         }
 
-        internal Paragraph(int startFrame, int endFrame, string text)
+        public Paragraph(int startFrame, int endFrame, string text)
         {
+            Id = GenerateId();
             StartTime = new TimeCode(0, 0, 0, 0);
             EndTime = new TimeCode(0, 0, 0, 0);
             StartFrame = startFrame;
@@ -61,14 +67,20 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             Text = text;
         }
 
-        internal Paragraph(string text, double startTotalMilliseconds, double endTotalMilliseconds)
+        public Paragraph(string text, double startTotalMilliseconds, double endTotalMilliseconds)
         {
+            Id = GenerateId();
             StartTime = new TimeCode(TimeSpan.FromMilliseconds(startTotalMilliseconds));
             EndTime = new TimeCode(TimeSpan.FromMilliseconds(endTotalMilliseconds));
             Text = text;
         }
 
-        internal void Adjust(double factor, double adjust)
+        private string GenerateId()
+        {
+            return Guid.NewGuid().ToString();
+        }
+
+        public void Adjust(double factor, double adjust)
         {
             double seconds = StartTime.TimeSpan.TotalSeconds * factor + adjust;
             StartTime.TimeSpan = TimeSpan.FromSeconds(seconds);
@@ -77,13 +89,13 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             EndTime.TimeSpan = TimeSpan.FromSeconds(seconds);
         }
 
-        internal void CalculateFrameNumbersFromTimeCodes(double frameRate)
+        public void CalculateFrameNumbersFromTimeCodes(double frameRate)
         {
             StartFrame = (int)Math.Round((StartTime.TotalMilliseconds / 1000.0 * frameRate));
             EndFrame = (int)Math.Round((EndTime.TotalMilliseconds / 1000.0 * frameRate));
         }
 
-        internal void CalculateTimeCodesFromFrameNumbers(double frameRate)
+        public void CalculateTimeCodesFromFrameNumbers(double frameRate)
         {
             StartTime.TotalMilliseconds = StartFrame * (1000.0D / frameRate);
             EndTime.TotalMilliseconds = EndFrame * (1000.0D / frameRate);
@@ -96,7 +108,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             //return StartTime + " --> " + EndTime + " " + Text;
         }
 
-        internal int NumberOfLines
+        public int NumberOfLines
         {
             get
             {
@@ -104,7 +116,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             }
         }
 
-        internal double WordsPerMinute
+        public double WordsPerMinute
         {
             get
             {
