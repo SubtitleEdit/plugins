@@ -42,6 +42,7 @@
   <Word us="flavor" br="flavour" />
   <Word us="freeway" br="motorway" />
   <Word us="fueled" br="fuelled" />
+  <Word us="fueling" br="fuelling" />
   <Word us="fulfill" br="fulfil" />
   <Word us="gray" br="grey" />
   <Word us="gynecology" br="gynaecology" />
@@ -57,6 +58,7 @@
   <Word us="labor" br="labour" />
   <Word us="lay of the land" br="lie of the land" />
   <Word us="leukemia" br="leukaemia" />
+  <Word us="license" br="licence" />
   <Word us="liter" br="litre" />
   <Word us="louver" br="louvre" />
   <Word us="luggage" br="baggage" />
