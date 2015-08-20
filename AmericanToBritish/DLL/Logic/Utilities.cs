@@ -50,7 +50,6 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
 
         #endregion
 
-
         internal static string AssemblyVersion
         {
             get
@@ -66,7 +65,6 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
                 return true;
             return false;
         }
-
 
         public static string RemoveHtmlTags(string s, bool alsoSsa)
         {
@@ -125,7 +123,6 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             return false;
         }
 
-
         private static bool CanBreak(string s, int index, string language)
         {
             char nextChar = ' ';
@@ -141,13 +138,10 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             return true;
         }
 
-
         internal static string AutoBreakLine(string p)
         {
             return AutoBreakLine(p, 43, 10, "en");
         }
-
-
 
         public static string AutoBreakLine(string text, int maximumLength, int mergeLinesShorterThan, string language)
         {
@@ -392,5 +386,18 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             return s;
         }
 
+        public static int GetNumberOfLines(string text)
+        {
+            if (text == null)
+                return 0;
+            var lines = 1;
+            var idx = text.IndexOf('\n');
+            while (idx >= 0)
+            {
+                lines++;
+                idx = text.IndexOf('\n', idx + 1);
+            }
+            return lines;
+        }
     }
 }

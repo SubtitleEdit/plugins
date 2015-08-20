@@ -100,9 +100,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
         {
             get
             {
-                if (string.IsNullOrEmpty(Text))
-                    return 0;
-                return Text.Length - Text.Replace(Environment.NewLine, string.Empty).Length;
+                return Utilities.GetNumberOfLines(Text);
             }
         }
 
