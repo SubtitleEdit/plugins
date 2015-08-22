@@ -274,7 +274,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 _textTwo = Utilities.RemoveHtmlTags(p.Text);
                 GeneratePreview();
             }
-        }        
+        }
 
         private void PluginForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -500,9 +500,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     translateMatrix.Translate(1, 1);
                     shadowPath.Transform(translateMatrix);
 
-                    var p1 = new Pen(Color.FromArgb(250, Color.Black), outline); //(()) panelBackColor.BackColor), outline);
-                    g.DrawPath(p1, shadowPath);
-                    p1.Dispose();
+                    using (var p1 = new Pen(Color.FromArgb(250, Color.Black), outline)) //(()) panelBackColor.BackColor), outline);
+                        g.DrawPath(p1, shadowPath);
                 }
             }
 
@@ -638,7 +637,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                                     string f = format[i].Trim();
                                     if (i == propertyIndex)
                                     {
-//                                        MessageBox.Show("Style:" + styleName + ": changing property " + propertyName + " " + f + " to " + propertyValue);
+                                        //                                        MessageBox.Show("Style:" + styleName + ": changing property " + propertyName + " " + f + " to " + propertyValue);
                                         sb.Append(propertyValue);
                                     }
                                     else
@@ -792,7 +791,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             SetSsaStyle("style2", "fontsize", numericUpDownFontSize2.Value.ToString(CultureInfo.InvariantCulture));
             GeneratePreview();
-        }     
+        }
 
         private void PluginForm_ResizeEnd(object sender, EventArgs e)
         {
@@ -923,7 +922,6 @@ Style: style2,tahoma,20,-1,-256,-16777216,-16777216,-1,0,1,2,1,2,10,10,10,0,1
             SetSsaStyle("style1", "fontname", comboBoxFontName1.Text);
             GeneratePreview();
         }
-
 
     }
 }
