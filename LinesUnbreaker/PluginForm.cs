@@ -109,18 +109,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _totalFixed = 0;
             listView1.BeginUpdate();
             _maxLineLength = (int)numericUpDown1.Value;
-            foreach (Paragraph p in _subtitle.Paragraphs)
+            foreach (var p in _subtitle.Paragraphs)
             {
                 if (p.NumberOfLines < 2)
                     continue;
-                string oldText = p.Text;
-                string text = p.Text;
+                var oldText = p.Text;
+                var text = p.Text;
 
                 text = UnbreakLines(text);
                 if (text != oldText)
                 {
-                    text = Regex.Replace(text, " +" + Environment.NewLine, Environment.NewLine).Trim();
-                    text = Regex.Replace(text, Environment.NewLine + " +", Environment.NewLine).Trim();
+                    //text = Regex.Replace(text, " +" + Environment.NewLine, Environment.NewLine).Trim();
+                    //text = Regex.Replace(text, Environment.NewLine + " +", Environment.NewLine).Trim();
 
                     if (AllowFix(p))
                     {
@@ -190,12 +190,22 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return s;
             }
 
-            temp = temp.Replace(Environment.NewLine, " ").Trim();
-            temp = temp.Replace("  ", " ");
-            if (temp.Length < _maxLineLength)
+
+            s = s.Replace(Environment.NewLine, " ");
+            if (s.Contains("</")) // Fix tag
             {
-                s = s.Replace(Environment.NewLine, " ").Trim();
+                s = s.Replace("</i> <i>", " ");
+                s = s.Replace("</i><i>", " ");
+
+                s = s.Replace("</b> <b>", " ");
+                s = s.Replace("</b><b>", " ");
+
+                s = s.Replace("</u> <u>", " ");
+                s = s.Replace("</u><u>", " ");
             }
+
+            while (s.Contains("  "))
+                s = s.Replace("  ", " ");
             return s;
         }
 
@@ -231,13 +241,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (listView1.Items.Count <= 0)
                 return;
+
             listView1.BeginUpdate();
-            if (sender == buttonCheckAll)
-                foreach (ListViewItem item in listView1.Items)
-                    item.Checked = true;
-            else
-                foreach (ListViewItem item in listView1.Items)
-                    item.Checked = !item.Checked;
+            bool selAll = sender == buttonCheckAll;
+            foreach (ListViewItem item in listView1.Items)
+            {
+                item.Checked = selAll ? selAll : !item.Checked;
+            }
             listView1.EndUpdate();
         }
 

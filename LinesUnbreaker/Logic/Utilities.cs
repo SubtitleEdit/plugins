@@ -8,13 +8,27 @@ namespace Nikse.SubtitleEdit.PluginLogic
     public static class Utilities
     {
         #region Extension Methods
+
         public static string[] SplitToLines(this string s)
         {
             return s.Replace(Environment.NewLine, "\n").Replace('\r', '\n').Split('\n');
         }
+        public static bool StartsWith(this string s, char c)
+        {
+            return s.Length > 0 && s[0] == c;
+        }
+        public static bool EndsWith(this string s, char c)
+        {
+            return s.Length > 0 && s[s.Length - 1] == c;
+        }
+        public static bool Contains(this string s, char c)
+        {
+            return s.Length > 0 && s.IndexOf(c) >= 0;
+        }
+
         #endregion
 
-        internal static string AssemblyVersion
+        public static string AssemblyVersion
         {
             get
             {
@@ -53,12 +67,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return RemoveHtmlFontTag(s).Trim();
         }
 
-        internal static string GetHtmlColorCode(Color color)
+        public static string GetHtmlColorCode(Color color)
         {
             return string.Format("#{0:x2}{1:x2}{2:x2}", color.R, color.G, color.B);
         }
 
-        internal static string RemoveParagraphTag(string s)
+        public static string RemoveParagraphTag(string s)
         {
             s = Regex.Replace(s, "(?i)</?p>", string.Empty);
             while (s.ToLower().Contains("<p "))
@@ -68,6 +82,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 s = s.Remove(startIndex, (endIndex - startIndex) + 1);
             }
             return s;
+        }
+
+        public static int GetNumberOfLines(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+                return 0;
+            var totalLines = 1;
+            var idx = s.IndexOf('\n');
+            while (idx >= 0)
+            {
+                totalLines++;
+                idx = s.IndexOf('\n', idx + 1);
+            }
+            return totalLines;
         }
     }
 }
