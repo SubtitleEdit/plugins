@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    public partial class PluginForm : Form
+    internal partial class PluginForm : Form
     {
         public string FixedSubtitle { get; set; }
         //private string path = Path.Combine("Plugins", "SeLinesUnbreaker.xml");

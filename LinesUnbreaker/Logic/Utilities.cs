@@ -7,6 +7,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public static class Utilities
     {
+        #region Extension Methods
+        public static string[] SplitToLines(this string s)
+        {
+            return s.Replace(Environment.NewLine, "\n").Replace('\r', '\n').Split('\n');
+        }
+        #endregion
+
         internal static string AssemblyVersion
         {
             get

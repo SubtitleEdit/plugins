@@ -2,11 +2,11 @@
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    public abstract class SubtitleFormat
+    internal abstract class SubtitleFormat
     {
         protected int _errorCount;
 
-        internal virtual List<string> AlternateExtensions
+        public virtual List<string> AlternateExtensions
         {
             get
             {
@@ -14,17 +14,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        internal int ErrorCount
+        public int ErrorCount
         {
             get { return _errorCount; }
         }
 
-        abstract internal string Extension
+        abstract public string Extension
         {
             get;
         }
 
-        internal string FriendlyName
+        public string FriendlyName
         {
             get
             {
@@ -32,7 +32,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        internal virtual bool HasStyleSupport
+        public virtual bool HasStyleSupport
         {
             get
             {
@@ -40,7 +40,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        internal bool IsFrameBased
+        public bool IsFrameBased
         {
             get
             {
@@ -48,34 +48,34 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        abstract internal bool IsTimeBased
+        abstract public bool IsTimeBased
         {
             get;
         }
 
-        abstract internal string Name
+        abstract public string Name
         {
             get;
         }
 
-        internal static int FramesToMilliseconds(double frames)
+        public static int FramesToMilliseconds(double frames)
         {
             return (int)System.Math.Round(frames * (1000.0 / Configuration.CurrentFrameRate));
         }
 
-        internal static int MillisecondsToFrames(double milliseconds)
+        public static int MillisecondsToFrames(double milliseconds)
         {
             return (int)System.Math.Round(milliseconds / (1000.0 / Configuration.CurrentFrameRate));
         }
 
-        abstract internal bool IsMine(List<string> lines, string fileName);
+        abstract public bool IsMine(string[] lines, string fileName);
 
-        abstract internal void LoadSubtitle(Subtitle subtitle, List<string> lines, string fileName);
+        abstract public void LoadSubtitle(Subtitle subtitle, string[] lines, string fileName);
 
-        internal virtual void RemoveNativeFormatting(Subtitle subtitle)
+        public virtual void RemoveNativeFormatting(Subtitle subtitle)
         {
         }
 
-        abstract internal string ToText(Subtitle subtitle, string title);
+        abstract public string ToText(Subtitle subtitle, string title);
     }
 }
