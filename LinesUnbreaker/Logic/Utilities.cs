@@ -56,32 +56,33 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return s;
         }
 
-        public static string RemoveHtmlTags(string s)
+        public static string RemoveHtmlTags(string s, bool alsoSsa )
         {
             if (string.IsNullOrEmpty(s))
                 return null;
-            if (!s.Contains("<"))
-                return s;
-            s = Regex.Replace(s, "(?i)</?[iіbu]>", string.Empty);
-            s = RemoveParagraphTag(s);
-            return RemoveHtmlFontTag(s).Trim();
+
+            int idx;
+            if (alsoSsa)
+            {
+                const string SSA = "{\\";
+                idx = s.IndexOf(SSA, StringComparison.Ordinal);
+                while (idx >= 0)
+                {
+                    var endIdx = s.IndexOf('}', idx + 2);
+                    if (endIdx < idx)
+                        break;
+                    s = s.Remove(idx, endIdx - idx + 1);
+                    idx = s.IndexOf(SSA);
+                }
+            }
+
+            idx = s.IndexOf('<');
+            return Regex.Replace(s, "(?i)</?[iіbu]>", string.Empty);
         }
 
         public static string GetHtmlColorCode(Color color)
         {
             return string.Format("#{0:x2}{1:x2}{2:x2}", color.R, color.G, color.B);
-        }
-
-        public static string RemoveParagraphTag(string s)
-        {
-            s = Regex.Replace(s, "(?i)</?p>", string.Empty);
-            while (s.ToLower().Contains("<p "))
-            {
-                int startIndex = s.ToLower().IndexOf("<p ");
-                int endIndex = Math.Max(s.IndexOf(">"), startIndex + 4);
-                s = s.Remove(startIndex, (endIndex - startIndex) + 1);
-            }
-            return s;
         }
 
         public static int GetNumberOfLines(string s)
@@ -97,5 +98,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             return totalLines;
         }
+
     }
 }

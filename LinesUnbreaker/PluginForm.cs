@@ -9,9 +9,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form
     {
-        public string FixedSubtitle { get; set; }
+        public string FixedSubtitle { get; private set; }
         //private string path = Path.Combine("Plugins", "SeLinesUnbreaker.xml");
-        private Subtitle _subtitle;
+        private readonly Subtitle _subtitle;
         private XElement _xmlSetting;
         private bool _allowFixes;
         private int _totalFixed;
@@ -34,18 +34,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 LoadSettingsIfThereIs(false); // store in xml file
             };
             LoadSettingsIfThereIs(true);
-            FindLines();
+            GeneratePreview();
         }
 
         private void LoadSettingsIfThereIs(bool load)
         {
-            string path = GetSettingsFileName();
+            var path = GetSettingsFileName();
             if (!File.Exists(path))
                 return;
             try
             {
                 if (load)
                 {
+                    // load
                     if (File.Exists(path))
                     {
                         _xmlSetting = XElement.Load(path);
@@ -60,6 +61,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     }
                     else
                     {
+                        // create new one & save
                         _xmlSetting = new XElement("SeLinesUnbreaker",
                             new XElement("Shorterthan", numericUpDown1.Value),
                             new XElement("SkipDialog", true),
@@ -75,17 +77,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
                 else
                 {
+                    // save settings
                     if (_xmlSetting == null)
                         return;
                     _xmlSetting.Element("Shorterthan").Value = numericUpDown1.Value.ToString();
                     _xmlSetting.Element("SkipMoods").Value = checkBoxMoods.Checked.ToString();
                     _xmlSetting.Element("SkipNarrator").Value = checkBoxSkipNarrator.Checked.ToString();
                     _xmlSetting.Element("SkipDialog").Value = checkBoxSkipDialog.Checked.ToString();
-                    try
-                    {
-                        _xmlSetting.Save(path);
-                    }
-                    catch { }
+                    _xmlSetting.Save(path);
                 }
             }
             catch (Exception ex)
@@ -96,9 +95,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string GetSettingsFileName()
         {
-            // "C:\Users\Ivandrofly\Desktop\SubtitleEdit\Plugins\SeLinesUnbreaker.xml"
+            // "%userprofile%Desktop\SubtitleEdit\Plugins\SeLinesUnbreaker.xml"
             var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-            if (path.StartsWith("file:\\"))
+            if (path.StartsWith("file:\\", StringComparison.Ordinal))
                 path = path.Remove(0, 6);
             path = Path.Combine(path, "Plugins");
             if (!Directory.Exists(path))
@@ -106,10 +105,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return Path.Combine(path, "SeLinesUnbreaker.xml");
         }
 
-        private void FindLines()
+        private void GeneratePreview()
         {
             _totalFixed = 0;
             listView1.BeginUpdate();
+            listView1.Items.Clear();
             _maxLineLength = (int)numericUpDown1.Value;
             foreach (var p in _subtitle.Paragraphs)
             {
@@ -132,8 +132,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     {
                         if (!_allowFixes)
                         {
-                            oldText = Utilities.RemoveHtmlTags(oldText);
-                            text = Utilities.RemoveHtmlTags(text);
+                            oldText = Utilities.RemoveHtmlTags(oldText, true);
+                            text = Utilities.RemoveHtmlTags(text, true);
                             AddFixToListView(p, oldText, text, text.Length.ToString());
                             _totalFixed++;
                         }
@@ -176,7 +176,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string UnbreakLines(string s)
         {
-            var temp = Utilities.RemoveHtmlTags(s);
+            var temp = Utilities.RemoveHtmlTags(s, true);
             temp = temp.Replace("  ", " ").Trim();
 
             if (checkBoxSkipDialog.Checked && (temp.StartsWith('-') || temp.Contains("\r\n-")) && checkBoxSkipDialog.Checked)
@@ -213,10 +213,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonUpdate_Click(object sender, EventArgs e)
         {
-            listView1.Items.Clear();
             _totalFixed = 0;
             buttonUpdate.Enabled = false;
-            FindLines();
+            GeneratePreview();
             buttonUpdate.Enabled = true;
         }
 
@@ -228,7 +227,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void buttonOK_Click(object sender, EventArgs e)
         {
             _allowFixes = true;
-            FindLines();
+            GeneratePreview();
             FixedSubtitle = _subtitle.ToText(new SubRip());
             DialogResult = DialogResult.OK;
         }

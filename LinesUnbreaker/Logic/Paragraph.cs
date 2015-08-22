@@ -27,20 +27,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public Paragraph()
         {
+            Id = GenerateId();
             StartTime = new TimeCode(TimeSpan.FromSeconds(0));
             EndTime = new TimeCode(TimeSpan.FromSeconds(0));
             Text = string.Empty;
         }
 
-        public Paragraph(TimeCode startTime, TimeCode endTime, string text)
+        private string GenerateId()
         {
-            StartTime = startTime;
-            EndTime = endTime;
-            Text = text;
+            return Guid.NewGuid().ToString();
         }
 
         public Paragraph(Paragraph paragraph)
         {
+            Id = GenerateId();
             Number = paragraph.Number;
             Text = paragraph.Text;
             StartTime = new TimeCode(paragraph.StartTime.TimeSpan);
@@ -51,31 +51,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Extra = paragraph.Extra;
             IsComment = paragraph.IsComment;
             Actor = paragraph.Actor;
-        }
-
-        public Paragraph(int startFrame, int endFrame, string text)
-        {
-            StartTime = new TimeCode(0, 0, 0, 0);
-            EndTime = new TimeCode(0, 0, 0, 0);
-            StartFrame = startFrame;
-            EndFrame = endFrame;
-            Text = text;
-        }
-
-        public Paragraph(string text, double startTotalMilliseconds, double endTotalMilliseconds)
-        {
-            StartTime = new TimeCode(TimeSpan.FromMilliseconds(startTotalMilliseconds));
-            EndTime = new TimeCode(TimeSpan.FromMilliseconds(endTotalMilliseconds));
-            Text = text;
-        }
-
-        public void Adjust(double factor, double adjust)
-        {
-            double seconds = StartTime.TimeSpan.TotalSeconds * factor + adjust;
-            StartTime.TimeSpan = TimeSpan.FromSeconds(seconds);
-
-            seconds = EndTime.TimeSpan.TotalSeconds * factor + adjust;
-            EndTime.TimeSpan = TimeSpan.FromSeconds(seconds);
         }
 
         public void CalculateFrameNumbersFromTimeCodes(double frameRate)
@@ -111,7 +86,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 if (string.IsNullOrEmpty(Text))
                     return 0;
-                int wordCount = Utilities.RemoveHtmlTags(Text).Split((" ,.!?;:()[]" + Environment.NewLine).ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Length;
+                int wordCount = Utilities.RemoveHtmlTags(Text, true).Split(new[] { ' ', ',', '.', '!', '?', ';', ':', '(', ')', '[', ']', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length;
                 return (60.0 / Duration.TotalSeconds) * wordCount;
             }
         }
