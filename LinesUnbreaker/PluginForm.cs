@@ -122,7 +122,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 var text = p.Text;
 
                 text = UnbreakLines(text);
-                if (text != oldText)
+                var t = Utilities.RemoveHtmlTags(text, true);
+                if (text != oldText && t.Length < numericUpDown1.Value)
                 {
                     //text = Regex.Replace(text, " +" + Environment.NewLine, Environment.NewLine).Trim();
                     //text = Regex.Replace(text, Environment.NewLine + " +", Environment.NewLine).Trim();
@@ -130,8 +131,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     {
                         FixedParagrahs.Add(p.Id, text);
                         oldText = Utilities.RemoveHtmlTags(oldText, true);
-                        text = Utilities.RemoveHtmlTags(text, true);
-                        AddFixToListView(p, oldText, text, text.Length.ToString());
+                        AddFixToListView(p, oldText, t, t.Length.ToString());
                         _totalFixed++;
                     }
                 }

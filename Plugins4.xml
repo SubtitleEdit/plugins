@@ -17,8 +17,8 @@
   <Plugin>
     <Name>Lines Unbreaker</Name>
     <Description>Helps breaking short lines (by Ivandrofly)</Description>
-    <Version>1.1</Version>
-    <Date>2014-03-09</Date>
+    <Version>1.2</Version>
+    <Date>2015-08-22</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/LinesUnbreaker.zip</Url>
   </Plugin>
   <Plugin>
