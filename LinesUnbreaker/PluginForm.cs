@@ -17,6 +17,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private int _totalFixed;
         private int _maxLineLength;
 
+        private readonly char[] MoodsChars = { '(', '[' };
+        private readonly Regex NarratorRegex = new Regex(":\\B");
         public PluginForm()
         {
             InitializeComponent();
@@ -95,7 +97,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private string GetSettingsFileName()
         {
             // "C:\Users\Ivandrofly\Desktop\SubtitleEdit\Plugins\SeLinesUnbreaker.xml"
-            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
             if (path.StartsWith("file:\\"))
                 path = path.Remove(0, 6);
             path = Path.Combine(path, "Plugins");
@@ -177,15 +179,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var temp = Utilities.RemoveHtmlTags(s);
             temp = temp.Replace("  ", " ").Trim();
 
-            if ((temp.StartsWith("-") || temp.Contains("\r\n-")) && checkBoxSkipDialog.Checked)
+            if (checkBoxSkipDialog.Checked && (temp.StartsWith('-') || temp.Contains("\r\n-")) && checkBoxSkipDialog.Checked)
             {
                 return s;
             }
-            if ((temp.Contains("(") || temp.Contains("[") || temp.Contains("{")) && checkBoxMoods.Checked)
+            if (checkBoxMoods.Checked && temp.IndexOfAny(MoodsChars) >= 0)
             {
                 return s;
             }
-            if (Regex.IsMatch(temp, ":\\B") && checkBoxSkipNarrator.Checked)
+            if (checkBoxSkipNarrator.Checked && NarratorRegex.IsMatch(temp))
             {
                 return s;
             }
