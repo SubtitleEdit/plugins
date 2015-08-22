@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -9,6 +10,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form
     {
+        private readonly Dictionary<string, string> FixedParagrahs = new Dictionary<string, string>();
         public string FixedSubtitle { get; private set; }
         //private string path = Path.Combine("Plugins", "SeLinesUnbreaker.xml");
         private readonly Subtitle _subtitle;
@@ -108,6 +110,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void GeneratePreview()
         {
             _totalFixed = 0;
+            FixedParagrahs.Clear();
             listView1.BeginUpdate();
             listView1.Items.Clear();
             _maxLineLength = (int)numericUpDown1.Value;
@@ -123,20 +126,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     //text = Regex.Replace(text, " +" + Environment.NewLine, Environment.NewLine).Trim();
                     //text = Regex.Replace(text, Environment.NewLine + " +", Environment.NewLine).Trim();
-
-                    if (AllowFix(p))
+                    if (!_allowFixes)
                     {
-                        p.Text = text;
-                    }
-                    else
-                    {
-                        if (!_allowFixes)
-                        {
-                            oldText = Utilities.RemoveHtmlTags(oldText, true);
-                            text = Utilities.RemoveHtmlTags(text, true);
-                            AddFixToListView(p, oldText, text, text.Length.ToString());
-                            _totalFixed++;
-                        }
+                        FixedParagrahs.Add(p.Id, text);
+                        oldText = Utilities.RemoveHtmlTags(oldText, true);
+                        text = Utilities.RemoveHtmlTags(text, true);
+                        AddFixToListView(p, oldText, text, text.Length.ToString());
+                        _totalFixed++;
                     }
                 }
             }
@@ -149,19 +145,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listView1.EndUpdate();
             //listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             //listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-        }
-
-        private bool AllowFix(Paragraph p)
-        {
-            if (!_allowFixes)
-                return false;
-            string ln = p.Number.ToString();
-            foreach (ListViewItem item in listView1.Items)
-            {
-                if (item.SubItems[1].Text == ln)
-                    return item.Checked;
-            }
-            return false;
         }
 
         private void AddFixToListView(Paragraph p, string before, string after, string lineLength)
@@ -213,7 +196,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonUpdate_Click(object sender, EventArgs e)
         {
-            _totalFixed = 0;
             buttonUpdate.Enabled = false;
             GeneratePreview();
             buttonUpdate.Enabled = true;
@@ -227,8 +209,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void buttonOK_Click(object sender, EventArgs e)
         {
             _allowFixes = true;
-            GeneratePreview();
-            FixedSubtitle = _subtitle.ToText(new SubRip());
+            //GeneratePreview();
+            foreach (ListViewItem item in listView1.Items)
+            {
+                var p = item.Tag as Paragraph;
+                if (!item.Checked | p == null)
+                    continue;
+                if (FixedParagrahs.ContainsKey(p.Id))
+                    p.Text = FixedParagrahs[p.Id];
+            }
+            FixedSubtitle = _subtitle.ToText();
             DialogResult = DialogResult.OK;
         }
 

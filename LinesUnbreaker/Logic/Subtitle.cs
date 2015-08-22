@@ -8,7 +8,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
     internal class Subtitle
     {
         private List<Paragraph> _paragraphs;
-        private SubtitleFormat _format;
+        private readonly SubtitleFormat _format = new SubRip();
         private bool _wasLoadedWithFrameNumbers;
         public string Header { get; set; }
         public string Footer { get; set; }
@@ -60,9 +60,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return _paragraphs[index];
         }
 
-        public string ToText(SubtitleFormat format)
+        public string ToText()
         {
-            return format.ToText(this, Path.GetFileNameWithoutExtension(FileName));
+            return _format.ToText(this, Path.GetFileNameWithoutExtension(FileName));
         }
 
         public void AddTimeToAllParagraphs(TimeSpan time)
