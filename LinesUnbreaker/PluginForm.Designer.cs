@@ -61,9 +61,9 @@
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
+            this.columnHeader5,
             this.columnHeader3,
-            this.columnHeader4,
-            this.columnHeader5});
+            this.columnHeader4});
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
             this.listView1.Location = new System.Drawing.Point(7, 148);
@@ -72,6 +72,7 @@
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
+            this.listView1.Resize += new System.EventHandler(this.listView1_Resize);
             // 
             // columnHeader1
             // 
@@ -85,19 +86,16 @@
             // 
             // columnHeader3
             // 
-            this.columnHeader3.DisplayIndex = 3;
             this.columnHeader3.Text = "Before";
             this.columnHeader3.Width = 334;
             // 
             // columnHeader4
             // 
-            this.columnHeader4.DisplayIndex = 4;
             this.columnHeader4.Text = "After";
             this.columnHeader4.Width = 350;
             // 
             // columnHeader5
             // 
-            this.columnHeader5.DisplayIndex = 2;
             this.columnHeader5.Text = "Length";
             this.columnHeader5.Width = 45;
             // 

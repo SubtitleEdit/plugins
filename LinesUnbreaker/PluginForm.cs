@@ -12,7 +12,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public string FixedSubtitle { get; set; }
         //private string path = Path.Combine("Plugins", "SeLinesUnbreaker.xml");
         private Subtitle _subtitle;
-        private XElement _xmlSetting = null;
+        private XElement _xmlSetting;
         private bool _allowFixes;
         private int _totalFixed;
         private int _maxLineLength;
@@ -26,15 +26,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             : this()
         {
             // TODO: Complete member initialization
-            this._subtitle = subtitle;
-            this.Resize += delegate
+            _subtitle = subtitle;
+            FormClosing += delegate
             {
-                listView1.Columns[listView1.Columns.Count - 1].Width = -2;
-                //this.listViewFixes.Columns.Count -1
-            };
-            this.FormClosing += delegate
-            {
-                LoadSettingsIfThereIs(false); // the setting will be stored in xml file.
+                LoadSettingsIfThereIs(false); // store in xml file
             };
             LoadSettingsIfThereIs(true);
             FindLines();
@@ -170,19 +165,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void AddFixToListView(Paragraph p, string before, string after, string lineLength)
         {
             var item = new ListViewItem() { Checked = true, UseItemStyleForSubItems = true, Tag = p };
-            var subItem = new ListViewItem.ListViewSubItem(item, p.Number.ToString());
-            item.SubItems.Add(subItem);
-
-            subItem = new ListViewItem.ListViewSubItem(item, before.Replace(Environment.NewLine,
-                Configuration.ListViewLineSeparatorString));
-            item.SubItems.Add(subItem);
-
-            subItem = new ListViewItem.ListViewSubItem(item, after.Replace(Environment.NewLine,
-                Configuration.ListViewLineSeparatorString));
-            item.SubItems.Add(subItem);
-
-            subItem = new ListViewItem.ListViewSubItem(item, lineLength);
-            item.SubItems.Add(subItem);
+            item.SubItems.Add(p.Number.ToString());
+            item.SubItems.Add(lineLength);
+            item.SubItems.Add(before.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
+            item.SubItems.Add(after.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
             listView1.Items.Add(item);
         }
 
@@ -238,21 +224,34 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void PluginForm_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
-                DialogResult = System.Windows.Forms.DialogResult.Cancel;
+                DialogResult = DialogResult.Cancel;
         }
 
         private void SelectionHandler(object sender, EventArgs e)
         {
-            if (this.listView1.Items.Count <= 0)
+            if (listView1.Items.Count <= 0)
                 return;
             listView1.BeginUpdate();
             if (sender == buttonCheckAll)
-                foreach (ListViewItem item in this.listView1.Items)
+                foreach (ListViewItem item in listView1.Items)
                     item.Checked = true;
             else
-                foreach (ListViewItem item in this.listView1.Items)
+                foreach (ListViewItem item in listView1.Items)
                     item.Checked = !item.Checked;
             listView1.EndUpdate();
+        }
+
+        private void listView1_Resize(object sender, EventArgs e)
+        {
+            var l = 0;
+            for (int i = 0; i < 3; i++)
+            {
+                l += listView1.Columns[i].Width;
+            }
+
+            var newWidth = (listView1.Width - l) >> 1;
+            listView1.Columns[3].Width = newWidth;
+            listView1.Columns[4].Width = newWidth;
         }
     }
 }
