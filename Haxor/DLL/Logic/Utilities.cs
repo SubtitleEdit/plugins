@@ -7,6 +7,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public static class Utilities
     {
+
+        #region StringExtension
+        public static bool Contains(this string s, char c)
+        {
+            return s.Length > 0 && s.IndexOf(c) > 0;
+        }
+        public static string[] SplitToLines(this string s)
+        {
+            return s.Replace(Environment.NewLine, "\n").Replace('\r', '\n').Split('\n');
+        }
+        #endregion
         internal static string AssemblyVersion
         {
             get
@@ -29,7 +40,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (alsoSSA)
                 s = RemoveSsaTags(s);
 
-            if (s.IndexOf('<') < 0)
+            if (!s.Contains('<'))
                 return s;
             s = Regex.Replace(s, "(?i)</?[ibu]>", string.Empty);
             while (s.Contains("  ")) s = s.Replace("  ", " ");
@@ -38,22 +49,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static string RemoveSsaTags(string s)
         {
-            int k = s.IndexOf('{');
-            while (k >= 0)
+            const string tag = "{\\";
+            var idx = s.IndexOf(tag, StringComparison.Ordinal);
+            while (idx >= 0)
             {
-                int l = s.IndexOf('}', k);
-                if (l > k)
-                {
-                    s = s.Remove(k, l - k + 1);
-                    if (s.Length > 1 && s.Length > k)
-                        k = s.IndexOf('{', k);
-                    else
-                        break;
-                }
-                else
-                {
+                var endIdx = s.IndexOf('}');
+                if (endIdx < idx)
                     break;
-                }
+                s = s.Remove(idx, endIdx - idx + 1);
+                idx = s.IndexOf(tag, StringComparison.Ordinal);
             }
             return s;
         }
