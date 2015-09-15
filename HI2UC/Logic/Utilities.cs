@@ -54,7 +54,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return lines;
         }
 
-
         public static string AssemblyVersion
         {
             get

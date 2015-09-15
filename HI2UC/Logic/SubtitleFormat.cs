@@ -6,14 +6,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         protected int _errorCount;
 
-        public virtual List<string> AlternateExtensions
-        {
-            get
-            {
-                return new List<string>();
-            }
-        }
-
         public int ErrorCount
         {
             get { return _errorCount; }

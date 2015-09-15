@@ -20,14 +20,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Text
         }
 
-        public override List<string> AlternateExtensions
-        {
-            get
-            {
-                return new List<string> { ".wsrt" };
-            }
-        }
-
         public string Errors { get; private set; }
 
         public override string Extension
