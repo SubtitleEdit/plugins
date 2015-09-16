@@ -35,51 +35,28 @@ namespace OpenSubtitlesUpload
             }
         }
 
-        private string GetSettingsFileName()
-        {
-            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-            if (path.StartsWith("file:\\", StringComparison.Ordinal))
-                path = path.Remove(0, 6);
-            path = Path.Combine(path, "Plugins");
-            if (!Directory.Exists(path))
-                path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Plugins");
-            return Path.Combine(path, "OpenSubtitles.xml");
-        }
-
-        private static string EncodeTo64(string toEncode)
-        {
-            byte[] toEncodeAsBytes = Encoding.Unicode.GetBytes(toEncode);
-            return Convert.ToBase64String(toEncodeAsBytes);
-        }
-
-        public static string DecodeFrom64(string encodedData)
-        {
-            byte[] encodedDataAsBytes = Convert.FromBase64String(encodedData);
-            return Encoding.Unicode.GetString(encodedDataAsBytes);
-        }
-
         private void LoadLogin()
         {
-            string fileName = GetSettingsFileName();
+            string fileName = Utils.GetSettingsFileName();
             try
             {
                 var doc = new XmlDocument();
                 doc.Load(fileName);
-                textBoxUserName.Text = DecodeFrom64(doc.DocumentElement.SelectSingleNode("Username").InnerText);
-                textBoxPassword.Text = DecodeFrom64(doc.DocumentElement.SelectSingleNode("Password").InnerText);
+                textBoxUserName.Text = Utils.DecodeFrom64(doc.DocumentElement.SelectSingleNode("Username").InnerText);
+                textBoxPassword.Text = Utils.DecodeFrom64(doc.DocumentElement.SelectSingleNode("Password").InnerText);
             }
             catch { }
         }
 
         private void SaveLogin(string userName, string password)
         {
-            var fileName = GetSettingsFileName();
+            var fileName = Utils.GetSettingsFileName();
             try
             {
                 var doc = new XmlDocument();
                 doc.LoadXml("<OpenSubtitles><Username/><Password/></OpenSubtitles>");
-                doc.DocumentElement.SelectSingleNode("Username").InnerText = EncodeTo64(userName);
-                doc.DocumentElement.SelectSingleNode("Password").InnerText = EncodeTo64(password);
+                doc.DocumentElement.SelectSingleNode("Username").InnerText = Utils.EncodeTo64(userName);
+                doc.DocumentElement.SelectSingleNode("Password").InnerText = Utils.EncodeTo64(password);
                 doc.Save(fileName);
             }
             catch { }
@@ -119,9 +96,11 @@ namespace OpenSubtitlesUpload
             textBoxSubtitleFileName.Text = Path.GetFileName(subtitleFileName);
             textBoxReleaseName.Text = Path.GetFileNameWithoutExtension(_subtitleFileName);
 
-            var twoLetterLanguageId = Utilities.AutoDetectGoogleLanguage(rawText);
+            var twoLetterLanguageId = Utils.AutoDetectGoogleLanguage(rawText);
             foreach (CultureInfo x in CultureInfo.GetCultures(CultureTypes.NeutralCultures))
             {
+                if (string.IsNullOrEmpty(x.Name)) // To skip culture like: Invariante Language
+                    continue;
                 comboBoxLanguage.Items.Add(new LanguageItem(x));
                 if (x.Name.ToLower() == twoLetterLanguageId.ToLower())
                     comboBoxLanguage.SelectedIndex = comboBoxLanguage.Items.Count - 1;
@@ -353,12 +332,11 @@ namespace OpenSubtitlesUpload
             {
                 textBoxMovieFileName.Text = Path.GetFileName(openFileDialogVideo.FileName);
                 _videoFileName = openFileDialogVideo.FileName;
+                labelStatus.ForeColor = System.Drawing.Color.Yellow;
                 labelStatus.Text = "Calculating frame-rate...";
+                Cursor = Cursors.WaitCursor;
                 Task.Factory.StartNew(SetFrameRateFromVideoFile);
-
-                buttonOpenVideo.Enabled = false;
-                textBoxMovieFileName.Enabled = true;
-                textBoxMovieFileName.ReadOnly = true;
+                EnableDisableActionButtons(false);
                 //Task.Factory.StartNew(SetFrameRateFromVideoFile).ContinueWith((_) => comboBoxFrameRate.SelectedIndex = idx, TaskScheduler.FromCurrentSynchronizationContext()); // where 'idx' is global volatile
             }
         }
@@ -366,7 +344,7 @@ namespace OpenSubtitlesUpload
         private void SetFrameRateFromVideoFile()
         {
             double frameRate = 0;
-            Cursor = Cursors.WaitCursor;
+            // Cursor = Cursors.WaitCursor; will Invalid operation exection (Note: Belong to UI thread, the expection won't crash the app 'CAREFUL') 
             try
             {
                 if (!string.IsNullOrEmpty(_videoFileName) && File.Exists(_videoFileName))
@@ -427,12 +405,20 @@ namespace OpenSubtitlesUpload
                     }
                     comboBoxFrameRate.SelectedIndex = index;
                 }));
+
             }
             catch
             {
             }
-            Cursor = Cursors.Default;
-            labelStatus.Text = string.Empty;
+
+            // Restore controls stats
+            Invoke(new MethodInvoker(() =>
+            {
+                Cursor = Cursors.Default;
+                labelStatus.Text = string.Empty;
+                EnableDisableActionButtons(true);
+                labelStatus.ForeColor = System.Drawing.Color.Black;
+            }));
         }
 
         private void buttonSearchIMDb_Click(object sender, EventArgs e)
@@ -511,7 +497,16 @@ namespace OpenSubtitlesUpload
 
         private void PluginForm_Load(object sender, EventArgs e)
         {
-            SetFrameRateFromVideoFile();
+            //SetFrameRateFromVideoFile();
+        }
+
+        private void EnableDisableActionButtons(bool enableDisable)
+        {
+            buttonUpload.Enabled = enableDisable;
+            buttonCancel.Enabled = enableDisable;
+            buttonOpenVideo.Enabled = enableDisable;
+            textBoxMovieFileName.Enabled = enableDisable;
+            textBoxMovieFileName.ReadOnly = !enableDisable;
         }
 
     }

@@ -8,8 +8,7 @@ namespace OpenSubtitlesUpload
 {
     public partial class ImdbSearch : Form
     {
-        private OpenSubtitlesApi _api;
-        public string ImdbId;
+        public string ImdbId { get; private set; }
         private readonly BackgroundWorker backGroundWoker;
         private readonly Action<bool> MethodInvoker;
 
@@ -17,7 +16,6 @@ namespace OpenSubtitlesUpload
         {
             InitializeComponent();
             labelStatus.Text = string.Empty;
-            _api = api;
             textBoxSearchQuery.Text = title;
 
             MethodInvoker = (b) => buttonSearch.Enabled = b;
