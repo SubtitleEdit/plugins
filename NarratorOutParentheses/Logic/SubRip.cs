@@ -66,10 +66,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             for (int i = 0; i < lines.Count; i++)
             {
                 _lineNumber++;
-                string line = lines[i].TrimEnd();
-                line = line.Trim(Convert.ToChar(127)); // 127=delete acscii
+                var line = lines[i].TrimEnd();
+                line = line.Trim('\u007F'); // 127=delete acscii
 
-                string next = string.Empty;
+                var next = string.Empty;
                 if (i + 1 < lines.Count)
                     next = lines[i + 1];
 
@@ -119,12 +119,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private bool IsText(string text)
         {
-            if (text.Trim().Length == 0)
+            if (string.IsNullOrWhiteSpace(text) || Utilities.IsInteger(text) || _regexTimeCodes.IsMatch(text))
                 return false;
-
-            if (Utilities.IsInteger(text) || _regexTimeCodes.IsMatch(text))
-                return false;
-
             return true;
         }
 
@@ -158,13 +154,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     break;
 
                 case ExpectingLine.Text:
-                    if (line.Trim().Length > 0)
-                    {
-                        if (_paragraph.Text.Length > 0)
-                            _paragraph.Text += Environment.NewLine;
-                        _paragraph.Text += RemoveBadChars(line).TrimEnd().Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
-                    }
-                    else if (IsText(next))
+                    if (!string.IsNullOrWhiteSpace(line) || IsText(line))
                     {
                         if (_paragraph.Text.Length > 0)
                             _paragraph.Text += Environment.NewLine;
@@ -199,9 +189,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private bool TryReadTimeCodesLine(string line, Paragraph paragraph)
         {
             const string defaultSeparator = " --> ";
-            line = line.Replace("،", ",");
-            line = line.Replace("", ",");
-            line = line.Replace("¡", ",");
+            line = line.Replace('،', ',');
+            line = line.Replace('', ',');
+            line = line.Replace('¡', ',');
 
             // Fix some badly formatted separator sequences - anything can happen if you manually edit ;)
             line = line.Replace(" -> ", defaultSeparator); // I've seen this

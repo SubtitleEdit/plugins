@@ -38,8 +38,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
-            subtitle = subtitle.Trim();
-            if (string.IsNullOrEmpty(subtitle))
+            if (string.IsNullOrWhiteSpace(subtitle))
             {
                 MessageBox.Show("No subtitle loaded", parentForm.Text,
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -49,7 +48,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (!string.IsNullOrEmpty(listViewLineSeparatorString))
                 Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
 
-            var list = subtitle.Replace(Environment.NewLine, "\n").Split('\n').ToList();
+            var list = subtitle.SplitToLines().ToList();
 
             var sub = new Subtitle();
             var srt = new SubRip();

@@ -30,8 +30,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         /// Copy constructor (only paragraphs)
         /// </summary>
         /// <param name="subtitle">Subtitle to copy</param>
-        public Subtitle(Subtitle subtitle)
-            : this()
+        public Subtitle(Subtitle subtitle) : this()
         {
             foreach (Paragraph p in subtitle.Paragraphs)
             {
@@ -52,79 +51,38 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return format.ToText(this, Path.GetFileNameWithoutExtension(FileName));
         }
 
-        public bool WasLoadedWithFrameNumbers { get { return _wasLoadedWithFrameNumbers; } set { _wasLoadedWithFrameNumbers = value; } }
-
-        public void Renumber(int startNumber)
+        public bool WasLoadedWithFrameNumbers
         {
-            int i;
-            if (startNumber < 0)
-                i = 0;
-            else
-                i = startNumber;
+            get
+            {
+                return _wasLoadedWithFrameNumbers;
+            }
+            set
+            {
+                _wasLoadedWithFrameNumbers = value;
+            }
+        }
+
+        public void Renumber(int startNumber = 1)
+        {
+            if (startNumber <= 0)
+                startNumber = 1;
             foreach (Paragraph p in _paragraphs)
             {
-                p.Number = i;
-                i++;
+                p.Number = startNumber++;
             }
-        }
-
-        public int GetIndex(Paragraph p)
-        {
-            if (p == null)
-                return -1;
-
-            int index = _paragraphs.IndexOf(p);
-            if (index >= 0)
-                return index;
-
-            for (int i = 0; i < _paragraphs.Count; i++)
-            {
-                if (p.StartTime.TotalMilliseconds == _paragraphs[i].StartTime.TotalMilliseconds &&
-                    p.EndTime.TotalMilliseconds == _paragraphs[i].EndTime.TotalMilliseconds)
-                    return i;
-                if (p.Number == _paragraphs[i].Number && (p.StartTime.TotalMilliseconds == _paragraphs[i].StartTime.TotalMilliseconds ||
-                    p.EndTime.TotalMilliseconds == _paragraphs[i].EndTime.TotalMilliseconds))
-                    return i;
-                if (p.Text == _paragraphs[i].Text && (p.StartTime.TotalMilliseconds == _paragraphs[i].StartTime.TotalMilliseconds ||
-                    p.EndTime.TotalMilliseconds == _paragraphs[i].EndTime.TotalMilliseconds))
-                    return i;
-            }
-            return -1;
-        }
-
-        public Paragraph GetFirstAlike(Paragraph p)
-        {
-            foreach (Paragraph item in _paragraphs)
-            {
-                if (p.StartTime.TotalMilliseconds == item.StartTime.TotalMilliseconds &&
-                    p.EndTime.TotalMilliseconds == item.EndTime.TotalMilliseconds &&
-                    p.Text == item.Text)
-                    return item;
-            }
-            return null;
-        }
-
-        public Paragraph GetFirstParagraphByLineNumber(int number)
-        {
-            foreach (Paragraph p in _paragraphs)
-            {
-                if (p.Number == number)
-                    return p;
-            }
-            return null;
         }
 
         public void RemoveLine(int lineNumber)
         {
-            if (_paragraphs == null)
+            if (_paragraphs == null || _paragraphs.Count == 0)
                 return;
 
-            int startNumber = _paragraphs[0].Number;
             if (lineNumber >= 0)
             {
                 _paragraphs.Remove(_paragraphs.Single(p => p.Number == lineNumber));
             }
-            Renumber(startNumber);
+            Renumber();
         }
     }
 }

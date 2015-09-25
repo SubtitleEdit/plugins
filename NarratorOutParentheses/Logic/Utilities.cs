@@ -10,6 +10,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal static class Utilities
     {
+
+        #region ExtensionMethods
+
+        public static string[] SplitToLines(this string s)
+        {
+            return s.Replace(Environment.NewLine, "\n").Replace('\r', '\n').Split('\n');
+        }
+
+        #endregion
+
+
         private const string FileName = "narratorNames.xml";
         private static readonly string DictionaryFolder = GetDicTionaryFolder();
         private static List<string> _listNames = LoadNames(Path.Combine(DictionaryFolder, "names_etc.xml")); // Uppercase names

@@ -24,22 +24,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             get;
         }
 
-        public string FriendlyName
-        {
-            get
-            {
-                return string.Format("{0} ({1})", Name, Extension);
-            }
-        }
-
-        public virtual bool HasStyleSupport
-        {
-            get
-            {
-                return false;
-            }
-        }
-
         public bool IsFrameBased
         {
             get
@@ -58,11 +42,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             get;
         }
 
-        public static int FramesToMilliseconds(double frames)
-        {
-            return (int)System.Math.Round(frames * (1000.0 / Configuration.CurrentFrameRate));
-        }
-
         public static int MillisecondsToFrames(double milliseconds)
         {
             return (int)System.Math.Round(milliseconds / (1000.0 / Configuration.CurrentFrameRate));
@@ -71,10 +50,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         abstract public bool IsMine(List<string> lines, string fileName);
 
         abstract public void LoadSubtitle(Subtitle subtitle, List<string> lines, string fileName);
-
-        public virtual void RemoveNativeFormatting(Subtitle subtitle)
-        {
-        }
 
         abstract public string ToText(Subtitle subtitle, string title);
     }
