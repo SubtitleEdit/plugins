@@ -36,7 +36,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             get { return string.Empty; }
         }
 
-        string IPlugin.DoAction(System.Windows.Forms.Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
+        string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
             subtitle = subtitle.Trim();
             if (string.IsNullOrEmpty(subtitle))

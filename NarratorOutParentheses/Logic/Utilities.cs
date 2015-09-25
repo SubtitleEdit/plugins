@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -9,7 +8,7 @@ using System.Linq;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    public static class Utilities
+    internal static class Utilities
     {
         private const string FileName = "narratorNames.xml";
         private static readonly string DictionaryFolder = GetDicTionaryFolder();
@@ -96,7 +95,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return int.TryParse(s, out i);
         }
 
-        internal static string RemoveHtmlFontTag(string s)
+        public static string RemoveHtmlFontTag(string s)
         {
             s = Regex.Replace(s, "(?i)</?font>", string.Empty);
             return RemoveTag(s, "<font");
