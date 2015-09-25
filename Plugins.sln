@@ -67,6 +67,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MergeTwoSrtToAssTester", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MergeTwoSrtToAss", "MergeTwoSrtToAss\DLL\MergeTwoSrtToAss.csproj", "{B4ED58DA-3967-4FEA-999C-191621AF3E4A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NarratorOutParentheses", "NarratorOutParentheses\NarratorOutParentheses.csproj", "{A075780C-6BAB-4E78-9FB2-B477219DDD72}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -167,6 +169,10 @@ Global
 		{B4ED58DA-3967-4FEA-999C-191621AF3E4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4ED58DA-3967-4FEA-999C-191621AF3E4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4ED58DA-3967-4FEA-999C-191621AF3E4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A075780C-6BAB-4E78-9FB2-B477219DDD72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A075780C-6BAB-4E78-9FB2-B477219DDD72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A075780C-6BAB-4E78-9FB2-B477219DDD72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A075780C-6BAB-4E78-9FB2-B477219DDD72}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -198,5 +204,6 @@ Global
 		{7D3A9768-8A59-4A13-A7BD-AC71F7C60C7B} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 		{93DE69A7-1B96-4D23-845A-CA83D3A01DF1} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 		{B4ED58DA-3967-4FEA-999C-191621AF3E4A} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
+		{A075780C-6BAB-4E78-9FB2-B477219DDD72} = {21BBD88D-F935-419F-A68B-E8DA9F08E9C1}
 	EndGlobalSection
 EndGlobal
