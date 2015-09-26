@@ -198,7 +198,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     {
                         xdoc.Save(path, SaveOptions.None);
                     }
-                    catch { }
+                    catch
+                    {
+                    }
                 }
             }
         }
@@ -206,6 +208,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void StoreItemsIntoXmlFile(string path)
         {
 
+        }
+
+        private void GetNames_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Escape)
+                DialogResult = DialogResult.Cancel;
         }
     }
 }

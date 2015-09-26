@@ -21,11 +21,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         #endregion
 
 
-        private const string FileName = "narratorNames.xml";
         private static readonly string DictionaryFolder = GetDicTionaryFolder();
         private static List<string> _listNames = LoadNames(Path.Combine(DictionaryFolder, "names_etc.xml")); // Uppercase names
         private static List<string> _listNewName = LoadNames(Path.Combine(DictionaryFolder, "narratorNames.xml"));
-
 
         public static ICollection<string> ListNames
         {
@@ -46,7 +44,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 try
                 {
-                    // Create file
+                    // Create file (user defined named)
                     var xdoc = new XDocument(
                         new XElement("names",
                             new XElement("name", "JOHN"),
@@ -138,7 +136,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return Regex.Replace(inputString, @"^[\[\(]|[\]\)]$", string.Empty).Trim();
         }
 
-        public static bool FixIfInList(string name)
+        public static bool IsInListName(string name)
         {
             if (ListNames == null)
                 return false;
@@ -164,7 +162,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (_listNewName == null || _listNewName.Count == 0)
                 return;
-            var filePath = Path.Combine(DictionaryFolder, FileName);
+            var filePath = Path.Combine(DictionaryFolder, "narratorNames.xml");
             try
             {
                 var xelem = XDocument.Load(filePath);

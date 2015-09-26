@@ -9,6 +9,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         private List<Paragraph> _paragraphs;
         private bool _wasLoadedWithFrameNumbers;
+        private static readonly SubRip _format = new SubRip();
 
         public string Header { get; set; }
         public string Footer { get; set; }
@@ -46,9 +47,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return _paragraphs[index];
         }
 
-        public string ToText(SubtitleFormat format)
+        public string ToText()
         {
-            return format.ToText(this, Path.GetFileNameWithoutExtension(FileName));
+            return _format.ToText(this, Path.GetFileNameWithoutExtension(FileName));
         }
 
         public bool WasLoadedWithFrameNumbers

@@ -132,8 +132,11 @@
             this.Controls.Add(this.buttonAddToList);
             this.Controls.Add(this.listBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
             this.Name = "GetNames";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "GetNames";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GetNames_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 
