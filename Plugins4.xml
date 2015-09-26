@@ -112,4 +112,11 @@
     <Date>2015-08-13</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/MergeTwoSrtToAss.zip</Url>
   </Plugin>
+  <Plugin>
+    <Name>Narrator Out Parentheses</Name>
+    <Description>Find and Convert narrator inside ()/[] to: Narrator:</Description>
+    <Version>1.0</Version>
+    <Date>2015-09-26</Date>
+    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/NarratorOutParentheses.zip</Url>
+  </Plugin>
 </Plugins>
