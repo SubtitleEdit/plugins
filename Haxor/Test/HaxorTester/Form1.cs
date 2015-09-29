@@ -11,12 +11,10 @@ namespace HaxorTester
             InitializeComponent();
         }
 
-        private static void Tester(string s)
+        private static string Tester(string s)
         {
-            // IPlugin plugin = new Nikse.SubtitleEdit.PluginLogic.Haxor();
-            IPlugin plugin = new Nikse.SubtitleEdit.PluginLogic.Haxor();
-            //MessageBox.Show(plugin.DoAction(null, s, 25, "<br />", null, @"C:\Users\Nikse\Desktop\Trailers\Game Of Thrones Season Trailer.mp4", s));
-            plugin.DoAction(null, s, 23, "<br />", null, null, s);
+            IPlugin plugin = new Haxor();
+            return plugin.DoAction(null, s, 23, "<br />", null, null, s);
         }
 
         private void buttonTest_Click(object sender, EventArgs e)
@@ -28,21 +26,13 @@ namespace HaxorTester
                     if (op.ShowDialog() == DialogResult.OK)
                     {
                         string rawTExt = System.IO.File.ReadAllText(op.FileName);
-                        Tester(rawTExt);
+                        textBoxOutput.Text = Tester(rawTExt);
                     }
                 }
             }
             else
             {
-                string str = textBox1.Text.Trim();
-                if (str.Length > 0)
-                {
-                    string p = @"
-1
-00:00:26,763 --> 00:00:29,381";
-                    p += Environment.NewLine + str;
-                    Tester(p);
-                }
+                textBoxOutput.Text = Tester(textBox1.Text);
             }
         }
     }

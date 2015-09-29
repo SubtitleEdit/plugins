@@ -112,9 +112,29 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="textBox1.Text" xml:space="preserve">
+    <value>1
+00:00:01,000 --&gt; 00:00:04,074
+Subtitles downloaded from Podnapisi.NET
+
+2
+00:00:10,082 --&gt; 00:00:13,050
+FEMALE REPORTER: For decades,
+millions of people have come here
+
+3
+00:00:13,052 --&gt; 00:00:14,985
+in search of the American Dream,
+
+4
+00:00:14,987 --&gt; 00:00:18,956
+but for many, that dream
+is quickly disappearing.
+</value>
+  </data>
 </root>
