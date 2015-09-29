@@ -38,8 +38,8 @@
   <Plugin>
     <Name>Haxor</Name>
     <Description>Translates subtitle to Haxor</Description>
-    <Version>1.4</Version>
-    <Date>2015-07-21</Date>
+    <Version>1.5</Version>
+    <Date>2015-09-29</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/Haxor.zip</Url>
   </Plugin>
   <Plugin>
