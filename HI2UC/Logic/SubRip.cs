@@ -144,13 +144,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     break;
 
                 case ExpectingLine.Text:
-                    if (line.Trim().Length > 0)
-                    {
-                        if (_paragraph.Text.Length > 0)
-                            _paragraph.Text += Environment.NewLine;
-                        _paragraph.Text += RemoveBadChars(line).TrimEnd().Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
-                    }
-                    else if (IsText(next))
+                    if (!string.IsNullOrWhiteSpace(line) || IsText(next))
                     {
                         if (_paragraph.Text.Length > 0)
                             _paragraph.Text += Environment.NewLine;
