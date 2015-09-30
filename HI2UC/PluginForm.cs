@@ -52,8 +52,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void PluginForm_Load(object sender, EventArgs e)
         {
-            comboBox1.SelectedIndex = 0;
-            this.Resize += delegate
+            comboBoxStyle.SelectedIndex = 0;
+            Resize += delegate
             {
                 listViewFixes.Columns[listViewFixes.Columns.Count - 1].Width = -2;
             };
@@ -130,11 +130,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBox1.SelectedIndex < 0 || listViewFixes.Items.Count < 0)
+            if (comboBoxStyle.SelectedIndex < 0 || listViewFixes.Items.Count < 0)
                 return;
-            if ((int)_hiStyle != comboBox1.SelectedIndex)
+            if ((int)_hiStyle != comboBoxStyle.SelectedIndex)
             {
-                _hiStyle = (HIStyle)comboBox1.SelectedIndex;
+                _hiStyle = (HIStyle)comboBoxStyle.SelectedIndex;
                 FindHearingImpairedText();
             }
         }

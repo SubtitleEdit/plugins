@@ -46,7 +46,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public override void LoadSubtitle(Subtitle subtitle, List<string> lines, string fileName)
         {
-            subtitle.SubFormat = this; // set format to subtip
             bool doRenum = false;
             _lineNumber = 0;
 
@@ -179,16 +178,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string RemoveBadChars(string line)
         {
-            line = line.Replace("\0", " ");
-            return line;
+            return line.Replace("\0", " ");
         }
 
         private bool TryReadTimeCodesLine(string line, Paragraph paragraph)
         {
             const string defaultSeparator = " --> ";
-            line = line.Replace("،", ",");
-            line = line.Replace("", ",");
-            line = line.Replace("¡", ",");
+            line = line.Replace('،', ',');
+            line = line.Replace('', ',');
+            line = line.Replace('¡', ',');
 
             // Fix some badly formatted separator sequences - anything can happen if you manually edit ;)
             line = line.Replace(" -> ", defaultSeparator); // I've seen this
