@@ -111,5 +111,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _paragraphs.Remove(_paragraphs.Single(p => p.Number == lineNumber));
             Renumber();
         }
+
+        /// <summary>
+        /// Removes paragrahs by a list of IDs
+        /// </summary>
+        /// <param name="ids">IDs of pargraphs/lines to delete</param>
+        /// <returns>Number of lines deleted</returns>
+        public int RemoveParagraphsByIds(IEnumerable<string> ids)
+        {
+            int beforeCount = _paragraphs.Count;
+            _paragraphs = _paragraphs.Where(p => !ids.Contains(p.Id)).ToList();
+            return beforeCount - _paragraphs.Count;
+        }
     }
 }

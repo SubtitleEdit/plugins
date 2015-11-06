@@ -34,7 +34,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         //Gets or sets the major, minor, build, and revision numbers of the assembly.
         decimal IPlugin.Version
         {
-            get { return 3.1M; }
+            get { return 3.2M; }
         }
 
         string IPlugin.DoAction(Form parentForm, string subtitleText, double frameRate,

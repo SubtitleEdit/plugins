@@ -69,7 +69,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (listViewFixes.Items.Count > 0)
             {
                 Cursor = Cursors.WaitCursor;
-                RemoveDeletedParagraphs();
                 listViewFixes.Resize -= listViewFixes_Resize;
                 ApplyChanges(false);
                 Cursor = Cursors.Default;
@@ -128,13 +127,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             else
             {
-                if (listViewFixes.FocusedItem.BackColor != Color.Red)
+                for (int idx = listViewFixes.SelectedIndices.Count - 1; idx >= 0; idx--)
                 {
-                    _deletedParagarphs.Add(listViewFixes.FocusedItem.Tag as Paragraph);
-                    listViewFixes.FocusedItem.UseItemStyleForSubItems = true;
-                    listViewFixes.FocusedItem.BackColor = Color.Red;
-                    _deleteLine = true;
+                    var index = listViewFixes.SelectedIndices[idx];
+                    var p = listViewFixes.Items[idx].Tag as Paragraph;
+                    if (p != null)
+                    {
+                        _subtitle.RemoveLine(p.Number);
+                    }
+                    listViewFixes.Items.RemoveAt(index);
                 }
+                _subtitle.Renumber();
             }
         }
 
@@ -153,8 +156,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             _totalChanged = 0;
             listViewFixes.BeginUpdate();
-
             listViewFixes.Items.Clear();
+
             _fixedTexts = new Dictionary<string, string>();
             _notAllowedFixes = new HashSet<string>();
 
@@ -392,21 +395,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Cursor = Cursors.WaitCursor;
             listViewFixes.Resize -= listViewFixes_Resize;
             GeneratePreview();
-            RemoveDeletedParagraphs();
             ApplyChanges(true);
             listViewFixes.Resize += listViewFixes_Resize;
             Cursor = Cursors.Default;
-        }
-
-        private void RemoveDeletedParagraphs()
-        {
-            if (!_deleteLine || _deletedParagarphs == null) return;
-            for (int i = 0; i < _deletedParagarphs.Count; i++)
-            {
-                var p = _deletedParagarphs[i];
-                _subtitle.Paragraphs.Remove(p);
-            }
-            _subtitle.Renumber(1);
         }
 
         private void checkBoxRemoveSpaces_CheckedChanged(object sender, EventArgs e)
@@ -464,17 +455,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void listViewFixes_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
-            if (e.Item == null)
+            Paragraph p = null;
+            if (e.Item == null || (p = e.Item.Tag as Paragraph) == null)
                 return;
-
-            var p = e.Item.Tag as Paragraph;
-            if (p == null)
-                return;
-
             if (e.Item.Checked)
+            {
                 _notAllowedFixes.Remove(p.Id);
+            }
             else
+            {
                 _notAllowedFixes.Add(p.Id);
+            }
         }
     }
 }

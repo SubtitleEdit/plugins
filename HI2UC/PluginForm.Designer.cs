@@ -151,41 +151,41 @@
             this.copyToolStripMenuItem,
             this.deleteLineToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(139, 114);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 136);
             // 
             // checkAllToolStripMenuItem
             // 
             this.checkAllToolStripMenuItem.Name = "checkAllToolStripMenuItem";
-            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.checkAllToolStripMenuItem.Text = "Check all";
             this.checkAllToolStripMenuItem.Click += new System.EventHandler(this.CheckTypeStyle);
             // 
             // uncheckAllToolStripMenuItem
             // 
             this.uncheckAllToolStripMenuItem.Name = "uncheckAllToolStripMenuItem";
-            this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.uncheckAllToolStripMenuItem.Text = "Uncheck all";
             this.uncheckAllToolStripMenuItem.Click += new System.EventHandler(this.CheckTypeStyle);
             // 
             // invertCheckToolStripMenuItem
             // 
             this.invertCheckToolStripMenuItem.Name = "invertCheckToolStripMenuItem";
-            this.invertCheckToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.invertCheckToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.invertCheckToolStripMenuItem.Text = "Invert check";
             this.invertCheckToolStripMenuItem.Click += new System.EventHandler(this.CheckTypeStyle);
             // 
             // copyToolStripMenuItem
             // 
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.copyToolStripMenuItem.Text = "Copy";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.CheckTypeStyle);
             // 
             // deleteLineToolStripMenuItem
             // 
             this.deleteLineToolStripMenuItem.Name = "deleteLineToolStripMenuItem";
-            this.deleteLineToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
-            this.deleteLineToolStripMenuItem.Text = "Delete Line";
+            this.deleteLineToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.deleteLineToolStripMenuItem.Text = "Remove Line/s";
             this.deleteLineToolStripMenuItem.Click += new System.EventHandler(this.CheckTypeStyle);
             // 
             // checkBoxNames
