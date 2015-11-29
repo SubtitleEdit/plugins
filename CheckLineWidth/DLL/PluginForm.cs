@@ -105,14 +105,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     maxWidth = width;
                 sb.Append(" " + width + " /");
             }
-            subtitleListView1.SetAlternateText(i, sb.ToString().TrimEnd('/').Trim());
             if (maxWidth > numericUpDown1.Value)
             {
-                subtitleListView1.SetBackgroundColor(i, Color.MistyRose);
+                subtitleListView1.SetAlternateText(i, sb.ToString().TrimEnd('/').Trim() + " - " + (maxWidth - numericUpDown1.Value) + " pixels too long!!!");
+                subtitleListView1.SetBackgroundColor(i, Color.FromArgb(255, 180, 150));
                 _tooLongCount++;
             }
             else
             {
+                subtitleListView1.SetAlternateText(i, sb.ToString().TrimEnd('/').Trim());
                 subtitleListView1.SetBackgroundColor(i, DefaultBackColor);
             }
             if (maxWidth > _longestLine)
