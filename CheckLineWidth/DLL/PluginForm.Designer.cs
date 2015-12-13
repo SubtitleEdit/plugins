@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOK = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -50,6 +51,7 @@
             this.labelText = new System.Windows.Forms.Label();
             this.buttonAutoBreak = new System.Windows.Forms.Button();
             this.labelErrorCount = new System.Windows.Forms.Label();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.subtitleListView1 = new Nikse.SubtitleEdit.PluginLogic.Controls.SubtitleListView();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -293,6 +295,11 @@
             this.labelErrorCount.TabIndex = 6;
             this.labelErrorCount.Text = "Error count: ";
             // 
+            // timer1
+            // 
+            this.timer1.Interval = 200;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // subtitleListView1
             // 
             this.subtitleListView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -331,7 +338,7 @@
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
             this.KeyPreview = true;
-            this.MinimumSize = new System.Drawing.Size(820, 583);
+            this.MinimumSize = new System.Drawing.Size(834, 583);
             this.Name = "PluginForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -375,5 +382,6 @@
         private System.Windows.Forms.Label labelCustomCharNotFound;
         private System.Windows.Forms.TextBox textBoxCustomCharNotFound;
         private System.Windows.Forms.Label labelErrorCount;
+        private System.Windows.Forms.Timer timer1;
     }
 }

@@ -95,7 +95,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void ShowLineLengths(int i)
         {
-            var lines = _subtitle.Paragraphs[i].Text.Replace(Environment.NewLine, "\n").Split('\n');
+            var lines = Utilities.RemoveHtmlTags(_subtitle.Paragraphs[i].Text, true).Replace(Environment.NewLine, "\n").Split('\n');
             var sb = new StringBuilder();
             int maxWidth = 0;
             foreach (string line in lines)
@@ -304,6 +304,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 textBoxText.ScrollBars = ScrollBars.Vertical;
             else
                 textBoxText.ScrollBars = ScrollBars.None;
+            GeneratePreview();
         }
 
         private void buttonUnBreak_Click(object sender, EventArgs e)
@@ -490,6 +491,26 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 e.SuppressKeyPress = true;
             }
         }
+        private void GeneratePreview()
+        {
+            if (timer1.Enabled)
+            {
+                timer1.Stop();
+                timer1.Start();
+            }
+            else
+            {
+                timer1.Start();
+            }
+        }
 
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (CanFocus)
+            {
+                timer1.Stop();
+                RefreshLineWidth();
+            }
+        }
     }
 }
