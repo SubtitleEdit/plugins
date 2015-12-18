@@ -80,7 +80,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 ReadLine(subtitle, line, next);
             }
 
-            if (_paragraph.Text.Trim().Length > 0)
+            if (!string.IsNullOrWhiteSpace(_paragraph.Text))
                 subtitle.Paragraphs.Add(_paragraph);
 
             foreach (Paragraph p in subtitle.Paragraphs)
@@ -109,7 +109,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private bool IsText(string text)
         {
-            if (text.Trim().Length == 0 || Utilities.IsInteger(text) || _regexTimeCodes.IsMatch(text))
+            if (string.IsNullOrWhiteSpace(text) || Utilities.IsInteger(text) || _regexTimeCodes.IsMatch(text))
                 return false;
             return true;
         }
@@ -172,7 +172,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string RemoveBadChars(string line)
         {
-            return line.Replace("\0", " ");
+            return line.Replace('\0', ' ');
         }
 
         private bool TryReadTimeCodesLine(string line, Paragraph paragraph)
