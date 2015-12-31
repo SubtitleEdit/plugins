@@ -52,8 +52,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void PluginForm_Load(object sender, EventArgs e)
         {
-            comboBox1.SelectedIndex = 0;
-            this.Resize += delegate
+            comboBoxStyle.SelectedIndex = 0;
+            Resize += delegate
             {
                 listViewFixes.Columns[listViewFixes.Columns.Count - 1].Width = -2;
             };
@@ -69,26 +69,35 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (listViewFixes.Items.Count > 0)
             {
                 Cursor = Cursors.WaitCursor;
-                RemoveDeletedParagraphs();
                 listViewFixes.Resize -= listViewFixes_Resize;
-                for (int i = _subtitle.Paragraphs.Count - 1; i >= 0; i--)
-                {
-                    var p = _subtitle.Paragraphs[i];
-                    if (!_notAllowedFixes.Contains(p.Id) && _fixedTexts.ContainsKey(p.Id))
-                        p.Text = _fixedTexts[p.Id];
-                }
-                //FindHearingImpairedText();
+                ApplyChanges(false);
                 Cursor = Cursors.Default;
             }
             FixedSubtitle = _subtitle.ToText();
             DialogResult = DialogResult.OK;
         }
 
+        private void ApplyChanges(bool generatePreview)
+        {
+            if (_subtitle == null || _subtitle.Paragraphs == null || _subtitle.Paragraphs.Count == 0)
+                return;
+            for (int i = _subtitle.Paragraphs.Count - 1; i >= 0; i--)
+            {
+                var p = _subtitle.Paragraphs[i];
+                if (!_notAllowedFixes.Contains(p.Id) && _fixedTexts.ContainsKey(p.Id))
+                    p.Text = _fixedTexts[p.Id];
+            }
+            if (generatePreview)
+            {
+                GeneratePreview();
+            }
+        }
+
         private void checkBoxNarrator_CheckedChanged(object sender, EventArgs e)
         {
             if (_subtitle.Paragraphs.Count <= 0)
                 return;
-            FindHearingImpairedText();
+            GeneratePreview();
         }
 
         private void CheckTypeStyle(object sender, EventArgs e)
@@ -118,33 +127,37 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             else
             {
-                if (listViewFixes.FocusedItem.BackColor != Color.Red)
+                for (int idx = listViewFixes.SelectedIndices.Count - 1; idx >= 0; idx--)
                 {
-                    _deletedParagarphs.Add(listViewFixes.FocusedItem.Tag as Paragraph);
-                    listViewFixes.FocusedItem.UseItemStyleForSubItems = true;
-                    listViewFixes.FocusedItem.BackColor = Color.Red;
-                    _deleteLine = true;
+                    var index = listViewFixes.SelectedIndices[idx];
+                    var p = listViewFixes.Items[idx].Tag as Paragraph;
+                    if (p != null)
+                    {
+                        _subtitle.RemoveLine(p.Number);
+                    }
+                    listViewFixes.Items.RemoveAt(index);
                 }
+                _subtitle.Renumber();
             }
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBox1.SelectedIndex < 0 || listViewFixes.Items.Count < 0)
+            if (comboBoxStyle.SelectedIndex < 0 || listViewFixes.Items.Count < 0)
                 return;
-            if ((int)_hiStyle != comboBox1.SelectedIndex)
+            if ((int)_hiStyle != comboBoxStyle.SelectedIndex)
             {
-                _hiStyle = (HIStyle)comboBox1.SelectedIndex;
-                FindHearingImpairedText();
+                _hiStyle = (HIStyle)comboBoxStyle.SelectedIndex;
+                GeneratePreview();
             }
         }
 
-        private void FindHearingImpairedText()
+        private void GeneratePreview()
         {
             _totalChanged = 0;
             listViewFixes.BeginUpdate();
-
             listViewFixes.Items.Clear();
+
             _fixedTexts = new Dictionary<string, string>();
             _notAllowedFixes = new HashSet<string>();
 
@@ -381,21 +394,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             Cursor = Cursors.WaitCursor;
             listViewFixes.Resize -= listViewFixes_Resize;
-            FindHearingImpairedText();
-            RemoveDeletedParagraphs();
-            FindHearingImpairedText();
+            GeneratePreview();
+            ApplyChanges(true);
             listViewFixes.Resize += listViewFixes_Resize;
             Cursor = Cursors.Default;
-        }
-
-        private void RemoveDeletedParagraphs()
-        {
-            if (!_deleteLine) return;
-            for (int i = 0; i < _deletedParagarphs.Count; i++)
-            {
-                var p = _deletedParagarphs[i];
-                _subtitle.Paragraphs.Remove(p);
-            }
         }
 
         private void checkBoxRemoveSpaces_CheckedChanged(object sender, EventArgs e)
@@ -403,12 +405,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (listViewFixes.Items.Count < 1 || _subtitle.Paragraphs.Count == 0)
                 return;
 
-            FindHearingImpairedText();
+            GeneratePreview();
         }
 
         private void PluginForm_Shown(object sender, EventArgs e)
         {
-            FindHearingImpairedText();
+            GeneratePreview();
         }
 
         private void listViewFixes_Resize(object sender, EventArgs e)
@@ -453,17 +455,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void listViewFixes_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
-            if (e.Item == null)
+            Paragraph p = null;
+            if (e.Item == null || (p = e.Item.Tag as Paragraph) == null)
                 return;
-
-            var p = e.Item.Tag as Paragraph;
-            if (p == null)
-                return;
-
             if (e.Item.Checked)
+            {
                 _notAllowedFixes.Remove(p.Id);
+            }
             else
+            {
                 _notAllowedFixes.Add(p.Id);
+            }
         }
     }
 }

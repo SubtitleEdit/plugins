@@ -46,7 +46,7 @@
             this.deleteLineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkBoxNames = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.comboBoxStyle = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -151,41 +151,41 @@
             this.copyToolStripMenuItem,
             this.deleteLineToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(139, 114);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 136);
             // 
             // checkAllToolStripMenuItem
             // 
             this.checkAllToolStripMenuItem.Name = "checkAllToolStripMenuItem";
-            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.checkAllToolStripMenuItem.Text = "Check all";
             this.checkAllToolStripMenuItem.Click += new System.EventHandler(this.CheckTypeStyle);
             // 
             // uncheckAllToolStripMenuItem
             // 
             this.uncheckAllToolStripMenuItem.Name = "uncheckAllToolStripMenuItem";
-            this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.uncheckAllToolStripMenuItem.Text = "Uncheck all";
             this.uncheckAllToolStripMenuItem.Click += new System.EventHandler(this.CheckTypeStyle);
             // 
             // invertCheckToolStripMenuItem
             // 
             this.invertCheckToolStripMenuItem.Name = "invertCheckToolStripMenuItem";
-            this.invertCheckToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.invertCheckToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.invertCheckToolStripMenuItem.Text = "Invert check";
             this.invertCheckToolStripMenuItem.Click += new System.EventHandler(this.CheckTypeStyle);
             // 
             // copyToolStripMenuItem
             // 
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.copyToolStripMenuItem.Text = "Copy";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.CheckTypeStyle);
             // 
             // deleteLineToolStripMenuItem
             // 
             this.deleteLineToolStripMenuItem.Name = "deleteLineToolStripMenuItem";
-            this.deleteLineToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
-            this.deleteLineToolStripMenuItem.Text = "Delete Line";
+            this.deleteLineToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.deleteLineToolStripMenuItem.Text = "Remove Line/s";
             this.deleteLineToolStripMenuItem.Click += new System.EventHandler(this.CheckTypeStyle);
             // 
             // checkBoxNames
@@ -207,23 +207,23 @@
             this.toolTip1.IsBalloon = true;
             this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             // 
-            // comboBox1
+            // comboBoxStyle
             // 
-            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.comboBoxStyle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
+            this.comboBoxStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxStyle.FormattingEnabled = true;
+            this.comboBoxStyle.Items.AddRange(new object[] {
             "Uppercase (HELLO)",
             "Lowercase (hello)",
             "First Char in Word (Hello Hello)",
             "UpperLower (HeLlO)"});
-            this.comboBox1.Location = new System.Drawing.Point(756, 38);
-            this.comboBox1.MaxDropDownItems = 5;
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(153, 21);
-            this.comboBox1.TabIndex = 2;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.comboBoxStyle.Location = new System.Drawing.Point(756, 38);
+            this.comboBoxStyle.MaxDropDownItems = 5;
+            this.comboBoxStyle.Name = "comboBoxStyle";
+            this.comboBoxStyle.Size = new System.Drawing.Size(153, 21);
+            this.comboBoxStyle.TabIndex = 2;
+            this.comboBoxStyle.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // label2
             // 
@@ -294,7 +294,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.checkBoxNames);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.comboBoxStyle);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.btn_Cancel);
             this.Controls.Add(this.buttonConvert);
@@ -330,7 +330,7 @@
         private System.Windows.Forms.ToolStripMenuItem checkAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem uncheckAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem invertCheckToolStripMenuItem;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox comboBoxStyle;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.GroupBox groupBox1;

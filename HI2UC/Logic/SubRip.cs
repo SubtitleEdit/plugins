@@ -46,7 +46,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public override void LoadSubtitle(Subtitle subtitle, List<string> lines, string fileName)
         {
-            subtitle.SubFormat = this; // set format to subtip
             bool doRenum = false;
             _lineNumber = 0;
 
@@ -81,7 +80,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 ReadLine(subtitle, line, next);
             }
 
-            if (_paragraph.Text.Trim().Length > 0)
+            if (!string.IsNullOrWhiteSpace(_paragraph.Text))
                 subtitle.Paragraphs.Add(_paragraph);
 
             foreach (Paragraph p in subtitle.Paragraphs)
@@ -110,7 +109,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private bool IsText(string text)
         {
-            if (text.Trim().Length == 0 || Utilities.IsInteger(text) || _regexTimeCodes.IsMatch(text))
+            if (string.IsNullOrWhiteSpace(text) || Utilities.IsInteger(text) || _regexTimeCodes.IsMatch(text))
                 return false;
             return true;
         }
@@ -145,13 +144,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     break;
 
                 case ExpectingLine.Text:
-                    if (line.Trim().Length > 0)
-                    {
-                        if (_paragraph.Text.Length > 0)
-                            _paragraph.Text += Environment.NewLine;
-                        _paragraph.Text += RemoveBadChars(line).TrimEnd().Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
-                    }
-                    else if (IsText(next))
+                    if (!string.IsNullOrWhiteSpace(line) || IsText(next))
                     {
                         if (_paragraph.Text.Length > 0)
                             _paragraph.Text += Environment.NewLine;
@@ -179,16 +172,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string RemoveBadChars(string line)
         {
-            line = line.Replace("\0", " ");
-            return line;
+            return line.Replace('\0', ' ');
         }
 
         private bool TryReadTimeCodesLine(string line, Paragraph paragraph)
         {
             const string defaultSeparator = " --> ";
-            line = line.Replace("،", ",");
-            line = line.Replace("", ",");
-            line = line.Replace("¡", ",");
+            line = line.Replace('،', ',');
+            line = line.Replace('', ',');
+            line = line.Replace('¡', ',');
 
             // Fix some badly formatted separator sequences - anything can happen if you manually edit ;)
             line = line.Replace(" -> ", defaultSeparator); // I've seen this

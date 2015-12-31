@@ -12,8 +12,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public string Header { get; set; }
         public string Footer { get; set; }
         public string FileName { get; set; }
-        public SubtitleFormat SubFormat { get; set; }
-
+        private readonly SubtitleFormat _subFormat = new SubRip();
         public List<Paragraph> Paragraphs { get { return _paragraphs; } }
 
         public Subtitle()
@@ -46,7 +45,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public string ToText()
         {
-            return SubFormat.ToText(this, Path.GetFileNameWithoutExtension(FileName));
+            return _subFormat.ToText(this, Path.GetFileNameWithoutExtension(FileName));
         }
 
         public bool WasLoadedWithFrameNumbers { get { return _wasLoadedWithFrameNumbers; } set { _wasLoadedWithFrameNumbers = value; } }
@@ -111,6 +110,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return;
             _paragraphs.Remove(_paragraphs.Single(p => p.Number == lineNumber));
             Renumber();
+        }
+
+        /// <summary>
+        /// Removes paragrahs by a list of IDs
+        /// </summary>
+        /// <param name="ids">IDs of pargraphs/lines to delete</param>
+        /// <returns>Number of lines deleted</returns>
+        public int RemoveParagraphsByIds(IEnumerable<string> ids)
+        {
+            int beforeCount = _paragraphs.Count;
+            _paragraphs = _paragraphs.Where(p => !ids.Contains(p.Id)).ToList();
+            return beforeCount - _paragraphs.Count;
         }
     }
 }

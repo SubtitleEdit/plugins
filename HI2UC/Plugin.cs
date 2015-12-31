@@ -34,16 +34,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
         //Gets or sets the major, minor, build, and revision numbers of the assembly.
         decimal IPlugin.Version
         {
-            get { return 3.1M; }
+            get { return 3.2M; }
         }
 
         string IPlugin.DoAction(Form parentForm, string subtitleText, double frameRate,
             string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
-            subtitleText = subtitleText.Trim();
-
             // Make sure subtitle isn't null or empty
-            if (string.IsNullOrEmpty(subtitleText))
+            if (string.IsNullOrWhiteSpace(subtitleText))
             {
                 MessageBox.Show("No subtitle loaded", parentForm.Text,
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);

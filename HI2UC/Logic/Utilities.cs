@@ -37,6 +37,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             s = s.Replace(" \r\n", Environment.NewLine);
             return s;
         }
+
         #endregion
 
         public static int GetNumberOfLines(string text)
@@ -46,7 +47,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             int lines = 1;
             int idx = text.IndexOf('\n');
-            while (idx != -1)
+            while (idx >= 0)
             {
                 lines++;
                 idx = text.IndexOf('\n', idx + 1);
