@@ -1,37 +1,51 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form
     {
-        internal string FixedSubtitle { get; private set; }
+        public string FixedSubtitle { get; private set; }
         private Subtitle _subtitle;
         private int _totalFixes = 0;
-        private bool _allowFixes = false;
+        private Dictionary<string, string> _fixedParagraphs;
 
-        internal PluginForm(Subtitle subtitle, string name, string description)
+        public PluginForm(Subtitle subtitle, string name, string description)
         {
             InitializeComponent();
 
-            this.Text = name;
+            Text = name;
             labelDescription.Text = description;
             _subtitle = subtitle;
-            this.Resize += delegate
+            Resize += delegate
             {
                 int idx = listViewFixes.Columns.Count - 1;
-                this.listViewFixes.Columns[idx].Width = -2;
+                listViewFixes.Columns[idx].Width = -2;
             };
             FindDialogueAndListFixes();
         }
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            _allowFixes = true;
-            FindDialogueAndListFixes();
-            FixedSubtitle = _subtitle.ToText(new SubRip());
-            DialogResult = DialogResult.OK;
+            if (_fixedParagraphs != null && _fixedParagraphs.Count > 0)
+            {
+                foreach (ListViewItem item in listViewFixes.Items)
+                {
+                    var p = item.Tag as Paragraph;
+                    if (!item.Checked || p == null || !_fixedParagraphs.ContainsKey(p.ID))
+                        continue;
+
+                    p.Text = _fixedParagraphs[p.ID];
+                }
+                FixedSubtitle = _subtitle.ToText();
+                DialogResult = DialogResult.OK;
+            }
+            else
+            {
+                DialogResult = DialogResult.Cancel;
+            }
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -41,32 +55,31 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void AddFixToListView(Paragraph p, string action, string before, string after)
         {
-            var item = new ListViewItem(string.Empty) { Checked = true };
-
-            var subItem = new ListViewItem.ListViewSubItem(item, p.Number.ToString());
-            item.SubItems.Add(subItem);
-            subItem = new ListViewItem.ListViewSubItem(item, action);
-            item.SubItems.Add(subItem);
-            subItem = new ListViewItem.ListViewSubItem(item, before.Replace(Environment.NewLine, "<br />"));
-            item.SubItems.Add(subItem);
-            subItem = new ListViewItem.ListViewSubItem(item, after.Replace(Environment.NewLine, "<br />"));
-            item.SubItems.Add(subItem);
-
+            var item = new ListViewItem(string.Empty) { Checked = true, Tag = p };
+            item.SubItems.Add(p.Number.ToString());
+            item.SubItems.Add(action);
+            item.SubItems.Add(before.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
+            item.SubItems.Add(after.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
             listViewFixes.Items.Add(item);
         }
 
         private void FindDialogueAndListFixes()
         {
-            string fixAction = "Remove first hyphen in dialogues";
+            var fixAction = !checkBoxStripAll.Checked ? "Remove first hyphen in dialogues" : "Remove all beginning hyphens/dashes";
+            listViewFixes.BeginUpdate();
+            listViewFixes.Items.Clear();
+            _totalFixes = 0;
+            _fixedParagraphs = new Dictionary<string, string>();
+
             for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
             {
-                Paragraph p = _subtitle.Paragraphs[i];
-                string text = p.Text.Trim();
+                var p = _subtitle.Paragraphs[i];
+                var text = p.Text.Trim();
 
                 if (AnalyzeText(text))
                 {
-                    Paragraph prev = _subtitle.GetParagraphOrDefault(i - 1);
-                    if (prev == null || !Utilities.RemoveHtmlTags(prev.Text).Trim().EndsWith('-'))
+                    var prev = _subtitle.GetParagraphOrDefault(i - 1);
+                    if (prev == null || !Utilities.RemoveHtmlTags(prev.Text).TrimEnd().EndsWith('-'))
                     {
                         // <i>- You delusional?
                         //- I counted.</i>
@@ -74,71 +87,66 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         if (index >= 0)
                         {
                             string oldText = text;
-                            text = text.Remove(index, 1);
+                            text = RemoveHyphens(text, checkBoxStripAll.Checked);
+
                             if (text[index] == 0x14)
                                 text = RemoveExtraSpaces(text, index); //<i> Word => <i>Word
 
                             if (text != oldText)
                             {
-                                text = text.Replace(" " + Environment.NewLine, Environment.NewLine).Trim();
+                                text = text.Replace(" " + Environment.NewLine, Environment.NewLine);
+                                text = text.Replace(Environment.NewLine + " ", Environment.NewLine);
                                 text = text.Replace(Environment.NewLine + " ", Environment.NewLine).Trim();
-                                text = text.Replace(Environment.NewLine + " ", Environment.NewLine).Trim();
-                                if (AllowFix(p, fixAction))
-                                {
-                                    p.Text = text;
-                                }
-                                else
-                                {
-                                    if (_allowFixes)
-                                        continue;
-                                    _totalFixes++;
-                                    // remove html tags before adding to listview
-                                    text = Utilities.RemoveHtmlTags(text);
-                                    oldText = Utilities.RemoveHtmlTags(oldText);
-                                    AddFixToListView(p, fixAction, oldText, text);
-                                }
+                                _totalFixes++;
+                                // remove html tags before adding to listview
+                                _fixedParagraphs.Add(p.ID, text);
+                                text = Utilities.RemoveHtmlTags(text, true);
+                                oldText = Utilities.RemoveHtmlTags(oldText, true);
+                                AddFixToListView(p, fixAction, oldText, text);
                             }
                         }
                     }
                 }
             }
-            if (!_allowFixes)
+
+            listViewFixes.EndUpdate();
+            labelTotal.Text = "Total: " + _totalFixes.ToString();
+            labelTotal.ForeColor = _totalFixes > 0 ? Color.Blue : Color.Red;
+        }
+
+        private string RemoveHyphens(string text, bool bothLines)
+        {
+            var lines = text.SplitToLines();
+            for (int i = 0; i < lines.Length; i++)
             {
-                labelTotal.Text = "Total: " + _totalFixes.ToString();
-                labelTotal.ForeColor = _totalFixes > 0 ? Color.Blue : Color.Red;
+                // Todo: check if line was ended with: ., !, ?.
+                var removeHyphen = Utilities.RemoveHtmlTags(lines[i], true).StartsWith('-');
+                if (removeHyphen)
+                {
+                    var hyphenIdx = lines[i].IndexOf('-');
+                    lines[i] = lines[i].Remove(hyphenIdx, 1);
+                }
+
+                // Quit at first loop
+                if (!bothLines)
+                    break;
             }
+            return string.Join(Environment.NewLine, lines);
         }
 
         private string RemoveExtraSpaces(string text, int index)
         {
-            var temp = text.Substring(0, index);
-            temp = temp.Trim();
-            text = text.Remove(0, index).TrimStart();
-            text = temp + " " + text;
-            return text;
-        }
-
-        private bool AllowFix(Paragraph p, string action)
-        {
-            if (!_allowFixes)
-                return false;
-
-            string ln = p.Number.ToString();
-            foreach (ListViewItem item in listViewFixes.Items)
-            {
-                if (item.SubItems[1].Text == ln && item.SubItems[2].Text == action)
-                    return item.Checked;
-            }
-            return false;
+            var temp = text.Substring(0, index).Trim();
+            text = text.Substring(index).TrimStart();
+            return temp + " " + text;
         }
 
         private bool AnalyzeText(string s)
         {
-            s = Utilities.RemoveHtmlTags(s).Trim();
+            s = Utilities.RemoveHtmlTags(s, true);
             s = s.Replace("  ", " ");
-
             s = s.Replace(Environment.NewLine + " ", Environment.NewLine);
-            return s.StartsWith('-') && s.Contains(Environment.NewLine + "-");
+            return checkBoxStripAll.Checked ? s.StartsWith('-') || s.Contains(Environment.NewLine + "-") : s.StartsWith('-') && s.Contains(Environment.NewLine + "-");
         }
 
         private void buttonSelectAll_Click(object sender, EventArgs e)
@@ -168,7 +176,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
             foreach (ListViewItem item in listViewFixes.Items)
                 item.Checked = selectAll ? selectAll : !item.Checked;
             listViewFixes.EndUpdate();
-            this.Refresh();
+            Refresh();
+        }
+
+        private void checkBoxStripAll_CheckedChanged(object sender, EventArgs e)
+        {
+            // Todo: Warn the user that this action is irreversible!
+            FindDialogueAndListFixes();
         }
     }
 }

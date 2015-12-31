@@ -7,7 +7,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal class SubRip : SubtitleFormat
     {
-        internal string Errors { get; private set; }
+        public string Errors { get; private set; }
         private StringBuilder _errors;
         private int _lineNumber;
 
@@ -23,29 +23,29 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private static Regex _regexTimeCodes = new Regex(@"^-?\d+:-?\d+:-?\d+[:,]-?\d+\s*-->\s*-?\d+:-?\d+:-?\d+[:,]-?\d+$", RegexOptions.Compiled);
         private static Regex _regexTimeCodes2 = new Regex(@"^\d+:\d+:\d+,\d+\s*-->\s*\d+:\d+:\d+,\d+$", RegexOptions.Compiled);
 
-        internal override string Extension
+        public override string Extension
         {
             get { return ".srt"; }
         }
 
-        internal override string Name
+        public override string Name
         {
             get { return "SubRip"; }
         }
 
-        internal override bool IsTimeBased
+        public override bool IsTimeBased
         {
             get { return true; }
         }
 
-        internal override bool IsMine(List<string> lines, string fileName)
+        public override bool IsMine(List<string> lines, string fileName)
         {
             var subtitle = new Subtitle();
             LoadSubtitle(subtitle, lines, fileName);
             return subtitle.Paragraphs.Count > _errorCount;
         }
 
-        internal override string ToText(Subtitle subtitle, string title)
+        public override string ToText(Subtitle subtitle, string title)
         {
             const string paragraphWriteFormat = "{0}\r\n{1} --> {2}\r\n{3}\r\n\r\n";
 
@@ -58,7 +58,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return sb.ToString().Trim();
         }
 
-        internal override void LoadSubtitle(Subtitle subtitle, List<string> lines, string fileName)
+        public override void LoadSubtitle(Subtitle subtitle, List<string> lines, string fileName)
         {
             bool doRenum = false;
             _errors = new StringBuilder();
@@ -242,7 +242,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return false;
         }
 
-        internal override List<string> AlternateExtensions
+        public override List<string> AlternateExtensions
         {
             get
             {

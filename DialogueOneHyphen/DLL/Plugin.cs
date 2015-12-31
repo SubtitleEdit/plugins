@@ -55,10 +55,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             // load subtitle text into object
             var list = new List<string>();
-            foreach (string line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
+            foreach (string line in subtitle.SplitToLines())
                 list.Add(line);
-            Subtitle sub = new Subtitle();
-            SubRip srt = new SubRip();
+            var sub = new Subtitle();
+            var srt = new SubRip();
             srt.LoadSubtitle(sub, list, subtitleFileName);
             using (var form = new PluginForm(sub, (this as IPlugin).Name, (this as IPlugin).Description))
             {
