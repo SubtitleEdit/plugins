@@ -9,9 +9,9 @@
   </Plugin>
   <Plugin>
     <Name>Hearing Impaired to Uppercase</Name>
-    <Description>Changes all the text inside: "[]", "()" and "{}" to Uppercase (by Ivandrofly)</Description>
-    <Version>3.1</Version>
-    <Date>2015-08-14</Date>
+    <Description>Converts text inside "[]" / "()" to Uppercase (by Ivandrofly)</Description>
+    <Version>3.2</Version>
+    <Date>2016-01-03</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/HI2UC.zip</Url>
   </Plugin>
   <Plugin>
