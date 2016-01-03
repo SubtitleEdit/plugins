@@ -2,7 +2,7 @@
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    internal interface IPlugin
+    public interface IPlugin
     {
         /// <summary>
         /// Name of the plug-in

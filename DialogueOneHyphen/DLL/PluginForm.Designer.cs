@@ -40,6 +40,7 @@
             this.labelTotal = new System.Windows.Forms.Label();
             this.buttonInverseSelection = new System.Windows.Forms.Button();
             this.buttonSelectAll = new System.Windows.Forms.Button();
+            this.checkBoxStripAll = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // buttonOK
@@ -56,6 +57,7 @@
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.button1.Location = new System.Drawing.Point(876, 454);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
@@ -152,11 +154,23 @@
             this.buttonSelectAll.UseVisualStyleBackColor = true;
             this.buttonSelectAll.Click += new System.EventHandler(this.buttonSelectAll_Click);
             // 
+            // checkBoxStripAll
+            // 
+            this.checkBoxStripAll.AutoSize = true;
+            this.checkBoxStripAll.Location = new System.Drawing.Point(602, 21);
+            this.checkBoxStripAll.Name = "checkBoxStripAll";
+            this.checkBoxStripAll.Size = new System.Drawing.Size(147, 17);
+            this.checkBoxStripAll.TabIndex = 105;
+            this.checkBoxStripAll.Text = "Strip all beginning hyphen";
+            this.checkBoxStripAll.UseVisualStyleBackColor = true;
+            this.checkBoxStripAll.CheckedChanged += new System.EventHandler(this.checkBoxStripAll_CheckedChanged);
+            // 
             // PluginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(963, 489);
+            this.Controls.Add(this.checkBoxStripAll);
             this.Controls.Add(this.buttonSelectAll);
             this.Controls.Add(this.buttonInverseSelection);
             this.Controls.Add(this.labelTotal);
@@ -191,6 +205,6 @@
         private System.Windows.Forms.Label labelTotal;
         private System.Windows.Forms.Button buttonInverseSelection;
         private System.Windows.Forms.Button buttonSelectAll;
-
+        private System.Windows.Forms.CheckBox checkBoxStripAll;
     }
 }

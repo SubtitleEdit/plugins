@@ -4,80 +4,52 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal abstract class SubtitleFormat
     {
-
         protected int _errorCount;
 
-        abstract internal string Extension
+        abstract public string Extension
         {
             get;
         }
 
-        abstract internal string Name
+        abstract public string Name
         {
             get;
         }
 
-        abstract internal bool IsTimeBased
+        abstract public bool IsTimeBased
         {
             get;
         }
 
-        internal bool IsFrameBased
-        {
-            get
-            {
-                return !IsTimeBased;
-            }
-        }
+        public bool IsFrameBased => !IsTimeBased;
 
-        internal string FriendlyName
-        {
-            get
-            {
-                return string.Format("{0} ({1})", Name, Extension);
-            }
-        }
+        public string FriendlyName => $"{Name} ({Extension})";
 
-        internal int ErrorCount
-        {
-            get { return _errorCount; }
-        }
+        public int ErrorCount => _errorCount;
 
-        abstract internal bool IsMine(List<string> lines, string fileName);
+        abstract public bool IsMine(List<string> lines, string fileName);
 
-        abstract internal string ToText(Subtitle subtitle, string title);
+        abstract public string ToText(Subtitle subtitle, string title);
 
-        abstract internal void LoadSubtitle(Subtitle subtitle, List<string> lines, string fileName);
+        abstract public void LoadSubtitle(Subtitle subtitle, List<string> lines, string fileName);
 
-        internal virtual void RemoveNativeFormatting(Subtitle subtitle)
+        public virtual void RemoveNativeFormatting(Subtitle subtitle)
         {
         }
 
-        internal virtual List<string> AlternateExtensions
+        public virtual List<string> AlternateExtensions => new List<string>();
+
+        public static int MillisecondsToFrames(double milliseconds)
         {
-            get
-            {
-                return new List<string>();
-            }
+            return (int)System.Math.Round(milliseconds / (TimeCode.BaseUnit / Configuration.CurrentFrameRate));
         }
 
-        internal static int MillisecondsToFrames(double milliseconds)
+        public static int FramesToMilliseconds(double frames)
         {
-            return (int)System.Math.Round(milliseconds / (1000.0 / Configuration.CurrentFrameRate));
+            return (int)System.Math.Round(frames * (TimeCode.BaseUnit / Configuration.CurrentFrameRate));
         }
 
-        internal static int FramesToMilliseconds(double frames)
-        {
-            return (int)System.Math.Round(frames * (1000.0 / Configuration.CurrentFrameRate));
-        }
-
-        internal virtual bool HasStyleSupport
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public virtual bool HasStyleSupport => false;
 
     }
 }
