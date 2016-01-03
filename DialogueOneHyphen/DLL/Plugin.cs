@@ -10,7 +10,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "Dialogues - remove hyphen in first line in dialogues...";
 
-        decimal IPlugin.Version => 0.4M;
+        decimal IPlugin.Version => 0.5M;
 
         string IPlugin.Description => "Removes hyphens in first line in dialoguees";
 
