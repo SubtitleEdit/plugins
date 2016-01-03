@@ -33,9 +33,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public static bool IsInteger(string s)
         {
             int i;
-            if (int.TryParse(s, out i))
-                return true;
-            return false;
+            return int.TryParse(s, out i);
         }
 
         public static string RemoveHtmlTags(string s, bool alsoSSA = false)
@@ -70,13 +68,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return s.Trim();
         }
 
-        public static string AssemblyVersion
-        {
-            get
-            {
-                return Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            }
-        }
+        public static string AssemblyVersion => Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
         public static int GetNumberOfLines(string text)
         {

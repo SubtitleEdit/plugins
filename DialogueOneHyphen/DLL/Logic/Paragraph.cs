@@ -33,10 +33,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             ID = GenerateId();
         }
 
-        private string GenerateId()
-        {
-            return Guid.NewGuid().ToString();
-        }
+        private string GenerateId() => Guid.NewGuid().ToString();
 
         public Paragraph(TimeCode startTime, TimeCode endTime, string text)
         {
@@ -99,24 +96,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
             EndTime.TotalMilliseconds = EndFrame * (TimeCode.BaseUnit / frameRate);
         }
 
-        public override string ToString()
-        {
-            return StartTime + " --> " + EndTime + " " + Text;
-        }
+        public override string ToString() => $"{StartTime} --> {EndTime} {Text}";
 
-        public int NumberOfLines
-        {
-            get
-            {
-                return Utilities.GetNumberOfLines(Text);
-            }
-        }
+        public int NumberOfLines => Utilities.GetNumberOfLines(Text);
 
         public double WordsPerMinute
         {
             get
             {
-                if (string.IsNullOrEmpty(Text))
+                if (string.IsNullOrWhiteSpace(Text))
                     return 0;
                 int wordCount = Utilities.RemoveHtmlTags(Text, true).Split(new[] { ' ', ',', '.', '!', '?', ';', ':', '(', ')', '[', ']', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length;
                 return (60.0 / Duration.TotalSeconds) * wordCount;

@@ -6,41 +6,23 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class DiaOneHyphen : IPlugin // dll file name must "<classname>.dll" - e.g. "SyncViaOtherSubtitle.dll"
     {
-        string IPlugin.Name
-        {
-            get { return "Dialogue one hyphen only"; }
-        }
+        string IPlugin.Name => "Dialogue one hyphen only";
 
-        string IPlugin.Text
-        {
-            get { return "Dialogues - remove hyphen in first line in dialogues..."; }
-        }
+        string IPlugin.Text => "Dialogues - remove hyphen in first line in dialogues...";
 
-        decimal IPlugin.Version
-        {
-            get { return 0.4M; }
-        }
+        decimal IPlugin.Version => 0.4M;
 
-        string IPlugin.Description
-        {
-            get { return "Removes hyphens in first line in dialoguees"; }
-        }
+        string IPlugin.Description => "Removes hyphens in first line in dialoguees";
 
-        string IPlugin.ActionType // Can be one of these: file, tool, sync, translate, spellcheck
-        {
-            get { return "tool"; }
-        }
+        // Can be one of these: file, tool, sync, translate, spellcheck
+        string IPlugin.ActionType => "tool";
 
-        string IPlugin.Shortcut
-        {
-            get { return string.Empty; }
-        }
+        string IPlugin.Shortcut => string.Empty;
 
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName,
             string videoFileName, string rawText)
         {
-            subtitle = subtitle.Trim();
-            if (string.IsNullOrEmpty(subtitle))
+            if (string.IsNullOrWhiteSpace(subtitle))
             {
                 MessageBox.Show("No subtitle loaded", parentForm.Text,
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -60,7 +42,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var sub = new Subtitle();
             var srt = new SubRip();
             srt.LoadSubtitle(sub, list, subtitleFileName);
-            using (var form = new PluginForm(sub, (this as IPlugin).Name, (this as IPlugin).Description))
+
+            IPlugin plugin = this;
+            using (var form = new PluginForm(sub, plugin.Name, plugin.Description))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
                 {

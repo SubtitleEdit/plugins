@@ -23,20 +23,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private static Regex _regexTimeCodes = new Regex(@"^-?\d+:-?\d+:-?\d+[:,]-?\d+\s*-->\s*-?\d+:-?\d+:-?\d+[:,]-?\d+$", RegexOptions.Compiled);
         private static Regex _regexTimeCodes2 = new Regex(@"^\d+:\d+:\d+,\d+\s*-->\s*\d+:\d+:\d+,\d+$", RegexOptions.Compiled);
 
-        public override string Extension
-        {
-            get { return ".srt"; }
-        }
+        public override string Extension => ".srt";
 
-        public override string Name
-        {
-            get { return "SubRip"; }
-        }
+        public override string Name => "Subrip";
 
-        public override bool IsTimeBased
-        {
-            get { return true; }
-        }
+        public override bool IsTimeBased => true;
 
         public override bool IsMine(List<string> lines, string fileName)
         {
@@ -168,38 +159,26 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private bool IsText(string text)
         {
-            if (text.Trim().Length == 0)
-                return false;
-
-            if (Utilities.IsInteger(text))
-                return false;
-
-            if (_regexTimeCodes.IsMatch(text))
-                return false;
-
-            return true;
+            return !(string.IsNullOrWhiteSpace(text) || Utilities.IsInteger(text) || _regexTimeCodes.IsMatch(text));
         }
 
-        private string RemoveBadChars(string line)
-        {
-            line = line.Replace("\0", " ");
-            return line;
-        }
+        private string RemoveBadChars(string line) => line.Replace('\0', ' ');
 
         private bool TryReadTimeCodesLine(string line, Paragraph paragraph)
         {
+            const string separator = " --> ";
             line = line.Replace("،", ",");
             line = line.Replace("", ",");
             line = line.Replace("¡", ",");
 
             // Fix some badly formatted separator sequences - anything can happen if you manually edit ;)
-            line = line.Replace(" -> ", " --> "); // I've seen this
-            line = line.Replace(" - > ", " --> ");
-            line = line.Replace(" ->> ", " --> ");
-            line = line.Replace(" -- > ", " --> ");
-            line = line.Replace(" - -> ", " --> ");
-            line = line.Replace(" -->> ", " --> ");
-            line = line.Replace(" ---> ", " --> ");
+            line = line.Replace(" -> ", separator); // I've seen this
+            line = line.Replace(" - > ", separator);
+            line = line.Replace(" ->> ", separator);
+            line = line.Replace(" -- > ", separator);
+            line = line.Replace(" - -> ", separator);
+            line = line.Replace(" -->> ", separator);
+            line = line.Replace(" ---> ", separator);
 
             // Removed stuff after timecodes - like subtitle position
             //  - example of position info: 00:02:26,407 --> 00:02:31,356  X1:100 X2:100 Y1:100 Y2:100
@@ -207,7 +186,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 line = line.Substring(0, 29);
 
             // removes all extra spaces
-            line = line.Replace(" ", string.Empty).Replace("-->", " --> ");
+            line = line.Replace(" ", string.Empty).Replace("-->", separator);
             line = line.Trim();
 
             // Fix a few more cases of wrong time codes, seen this: 00.00.02,000 --> 00.00.04,000
@@ -242,12 +221,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return false;
         }
 
-        public override List<string> AlternateExtensions
-        {
-            get
-            {
-                return new List<string> { ".wsrt" };
-            }
-        }
+        public override List<string> AlternateExtensions => new List<string> { ".wsrt" };
     }
 }

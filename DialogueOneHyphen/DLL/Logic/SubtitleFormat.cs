@@ -4,7 +4,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal abstract class SubtitleFormat
     {
-
         protected int _errorCount;
 
         abstract public string Extension
@@ -22,26 +21,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             get;
         }
 
-        public bool IsFrameBased
-        {
-            get
-            {
-                return !IsTimeBased;
-            }
-        }
+        public bool IsFrameBased => !IsTimeBased;
 
-        public string FriendlyName
-        {
-            get
-            {
-                return string.Format("{0} ({1})", Name, Extension);
-            }
-        }
+        public string FriendlyName => $"{Name} ({Extension})";
 
-        public int ErrorCount
-        {
-            get { return _errorCount; }
-        }
+        public int ErrorCount => _errorCount;
 
         abstract public bool IsMine(List<string> lines, string fileName);
 
@@ -53,31 +37,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
         }
 
-        public virtual List<string> AlternateExtensions
-        {
-            get
-            {
-                return new List<string>();
-            }
-        }
+        public virtual List<string> AlternateExtensions => new List<string>();
 
         public static int MillisecondsToFrames(double milliseconds)
         {
-            return (int)System.Math.Round(milliseconds / (1000.0 / Configuration.CurrentFrameRate));
+            return (int)System.Math.Round(milliseconds / (TimeCode.BaseUnit / Configuration.CurrentFrameRate));
         }
 
         public static int FramesToMilliseconds(double frames)
         {
-            return (int)System.Math.Round(frames * (1000.0 / Configuration.CurrentFrameRate));
+            return (int)System.Math.Round(frames * (TimeCode.BaseUnit / Configuration.CurrentFrameRate));
         }
 
-        public virtual bool HasStyleSupport
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public virtual bool HasStyleSupport => false;
 
     }
 }

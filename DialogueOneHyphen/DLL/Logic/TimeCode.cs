@@ -9,7 +9,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static double ParseToMilliseconds(string text)
         {
-            string[] parts = text.Split(":,.".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            var parts = text.Split(new[] { ':', ',', '.' }, StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length == 4)
             {
                 int hours;
@@ -19,24 +19,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (int.TryParse(parts[0], out hours) && int.TryParse(parts[1], out minutes) && int.TryParse(parts[2], out seconds) && int.TryParse(parts[3], out milliseconds))
                 {
                     TimeSpan ts = new TimeSpan(0, hours, minutes, seconds, milliseconds);
-                    return ts.TotalMilliseconds;
-                }
-            }
-            return 0;
-        }
-
-        public static double ParseHHMMSSFFToMilliseconds(string text)
-        {
-            string[] parts = text.Split(":,.".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length == 4)
-            {
-                int hours;
-                int minutes;
-                int seconds;
-                int frames;
-                if (int.TryParse(parts[0], out hours) && int.TryParse(parts[1], out minutes) && int.TryParse(parts[2], out seconds) && int.TryParse(parts[3], out frames))
-                {
-                    TimeSpan ts = new TimeSpan(0, hours, minutes, seconds, SubtitleFormat.FramesToMilliseconds(frames));
                     return ts.TotalMilliseconds;
                 }
             }
@@ -126,47 +108,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public override string ToString()
         {
-            string s = string.Format("{0:00}:{1:00}:{2:00},{3:000}", _time.Hours, _time.Minutes, _time.Seconds, _time.Milliseconds);
-
-            if (TotalMilliseconds >= 0)
-                return s;
-            else
-                return "-" + s.Replace("-", string.Empty);
-        }
-
-        public string ToShortString()
-        {
-            string s;
-            if (_time.Minutes == 0 && _time.Hours == 0)
-                s = string.Format("{0:0},{1:000}", _time.Seconds, _time.Milliseconds);
-            else if (_time.Hours == 0)
-                s = string.Format("{0:0}:{1:00},{2:000}", _time.Minutes, _time.Seconds, _time.Milliseconds);
-            else
-                s = string.Format("{0:0}:{1:00}:{2:00},{3:000}", _time.Hours, _time.Minutes, _time.Seconds, _time.Milliseconds);
-
-            if (TotalMilliseconds >= 0)
-                return s;
-            else
-                return "-" + s.Replace("-", string.Empty);
-        }
-
-        public string ToShortStringHHMMSSFF()
-        {
-            if (_time.Minutes == 0 && _time.Hours == 0)
-                return string.Format("{0:00}:{1:00}", _time.Seconds, SubtitleFormat.MillisecondsToFrames(_time.Milliseconds));
-            if (_time.Hours == 0)
-                return string.Format("{0:00}:{1:00}:{2:00}", _time.Minutes, _time.Seconds, SubtitleFormat.MillisecondsToFrames(_time.Milliseconds));
-            return string.Format("{0:00}:{1:00}:{2:00}:{3:00}", _time.Hours, _time.Minutes, _time.Seconds, SubtitleFormat.MillisecondsToFrames(_time.Milliseconds));
-        }
-
-        public string ToHHMMSSFF()
-        {
-            return string.Format("{0:00}:{1:00}:{2:00}:{3:00}", _time.Hours, _time.Minutes, _time.Seconds, SubtitleFormat.MillisecondsToFrames(_time.Milliseconds));
-        }
-
-        public string ToHHMMSSPeriodFF()
-        {
-            return string.Format("{0:00}:{1:00}:{2:00}.{3:00}", _time.Hours, _time.Minutes, _time.Seconds, SubtitleFormat.MillisecondsToFrames(_time.Milliseconds));
+            var s = $"{_time.Hours:00}:{_time.Minutes:00}:{_time.Seconds:00},{_time.Milliseconds:000}";
+            if (TotalMilliseconds < 0)
+                s = "-" + s.Replace("-", string.Empty);
+            return s;
         }
 
     }

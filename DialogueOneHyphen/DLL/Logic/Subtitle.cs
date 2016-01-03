@@ -15,13 +15,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public const int MaximumHistoryItems = 100;
 
-        public SubtitleFormat OriginalFormat
-        {
-            get
-            {
-                return _format;
-            }
-        }
+        public SubtitleFormat OriginalFormat => _format;
 
         public Subtitle()
         {
@@ -43,13 +37,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _wasLoadedWithFrameNumbers = subtitle.WasLoadedWithFrameNumbers;
         }
 
-        public List<Paragraph> Paragraphs
-        {
-            get
-            {
-                return _paragraphs;
-            }
-        }
+        public List<Paragraph> Paragraphs => _paragraphs;
 
         public Paragraph GetParagraphOrDefault(int index)
         {
@@ -100,10 +88,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         /// <returns></returns>
         public bool CalculateFrameNumbersFromTimeCodes(double frameRate)
         {
-            if (_format == null)
-                return false;
-
-            if (_format.IsFrameBased)
+            if (_format == null || _format.IsFrameBased)
                 return false;
 
             foreach (Paragraph p in Paragraphs)
@@ -139,10 +124,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             foreach (Paragraph p in Paragraphs)
             {
-                double startFrame = p.StartTime.TotalMilliseconds / 1000.0 * oldFramerate;
-                double endFrame = p.EndTime.TotalMilliseconds / 1000.0 * oldFramerate;
-                p.StartTime.TotalMilliseconds = startFrame * (1000.0 / newFramerate);
-                p.EndTime.TotalMilliseconds = endFrame * (1000.0 / newFramerate);
+                double startFrame = p.StartTime.TotalMilliseconds / TimeCode.BaseUnit * oldFramerate;
+                double endFrame = p.EndTime.TotalMilliseconds / TimeCode.BaseUnit * oldFramerate;
+                p.StartTime.TotalMilliseconds = startFrame * (TimeCode.BaseUnit / newFramerate);
+                p.EndTime.TotalMilliseconds = endFrame * (TimeCode.BaseUnit / newFramerate);
 
                 p.CalculateFrameNumbersFromTimeCodes(newFramerate);
             }
@@ -189,7 +174,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     if (i + 1 < _paragraphs.Count)
                         nextStartMilliseconds = _paragraphs[i + 1].StartTime.TotalMilliseconds;
 
-                    double newEndMilliseconds = _paragraphs[i].EndTime.TotalMilliseconds + (seconds * 1000.0);
+                    double newEndMilliseconds = _paragraphs[i].EndTime.TotalMilliseconds + (seconds * TimeCode.BaseUnit);
                     if (newEndMilliseconds > nextStartMilliseconds)
                         newEndMilliseconds = nextStartMilliseconds - 1;
 
