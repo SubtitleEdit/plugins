@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.label1 = new System.Windows.Forms.Label();
+            this.labelDesc = new System.Windows.Forms.Label();
             this.btn_Cancel = new System.Windows.Forms.Button();
             this.buttonConvert = new System.Windows.Forms.Button();
             this.listViewFixes = new System.Windows.Forms.ListView();
@@ -56,15 +56,15 @@
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // label1
+            // labelDesc
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 524);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(83, 13);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "description label";
+            this.labelDesc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.labelDesc.AutoSize = true;
+            this.labelDesc.Location = new System.Drawing.Point(12, 524);
+            this.labelDesc.Name = "labelDesc";
+            this.labelDesc.Size = new System.Drawing.Size(83, 13);
+            this.labelDesc.TabIndex = 6;
+            this.labelDesc.Text = "description label";
             // 
             // btn_Cancel
             // 
@@ -151,7 +151,7 @@
             this.copyToolStripMenuItem,
             this.deleteLineToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 136);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 114);
             // 
             // checkAllToolStripMenuItem
             // 
@@ -298,7 +298,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.btn_Cancel);
             this.Controls.Add(this.buttonConvert);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.labelDesc);
             this.KeyPreview = true;
             this.MinimumSize = new System.Drawing.Size(711, 425);
             this.Name = "PluginForm";
@@ -316,7 +316,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label labelDesc;
         private System.Windows.Forms.Button btn_Cancel;
         private System.Windows.Forms.Button buttonConvert;
         private System.Windows.Forms.ListView listViewFixes;

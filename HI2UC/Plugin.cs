@@ -1,41 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class HI2UC : IPlugin // dll file name must "<classname>.dll" - e.g. "Haxor.dll"
     {
-        string IPlugin.ActionType // Can be one of these: file, tool, sync, translate, spellcheck
-        {
-            get { return "tool"; }
-        }
+        #region Metadata
 
-        string IPlugin.Description
-        {
-            get { return "Convert moods and Narrator to Uppercase"; }
-        }
+        string IPlugin.ActionType => "tool";// Can be one of these: file, tool, sync, translate, spellcheck
 
-        string IPlugin.Name
-        {
-            get { return "Hearing Impaired to Uppercase"; }
-        }
+        string IPlugin.Description => "Convert moods and Narrator to Uppercase";
 
-        string IPlugin.Shortcut
-        {
-            get { return string.Empty; }
-        }
+        string IPlugin.Name => "Hearing Impaired to Uppercase";
 
-        string IPlugin.Text
-        {
-            get { return "Hearing Impaired to Uppercase"; }
-        }
+        string IPlugin.Shortcut => string.Empty;
 
-        //Gets or sets the major, minor, build, and revision numbers of the assembly.
-        decimal IPlugin.Version
-        {
-            get { return 3.2M; }
-        }
+        string IPlugin.Text => "Hearing Impaired to Uppercase";
+
+        decimal IPlugin.Version => 3.2M; //Gets or sets the major, minor, build, and revision numbers of the assembly
+
+        #endregion
 
         string IPlugin.DoAction(Form parentForm, string subtitleText, double frameRate,
             string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
@@ -62,7 +46,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             // Load raws subtitle lines into Subtitle object
             srt.LoadSubtitle(sub, list, subtitleFileName);
-            using (var form = new PluginForm(parentForm, sub, (this as IPlugin).Name, (this as IPlugin).Description))
+
+            IPlugin HI2UC = (this as IPlugin);
+            using (var form = new PluginForm(parentForm, sub, HI2UC.Name, HI2UC.Description))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
                     return form.FixedSubtitle;

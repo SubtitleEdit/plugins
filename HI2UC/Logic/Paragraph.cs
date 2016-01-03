@@ -66,22 +66,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Text = text;
         }
 
-        public override string ToString()
-        {
-            return StartTime + " --> " + EndTime + " " + Text;
-        }
+        public override string ToString() => $"{StartTime} --> {EndTime} {Text}";
 
-        public int NumberOfLines
-        {
-            get
-            {
-                return Utilities.GetNumberOfLines(Text);
-            }
-        }
+        public int NumberOfLines => Utilities.GetNumberOfLines(Text);
 
-        private string GenerateId()
-        {
-            return Guid.NewGuid().ToString();
-        }
+        private string GenerateId() => Guid.NewGuid().ToString();
     }
 }

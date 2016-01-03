@@ -6,39 +6,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         protected int _errorCount;
 
-        public int ErrorCount
-        {
-            get { return _errorCount; }
-        }
+        public int ErrorCount => _errorCount;
 
         abstract public string Extension
         {
             get;
         }
 
-        public string FriendlyName
-        {
-            get
-            {
-                return string.Format("{0} ({1})", Name, Extension);
-            }
-        }
+        public string FriendlyName => $"{Name} ({Extension})";
 
-        public virtual bool HasStyleSupport
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public virtual bool HasStyleSupport => false;
 
-        public bool IsFrameBased
-        {
-            get
-            {
-                return !IsTimeBased;
-            }
-        }
+        public bool IsFrameBased => !IsTimeBased;
 
         abstract public bool IsTimeBased
         {

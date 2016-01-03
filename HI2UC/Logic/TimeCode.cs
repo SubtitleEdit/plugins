@@ -9,18 +9,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public const double BaseUnit = 1000.0; // Base unit of time
         private double _totalMilliseconds;
 
-        public bool IsMaxTime
-        {
-            get
-            {
-                return Math.Abs(_totalMilliseconds - MaxTime.TotalMilliseconds) < 0.01;
-            }
-        }
+        public bool IsMaxTime => Math.Abs(_totalMilliseconds - MaxTime.TotalMilliseconds) < 0.01;
 
-        public static TimeCode FromSeconds(double seconds)
-        {
-            return new TimeCode(seconds * BaseUnit);
-        }
+        public static TimeCode FromSeconds(double seconds) => new TimeCode(seconds * BaseUnit);
 
         public static double ParseToMilliseconds(string text)
         {
@@ -157,7 +148,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public override string ToString()
         {
             var ts = TimeSpan;
-            string s = string.Format("{0:00}:{1:00}:{2:00},{3:000}", ts.Hours + ts.Days * 24, ts.Minutes, ts.Seconds, ts.Milliseconds);
+            var s = $"{(ts.Hours + ts.Days * 24):00}:{ts.Minutes:00}:{ts.Seconds:00},{ts.Milliseconds:000}";
 
             if (TotalMilliseconds >= 0)
                 return s;

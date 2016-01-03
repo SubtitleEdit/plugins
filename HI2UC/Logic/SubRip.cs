@@ -22,20 +22,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public string Errors { get; private set; }
 
-        public override string Extension
-        {
-            get { return ".srt"; }
-        }
+        public override string Extension => ".srt";
 
-        public override bool IsTimeBased
-        {
-            get { return true; }
-        }
+        public override bool IsTimeBased => true;
 
-        public override string Name
-        {
-            get { return "SubRip"; }
-        }
+        public override string Name => "SubRip";
 
         public override bool IsMine(List<string> lines, string fileName)
         {
@@ -109,9 +100,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private bool IsText(string text)
         {
-            if (string.IsNullOrWhiteSpace(text) || Utilities.IsInteger(text) || _regexTimeCodes.IsMatch(text))
-                return false;
-            return true;
+            return !(string.IsNullOrWhiteSpace(text) || Utilities.IsInteger(text) || _regexTimeCodes.IsMatch(text));
         }
 
         private void ReadLine(Subtitle subtitle, string line, string next)
@@ -170,10 +159,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        private string RemoveBadChars(string line)
-        {
-            return line.Replace('\0', ' ');
-        }
+        private string RemoveBadChars(string line) => line.Replace('\0', ' ');
 
         private bool TryReadTimeCodesLine(string line, Paragraph paragraph)
         {

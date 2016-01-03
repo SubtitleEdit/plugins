@@ -20,7 +20,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public string FixedSubtitle { get; private set; }
 
         private HIStyle _hiStyle = HIStyle.UpperCase;
-        private bool _deleteLine = false;
         private bool _moodsMatched;
         private bool _namesMatched;
         private int _totalChanged;
@@ -40,7 +39,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             InitializeComponent();
             _parentForm = parentForm;
             _subtitle = subtitle;
-            label1.Text = "Description: " + description;
+            labelDesc.Text = "Description: " + description;
             /*
             this.KeyDown += (s, e) =>
             {
@@ -188,6 +187,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     AddFixToListView(p, oldText, text);
                     _totalChanged++;
                 }
+
                 // Reset
                 _namesMatched = false;
                 _moodsMatched = false;
@@ -365,26 +365,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 line.EndsWith("corrected by", StringComparison.OrdinalIgnoreCase))
                 return false;
             return true;
-        }
-
-        private string MoveHtmlTagsAfterColon(string narrator)
-        {
-            // Fix uppercase tags
-            int tagIndex = narrator.IndexOf('<');
-            while (tagIndex >= 0)
-            {
-                int closeIndex = narrator.IndexOf('>', tagIndex + 1);
-                if (closeIndex > -1 && closeIndex > tagIndex)
-                {
-                    string temp = narrator.Substring(tagIndex, (closeIndex - tagIndex)).ToLower();
-                    narrator = narrator.Remove(tagIndex, (closeIndex - tagIndex)).Insert(tagIndex, temp);
-                }
-                if (closeIndex > -1)
-                    tagIndex = narrator.IndexOf('<', closeIndex);
-                else
-                    tagIndex = -1;
-            }
-            return narrator;
         }
 
         private void buttonApply_Click(object sender, EventArgs e)
