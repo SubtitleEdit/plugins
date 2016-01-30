@@ -49,6 +49,7 @@
       <DependentUpon>ImdbSearch.cs</DependentUpon>
     </Compile>
     <Compile Include="IPlugin.cs" />
+    <Compile Include="LanguageAutoDetect.cs" />
     <Compile Include="OpenSubtitlesApi.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginForm.cs">

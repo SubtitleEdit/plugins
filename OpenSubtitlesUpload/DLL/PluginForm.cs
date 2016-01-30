@@ -22,16 +22,18 @@ namespace OpenSubtitlesUpload
 
         public class LanguageItem
         {
-            public CultureInfo CI { private set; get; }
-
-            public LanguageItem(CultureInfo ci)
+            public LanguageItem(string threeLettercode, string englishName)
             {
-                CI = ci;
+                ThreeLetterCode = threeLettercode;
+                EnglishName = englishName;
             }
+
+            public string EnglishName { get; set; }
+            public string ThreeLetterCode { get; set; }
 
             public override string ToString()
             {
-                return CI.EnglishName;
+                return EnglishName;
             }
         }
 
@@ -68,7 +70,7 @@ namespace OpenSubtitlesUpload
             if (idx >= 0)
             {
                 var li = (LanguageItem)comboBoxLanguage.Items[idx];
-                return li.CI.ThreeLetterISOLanguageName;
+                return li.ThreeLetterCode;
             }
             return "eng";
         }
@@ -96,15 +98,8 @@ namespace OpenSubtitlesUpload
             textBoxSubtitleFileName.Text = Path.GetFileName(subtitleFileName);
             textBoxReleaseName.Text = Path.GetFileNameWithoutExtension(_subtitleFileName);
 
-            var twoLetterLanguageId = Utils.AutoDetectGoogleLanguage(rawText);
-            foreach (CultureInfo x in CultureInfo.GetCultures(CultureTypes.NeutralCultures))
-            {
-                if (string.IsNullOrEmpty(x.Name)) // To skip culture like: Invariante Language
-                    continue;
-                comboBoxLanguage.Items.Add(new LanguageItem(x));
-                if (x.Name.ToLower() == twoLetterLanguageId.ToLower())
-                    comboBoxLanguage.SelectedIndex = comboBoxLanguage.Items.Count - 1;
-            }
+            FillLanguages(rawText);
+
             textBoxUserName.Text = string.Empty;
             textBoxPassword.Text = string.Empty;
             LoadLogin();
@@ -127,6 +122,115 @@ namespace OpenSubtitlesUpload
                 }
             }
             comboBoxEncoding.SelectedIndex = encodingSelectedIndex;
+        }
+
+        private static List<LanguageItem> OSLanguages = new List<LanguageItem>
+        {
+            new LanguageItem("eng", "English"),
+            new LanguageItem("alb", "Albanian"),
+            new LanguageItem("afr", "Afrikaans"),
+            new LanguageItem("ara", "Arabic"),
+            new LanguageItem("arm", "Armenian"),
+            new LanguageItem("baq", "Basque"),
+            new LanguageItem("bel", "Belarusian"),
+            new LanguageItem("ben", "Bengali"),
+            new LanguageItem("bos", "Bosnian"),
+            new LanguageItem("bre", "Breton"),
+            new LanguageItem("bul", "Bulgarian"),
+            new LanguageItem("bur", "Burmese"),
+            new LanguageItem("cat", "Catalan"),
+            new LanguageItem("chi", "Chinese (simplified)"),
+            new LanguageItem("zht", "Chinese (traditional)"),
+            new LanguageItem("zhe", "Chinese bilingual"),
+            new LanguageItem("hrv", "Croatian"),
+            new LanguageItem("cze", "Czech"),
+            new LanguageItem("dan", "Danish"),
+            new LanguageItem("dut", "Dutch"),
+            new LanguageItem("epo", "Esperanto"),
+            new LanguageItem("est", "Estonian"),
+            new LanguageItem("fin", "Finnish"),
+            new LanguageItem("fre", "French"),
+            new LanguageItem("glg", "Galician"),
+            new LanguageItem("geo", "Georgian"),
+            new LanguageItem("ger", "German"),
+            new LanguageItem("ell", "Greek"),
+            new LanguageItem("heb", "Hebrew"),
+            new LanguageItem("hin", "Hindi"),
+            new LanguageItem("hun", "Hungarian"),
+            new LanguageItem("ice", "Icelandic"),
+            new LanguageItem("ind", "Indonesian"),
+            new LanguageItem("ita", "Italian"),
+            new LanguageItem("jpn", "Japanese"),
+            new LanguageItem("kaz", "Kazakh"),
+            new LanguageItem("khm", "Khmer"),
+            new LanguageItem("kor", "Korean"),
+            new LanguageItem("lav", "Latvian"),
+            new LanguageItem("lit", "Lithuanian"),
+            new LanguageItem("ltz", "Luxembourgish"),
+            new LanguageItem("mac", "Macedonian"),
+            new LanguageItem("may", "Malay"),
+            new LanguageItem("mal", "Malayalam"),
+            new LanguageItem("mni", "Manipuri"),
+            new LanguageItem("mon", "Mongolian"),
+            new LanguageItem("mne", "Montenegrin"),
+            new LanguageItem("nor", "Norwegian"),
+            new LanguageItem("oci", "Occitan"),
+            new LanguageItem("per", "Persian"),
+            new LanguageItem("pol", "Polish"),
+            new LanguageItem("por", "Portuguese"),
+            new LanguageItem("pob", "Portuguese (BR)"),
+            new LanguageItem("rum", "Romanian"),
+            new LanguageItem("rus", "Russian"),
+            new LanguageItem("scc", "Serbian"),
+            new LanguageItem("sin", "Sinhalese"),
+            new LanguageItem("slo", "Slovak"),
+            new LanguageItem("slv", "Slovenian"),
+            new LanguageItem("spa", "Spanish"),
+            new LanguageItem("swa", "Swahili"),
+            new LanguageItem("swe", "Swedish"),
+            new LanguageItem("syr", "Syriac"),
+            new LanguageItem("tgl", "Tagalog"),
+            new LanguageItem("tam", "Tamil"),
+            new LanguageItem("tel", "Telugu"),
+            new LanguageItem("tha", "Thai"),
+            new LanguageItem("tur", "Turkish"),
+            new LanguageItem("ukr", "Ukrainian"),
+            new LanguageItem("urd", "Urdu"),
+            new LanguageItem("vie", "Vietnamese"),
+        };
+
+        private void FillLanguages(string rawText)
+        {
+            var twoLetterLanguageId = Utils.AutoDetectGoogleLanguage(rawText);
+            string threeLetterLanguageId = "eng";
+            try
+            {
+                foreach (CultureInfo x in CultureInfo.GetCultures(CultureTypes.NeutralCultures))
+                {
+                    if (string.IsNullOrEmpty(x.Name)) // To skip culture like: Invariante Language
+                        continue;
+                    if (twoLetterLanguageId == x.TwoLetterISOLanguageName)
+                    {
+                        threeLetterLanguageId = x.ThreeLetterISOLanguageName;
+                        break;
+                    }
+                }
+            }
+            catch
+            {
+                // ignore
+            }
+
+
+            foreach (var item in OSLanguages)
+            {
+                comboBoxLanguage.Items.Add(item);
+                if (item.ThreeLetterCode == threeLetterLanguageId)
+                {
+                    comboBoxLanguage.SelectedIndex = comboBoxLanguage.Items.Count - 1;
+                }
+            }
+
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
