@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSpellCheck", "WordSpellCheck\DLL\WordSpellCheck.csproj", "{40D9F0DB-1C62-4CFC-A412-796E753AA057}"
 EndProject
@@ -68,6 +68,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MergeTwoSrtToAss", "MergeTwoSrtToAss\DLL\MergeTwoSrtToAss.csproj", "{B4ED58DA-3967-4FEA-999C-191621AF3E4A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NarratorOutParentheses", "NarratorOutParentheses\NarratorOutParentheses.csproj", "{A075780C-6BAB-4E78-9FB2-B477219DDD72}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DialogueOneHyphenTester", "DialogueOneHyphenTester\DialogueOneHyphenTester.csproj", "{225AC2C8-7073-489F-9FA9-169495523FF0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -173,6 +175,10 @@ Global
 		{A075780C-6BAB-4E78-9FB2-B477219DDD72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A075780C-6BAB-4E78-9FB2-B477219DDD72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A075780C-6BAB-4E78-9FB2-B477219DDD72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{225AC2C8-7073-489F-9FA9-169495523FF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{225AC2C8-7073-489F-9FA9-169495523FF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{225AC2C8-7073-489F-9FA9-169495523FF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{225AC2C8-7073-489F-9FA9-169495523FF0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -205,5 +211,6 @@ Global
 		{93DE69A7-1B96-4D23-845A-CA83D3A01DF1} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 		{B4ED58DA-3967-4FEA-999C-191621AF3E4A} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 		{A075780C-6BAB-4E78-9FB2-B477219DDD72} = {21BBD88D-F935-419F-A68B-E8DA9F08E9C1}
+		{225AC2C8-7073-489F-9FA9-169495523FF0} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 	EndGlobalSection
 EndGlobal
