@@ -89,7 +89,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                             string oldText = text;
                             text = RemoveHyphens(text, checkBoxStripAll.Checked);
 
-                            if (text[index] == 0x14)
+                            if (text.Length > 0 && text[index] == 0x14)
                                 text = RemoveExtraSpaces(text, index); //<i> Word => <i>Word
 
                             if (text != oldText)
