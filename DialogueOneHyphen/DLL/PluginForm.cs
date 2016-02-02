@@ -136,9 +136,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string RemoveExtraSpaces(string text, int index)
         {
-            var temp = text.Substring(0, index).Trim();
-            text = text.Substring(index).TrimStart();
-            return temp + " " + text;
+            return text.Substring(0, index).Trim() + " " + text.Substring(index).TrimStart();
         }
 
         private bool AnalyzeText(string s)
