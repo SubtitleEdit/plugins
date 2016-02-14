@@ -45,8 +45,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         _namesList.Add(s);
                 }
             }
-            FillNames();
-            labelCount.Text = _namesList.Count.ToString();
+            FillNames();            
             _changed = false;
         }
 
@@ -60,6 +59,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 listBoxNames.Items.Add(name);
             }
             listBoxNames.EndUpdate();
+            labelCount.Text = $"{_namesList.Count:###,##0}";
         }
 
         private void buttonAdd_Click(object sender, EventArgs e)
@@ -231,7 +231,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
                 listBoxImport.EndUpdate();
 
-                labelImportCount.Text = listBoxImport.Items.Count.ToString();
+                labelImportCount.Text = $"{listBoxImport.Items.Count:###,##0}";
                 MessageBox.Show("Words found: " + listBoxImport.Items.Count + Environment.NewLine + 
                                 "Existing words skipped: " + countSkippedExisting + Environment.NewLine + 
                                 "One letter word skipped: " + countSkippedOneLetter);
