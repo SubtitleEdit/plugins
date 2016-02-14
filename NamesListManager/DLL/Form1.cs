@@ -285,5 +285,46 @@ namespace Nikse.SubtitleEdit.PluginLogic
             timer1.Stop();
         }
 
+        private void removeNamesContainedInFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openFileDialog1.Filter = "Names etc files|*names_etc*.xml";
+            openFileDialog1.FileName = string.Empty;
+            if (openFileDialog1.ShowDialog(this) == DialogResult.OK)
+            {
+                int countExisting = 0;
+                List<string> namesToDelete = new List<string>();
+                var xdoc = XDocument.Load(openFileDialog1.FileName);
+                if (xdoc.Document != null)
+                {
+                    foreach (var nameNode in xdoc.Document.Descendants("name"))
+                    {
+                        string s = nameNode.Value;
+                        while (s.Contains("  "))
+                            s = s.Replace("  ", " ");
+                        if (_namesList.Contains(s))
+                        {
+                            countExisting++;
+                            namesToDelete.Add(s);
+                        }                       
+                    }
+                    if (countExisting == 0)
+                    {
+                        MessageBox.Show("Nothing to delete");
+                        return;
+                    }
+                    var result = MessageBox.Show(string.Format("Delete {0} names?", countExisting), null, MessageBoxButtons.YesNoCancel);
+                    if (result != DialogResult.Yes)
+                    {
+                        return;
+                    }
+                    foreach (var s in namesToDelete)
+                    {
+                        _namesList.Remove(s);
+                    }
+                    FillNames();
+                }
+            }
+        }
+
     }
 }

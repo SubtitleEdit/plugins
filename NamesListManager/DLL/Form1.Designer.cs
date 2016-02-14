@@ -43,6 +43,9 @@
             this.button1 = new System.Windows.Forms.Button();
             this.labelTransfered = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.removeNamesContainedInFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // listBoxNames
@@ -179,11 +182,26 @@
             this.timer1.Interval = 5000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.removeNamesContainedInFileToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(253, 48);
+            // 
+            // removeNamesContainedInFileToolStripMenuItem
+            // 
+            this.removeNamesContainedInFileToolStripMenuItem.Name = "removeNamesContainedInFileToolStripMenuItem";
+            this.removeNamesContainedInFileToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+            this.removeNamesContainedInFileToolStripMenuItem.Text = "Remove names contained in file...";
+            this.removeNamesContainedInFileToolStripMenuItem.Click += new System.EventHandler(this.removeNamesContainedInFileToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(734, 621);
+            this.ContextMenuStrip = this.contextMenuStrip1;
             this.Controls.Add(this.labelTransfered);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.labelImportCount);
@@ -200,6 +218,7 @@
             this.Name = "Form1";
             this.Text = "SE Names etc list manager";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -221,6 +240,8 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label labelTransfered;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem removeNamesContainedInFileToolStripMenuItem;
     }
 }
 
