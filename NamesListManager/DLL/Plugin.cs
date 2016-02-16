@@ -38,18 +38,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
-            subtitle = subtitle.Trim();
-
-            if (!string.IsNullOrEmpty(listViewLineSeparatorString))
-                Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
-
-            var list = new List<string>();
-            foreach (string line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
-                list.Add(line);
-
-            var sub = new Subtitle();
-            var srt = new SubRip();
-            srt.LoadSubtitle(sub, list, subtitleFileName);
             using (var form = new Form1())
             {
                 form.ShowDialog(parentForm);

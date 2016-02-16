@@ -49,11 +49,6 @@
     </Compile>
     <Compile Include="IPlugin.cs" />
     <Compile Include="Logic\Configuration.cs" />
-    <Compile Include="Logic\Paragraph.cs" />
-    <Compile Include="Logic\SubRip.cs" />
-    <Compile Include="Logic\Subtitle.cs" />
-    <Compile Include="Logic\SubtitleFormat.cs" />
-    <Compile Include="Logic\TimeCode.cs" />
     <Compile Include="Logic\Utilities.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
