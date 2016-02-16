@@ -43,8 +43,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     if (!_namesList.Contains(s))
                         _namesList.Add(s);
                 }
+                FillNames();
             }
-            FillNames();            
             _changed = false;
         }
 
