@@ -12,7 +12,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
     public partial class Form1 : Form
     {
         private string _namesFileName;
-        private List<string> _namesList;
+        private List<string> _namesList = new List<string>();
         private XDocument _namesXml;
         private bool _changed;
 
@@ -35,7 +35,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             textBoxFileName.Text = fileName;
             _namesFileName = fileName;
             _namesXml = XDocument.Load(fileName);
-            _namesList = new List<string>();
             if (_namesXml.Document != null)
             {
                 foreach (var nameNode in _namesXml.Document.Descendants("name"))
