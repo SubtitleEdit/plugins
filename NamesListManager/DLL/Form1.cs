@@ -97,14 +97,22 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 // ignore
             }
 
-            _namesXml.Document?.Descendants("name").Remove();
-            var root = _namesXml.Descendants().First(p => p.NodeType == XmlNodeType.Element);
-            foreach (var name in _namesList)
+            try
             {
-                root.Add(new XElement("name", name));
+                _namesXml.Document?.Descendants("name").Remove();
+                // will throw an exception if no element satisfy the predicate/empty
+                var root = _namesXml.Descendants().First(p => p.NodeType == XmlNodeType.Element);
+                foreach (var name in _namesList)
+                {
+                    root.Add(new XElement("name", name));
+                }
+                _namesXml.Save(_namesFileName);
+                MessageBox.Show(_namesFileName + " saved!");
             }
-            _namesXml.Save(_namesFileName);
-            MessageBox.Show(_namesFileName + " saved!");
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void listBoxNames_KeyDown(object sender, KeyEventArgs e)
