@@ -223,7 +223,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         }
                         else
                         {
-                            if (!importedList.Contains(s))
+                            if (!importedList.Contains(s) && !Utilities.IsInteger(s))
                             {
                                 importedList.Add(s);
                             }
