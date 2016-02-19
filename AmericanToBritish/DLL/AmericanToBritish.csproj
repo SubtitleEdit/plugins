@@ -41,7 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AmericanToBritish.cs" />
+    <Compile Include="AmericanToBritishConverter.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="ListType.cs" />
     <Compile Include="Logic\Configuration.cs" />

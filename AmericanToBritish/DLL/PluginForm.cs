@@ -27,7 +27,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             labelDescription.Text = description;
             _subtitle = subtitle;
 
-            _localFile = Utilities.GetWordListFileName();
+            _localFile = Path.Combine(Utilities.GetWordListFileName(), "WordList.xml");
             if (File.Exists(_localFile))
             {
                 _converter = new AmericanToBritishConverter(_localFile);
@@ -204,18 +204,41 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void radioButtonLocalList_CheckedChanged(object sender, EventArgs e)
         {
-            // load local list name
+            var generate = false;
+            // reload local words-list
             if (File.Exists(_localFile))
             {
                 _converter.LoadLocalWords(_localFile);
+                generate = true;
             }
             else
             {
                 // prompt to create words list if it doesn't exist
+                if (MessageBox.Show("Local list wasn't found, do you want to create one?", "Word list not found!", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                {
+                    try
+                    {
+                        // TODO: load names from built-in words when creating local-list
+                        var wordsListXml = new XElement("Words",
+                            new XElement("Word", new XAttribute("us", "acclimatizes"), new XAttribute("br", "acclimatises")
+                            ));
+                        wordsListXml.Save(_localFile);
+                        _converter.LoadLocalWords(_localFile);
+                        generate = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                        generate = false;
+                    }
+                }
                 // validation
             }
-            // update list view
-            GeneratePreview();
+            if (generate)
+            {
+                // update list view
+                GeneratePreview();
+            }
         }
     }
 }

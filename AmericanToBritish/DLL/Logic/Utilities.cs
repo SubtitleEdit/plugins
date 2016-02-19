@@ -122,14 +122,24 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
 
         public static string GetWordListFileName()
         {
-            // "%userprofile%Desktop\SubtitleEdit\Plugins\SeLinesUnbreaker.xml"
-            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+            /* If the assembly is loaded from a byte array, such as when using the Load(Byte[])
+             method overload, the value returned is an empty string ("").*/
+            //var path = Assembly.GetExecutingAssembly().Location; // this will Throw
+
+            // If the assembly was loaded as a byte array, using an overload of the Load
+            // method that takes an array of bytes, this property returns the location of
+            // the caller of the method, not the location of the loaded assembly.
+            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase); // Note: Subtitle edit load assembly from raw bytes
             if (path.StartsWith("file:\\", StringComparison.Ordinal))
                 path = path.Remove(0, 6);
-            path = Path.Combine(path, "Plugins");
+
+            path = Path.Combine(path, "Plugins"); // try to find portable SE Plugins folder
             if (!Directory.Exists(path))
-                path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Plugins");
-            return Path.Combine(path, "WordList.xml");
+            {
+                path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    "Subtitle Edit"), "Plugins");
+            }
+            return Path.Combine(path);
         }
     }
 }

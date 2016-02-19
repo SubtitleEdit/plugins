@@ -28,10 +28,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             LoadLocalWords(localListPath);
         }
 
-        public string FixText(string s, ListType listType)
+        public string FixText(string text, ListType listType)
         {
-            if (string.IsNullOrWhiteSpace(s))
-                return s;
+            if (string.IsNullOrWhiteSpace(text))
+                return text;
 
             switch (listType)
             {
@@ -39,9 +39,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     for (int index = 0; index < _regexListBuiltIn.Count; index++)
                     {
                         var regex = _regexListBuiltIn[index];
-                        if (regex.IsMatch(s))
+                        if (regex.IsMatch(text))
                         {
-                            s = regex.Replace(s, _replaceListBuitIn[index]);
+                            text = regex.Replace(text, _replaceListBuitIn[index]);
                         }
                     }
                     break;
@@ -50,14 +50,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     for (int index = 0; index < _regexListLocal.Count; index++)
                     {
                         var regex = _regexListLocal[index];
-                        if (regex.IsMatch(s))
+                        if (regex.IsMatch(text))
                         {
-                            s = regex.Replace(s, _replaceListLocal[index]);
+                            text = regex.Replace(text, _replaceListLocal[index]);
                         }
                     }
                     break;
             }
-            return FixMissChangedWord(s);
+            return FixMissChangedWord(text);
         }
 
         public void LoadBuiltInWords()
@@ -103,7 +103,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public void LoadLocalWords(string path)
         {
-            if (!Path.IsPathRooted(path))
+            if (string.IsNullOrWhiteSpace(path) || !Path.IsPathRooted(path) || !File.Exists(path))
                 return;
             // always reload list
             var xDoc = XDocument.Load(path);
