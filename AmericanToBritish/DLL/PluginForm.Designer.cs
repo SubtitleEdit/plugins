@@ -177,7 +177,7 @@
             // 
             this.radioButtonBuiltInList.AutoSize = true;
             this.radioButtonBuiltInList.Checked = true;
-            this.radioButtonBuiltInList.Location = new System.Drawing.Point(156, 18);
+            this.radioButtonBuiltInList.Location = new System.Drawing.Point(237, 18);
             this.radioButtonBuiltInList.Name = "radioButtonBuiltInList";
             this.radioButtonBuiltInList.Size = new System.Drawing.Size(92, 17);
             this.radioButtonBuiltInList.TabIndex = 9;
@@ -189,7 +189,7 @@
             // radioButtonLocalList
             // 
             this.radioButtonLocalList.AutoSize = true;
-            this.radioButtonLocalList.Location = new System.Drawing.Point(254, 18);
+            this.radioButtonLocalList.Location = new System.Drawing.Point(335, 18);
             this.radioButtonLocalList.Name = "radioButtonLocalList";
             this.radioButtonLocalList.Size = new System.Drawing.Size(84, 17);
             this.radioButtonLocalList.TabIndex = 10;

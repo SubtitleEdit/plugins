@@ -17,15 +17,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private readonly Subtitle _subtitle;
         private int _totalFixes;
         private bool _allowFixes;
-
-        // built-in list
-        private readonly List<Regex> _regexListBuiltIn = new List<Regex>();
-        private readonly List<string> _replaceListBuitIn = new List<string>();
-
-        // local names
-        private readonly List<Regex> _regexListLocal = new List<Regex>();
-        private readonly List<string> _replaceListLocal = new List<string>();
-
+        private AmericanToBritishConverter _converter;
         internal PluginForm(Subtitle subtitle, string name, string description)
         {
             InitializeComponent();
@@ -33,6 +25,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Text = name;
             labelDescription.Text = description;
             _subtitle = subtitle;
+
+            var localFile = Utilities.GetWordListFileName();
+            if (File.Exists(localFile))
+            {
+                _converter = new AmericanToBritishConverter(localFile);
+            }
+            else
+            {
+                _converter = new AmericanToBritishConverter();
+            }
+
             SizeChanged += delegate
             {
                 var width = (Width - (130 + listViewFixes.Left * 2)) / 2;
@@ -65,26 +68,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void GeneratePreview()
         {
+            ListType listType = radioButtonBuiltInList.Checked ? ListType.BuiltIn : ListType.Local;
+            listViewFixes.BeginUpdate();
+            listViewFixes.Items.Clear();
             for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
             {
                 Paragraph p = _subtitle.Paragraphs[i];
                 string text = p.Text.Trim();
                 string oldText = text;
-                text = FixText(text);
-
-                var idx = text.IndexOf("<font", StringComparison.OrdinalIgnoreCase);
-                while (idx >= 0) // Fix colour => color
-                {
-                    var endIdx = text.IndexOf('>', idx + 5);
-                    if (endIdx < 5)
-                        break;
-                    var tag = text.Substring(idx, endIdx - idx);
-                    tag = tag.Replace("colour", "color");
-                    tag = tag.Replace("COLOUR", "COLOR");
-                    tag = tag.Replace("Colour", "Color");
-                    text = text.Remove(idx, endIdx - idx).Insert(idx, tag);
-                    idx = text.IndexOf("<font", endIdx + 1, StringComparison.OrdinalIgnoreCase);
-                }
+                text = _converter.FixText(text, listType);
 
                 if (text != oldText)
                 {
@@ -104,6 +96,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     }
                 }
             }
+            listViewFixes.EndUpdate();
             if (!_allowFixes)
             {
                 labelTotal.Text = "Total: " + _totalFixes;
@@ -125,21 +118,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return false;
         }
 
-        private string FixText(string s)
-        {
-            if (string.IsNullOrWhiteSpace(s))
-                return s;
-
-            for (int index = 0; index < _regexListBuiltIn.Count; index++)
-            {
-                var regex = _regexListBuiltIn[index];
-                if (regex.IsMatch(s))
-                {
-                    s = regex.Replace(s, _replaceListBuitIn[index]);
-                }
-            }
-            return s;
-        }
 
         private void buttonSelectAll_Click(object sender, EventArgs e)
         {
@@ -176,38 +154,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             try
             {
                 Cursor = Cursors.WaitCursor;
-                using (var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Nikse.SubtitleEdit.PluginLogic.WordList.xml"))
-                {
-                    if (stream != null)
-                    {
-                        using (var reader = new StreamReader(stream))
-                        {
-                            var xdoc = XDocument.Parse(reader.ReadToEnd());
-                            foreach (XElement xElement in xdoc.Descendants("Word"))
-                            {
-                                string american = xElement.Attribute("us").Value;
-                                string british = xElement.Attribute("br").Value;
-                                if (!(string.IsNullOrWhiteSpace(american) || string.IsNullOrWhiteSpace(british)) && american != british)
-                                {
-                                    _regexListBuiltIn.Add(new Regex("\\b" + american + "\\b", RegexOptions.Compiled));
-                                    _replaceListBuitIn.Add(british);
-
-                                    _regexListBuiltIn.Add(new Regex("\\b" + american.ToUpperInvariant() + "\\b", RegexOptions.Compiled));
-                                    _replaceListBuitIn.Add(british.ToUpperInvariant());
-
-                                    if (american.Length > 1)
-                                    {
-                                        _regexListBuiltIn.Add(new Regex("\\b" + char.ToUpperInvariant(american[0]) + american.Substring(1) + "\\b", RegexOptions.Compiled));
-                                        if (british.Length > 1)
-                                            _replaceListBuitIn.Add(char.ToUpperInvariant(british[0]) + british.Substring(1));
-                                        else
-                                            _replaceListBuitIn.Add(british.ToUpper());
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
                 GeneratePreview();
                 if (listViewFixes.Items.Count > 0)
                 {
@@ -225,7 +171,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 Cursor = Cursors.Default;
             }
-
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -253,6 +198,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             // load built-in list name
             // update list view
+            GeneratePreview();
         }
 
         private void radioButtonLocalList_CheckedChanged(object sender, EventArgs e)
@@ -260,6 +206,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // load local list name
             // validation
             // udpate list view
+            GeneratePreview();
         }
     }
 }
