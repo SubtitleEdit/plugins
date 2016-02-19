@@ -2,7 +2,7 @@
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    internal class Paragraph
+    public class Paragraph
     {
         public string Id { get; private set; }
         public int Number { get; set; }

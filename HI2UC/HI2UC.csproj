@@ -55,6 +55,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HearingImpaired.cs" />
+    <Compile Include="HIStyle.cs" />
+    <Compile Include="Interfaces\IHearingImpaired.cs" />
     <Compile Include="Logic\Configuration.cs" />
     <Compile Include="PluginForm.cs">
       <SubType>Form</SubType>
@@ -62,7 +65,7 @@
     <Compile Include="PluginForm.Designer.cs">
       <DependentUpon>PluginForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="IPlugin.cs" />
+    <Compile Include="Interfaces\IPlugin.cs" />
     <Compile Include="Logic\Paragraph.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

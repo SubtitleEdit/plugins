@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    internal class Subtitle
+    public class Subtitle
     {
         private List<Paragraph> _paragraphs;
         private bool _wasLoadedWithFrameNumbers;

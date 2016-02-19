@@ -9,17 +9,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form
     {
-        private enum HIStyle
-        {
-            UpperCase,
-            LowerCase,
-            FirstUppercase,
-            UpperLowerCase
-        }
-
         public string FixedSubtitle { get; private set; }
+        private readonly IHearingImpaired _hiStyler;
 
-        private HIStyle _hiStyle = HIStyle.UpperCase;
         private bool _moodsMatched;
         private bool _namesMatched;
         private int _totalChanged;
@@ -29,9 +21,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private Dictionary<string, string> _fixedTexts = new Dictionary<string, string>();
         private HashSet<string> _notAllowedFixes = new HashSet<string>();
         private readonly List<Paragraph> _deletedParagarphs = new List<Paragraph>();
-        private readonly char[] HIChars = { '(', '[' };
+
         private readonly Regex _regexExtraSpaces = new Regex(@"(?<=[\(\[]) +| +(?=[\)\]])", RegexOptions.Compiled);
-        private readonly Regex _regexFirstChar = new Regex(@"\b\w", RegexOptions.Compiled);
         private readonly StringBuilder SB = new StringBuilder();
 
         public PluginForm(Form parentForm, Subtitle subtitle, string name, string description)
@@ -40,6 +31,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _parentForm = parentForm;
             _subtitle = subtitle;
             labelDesc.Text = "Description: " + description;
+            _hiStyler = new HearingImpaired();
+
             /*
             this.KeyDown += (s, e) =>
             {
@@ -144,9 +137,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (comboBoxStyle.SelectedIndex < 0 || listViewFixes.Items.Count < 0)
                 return;
-            if ((int)_hiStyle != comboBoxStyle.SelectedIndex)
+            if ((int)_hiStyler.Style != comboBoxStyle.SelectedIndex)
             {
-                _hiStyle = (HIStyle)comboBoxStyle.SelectedIndex;
+                _hiStyler.Style = (HIStyle)comboBoxStyle.SelectedIndex;
                 GeneratePreview();
             }
         }
@@ -167,17 +160,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 var oldText = text;
 
                 // (Moods and feelings)
-                if (text.ContainsAny(HIChars))
+                if (text.ContainsAny(HearingImpaired.ExpectedHIChars))
                 {
                     //Remove Extra Spaces inside brackets ( foobar ) to (foobar)
                     if (checkBoxRemoveSpaces.Checked)
                         text = _regexExtraSpaces.Replace(text, string.Empty);
-                    text = ChangeMoodsToUppercase(text);
+                    text = _hiStyler.ChangeMoodsToUppercase(text);// Todo: call this through instance
                 }
 
                 // Narrator:
                 if (checkBoxNames.Checked && text.Contains(':'))
-                    text = NarratorToUpper(text);
+                    text = _hiStyler.NarratorToUpper(text);
 
                 if (text != oldText)
                 {
@@ -241,132 +234,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.Items.Add(item);
         }
 
-        private string ChangeMoodsToUppercase(string text)
-        {
-            Action<char, int> FindBrackets = delegate (char openBracket, int idx)
-            {
-                //char? closeBracket = null;
-                char closeBracket = '\0';
-                switch (openBracket)
-                {
-                    case '(':
-                        closeBracket = ')';
-                        break;
-                    case '[':
-                        closeBracket = ']';
-                        break;
-                }
-
-                while (idx >= 0)
-                {
-                    int endIdx = text.IndexOf(closeBracket, idx + 1); // ] or )
-                    if (endIdx < idx + 1)
-                        break;
-
-                    var moodText = text.Substring(idx, endIdx - idx + 1);
-                    moodText = StyleMoodsAndFeelings(moodText);
-
-                    if (_moodsMatched)
-                        text = text.Remove(idx, endIdx - idx + 1).Insert(idx, moodText);
-
-                    idx = text.IndexOf(openBracket, endIdx + 1); // ( or [
-                }
-            };
-            text = text.Replace("()", string.Empty);
-            text = text.Replace("[]", string.Empty);
-            var bIdx = text.IndexOfAny(HIChars);
-            if (bIdx >= 0)
-                FindBrackets(text[bIdx], bIdx);
-            return text.FixExtraSpaces();
-        }
-
-        private string StyleMoodsAndFeelings(string text)
-        {
-            var before = text;
-            switch (_hiStyle)
-            {
-                case HIStyle.UpperLowerCase:
-                    SB.Clear();
-                    bool isUpperTime = true;
-                    foreach (char myChar in text)
-                    {
-                        if (!char.IsLetter(myChar))
-                        {
-                            SB.Append(myChar);
-                        }
-                        else
-                        {
-                            SB.Append(isUpperTime ? char.ToUpper(myChar) : char.ToLower(myChar));
-                            isUpperTime = !isUpperTime;
-                        }
-                    }
-                    text = SB.ToString();
-                    break;
-                case HIStyle.FirstUppercase:
-                    text = _regexFirstChar.Replace(text.ToLower(), x => x.Value.ToUpper()); // foobar to Foobar
-                    break;
-                case HIStyle.UpperCase:
-                    text = text.ToUpper();
-                    break;
-                case HIStyle.LowerCase:
-                    text = text.ToLower();
-                    break;
-            }
-            _moodsMatched = text != before;
-            return text;
-        }
-
-        //delegate void RefAction<in T>(ref T obj);
-        private string NarratorToUpper(string text)
-        {
-            string before = text;
-            var t = Utilities.RemoveHtmlTags(text, true).TrimEnd().TrimEnd('"');
-            var index = t.IndexOf(':');
-
-            // like: "Ivandro Says:"
-            if (index == t.Length - 1 || text.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-            {
-                return text;
-            }
-
-            var lines = text.SplitToLines();
-            for (int i = 0; i < lines.Length; i++)
-            {
-                var noTagText = Utilities.RemoveHtmlTags(lines[i], true).Trim();
-                index = noTagText.IndexOf(':');
-                if (!CanUpper(noTagText, index))
-                    continue;
-
-                // Ivandro ismael:
-                // hello world!
-                if (i > 0 && index >= noTagText.Length)
-                    continue;
-
-                // Now find : in original text
-                index = lines[i].IndexOf(':');
-                if (index > 0)
-                {
-                    lines[i] = ConvertToUpper(lines[i], index);
-                }
-            }
-            text = string.Join(Environment.NewLine, lines);
-
-            if (before != text)
-                _namesMatched = true;
-            return text;
-        }
-
-        private bool CanUpper(string line, int index)
-        {
-            if (index <= 0 || (index + 1 >= line.Length) || char.IsDigit(line[index + 1]))
-                return false;
-            line = line.Substring(0, index);
-            if (line.EndsWith("improved by", StringComparison.OrdinalIgnoreCase) ||
-                line.EndsWith("corrected by", StringComparison.OrdinalIgnoreCase))
-                return false;
-            return true;
-        }
-
         private void buttonApply_Click(object sender, EventArgs e)
         {
             if (listViewFixes.Items.Count == 0)
@@ -398,39 +265,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var newWidth = (listViewFixes.Width - (listViewFixes.Columns[0].Width + listViewFixes.Columns[1].Width + listViewFixes.Columns[2].Width)) / 2;
             listViewFixes.Columns[3].Width = newWidth;
             listViewFixes.Columns[4].Width = newWidth;
-        }
-
-        private readonly Regex _RegexFirstChar = new Regex("(?<!<)\\w", RegexOptions.Compiled); // Will also avoid matching <i> or <b>...
-        private string ConvertToUpper(string s, int colonIdx)
-        {
-            var pre = s.Substring(0, colonIdx);
-
-            // (Adele: ...)
-            if (pre.ContainsAny(HIChars) || s.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-                return s;
-
-            if (Utilities.RemoveHtmlTags(pre, true).Trim().Length > 1)
-            {
-                var firstChr = _RegexFirstChar.Match(pre).Value; // Note: this will prevent to fix tag pre narrator <i>John: Hey!</i>
-                int idx = pre.IndexOf(firstChr, StringComparison.Ordinal);
-                if (idx >= 0)
-                {
-                    var narrator = pre.Substring(idx, colonIdx - idx);
-                    var oldNarrator = narrator;
-                    // Filter http protocols
-                    if (narrator.TrimEnd().EndsWith("HTTPS", StringComparison.OrdinalIgnoreCase) ||
-                        narrator.TrimEnd().EndsWith("HTTP", StringComparison.OrdinalIgnoreCase))
-                        return s;
-
-                    narrator = narrator.ToUpper();
-                    // Return if narrator is already uppercase
-                    if (narrator == oldNarrator)
-                        return s;
-                    pre = pre.Remove(idx, colonIdx - idx).Insert(idx, narrator);
-                    s = s.Remove(0, colonIdx).Insert(0, pre);
-                }
-            }
-            return s;
         }
 
         private void listViewFixes_ItemChecked(object sender, ItemCheckedEventArgs e)

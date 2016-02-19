@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    internal static class Utilities
+    public static class Utilities
     {
         #region ExtensionMethod
 
