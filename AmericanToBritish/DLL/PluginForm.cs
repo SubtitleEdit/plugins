@@ -17,8 +17,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private readonly Subtitle _subtitle;
         private int _totalFixes;
         private bool _allowFixes;
-        private readonly List<Regex> _regexList = new List<Regex>();
-        private readonly List<string> _replaceList = new List<string>();
+
+        // built-in list
+        private readonly List<Regex> _regexListBuiltIn = new List<Regex>();
+        private readonly List<string> _replaceListBuitIn = new List<string>();
+
+        // local names
+        private readonly List<Regex> _regexListLocal = new List<Regex>();
+        private readonly List<string> _replaceListLocal = new List<string>();
 
         internal PluginForm(Subtitle subtitle, string name, string description)
         {
@@ -38,7 +44,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void buttonOK_Click(object sender, EventArgs e)
         {
             _allowFixes = true;
-            AmericanToBritish();
+            GeneratePreview();
             FixedSubtitle = _subtitle.ToText(new SubRip());
             DialogResult = DialogResult.OK;
         }
@@ -52,12 +58,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             var item = new ListViewItem(string.Empty) { Checked = true };
             item.SubItems.Add(p.Number.ToString(CultureInfo.InvariantCulture));
-            item.SubItems.Add(before.Replace(Environment.NewLine, "<br />"));
-            item.SubItems.Add(after.Replace(Environment.NewLine, "<br />"));
+            item.SubItems.Add(before.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
+            item.SubItems.Add(after.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
             listViewFixes.Items.Add(item);
         }
 
-        private void AmericanToBritish()
+        private void GeneratePreview()
         {
             for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
             {
@@ -124,12 +130,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (string.IsNullOrWhiteSpace(s))
                 return s;
 
-            for (int index = 0; index < _regexList.Count; index++)
+            for (int index = 0; index < _regexListBuiltIn.Count; index++)
             {
-                var regex = _regexList[index];
+                var regex = _regexListBuiltIn[index];
                 if (regex.IsMatch(s))
                 {
-                    s = regex.Replace(s, _replaceList[index]);
+                    s = regex.Replace(s, _replaceListBuitIn[index]);
                 }
             }
             return s;
@@ -151,9 +157,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private bool SubtitleLoaded()
         {
-            if (_subtitle == null)
-                return false;
-            if (_subtitle.Paragraphs.Count < 1)
+            if (_subtitle == null || _subtitle.Paragraphs.Count < 1)
                 return false;
             return true;
         }
@@ -183,29 +187,28 @@ namespace Nikse.SubtitleEdit.PluginLogic
                             {
                                 string american = xElement.Attribute("us").Value;
                                 string british = xElement.Attribute("br").Value;
-                                if (!string.IsNullOrWhiteSpace(american) || !string.IsNullOrWhiteSpace(british) && american != british)
+                                if (!(string.IsNullOrWhiteSpace(american) || string.IsNullOrWhiteSpace(british)) && american != british)
                                 {
-                                    _regexList.Add(new Regex("\\b" + american + "\\b", RegexOptions.Compiled));
-                                    _replaceList.Add(british);
+                                    _regexListBuiltIn.Add(new Regex("\\b" + american + "\\b", RegexOptions.Compiled));
+                                    _replaceListBuitIn.Add(british);
 
-                                    _regexList.Add(new Regex("\\b" + american.ToUpperInvariant() + "\\b", RegexOptions.Compiled));
-                                    _replaceList.Add(british.ToUpperInvariant());
+                                    _regexListBuiltIn.Add(new Regex("\\b" + american.ToUpperInvariant() + "\\b", RegexOptions.Compiled));
+                                    _replaceListBuitIn.Add(british.ToUpperInvariant());
 
                                     if (american.Length > 1)
                                     {
-                                        _regexList.Add(new Regex("\\b" + char.ToUpperInvariant(american[0]) + american.Substring(1) + "\\b", RegexOptions.Compiled));
+                                        _regexListBuiltIn.Add(new Regex("\\b" + char.ToUpperInvariant(american[0]) + american.Substring(1) + "\\b", RegexOptions.Compiled));
                                         if (british.Length > 1)
-                                            _replaceList.Add(char.ToUpperInvariant(british[0]) + british.Substring(1));
+                                            _replaceListBuitIn.Add(char.ToUpperInvariant(british[0]) + british.Substring(1));
                                         else
-                                            _replaceList.Add(british.ToUpper());
+                                            _replaceListBuitIn.Add(british.ToUpper());
                                     }
                                 }
                             }
-
                         }
                     }
                 }
-                AmericanToBritish();
+                GeneratePreview();
                 if (listViewFixes.Items.Count > 0)
                 {
                     listViewFixes.Items[0].Selected = true;
@@ -244,6 +247,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (e.KeyCode == Keys.Escape)
                 DialogResult = DialogResult.Cancel;
+        }
+
+        private void radioButtonBuiltInList_CheckedChanged(object sender, EventArgs e)
+        {
+            // load built-in list name
+            // update list view
+        }
+
+        private void radioButtonLocalList_CheckedChanged(object sender, EventArgs e)
+        {
+            // load local list name
+            // validation
+            // udpate list view
         }
     }
 }

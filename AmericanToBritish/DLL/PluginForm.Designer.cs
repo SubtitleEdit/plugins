@@ -41,6 +41,8 @@
             this.buttonSelectAll = new System.Windows.Forms.Button();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
+            this.radioButtonBuiltInList = new System.Windows.Forms.RadioButton();
+            this.radioButtonLocalList = new System.Windows.Forms.RadioButton();
             this.SuspendLayout();
             // 
             // buttonOK
@@ -171,11 +173,37 @@
             this.linkLabel2.Text = "View word list...";
             this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
             // 
+            // radioButtonBuiltInList
+            // 
+            this.radioButtonBuiltInList.AutoSize = true;
+            this.radioButtonBuiltInList.Checked = true;
+            this.radioButtonBuiltInList.Location = new System.Drawing.Point(156, 18);
+            this.radioButtonBuiltInList.Name = "radioButtonBuiltInList";
+            this.radioButtonBuiltInList.Size = new System.Drawing.Size(92, 17);
+            this.radioButtonBuiltInList.TabIndex = 9;
+            this.radioButtonBuiltInList.TabStop = true;
+            this.radioButtonBuiltInList.Text = "Use built-in list";
+            this.radioButtonBuiltInList.UseVisualStyleBackColor = true;
+            this.radioButtonBuiltInList.CheckedChanged += new System.EventHandler(this.radioButtonBuiltInList_CheckedChanged);
+            // 
+            // radioButtonLocalList
+            // 
+            this.radioButtonLocalList.AutoSize = true;
+            this.radioButtonLocalList.Location = new System.Drawing.Point(254, 18);
+            this.radioButtonLocalList.Name = "radioButtonLocalList";
+            this.radioButtonLocalList.Size = new System.Drawing.Size(84, 17);
+            this.radioButtonLocalList.TabIndex = 10;
+            this.radioButtonLocalList.Text = "Use local list";
+            this.radioButtonLocalList.UseVisualStyleBackColor = true;
+            this.radioButtonLocalList.CheckedChanged += new System.EventHandler(this.radioButtonLocalList_CheckedChanged);
+            // 
             // PluginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(866, 473);
+            this.Controls.Add(this.radioButtonLocalList);
+            this.Controls.Add(this.radioButtonBuiltInList);
             this.Controls.Add(this.linkLabel2);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.buttonSelectAll);
@@ -216,6 +244,7 @@
         private System.Windows.Forms.Button buttonSelectAll;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.LinkLabel linkLabel2;
-
+        private System.Windows.Forms.RadioButton radioButtonBuiltInList;
+        private System.Windows.Forms.RadioButton radioButtonLocalList;
     }
 }
