@@ -103,8 +103,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public void LoadLocalWords(string path)
         {
-            if (string.IsNullOrWhiteSpace(path) || !Path.IsPathRooted(path) || !File.Exists(path))
+            if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
                 return;
+            _regexListLocal.Clear();
+            _replaceListLocal.Clear();
             // always reload list
             var xDoc = XDocument.Load(path);
             if (xDoc?.Root.Name == "Words")

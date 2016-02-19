@@ -69,6 +69,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void GeneratePreview()
         {
+            _totalFixes = 0;
             ListType listType = radioButtonBuiltInList.Checked ? ListType.BuiltIn : ListType.Local;
             listViewFixes.BeginUpdate();
             listViewFixes.Items.Clear();
@@ -232,7 +233,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         generate = false;
                     }
                 }
-                // validation
             }
             if (generate)
             {
