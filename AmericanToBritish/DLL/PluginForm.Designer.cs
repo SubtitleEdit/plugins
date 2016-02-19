@@ -43,6 +43,11 @@
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.radioButtonBuiltInList = new System.Windows.Forms.RadioButton();
             this.radioButtonLocalList = new System.Windows.Forms.RadioButton();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.manageLocalwordsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewBuiltinWordsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonOK
@@ -197,6 +202,39 @@
             this.radioButtonLocalList.UseVisualStyleBackColor = true;
             this.radioButtonLocalList.CheckedChanged += new System.EventHandler(this.radioButtonLocalList_CheckedChanged);
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(866, 24);
+            this.menuStrip1.TabIndex = 11;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.manageLocalwordsToolStripMenuItem,
+            this.viewBuiltinWordsToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
+            // manageLocalwordsToolStripMenuItem
+            // 
+            this.manageLocalwordsToolStripMenuItem.Name = "manageLocalwordsToolStripMenuItem";
+            this.manageLocalwordsToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.manageLocalwordsToolStripMenuItem.Text = "Manage local-words";
+            this.manageLocalwordsToolStripMenuItem.Click += new System.EventHandler(this.manageLocalwordsToolStripMenuItem_Click);
+            // 
+            // viewBuiltinWordsToolStripMenuItem
+            // 
+            this.viewBuiltinWordsToolStripMenuItem.Name = "viewBuiltinWordsToolStripMenuItem";
+            this.viewBuiltinWordsToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.viewBuiltinWordsToolStripMenuItem.Text = "View built-in words";
+            this.viewBuiltinWordsToolStripMenuItem.Click += new System.EventHandler(this.viewBuiltinWordsToolStripMenuItem_Click);
+            // 
             // PluginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -213,7 +251,9 @@
             this.Controls.Add(this.labelDescription);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.buttonOK);
+            this.Controls.Add(this.menuStrip1);
             this.KeyPreview = true;
+            this.MainMenuStrip = this.menuStrip1;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(800, 428);
             this.Name = "PluginForm";
@@ -224,6 +264,8 @@
             this.Load += new System.EventHandler(this.PluginForm_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PluginForm_KeyDown);
             this.Resize += new System.EventHandler(this.PluginForm_Resize);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -246,5 +288,9 @@
         private System.Windows.Forms.LinkLabel linkLabel2;
         private System.Windows.Forms.RadioButton radioButtonBuiltInList;
         private System.Windows.Forms.RadioButton radioButtonLocalList;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem manageLocalwordsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewBuiltinWordsToolStripMenuItem;
     }
 }

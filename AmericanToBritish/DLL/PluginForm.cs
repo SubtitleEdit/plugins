@@ -240,5 +240,26 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 GeneratePreview();
             }
         }
+
+        private void manageLocalwordsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!File.Exists(_localFile))
+                return;
+            using (var manageWords = new ManageWordsForm())
+            {
+                manageWords.Initialize(File.Open(_localFile, FileMode.Open, FileAccess.ReadWrite, FileShare.Read), "Local list");
+                manageWords.ShowDialog();
+            }
+        }
+
+        private void viewBuiltinWordsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var manageWords = new ManageWordsForm())
+            {
+                var resouceStream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Nikse.SubtitleEdit.PluginLogic.WordList.xml");
+                manageWords.Initialize(resouceStream, "Embadded list");
+                manageWords.ShowDialog();
+            }
+        }
     }
 }

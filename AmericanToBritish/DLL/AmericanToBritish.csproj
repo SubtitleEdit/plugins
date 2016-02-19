@@ -51,6 +51,12 @@
     <Compile Include="Logic\SubtitleFormat.cs" />
     <Compile Include="Logic\TimeCode.cs" />
     <Compile Include="Logic\Utilities.cs" />
+    <Compile Include="ManageWordsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageWordsForm.Designer.cs">
+      <DependentUpon>ManageWordsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginForm.cs">
       <SubType>Form</SubType>
@@ -61,6 +67,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ManageWordsForm.resx">
+      <DependentUpon>ManageWordsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PluginForm.resx">
       <DependentUpon>PluginForm.cs</DependentUpon>
     </EmbeddedResource>
