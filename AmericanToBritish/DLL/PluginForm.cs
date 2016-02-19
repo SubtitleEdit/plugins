@@ -18,6 +18,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private int _totalFixes;
         private bool _allowFixes;
         private AmericanToBritishConverter _converter;
+        private string _localFile;
         internal PluginForm(Subtitle subtitle, string name, string description)
         {
             InitializeComponent();
@@ -26,10 +27,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             labelDescription.Text = description;
             _subtitle = subtitle;
 
-            var localFile = Utilities.GetWordListFileName();
-            if (File.Exists(localFile))
+            _localFile = Utilities.GetWordListFileName();
+            if (File.Exists(_localFile))
             {
-                _converter = new AmericanToBritishConverter(localFile);
+                _converter = new AmericanToBritishConverter(_localFile);
             }
             else
             {
@@ -204,8 +205,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void radioButtonLocalList_CheckedChanged(object sender, EventArgs e)
         {
             // load local list name
-            // validation
-            // udpate list view
+            if (File.Exists(_localFile))
+            {
+                _converter.LoadLocalWords(_localFile);
+            }
+            else
+            {
+                // prompt to create words list if it doesn't exist
+                // validation
+            }
+            // update list view
             GeneratePreview();
         }
     }

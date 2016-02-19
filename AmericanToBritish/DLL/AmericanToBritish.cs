@@ -105,6 +105,32 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (!Path.IsPathRooted(path))
                 return;
+            // always reload list
+            var xDoc = XDocument.Load(path);
+            if (xDoc?.Root.Name == "Words")
+            {
+                // todo: make load words generic to allow loading both built-in and local
+                foreach (XElement xe in xDoc.Root.Elements("Word"))
+                {
+                    if (xe.Attribute("us")?.Value.Length > 1 && xe.Attribute("br")?.Value.Length > 1)
+                    {
+                        string american = xe.Attribute("us").Value;
+                        string british = xe.Attribute("us").Value;
+
+                        _regexListLocal.Add(new Regex("\\b" + american + "\\b", RegexOptions.Compiled));
+                        _replaceListLocal.Add(british);
+
+                        _regexListLocal.Add(new Regex("\\b" + american.ToUpperInvariant() + "\\b", RegexOptions.Compiled));
+                        _replaceListLocal.Add(british.ToUpperInvariant());
+
+                        _regexListLocal.Add(new Regex("\\b" + char.ToUpperInvariant(american[0]) + american.Substring(1) + "\\b", RegexOptions.Compiled));
+                        if (british.Length > 1)
+                            _replaceListLocal.Add(char.ToUpperInvariant(british[0]) + british.Substring(1));
+                        else
+                            _replaceListLocal.Add(british.ToUpper());
+                    }
+                }
+            }
         }
 
         private string FixMissChangedWord(string s)
