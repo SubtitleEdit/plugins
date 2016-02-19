@@ -24,6 +24,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public void Initialize(Stream stream, string source)
         {
             labelSource.Text = $"Source: {source}";
+            DisableEditFunctionalityIfIsEmbaddedStream(source.StartsWith("Embadded", StringComparison.Ordinal));
             var totalWords = 0;
             var xdoc = XDocument.Load(stream);
             if (xdoc.Root?.Name == "Words")
@@ -45,6 +46,25 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var item = new ListViewItem(americanWord);
             item.SubItems.Add(britishWord);
             listView1.Items.Add(item);
+        }
+
+        private void buttonOK_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.OK;
+        }
+
+        private void buttonAdd_Click(object sender, EventArgs e)
+        {
+            // validate both words
+            // add words to listview
+            // store added word in local words-list
+        }
+
+        private void DisableEditFunctionalityIfIsEmbaddedStream(bool disable)
+        {
+            textBoxAmerican.Enabled = disable;
+            textBoxBritish.Enabled = disable;
+            buttonAdd.Enabled = disable;
         }
     }
 }

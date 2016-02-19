@@ -248,7 +248,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             using (var manageWords = new ManageWordsForm())
             {
                 manageWords.Initialize(File.Open(_localFile, FileMode.Open, FileAccess.ReadWrite, FileShare.Read), "Local list");
-                manageWords.ShowDialog();
+                manageWords.ShowDialog(this);
             }
         }
 
@@ -258,7 +258,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 var resouceStream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Nikse.SubtitleEdit.PluginLogic.WordList.xml");
                 manageWords.Initialize(resouceStream, "Embadded list");
-                manageWords.ShowDialog();
+                manageWords.ShowDialog(this);
             }
         }
     }
