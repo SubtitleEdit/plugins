@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using Nikse.SubtitleEdit.PluginLogic.Logic;
+using System.Reflection;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -19,6 +20,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private bool _allowFixes;
         private AmericanToBritishConverter _converter;
         private string _localFile;
+        private readonly SubRip _subrip = new SubRip();
+
         internal PluginForm(Subtitle subtitle, string name, string description)
         {
             InitializeComponent();
@@ -27,7 +30,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             labelDescription.Text = description;
             _subtitle = subtitle;
 
-            _localFile = Path.Combine(Utilities.GetWordListFileName(), "WordList.xml");
+            _localFile = Path.Combine(Utilities.GetWordListFileName(), "AmericanToBritish.xml");
             if (File.Exists(_localFile))
             {
                 _converter = new AmericanToBritishConverter(_localFile);
@@ -43,13 +46,45 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 columnHeader7.Width = width;
                 columnHeader8.Width = width;
             };
+
+            // deserialize checkbox status
+            try
+            {
+                var xmldoc = new System.Xml.XmlDocument();
+                xmldoc.Load(_localFile);
+                var xnode = xmldoc.SelectSingleNode("Words");
+                var state = Convert.ToBoolean(xnode.Attributes["NoBuiltIn"].InnerText);
+                checkBox1.Checked = state;
+            }
+            catch (Exception)
+            {
+            }
+
+            //Convert.ToBoolean()
+            FormClosed += delegate
+            {
+                try
+                {
+                    var xmldoc = new System.Xml.XmlDocument();
+                    xmldoc.Load(_localFile);
+                    var xnode = xmldoc.SelectSingleNode("Words");
+                    var attrib = xmldoc.CreateAttribute("NoBuiltIn");
+                    attrib.InnerText = checkBox1.Checked.ToString();
+                    xnode.Attributes.Append(attrib);
+                    xmldoc.Save(_localFile);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            };
         }
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
             _allowFixes = true;
             GeneratePreview();
-            FixedSubtitle = _subtitle.ToText(new SubRip());
+            FixedSubtitle = _subtitle.ToText(_subrip);
             DialogResult = DialogResult.OK;
         }
 
@@ -92,8 +127,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                             continue;
                         _totalFixes++;
                         // remove html tags before adding to listview
-                        //text = Utilities.RemoveHtmlTags(text);
-                        //oldText = Utilities.RemoveHtmlTags(oldText);
+                        // text = Utilities.RemoveHtmlTags(text);
+                        // oldText = Utilities.RemoveHtmlTags(oldText);
                         AddFixToListView(p, oldText, text);
                     }
                 }
@@ -118,21 +153,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     return item.Checked;
             }
             return false;
-        }
-
-
-        private void buttonSelectAll_Click(object sender, EventArgs e)
-        {
-            if (!SubtitleLoaded())
-                return;
-            DoSelection(true);
-        }
-
-        private void buttonInverseSelection_Click(object sender, EventArgs e)
-        {
-            if (!SubtitleLoaded())
-                return;
-            DoSelection(false);
         }
 
         private bool SubtitleLoaded()
@@ -196,20 +216,69 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 DialogResult = DialogResult.Cancel;
         }
 
-        private void radioButtonBuiltInList_CheckedChanged(object sender, EventArgs e)
+        private void manageLocalwordsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // load built-in list name
-            // update list view
-            GeneratePreview();
+            if (!File.Exists(_localFile))
+                return;
+            using (var manageWords = new ManageWordsForm())
+            using (var fs = File.Open(_localFile, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
+            {
+                manageWords.Initialize(fs, "Local list");
+                manageWords.ShowDialog(this);
+            }
+            if (radioButtonLocalList.Checked)
+                GeneratePreview();
         }
 
-        private void radioButtonLocalList_CheckedChanged(object sender, EventArgs e)
+        private void viewBuiltinWordsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var manageWords = new ManageWordsForm())
+            using (var resouceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Nikse.SubtitleEdit.PluginLogic.WordList.xml"))
+            {
+                manageWords.Initialize(resouceStream, "Embadded list");
+                manageWords.ShowDialog(this);
+            }
+        }
+
+        private void ExtractWordsFromBuiltInLIst()
+        {
+            using (var resouce = Assembly.GetExecutingAssembly().GetManifestResourceStream("Nikse.SubtitleEdit.PluginLogic.WordList.xml"))
+            {
+                var xdoc = XDocument.Load(resouce);
+                xdoc.Save(_localFile);
+            }
+        }
+
+        private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!SubtitleLoaded())
+                return;
+            DoSelection(true);
+        }
+
+        private void invertToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!SubtitleLoaded())
+                return;
+            DoSelection(false);
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            radioButtonLocalList.Enabled = !checkBox1.Checked;
+            radioButtonBuiltInList.Enabled = !checkBox1.Checked;
+            if (checkBox1.Checked)
+            {
+                radioButtonLocalList.Checked = true;
+                radioButtonLocalList_Click(this, EventArgs.Empty);
+            }
+        }
+
+        private void radioButtonLocalList_Click(object sender, EventArgs e)
         {
             var generate = false;
-            // reload local words-list
             if (File.Exists(_localFile))
             {
-                _converter.LoadLocalWords(_localFile);
                 generate = true;
             }
             else
@@ -219,12 +288,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     try
                     {
-                        // TODO: load names from built-in words when creating local-list
-                        var wordsListXml = new XElement("Words",
-                            new XElement("Word", new XAttribute("us", "acclimatizes"), new XAttribute("br", "acclimatises")
-                            ));
-                        wordsListXml.Save(_localFile);
-                        _converter.LoadLocalWords(_localFile);
+                        ExtractWordsFromBuiltInLIst();
                         generate = true;
                     }
                     catch (Exception ex)
@@ -236,30 +300,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             if (generate)
             {
-                // update list view
+                _converter.LoadLocalWords(_localFile);
                 GeneratePreview();
             }
         }
 
-        private void manageLocalwordsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void radioButtonBuiltInList_Click(object sender, EventArgs e)
         {
-            if (!File.Exists(_localFile))
-                return;
-            using (var manageWords = new ManageWordsForm())
-            {
-                manageWords.Initialize(File.Open(_localFile, FileMode.Open, FileAccess.ReadWrite, FileShare.Read), "Local list");
-                manageWords.ShowDialog(this);
-            }
-        }
-
-        private void viewBuiltinWordsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            using (var manageWords = new ManageWordsForm())
-            {
-                var resouceStream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Nikse.SubtitleEdit.PluginLogic.WordList.xml");
-                manageWords.Initialize(resouceStream, "Embadded list");
-                manageWords.ShowDialog(this);
-            }
+            // load built-in list name
+            // update list view
+            GeneratePreview();
         }
     }
 }

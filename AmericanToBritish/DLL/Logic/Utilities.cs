@@ -94,14 +94,11 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             idx = s.IndexOf("<font", StringComparison.Ordinal);
             while (idx >= 0)
             {
-                while (idx >= 0)
-                {
-                    var endIdx = s.IndexOf('>', idx + 5);
-                    if (endIdx < idx)
-                        break;
-                    s = s.Remove(idx, endIdx - idx + 1);
-                    idx = s.IndexOf("<font", idx, StringComparison.Ordinal);
-                }
+                var endIdx = s.IndexOf('>', idx + 5);
+                if (endIdx < idx)
+                    break;
+                s = s.Remove(idx, endIdx - idx + 1);
+                idx = s.IndexOf("<font", idx, StringComparison.Ordinal);
             }
             return s.Trim();
         }
@@ -129,7 +126,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             // If the assembly was loaded as a byte array, using an overload of the Load
             // method that takes an array of bytes, this property returns the location of
             // the caller of the method, not the location of the loaded assembly.
-            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase); // Note: Subtitle edit load assembly from raw bytes
+            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase); // Note: Subtitle edit loads assembly from raw bytes
             if (path.StartsWith("file:\\", StringComparison.Ordinal))
                 path = path.Remove(0, 6);
 

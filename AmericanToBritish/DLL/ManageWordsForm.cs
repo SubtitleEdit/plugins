@@ -15,6 +15,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
     public partial class ManageWordsForm : Form
     {
         // readonly for built-in list
+        private Stream _localFileStream;
 
         public ManageWordsForm()
         {
@@ -24,21 +25,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public void Initialize(Stream stream, string source)
         {
             labelSource.Text = $"Source: {source}";
-            DisableEditFunctionalityIfIsEmbaddedStream(source.StartsWith("Embadded", StringComparison.Ordinal));
-            var totalWords = 0;
-            var xdoc = XDocument.Load(stream);
-            if (xdoc.Root?.Name == "Words")
+            if (!source.StartsWith("Embadded", StringComparison.Ordinal))
             {
-                foreach (var item in xdoc.Root.Elements("Word"))
-                {
-                    if (item.Attribute("us")?.Value.Length > 1 && item.Attribute("br")?.Value.Length > 1)
-                    {
-                        AddToListView(item.Attribute("us")?.Value, item.Attribute("br")?.Value);
-                        totalWords++;
-                    }
-                }
+                DisableEditFunctionalityIfIsEmbaddedStream(false);
+                _localFileStream = stream;
             }
-            labelTotalWords.Text = $"Total words: {totalWords}";
+            else
+            {
+                DisableEditFunctionalityIfIsEmbaddedStream(true);
+            }
+
+            AddStreamToListView(stream);
         }
 
         private void AddToListView(string americanWord, string britishWord)
@@ -56,15 +53,60 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void buttonAdd_Click(object sender, EventArgs e)
         {
             // validate both words
-            // add words to listview
+            if (string.IsNullOrWhiteSpace(textBoxAmerican.Text) || string.IsNullOrWhiteSpace(textBoxBritish.Text) || (textBoxAmerican.Text == textBoxBritish.Text))
+                return;
+
+            //var xr = XmlReader.Create(_localFileStream);
             // store added word in local words-list
+
+            _localFileStream.Seek(0, SeekOrigin.Begin);
+            var xdoc = XDocument.Load(_localFileStream);//XmlReader.Create(_localFileStream));
+            if (xdoc?.Root?.Name == "Words")
+            {
+                xdoc.Root.Add(new XElement("Word", new XAttribute("us", textBoxAmerican.Text), new XAttribute("br", textBoxBritish.Text)));
+
+                _localFileStream.Position = 0;
+                xdoc.Save(_localFileStream);
+
+                textBoxAmerican.Text = string.Empty;
+                textBoxBritish.Text = string.Empty;
+
+                // reload listview
+                AddStreamToListView(_localFileStream);
+                MessageBox.Show($"Added: American: {textBoxAmerican.Text}; British: {textBoxBritish.Text}");
+            }
         }
 
         private void DisableEditFunctionalityIfIsEmbaddedStream(bool disable)
         {
-            textBoxAmerican.Enabled = disable;
-            textBoxBritish.Enabled = disable;
-            buttonAdd.Enabled = disable;
+            textBoxAmerican.Enabled = !disable;
+            textBoxBritish.Enabled = !disable;
+            buttonAdd.Enabled = !disable;
+        }
+
+        private void AddStreamToListView(Stream stream)
+        {
+            if (stream == null)
+                return;
+
+            var totalWords = 0;
+            stream.Seek(0, SeekOrigin.Begin);
+            var xdoc = XDocument.Load(stream);
+            listView1.BeginUpdate();
+            listView1.Items.Clear();
+            if (xdoc?.Root?.Name == "Words")
+            {
+                foreach (var item in xdoc.Root.Elements("Word"))
+                {
+                    if (item.Attribute("us")?.Value.Length > 1 && item.Attribute("br")?.Value.Length > 1)
+                    {
+                        AddToListView(item.Attribute("us")?.Value, item.Attribute("br")?.Value);
+                        totalWords++;
+                    }
+                }
+            }
+            listView1.EndUpdate();
+            labelTotalWords.Text = $"Total words: {totalWords}";
         }
     }
 }

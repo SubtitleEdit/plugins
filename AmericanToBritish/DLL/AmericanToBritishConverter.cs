@@ -46,7 +46,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     }
                     break;
                 case ListType.Local:
-                    // Todo: make sure local-list is loaded!
                     for (int index = 0; index < _regexListLocal.Count; index++)
                     {
                         var regex = _regexListLocal[index];
@@ -103,12 +102,23 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public void LoadLocalWords(string path)
         {
-            if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+            if (!File.Exists(path))
                 return;
+
             _regexListLocal.Clear();
             _replaceListLocal.Clear();
             // always reload list
-            var xDoc = XDocument.Load(path);
+            XDocument xDoc;
+            try
+            {
+                // will throw if xml contains invalid tag or is bad formatted.
+                xDoc = XDocument.Load(path);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message);
+                return;
+            }
             if (xDoc?.Root.Name == "Words")
             {
                 // todo: make load words generic to allow loading both built-in and local
@@ -117,7 +127,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     if (xe.Attribute("us")?.Value.Length > 1 && xe.Attribute("br")?.Value.Length > 1)
                     {
                         string american = xe.Attribute("us").Value;
-                        string british = xe.Attribute("us").Value;
+                        string british = xe.Attribute("br").Value;
 
                         _regexListLocal.Add(new Regex("\\b" + american + "\\b", RegexOptions.Compiled));
                         _replaceListLocal.Add(british);
