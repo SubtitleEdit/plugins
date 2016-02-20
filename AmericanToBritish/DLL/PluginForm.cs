@@ -56,7 +56,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 var state = Convert.ToBoolean(xnode.Attributes["NoBuiltIn"].InnerText);
                 checkBox1.Checked = state;
             }
-            catch (Exception)
+            catch
             {
             }
 
@@ -73,9 +73,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     xnode.Attributes.Append(attrib);
                     xmldoc.Save(_localFile);
                 }
-                catch (Exception ex)
+                catch
                 {
-                    MessageBox.Show(ex.Message);
                 }
             };
         }
@@ -221,11 +220,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (!File.Exists(_localFile))
                 return;
             using (var manageWords = new ManageWordsForm())
-            using (var fs = File.Open(_localFile, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
             {
-                manageWords.Initialize(fs, "Local list");
+                manageWords.Initialize(_localFile);
                 manageWords.ShowDialog(this);
             }
+
             if (radioButtonLocalList.Checked)
                 GeneratePreview();
         }
@@ -235,7 +234,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             using (var manageWords = new ManageWordsForm())
             using (var resouceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Nikse.SubtitleEdit.PluginLogic.WordList.xml"))
             {
-                manageWords.Initialize(resouceStream, "Embadded list");
+                manageWords.Initialize(resouceStream);
                 manageWords.ShowDialog(this);
             }
         }

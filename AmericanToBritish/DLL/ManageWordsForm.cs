@@ -15,32 +15,34 @@ namespace Nikse.SubtitleEdit.PluginLogic
     public partial class ManageWordsForm : Form
     {
         // readonly for built-in list
-        private Stream _localFileStream;
-
+        private XDocument _xdoc;
+        private string _path;
         public ManageWordsForm()
         {
             InitializeComponent();
         }
 
-        public void Initialize(Stream stream, string source)
+        public void Initialize(string path)
         {
-            labelSource.Text = $"Source: {source}";
-            if (!source.StartsWith("Embadded", StringComparison.Ordinal))
-            {
-                DisableEditFunctionalityIfIsEmbaddedStream(false);
-                _localFileStream = stream;
-            }
-            else
-            {
-                DisableEditFunctionalityIfIsEmbaddedStream(true);
-            }
-
-            AddStreamToListView(stream);
+            labelSource.Text = $"Source: Local-List";
+            _path = path;
+            _xdoc = XDocument.Load(path);
+            GeneratePreview();
         }
 
-        private void AddToListView(string americanWord, string britishWord)
+        public void Initialize(Stream stream)
         {
-            var item = new ListViewItem(americanWord);
+            labelSource.Text = $"Source: Embadded-List";
+            textBoxAmerican.Enabled = false;
+            textBoxBritish.Enabled = false;
+            buttonAdd.Enabled = false;
+            _xdoc = XDocument.Load(stream);
+            GeneratePreview();
+        }
+
+        private void AddToListView(string americanWord, string britishWord, XElement elem)
+        {
+            var item = new ListViewItem(americanWord) { Tag = elem };
             item.SubItems.Add(britishWord);
             listView1.Items.Add(item);
         }
@@ -48,6 +50,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void buttonOK_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
+            if (!string.IsNullOrEmpty(_path))
+                _xdoc.Save(_path);
         }
 
         private void buttonAdd_Click(object sender, EventArgs e)
@@ -56,57 +60,56 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (string.IsNullOrWhiteSpace(textBoxAmerican.Text) || string.IsNullOrWhiteSpace(textBoxBritish.Text) || (textBoxAmerican.Text == textBoxBritish.Text))
                 return;
 
-            //var xr = XmlReader.Create(_localFileStream);
-            // store added word in local words-list
-
-            _localFileStream.Seek(0, SeekOrigin.Begin);
-            var xdoc = XDocument.Load(_localFileStream);//XmlReader.Create(_localFileStream));
-            if (xdoc?.Root?.Name == "Words")
+            if (_xdoc?.Root?.Name == "Words")
             {
-                xdoc.Root.Add(new XElement("Word", new XAttribute("us", textBoxAmerican.Text), new XAttribute("br", textBoxBritish.Text)));
-
-                _localFileStream.Position = 0;
-                xdoc.Save(_localFileStream);
-
+                _xdoc.Root.Add(new XElement("Word", new XAttribute("us", textBoxAmerican.Text), new XAttribute("br", textBoxBritish.Text)));
                 textBoxAmerican.Text = string.Empty;
                 textBoxBritish.Text = string.Empty;
-
                 // reload listview
-                AddStreamToListView(_localFileStream);
+                GeneratePreview();
                 MessageBox.Show($"Added: American: {textBoxAmerican.Text}; British: {textBoxBritish.Text}");
             }
         }
 
-        private void DisableEditFunctionalityIfIsEmbaddedStream(bool disable)
+        private void GeneratePreview()
         {
-            textBoxAmerican.Enabled = !disable;
-            textBoxBritish.Enabled = !disable;
-            buttonAdd.Enabled = !disable;
-        }
-
-        private void AddStreamToListView(Stream stream)
-        {
-            if (stream == null)
-                return;
-
             var totalWords = 0;
-            stream.Seek(0, SeekOrigin.Begin);
-            var xdoc = XDocument.Load(stream);
             listView1.BeginUpdate();
             listView1.Items.Clear();
-            if (xdoc?.Root?.Name == "Words")
+            if (_xdoc?.Root?.Name == "Words")
             {
-                foreach (var item in xdoc.Root.Elements("Word"))
+                foreach (var item in _xdoc.Root.Elements("Word"))
                 {
                     if (item.Attribute("us")?.Value.Length > 1 && item.Attribute("br")?.Value.Length > 1)
                     {
-                        AddToListView(item.Attribute("us")?.Value, item.Attribute("br")?.Value);
+                        AddToListView(item.Attribute("us")?.Value, item.Attribute("br")?.Value, item);
                         totalWords++;
                     }
                 }
             }
             listView1.EndUpdate();
             labelTotalWords.Text = $"Total words: {totalWords}";
+        }
+
+        private void removeSelectedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listView1.SelectedIndices.Count == 0)
+            {
+                return;
+            }
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                var r = ((XElement)item.Tag);
+                _xdoc.Root.Elements().Where(el => el == r).First().Remove();
+                item.Remove();
+            }
+            GeneratePreview();
+        }
+
+        private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+        {
+            if (_path == null)
+                e.Cancel = true;
         }
     }
 }

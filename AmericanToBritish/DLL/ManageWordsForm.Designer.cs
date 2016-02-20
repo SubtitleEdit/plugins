@@ -28,9 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.removeSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.labelSource = new System.Windows.Forms.Label();
             this.buttonOK = new System.Windows.Forms.Button();
             this.labelTotalWords = new System.Windows.Forms.Label();
@@ -39,6 +42,7 @@
             this.textBoxAmerican = new System.Windows.Forms.TextBox();
             this.textBoxBritish = new System.Windows.Forms.TextBox();
             this.buttonAdd = new System.Windows.Forms.Button();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // listView1
@@ -46,6 +50,7 @@
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
+            this.listView1.ContextMenuStrip = this.contextMenuStrip1;
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
             this.listView1.Location = new System.Drawing.Point(12, 39);
@@ -64,6 +69,21 @@
             // 
             this.columnHeader2.Text = "British";
             this.columnHeader2.Width = 325;
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.removeSelectedToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(164, 48);
+            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
+            // 
+            // removeSelectedToolStripMenuItem
+            // 
+            this.removeSelectedToolStripMenuItem.Name = "removeSelectedToolStripMenuItem";
+            this.removeSelectedToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.removeSelectedToolStripMenuItem.Text = "Remove selected";
+            this.removeSelectedToolStripMenuItem.Click += new System.EventHandler(this.removeSelectedToolStripMenuItem_Click);
             // 
             // labelSource
             // 
@@ -154,6 +174,7 @@
             this.Name = "ManageWordsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "List words manager";
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -172,5 +193,7 @@
         private System.Windows.Forms.TextBox textBoxAmerican;
         private System.Windows.Forms.TextBox textBoxBritish;
         private System.Windows.Forms.Button buttonAdd;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem removeSelectedToolStripMenuItem;
     }
 }
