@@ -5,17 +5,14 @@ using System.Text.RegularExpressions;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    internal class SubRip : SubtitleFormat
+    internal class SubRip
     {
         private static Regex _regexTimeCodes = new Regex(@"^-?\d+:-?\d+:-?\d+[:,]-?\d+\s*-->\s*-?\d+:-?\d+:-?\d+[:,]-?\d+$", RegexOptions.Compiled);
-
         private static Regex _regexTimeCodes2 = new Regex(@"^\d+:\d+:\d+,\d+\s*-->\s*\d+:\d+:\d+,\d+$", RegexOptions.Compiled);
-
         private ExpectingLine _expecting = ExpectingLine.Number;
-
-        private int _lineNumber;
-
         private Paragraph _paragraph;
+        private int _lineNumber;
+        private int _errorCount;
 
         private enum ExpectingLine
         {
@@ -24,39 +21,29 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Text
         }
 
-        internal override List<string> AlternateExtensions
-        {
-            get
-            {
-                return new List<string> { ".wsrt" };
-            }
-        }
-
-        internal string Errors { get; private set; }
-
-        internal override string Extension
+        public string Extension
         {
             get { return ".srt"; }
         }
 
-        internal override bool IsTimeBased
+        public bool IsTimeBased
         {
             get { return true; }
         }
 
-        internal override string Name
+        public string Name
         {
             get { return "SubRip"; }
         }
 
-        internal override bool IsMine(List<string> lines, string fileName)
+        public bool IsMine(List<string> lines, string fileName)
         {
             var subtitle = new Subtitle();
             LoadSubtitle(subtitle, lines, fileName);
             return subtitle.Paragraphs.Count > _errorCount;
         }
 
-        internal override void LoadSubtitle(Subtitle subtitle, List<string> lines, string fileName)
+        public void LoadSubtitle(Subtitle subtitle, IList<string> lines, string fileName)
         {
             bool doRenum = false;
             _lineNumber = 0;
@@ -102,11 +89,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (_errorCount < 100)
                 if (doRenum)
                     subtitle.Renumber(1);
-
-            Errors = _errorCount.ToString();
         }
 
-        internal override string ToText(Subtitle subtitle, string title)
+        public string ToText(Subtitle subtitle, string title)
         {
             const string paragraphWriteFormat = "{0}\r\n{1} --> {2}\r\n{3}\r\n\r\n";
             var sb = new StringBuilder();
