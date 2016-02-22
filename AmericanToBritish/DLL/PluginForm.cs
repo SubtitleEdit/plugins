@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using Nikse.SubtitleEdit.PluginLogic.Logic;
@@ -20,8 +18,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private bool _allowFixes;
         private AmericanToBritishConverter _converter;
         private string _localFile;
-        private readonly SubRip _subrip = new SubRip();
-
         internal PluginForm(Subtitle subtitle, string name, string description)
         {
             InitializeComponent();
@@ -83,7 +79,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             _allowFixes = true;
             GeneratePreview();
-            FixedSubtitle = _subtitle.ToText(_subrip);
+            FixedSubtitle = _subtitle.ToText();
             DialogResult = DialogResult.OK;
         }
 
@@ -105,8 +101,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             _totalFixes = 0;
             ListType listType = radioButtonBuiltInList.Checked ? ListType.BuiltIn : ListType.Local;
-            listViewFixes.BeginUpdate();
-            listViewFixes.Items.Clear();
+
+            if (!_allowFixes)
+            {
+                listViewFixes.BeginUpdate();
+                listViewFixes.Items.Clear();
+            }
             for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
             {
                 Paragraph p = _subtitle.Paragraphs[i];
@@ -132,9 +132,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     }
                 }
             }
-            listViewFixes.EndUpdate();
             if (!_allowFixes)
             {
+                listViewFixes.EndUpdate();
                 labelTotal.Text = "Total: " + _totalFixes;
                 labelTotal.ForeColor = _totalFixes > 0 ? Color.Blue : Color.Red;
             }

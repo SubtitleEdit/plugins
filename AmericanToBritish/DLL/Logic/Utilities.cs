@@ -8,9 +8,9 @@ using System.Text.RegularExpressions;
 
 namespace Nikse.SubtitleEdit.PluginLogic.Logic
 {
-    public static class Utilities
+    internal static class Utilities
     {
-        internal static readonly char[] NewLineChars = Environment.NewLine.ToCharArray();
+        public static readonly char[] NewLineChars = Environment.NewLine.ToCharArray();
 
         #region String Extensions
 
@@ -51,7 +51,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
 
         #endregion
 
-        internal static string AssemblyVersion
+        public static string AssemblyVersion
         {
             get
             {

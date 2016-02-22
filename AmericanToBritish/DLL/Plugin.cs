@@ -54,7 +54,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var sub = new Subtitle();
             var srt = new SubRip();
             srt.LoadSubtitle(sub, list, subtitleFileName);
-            if (srt.ErrorCount > 0)
+            if (srt.Errors > 0)
             {
                 MessageBox.Show(srt.Errors + " Errors found while parsing .srt",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
