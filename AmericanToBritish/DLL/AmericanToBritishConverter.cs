@@ -10,118 +10,67 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class AmericanToBritishConverter
     {
-        // built-in words
-        private readonly List<Regex> _regexListBuiltIn = new List<Regex>();
-        private readonly List<string> _replaceListBuitIn = new List<string>();
+        private IList<Regex> _regexList = new List<Regex>();
+        private IList<string> _replaceList = new List<string>();
 
-        // local words
-        private readonly List<Regex> _regexListLocal = new List<Regex>();
-        private readonly List<string> _replaceListLocal = new List<string>();
-
-        public AmericanToBritishConverter()
-        {
-            LoadBuiltInWords();
-        }
-
-        public AmericanToBritishConverter(string localListPath) : this()
-        {
-            LoadLocalWords(localListPath);
-        }
-
-        public string FixText(string text, ListType listType)
+        public string FixText(string text)
         {
             if (string.IsNullOrWhiteSpace(text))
                 return text;
-
-            switch (listType)
+            for (int index = 0; index < _regexList.Count; index++)
             {
-                case ListType.BuiltIn:
-                    for (int index = 0; index < _regexListBuiltIn.Count; index++)
-                    {
-                        var regex = _regexListBuiltIn[index];
-                        if (regex.IsMatch(text))
-                        {
-                            text = regex.Replace(text, _replaceListBuitIn[index]);
-                        }
-                    }
-                    break;
-                case ListType.Local:
-                    for (int index = 0; index < _regexListLocal.Count; index++)
-                    {
-                        var regex = _regexListLocal[index];
-                        if (regex.IsMatch(text))
-                        {
-                            text = regex.Replace(text, _replaceListLocal[index]);
-                        }
-                    }
-                    break;
+                var regex = _regexList[index];
+                if (regex.IsMatch(text))
+                {
+                    text = regex.Replace(text, _replaceList[index]);
+                }
             }
             return FixMissChangedWord(text);
         }
 
-        public void LoadBuiltInWords()
+        public bool LoadBuiltInWords()
         {
-            if (_regexListBuiltIn.Count > 0 && _replaceListBuitIn.Count > 0)
-                return;
-            _regexListBuiltIn.Clear();
-            _replaceListBuitIn.Clear();
-
+            bool success = false;
             using (var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Nikse.SubtitleEdit.PluginLogic.WordList.xml"))
             {
-                if (stream != null)
-                {
-                    using (var reader = new StreamReader(stream))
-                    {
-                        var xdoc = XDocument.Parse(reader.ReadToEnd());
-                        foreach (XElement xElement in xdoc.Descendants("Word"))
-                        {
-                            string american = xElement.Attribute("us").Value;
-                            string british = xElement.Attribute("br").Value;
-                            if (!(string.IsNullOrWhiteSpace(american) || string.IsNullOrWhiteSpace(british)) && american != british)
-                            {
-                                _regexListBuiltIn.Add(new Regex("\\b" + american + "\\b", RegexOptions.Compiled));
-                                _replaceListBuitIn.Add(british);
-
-                                _regexListBuiltIn.Add(new Regex("\\b" + american.ToUpperInvariant() + "\\b", RegexOptions.Compiled));
-                                _replaceListBuitIn.Add(british.ToUpperInvariant());
-
-                                if (american.Length > 1)
-                                {
-                                    _regexListBuiltIn.Add(new Regex("\\b" + char.ToUpperInvariant(american[0]) + american.Substring(1) + "\\b", RegexOptions.Compiled));
-                                    if (british.Length > 1)
-                                        _replaceListBuitIn.Add(char.ToUpperInvariant(british[0]) + british.Substring(1));
-                                    else
-                                        _replaceListBuitIn.Add(british.ToUpper());
-                                }
-                            }
-                        }
-                    }
-                }
+                success = LoadWordsToLists(stream);
             }
+            return success;
         }
 
-        public void LoadLocalWords(string path)
+        public bool LoadLocalWords(string path)
         {
             if (!File.Exists(path))
-                return;
+            {
+                return false;
+            }
+            bool success = false;
+            using (FileStream fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                success = LoadWordsToLists(fs);
+            }
+            return success;
+        }
 
-            _regexListLocal.Clear();
-            _replaceListLocal.Clear();
+        private bool LoadWordsToLists(Stream stream)
+        {
+            _regexList = new List<Regex>();
+            _replaceList = new List<string>();
+
             // always reload list
             XDocument xDoc;
             try
             {
-                // will throw if xml contains invalid tag or is bad formatted.
-                xDoc = XDocument.Load(path);
+                stream.Position = 0;
+                xDoc = XDocument.Load(stream);
             }
             catch (Exception ex)
             {
                 System.Windows.Forms.MessageBox.Show(ex.Message);
-                return;
+                return false;
             }
             if (xDoc?.Root.Name == "Words")
             {
-                // todo: make load words generic to allow loading both built-in and local
                 foreach (XElement xe in xDoc.Root.Elements("Word"))
                 {
                     if (xe.Attribute("us")?.Value.Length > 1 && xe.Attribute("br")?.Value.Length > 1)
@@ -129,20 +78,21 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         string american = xe.Attribute("us").Value;
                         string british = xe.Attribute("br").Value;
 
-                        _regexListLocal.Add(new Regex("\\b" + american + "\\b", RegexOptions.Compiled));
-                        _replaceListLocal.Add(british);
+                        _regexList.Add(new Regex("\\b" + american + "\\b", RegexOptions.Compiled));
+                        _replaceList.Add(british);
 
-                        _regexListLocal.Add(new Regex("\\b" + american.ToUpperInvariant() + "\\b", RegexOptions.Compiled));
-                        _replaceListLocal.Add(british.ToUpperInvariant());
+                        _regexList.Add(new Regex("\\b" + american.ToUpperInvariant() + "\\b", RegexOptions.Compiled));
+                        _replaceList.Add(british.ToUpperInvariant());
 
-                        _regexListLocal.Add(new Regex("\\b" + char.ToUpperInvariant(american[0]) + american.Substring(1) + "\\b", RegexOptions.Compiled));
+                        _regexList.Add(new Regex("\\b" + char.ToUpperInvariant(american[0]) + american.Substring(1) + "\\b", RegexOptions.Compiled));
                         if (british.Length > 1)
-                            _replaceListLocal.Add(char.ToUpperInvariant(british[0]) + british.Substring(1));
+                            _replaceList.Add(char.ToUpperInvariant(british[0]) + british.Substring(1));
                         else
-                            _replaceListLocal.Add(british.ToUpper());
+                            _replaceList.Add(british.ToUpper());
                     }
                 }
             }
+            return true;
         }
 
         private string FixMissChangedWord(string s)

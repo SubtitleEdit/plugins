@@ -27,13 +27,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _subtitle = subtitle;
 
             _localFile = Path.Combine(Utilities.GetWordListFileName(), "AmericanToBritish.xml");
-            if (File.Exists(_localFile))
+            _converter = new AmericanToBritishConverter();
+            if (!_converter.LoadLocalWords(_localFile))
             {
-                _converter = new AmericanToBritishConverter(_localFile);
-            }
-            else
-            {
-                _converter = new AmericanToBritishConverter();
+                _converter.LoadBuiltInWords();
             }
 
             SizeChanged += delegate
@@ -100,7 +97,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void GeneratePreview()
         {
             _totalFixes = 0;
-            ListType listType = radioButtonBuiltInList.Checked ? ListType.BuiltIn : ListType.Local;
 
             if (!_allowFixes)
             {
@@ -112,7 +108,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 Paragraph p = _subtitle.Paragraphs[i];
                 string text = p.Text.Trim();
                 string oldText = text;
-                text = _converter.FixText(text, listType);
+                text = _converter.FixText(text);
 
                 if (text != oldText)
                 {

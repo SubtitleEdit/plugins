@@ -43,7 +43,6 @@
   <ItemGroup>
     <Compile Include="AmericanToBritishConverter.cs" />
     <Compile Include="IPlugin.cs" />
-    <Compile Include="ListType.cs" />
     <Compile Include="Logic\Configuration.cs" />
     <Compile Include="Logic\Paragraph.cs" />
     <Compile Include="Logic\SubRip.cs" />
