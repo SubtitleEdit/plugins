@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using Nikse.SubtitleEdit.PluginLogic.Logic;
+using System.Reflection;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -17,9 +16,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private readonly Subtitle _subtitle;
         private int _totalFixes;
         private bool _allowFixes;
-        private readonly List<Regex> _regexList = new List<Regex>();
-        private readonly List<string> _replaceList = new List<string>();
-
+        private AmericanToBritishConverter _converter;
+        private string _localFile;
         internal PluginForm(Subtitle subtitle, string name, string description)
         {
             InitializeComponent();
@@ -27,19 +25,58 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Text = name;
             labelDescription.Text = description;
             _subtitle = subtitle;
+
+            _localFile = Path.Combine(Utilities.GetWordListFileName(), "AmericanToBritish.xml");
+            _converter = new AmericanToBritishConverter();
+            if (!_converter.LoadLocalWords(_localFile))
+            {
+                _converter.LoadBuiltInWords();
+            }
+
             SizeChanged += delegate
             {
                 var width = (Width - (130 + listViewFixes.Left * 2)) / 2;
                 columnHeader7.Width = width;
                 columnHeader8.Width = width;
             };
+
+            // deserialize checkbox status
+            try
+            {
+                var xmldoc = new System.Xml.XmlDocument();
+                xmldoc.Load(_localFile);
+                var xnode = xmldoc.SelectSingleNode("Words");
+                var state = Convert.ToBoolean(xnode.Attributes["NoBuiltIn"].InnerText);
+                checkBox1.Checked = state;
+            }
+            catch
+            {
+            }
+
+            //Convert.ToBoolean()
+            FormClosed += delegate
+            {
+                try
+                {
+                    var xmldoc = new System.Xml.XmlDocument();
+                    xmldoc.Load(_localFile);
+                    var xnode = xmldoc.SelectSingleNode("Words");
+                    var attrib = xmldoc.CreateAttribute("NoBuiltIn");
+                    attrib.InnerText = checkBox1.Checked.ToString();
+                    xnode.Attributes.Append(attrib);
+                    xmldoc.Save(_localFile);
+                }
+                catch
+                {
+                }
+            };
         }
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
             _allowFixes = true;
-            AmericanToBritish();
-            FixedSubtitle = _subtitle.ToText(new SubRip());
+            GeneratePreview();
+            FixedSubtitle = _subtitle.ToText();
             DialogResult = DialogResult.OK;
         }
 
@@ -52,33 +89,26 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             var item = new ListViewItem(string.Empty) { Checked = true };
             item.SubItems.Add(p.Number.ToString(CultureInfo.InvariantCulture));
-            item.SubItems.Add(before.Replace(Environment.NewLine, "<br />"));
-            item.SubItems.Add(after.Replace(Environment.NewLine, "<br />"));
+            item.SubItems.Add(before.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
+            item.SubItems.Add(after.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
             listViewFixes.Items.Add(item);
         }
 
-        private void AmericanToBritish()
+        private void GeneratePreview()
         {
+            _totalFixes = 0;
+
+            if (!_allowFixes)
+            {
+                listViewFixes.BeginUpdate();
+                listViewFixes.Items.Clear();
+            }
             for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
             {
                 Paragraph p = _subtitle.Paragraphs[i];
                 string text = p.Text.Trim();
                 string oldText = text;
-                text = FixText(text);
-
-                var idx = text.IndexOf("<font", StringComparison.OrdinalIgnoreCase);
-                while (idx >= 0) // Fix colour => color
-                {
-                    var endIdx = text.IndexOf('>', idx + 5);
-                    if (endIdx < 5)
-                        break;
-                    var tag = text.Substring(idx, endIdx - idx);
-                    tag = tag.Replace("colour", "color");
-                    tag = tag.Replace("COLOUR", "COLOR");
-                    tag = tag.Replace("Colour", "Color");
-                    text = text.Remove(idx, endIdx - idx).Insert(idx, tag);
-                    idx = text.IndexOf("<font", endIdx + 1, StringComparison.OrdinalIgnoreCase);
-                }
+                text = _converter.FixText(text);
 
                 if (text != oldText)
                 {
@@ -92,14 +122,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
                             continue;
                         _totalFixes++;
                         // remove html tags before adding to listview
-                        //text = Utilities.RemoveHtmlTags(text);
-                        //oldText = Utilities.RemoveHtmlTags(oldText);
+                        // text = Utilities.RemoveHtmlTags(text);
+                        // oldText = Utilities.RemoveHtmlTags(oldText);
                         AddFixToListView(p, oldText, text);
                     }
                 }
             }
             if (!_allowFixes)
             {
+                listViewFixes.EndUpdate();
                 labelTotal.Text = "Total: " + _totalFixes;
                 labelTotal.ForeColor = _totalFixes > 0 ? Color.Blue : Color.Red;
             }
@@ -119,41 +150,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return false;
         }
 
-        private string FixText(string s)
-        {
-            if (string.IsNullOrWhiteSpace(s))
-                return s;
-
-            for (int index = 0; index < _regexList.Count; index++)
-            {
-                var regex = _regexList[index];
-                if (regex.IsMatch(s))
-                {
-                    s = regex.Replace(s, _replaceList[index]);
-                }
-            }
-            return s;
-        }
-
-        private void buttonSelectAll_Click(object sender, EventArgs e)
-        {
-            if (!SubtitleLoaded())
-                return;
-            DoSelection(true);
-        }
-
-        private void buttonInverseSelection_Click(object sender, EventArgs e)
-        {
-            if (!SubtitleLoaded())
-                return;
-            DoSelection(false);
-        }
-
         private bool SubtitleLoaded()
         {
-            if (_subtitle == null)
-                return false;
-            if (_subtitle.Paragraphs.Count < 1)
+            if (_subtitle == null || _subtitle.Paragraphs.Count < 1)
                 return false;
             return true;
         }
@@ -172,40 +171,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             try
             {
                 Cursor = Cursors.WaitCursor;
-                using (var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Nikse.SubtitleEdit.PluginLogic.WordList.xml"))
-                {
-                    if (stream != null)
-                    {
-                        using (var reader = new StreamReader(stream))
-                        {
-                            var xdoc = XDocument.Parse(reader.ReadToEnd());
-                            foreach (XElement xElement in xdoc.Descendants("Word"))
-                            {
-                                string american = xElement.Attribute("us").Value;
-                                string british = xElement.Attribute("br").Value;
-                                if (!string.IsNullOrWhiteSpace(american) || !string.IsNullOrWhiteSpace(british) && american != british)
-                                {
-                                    _regexList.Add(new Regex("\\b" + american + "\\b", RegexOptions.Compiled));
-                                    _replaceList.Add(british);
-
-                                    _regexList.Add(new Regex("\\b" + american.ToUpperInvariant() + "\\b", RegexOptions.Compiled));
-                                    _replaceList.Add(british.ToUpperInvariant());
-
-                                    if (american.Length > 1)
-                                    {
-                                        _regexList.Add(new Regex("\\b" + char.ToUpperInvariant(american[0]) + american.Substring(1) + "\\b", RegexOptions.Compiled));
-                                        if (british.Length > 1)
-                                            _replaceList.Add(char.ToUpperInvariant(british[0]) + british.Substring(1));
-                                        else
-                                            _replaceList.Add(british.ToUpper());
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-                }
-                AmericanToBritish();
+                GeneratePreview();
                 if (listViewFixes.Items.Count > 0)
                 {
                     listViewFixes.Items[0].Selected = true;
@@ -222,7 +188,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 Cursor = Cursors.Default;
             }
-
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -244,6 +209,102 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (e.KeyCode == Keys.Escape)
                 DialogResult = DialogResult.Cancel;
+        }
+
+        private void manageLocalwordsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!File.Exists(_localFile))
+                return;
+            using (var manageWords = new ManageWordsForm())
+            {
+                manageWords.Initialize(_localFile);
+                manageWords.ShowDialog(this);
+            }
+
+            if (radioButtonLocalList.Checked)
+                GeneratePreview();
+        }
+
+        private void viewBuiltinWordsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var manageWords = new ManageWordsForm())
+            using (var resouceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Nikse.SubtitleEdit.PluginLogic.WordList.xml"))
+            {
+                manageWords.Initialize(resouceStream);
+                manageWords.ShowDialog(this);
+            }
+        }
+
+        private void ExtractWordsFromBuiltInLIst()
+        {
+            using (var resouce = Assembly.GetExecutingAssembly().GetManifestResourceStream("Nikse.SubtitleEdit.PluginLogic.WordList.xml"))
+            {
+                var xdoc = XDocument.Load(resouce);
+                xdoc.Save(_localFile);
+            }
+        }
+
+        private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!SubtitleLoaded())
+                return;
+            DoSelection(true);
+        }
+
+        private void invertToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!SubtitleLoaded())
+                return;
+            DoSelection(false);
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            radioButtonLocalList.Enabled = !checkBox1.Checked;
+            radioButtonBuiltInList.Enabled = !checkBox1.Checked;
+            if (checkBox1.Checked)
+            {
+                radioButtonLocalList.Checked = true;
+                radioButtonLocalList_Click(this, EventArgs.Empty);
+            }
+        }
+
+        private void radioButtonLocalList_Click(object sender, EventArgs e)
+        {
+            var generate = false;
+            if (File.Exists(_localFile))
+            {
+                generate = true;
+            }
+            else
+            {
+                // prompt to create words list if it doesn't exist
+                if (MessageBox.Show("Local list wasn't found, do you want to create one?", "Word list not found!", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                {
+                    try
+                    {
+                        ExtractWordsFromBuiltInLIst();
+                        generate = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                        generate = false;
+                    }
+                }
+            }
+            if (generate)
+            {
+                _converter.LoadLocalWords(_localFile);
+                GeneratePreview();
+            }
+        }
+
+        private void radioButtonBuiltInList_Click(object sender, EventArgs e)
+        {
+            // load built-in list name
+            // update list view
+            GeneratePreview();
         }
     }
 }

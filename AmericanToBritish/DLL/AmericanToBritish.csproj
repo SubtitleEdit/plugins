@@ -41,14 +41,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AmericanToBritishConverter.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="Logic\Configuration.cs" />
     <Compile Include="Logic\Paragraph.cs" />
     <Compile Include="Logic\SubRip.cs" />
     <Compile Include="Logic\Subtitle.cs" />
-    <Compile Include="Logic\SubtitleFormat.cs" />
     <Compile Include="Logic\TimeCode.cs" />
     <Compile Include="Logic\Utilities.cs" />
+    <Compile Include="ManageWordsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageWordsForm.Designer.cs">
+      <DependentUpon>ManageWordsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginForm.cs">
       <SubType>Form</SubType>
@@ -59,6 +65,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ManageWordsForm.resx">
+      <DependentUpon>ManageWordsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PluginForm.resx">
       <DependentUpon>PluginForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -70,7 +79,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>rem copy "$(TargetPath)" "C:\Users\Ivandrofly\Desktop\SubtitleEdit\Plugins"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -4,41 +4,32 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
 {
     internal class Paragraph
     {
-        internal int Number { get; set; }
-        internal string Text { get; set; }
-        internal TimeCode StartTime { get; set; }
-        internal TimeCode EndTime { get; set; }
-        internal TimeCode Duration
-        {
-            get
-            {
-                var timeCode = new TimeCode(EndTime.TimeSpan);
-                timeCode.AddTime(-StartTime.TotalMilliseconds);
-                return timeCode;
-            }
-        }
-        internal int StartFrame { get; set; }
-        internal int EndFrame { get; set; }
-        internal bool Forced { get; set; }
-        internal string Extra { get; set; }
-        internal bool IsComment { get; set; }
-        internal string Actor { get; set; }
+        public int Number { get; set; }
+        public string Text { get; set; }
+        public TimeCode StartTime { get; set; }
+        public TimeCode EndTime { get; set; }
+        public int StartFrame { get; set; }
+        public int EndFrame { get; set; }
+        public bool Forced { get; set; }
+        public string Extra { get; set; }
+        public bool IsComment { get; set; }
+        public string Actor { get; set; }
 
-        internal Paragraph()
+        public Paragraph()
         {
             StartTime = new TimeCode(TimeSpan.FromSeconds(0));
             EndTime = new TimeCode(TimeSpan.FromSeconds(0));
             Text = string.Empty;
         }
 
-        internal Paragraph(TimeCode startTime, TimeCode endTime, string text)
+        public Paragraph(TimeCode startTime, TimeCode endTime, string text)
         {
             StartTime = startTime;
             EndTime = endTime;
             Text = text;
         }
 
-        internal Paragraph(Paragraph paragraph)
+        public Paragraph(Paragraph paragraph)
         {
             Number = paragraph.Number;
             Text = paragraph.Text;
@@ -52,7 +43,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             Actor = paragraph.Actor;
         }
 
-        internal Paragraph(int startFrame, int endFrame, string text)
+        public Paragraph(int startFrame, int endFrame, string text)
         {
             StartTime = new TimeCode(0, 0, 0, 0);
             EndTime = new TimeCode(0, 0, 0, 0);
@@ -61,32 +52,11 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             Text = text;
         }
 
-        internal Paragraph(string text, double startTotalMilliseconds, double endTotalMilliseconds)
+        public Paragraph(string text, double startTotalMilliseconds, double endTotalMilliseconds)
         {
             StartTime = new TimeCode(TimeSpan.FromMilliseconds(startTotalMilliseconds));
             EndTime = new TimeCode(TimeSpan.FromMilliseconds(endTotalMilliseconds));
             Text = text;
-        }
-
-        internal void Adjust(double factor, double adjust)
-        {
-            double seconds = StartTime.TimeSpan.TotalSeconds * factor + adjust;
-            StartTime.TimeSpan = TimeSpan.FromSeconds(seconds);
-
-            seconds = EndTime.TimeSpan.TotalSeconds * factor + adjust;
-            EndTime.TimeSpan = TimeSpan.FromSeconds(seconds);
-        }
-
-        internal void CalculateFrameNumbersFromTimeCodes(double frameRate)
-        {
-            StartFrame = (int)Math.Round((StartTime.TotalMilliseconds / 1000.0 * frameRate));
-            EndFrame = (int)Math.Round((EndTime.TotalMilliseconds / 1000.0 * frameRate));
-        }
-
-        internal void CalculateTimeCodesFromFrameNumbers(double frameRate)
-        {
-            StartTime.TotalMilliseconds = StartFrame * (1000.0D / frameRate);
-            EndTime.TotalMilliseconds = EndFrame * (1000.0D / frameRate);
         }
 
         public override string ToString()
@@ -94,25 +64,6 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             const string format = "{0}\r\n{1} --> {2}\r\n{3}";
             return string.Format(format, Number, StartTime, EndTime, Text);
             //return StartTime + " --> " + EndTime + " " + Text;
-        }
-
-        internal int NumberOfLines
-        {
-            get
-            {
-                return Utilities.GetNumberOfLines(Text);
-            }
-        }
-
-        internal double WordsPerMinute
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(Text))
-                    return 0;
-                int wordCount = Utilities.RemoveHtmlTags(Text, true).Split(new[] { ' ', ',', '.', '!', '?', ';', ':', '(', ')', '[', ']', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Length;
-                return (60.0 / Duration.TotalSeconds) * wordCount;
-            }
         }
     }
 }
