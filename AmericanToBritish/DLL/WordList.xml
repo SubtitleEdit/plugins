@@ -2,9 +2,12 @@
 <Words>
   <Word us="aging" br="ageing" />
   <Word us="airplane" br="aeroplane" />
+  <Word us="airplanes" br="aeroplanes" />
   <Word us="aluminum" br="aluminium" />
   <Word us="amphitheater" br="amphitheatre" />
+  <Word us="amphitheaters" br="amphitheatres" />
   <Word us="analog" br="analogue" />
+  <Word us="analogs" br="analogues" />
   <Word us="analyze" br="analyse" />
   <Word us="analyzed" br="analysed" />
   <Word us="analyzes" br="analyses" />
@@ -21,6 +24,7 @@
   <Word us="anticlockwise" br="counterclockwise" />
   <Word us="apologize" br="apologise" />
   <Word us="appetizer" br="appetiser" />
+  <Word us="appetizers" br="appetisers" />
   <Word us="apprize" br="apprise" />
   <Word us="apprized" br="apprised" />
   <Word us="apprizes" br="apprises" />
@@ -38,6 +42,7 @@
   <Word us="belaboring" br="belabouring" />
   <Word us="belabors" br="belabours" />
   <Word us="caliber" br="calibre" />
+  <Word us="calibers" br="calibres" />
   <Word us="catalog" br="catalogue" />
   <Word us="cataloged" br="catalogued" />
   <Word us="cataloging" br="cataloguing" />
@@ -51,6 +56,7 @@
   <Word us="centerpieces" br="centrepieces" />
   <Word us="centers" br="centres" />
   <Word us="centimeter" br="centimetre" />
+  <Word us="centimeters" br="centimetres" />
   <Word us="civilization" br="civilisation" />
   <Word us="civilize" br="civilise" />
   <Word us="colonization" br="colonisation" />
@@ -76,9 +82,12 @@
   <Word us="colorless" br="colourless" />
   <Word us="colors" br="colours" />
   <Word us="counselor" br="counsellor" />
+  <Word us="counselors" br="counsellors" />
   <Word us="criticize" br="criticise" />
   <Word us="defense" br="defence" />
+  <Word us="defenses" br="defences" />
   <Word us="dialog" br="dialogue" />
+  <Word us="dialogs" br="dialogues" />
   <Word us="discolor" br="discolour" />
   <Word us="discolored" br="discoloured" />
   <Word us="discoloring" br="discolouring" />
@@ -87,13 +96,17 @@
   <Word us="dustbin" br="garbage can" />
   <Word us="emphasize" br="emphasise" />
   <Word us="encyclopedia" br="encyclopaedia" />
+  <Word us="encyclopedias" br="encyclopaedias" />
   <Word us="enrollment" br="enrolment" />
+  <Word us="enrollments" br="enrolments" />
   <Word us="epicenter" br="epicentre" />
   <Word us="epicenters" br="epicentres" />
   <Word us="estrogen" br="oestrogen" />
   <Word us="favorite" br="favourite" />
+  <Word us="favorites" br="favourites" />
   <Word us="fervor" br="fervour" />
   <Word us="fiber" br="fibre" />
+  <Word us="fibers" br="fibres" />
   <Word us="flavor" br="flavour" />
   <Word us="flavored" br="flavoured" />
   <Word us="flavoring" br="flavouring" />
@@ -106,15 +119,20 @@
   <Word us="fueling" br="fuelling" />
   <Word us="fulfill" br="fulfil" />
   <Word us="gray" br="grey" />
+  <Word us="grays" br="greys" />
   <Word us="gynecology" br="gynaecology" />
   <Word us="harbor" br="harbour" />
+  <Word us="harbors" br="harbours" />
   <Word us="honor" br="honour" />
+  <Word us="honors" br="honours" />
   <Word us="humor" br="humour" />
   <Word us="installment" br="instalment" />
+  <Word us="installments" br="instalments" />
   <Word us="jewelery" br="jewellery" />
   <Word us="jewelry" br="jewellery" />
   <Word us="judgment" br="judgement" />
   <Word us="kilometer" br="kilometre" />
+  <Word us="kilometers" br="kilometres" />
   <Word us="labor" br="labour" />
   <Word us="labored" br="laboured" />
   <Word us="laborer" br="labourer" />
@@ -125,6 +143,7 @@
   <Word us="leukemia" br="leukaemia" />
   <Word us="license" br="licence" />
   <Word us="liter" br="litre" />
+  <Word us="liters" br="litres" />
   <Word us="louver" br="louvre" />
   <Word us="luggage" br="baggage" />
   <Word us="luster" br="lustre" />
@@ -135,12 +154,14 @@
   <Word us="medieval" br="mediaeval" />
   <Word us="mementos" br="mementoes" />
   <Word us="meter" br="metre" />
+  <Word us="meters" br="metres" />
   <Word us="misbehavior" br="misbehaviour" />
   <Word us="misbehaviors" br="misbehaviours" />
   <Word us="mold" br="mould" />
   <Word us="mom" br="mum" />
   <Word us="mommy" br="mummy" />
   <Word us="monolog" br="monologue" />
+  <Word us="monologs" br="monologues" />
   <Word us="multicolored" br="multicoloured" />
   <Word us="neighbor" br="neighbour" />
   <Word us="neighborhood" br="neighbourhood" />
@@ -150,10 +171,13 @@
   <Word us="neighborly" br="neighbourly" />
   <Word us="neighbors" br="neighbours" />
   <Word us="offense" br="offence" />
+  <Word us="offenses" br="offences" />
   <Word us="omelet" br="omelette" />
+  <Word us="omelets" br="omelettes" />
   <Word us="organize" br="organise" />
   <Word us="oriented" br="orientated" />
   <Word us="orthopedic" br="orthopaedic" />
+  <Word us="orthopedics" br="orthopaedics" />
   <Word us="pajamas" br="pyjamas" />
   <Word us="paleontology" br="palaeontology" />
   <Word us="pants" br="trousers" />
@@ -166,7 +190,9 @@
   <Word us="practice" br="practise" />
   <Word us="practicing" br="practising" />
   <Word us="pretense" br="pretence" />
+  <Word us="pretenses" br="pretences" />
   <Word us="program" br="programme" />
+  <Word us="programs" br="programmes" />
   <Word us="psychoanalyze" br="psychoanalyse" />
   <Word us="psychoanalyzed" br="psychoanalysed" />
   <Word us="psychoanalyzes" br="psychoanalyses" />
@@ -182,7 +208,10 @@
   <Word us="realizing" br="realising" />
   <Word us="recognize" br="recognise" />
   <Word us="rumor" br="rumour" />
+  <Word us="rumored" br="rumoured" />
+  <Word us="rumors" br="rumours" />
   <Word us="savior" br="saviour" />
+  <Word us="saviors" br="saviours" />
   <Word us="skeleton in the closet" br="skeleton in the cupboard" />
   <Word us="skeptic" br="sceptic" />
   <Word us="skillful" br="skilful" />
@@ -190,10 +219,13 @@
   <Word us="sneakers" br="trainers" />
   <Word us="specialty" br="speciality" />
   <Word us="specter" br="spectre" />
+  <Word us="specters" br="spectres" />
   <Word us="sulfur" br="sulphur" />
   <Word us="technicolor" br="technicolour" />
   <Word us="theater" br="theatre" />
+  <Word us="theaters" br="theatres" />
   <Word us="tire" br="tyre" />
+  <Word us="tires" br="tyres" />
   <Word us="toxemia" br="toxaemia" />
   <Word us="traveling" br="travelling" />
   <Word us="tricolor" br="tricolour" />
