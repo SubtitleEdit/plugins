@@ -48,7 +48,6 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="IPlugin.cs" />
-    <Compile Include="Logic\Configuration.cs" />
     <Compile Include="Logic\Utilities.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -3,7 +3,6 @@
   <Word us="aging" br="ageing" />
   <Word us="airplane" br="aeroplane" />
   <Word us="aluminum" br="aluminium" />
-  <Word us="aluminum" br="aluminium" />
   <Word us="amphitheater" br="amphitheatre" />
   <Word us="analog" br="analogue" />
   <Word us="analyze" br="analyse" />
@@ -13,7 +12,6 @@
   <Word us="appetizer" br="appetiser" />
   <Word us="apprize" br="apprise" />
   <Word us="archeology" br="archaeology" />
-  <Word us="argument" br="arguement" />
   <Word us="armor" br="armour" />
   <Word us="behavior" br="behaviour" />
   <Word us="caliber" br="calibre" />
@@ -90,7 +88,7 @@
   <Word us="popularize " br="popularise " />
   <Word us="postman" br="mailman" />
   <Word us="practice " br="practise " />
-  <Word us="practicing " br="practising" />
+  <Word us="practicing " br="practising " />
   <Word us="pretense" br="pretence" />
   <Word us="program" br="programme" />
   <Word us="pulled up" br="drew up" />
