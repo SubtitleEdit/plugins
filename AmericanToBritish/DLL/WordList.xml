@@ -9,7 +9,15 @@
   <Word us="analyzed" br="analysed" />
   <Word us="analyzes" br="analyses" />
   <Word us="analyzing" br="analysing" />
+  <Word us="anesthesia" br="anaesthesia" />
   <Word us="anesthetic" br="anaesthetic" />
+  <Word us="anesthetics" br="anaesthetics" />
+  <Word us="anesthetist" br="anaesthetist" />
+  <Word us="anesthetists" br="anaesthetists" />
+  <Word us="anesthetize" br="anaesthetise" />
+  <Word us="anesthetized" br="anaesthetised" />
+  <Word us="anesthetizes" br="anaesthetises" />
+  <Word us="anesthetizing" br="anaesthetising" />
   <Word us="anticlockwise" br="counterclockwise" />
   <Word us="apologize" br="apologise" />
   <Word us="appetizer" br="appetiser" />
