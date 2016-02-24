@@ -38,10 +38,33 @@
   <Word us="colonization" br="colonisation" />
   <Word us="colonize" br="colonise" />
   <Word us="color" br="colour" />
+  <Word us="colorant" br="colourant" />
+  <Word us="colorants" br="colourants" />
+  <Word us="colored" br="coloured" />
+  <Word us="coloreds" br="coloureds" />
+  <Word us="colorful" br="colourful" />
+  <Word us="colorfully" br="colourfully" />
+  <Word us="coloring" br="colouring" />
+  <Word us="colorism" br="colourism" />
+  <Word us="colorist" br="colourist" />
+  <Word us="colorists" br="colourists" />
+  <Word us="colorization" br="colourization" />
+  <Word us="colorize" br="colourize" />
+  <Word us="colorized" br="colourized" />
+  <Word us="colorizer" br="colourizer" />
+  <Word us="colorizers" br="colourizers" />
+  <Word us="colorizes" br="colourizes" />
+  <Word us="colorizing" br="colourizing" />
+  <Word us="colorless" br="colourless" />
+  <Word us="colors" br="colours" />
   <Word us="counselor" br="counsellor" />
   <Word us="criticize" br="criticise" />
   <Word us="defense" br="defence" />
   <Word us="dialog" br="dialogue" />
+  <Word us="discolor" br="discolour" />
+  <Word us="discolored" br="discoloured" />
+  <Word us="discoloring" br="discolouring" />
+  <Word us="discolors" br="discolours" />
   <Word us="draft beer" br="draught beer" />
   <Word us="dustbin" br="garbage can" />
   <Word us="emphasize" br="emphasise" />
@@ -85,6 +108,7 @@
   <Word us="mom" br="mum" />
   <Word us="mommy" br="mummy" />
   <Word us="monolog" br="monologue" />
+  <Word us="multicolored" br="multicoloured" />
   <Word us="neighbor" br="neighbour" />
   <Word us="offense" br="offence" />
   <Word us="omelet" br="omelette" />
@@ -122,10 +146,15 @@
   <Word us="specialty" br="speciality" />
   <Word us="specter" br="spectre" />
   <Word us="sulfur" br="sulphur" />
+  <Word us="technicolor" br="technicolour" />
   <Word us="theater" br="theatre" />
   <Word us="tire" br="tyre" />
   <Word us="toxemia" br="toxaemia" />
   <Word us="traveling" br="travelling" />
+  <Word us="tricolor" br="tricolour" />
+  <Word us="tricolors" br="tricolours" />
+  <Word us="watercolor" br="watercolour" />
+  <Word us="watercolors" br="watercolours" />
   <Word us="woolen" br="woollen" />
   <Word us="yodeled" br="yodelled" />
   <Word us="yodeler" br="yodeller" />
