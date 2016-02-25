@@ -30,6 +30,9 @@
   <Word us="behavior" br="behaviour" />
   <Word us="caliber" br="calibre" />
   <Word us="catalog" br="catalogue" />
+  <Word us="cataloged" br="catalogued" />
+  <Word us="cataloging" br="cataloguing" />
+  <Word us="catalogs" br="catalogues" />
   <Word us="catalyze" br="catalyse" />
   <Word us="center" br="centre" />
   <Word us="centimeter" br="centimetre" />
