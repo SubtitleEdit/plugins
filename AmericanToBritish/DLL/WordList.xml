@@ -63,6 +63,8 @@
   <Word us="louver" br="louvre" />
   <Word us="luggage" br="baggage" />
   <Word us="luster" br="lustre" />
+  <Word us="mailman" br="postman" />
+  <Word us="mailmen" br="postmen" />
   <Word us="maneuver" br="manoeuvre" />
   <Word us="marvelous" br="marvellous" />
   <Word us="medieval" br="mediaeval" />
@@ -87,7 +89,6 @@
   <Word us="plow" br="plough" />
   <Word us="popularization" br="popularisation" />
   <Word us="popularize " br="popularise " />
-  <Word us="postman" br="mailman" />
   <Word us="practice " br="practise " />
   <Word us="practicing " br="practising " />
   <Word us="pretense" br="pretence" />
