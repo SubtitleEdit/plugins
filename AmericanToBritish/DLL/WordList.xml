@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Words>
   <Word us="aging" br="ageing" />
   <Word us="airplane" br="aeroplane" />
@@ -34,9 +34,9 @@
   <Word us="center" br="centre" />
   <Word us="centimeter" br="centimetre" />
   <Word us="civilization" br="civilisation" />
-  <Word us="civilize " br="civilise " />
+  <Word us="civilize" br="civilise" />
   <Word us="colonization" br="colonisation" />
-  <Word us="colonize " br="colonise " />
+  <Word us="colonize" br="colonise" />
   <Word us="color" br="colour" />
   <Word us="counselor" br="counsellor" />
   <Word us="criticize" br="criticise" />
@@ -82,7 +82,7 @@
   <Word us="mementos" br="mementoes" />
   <Word us="meter" br="metre" />
   <Word us="mold" br="mould" />
-  <Word us="mom " br="mum " />
+  <Word us="mom" br="mum" />
   <Word us="mommy" br="mummy" />
   <Word us="monolog" br="monologue" />
   <Word us="neighbor" br="neighbour" />
@@ -99,9 +99,9 @@
   <Word us="pediatric" br="paediatric" />
   <Word us="plow" br="plough" />
   <Word us="popularization" br="popularisation" />
-  <Word us="popularize " br="popularise " />
-  <Word us="practice " br="practise " />
-  <Word us="practicing " br="practising " />
+  <Word us="popularize" br="popularise" />
+  <Word us="practice" br="practise" />
+  <Word us="practicing" br="practising" />
   <Word us="pretense" br="pretence" />
   <Word us="program" br="programme" />
   <Word us="psychoanalyze" br="psychoanalyse" />
