@@ -35,6 +35,12 @@
   <Word us="catalogs" br="catalogues" />
   <Word us="catalyze" br="catalyse" />
   <Word us="center" br="centre" />
+  <Word us="centered" br="centred" />
+  <Word us="centerfold" br="centrefold" />
+  <Word us="centerfolds" br="centrefolds" />
+  <Word us="centerpiece" br="centrepiece" />
+  <Word us="centerpieces" br="centrepieces" />
+  <Word us="centers" br="centres" />
   <Word us="centimeter" br="centimetre" />
   <Word us="civilization" br="civilisation" />
   <Word us="civilize" br="civilise" />
@@ -73,6 +79,8 @@
   <Word us="emphasize" br="emphasise" />
   <Word us="encyclopedia" br="encyclopaedia" />
   <Word us="enrollment" br="enrolment" />
+  <Word us="epicenter" br="epicentre" />
+  <Word us="epicenters" br="epicentres" />
   <Word us="estrogen" br="oestrogen" />
   <Word us="favorite" br="favourite" />
   <Word us="fervor" br="fervour" />
