@@ -94,6 +94,12 @@
   <Word us="discolored" br="discoloured" />
   <Word us="discoloring" br="discolouring" />
   <Word us="discolors" br="discolours" />
+  <Word us="disorganization" br="disorganisation" />
+  <Word us="disorganizations" br="disorganisations" />
+  <Word us="disorganize" br="disorganise" />
+  <Word us="disorganized" br="disorganised" />
+  <Word us="disorganizes" br="disorganises" />
+  <Word us="disorganizing" br="disorganising" />
   <Word us="draft beer" br="draught beer" />
   <Word us="dustbin" br="garbage can" />
   <Word us="emphasize" br="emphasise" />
@@ -176,7 +182,15 @@
   <Word us="offenses" br="offences" />
   <Word us="omelet" br="omelette" />
   <Word us="omelets" br="omelettes" />
+  <Word us="organization" br="organisation" />
+  <Word us="organizational" br="organisational" />
+  <Word us="organizations" br="organisations" />
   <Word us="organize" br="organise" />
+  <Word us="organized" br="organised" />
+  <Word us="organizer" br="organiser" />
+  <Word us="organizers" br="organisers" />
+  <Word us="organizes" br="organises" />
+  <Word us="organizing" br="organising" />
   <Word us="oriented" br="orientated" />
   <Word us="orthopedic" br="orthopaedic" />
   <Word us="orthopedics" br="orthopaedics" />
@@ -209,6 +223,14 @@
   <Word us="realizes" br="realises" />
   <Word us="realizing" br="realising" />
   <Word us="recognize" br="recognise" />
+  <Word us="reorganization" br="reorganisation" />
+  <Word us="reorganizations" br="reorganisations" />
+  <Word us="reorganize" br="reorganise" />
+  <Word us="reorganized" br="reorganised" />
+  <Word us="reorganizer" br="reorganiser" />
+  <Word us="reorganizers" br="reorganisers" />
+  <Word us="reorganizes" br="reorganises" />
+  <Word us="reorganizing" br="reorganising" />
   <Word us="rumor" br="rumour" />
   <Word us="rumored" br="rumoured" />
   <Word us="rumors" br="rumours" />
@@ -232,6 +254,7 @@
   <Word us="traveling" br="travelling" />
   <Word us="tricolor" br="tricolour" />
   <Word us="tricolors" br="tricolours" />
+  <Word us="unorganized" br="unorganised" />
   <Word us="watercolor" br="watercolour" />
   <Word us="watercolors" br="watercolours" />
   <Word us="woolen" br="woollen" />
