@@ -28,6 +28,11 @@
   <Word us="archeology" br="archaeology" />
   <Word us="armor" br="armour" />
   <Word us="behavior" br="behaviour" />
+  <Word us="behavioral" br="behavioural" />
+  <Word us="behaviorism" br="behaviourism" />
+  <Word us="behaviorist" br="behaviourist" />
+  <Word us="behaviorists" br="behaviourists" />
+  <Word us="behaviors" br="behaviours" />
   <Word us="caliber" br="calibre" />
   <Word us="catalog" br="catalogue" />
   <Word us="cataloged" br="catalogued" />
@@ -121,6 +126,8 @@
   <Word us="medieval" br="mediaeval" />
   <Word us="mementos" br="mementoes" />
   <Word us="meter" br="metre" />
+  <Word us="misbehavior" br="misbehaviour" />
+  <Word us="misbehaviors" br="misbehaviours" />
   <Word us="mold" br="mould" />
   <Word us="mom" br="mum" />
   <Word us="mommy" br="mummy" />
