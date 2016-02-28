@@ -93,6 +93,9 @@
   <Word us="counselor" br="counsellor" />
   <Word us="counselors" br="counsellors" />
   <Word us="criticize" br="criticise" />
+  <Word us="criticized" br="criticised" />
+  <Word us="criticizes" br="criticises" />
+  <Word us="criticizing" br="criticising" />
   <Word us="defense" br="defence" />
   <Word us="defenses" br="defences" />
   <Word us="dialog" br="dialogue" />
