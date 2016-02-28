@@ -224,6 +224,13 @@
   <Word us="paralyze" br="paralyse" />
   <Word us="pediatric" br="paediatric" />
   <Word us="plow" br="plough" />
+  <Word us="plowed" br="ploughed" />
+  <Word us="plowing" br="ploughing" />
+  <Word us="plowman" br="ploughman" />
+  <Word us="plowmen" br="ploughmen" />
+  <Word us="plows" br="ploughs" />
+  <Word us="plowshare" br="ploughshare" />
+  <Word us="plowshares" br="ploughshares" />
   <Word us="popularization" br="popularisation" />
   <Word us="popularize" br="popularise" />
   <Word us="practice" br="practise" />
@@ -264,6 +271,8 @@
   <Word us="skillful" br="skilful" />
   <Word us="sneaker" br="trainer" />
   <Word us="sneakers" br="trainers" />
+  <Word us="snowplow" br="snowplough" />
+  <Word us="snowplow" br="snowploughs" />
   <Word us="specialty" br="speciality" />
   <Word us="specter" br="spectre" />
   <Word us="specters" br="spectres" />
