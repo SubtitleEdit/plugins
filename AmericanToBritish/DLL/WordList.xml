@@ -104,6 +104,10 @@
   <Word us="discolored" br="discoloured" />
   <Word us="discoloring" br="discolouring" />
   <Word us="discolors" br="discolours" />
+  <Word us="disfavor" br="disfavour" />
+  <Word us="disfavored" br="disfavoured" />
+  <Word us="disfavoring" br="disfavouring" />
+  <Word us="disfavors" br="disfavours" />
   <Word us="disorganization" br="disorganisation" />
   <Word us="disorganizations" br="disorganisations" />
   <Word us="disorganize" br="disorganise" />
@@ -120,8 +124,17 @@
   <Word us="epicenter" br="epicentre" />
   <Word us="epicenters" br="epicentres" />
   <Word us="estrogen" br="oestrogen" />
+  <Word us="favor" br="favour" />
+  <Word us="favorable" br="favourable" />
+  <Word us="favorably" br="favourably" />
+  <Word us="favored" br="favoured" />
+  <Word us="favorer" br="favourer" />
+  <Word us="favorers" br="favourers" />
+  <Word us="favoring" br="favouring" />
   <Word us="favorite" br="favourite" />
   <Word us="favorites" br="favourites" />
+  <Word us="favoritism" br="favouritism" />
+  <Word us="favors" br="favours" />
   <Word us="fervor" br="fervour" />
   <Word us="fiber" br="fibre" />
   <Word us="fibers" br="fibres" />
@@ -267,6 +280,9 @@
   <Word us="traveling" br="travelling" />
   <Word us="tricolor" br="tricolour" />
   <Word us="tricolors" br="tricolours" />
+  <Word us="unfavorable" br="unfavourable" />
+  <Word us="unfavorably" br="unfavourably" />
+  <Word us="unfavorite" br="unfavourite" />
   <Word us="unorganized" br="unorganised" />
   <Word us="watercolor" br="watercolour" />
   <Word us="watercolors" br="watercolours" />
