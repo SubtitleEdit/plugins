@@ -40,6 +40,13 @@
   <Word us="archeologists" br="archaeologists" />
   <Word us="archeology" br="archaeology" />
   <Word us="armor" br="armour" />
+  <Word us="armored" br="armoured" />
+  <Word us="armorer" br="armourer" />
+  <Word us="armorers" br="armourers" />
+  <Word us="armories" br="armouries" />
+  <Word us="armoring" br="armouring" />
+  <Word us="armors" br="armours" />
+  <Word us="armory" br="armoury" />
   <Word us="behavior" br="behaviour" />
   <Word us="behavioral" br="behavioural" />
   <Word us="behaviorism" br="behaviourism" />
