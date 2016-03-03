@@ -226,6 +226,10 @@
   <Word us="mementos" br="mementoes" />
   <Word us="meter" br="metre" />
   <Word us="meters" br="metres" />
+  <Word us="micrometer" br="micrometre" />
+  <Word us="micrometers" br="micrometres" />
+  <Word us="millimeter" br="millimetre" />
+  <Word us="millimeters" br="millimetres" />
   <Word us="misbehavior" br="misbehaviour" />
   <Word us="misbehaviors" br="misbehaviours" />
   <Word us="mold" br="mould" />
@@ -234,6 +238,8 @@
   <Word us="monolog" br="monologue" />
   <Word us="monologs" br="monologues" />
   <Word us="multicolored" br="multicoloured" />
+  <Word us="nanometer" br="nanometre" />
+  <Word us="nanometers" br="nanometres" />
   <Word us="neighbor" br="neighbour" />
   <Word us="neighborhood" br="neighbourhood" />
   <Word us="neighborhoods" br="neighbourhoods" />
