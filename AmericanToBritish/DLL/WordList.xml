@@ -55,6 +55,10 @@
   <Word us="armoring" br="armouring" />
   <Word us="armors" br="armours" />
   <Word us="armory" br="armoury" />
+  <Word us="artifact" br="artefact" />
+  <Word us="artifacts" br="artefacts" />
+  <Word us="ax" br="axe" />
+  <Word us="battleax" br="battleaxe" />
   <Word us="behavior" br="behaviour" />
   <Word us="behavioral" br="behavioural" />
   <Word us="behaviorism" br="behaviourism" />
@@ -110,6 +114,14 @@
   <Word us="colors" br="colours" />
   <Word us="counselor" br="counsellor" />
   <Word us="counselors" br="counsellors" />
+  <Word us="cozied" br="cosied" />
+  <Word us="cozier" br="cosier" />
+  <Word us="cozies" br="cosies" />
+  <Word us="coziest" br="cosiest" />
+  <Word us="cozily" br="cosily" />
+  <Word us="coziness" br="cosiness" />
+  <Word us="cozy" br="cosy" />
+  <Word us="cozying" br="cosying" />
   <Word us="criticize" br="criticise" />
   <Word us="criticized" br="criticised" />
   <Word us="criticizes" br="criticises" />
