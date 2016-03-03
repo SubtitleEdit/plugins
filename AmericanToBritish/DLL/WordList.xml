@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Words>
+  <Word us="accouterment" br="accoutrement" />
+  <Word us="accouterments" br="accoutrements" />
   <Word us="aerogram" br="aerogramme" />
   <Word us="aerograms" br="aerogrammes" />
   <Word us="aging" br="ageing" />
