@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Words>
+  <Word us="aerogram" br="aerogramme" />
+  <Word us="aerograms" br="aerogrammes" />
   <Word us="aging" br="ageing" />
   <Word us="airplane" br="aeroplane" />
   <Word us="airplanes" br="aeroplanes" />
