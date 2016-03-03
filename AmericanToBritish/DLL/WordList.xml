@@ -57,6 +57,8 @@
   <Word us="armory" br="armoury" />
   <Word us="artifact" br="artefact" />
   <Word us="artifacts" br="artefacts" />
+  <Word us="ax" br="axe" />
+  <Word us="battleax" br="battleaxe" />
   <Word us="behavior" br="behaviour" />
   <Word us="behavioral" br="behavioural" />
   <Word us="behaviorism" br="behaviourism" />
