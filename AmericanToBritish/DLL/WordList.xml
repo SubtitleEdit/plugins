@@ -62,6 +62,8 @@
   <Word us="artifact" br="artefact" />
   <Word us="artifacts" br="artefacts" />
   <Word us="ax" br="axe" />
+  <Word us="backpedaled" br="backpedalled" />
+  <Word us="backpedaling" br="backpedalling" />
   <Word us="battleax" br="battleaxe" />
   <Word us="bedeviled" br="bedevilled" />
   <Word us="bedeviling" br="bedevilling" />
@@ -71,6 +73,11 @@
   <Word us="behaviorist" br="behaviourist" />
   <Word us="behaviorists" br="behaviourists" />
   <Word us="behaviors" br="behaviours" />
+  <Word us="behoove" br="behove" />
+  <Word us="behooved" br="behoved" />
+  <Word us="behooves" br="behoves" />
+  <Word us="behooving" br="behoving" />
+  <Word us="bejeweled" br="bejewelled" />
   <Word us="belabor" br="belabour" />
   <Word us="belabored" br="belaboured" />
   <Word us="belaboring" br="belabouring" />
@@ -199,6 +206,9 @@
   <Word us="humor" br="humour" />
   <Word us="installment" br="instalment" />
   <Word us="installments" br="instalments" />
+  <Word us="jeweled" br="jewelled" />
+  <Word us="jeweler" br="jeweller" />
+  <Word us="jewelers" br="jewellers" />
   <Word us="jewelery" br="jewellery" />
   <Word us="jewelry" br="jewellery" />
   <Word us="judgment" br="judgement" />
@@ -281,6 +291,8 @@
   <Word us="paralyzed" br="paralysed" />
   <Word us="paralyzes" br="paralyses" />
   <Word us="paralyzing" br="paralysing" />
+  <Word us="pedaled" br="pedalled" />
+  <Word us="pedaling" br="pedalling" />
   <Word us="pediatric" br="paediatric" />
   <Word us="plow" br="plough" />
   <Word us="plowed" br="ploughed" />
