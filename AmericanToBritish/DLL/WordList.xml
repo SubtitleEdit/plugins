@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Words>
+  <Word us="accouterment" br="accoutrement" />
+  <Word us="accouterments" br="accoutrements" />
+  <Word us="aerogram" br="aerogramme" />
+  <Word us="aerograms" br="aerogrammes" />
   <Word us="aging" br="ageing" />
   <Word us="airplane" br="aeroplane" />
   <Word us="airplanes" br="aeroplanes" />
@@ -59,6 +63,8 @@
   <Word us="artifacts" br="artefacts" />
   <Word us="ax" br="axe" />
   <Word us="battleax" br="battleaxe" />
+  <Word us="bedeviled" br="bedevilled" />
+  <Word us="bedeviling" br="bedevilling" />
   <Word us="behavior" br="behaviour" />
   <Word us="behavioral" br="behavioural" />
   <Word us="behaviorism" br="behaviourism" />
