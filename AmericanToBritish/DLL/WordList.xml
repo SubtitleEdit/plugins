@@ -151,6 +151,13 @@
   <Word us="disfavored" br="disfavoured" />
   <Word us="disfavoring" br="disfavouring" />
   <Word us="disfavors" br="disfavours" />
+  <Word us="dishonor" br="dishonour" />
+  <Word us="dishonorable" br="dishonourable" />
+  <Word us="dishonorableness" br="dishonourableness" />
+  <Word us="dishonorably" br="dishonourably" />
+  <Word us="dishonored" br="dishonoured" />
+  <Word us="dishonoring" br="dishonouring" />
+  <Word us="dishonors" br="dishonours" />
   <Word us="disorganization" br="disorganisation" />
   <Word us="disorganizations" br="disorganisations" />
   <Word us="disorganize" br="disorganise" />
@@ -202,6 +209,12 @@
   <Word us="harbor" br="harbour" />
   <Word us="harbors" br="harbours" />
   <Word us="honor" br="honour" />
+  <Word us="honorability" br="honourability" />
+  <Word us="honorable" br="honourable" />
+  <Word us="honorableness" br="honourableness" />
+  <Word us="honorably" br="honourably" />
+  <Word us="honored" br="honoured" />
+  <Word us="honoring" br="honouring" />
   <Word us="honors" br="honours" />
   <Word us="humor" br="humour" />
   <Word us="installment" br="instalment" />
