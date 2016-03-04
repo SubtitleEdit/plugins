@@ -62,6 +62,8 @@
   <Word us="artifact" br="artefact" />
   <Word us="artifacts" br="artefacts" />
   <Word us="ax" br="axe" />
+  <Word us="backpedaled" br="backpedalled" />
+  <Word us="backpedaling" br="backpedalling" />
   <Word us="battleax" br="battleaxe" />
   <Word us="bedeviled" br="bedevilled" />
   <Word us="bedeviling" br="bedevilling" />
@@ -281,6 +283,8 @@
   <Word us="paralyzed" br="paralysed" />
   <Word us="paralyzes" br="paralyses" />
   <Word us="paralyzing" br="paralysing" />
+  <Word us="pedaled" br="pedalled" />
+  <Word us="pedaling" br="pedalling" />
   <Word us="pediatric" br="paediatric" />
   <Word us="plow" br="plough" />
   <Word us="plowed" br="ploughed" />
