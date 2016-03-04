@@ -12,6 +12,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             return s.Length >= find.Length && s.IndexOf(find, comparison) >= 0;
         }
+
         public static bool Contains(this string s, char c)
         {
             return s.Length > 0 && s.IndexOf(c) >= 0;
@@ -189,7 +190,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public static string GetSettingsFileName()
         {
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-            if (path.StartsWith("file:\\"))
+            if (path.StartsWith("file:\\", StringComparison.Ordinal))
                 path = path.Remove(0, 6);
             path = Path.Combine(path, "Plugins");
             if (!Directory.Exists(path))
