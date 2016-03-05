@@ -103,6 +103,9 @@
   <Word us="centimeters" br="centimetres" />
   <Word us="civilization" br="civilisation" />
   <Word us="civilize" br="civilise" />
+  <Word us="civilized" br="civilised" />
+  <Word us="civilizes" br="civilises" />
+  <Word us="civilizing" br="civilising" />
   <Word us="colonization" br="colonisation" />
   <Word us="colonize" br="colonise" />
   <Word us="color" br="colour" />
@@ -373,6 +376,7 @@
   <Word us="traveling" br="travelling" />
   <Word us="tricolor" br="tricolour" />
   <Word us="tricolors" br="tricolours" />
+  <Word us="uncivilized" br="uncivilised" />
   <Word us="unfavorable" br="unfavourable" />
   <Word us="unfavorably" br="unfavourably" />
   <Word us="unfavorite" br="unfavourite" />
