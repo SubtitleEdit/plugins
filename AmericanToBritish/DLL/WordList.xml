@@ -367,6 +367,17 @@
   <Word us="rumors" br="rumours" />
   <Word us="savior" br="saviour" />
   <Word us="saviors" br="saviours" />
+  <Word us="savor" br="savour" />
+  <Word us="savorable" br="savourable" />
+  <Word us="savored" br="savoured" />
+  <Word us="savories" br="savouries" />
+  <Word us="savorily" br="savourily" />
+  <Word us="savoriness" br="savouriness" />
+  <Word us="savoring" br="savouring" />
+  <Word us="savorless" br="savourless" />
+  <Word us="savorous" br="savourous" />
+  <Word us="savors" br="savours" />
+  <Word us="savory" br="savoury" />
   <Word us="skeleton in the closet" br="skeleton in the cupboard" />
   <Word us="skeptic" br="sceptic" />
   <Word us="skillful" br="skilful" />
@@ -395,6 +406,9 @@
   <Word us="unfavorably" br="unfavourably" />
   <Word us="unfavorite" br="unfavourite" />
   <Word us="unorganized" br="unorganised" />
+  <Word us="unsavorily" br="unsavourily" />
+  <Word us="unsavoriness" br="unsavouriness" />
+  <Word us="unsavory" br="unsavoury" />
   <Word us="vigor" br="vigour" />
   <Word us="vigorless" br="vigourless" />
   <Word us="watercolor" br="watercolour" />
