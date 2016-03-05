@@ -149,8 +149,13 @@
   <Word us="criticizing" br="criticising" />
   <Word us="defense" br="defence" />
   <Word us="defenses" br="defences" />
+  <Word us="demeanor" br="demeanour" />
+  <Word us="demeanors" br="demeanours" />
   <Word us="dialog" br="dialogue" />
   <Word us="dialogs" br="dialogues" />
+  <Word us="diarrhea" br="diarrhoea" />
+  <Word us="diarrheal" br="diarrhoeal" />
+  <Word us="diarrheic" br="diarrhoeic" />
   <Word us="discolor" br="discolour" />
   <Word us="discolored" br="discoloured" />
   <Word us="discoloring" br="discolouring" />
@@ -207,6 +212,8 @@
   <Word us="fueled" br="fuelled" />
   <Word us="fueling" br="fuelling" />
   <Word us="fulfill" br="fulfil" />
+  <Word us="gonorrhea" br="gonorrhoea" />
+  <Word us="gonorrheal" br="gonorrhoeal" />
   <Word us="gray" br="grey" />
   <Word us="grayed" br="greyed" />
   <Word us="graying" br="greying" />
@@ -269,6 +276,8 @@
   <Word us="millimeters" br="millimetres" />
   <Word us="misbehavior" br="misbehaviour" />
   <Word us="misbehaviors" br="misbehaviours" />
+  <Word us="misdemeanor" br="misdemeanour" />
+  <Word us="misdemeanors" br="misdemeanours" />
   <Word us="mold" br="mould" />
   <Word us="mom" br="mum" />
   <Word us="mommy" br="mummy" />
