@@ -194,6 +194,10 @@
   <Word us="emphasize" br="emphasise" />
   <Word us="encyclopedia" br="encyclopaedia" />
   <Word us="encyclopedias" br="encyclopaedias" />
+  <Word us="endeavor" br="endeavour" />
+  <Word us="endeavored" br="endeavoured" />
+  <Word us="endeavoring" br="endeavouring" />
+  <Word us="endeavors" br="endeavours" />
   <Word us="enrollment" br="enrolment" />
   <Word us="enrollments" br="enrolments" />
   <Word us="epicenter" br="epicentre" />
