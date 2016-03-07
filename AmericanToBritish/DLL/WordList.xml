@@ -188,6 +188,8 @@
   <Word us="dustbin" br="garbage can" />
   <Word us="emboweled" br="embowelled" />
   <Word us="emboweling" br="embowelling" />
+  <Word us="empaneled" br="empanelled" />
+  <Word us="empaneling" br="empanelling" />
   <Word us="emphasize" br="emphasise" />
   <Word us="encyclopedia" br="encyclopaedia" />
   <Word us="encyclopedias" br="encyclopaedias" />
@@ -241,6 +243,11 @@
   <Word us="honoring" br="honouring" />
   <Word us="honors" br="honours" />
   <Word us="humor" br="humour" />
+  <Word us="impanel" br="empanel" />
+  <Word us="impaneled" br="empanelled" />
+  <Word us="impaneling" br="empanelling" />
+  <Word us="impanelment" br="empanelment" />
+  <Word us="impanels" br="empanels" />
   <Word us="installment" br="instalment" />
   <Word us="installments" br="instalments" />
   <Word us="jeweled" br="jewelled" />
