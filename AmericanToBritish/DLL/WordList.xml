@@ -435,6 +435,8 @@
   <Word us="traveling" br="travelling" />
   <Word us="tricolor" br="tricolour" />
   <Word us="tricolors" br="tricolours" />
+  <Word us="tumor" br="tumour" />
+  <Word us="tumors" br="tumours" />
   <Word us="uncivilized" br="uncivilised" />
   <Word us="unfavorable" br="unfavourable" />
   <Word us="unfavorably" br="unfavourably" />
@@ -443,11 +445,20 @@
   <Word us="unsavorily" br="unsavourily" />
   <Word us="unsavoriness" br="unsavouriness" />
   <Word us="unsavory" br="unsavoury" />
+  <Word us="vapor" br="vapour" />
+  <Word us="vaporish" br="vapourish" />
+  <Word us="vapors" br="vapours" />
+  <Word us="vaporware" br="vapourware" />
+  <Word us="vapory" br="vapoury" />
   <Word us="vigor" br="vigour" />
   <Word us="vigorless" br="vigourless" />
   <Word us="watercolor" br="watercolour" />
   <Word us="watercolors" br="watercolours" />
   <Word us="woolen" br="woollen" />
+  <Word us="worshiped" br="worshipped" />
+  <Word us="worshiper" br="worshipper" />
+  <Word us="worshipers" br="worshippers" />
+  <Word us="worshiping" br="worshipping" />
   <Word us="yodeled" br="yodelled" />
   <Word us="yodeler" br="yodeller" />
   <Word us="yodeling" br="yodelling" />
