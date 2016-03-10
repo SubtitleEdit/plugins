@@ -259,6 +259,8 @@
   <Word us="grovelers" br="grovellers" />
   <Word us="groveling" br="grovelling" />
   <Word us="grovelingly" br="grovellingly" />
+  <Word us="grueling" br="gruelling" />
+  <Word us="gruelingly" br="gruellingly" />
   <Word us="gynecologic" br="gynaecologic" />
   <Word us="gynecological" br="gynaecological" />
   <Word us="gynecologically" br="gynaecologically" />
@@ -395,12 +397,16 @@
   <Word us="pretenses" br="pretences" />
   <Word us="program" br="programme" />
   <Word us="programs" br="programmes" />
+  <Word us="prolog" br="prologue" />
+  <Word us="prologs" br="prologues" />
   <Word us="psychoanalyze" br="psychoanalyse" />
   <Word us="psychoanalyzed" br="psychoanalysed" />
   <Word us="psychoanalyzes" br="psychoanalyses" />
   <Word us="psychoanalyzing" br="psychoanalysing" />
   <Word us="pulled up" br="drew up" />
   <Word us="quarreling" br="quarrelling" />
+  <Word us="rancor" br="rancour" />
+  <Word us="rancored" br="rancoured" />
   <Word us="realizable" br="realisable" />
   <Word us="realization" br="realisation" />
   <Word us="realizations" br="realisations" />
