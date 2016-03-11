@@ -194,6 +194,9 @@
   <Word us="empaneled" br="empanelled" />
   <Word us="empaneling" br="empanelling" />
   <Word us="emphasize" br="emphasise" />
+  <Word us="emphasized" br="emphasised" />
+  <Word us="emphasizes" br="emphasises" />
+  <Word us="emphasizing" br="emphasising" />
   <Word us="encyclopedia" br="encyclopaedia" />
   <Word us="encyclopedias" br="encyclopaedias" />
   <Word us="endeavor" br="endeavour" />
@@ -377,6 +380,10 @@
   <Word us="outmaneuvered" br="outmanoeuvred" />
   <Word us="outmaneuvering" br="outmanoeuvring" />
   <Word us="outmaneuvers" br="outmanoeuvres" />
+  <Word us="overemphasize" br="overemphasise" />
+  <Word us="overemphasized" br="overemphasised" />
+  <Word us="overemphasizes" br="overemphasises" />
+  <Word us="overemphasizing" br="overemphasising" />
   <Word us="pajamas" br="pyjamas" />
   <Word us="paleontology" br="palaeontology" />
   <Word us="pants" br="trousers" />
