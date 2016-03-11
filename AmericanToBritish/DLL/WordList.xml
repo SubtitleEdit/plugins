@@ -214,6 +214,8 @@
   <Word us="entrammeling" br="entrammelling" />
   <Word us="epicenter" br="epicentre" />
   <Word us="epicenters" br="epicentres" />
+  <Word us="epilog" br="epilogue" />
+  <Word us="epilogs" br="epilogues" />
   <Word us="equaled" br="equalled" />
   <Word us="equaling" br="equalling" />
   <Word us="estrogen" br="oestrogen" />
@@ -384,6 +386,8 @@
   <Word us="overemphasized" br="overemphasised" />
   <Word us="overemphasizes" br="overemphasises" />
   <Word us="overemphasizing" br="overemphasising" />
+  <Word us="pajama" br="pyjama" />
+  <Word us="pajamaed" br="pyjamaed" />
   <Word us="pajamas" br="pyjamas" />
   <Word us="paleontology" br="palaeontology" />
   <Word us="pants" br="trousers" />
@@ -489,6 +493,8 @@
   <Word us="trammeled" br="trammelled" />
   <Word us="trammeling" br="trammelling" />
   <Word us="traveling" br="travelling" />
+  <Word us="travelog" br="travelogue" />
+  <Word us="travelogs" br="travelogues" />
   <Word us="tricolor" br="tricolour" />
   <Word us="tricolors" br="tricolours" />
   <Word us="tumor" br="tumour" />
