@@ -200,12 +200,19 @@
   <Word us="endeavored" br="endeavoured" />
   <Word us="endeavoring" br="endeavouring" />
   <Word us="endeavors" br="endeavours" />
+  <Word us="enroll" br="enrol" />
   <Word us="enrollment" br="enrolment" />
   <Word us="enrollments" br="enrolments" />
+  <Word us="enrolls" br="enrols" />
+  <Word us="enthrall" br="enthral" />
+  <Word us="enthrallment" br="enthralment" />
+  <Word us="enthralls" br="enthrals" />
   <Word us="entrammeled" br="entrammelled" />
   <Word us="entrammeling" br="entrammelling" />
   <Word us="epicenter" br="epicentre" />
   <Word us="epicenters" br="epicentres" />
+  <Word us="equaled" br="equalled" />
+  <Word us="equaling" br="equalling" />
   <Word us="estrogen" br="oestrogen" />
   <Word us="favor" br="favour" />
   <Word us="favorable" br="favourable" />
@@ -469,6 +476,7 @@
   <Word us="tumor" br="tumour" />
   <Word us="tumors" br="tumours" />
   <Word us="uncivilized" br="uncivilised" />
+  <Word us="unequaled" br="unequalled" />
   <Word us="unfavorable" br="unfavourable" />
   <Word us="unfavorably" br="unfavourably" />
   <Word us="unfavorite" br="unfavourite" />
