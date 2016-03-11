@@ -109,6 +109,11 @@
   <Word us="civilized" br="civilised" />
   <Word us="civilizes" br="civilises" />
   <Word us="civilizing" br="civilising" />
+  <Word us="clamor" br="clamour" />
+  <Word us="clamored" br="clamoured" />
+  <Word us="clamoring" br="clamouring" />
+  <Word us="clamors" br="clamours" />
+  <Word us="clangor" br="clangour" />
   <Word us="colonization" br="colonisation" />
   <Word us="colonize" br="colonise" />
   <Word us="colonized" br="colonised" />
@@ -362,6 +367,10 @@
   <Word us="neighborliness" br="neighbourliness" />
   <Word us="neighborly" br="neighbourly" />
   <Word us="neighbors" br="neighbours" />
+  <Word us="odor" br="odour" />
+  <Word us="odored" br="odoured" />
+  <Word us="odorless" br="odourless" />
+  <Word us="odors" br="odours" />
   <Word us="offense" br="offence" />
   <Word us="offenses" br="offences" />
   <Word us="omelet" br="omelette" />
@@ -396,6 +405,9 @@
   <Word us="paralyzed" br="paralysed" />
   <Word us="paralyzes" br="paralyses" />
   <Word us="paralyzing" br="paralysing" />
+  <Word us="parlor" br="parlour" />
+  <Word us="parlormaid" br="parlourmaid" />
+  <Word us="parlors" br="parlours" />
   <Word us="pedaled" br="pedalled" />
   <Word us="pedaling" br="pedalling" />
   <Word us="pediatric" br="paediatric" />
@@ -441,6 +453,8 @@
   <Word us="reorganizers" br="reorganisers" />
   <Word us="reorganizes" br="reorganises" />
   <Word us="reorganizing" br="reorganising" />
+  <Word us="rigor" br="rigour" />
+  <Word us="rigors" br="rigours" />
   <Word us="rumor" br="rumour" />
   <Word us="rumored" br="rumoured" />
   <Word us="rumors" br="rumours" />
@@ -467,6 +481,9 @@
   <Word us="specialty" br="speciality" />
   <Word us="specter" br="spectre" />
   <Word us="specters" br="spectres" />
+  <Word us="splendor" br="splendour" />
+  <Word us="splendored" br="splendoured" />
+  <Word us="splendors" br="splendours" />
   <Word us="succor" br="succour" />
   <Word us="succored" br="succoured" />
   <Word us="succoring" br="succouring" />
@@ -509,6 +526,7 @@
   <Word us="unsavoriness" br="unsavouriness" />
   <Word us="unsavory" br="unsavoury" />
   <Word us="untrammeled" br="untrammelled" />
+  <Word us="valor" br="valour" />
   <Word us="vapor" br="vapour" />
   <Word us="vaporish" br="vapourish" />
   <Word us="vapors" br="vapours" />
