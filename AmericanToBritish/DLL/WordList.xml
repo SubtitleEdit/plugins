@@ -82,8 +82,14 @@
   <Word us="belabored" br="belaboured" />
   <Word us="belaboring" br="belabouring" />
   <Word us="belabors" br="belabours" />
+  <Word us="beveled" br="bevelled" />
+  <Word us="beveling" br="bevelling" />
   <Word us="caliber" br="calibre" />
   <Word us="calibers" br="calibres" />
+  <Word us="cancelation" br="cancellation" />
+  <Word us="cancelations" br="cancellations" />
+  <Word us="canceled" br="cancelled" />
+  <Word us="canceling" br="cancelling" />
   <Word us="candor" br="candour" />
   <Word us="catalog" br="catalogue" />
   <Word us="cataloged" br="catalogued" />
@@ -102,8 +108,14 @@
   <Word us="centers" br="centres" />
   <Word us="centimeter" br="centimetre" />
   <Word us="centimeters" br="centimetres" />
+  <Word us="channeled" br="channelled" />
+  <Word us="channeling" br="channelling" />
   <Word us="chili" br="chilli" />
   <Word us="chilies" br="chillies" />
+  <Word us="chiseled" br="chiselled" />
+  <Word us="chiseler" br="chiseller" />
+  <Word us="chiselers" br="chisellers" />
+  <Word us="chiseling" br="chiselling" />
   <Word us="civilization" br="civilisation" />
   <Word us="civilize" br="civilise" />
   <Word us="civilized" br="civilised" />
