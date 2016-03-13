@@ -153,6 +153,8 @@
   <Word us="colorizing" br="colourizing" />
   <Word us="colorless" br="colourless" />
   <Word us="colors" br="colours" />
+  <Word us="counseled" br="counselled" />
+  <Word us="counseling" br="counselling" />
   <Word us="counselor" br="counsellor" />
   <Word us="counselors" br="counsellors" />
   <Word us="cozied" br="cosied" />
@@ -167,6 +169,8 @@
   <Word us="criticized" br="criticised" />
   <Word us="criticizes" br="criticises" />
   <Word us="criticizing" br="criticising" />
+  <Word us="cudgeled" br="cudgelled" />
+  <Word us="cudgeling" br="cudgelling" />
   <Word us="defense" br="defence" />
   <Word us="defenseless" br="defenceless" />
   <Word us="defenselessly" br="defencelessly" />
@@ -205,6 +209,10 @@
   <Word us="disorganizes" br="disorganises" />
   <Word us="disorganizing" br="disorganising" />
   <Word us="draft beer" br="draught beer" />
+  <Word us="driveled" br="drivelled" />
+  <Word us="driveler" br="driveller" />
+  <Word us="drivelers" br="drivellers" />
+  <Word us="driveling" br="drivelling" />
   <Word us="dustbin" br="garbage can" />
   <Word us="emboweled" br="embowelled" />
   <Word us="emboweling" br="embowelling" />
@@ -214,6 +222,10 @@
   <Word us="emphasized" br="emphasised" />
   <Word us="emphasizes" br="emphasises" />
   <Word us="emphasizing" br="emphasising" />
+  <Word us="enamor" br="enamour" />
+  <Word us="enamored" br="enamoured" />
+  <Word us="enamoring" br="enamouring" />
+  <Word us="enamors" br="enamours" />
   <Word us="encyclopedia" br="encyclopaedia" />
   <Word us="encyclopedias" br="encyclopaedias" />
   <Word us="endeavor" br="endeavour" />
