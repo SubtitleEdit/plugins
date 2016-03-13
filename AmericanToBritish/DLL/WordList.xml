@@ -456,7 +456,20 @@
   <Word us="realized" br="realised" />
   <Word us="realizes" br="realises" />
   <Word us="realizing" br="realising" />
+  <Word us="recognizability" br="recognisability" />
+  <Word us="recognizable" br="recognisable" />
+  <Word us="recognizably" br="recognisably" />
+  <Word us="recognizance" br="recognisance" />
+  <Word us="recognizant" br="recognisant" />
   <Word us="recognize" br="recognise" />
+  <Word us="recognized" br="recognised" />
+  <Word us="recognizer" br="recogniser" />
+  <Word us="recognizers" br="recognisers" />
+  <Word us="recognizes" br="recognises" />
+  <Word us="recognizing" br="recognising" />
+  <Word us="recognizingly" br="recognisingly" />
+  <Word us="recognizor" br="recognisor" />
+  <Word us="recognizors" br="recognisors" />
   <Word us="reorganization" br="reorganisation" />
   <Word us="reorganizations" br="reorganisations" />
   <Word us="reorganize" br="reorganise" />
@@ -534,6 +547,9 @@
   <Word us="unfavorably" br="unfavourably" />
   <Word us="unfavorite" br="unfavourite" />
   <Word us="unorganized" br="unorganised" />
+  <Word us="unrecognizable" br="unrecognisable" />
+  <Word us="unrecognizably" br="unrecognisably" />
+  <Word us="unrecognized" br="unrecognised" />
   <Word us="unsavorily" br="unsavourily" />
   <Word us="unsavoriness" br="unsavouriness" />
   <Word us="unsavory" br="unsavoury" />
