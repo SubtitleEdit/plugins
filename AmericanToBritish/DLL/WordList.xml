@@ -195,6 +195,8 @@
   <Word us="disfavored" br="disfavoured" />
   <Word us="disfavoring" br="disfavouring" />
   <Word us="disfavors" br="disfavours" />
+  <Word us="disheveled" br="dishevelled" />
+  <Word us="disheveling" br="dishevelling" />
   <Word us="dishonor" br="dishonour" />
   <Word us="dishonorable" br="dishonourable" />
   <Word us="dishonorableness" br="dishonourableness" />
@@ -213,6 +215,12 @@
   <Word us="driveler" br="driveller" />
   <Word us="drivelers" br="drivellers" />
   <Word us="driveling" br="drivelling" />
+  <Word us="dueled" br="duelled" />
+  <Word us="dueler" br="dueller" />
+  <Word us="duelers" br="duellers" />
+  <Word us="dueling" br="duelling" />
+  <Word us="duelist" br="duellist" />
+  <Word us="duelists" br="duellists" />
   <Word us="dustbin" br="garbage can" />
   <Word us="emboweled" br="embowelled" />
   <Word us="emboweling" br="embowelling" />
@@ -222,6 +230,12 @@
   <Word us="emphasized" br="emphasised" />
   <Word us="emphasizes" br="emphasises" />
   <Word us="emphasizing" br="emphasising" />
+  <Word us="enameled" br="enamelled" />
+  <Word us="enameler" br="enameller" />
+  <Word us="enamelers" br="enamellers" />
+  <Word us="enameling" br="enamelling" />
+  <Word us="enamelist" br="enamellist" />
+  <Word us="enamelists" br="enamellists" />
   <Word us="enamor" br="enamour" />
   <Word us="enamored" br="enamoured" />
   <Word us="enamoring" br="enamouring" />
@@ -540,6 +554,8 @@
   <Word us="sulfite" br="sulphite" />
   <Word us="sulfites" br="sulphites" />
   <Word us="sulfur" br="sulphur" />
+  <Word us="swiveled" br="swivelled" />
+  <Word us="swiveling" br="swivelling" />
   <Word us="tasseled" br="tasselled" />
   <Word us="tasseling" br="tasselling" />
   <Word us="technicolor" br="technicolour" />
