@@ -296,6 +296,8 @@
   <Word us="fueled" br="fuelled" />
   <Word us="fueling" br="fuelling" />
   <Word us="fulfill" br="fulfil" />
+  <Word us="funneled" br="funnelled" />
+  <Word us="funneling" br="funnelling" />
   <Word us="glamor" br="glamour" />
   <Word us="gluing" br="glueing" />
   <Word us="goiter" br="goitre" />
@@ -303,6 +305,8 @@
   <Word us="goiters" br="goitres" />
   <Word us="gonorrhea" br="gonorrhoea" />
   <Word us="gonorrheal" br="gonorrhoeal" />
+  <Word us="graveled" br="gravelled" />
+  <Word us="graveling" br="gravelling" />
   <Word us="gray" br="grey" />
   <Word us="grayed" br="greyed" />
   <Word us="graying" br="greying" />
@@ -361,6 +365,10 @@
   <Word us="judgment" br="judgement" />
   <Word us="kilometer" br="kilometre" />
   <Word us="kilometers" br="kilometres" />
+  <Word us="labeled" br="labelled" />
+  <Word us="labeler" br="labeller" />
+  <Word us="labelers" br="labellers" />
+  <Word us="labeling" br="labelling" />
   <Word us="labor" br="labour" />
   <Word us="labored" br="laboured" />
   <Word us="laborer" br="labourer" />
@@ -369,6 +377,10 @@
   <Word us="labors" br="labours" />
   <Word us="lay of the land" br="lie of the land" />
   <Word us="leukemia" br="leukaemia" />
+  <Word us="leveled" br="levelled" />
+  <Word us="leveler" br="leveller" />
+  <Word us="levelers" br="levellers" />
+  <Word us="leveling" br="levelling" />
   <Word us="license" br="licence" />
   <Word us="liter" br="litre" />
   <Word us="liters" br="litres" />
