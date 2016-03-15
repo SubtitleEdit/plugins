@@ -84,6 +84,9 @@
   <Word us="belabors" br="belabours" />
   <Word us="beveled" br="bevelled" />
   <Word us="beveling" br="bevelling" />
+  <Word us="biased" br="biassed" />
+  <Word us="biases" br="biasses" />
+  <Word us="biasing" br="biassing" />
   <Word us="caliber" br="calibre" />
   <Word us="calibers" br="calibres" />
   <Word us="cancelation" br="cancellation" />
@@ -242,6 +245,10 @@
   <Word us="enamors" br="enamours" />
   <Word us="encyclopedia" br="encyclopaedia" />
   <Word us="encyclopedias" br="encyclopaedias" />
+  <Word us="encyclopedic" br="encyclopaedic" />
+  <Word us="encyclopedism" br="encyclopaedism" />
+  <Word us="encyclopedist" br="encyclopaedist" />
+  <Word us="encyclopedists" br="encyclopaedists" />
   <Word us="endeavor" br="endeavour" />
   <Word us="endeavored" br="endeavoured" />
   <Word us="endeavoring" br="endeavouring" />
@@ -375,6 +382,7 @@
   <Word us="laborers" br="labourers" />
   <Word us="laboring" br="labouring" />
   <Word us="labors" br="labours" />
+  <Word us="lackluster" br="lacklustre" />
   <Word us="lay of the land" br="lie of the land" />
   <Word us="leukemia" br="leukaemia" />
   <Word us="leveled" br="levelled" />
@@ -566,6 +574,7 @@
   <Word us="sulfite" br="sulphite" />
   <Word us="sulfites" br="sulphites" />
   <Word us="sulfur" br="sulphur" />
+  <Word us="sulfurous" br="sulphurous" />
   <Word us="swiveled" br="swivelled" />
   <Word us="swiveling" br="swivelling" />
   <Word us="tasseled" br="tasselled" />
