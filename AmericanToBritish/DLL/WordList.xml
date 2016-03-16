@@ -493,6 +493,8 @@
   <Word us="paralyzed" br="paralysed" />
   <Word us="paralyzes" br="paralyses" />
   <Word us="paralyzing" br="paralysing" />
+  <Word us="parceled" br="parcelled" />
+  <Word us="parceling" br="parcelling" />
   <Word us="parlor" br="parlour" />
   <Word us="parlormaid" br="parlourmaid" />
   <Word us="parlors" br="parlours" />
@@ -507,6 +509,8 @@
   <Word us="plows" br="ploughs" />
   <Word us="plowshare" br="ploughshare" />
   <Word us="plowshares" br="ploughshares" />
+  <Word us="pommeled" br="pommelled" />
+  <Word us="pommeling" br="pommelling" />
   <Word us="popularization" br="popularisation" />
   <Word us="popularize" br="popularise" />
   <Word us="practice" br="practise" />
@@ -522,6 +526,11 @@
   <Word us="psychoanalyzes" br="psychoanalyses" />
   <Word us="psychoanalyzing" br="psychoanalysing" />
   <Word us="pulled up" br="drew up" />
+  <Word us="pummeled" br="pummelled" />
+  <Word us="pummeling" br="pummelling" />
+  <Word us="quarreled" br="quarrelled" />
+  <Word us="quarreler" br="quarreller" />
+  <Word us="quarrelers" br="quarrellers" />
   <Word us="quarreling" br="quarrelling" />
   <Word us="rancor" br="rancour" />
   <Word us="rancored" br="rancoured" />
