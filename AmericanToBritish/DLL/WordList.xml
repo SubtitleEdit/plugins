@@ -389,6 +389,12 @@
   <Word us="leveler" br="leveller" />
   <Word us="levelers" br="levellers" />
   <Word us="leveling" br="levelling" />
+  <Word us="libeled" br="libelled" />
+  <Word us="libeler" br="libeller" />
+  <Word us="libelers" br="libellers" />
+  <Word us="libeling" br="libelling" />
+  <Word us="libelous" br="libellous" />
+  <Word us="libelously" br="libellously" />
   <Word us="license" br="licence" />
   <Word us="liter" br="litre" />
   <Word us="liters" br="litres" />
@@ -404,7 +410,14 @@
   <Word us="maneuvering" br="manoeuvring" />
   <Word us="maneuverings" br="manoeuvrings" />
   <Word us="maneuvers" br="manoeuvres" />
+  <Word us="marveled" br="marvelled" />
+  <Word us="marveler" br="marveller" />
+  <Word us="marvelers" br="marvellers" />
+  <Word us="marveling" br="marvelling" />
+  <Word us="marvelingly" br="marvellingly" />
   <Word us="marvelous" br="marvellous" />
+  <Word us="marvelously" br="marvellously" />
+  <Word us="marvelousness" br="marvellousness" />
   <Word us="medieval" br="mediaeval" />
   <Word us="mementos" br="mementoes" />
   <Word us="meter" br="metre" />
@@ -417,6 +430,12 @@
   <Word us="misbehaviors" br="misbehaviours" />
   <Word us="misdemeanor" br="misdemeanour" />
   <Word us="misdemeanors" br="misdemeanours" />
+  <Word us="modeled" br="modelled" />
+  <Word us="modeler" br="modeller" />
+  <Word us="modelers" br="modellers" />
+  <Word us="modeling" br="modelling" />
+  <Word us="modelist" br="modellist" />
+  <Word us="modelists" br="modellists" />
   <Word us="mold" br="mould" />
   <Word us="mom" br="mum" />
   <Word us="mommy" br="mummy" />
@@ -464,6 +483,10 @@
   <Word us="pajamaed" br="pyjamaed" />
   <Word us="pajamas" br="pyjamas" />
   <Word us="paleontology" br="palaeontology" />
+  <Word us="paneled" br="panelled" />
+  <Word us="paneling" br="panelling" />
+  <Word us="panelist" br="panellist" />
+  <Word us="panelists" br="panellists" />
   <Word us="pants" br="trousers" />
   <Word us="paralleled" br="parallelled" />
   <Word us="paralyze" br="paralyse" />
