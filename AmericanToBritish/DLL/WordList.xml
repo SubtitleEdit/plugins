@@ -539,6 +539,10 @@
   <Word us="quarreling" br="quarrelling" />
   <Word us="rancor" br="rancour" />
   <Word us="rancored" br="rancoured" />
+  <Word us="raveled" br="ravelled" />
+  <Word us="raveler" br="raveller" />
+  <Word us="ravelers" br="ravellers" />
+  <Word us="raveling" br="ravelling" />
   <Word us="realizable" br="realisable" />
   <Word us="realization" br="realisation" />
   <Word us="realizations" br="realisations" />
@@ -560,6 +564,14 @@
   <Word us="recognizingly" br="recognisingly" />
   <Word us="recognizor" br="recognisor" />
   <Word us="recognizors" br="recognisors" />
+  <Word us="refueled" br="refuelled" />
+  <Word us="refueler" br="refueller" />
+  <Word us="refuelers" br="refuellers" />
+  <Word us="refueling" br="refuelling" />
+  <Word us="remodeled" br="remodelled" />
+  <Word us="remodeler" br="remodeller" />
+  <Word us="remodelers" br="remodellers" />
+  <Word us="remodeling" br="remodelling" />
   <Word us="reorganization" br="reorganisation" />
   <Word us="reorganizations" br="reorganisations" />
   <Word us="reorganize" br="reorganise" />
@@ -568,6 +580,10 @@
   <Word us="reorganizers" br="reorganisers" />
   <Word us="reorganizes" br="reorganises" />
   <Word us="reorganizing" br="reorganising" />
+  <Word us="reveled" br="revelled" />
+  <Word us="reveler" br="reveller" />
+  <Word us="revelers" br="revellers" />
+  <Word us="reveling" br="revelling" />
   <Word us="rigor" br="rigour" />
   <Word us="rigors" br="rigours" />
   <Word us="rumor" br="rumour" />
