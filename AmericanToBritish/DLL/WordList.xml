@@ -437,11 +437,23 @@
   <Word us="modelist" br="modellist" />
   <Word us="modelists" br="modellists" />
   <Word us="mold" br="mould" />
+  <Word us="molt" br="moult" />
+  <Word us="molted" br="moulted" />
+  <Word us="molter" br="moulter" />
+  <Word us="molters" br="moulters" />
+  <Word us="molting" br="moulting" />
+  <Word us="molts" br="moults" />
   <Word us="mom" br="mum" />
   <Word us="mommy" br="mummy" />
   <Word us="monolog" br="monologue" />
   <Word us="monologs" br="monologues" />
   <Word us="multicolored" br="multicoloured" />
+  <Word us="mustache" br="moustache" />
+  <Word us="mustached" br="moustached" />
+  <Word us="mustacheless" br="moustacheless" />
+  <Word us="mustaches" br="moustaches" />
+  <Word us="mustachial" br="moustachial" />
+  <Word us="mustachioed" br="moustachioed" />
   <Word us="nanometer" br="nanometre" />
   <Word us="nanometers" br="nanometres" />
   <Word us="neighbor" br="neighbour" />
@@ -482,6 +494,8 @@
   <Word us="pajama" br="pyjama" />
   <Word us="pajamaed" br="pyjamaed" />
   <Word us="pajamas" br="pyjamas" />
+  <Word us="paleolithic" br="palaeolithic" />
+  <Word us="paleolithical" br="palaeolithical" />
   <Word us="paleontology" br="palaeontology" />
   <Word us="paneled" br="panelled" />
   <Word us="paneling" br="panelling" />
@@ -623,6 +637,8 @@
   <Word us="specialty" br="speciality" />
   <Word us="specter" br="spectre" />
   <Word us="specters" br="spectres" />
+  <Word us="spiraled" br="spiralled" />
+  <Word us="spiraling" br="spiralling" />
   <Word us="splendor" br="splendour" />
   <Word us="splendored" br="splendoured" />
   <Word us="splendors" br="splendours" />
