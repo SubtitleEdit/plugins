@@ -572,6 +572,10 @@
   <Word us="remodeler" br="remodeller" />
   <Word us="remodelers" br="remodellers" />
   <Word us="remodeling" br="remodelling" />
+  <Word us="remold" br="remould" />
+  <Word us="remolded" br="remoulded" />
+  <Word us="remolding" br="remoulding" />
+  <Word us="remolds" br="remoulds" />
   <Word us="reorganization" br="reorganisation" />
   <Word us="reorganizations" br="reorganisations" />
   <Word us="reorganize" br="reorganise" />
@@ -602,9 +606,16 @@
   <Word us="savorous" br="savourous" />
   <Word us="savors" br="savours" />
   <Word us="savory" br="savoury" />
+  <Word us="sheik" br="sheikh" />
+  <Word us="sheikdom" br="sheikhdom" />
   <Word us="skeleton in the closet" br="skeleton in the cupboard" />
   <Word us="skeptic" br="sceptic" />
   <Word us="skillful" br="skilful" />
+  <Word us="smolder" br="smoulder" />
+  <Word us="smoldered" br="smouldered" />
+  <Word us="smoldering" br="smouldering" />
+  <Word us="smolderingly" br="smoulderingly" />
+  <Word us="smolders" br="smoulders" />
   <Word us="sneaker" br="trainer" />
   <Word us="sneakers" br="trainers" />
   <Word us="snowplow" br="snowplough" />
@@ -673,6 +684,8 @@
   <Word us="vigorless" br="vigourless" />
   <Word us="watercolor" br="watercolour" />
   <Word us="watercolors" br="watercolours" />
+  <Word us="weaseled" br="weaselled" />
+  <Word us="weaseling" br="weaselling" />
   <Word us="woolen" br="woollen" />
   <Word us="worshiped" br="worshipped" />
   <Word us="worshiper" br="worshipper" />
