@@ -641,6 +641,8 @@
   <Word us="shoveler" br="shoveller" />
   <Word us="shovelers" br="shovellers" />
   <Word us="shoveling" br="shovelling" />
+  <Word us="shriveled" br="shrivelled" />
+  <Word us="shriveling" br="shrivelling" />
   <Word us="skeleton in the closet" br="skeleton in the cupboard" />
   <Word us="skeptic" br="sceptic" />
   <Word us="skillful" br="skilful" />
@@ -666,6 +668,8 @@
   <Word us="splendor" br="splendour" />
   <Word us="splendored" br="splendoured" />
   <Word us="splendors" br="splendours" />
+  <Word us="squirreled" br="squirrelled" />
+  <Word us="squirreling" br="squirrelling" />
   <Word us="succor" br="succour" />
   <Word us="succored" br="succoured" />
   <Word us="succoring" br="succouring" />
@@ -697,6 +701,9 @@
   <Word us="toxemia" br="toxaemia" />
   <Word us="trammeled" br="trammelled" />
   <Word us="trammeling" br="trammelling" />
+  <Word us="traveled" br="travelled" />
+  <Word us="traveler" br="traveller" />
+  <Word us="travelers" br="travellers" />
   <Word us="traveling" br="travelling" />
   <Word us="travelog" br="travelogue" />
   <Word us="travelogs" br="travelogues" />
@@ -714,6 +721,11 @@
   <Word us="unfavorably" br="unfavourably" />
   <Word us="unfavorite" br="unfavourite" />
   <Word us="unorganized" br="unorganised" />
+  <Word us="unravelable" br="unravellable" />
+  <Word us="unraveled" br="unravelled" />
+  <Word us="unraveler" br="unraveller" />
+  <Word us="unravelers" br="unravellers" />
+  <Word us="unraveling" br="unravelling" />
   <Word us="unrecognizable" br="unrecognisable" />
   <Word us="unrecognizably" br="unrecognisably" />
   <Word us="unrecognized" br="unrecognised" />
