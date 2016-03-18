@@ -637,6 +637,10 @@
   <Word us="savory" br="savoury" />
   <Word us="sheik" br="sheikh" />
   <Word us="sheikdom" br="sheikhdom" />
+  <Word us="shoveled" br="shovelled" />
+  <Word us="shoveler" br="shoveller" />
+  <Word us="shovelers" br="shovellers" />
+  <Word us="shoveling" br="shovelling" />
   <Word us="skeleton in the closet" br="skeleton in the cupboard" />
   <Word us="skeptic" br="sceptic" />
   <Word us="skillful" br="skilful" />
@@ -647,6 +651,11 @@
   <Word us="smolders" br="smoulders" />
   <Word us="sneaker" br="trainer" />
   <Word us="sneakers" br="trainers" />
+  <Word us="sniveled" br="snivelled" />
+  <Word us="sniveler" br="sniveller" />
+  <Word us="snivelers" br="snivellers" />
+  <Word us="sniveling" br="snivelling" />
+  <Word us="snivelingly" br="snivellingly" />
   <Word us="snowplow" br="snowplough" />
   <Word us="snowplow" br="snowploughs" />
   <Word us="specialty" br="speciality" />
@@ -682,6 +691,9 @@
   <Word us="theaters" br="theatres" />
   <Word us="tire" br="tyre" />
   <Word us="tires" br="tyres" />
+  <Word us="toweled" br="towelled" />
+  <Word us="toweling" br="towelling" />
+  <Word us="towelings" br="towellings" />
   <Word us="toxemia" br="toxaemia" />
   <Word us="trammeled" br="trammelled" />
   <Word us="trammeling" br="trammelling" />
@@ -692,6 +704,10 @@
   <Word us="tricolors" br="tricolours" />
   <Word us="tumor" br="tumour" />
   <Word us="tumors" br="tumours" />
+  <Word us="tunneled" br="tunnelled" />
+  <Word us="tunneler" br="tunneller" />
+  <Word us="tunnelers" br="tunnellers" />
+  <Word us="tunneling" br="tunnelling" />
   <Word us="uncivilized" br="uncivilised" />
   <Word us="unequaled" br="unequalled" />
   <Word us="unfavorable" br="unfavourable" />
