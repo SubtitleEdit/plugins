@@ -106,6 +106,10 @@
   <Word us="catalyzed" br="catalysed" />
   <Word us="catalyzes" br="catalyses" />
   <Word us="catalyzing" br="catalysing" />
+  <Word us="caviled" br="cavilled" />
+  <Word us="caviler" br="caviller" />
+  <Word us="cavilers" br="cavillers" />
+  <Word us="caviling" br="cavilling" />
   <Word us="center" br="centre" />
   <Word us="centered" br="centred" />
   <Word us="centerfold" br="centrefold" />
@@ -368,6 +372,8 @@
   <Word us="impaneling" br="empanelling" />
   <Word us="impanelment" br="empanelment" />
   <Word us="impanels" br="empanels" />
+  <Word us="imperiled" br="imperilled" />
+  <Word us="imperiling" br="imperilling" />
   <Word us="initialed" br="initialled" />
   <Word us="initialing" br="initialling" />
   <Word us="installment" br="instalment" />
@@ -632,6 +638,8 @@
   <Word us="reveling" br="revelling" />
   <Word us="rigor" br="rigour" />
   <Word us="rigors" br="rigours" />
+  <Word us="rivaled" br="rivalled" />
+  <Word us="rivaling" br="rivalling" />
   <Word us="rumor" br="rumour" />
   <Word us="rumored" br="rumoured" />
   <Word us="rumors" br="rumours" />
@@ -754,6 +762,8 @@
   <Word us="unrecognizable" br="unrecognisable" />
   <Word us="unrecognizably" br="unrecognisably" />
   <Word us="unrecognized" br="unrecognised" />
+  <Word us="unrivalable" br="unrivallable" />
+  <Word us="unrivaled" br="unrivalled" />
   <Word us="unsavorily" br="unsavourily" />
   <Word us="unsavoriness" br="unsavouriness" />
   <Word us="unsavory" br="unsavoury" />
