@@ -94,6 +94,10 @@
   <Word us="canceled" br="cancelled" />
   <Word us="canceling" br="cancelling" />
   <Word us="candor" br="candour" />
+  <Word us="caroled" br="carolled" />
+  <Word us="caroler" br="caroller" />
+  <Word us="carolers" br="carollers" />
+  <Word us="caroling" br="carolling" />
   <Word us="catalog" br="catalogue" />
   <Word us="cataloged" br="catalogued" />
   <Word us="cataloging" br="cataloguing" />
@@ -305,6 +309,8 @@
   <Word us="fulfill" br="fulfil" />
   <Word us="funneled" br="funnelled" />
   <Word us="funneling" br="funnelling" />
+  <Word us="gamboled" br="gambolled" />
+  <Word us="gamboling" br="gambolling" />
   <Word us="glamor" br="glamour" />
   <Word us="gluing" br="glueing" />
   <Word us="goiter" br="goitre" />
@@ -533,6 +539,10 @@
   <Word us="pedaled" br="pedalled" />
   <Word us="pedaling" br="pedalling" />
   <Word us="pediatric" br="paediatric" />
+  <Word us="penciled" br="pencilled" />
+  <Word us="penciler" br="penciller" />
+  <Word us="pencilers" br="pencillers" />
+  <Word us="penciling" br="pencilling" />
   <Word us="plow" br="plough" />
   <Word us="plowed" br="ploughed" />
   <Word us="plowing" br="ploughing" />
@@ -718,6 +728,10 @@
   <Word us="traveling" br="travelling" />
   <Word us="travelog" br="travelogue" />
   <Word us="travelogs" br="travelogues" />
+  <Word us="trialed" br="trialled" />
+  <Word us="trialing" br="trialling" />
+  <Word us="trialist" br="triallist" />
+  <Word us="trialists" br="triallists" />
   <Word us="tricolor" br="tricolour" />
   <Word us="tricolors" br="tricolours" />
   <Word us="tumor" br="tumour" />
