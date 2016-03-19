@@ -362,6 +362,8 @@
   <Word us="impaneling" br="empanelling" />
   <Word us="impanelment" br="empanelment" />
   <Word us="impanels" br="empanels" />
+  <Word us="initialed" br="initialled" />
+  <Word us="initialing" br="initialling" />
   <Word us="installment" br="instalment" />
   <Word us="installments" br="instalments" />
   <Word us="jeweled" br="jewelled" />
@@ -430,6 +432,7 @@
   <Word us="misbehaviors" br="misbehaviours" />
   <Word us="misdemeanor" br="misdemeanour" />
   <Word us="misdemeanors" br="misdemeanours" />
+  <Word us="misspelled" br="misspelt" />
   <Word us="modeled" br="modelled" />
   <Word us="modeler" br="modeller" />
   <Word us="modelers" br="modellers" />
@@ -643,6 +646,10 @@
   <Word us="shoveling" br="shovelling" />
   <Word us="shriveled" br="shrivelled" />
   <Word us="shriveling" br="shrivelling" />
+  <Word us="signaled" br="signalled" />
+  <Word us="signaler" br="signaller" />
+  <Word us="signalers" br="signallers" />
+  <Word us="signaling" br="signalling" />
   <Word us="skeleton in the closet" br="skeleton in the cupboard" />
   <Word us="skeptic" br="sceptic" />
   <Word us="skillful" br="skilful" />
@@ -658,6 +665,10 @@
   <Word us="snivelers" br="snivellers" />
   <Word us="sniveling" br="snivelling" />
   <Word us="snivelingly" br="snivellingly" />
+  <Word us="snorkeled" br="snorkelled" />
+  <Word us="snorkeler" br="snorkeller" />
+  <Word us="snorkelers" br="snorkellers" />
+  <Word us="snorkeling" br="snorkelling" />
   <Word us="snowplow" br="snowplough" />
   <Word us="snowplow" br="snowploughs" />
   <Word us="specialty" br="speciality" />
