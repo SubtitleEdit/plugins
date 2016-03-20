@@ -191,6 +191,10 @@
   <Word us="defenses" br="defences" />
   <Word us="demeanor" br="demeanour" />
   <Word us="demeanors" br="demeanours" />
+  <Word us="dialed" br="dialled" />
+  <Word us="dialer" br="dialler" />
+  <Word us="dialers" br="diallers" />
+  <Word us="dialing" br="dialling" />
   <Word us="dialog" br="dialogue" />
   <Word us="dialogs" br="dialogues" />
   <Word us="diarrhea" br="diarrhoea" />
@@ -424,6 +428,10 @@
   <Word us="maneuvering" br="manoeuvring" />
   <Word us="maneuverings" br="manoeuvrings" />
   <Word us="maneuvers" br="manoeuvres" />
+  <Word us="marshaled" br="marshalled" />
+  <Word us="marshaler" br="marshaller" />
+  <Word us="marshalers" br="marshallers" />
+  <Word us="marshaling" br="marshalling" />
   <Word us="marveled" br="marvelled" />
   <Word us="marveler" br="marveller" />
   <Word us="marvelers" br="marvellers" />
@@ -643,6 +651,10 @@
   <Word us="rumor" br="rumour" />
   <Word us="rumored" br="rumoured" />
   <Word us="rumors" br="rumours" />
+  <Word us="saber" br="sabre" />
+  <Word us="sabers" br="sabres" />
+  <Word us="sabertooth" br="sabretooth" />
+  <Word us="sabertooths" br="sabretooths" />
   <Word us="savior" br="saviour" />
   <Word us="saviors" br="saviours" />
   <Word us="savor" br="savour" />
@@ -699,6 +711,8 @@
   <Word us="splendors" br="splendours" />
   <Word us="squirreled" br="squirrelled" />
   <Word us="squirreling" br="squirrelling" />
+  <Word us="stenciled" br="stencilled" />
+  <Word us="stenciling" br="stencilling" />
   <Word us="succor" br="succour" />
   <Word us="succored" br="succoured" />
   <Word us="succoring" br="succouring" />
