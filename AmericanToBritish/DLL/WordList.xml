@@ -446,6 +446,8 @@
   <Word us="meters" br="metres" />
   <Word us="micrometer" br="micrometre" />
   <Word us="micrometers" br="micrometres" />
+  <Word us="milliliter" br="millilitre" />
+  <Word us="milliliters" br="millilitres" />
   <Word us="millimeter" br="millimetre" />
   <Word us="millimeters" br="millimetres" />
   <Word us="misbehavior" br="misbehaviour" />
