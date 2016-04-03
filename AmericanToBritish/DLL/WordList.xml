@@ -117,6 +117,8 @@
   <Word us="centerpiece" br="centrepiece" />
   <Word us="centerpieces" br="centrepieces" />
   <Word us="centers" br="centres" />
+  <Word us="centiliter" br="centilitre" />
+  <Word us="centiliters" br="centilitres" />
   <Word us="centimeter" br="centimetre" />
   <Word us="centimeters" br="centimetres" />
   <Word us="channeled" br="channelled" />
@@ -446,6 +448,8 @@
   <Word us="meters" br="metres" />
   <Word us="micrometer" br="micrometre" />
   <Word us="micrometers" br="micrometres" />
+  <Word us="milliliter" br="millilitre" />
+  <Word us="milliliters" br="millilitres" />
   <Word us="millimeter" br="millimetre" />
   <Word us="millimeters" br="millimetres" />
   <Word us="misbehavior" br="misbehaviour" />
@@ -620,6 +624,10 @@
   <Word us="recognizingly" br="recognisingly" />
   <Word us="recognizor" br="recognisor" />
   <Word us="recognizors" br="recognisors" />
+  <Word us="reconnoiter" br="reconnoitre" />
+  <Word us="reconnoitered" br="reconnoitred" />
+  <Word us="reconnoitering" br="reconnoitring" />
+  <Word us="reconnoiters" br="reconnoitres" />
   <Word us="refueled" br="refuelled" />
   <Word us="refueler" br="refueller" />
   <Word us="refuelers" br="refuellers" />
