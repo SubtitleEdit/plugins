@@ -457,6 +457,10 @@
   <Word us="misdemeanor" br="misdemeanour" />
   <Word us="misdemeanors" br="misdemeanours" />
   <Word us="misspelled" br="misspelt" />
+  <Word us="miter" br="mitre" />
+  <Word us="mitered" br="mitred" />
+  <Word us="mitering" br="mitring" />
+  <Word us="miters" br="mitres" />
   <Word us="modeled" br="modelled" />
   <Word us="modeler" br="modeller" />
   <Word us="modelers" br="modellers" />
@@ -561,6 +565,8 @@
   <Word us="penciler" br="penciller" />
   <Word us="pencilers" br="pencillers" />
   <Word us="penciling" br="pencilling" />
+  <Word us="philter" br="philtre" />
+  <Word us="philters" br="philtres" />
   <Word us="plow" br="plough" />
   <Word us="plowed" br="ploughed" />
   <Word us="plowing" br="ploughing" />
@@ -663,6 +669,7 @@
   <Word us="sabers" br="sabres" />
   <Word us="sabertooth" br="sabretooth" />
   <Word us="sabertooths" br="sabretooths" />
+  <Word us="saltpeter" br="saltpetre" />
   <Word us="savior" br="saviour" />
   <Word us="saviors" br="saviours" />
   <Word us="savor" br="savour" />
@@ -676,6 +683,9 @@
   <Word us="savorous" br="savourous" />
   <Word us="savors" br="savours" />
   <Word us="savory" br="savoury" />
+  <Word us="scepter" br="sceptre" />
+  <Word us="sceptered" br="sceptred" />
+  <Word us="scepters" br="sceptres" />
   <Word us="sheik" br="sheikh" />
   <Word us="sheikdom" br="sheikhdom" />
   <Word us="shoveled" br="shovelled" />
