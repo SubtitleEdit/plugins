@@ -45,6 +45,8 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.removeNamesContainedInFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.deleteCurrentNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -185,9 +187,12 @@
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.deleteCurrentNameToolStripMenuItem,
+            this.toolStripSeparator1,
             this.removeNamesContainedInFileToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(253, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(253, 54);
+            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
             // removeNamesContainedInFileToolStripMenuItem
             // 
@@ -195,6 +200,18 @@
             this.removeNamesContainedInFileToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
             this.removeNamesContainedInFileToolStripMenuItem.Text = "Remove names contained in file...";
             this.removeNamesContainedInFileToolStripMenuItem.Click += new System.EventHandler(this.removeNamesContainedInFileToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(249, 6);
+            // 
+            // deleteCurrentNameToolStripMenuItem
+            // 
+            this.deleteCurrentNameToolStripMenuItem.Name = "deleteCurrentNameToolStripMenuItem";
+            this.deleteCurrentNameToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+            this.deleteCurrentNameToolStripMenuItem.Text = "Delete current name...";
+            this.deleteCurrentNameToolStripMenuItem.Click += new System.EventHandler(this.deleteCurrentNameToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -242,6 +259,8 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem removeNamesContainedInFileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deleteCurrentNameToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }
 

@@ -126,12 +126,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
             string name = listBoxNames.Items[index].ToString();
             if (e.KeyCode == Keys.Delete)
             {
-                if (MessageBox.Show("Delete '" + name + "' ?", string.Empty, MessageBoxButtons.YesNo) == DialogResult.Yes)
-                {
-                    _namesList.Remove(name);
-                    FillNames();
-                    _changed = true;
-                }
+                DeleteName(name);
+            }
+        }
+
+        private void DeleteName(string name)
+        {
+            if (MessageBox.Show(this, "Delete '" + name + "' ?", string.Empty, MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                _namesList.Remove(name);
+                FillNames();
+                _changed = true;
             }
         }
 
@@ -331,6 +336,23 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     FillNames();
                 }
             }
+        }
+
+        private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            deleteCurrentNameToolStripMenuItem.Enabled = listBoxNames.SelectedIndex >= 0;
+        }
+
+        private void deleteCurrentNameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int index = listBoxNames.SelectedIndex;
+            if (index < 0)
+            {
+                return;
+            }
+
+            string name = listBoxNames.Items[index].ToString();
+            DeleteName(name);
         }
 
     }
