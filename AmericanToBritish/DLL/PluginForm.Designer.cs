@@ -45,11 +45,11 @@
             this.linkLabelWordList = new System.Windows.Forms.LinkLabel();
             this.radioButtonBuiltInList = new System.Windows.Forms.RadioButton();
             this.radioButtonLocalList = new System.Windows.Forms.RadioButton();
+            this.radioButtonBothLists = new System.Windows.Forms.RadioButton();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.toolStripMenuItemFile = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemManageLocalWords = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemViewBuiltInWords = new System.Windows.Forms.ToolStripMenuItem();
-            this.checkBoxNoBuiltIn = new System.Windows.Forms.CheckBox();
             this.contextMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -166,7 +166,7 @@
             this.linkLabelIssues.Location = new System.Drawing.Point(12, 451);
             this.linkLabelIssues.Name = "linkLabelIssues";
             this.linkLabelIssues.Size = new System.Drawing.Size(111, 13);
-            this.linkLabelIssues.TabIndex = 6;
+            this.linkLabelIssues.TabIndex = 5;
             this.linkLabelIssues.TabStop = true;
             this.linkLabelIssues.Text = "Report missing word...";
             this.linkLabelIssues.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelIssues_LinkClicked);
@@ -178,7 +178,7 @@
             this.linkLabelWordList.Location = new System.Drawing.Point(129, 451);
             this.linkLabelWordList.Name = "linkLabelWordList";
             this.linkLabelWordList.Size = new System.Drawing.Size(80, 13);
-            this.linkLabelWordList.TabIndex = 5;
+            this.linkLabelWordList.TabIndex = 6;
             this.linkLabelWordList.TabStop = true;
             this.linkLabelWordList.Text = "View word list...";
             this.linkLabelWordList.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelWordList_LinkClicked);
@@ -188,10 +188,10 @@
             this.radioButtonBuiltInList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.radioButtonBuiltInList.AutoSize = true;
             this.radioButtonBuiltInList.Checked = true;
-            this.radioButtonBuiltInList.Location = new System.Drawing.Point(566, 23);
+            this.radioButtonBuiltInList.Location = new System.Drawing.Point(578, 23);
             this.radioButtonBuiltInList.Name = "radioButtonBuiltInList";
             this.radioButtonBuiltInList.Size = new System.Drawing.Size(92, 17);
-            this.radioButtonBuiltInList.TabIndex = 9;
+            this.radioButtonBuiltInList.TabIndex = 7;
             this.radioButtonBuiltInList.TabStop = true;
             this.radioButtonBuiltInList.Text = "Use built-in list";
             this.radioButtonBuiltInList.UseVisualStyleBackColor = true;
@@ -201,13 +201,25 @@
             // 
             this.radioButtonLocalList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.radioButtonLocalList.AutoSize = true;
-            this.radioButtonLocalList.Location = new System.Drawing.Point(664, 23);
+            this.radioButtonLocalList.Location = new System.Drawing.Point(676, 23);
             this.radioButtonLocalList.Name = "radioButtonLocalList";
             this.radioButtonLocalList.Size = new System.Drawing.Size(84, 17);
-            this.radioButtonLocalList.TabIndex = 10;
+            this.radioButtonLocalList.TabIndex = 8;
             this.radioButtonLocalList.Text = "Use local list";
             this.radioButtonLocalList.UseVisualStyleBackColor = true;
             this.radioButtonLocalList.Click += new System.EventHandler(this.radioButtonLocalList_Click);
+            // 
+            // radioButtonBothLists
+            // 
+            this.radioButtonBothLists.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.radioButtonBothLists.AutoSize = true;
+            this.radioButtonBothLists.Location = new System.Drawing.Point(766, 23);
+            this.radioButtonBothLists.Name = "radioButtonBothLists";
+            this.radioButtonBothLists.Size = new System.Drawing.Size(88, 17);
+            this.radioButtonBothLists.TabIndex = 9;
+            this.radioButtonBothLists.Text = "Use both lists";
+            this.radioButtonBothLists.UseVisualStyleBackColor = true;
+            this.radioButtonBothLists.Click += new System.EventHandler(this.radioButtonBothLists_Click);
             // 
             // menuStrip1
             // 
@@ -216,7 +228,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(866, 24);
-            this.menuStrip1.TabIndex = 11;
+            this.menuStrip1.TabIndex = 10;
             this.menuStrip1.Text = "menuStrip1";
             // 
             // toolStripMenuItemFile
@@ -242,24 +254,12 @@
             this.toolStripMenuItemViewBuiltInWords.Text = "View built-in word list";
             this.toolStripMenuItemViewBuiltInWords.Click += new System.EventHandler(this.toolStripMenuItemViewBuiltInWords_Click);
             // 
-            // checkBoxNoBuiltIn
-            // 
-            this.checkBoxNoBuiltIn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBoxNoBuiltIn.AutoSize = true;
-            this.checkBoxNoBuiltIn.Location = new System.Drawing.Point(758, 23);
-            this.checkBoxNoBuiltIn.Name = "checkBoxNoBuiltIn";
-            this.checkBoxNoBuiltIn.Size = new System.Drawing.Size(96, 17);
-            this.checkBoxNoBuiltIn.TabIndex = 12;
-            this.checkBoxNoBuiltIn.Text = "Disable built-in";
-            this.checkBoxNoBuiltIn.UseVisualStyleBackColor = true;
-            this.checkBoxNoBuiltIn.CheckedChanged += new System.EventHandler(this.checkBoxNoBuiltIn_CheckedChanged);
-            // 
             // PluginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(866, 473);
-            this.Controls.Add(this.checkBoxNoBuiltIn);
+            this.Controls.Add(this.radioButtonBothLists);
             this.Controls.Add(this.radioButtonLocalList);
             this.Controls.Add(this.radioButtonBuiltInList);
             this.Controls.Add(this.linkLabelWordList);
@@ -305,6 +305,7 @@
         private System.Windows.Forms.LinkLabel linkLabelWordList;
         private System.Windows.Forms.RadioButton radioButtonBuiltInList;
         private System.Windows.Forms.RadioButton radioButtonLocalList;
+        private System.Windows.Forms.RadioButton radioButtonBothLists;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemFile;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemManageLocalWords;
@@ -312,6 +313,5 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSelectAll;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemInvert;
-        private System.Windows.Forms.CheckBox checkBoxNoBuiltIn;
     }
 }

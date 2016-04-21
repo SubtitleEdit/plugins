@@ -10,6 +10,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         private IList<Regex> _regexList = new List<Regex>();
         private IList<string> _replaceList = new List<string>();
+        private bool _extendsBuiltInWordList;
+
+        public bool ExtendsBuiltInWordList
+        {
+            get
+            {
+                return _extendsBuiltInWordList;
+            }
+        }
 
         public string FixText(string text)
         {
@@ -28,10 +37,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public bool LoadBuiltInWords()
         {
+            _regexList.Clear();
+            _replaceList.Clear();
+
+            return AddBuiltInWords();
+        }
+
+        public bool AddBuiltInWords()
+        {
             bool success = false;
             using (var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Nikse.SubtitleEdit.PluginLogic.WordList.xml"))
             {
-                success = LoadWordsToLists(stream);
+                success = AddWordsToLists(stream);
             }
             return success;
         }
@@ -43,18 +60,23 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 using (var stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    success = LoadWordsToLists(stream);
+                    var oldRegexList = _regexList;
+                    var oldReplaceList = _replaceList;
+                    _regexList = new List<Regex>();
+                    _replaceList = new List<string>();
+                    success = AddWordsToLists(stream);
+                    if (!success)
+                    {
+                        _regexList = oldRegexList;
+                        _replaceList = oldReplaceList;
+                    }
                 }
             }
             return success;
         }
 
-        private bool LoadWordsToLists(Stream stream)
+        private bool AddWordsToLists(Stream stream)
         {
-            _regexList = new List<Regex>();
-            _replaceList = new List<string>();
-
-            // always reload list
             XDocument xDoc;
             try
             {
@@ -75,16 +97,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         string american = xe.Attribute("us").Value;
                         string british = xe.Attribute("br").Value;
 
-                        _regexList.Add(new Regex("\\b" + american + "\\b", RegexOptions.Compiled));
+                        _regexList.Add(new Regex("\\b" + american + "\\b", RegexOptions.ExplicitCapture));
                         _replaceList.Add(british);
 
-                        _regexList.Add(new Regex("\\b" + american.ToUpperInvariant() + "\\b", RegexOptions.Compiled));
+                        _regexList.Add(new Regex("\\b" + american.ToUpperInvariant() + "\\b", RegexOptions.ExplicitCapture));
                         _replaceList.Add(british.ToUpperInvariant());
 
-                        _regexList.Add(new Regex("\\b" + char.ToUpperInvariant(american[0]) + american.Substring(1) + "\\b", RegexOptions.Compiled));
+                        _regexList.Add(new Regex("\\b" + char.ToUpperInvariant(american[0]) + american.Substring(1) + "\\b", RegexOptions.ExplicitCapture));
                         _replaceList.Add(char.ToUpperInvariant(british[0]) + british.Substring(1));
                     }
                 }
+                bool.TryParse(xDoc.Root.Attribute("ExtendsBuiltInWordList")?.Value, out _extendsBuiltInWordList);
             }
             return true;
         }
