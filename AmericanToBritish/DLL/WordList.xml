@@ -121,8 +121,13 @@
   <Word us="centiliters" br="centilitres" />
   <Word us="centimeter" br="centimetre" />
   <Word us="centimeters" br="centimetres" />
+  <Word us="cesarean" br="caesarean" />
+  <Word us="cesareans" br="caesareans" />
   <Word us="channeled" br="channelled" />
   <Word us="channeling" br="channelling" />
+  <Word us="checkbook" br="chequebook" />
+  <Word us="checkbooks" br="chequebooks" />
+  <Word us="checkered" br="chequered" />
   <Word us="chili" br="chilli" />
   <Word us="chilies" br="chillies" />
   <Word us="chiseled" br="chiselled" />
@@ -139,6 +144,8 @@
   <Word us="clamoring" br="clamouring" />
   <Word us="clamors" br="clamours" />
   <Word us="clangor" br="clangour" />
+  <Word us="clarinetist" br="clarinettist" />
+  <Word us="clarinetists" br="clarinettists" />
   <Word us="colonization" br="colonisation" />
   <Word us="colonize" br="colonise" />
   <Word us="colonized" br="colonised" />
@@ -166,6 +173,8 @@
   <Word us="colorizing" br="colourizing" />
   <Word us="colorless" br="colourless" />
   <Word us="colors" br="colours" />
+  <Word us="councilor" br="councillor" />
+  <Word us="councilors" br="councillors" />
   <Word us="counseled" br="counselled" />
   <Word us="counseling" br="counselling" />
   <Word us="counselor" br="counsellor" />
