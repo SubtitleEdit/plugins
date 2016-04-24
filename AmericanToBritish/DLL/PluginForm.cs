@@ -132,9 +132,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Refresh();
         }
 
-        private void PluginForm_Load(object sender, EventArgs e)
+        private void PluginForm_Shown(object sender, EventArgs e)
         {
             Cursor = Cursors.WaitCursor;
+            Enabled = false;
+            Refresh();
             try
             {
                 if (_converter.LoadLocalWords(_localFileName))
@@ -155,6 +157,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     _converter.LoadBuiltInWords();
                 }
                 GeneratePreview();
+                Enabled = true;
             }
             catch (Exception exception)
             {
@@ -169,11 +172,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void linkLabelIssues_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("https://github.com/SubtitleEdit/plugins/issues/new");
+            listViewFixes.Select();
         }
 
         private void linkLabelWordList_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("https://github.com/SubtitleEdit/plugins/blob/master/AmericanToBritish/DLL/WordList.xml");
+            listViewFixes.Select();
         }
 
         private void PluginForm_Resize(object sender, EventArgs e)
