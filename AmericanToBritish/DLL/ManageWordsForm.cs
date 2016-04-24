@@ -44,19 +44,38 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonAdd_Click(object sender, EventArgs e)
         {
-            // validate both words
-            if (string.IsNullOrWhiteSpace(textBoxAmerican.Text) || string.IsNullOrWhiteSpace(textBoxBritish.Text) || (textBoxAmerican.Text == textBoxBritish.Text))
-                return;
+            var americanWord = textBoxAmerican.Text.Trim().ToLowerInvariant();
+            var britishWord = textBoxBritish.Text.Trim().ToLowerInvariant();
 
-            if (_xdoc?.Root?.Name == "Words")
+            if (americanWord.Length > 0)
             {
-                _xdoc.Root.Add(new XElement("Word", new XAttribute("us", textBoxAmerican.Text), new XAttribute("br", textBoxBritish.Text)));
-                textBoxAmerican.Text = string.Empty;
-                textBoxBritish.Text = string.Empty;
-                // reload listview
-                GeneratePreview();
-                MessageBox.Show($"Added: American: {textBoxAmerican.Text}; British: {textBoxBritish.Text}");
+                foreach (ListViewItem item in listView1.Items)
+                {
+                    if (americanWord == item.Text.ToLowerInvariant())
+                    {
+                        listView1.SelectedItems.Clear();
+                        item.EnsureVisible();
+                        item.Selected = true;
+                        item.Focused = true;
+                        listView1.Select();
+                        return;
+                    }
+                }
+                if (britishWord.Length == 0 || americanWord == britishWord)
+                {
+                    textBoxBritish.Select();
+                    return;
+                }
+                if (_xdoc?.Root?.Name == "Words")
+                {
+                    _xdoc.Root.Add(new XElement("Word", new XAttribute("us", americanWord), new XAttribute("br", britishWord)));
+                    textBoxAmerican.Text = string.Empty;
+                    textBoxBritish.Text = string.Empty;
+                    GeneratePreview();
+                    MessageBox.Show($"Added: American: {americanWord}; British: {britishWord}");
+                }
             }
+            textBoxAmerican.Select();
         }
 
         private void GeneratePreview()
