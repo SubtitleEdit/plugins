@@ -17,8 +17,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private readonly AmericanToBritishConverter _converter;
         private readonly string _localFileName;
         private readonly Subtitle _subtitle;
-        private int _totalFixes;
-        private bool _allowFixes;
         private bool _localFileExtendsBuiltIn;
 
         internal PluginForm(Subtitle subtitle, string name, string description)
@@ -63,8 +61,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Cursor = Cursors.WaitCursor;
             try
             {
-                _allowFixes = true;
-                GeneratePreview();
+                foreach (ListViewItem item in listViewFixes.Items)
+                {
+                    if (item.Checked)
+                    {
+                        var paragraph = item.Tag as Paragraph;
+                        paragraph.Text = _converter.FixText(paragraph.Text);
+                    }
+                }
                 FixedSubtitle = _subtitle.ToText();
                 DialogResult = DialogResult.OK;
             }
@@ -81,7 +85,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void AddFixToListView(Paragraph p, string before, string after)
         {
-            var item = new ListViewItem(string.Empty) { Checked = true };
+            var item = new ListViewItem(string.Empty) { Checked = true, Tag = p };
             item.SubItems.Add(p.Number.ToString(CultureInfo.InvariantCulture));
             item.SubItems.Add(before.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
             item.SubItems.Add(after.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
@@ -90,56 +94,28 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void GeneratePreview()
         {
-            _totalFixes = 0;
-
-            if (!_allowFixes)
+            listViewFixes.BeginUpdate();
+            listViewFixes.Items.Clear();
+            foreach (var paragraph in _subtitle.Paragraphs)
             {
-                listViewFixes.BeginUpdate();
-                listViewFixes.Items.Clear();
-            }
-            for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
-            {
-                var p = _subtitle.Paragraphs[i];
-                var text = p.Text.Trim();
-                var oldText = text;
-                text = _converter.FixText(text);
-
-                if (text != oldText)
+                var oldText = paragraph.Text.Trim();
+                var newText = _converter.FixText(oldText);
+                if (newText != oldText)
                 {
-                    if (AllowFix(p))
-                    {
-                        p.Text = text;
-                    }
-                    else if (!_allowFixes)
-                    {
-                        _totalFixes++;
-                        // remove html tags before adding to listview
-                        // text = Utilities.RemoveHtmlTags(text);
-                        // oldText = Utilities.RemoveHtmlTags(oldText);
-                        AddFixToListView(p, oldText, text);
-                    }
+                    AddFixToListView(paragraph, oldText, newText);
                 }
             }
-            if (!_allowFixes)
-            {
-                listViewFixes.EndUpdate();
-                labelTotal.Text = "Total: " + _totalFixes;
-                labelTotal.ForeColor = _totalFixes > 0 ? Color.Blue : Color.Red;
-            }
-        }
 
-        private bool AllowFix(Paragraph p)
-        {
-            if (_allowFixes)
+            var totalFixes = listViewFixes.Items.Count;
+            if (totalFixes > 0)
             {
-                var ln = p.Number.ToString(CultureInfo.InvariantCulture);
-                foreach (ListViewItem item in listViewFixes.Items)
-                {
-                    if (item.SubItems[1].Text == ln)
-                        return item.Checked;
-                }
+                listViewFixes.Items[0].Selected = true;
+                listViewFixes.Items[0].Focused = true;
             }
-            return false;
+            listViewFixes.Select();
+            listViewFixes.EndUpdate();
+            labelTotal.Text = "Total: " + totalFixes;
+            labelTotal.ForeColor = totalFixes > 0 ? Color.Blue : Color.Red;
         }
 
         private bool SubtitleLoaded()
@@ -158,9 +134,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void PluginForm_Load(object sender, EventArgs e)
         {
+            Cursor = Cursors.WaitCursor;
             try
             {
-                Cursor = Cursors.WaitCursor;
                 if (_converter.LoadLocalWords(_localFileName))
                 {
                     if (_converter.ExtendsBuiltInWordList)
@@ -179,13 +155,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     _converter.LoadBuiltInWords();
                 }
                 GeneratePreview();
-                if (listViewFixes.Items.Count > 0)
-                {
-                    listViewFixes.Items[0].Selected = true;
-                    listViewFixes.Items[0].Focused = true;
-                }
-                listViewFixes.Select();
-                listViewFixes.Focus();
             }
             catch (Exception exception)
             {
