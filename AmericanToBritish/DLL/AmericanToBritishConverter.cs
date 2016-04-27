@@ -97,18 +97,21 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string FixMissChangedWord(string s)
         {
-            var idx = s.IndexOf("<font", StringComparison.OrdinalIgnoreCase);
-            while (idx >= 0) // Fix colour => color
+            var tagIndex = s.IndexOf("<font", StringComparison.OrdinalIgnoreCase);
+            while (tagIndex >= 0)
             {
-                var endIdx = s.IndexOf('>', idx + 5);
-                if (endIdx < 5)
+                var tagEndIndex = s.IndexOf('>', tagIndex + 5);
+                if (tagEndIndex < 0)
                     break;
-                var tag = s.Substring(idx, endIdx - idx);
-                tag = tag.Replace("colour", "color");
-                tag = tag.Replace("COLOUR", "COLOR");
-                tag = tag.Replace("Colour", "Color");
-                s = s.Remove(idx, endIdx - idx).Insert(idx, tag);
-                idx = s.IndexOf("<font", endIdx + 1, StringComparison.OrdinalIgnoreCase);
+                var tag = s.Substring(tagIndex, tagEndIndex - tagIndex);
+                var colourIndex = tag.IndexOf("colour", StringComparison.OrdinalIgnoreCase);
+                while (colourIndex >= 0)
+                {
+                    tag = tag.Remove(colourIndex + 4, 1); // colour => color
+                    colourIndex = tag.IndexOf("colour", colourIndex + 5, StringComparison.OrdinalIgnoreCase);
+                }
+                s = s.Remove(tagIndex, tagEndIndex - tagIndex).Insert(tagIndex, tag);
+                tagIndex = s.IndexOf("<font", tagIndex + tag.Length + 1, StringComparison.OrdinalIgnoreCase);
             }
             return s;
         }
