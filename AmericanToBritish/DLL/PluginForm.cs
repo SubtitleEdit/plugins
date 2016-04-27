@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Nikse.SubtitleEdit.PluginLogic.Logic;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using Nikse.SubtitleEdit.PluginLogic.Logic;
-using System.Reflection;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -26,7 +26,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             labelDescription.Text = description;
             _subtitle = subtitle;
 
-            _localFile = Path.Combine(Utilities.GetWordListFileName(), "AmericanToBritish.xml");
+            _localFile = Utilities.GetWordListFileName();
             _converter = new AmericanToBritishConverter();
             if (!_converter.LoadLocalWords(_localFile))
             {

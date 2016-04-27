@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -62,9 +60,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
         public static bool IsInteger(string s)
         {
             int i;
-            if (int.TryParse(s, out i))
-                return true;
-            return false;
+            return int.TryParse(s, out i);
         }
 
         public static string RemoveHtmlTags(string s, bool alsoSsa)
@@ -79,7 +75,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
                 idx = s.IndexOf(SSATAg, StringComparison.Ordinal);
                 while (idx >= 0)
                 {
-                    var endIdx = s.IndexOf('>', idx + 2);
+                    var endIdx = s.IndexOf('}', idx + 2);
                     if (endIdx < idx)
                         break;
                     s = s.Remove(idx, endIdx - idx + 1);
@@ -88,17 +84,17 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             }
             if (!s.Contains("<"))
                 return s;
-            s = Regex.Replace(s, "(?i)</?[iіbu]>", string.Empty);
+            s = Regex.Replace(s, "</?[ibu]>", string.Empty, RegexOptions.IgnoreCase);
 
             s = Regex.Replace(s, "</?font>", string.Empty, RegexOptions.IgnoreCase);
-            idx = s.IndexOf("<font", StringComparison.Ordinal);
+            idx = s.IndexOf("<font", StringComparison.OrdinalIgnoreCase);
             while (idx >= 0)
             {
                 var endIdx = s.IndexOf('>', idx + 5);
                 if (endIdx < idx)
                     break;
                 s = s.Remove(idx, endIdx - idx + 1);
-                idx = s.IndexOf("<font", idx, StringComparison.Ordinal);
+                idx = s.IndexOf("<font", idx, StringComparison.OrdinalIgnoreCase);
             }
             return s.Trim();
         }
@@ -133,10 +129,10 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             path = Path.Combine(path, "Plugins"); // try to find portable SE Plugins folder
             if (!Directory.Exists(path))
             {
-                path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                    "Subtitle Edit"), "Plugins");
+                path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit", "Plugins");
             }
-            return Path.Combine(path);
+            return Path.Combine(path, "AmericanToBritish.xml");
         }
+
     }
 }
