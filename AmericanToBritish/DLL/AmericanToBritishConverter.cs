@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
@@ -25,7 +23,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     text = regex.Replace(text, _replaceList[index]);
                 }
             }
-            return FixMissChangedWord(text);
+            return RevertFontColorFix(text);
         }
 
         public bool LoadBuiltInWords()
@@ -40,14 +38,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public bool LoadLocalWords(string path)
         {
-            if (!File.Exists(path))
-            {
-                return false;
-            }
             bool success = false;
-            using (FileStream fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+            if (File.Exists(path))
             {
-                success = LoadWordsToLists(fs);
+                using (var stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    success = LoadWordsToLists(stream);
+                }
             }
             return success;
         }
@@ -85,17 +82,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         _replaceList.Add(british.ToUpperInvariant());
 
                         _regexList.Add(new Regex("\\b" + char.ToUpperInvariant(american[0]) + american.Substring(1) + "\\b", RegexOptions.Compiled));
-                        if (british.Length > 1)
-                            _replaceList.Add(char.ToUpperInvariant(british[0]) + british.Substring(1));
-                        else
-                            _replaceList.Add(british.ToUpper());
+                        _replaceList.Add(char.ToUpperInvariant(british[0]) + british.Substring(1));
                     }
                 }
             }
             return true;
         }
 
-        private string FixMissChangedWord(string s)
+        private string RevertFontColorFix(string s)
         {
             var tagIndex = s.IndexOf("<font", StringComparison.OrdinalIgnoreCase);
             while (tagIndex >= 0)
@@ -115,5 +109,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             return s;
         }
+
     }
 }
