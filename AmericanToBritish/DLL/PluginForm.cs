@@ -18,6 +18,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private bool _allowFixes;
         private AmericanToBritishConverter _converter;
         private string _localFile;
+
         internal PluginForm(Subtitle subtitle, string name, string description)
         {
             InitializeComponent();
@@ -43,11 +44,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // deserialize checkbox status
             try
             {
-                var xmldoc = new System.Xml.XmlDocument();
+                var xmldoc = new System.Xml.XmlDocument { XmlResolver = null };
                 xmldoc.Load(_localFile);
                 var xnode = xmldoc.SelectSingleNode("Words");
                 var state = Convert.ToBoolean(xnode.Attributes["NoBuiltIn"].InnerText);
-                checkBox1.Checked = state;
+                checkBoxNoBuiltIn.Checked = state;
             }
             catch
             {
@@ -62,7 +63,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     xmldoc.Load(_localFile);
                     var xnode = xmldoc.SelectSingleNode("Words");
                     var attrib = xmldoc.CreateAttribute("NoBuiltIn");
-                    attrib.InnerText = checkBox1.Checked.ToString();
+                    attrib.InnerText = checkBoxNoBuiltIn.Checked.ToString();
                     xnode.Attributes.Append(attrib);
                     xmldoc.Save(_localFile);
                 }
@@ -152,9 +153,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private bool SubtitleLoaded()
         {
-            if (_subtitle == null || _subtitle.Paragraphs.Count < 1)
-                return false;
-            return true;
+            return _subtitle != null && _subtitle.Paragraphs.Count > 0;
         }
 
         private void DoSelection(bool selectAll)
@@ -190,12 +189,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void linkLabelIssues_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("https://github.com/SubtitleEdit/plugins/issues/new");
         }
 
-        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void linkLabelWordList_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("https://github.com/SubtitleEdit/plugins/blob/master/AmericanToBritish/DLL/WordList.xml");
         }
@@ -211,7 +210,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 DialogResult = DialogResult.Cancel;
         }
 
-        private void manageLocalwordsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void toolStripMenuItemManageLocalwords_Click(object sender, EventArgs e)
         {
             if (!File.Exists(_localFile))
                 return;
@@ -225,7 +224,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 GeneratePreview();
         }
 
-        private void viewBuiltinWordsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void toolStripMenuItemViewBuiltInWords_Click(object sender, EventArgs e)
         {
             using (var manageWords = new ManageWordsForm())
             using (var resouceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Nikse.SubtitleEdit.PluginLogic.WordList.xml"))
@@ -244,25 +243,25 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+        private void toolStripMenuItemSelectAll_Click(object sender, EventArgs e)
         {
             if (!SubtitleLoaded())
                 return;
             DoSelection(true);
         }
 
-        private void invertToolStripMenuItem_Click(object sender, EventArgs e)
+        private void toolStripMenuItemInvert_Click(object sender, EventArgs e)
         {
             if (!SubtitleLoaded())
                 return;
             DoSelection(false);
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void checkBoxNoBuiltIn_CheckedChanged(object sender, EventArgs e)
         {
-            radioButtonLocalList.Enabled = !checkBox1.Checked;
-            radioButtonBuiltInList.Enabled = !checkBox1.Checked;
-            if (checkBox1.Checked)
+            radioButtonLocalList.Enabled = !checkBoxNoBuiltIn.Checked;
+            radioButtonBuiltInList.Enabled = !checkBoxNoBuiltIn.Checked;
+            if (checkBoxNoBuiltIn.Checked)
             {
                 radioButtonLocalList.Checked = true;
                 radioButtonLocalList_Click(this, EventArgs.Empty);
@@ -306,5 +305,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // update list view
             GeneratePreview();
         }
+
     }
 }

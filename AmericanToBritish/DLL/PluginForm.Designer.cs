@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.buttonOK = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.buttonCancel = new System.Windows.Forms.Button();
             this.labelDescription = new System.Windows.Forms.Label();
             this.listViewFixes = new System.Windows.Forms.ListView();
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -38,18 +38,18 @@
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.invertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemSelectAll = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemInvert = new System.Windows.Forms.ToolStripMenuItem();
             this.labelTotal = new System.Windows.Forms.Label();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
+            this.linkLabelIssues = new System.Windows.Forms.LinkLabel();
+            this.linkLabelWordList = new System.Windows.Forms.LinkLabel();
             this.radioButtonBuiltInList = new System.Windows.Forms.RadioButton();
             this.radioButtonLocalList = new System.Windows.Forms.RadioButton();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.manageLocalwordsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.viewBuiltinWordsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.toolStripMenuItemFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemManageLocalWords = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemViewBuiltInWords = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkBoxNoBuiltIn = new System.Windows.Forms.CheckBox();
             this.contextMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -65,16 +65,16 @@
             this.buttonOK.UseVisualStyleBackColor = true;
             this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
             // 
-            // button1
+            // buttonCancel
             // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(779, 437);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "C&ancel";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCancel.Location = new System.Drawing.Point(779, 437);
+            this.buttonCancel.Name = "buttonCancel";
+            this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+            this.buttonCancel.TabIndex = 3;
+            this.buttonCancel.Text = "C&ancel";
+            this.buttonCancel.UseVisualStyleBackColor = true;
+            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
             // labelDescription
             // 
@@ -114,7 +114,7 @@
             // 
             // columnHeader5
             // 
-            this.columnHeader5.Text = "Line#";
+            this.columnHeader5.Text = "Line #";
             this.columnHeader5.Width = 50;
             // 
             // columnHeader7
@@ -130,24 +130,24 @@
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.selectAllToolStripMenuItem,
-            this.invertToolStripMenuItem});
+            this.toolStripMenuItemSelectAll,
+            this.toolStripMenuItemInvert});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(155, 48);
             // 
-            // selectAllToolStripMenuItem
+            // toolStripMenuItemSelectAll
             // 
-            this.selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
-            this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-            this.selectAllToolStripMenuItem.Text = "Select all";
-            this.selectAllToolStripMenuItem.Click += new System.EventHandler(this.selectAllToolStripMenuItem_Click);
+            this.toolStripMenuItemSelectAll.Name = "toolStripMenuItemSelectAll";
+            this.toolStripMenuItemSelectAll.Size = new System.Drawing.Size(154, 22);
+            this.toolStripMenuItemSelectAll.Text = "Select all";
+            this.toolStripMenuItemSelectAll.Click += new System.EventHandler(this.toolStripMenuItemSelectAll_Click);
             // 
-            // invertToolStripMenuItem
+            // toolStripMenuItemInvert
             // 
-            this.invertToolStripMenuItem.Name = "invertToolStripMenuItem";
-            this.invertToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-            this.invertToolStripMenuItem.Text = "Invert selection";
-            this.invertToolStripMenuItem.Click += new System.EventHandler(this.invertToolStripMenuItem_Click);
+            this.toolStripMenuItemInvert.Name = "toolStripMenuItemInvert";
+            this.toolStripMenuItemInvert.Size = new System.Drawing.Size(154, 22);
+            this.toolStripMenuItemInvert.Text = "Invert selection";
+            this.toolStripMenuItemInvert.Click += new System.EventHandler(this.toolStripMenuItemInvert_Click);
             // 
             // labelTotal
             // 
@@ -159,29 +159,29 @@
             this.labelTotal.TabIndex = 1;
             this.labelTotal.Text = "Total:";
             // 
-            // linkLabel1
+            // linkLabelIssues
             // 
-            this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(12, 451);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(111, 13);
-            this.linkLabel1.TabIndex = 6;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "Report missing word...";
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            this.linkLabelIssues.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.linkLabelIssues.AutoSize = true;
+            this.linkLabelIssues.Location = new System.Drawing.Point(12, 451);
+            this.linkLabelIssues.Name = "linkLabelIssues";
+            this.linkLabelIssues.Size = new System.Drawing.Size(111, 13);
+            this.linkLabelIssues.TabIndex = 6;
+            this.linkLabelIssues.TabStop = true;
+            this.linkLabelIssues.Text = "Report missing word...";
+            this.linkLabelIssues.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelIssues_LinkClicked);
             // 
-            // linkLabel2
+            // linkLabelWordList
             // 
-            this.linkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Location = new System.Drawing.Point(129, 451);
-            this.linkLabel2.Name = "linkLabel2";
-            this.linkLabel2.Size = new System.Drawing.Size(80, 13);
-            this.linkLabel2.TabIndex = 5;
-            this.linkLabel2.TabStop = true;
-            this.linkLabel2.Text = "View word list...";
-            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
+            this.linkLabelWordList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.linkLabelWordList.AutoSize = true;
+            this.linkLabelWordList.Location = new System.Drawing.Point(129, 451);
+            this.linkLabelWordList.Name = "linkLabelWordList";
+            this.linkLabelWordList.Size = new System.Drawing.Size(80, 13);
+            this.linkLabelWordList.TabIndex = 5;
+            this.linkLabelWordList.TabStop = true;
+            this.linkLabelWordList.Text = "View word list...";
+            this.linkLabelWordList.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelWordList_LinkClicked);
             // 
             // radioButtonBuiltInList
             // 
@@ -212,62 +212,62 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.toolStripMenuItemFile});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(866, 24);
             this.menuStrip1.TabIndex = 11;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // fileToolStripMenuItem
+            // toolStripMenuItemFile
             // 
-            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.manageLocalwordsToolStripMenuItem,
-            this.viewBuiltinWordsToolStripMenuItem});
-            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-            this.fileToolStripMenuItem.Text = "File";
+            this.toolStripMenuItemFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemManageLocalWords,
+            this.toolStripMenuItemViewBuiltInWords});
+            this.toolStripMenuItemFile.Name = "toolStripMenuItemFile";
+            this.toolStripMenuItemFile.Size = new System.Drawing.Size(37, 20);
+            this.toolStripMenuItemFile.Text = "File";
             // 
-            // manageLocalwordsToolStripMenuItem
+            // toolStripMenuItemManageLocalWords
             // 
-            this.manageLocalwordsToolStripMenuItem.Name = "manageLocalwordsToolStripMenuItem";
-            this.manageLocalwordsToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
-            this.manageLocalwordsToolStripMenuItem.Text = "Manage local-words";
-            this.manageLocalwordsToolStripMenuItem.Click += new System.EventHandler(this.manageLocalwordsToolStripMenuItem_Click);
+            this.toolStripMenuItemManageLocalWords.Name = "toolStripMenuItemManageLocalWords";
+            this.toolStripMenuItemManageLocalWords.Size = new System.Drawing.Size(193, 22);
+            this.toolStripMenuItemManageLocalWords.Text = "Manage local word list";
+            this.toolStripMenuItemManageLocalWords.Click += new System.EventHandler(this.toolStripMenuItemManageLocalwords_Click);
             // 
-            // viewBuiltinWordsToolStripMenuItem
+            // toolStripMenuItemViewBuiltInWords
             // 
-            this.viewBuiltinWordsToolStripMenuItem.Name = "viewBuiltinWordsToolStripMenuItem";
-            this.viewBuiltinWordsToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
-            this.viewBuiltinWordsToolStripMenuItem.Text = "View built-in words";
-            this.viewBuiltinWordsToolStripMenuItem.Click += new System.EventHandler(this.viewBuiltinWordsToolStripMenuItem_Click);
+            this.toolStripMenuItemViewBuiltInWords.Name = "toolStripMenuItemViewBuiltInWords";
+            this.toolStripMenuItemViewBuiltInWords.Size = new System.Drawing.Size(193, 22);
+            this.toolStripMenuItemViewBuiltInWords.Text = "View built-in word list";
+            this.toolStripMenuItemViewBuiltInWords.Click += new System.EventHandler(this.toolStripMenuItemViewBuiltInWords_Click);
             // 
-            // checkBox1
+            // checkBoxNoBuiltIn
             // 
-            this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(758, 23);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(96, 17);
-            this.checkBox1.TabIndex = 12;
-            this.checkBox1.Text = "Disalble built-in";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.checkBoxNoBuiltIn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBoxNoBuiltIn.AutoSize = true;
+            this.checkBoxNoBuiltIn.Location = new System.Drawing.Point(758, 23);
+            this.checkBoxNoBuiltIn.Name = "checkBoxNoBuiltIn";
+            this.checkBoxNoBuiltIn.Size = new System.Drawing.Size(96, 17);
+            this.checkBoxNoBuiltIn.TabIndex = 12;
+            this.checkBoxNoBuiltIn.Text = "Disable built-in";
+            this.checkBoxNoBuiltIn.UseVisualStyleBackColor = true;
+            this.checkBoxNoBuiltIn.CheckedChanged += new System.EventHandler(this.checkBoxNoBuiltIn_CheckedChanged);
             // 
             // PluginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(866, 473);
-            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.checkBoxNoBuiltIn);
             this.Controls.Add(this.radioButtonLocalList);
             this.Controls.Add(this.radioButtonBuiltInList);
-            this.Controls.Add(this.linkLabel2);
-            this.Controls.Add(this.linkLabel1);
+            this.Controls.Add(this.linkLabelWordList);
+            this.Controls.Add(this.linkLabelIssues);
             this.Controls.Add(this.labelTotal);
             this.Controls.Add(this.listViewFixes);
             this.Controls.Add(this.labelDescription);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.menuStrip1);
             this.KeyPreview = true;
@@ -293,7 +293,7 @@
         #endregion
 
         private System.Windows.Forms.Button buttonOK;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Label labelDescription;
         private System.Windows.Forms.ListView listViewFixes;
         private System.Windows.Forms.ColumnHeader columnHeader4;
@@ -301,17 +301,17 @@
         private System.Windows.Forms.ColumnHeader columnHeader7;
         private System.Windows.Forms.ColumnHeader columnHeader8;
         private System.Windows.Forms.Label labelTotal;
-        private System.Windows.Forms.LinkLabel linkLabel1;
-        private System.Windows.Forms.LinkLabel linkLabel2;
+        private System.Windows.Forms.LinkLabel linkLabelIssues;
+        private System.Windows.Forms.LinkLabel linkLabelWordList;
         private System.Windows.Forms.RadioButton radioButtonBuiltInList;
         private System.Windows.Forms.RadioButton radioButtonLocalList;
         private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem manageLocalwordsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem viewBuiltinWordsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemFile;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemManageLocalWords;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemViewBuiltInWords;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem invertToolStripMenuItem;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSelectAll;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemInvert;
+        private System.Windows.Forms.CheckBox checkBoxNoBuiltIn;
     }
 }

@@ -15,12 +15,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
         string Text { get; }
 
         /// <summary>
-        /// Version number of plugin
+        /// Version number of plug-in
         /// </summary>
         decimal Version { get; }
 
         /// <summary>
-        /// Description of what plugin does
+        /// Description of what plug-in does
         /// </summary>
         string Description { get; }
 
@@ -30,12 +30,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
         string ActionType { get; }
 
         /// <summary>
-        /// Shortcut used to active plugin - e.g. Control+Shift+F9
+        /// Shortcut used to activate the plug-in - e.g. Control+Shift+F9
         /// </summary>
         string Shortcut { get; }
 
         /// <summary>
-        /// This action of callsed when Subtitle Edit calls plugin
+        /// This method is invoked when Subtitle Edit calls the plug-in
         /// </summary>
         /// <param name="parentForm">Main form in Subtitle Edit</param>
         /// <param name="subtitle">SubRip text</param>

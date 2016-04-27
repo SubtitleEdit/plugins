@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Nikse.SubtitleEdit.PluginLogic.Logic;
 using System.Linq;
 using System.Windows.Forms;
-using Nikse.SubtitleEdit.PluginLogic.Logic;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -41,23 +40,22 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (string.IsNullOrWhiteSpace(subtitle))
             {
-                MessageBox.Show("No subtitle loaded", parentForm.Text,
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("No subtitle loaded", parentForm.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return string.Empty;
             }
 
             if (!string.IsNullOrEmpty(listViewLineSeparatorString))
                 Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
 
-            var list = subtitle.Replace(Environment.NewLine, "\n").Split('\n').ToList();
+            var list = subtitle.SplitToLines().ToList();
 
             var sub = new Subtitle();
             var srt = new SubRip();
             srt.LoadSubtitle(sub, list, subtitleFileName);
             if (srt.Errors > 0)
             {
-                MessageBox.Show(srt.Errors + " Errors found while parsing .srt",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                var s = srt.Errors > 1 ? "s" : string.Empty;
+                MessageBox.Show($"{srt.Errors} error{s} found while parsing .srt", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             using (var form = new PluginForm(sub, (this as IPlugin).Name, (this as IPlugin).Description))
             {
@@ -66,5 +64,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             return string.Empty;
         }
+
     }
 }
