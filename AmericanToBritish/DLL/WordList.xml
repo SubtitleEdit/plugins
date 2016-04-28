@@ -332,6 +332,13 @@
   <Word us="estrogenically" br="oestrogenically" />
   <Word us="estrogenicity" br="oestrogenicity" />
   <Word us="estrogens" br="oestrogens" />
+  <Word us="etiologic" br="aetiologic" />
+  <Word us="etiological" br="aetiological" />
+  <Word us="etiologically" br="aetiologically" />
+  <Word us="etiologies" br="aetiologies" />
+  <Word us="etiologist" br="aetiologist" />
+  <Word us="etiologists" br="aetiologists" />
+  <Word us="etiology" br="aetiology" />
   <Word us="favor" br="favour" />
   <Word us="favorable" br="favourable" />
   <Word us="favorably" br="favourably" />
@@ -343,6 +350,8 @@
   <Word us="favorites" br="favourites" />
   <Word us="favoritism" br="favouritism" />
   <Word us="favors" br="favours" />
+  <Word us="fecal" br="faecal" />
+  <Word us="feces" br="faeces" />
   <Word us="fervor" br="fervour" />
   <Word us="fiber" br="fibre" />
   <Word us="fiberboard" br="fibreboard" />
@@ -362,10 +371,16 @@
   <Word us="flavorless" br="flavourless" />
   <Word us="flavors" br="flavours" />
   <Word us="flavorsome" br="flavoursome" />
+  <Word us="flier" br="flyer" />
+  <Word us="flutist" br="flautist" />
+  <Word us="flutists" br="flautists" />
   <Word us="freeway" br="motorway" />
   <Word us="fueled" br="fuelled" />
   <Word us="fueling" br="fuelling" />
   <Word us="fulfill" br="fulfil" />
+  <Word us="fulfill" br="fulfil" />
+  <Word us="fulfillment" br="fulfilment" />
+  <Word us="fulfills" br="fulfils" />
   <Word us="funneled" br="funnelled" />
   <Word us="funneling" br="funnelling" />
   <Word us="gamboled" br="gambolled" />
