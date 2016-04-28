@@ -9,16 +9,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form
     {
-        private enum HIStyle
-        {
-            UpperCase,
-            LowerCase,
-            FirstUppercase,
-            UpperLowerCase
-        }
-
         public string FixedSubtitle { get; private set; }
-
         private HIStyle _hiStyle = HIStyle.UpperCase;
         private bool _moodsMatched;
         private bool _namesMatched;
@@ -140,7 +131,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void comboBoxStyle_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboBoxStyle.SelectedIndex < 0 || listViewFixes.Items.Count < 0)
                 return;

@@ -223,7 +223,7 @@
             this.comboBoxStyle.Name = "comboBoxStyle";
             this.comboBoxStyle.Size = new System.Drawing.Size(153, 21);
             this.comboBoxStyle.TabIndex = 2;
-            this.comboBoxStyle.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.comboBoxStyle.SelectedIndexChanged += new System.EventHandler(this.comboBoxStyle_SelectedIndexChanged);
             // 
             // label2
             // 
