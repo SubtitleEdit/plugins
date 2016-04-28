@@ -2,7 +2,6 @@ bin/
 obj/
 *.user
 *.suo
-*.csproj
 
 # Visual Studio 2015
 *.ide
