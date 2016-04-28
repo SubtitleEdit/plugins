@@ -378,13 +378,13 @@
   <Word us="fueled" br="fuelled" />
   <Word us="fueling" br="fuelling" />
   <Word us="fulfill" br="fulfil" />
-  <Word us="fulfill" br="fulfil" />
   <Word us="fulfillment" br="fulfilment" />
   <Word us="fulfills" br="fulfils" />
   <Word us="funneled" br="funnelled" />
   <Word us="funneling" br="funnelling" />
   <Word us="gamboled" br="gambolled" />
   <Word us="gamboling" br="gambolling" />
+  <Word us="gasses" br="gases" />
   <Word us="glamor" br="glamour" />
   <Word us="gluing" br="glueing" />
   <Word us="goiter" br="goitre" />
@@ -422,6 +422,21 @@
   <Word us="harbors" br="harbours" />
   <Word us="harborside" br="harbourside" />
   <Word us="harborsides" br="harboursides" />
+  <Word us="hematologic" br="haematologic" />
+  <Word us="hematological" br="haematological" />
+  <Word us="hematologist" br="haematologist" />
+  <Word us="hematologists" br="haematologists" />
+  <Word us="hematology" br="haematology" />
+  <Word us="hemoglobin" br="haemoglobin" />
+  <Word us="hemoglobinopathy" br="haemoglobinopathy" />
+  <Word us="hemoglobinuria" br="haemoglobinuria" />
+  <Word us="hemophilia" br="haemophilia" />
+  <Word us="hemophiliac" br="haemophiliac" />
+  <Word us="hemophiliacs" br="haemophiliacs" />
+  <Word us="hemophilic" br="haemophilic" />
+  <Word us="hemopoiesis" br="haemopoiesis" />
+  <Word us="hemopoietic" br="haemopoietic" />
+  <Word us="hemoptysis" br="haemoptysis" />
   <Word us="honor" br="honour" />
   <Word us="honorability" br="honourability" />
   <Word us="honorable" br="honourable" />
