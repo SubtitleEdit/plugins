@@ -11,31 +11,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public bool IsMaxTime => Math.Abs(_totalMilliseconds - MaxTime.TotalMilliseconds) < 0.01;
 
-        public static TimeCode FromSeconds(double seconds) => new TimeCode(seconds * BaseUnit);
-
-        public static double ParseToMilliseconds(string text)
-        {
-            string[] parts = text.Split(new[] { ':', ',', '.' }, StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length == 4)
-            {
-                int hours;
-                int minutes;
-                int seconds;
-                int milliseconds;
-                if (int.TryParse(parts[0], out hours) && int.TryParse(parts[1], out minutes) && int.TryParse(parts[2], out seconds) && int.TryParse(parts[3], out milliseconds))
-                {
-                    return new TimeSpan(0, hours, minutes, seconds, milliseconds).TotalMilliseconds;
-                }
-            }
-            return 0;
-        }
-
         public TimeCode(TimeSpan timeSpan)
         {
             _totalMilliseconds = timeSpan.TotalMilliseconds;
         }
 
-        public TimeCode(double totalMilliseconds)
+        public TimeCode(double totalMilliseconds = 0.0D)
         {
             _totalMilliseconds = totalMilliseconds;
         }

@@ -38,16 +38,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             // Get subtitle raw lines
             var list = new List<string>();
-            foreach (string line in subtitleText.SplitToLines())
-                list.Add(line);
+            list.AddRange(subtitleText.SplitToLines());
 
-            var sub = new Subtitle();
             var srt = new SubRip();
+            var sub = new Subtitle(srt);
 
             // Load raws subtitle lines into Subtitle object
             srt.LoadSubtitle(sub, list, subtitleFileName);
 
-            IPlugin HI2UC = (this as IPlugin);
+            IPlugin HI2UC = (IPlugin)this;
             using (var form = new PluginForm(parentForm, sub, HI2UC.Name, HI2UC.Description))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)

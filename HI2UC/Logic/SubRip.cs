@@ -5,13 +5,14 @@ using System.Text.RegularExpressions;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    internal class SubRip : SubtitleFormat
+    internal class SubRip
     {
         private readonly static Regex _regexTimeCodes = new Regex(@"^-?\d+:-?\d+:-?\d+[:,]-?\d+\s*-->\s*-?\d+:-?\d+:-?\d+[:,]-?\d+$", RegexOptions.Compiled);
         private readonly static Regex _regexTimeCodes2 = new Regex(@"^\d+:\d+:\d+,\d+\s*-->\s*\d+:\d+:\d+,\d+$", RegexOptions.Compiled);
         private ExpectingLine _expecting = ExpectingLine.Number;
         private int _lineNumber;
         private Paragraph _paragraph;
+        private int _errorCount;
 
         private enum ExpectingLine
         {
@@ -22,20 +23,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public string Errors { get; private set; }
 
-        public override string Extension => ".srt";
+        public string Extension => ".srt";
 
-        public override bool IsTimeBased => true;
+        public bool IsTimeBased => true;
 
-        public override string Name => "SubRip";
+        public string Name => "SubRip";
 
-        public override bool IsMine(List<string> lines, string fileName)
-        {
-            var subtitle = new Subtitle();
-            LoadSubtitle(subtitle, lines, fileName);
-            return subtitle.Paragraphs.Count > _errorCount;
-        }
-
-        public override void LoadSubtitle(Subtitle subtitle, List<string> lines, string fileName)
+        public void LoadSubtitle(Subtitle subtitle, List<string> lines, string fileName)
         {
             bool doRenum = false;
             _lineNumber = 0;
@@ -84,7 +78,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Errors = _errorCount.ToString();
         }
 
-        public override string ToText(Subtitle subtitle, string title)
+        public string ToText(Subtitle subtitle, string title)
         {
             const string paragraphWriteFormat = "{0}\r\n{1} --> {2}\r\n{3}\r\n\r\n";
             var sb = new StringBuilder();

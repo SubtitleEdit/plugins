@@ -28,8 +28,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public Paragraph()
         {
             Id = GenerateId();
-            StartTime = new TimeCode(TimeSpan.FromSeconds(0));
-            EndTime = new TimeCode(TimeSpan.FromSeconds(0));
+            StartTime = new TimeCode();
+            EndTime = new TimeCode();
             Text = string.Empty;
         }
 
@@ -59,8 +59,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public Paragraph(int startFrame, int endFrame, string text)
         {
             Id = GenerateId();
-            StartTime = new TimeCode(0, 0, 0, 0);
-            EndTime = new TimeCode(0, 0, 0, 0);
+            StartTime = new TimeCode();
+            EndTime = new TimeCode();
             StartFrame = startFrame;
             EndFrame = endFrame;
             Text = text;
