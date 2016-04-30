@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -11,26 +13,60 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         private class WordPair : ListViewItem, IComparer
         {
+            private static readonly Dictionary<string, LinkedList<WordPair>> _pairsByUs = new Dictionary<string, LinkedList<WordPair>>();
             private static uint _sortIndexCounter; // to enable stable sort
+            private static readonly Color _badBackColor = Color.FromArgb(255, 236, 236);
+            private static Color _okBackColor;
+
+            private readonly LinkedListNode<WordPair> _pairNode;
             private readonly uint _sortIndex;
-            private readonly string _usword;
+            private readonly string _usWord;
+            private readonly string _gbWord;
             private readonly XElement _node;
+            private readonly bool _isOk;
 
             public WordPair(string americanWord, string britishWord, XElement documentNode)
                 : base(americanWord)
             {
+                _usWord = americanWord.Trim().ToLowerInvariant();
+                _gbWord = britishWord.Trim().ToLowerInvariant();
                 _sortIndex = _sortIndexCounter++;
-                _usword = americanWord;
                 _node = documentNode;
+                _isOk = _usWord.Length > 1 && _gbWord.Length > 1 && _usWord != _gbWord && _usWord == americanWord && _gbWord == britishWord;
+
+                LinkedList<WordPair> list;
+                if (_pairsByUs.ContainsKey(_usWord))
+                {
+                    list = _pairsByUs[_usWord];
+                }
+                else
+                {
+                    list = new LinkedList<WordPair>();
+                    _pairsByUs[_usWord] = list;
+                }
+                if (list.Count > 0 || !_isOk)
+                {
+                    if (list.Count == 1)
+                        list.First.Value.BackColor = _badBackColor;
+                    BackColor = _badBackColor;
+                }
+                _pairNode = list.AddLast(this);
                 SubItems.Add(britishWord);
             }
 
             public WordPair()
             {
+                _okBackColor = BackColor;
             }
 
             public override void Remove()
             {
+                var list = _pairNode.List;
+                list.Remove(_pairNode);
+                if (list.Count == 0)
+                    _pairsByUs.Remove(_usWord);
+                else if (list.Count == 1 && list.First.Value._isOk)
+                    list.First.Value.BackColor = _okBackColor;
                 _node.Remove();
                 base.Remove();
             }
@@ -39,15 +75,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 var wp1 = o1 as WordPair;
                 var wp2 = o2 as WordPair;
-                int cmp = string.Compare(wp1._usword, wp2._usword, StringComparison.InvariantCultureIgnoreCase);
+                int cmp = string.Compare(wp1._usWord, wp2._usWord, StringComparison.InvariantCulture);
                 if (cmp == 0)
                 {
-                    cmp = string.Compare(wp1._usword, wp2._usword, StringComparison.Ordinal);
+                    cmp = string.Compare(wp1.Text, wp2.Text, StringComparison.InvariantCultureIgnoreCase);
                     if (cmp == 0)
                         cmp = wp1._sortIndex.CompareTo(wp2._sortIndex);
                 }
                 return cmp;
             }
+
         }
 
         // readonly for built-in list (_path == null)
