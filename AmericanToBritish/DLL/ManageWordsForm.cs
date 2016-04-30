@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
@@ -8,7 +9,48 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public partial class ManageWordsForm : Form
     {
-        // readonly for built-in list
+        private class WordPair : ListViewItem, IComparer
+        {
+            private static uint _sortIndexCounter; // to enable stable sort
+            private readonly uint _sortIndex;
+            private readonly string _usword;
+            private readonly XElement _node;
+
+            public WordPair(string americanWord, string britishWord, XElement documentNode)
+                : base(americanWord)
+            {
+                _sortIndex = _sortIndexCounter++;
+                _usword = americanWord;
+                _node = documentNode;
+                SubItems.Add(britishWord);
+            }
+
+            public WordPair()
+            {
+            }
+
+            public override void Remove()
+            {
+                _node.Remove();
+                base.Remove();
+            }
+
+            public int Compare(object o1, object o2)
+            {
+                var wp1 = o1 as WordPair;
+                var wp2 = o2 as WordPair;
+                int cmp = string.Compare(wp1._usword, wp2._usword, StringComparison.InvariantCultureIgnoreCase);
+                if (cmp == 0)
+                {
+                    cmp = string.Compare(wp1._usword, wp2._usword, StringComparison.Ordinal);
+                    if (cmp == 0)
+                        cmp = wp1._sortIndex.CompareTo(wp2._sortIndex);
+                }
+                return cmp;
+            }
+        }
+
+        // readonly for built-in list (_path == null)
         private XDocument _xdoc;
         private string _path;
 
@@ -21,8 +63,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             labelSource.Text = "Source: Local-List";
             _path = path;
-            _xdoc = XDocument.Load(path);
-            GeneratePreview();
+            InitializeListView(XDocument.Load(path));
         }
 
         public void Initialize(Stream stream)
@@ -31,13 +72,32 @@ namespace Nikse.SubtitleEdit.PluginLogic
             textBoxAmerican.Enabled = false;
             textBoxBritish.Enabled = false;
             buttonAdd.Enabled = false;
-            _xdoc = XDocument.Load(stream);
-            GeneratePreview();
+            InitializeListView(XDocument.Load(stream));
+        }
+
+        private void InitializeListView(XDocument xdoc)
+        {
+            listView1.BeginUpdate();
+            listView1.Items.Clear();
+            if (xdoc?.Root?.Name == "Words")
+            {
+                foreach (var node in xdoc.Root.Elements("Word"))
+                {
+                    if (node.Attribute("us")?.Value.Length > 0 && node.Attribute("br")?.Value.Length > 0)
+                    {
+                        listView1.Items.Add(new WordPair(node.Attribute("us").Value, node.Attribute("br").Value, node));
+                    }
+                }
+                listView1.ListViewItemSorter = new WordPair();
+                _xdoc = xdoc;
+            }
+            listView1.EndUpdate();
+            labelTotalWords.Text = $"Total words: {listView1.Items.Count}";
         }
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(_path))
+            if (_path != null && _xdoc != null)
                 _xdoc.Save(_path);
             DialogResult = DialogResult.OK;
         }
@@ -66,52 +126,33 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     textBoxBritish.Select();
                     return;
                 }
-                if (_xdoc?.Root?.Name == "Words")
+                if (_xdoc != null)
                 {
-                    _xdoc.Root.Add(new XElement("Word", new XAttribute("us", americanWord), new XAttribute("br", britishWord)));
+                    var node = new XElement("Word", new XAttribute("us", americanWord), new XAttribute("br", britishWord));
+                    listView1.Items.Add(new WordPair(americanWord, britishWord, node));
+                    labelTotalWords.Text = $"Total words: {listView1.Items.Count}";
+                    _xdoc.Root.Add(node);
                     textBoxAmerican.Text = string.Empty;
                     textBoxBritish.Text = string.Empty;
-                    GeneratePreview();
                     MessageBox.Show($"Added: American: {americanWord}; British: {britishWord}");
                 }
             }
             textBoxAmerican.Select();
         }
 
-        private void GeneratePreview()
-        {
-            listView1.BeginUpdate();
-            listView1.Items.Clear();
-            if (_xdoc?.Root?.Name == "Words")
-            {
-                foreach (var item in _xdoc.Root.Elements("Word"))
-                {
-                    if (item.Attribute("us")?.Value.Length > 0 && item.Attribute("br")?.Value.Length > 0)
-                    {
-                        AddToListView(item.Attribute("us").Value, item.Attribute("br").Value, item);
-                    }
-                }
-            }
-            listView1.EndUpdate();
-            labelTotalWords.Text = $"Total words: {listView1.Items.Count}";
-        }
-
-        private void AddToListView(string americanWord, string britishWord, XElement elem)
-        {
-            var item = new ListViewItem(americanWord) { Tag = elem };
-            item.SubItems.Add(britishWord);
-            listView1.Items.Add(item);
-        }
-
         private void toolStripMenuItemRemoveSelected_Click(object sender, EventArgs e)
         {
             if (listView1.SelectedItems.Count > 0)
             {
-                foreach (ListViewItem item in listView1.SelectedItems)
+                listView1.BeginUpdate();
+                var items = new ArrayList(listView1.SelectedItems);
+                listView1.SelectedItems.Clear();
+                foreach (var item in items)
                 {
-                    (item.Tag as XElement).Remove();
+                    (item as WordPair).Remove();
                 }
-                GeneratePreview();
+                listView1.EndUpdate();
+                labelTotalWords.Text = $"Total words: {listView1.Items.Count}";
             }
         }
 
