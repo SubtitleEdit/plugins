@@ -797,7 +797,9 @@
   <Word us="snorkelers" br="snorkellers" />
   <Word us="snorkeling" br="snorkelling" />
   <Word us="snowplow" br="snowplough" />
-  <Word us="snowplow" br="snowploughs" />
+  <Word us="snowplowed" br="snowploughed" />
+  <Word us="snowplowing" br="snowploughing" />
+  <Word us="snowplows" br="snowploughs" />
   <Word us="specialty" br="speciality" />
   <Word us="specter" br="spectre" />
   <Word us="specters" br="spectres" />
