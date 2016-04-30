@@ -437,6 +437,21 @@
   <Word us="hemopoiesis" br="haemopoiesis" />
   <Word us="hemopoietic" br="haemopoietic" />
   <Word us="hemoptysis" br="haemoptysis" />
+  <Word us="hemorrhage" br="haemorrhage" />
+  <Word us="hemorrhaged" br="haemorrhaged" />
+  <Word us="hemorrhages" br="haemorrhages" />
+  <Word us="hemorrhagic" br="haemorrhagic" />
+  <Word us="hemorrhaging" br="haemorrhaging" />
+  <Word us="hemorrhoid" br="haemorrhoid" />
+  <Word us="hemorrhoidal" br="haemorrhoidal" />
+  <Word us="hemorrhoids" br="haemorrhoids" />
+  <Word us="homeopath" br="homoeopath" />
+  <Word us="homeopathic" br="homoeopathic" />
+  <Word us="homeopathically" br="homoeopathically" />
+  <Word us="homeopathist" br="homoeopathist" />
+  <Word us="homeopathists" br="homoeopathists" />
+  <Word us="homeopaths" br="homoeopaths" />
+  <Word us="homeopathy" br="homoeopathy" />
   <Word us="honor" br="honour" />
   <Word us="honorability" br="honourability" />
   <Word us="honorable" br="honourable" />
@@ -461,8 +476,12 @@
   <Word us="imperiling" br="imperilling" />
   <Word us="initialed" br="initialled" />
   <Word us="initialing" br="initialling" />
+  <Word us="install" br="instal" />
   <Word us="installment" br="instalment" />
   <Word us="installments" br="instalments" />
+  <Word us="installs" br="instals" />
+  <Word us="instill" br="instil" />
+  <Word us="instills" br="instils" />
   <Word us="jeweled" br="jewelled" />
   <Word us="jeweler" br="jeweller" />
   <Word us="jewelers" br="jewellers" />
