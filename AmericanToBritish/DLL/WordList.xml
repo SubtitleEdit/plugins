@@ -684,6 +684,10 @@
   <Word us="penciler" br="penciller" />
   <Word us="pencilers" br="pencillers" />
   <Word us="penciling" br="pencilling" />
+  <Word us="pharmacopeia" br="pharmacopoeia" />
+  <Word us="pharmacopeial" br="pharmacopoeial" />
+  <Word us="pharmacopeian" br="pharmacopoeian" />
+  <Word us="pharmacopeias" br="pharmacopoeias" />
   <Word us="philter" br="philtre" />
   <Word us="philters" br="philtres" />
   <Word us="plow" br="plough" />
@@ -704,6 +708,10 @@
   <Word us="popularizes" br="popularises" />
   <Word us="popularizing" br="popularising" />
   <Word us="practice" br="practise" />
+  <Word us="practiced" br="practised" />
+  <Word us="practicer" br="practiser" />
+  <Word us="practicers" br="practisers" />
+  <Word us="practices" br="practises" />
   <Word us="practicing" br="practising" />
   <Word us="pretense" br="pretence" />
   <Word us="pretenses" br="pretences" />
@@ -805,6 +813,10 @@
   <Word us="scepter" br="sceptre" />
   <Word us="sceptered" br="sceptred" />
   <Word us="scepters" br="sceptres" />
+  <Word us="sepulcher" br="sepulchre" />
+  <Word us="sepulchered" br="sepulchred" />
+  <Word us="sepulchering" br="sepulchring" />
+  <Word us="sepulchers" br="sepulchres" />
   <Word us="sheik" br="sheikh" />
   <Word us="sheikdom" br="sheikhdom" />
   <Word us="shoveled" br="shovelled" />
@@ -819,6 +831,10 @@
   <Word us="signaling" br="signalling" />
   <Word us="skeleton in the closet" br="skeleton in the cupboard" />
   <Word us="skeptic" br="sceptic" />
+  <Word us="skeptical" br="sceptical" />
+  <Word us="skeptically" br="sceptically" />
+  <Word us="skepticism" br="scepticism" />
+  <Word us="skeptics" br="sceptics" />
   <Word us="skillful" br="skilful" />
   <Word us="smolder" br="smoulder" />
   <Word us="smoldered" br="smouldered" />
@@ -840,6 +856,9 @@
   <Word us="snowplowed" br="snowploughed" />
   <Word us="snowplowing" br="snowploughing" />
   <Word us="snowplows" br="snowploughs" />
+  <Word us="somber" br="sombre" />
+  <Word us="somberly" br="sombrely" />
+  <Word us="somberness" br="sombreness" />
   <Word us="specialty" br="speciality" />
   <Word us="specter" br="spectre" />
   <Word us="specters" br="spectres" />
