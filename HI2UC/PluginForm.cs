@@ -11,8 +11,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         public string FixedSubtitle { get; private set; }
         private HIStyle _hiStyle = HIStyle.UpperCase;
-        private bool _moodsMatched;
-        private bool _namesMatched;
         private int _totalChanged;
         private readonly Form _parentForm;
         private readonly Subtitle _subtitle;
@@ -20,9 +18,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private Dictionary<string, string> _fixedTexts = new Dictionary<string, string>();
         private HashSet<string> _notAllowedFixes = new HashSet<string>();
         private readonly List<Paragraph> _deletedParagarphs = new List<Paragraph>();
-        private readonly char[] HIChars = { '(', '[' };
-        private readonly Regex _regexExtraSpaces = new Regex(@"(?<=[\(\[]) +| +(?=[\)\]])", RegexOptions.Compiled);
-        private readonly Regex _regexFirstChar = new Regex(@"\b\w", RegexOptions.Compiled);
+        private static readonly char[] HIChars = { '(', '[' };
+        private static readonly Regex RegexExtraSpaces = new Regex(@"(?<=[\(\[]) +| +(?=[\)\]])", RegexOptions.Compiled);
+        private static readonly Regex RegexFirstChar1 = new Regex(@"\b\w", RegexOptions.Compiled);
+        private static readonly Regex RegexFirstChar2 = new Regex("(?<!<)\\w", RegexOptions.Compiled); // Will also avoid matching <i> or <b>...
         private readonly StringBuilder SB = new StringBuilder();
 
         public PluginForm(Form parentForm, Subtitle subtitle, string name, string description)
@@ -42,7 +41,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void PluginForm_Load(object sender, EventArgs e)
         {
+            comboBoxStyle.SelectedIndexChanged -= comboBoxStyle_SelectedIndexChanged;
             comboBoxStyle.SelectedIndex = 0;
+            comboBoxStyle.SelectedIndexChanged += comboBoxStyle_SelectedIndexChanged;
             Resize += delegate
             {
                 listViewFixes.Columns[listViewFixes.Columns.Count - 1].Width = -2;
@@ -156,32 +157,36 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 var text = p.Text;
                 var oldText = text;
+                bool containsMood = false;
+                bool containsNarrator = false;
 
                 // (Moods and feelings)
                 if (text.ContainsAny(HIChars))
                 {
                     //Remove Extra Spaces inside brackets ( foobar ) to (foobar)
                     if (checkBoxRemoveSpaces.Checked)
-                        text = _regexExtraSpaces.Replace(text, string.Empty);
+                        text = RegexExtraSpaces.Replace(text, string.Empty);
+                    string beforeChanges = text;
                     text = ChangeMoodsToUppercase(text);
+                    containsMood = beforeChanges != text;
                 }
 
                 // Narrator:
-                if (checkBoxNames.Checked && text.Contains(':'))
+                if (checkBoxNames.Checked)
+                {
+                    string beforeChanges = text;
                     text = NarratorToUpper(text);
+                    containsNarrator = beforeChanges != text;
+                }
 
                 if (text != oldText)
                 {
                     _fixedTexts.Add(p.Id, text);
                     oldText = Utilities.RemoveHtmlTags(oldText, true);
                     text = Utilities.RemoveHtmlTags(text, true);
-                    AddFixToListView(p, oldText, text);
+                    AddFixToListView(p, oldText, text, containsMood, containsNarrator);
                     _totalChanged++;
                 }
-
-                // Reset
-                _namesMatched = false;
-                _moodsMatched = false;
 
             }
 
@@ -195,32 +200,35 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Refresh();
         }
 
-        private void AddFixToListView(Paragraph p, string before, string after)
+        private void AddFixToListView(Paragraph p, string before, string after, bool containsMood, bool containsNarrator)
         {
             var item = new ListViewItem() { Checked = true, UseItemStyleForSubItems = true, Tag = p };
             item.SubItems.Add(p.Number.ToString());
-            if (_moodsMatched && _namesMatched)
+            if (containsMood && containsNarrator)
+            {
                 item.SubItems.Add("Name & Mood");
-            else if (_moodsMatched && !_namesMatched)
+            }
+            else if (containsMood)
+            {
                 item.SubItems.Add("Mood");
-            else if (_namesMatched && !_moodsMatched)
-                item.SubItems.Add("Name");
+            }
+            else if (containsNarrator)
+            {
+                item.SubItems.Add("Narrator");
+            }
             item.SubItems.Add(before.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
             item.SubItems.Add(after.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
 
-            if (after.Replace(Environment.NewLine, string.Empty).Length != after.Length)
+            int idx = after.IndexOf(Environment.NewLine, StringComparison.Ordinal);
+            if (idx > 2)
             {
-                int idx = after.IndexOf(Environment.NewLine, StringComparison.Ordinal);
-                if (idx > 2)
+                string firstLine = after.Substring(0, idx).Trim();
+                string secondLine = after.Substring(idx).Trim();
+                int idx1 = firstLine.IndexOf(':');
+                int idx2 = secondLine.IndexOf(':');
+                if (idx1 > 0xE || idx2 > 0xE)
                 {
-                    string firstLine = after.Substring(0, idx).Trim();
-                    string secondLine = after.Substring(idx).Trim();
-                    int idx1 = firstLine.IndexOf(':');
-                    int idx2 = secondLine.IndexOf(':');
-                    if (idx1 > 0xE || idx2 > 0xE)
-                    {
-                        item.BackColor = Color.Pink;
-                    }
+                    item.BackColor = Color.Pink;
                 }
             }
             else
@@ -232,42 +240,44 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.Items.Add(item);
         }
 
+        public int BracketsIndex(string text, int idx)
+        {
+            if (idx < 0 || idx + 1 >= text.Length)
+                return -1;
+
+            char openBracket = text[idx];
+            char closeBracket = '\0';
+            switch (openBracket)
+            {
+                case '(':
+                    closeBracket = ')';
+                    break;
+                case '[':
+                    closeBracket = ']';
+                    break;
+            }
+
+            while (idx >= 0)
+            {
+                int endIdx = text.IndexOf(closeBracket, idx + 1); // ] or )
+                if (endIdx < idx + 2)
+                {
+                    break;
+                }
+                string moodText = text.Substring(idx, endIdx - idx + 1);
+                moodText = StyleMoodsAndFeelings(moodText);
+                text = text.Remove(idx, endIdx - idx + 1).Insert(idx, moodText);
+                idx = text.IndexOf(openBracket, endIdx + 1); // ( or [
+            }
+            return idx;
+        }
+
+
         private string ChangeMoodsToUppercase(string text)
         {
-            Action<char, int> FindBrackets = delegate (char openBracket, int idx)
-            {
-                //char? closeBracket = null;
-                char closeBracket = '\0';
-                switch (openBracket)
-                {
-                    case '(':
-                        closeBracket = ')';
-                        break;
-                    case '[':
-                        closeBracket = ']';
-                        break;
-                }
-
-                while (idx >= 0)
-                {
-                    int endIdx = text.IndexOf(closeBracket, idx + 1); // ] or )
-                    if (endIdx < idx + 1)
-                        break;
-
-                    var moodText = text.Substring(idx, endIdx - idx + 1);
-                    moodText = StyleMoodsAndFeelings(moodText);
-
-                    if (_moodsMatched)
-                        text = text.Remove(idx, endIdx - idx + 1).Insert(idx, moodText);
-
-                    idx = text.IndexOf(openBracket, endIdx + 1); // ( or [
-                }
-            };
             text = text.Replace("()", string.Empty);
             text = text.Replace("[]", string.Empty);
-            var bIdx = text.IndexOfAny(HIChars);
-            if (bIdx >= 0)
-                FindBrackets(text[bIdx], bIdx);
+            BracketsIndex(text, text.IndexOfAny(HIChars));
             return text.FixExtraSpaces();
         }
 
@@ -294,7 +304,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     text = SB.ToString();
                     break;
                 case HIStyle.FirstUppercase:
-                    text = _regexFirstChar.Replace(text.ToLower(), x => x.Value.ToUpper()); // foobar to Foobar
+                    text = RegexFirstChar1.Replace(text.ToLower(), x => x.Value.ToUpper()); // foobar to Foobar
                     break;
                 case HIStyle.UpperCase:
                     text = text.ToUpper();
@@ -303,7 +313,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     text = text.ToLower();
                     break;
             }
-            _moodsMatched = text != before;
             return text;
         }
 
@@ -323,33 +332,30 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var lines = text.SplitToLines();
             for (int i = 0; i < lines.Length; i++)
             {
-                var noTagText = Utilities.RemoveHtmlTags(lines[i], true).Trim();
+                string line = lines[i];
+                var noTagText = Utilities.RemoveHtmlTags(line, true).Trim();
                 index = noTagText.IndexOf(':');
-                if (!CanUpper(noTagText, index))
+                if (index < 1 || !CanUpper(noTagText, index))
+                {
                     continue;
+                }
 
                 // Ivandro ismael:
                 // hello world!
-                if (i > 0 && index >= noTagText.Length)
+                if (i > 0 && index + 1 >= noTagText.Length)
+                {
                     continue;
+                }
 
                 // Now find : in original text
-                index = lines[i].IndexOf(':');
-                if (index > 0)
-                {
-                    lines[i] = ConvertToUpper(lines[i], index);
-                }
+                lines[i] = ConvertToUpper(line, line.IndexOf(':'));
             }
-            text = string.Join(Environment.NewLine, lines);
-
-            if (before != text)
-                _namesMatched = true;
-            return text;
+            return string.Join(Environment.NewLine, lines);
         }
 
         private bool CanUpper(string line, int index)
         {
-            if (index <= 0 || (index + 1 >= line.Length) || char.IsDigit(line[index + 1]))
+            if ((index + 1 >= line.Length) || char.IsDigit(line[index + 1]))
                 return false;
             line = line.Substring(0, index);
             if (line.EndsWith("improved by", StringComparison.OrdinalIgnoreCase) ||
@@ -391,8 +397,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.Columns[4].Width = newWidth;
         }
 
-        private readonly Regex _RegexFirstChar = new Regex("(?<!<)\\w", RegexOptions.Compiled); // Will also avoid matching <i> or <b>...
-        private string ConvertToUpper(string s, int colonIdx)
+        private static string ConvertToUpper(string s, int colonIdx)
         {
             var pre = s.Substring(0, colonIdx);
 
@@ -402,7 +407,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             if (Utilities.RemoveHtmlTags(pre, true).Trim().Length > 1)
             {
-                var firstChr = _RegexFirstChar.Match(pre).Value; // Note: this will prevent to fix tag pre narrator <i>John: Hey!</i>
+                var firstChr = RegexFirstChar2.Match(pre).Value; // Note: this will prevent to fix tag pre narrator <i>John: Hey!</i>
                 int idx = pre.IndexOf(firstChr, StringComparison.Ordinal);
                 if (idx >= 0)
                 {
