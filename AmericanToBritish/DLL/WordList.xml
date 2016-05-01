@@ -902,6 +902,13 @@
   <Word us="toxemia" br="toxaemia" />
   <Word us="trammeled" br="trammelled" />
   <Word us="trammeling" br="trammelling" />
+  <Word us="tranquility" br="tranquillity" />
+  <Word us="tranquilize" br="tranquillize" />
+  <Word us="tranquilized" br="tranquillized" />
+  <Word us="tranquilizer" br="tranquillizer" />
+  <Word us="tranquilizers" br="tranquillizers" />
+  <Word us="tranquilizes" br="tranquillizes" />
+  <Word us="tranquilizing" br="tranquillizing" />
   <Word us="traveled" br="travelled" />
   <Word us="traveler" br="traveller" />
   <Word us="travelers" br="travellers" />
@@ -946,6 +953,8 @@
   <Word us="vapors" br="vapours" />
   <Word us="vaporware" br="vapourware" />
   <Word us="vapory" br="vapoury" />
+  <Word us="videodisk" br="videodisc" />
+  <Word us="videodisks" br="videodiscs" />
   <Word us="vigor" br="vigour" />
   <Word us="vigorless" br="vigourless" />
   <Word us="watercolor" br="watercolour" />
@@ -953,6 +962,12 @@
   <Word us="weaseled" br="weaselled" />
   <Word us="weaseling" br="weaselling" />
   <Word us="woolen" br="woollen" />
+  <Word us="woolens" br="woollens" />
+  <Word us="woolier" br="woollier" />
+  <Word us="woolies" br="woollies" />
+  <Word us="wooliest" br="woolliest" />
+  <Word us="wooliness" br="woolliness" />
+  <Word us="wooly" br="woolly" />
   <Word us="worshiped" br="worshipped" />
   <Word us="worshiper" br="worshipper" />
   <Word us="worshipers" br="worshippers" />
