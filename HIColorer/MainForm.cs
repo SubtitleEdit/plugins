@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
+using Nikse.SubtitleEdit.PluginLogic.Logic;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -16,15 +17,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private Color _moodsColor = Color.Empty;
         private Subtitle _subtitle;
 
-        public MainForm()
+        internal MainForm(Subtitle sub, string name, string ver)
         {
             InitializeComponent();
-        }
-
-        internal MainForm(Subtitle sub, string name, string ver)
-            : this()
-        {
-            this._subtitle = sub;
+            _subtitle = sub;
             LoadingSettings();
         }
 
@@ -43,21 +39,21 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (sender == null) return;
             if (sender == buttonNarratorColor || sender == labelNarratorsColor)
             {
-                if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (colorDialog1.ShowDialog() == DialogResult.OK)
                 {
                     _narratorColor = colorDialog1.Color;
-                    this.labelNarratorsColor.BackColor = _narratorColor;
-                    this.labelNarratorsColor.Text = Utilities.GetHtmlColorCode(_narratorColor);
+                    labelNarratorsColor.BackColor = _narratorColor;
+                    labelNarratorsColor.Text = Utilities.GetHtmlColorCode(_narratorColor);
                 }
             }
             else
             {
-                if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (colorDialog1.ShowDialog() == DialogResult.OK)
                 {
                     _moodsColor = colorDialog1.Color;
-                    this.labelMoodsColor.BackColor = _moodsColor;
+                    labelMoodsColor.BackColor = _moodsColor;
                     // TODO: When the backcolor is to drak/lighty fix the forecolor
-                    this.labelMoodsColor.Text = Utilities.GetHtmlColorCode(_moodsColor);
+                    labelMoodsColor.Text = Utilities.GetHtmlColorCode(_moodsColor);
                 }
             }
         }
@@ -77,23 +73,23 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     p.Text = text;
             }
             FixedSubtitle = _subtitle.ToText(new SubRip());
-            DialogResult = System.Windows.Forms.DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
             if (!checkBoxEnabledMoods.Checked && !checkBoxEnabledNarrator.Checked)
-                DialogResult = System.Windows.Forms.DialogResult.Cancel;
+                DialogResult = DialogResult.Cancel;
             FindHearingImpairedNotation();
             FixedSubtitle = _subtitle.ToText(new SubRip());
             if (string.IsNullOrEmpty(FixedSubtitle))
-                DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            DialogResult = System.Windows.Forms.DialogResult.OK;
+                DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.OK;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
-            DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
 
         private void FindHearingImpairedNotation()
@@ -164,7 +160,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return string.Format(writeFormat, htmlColor, narrator.Trim());
             };
 
-            var lines = text.Replace(Environment.NewLine, "\n").Split('\n');
+            var lines = text.SplitToLines();
             for (int i = 0; i < lines.Length; i++)
             {
                 //TODO: if text contains 2 hearing text
@@ -224,18 +220,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return pre;
         }
 
-
-        private string GetSettingsFileName()
-        {
-            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-            if (path.StartsWith("file:\\"))
-                path = path.Remove(0, 6);
-            path = Path.Combine(path, "Plugins");
-            if (!Directory.Exists(path))
-                path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Plugins");
-            return Path.Combine(path, "HIColorer.xml");
-        }
-
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveSettings();
@@ -243,12 +227,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void LoadingSettings()
         {
-            string fileName = GetSettingsFileName();
-            if (!Path.IsPathRooted(fileName))
+            string fileName = Utilities.GetSettingsFileName();
+            if (!File.Exists(fileName))
                 return;
             try
             {
-                XmlDocument doc = new XmlDocument();
+                var doc = new XmlDocument();
                 doc.Load(fileName);
 
                 int argNarrator = Convert.ToInt32(doc.DocumentElement.SelectSingleNode("ColorNarrator").InnerText);
@@ -257,13 +241,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 _narratorColor = Color.FromArgb(argNarrator);
                 if (!_moodsColor.IsEmpty)
                 {
-                    this.labelMoodsColor.BackColor = _moodsColor;
-                    this.labelMoodsColor.Text = Utilities.GetHtmlColorCode(_moodsColor);
+                    labelMoodsColor.BackColor = _moodsColor;
+                    labelMoodsColor.Text = Utilities.GetHtmlColorCode(_moodsColor);
                 }
                 if (!_narratorColor.IsEmpty)
                 {
-                    this.labelNarratorsColor.BackColor = _narratorColor;
-                    this.labelNarratorsColor.Text = Utilities.GetHtmlColorCode(_narratorColor);
+                    labelNarratorsColor.BackColor = _narratorColor;
+                    labelNarratorsColor.Text = Utilities.GetHtmlColorCode(_narratorColor);
                 }
             }
             catch { }
@@ -271,10 +255,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void SaveSettings()
         {
-            string fileName = GetSettingsFileName();
+            string fileName = Utilities.GetSettingsFileName();
             try
             {
-                XmlDocument doc = new XmlDocument();
+                var doc = new XmlDocument();
                 doc.LoadXml("<ColorSettings><ColorNarrator/><ColorMoods/></ColorSettings>");
                 doc.DocumentElement.SelectSingleNode("ColorNarrator").InnerText = Convert.ToString(_narratorColor.ToArgb());
                 doc.DocumentElement.SelectSingleNode("ColorMoods").InnerText = Convert.ToString(_moodsColor.ToArgb());

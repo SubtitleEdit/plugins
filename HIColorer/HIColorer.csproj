@@ -44,10 +44,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Logic\Configuration.cs" />
+    <Compile Include="Logic\HearingImpairedColorer.cs" />
     <Compile Include="Logic\Paragraph.cs" />
+    <Compile Include="Logic\StringExtensions.cs" />
     <Compile Include="Logic\SubRip.cs" />
     <Compile Include="Logic\Subtitle.cs" />
-    <Compile Include="Logic\SubtitleFormat.cs" />
     <Compile Include="Logic\TimeCode.cs" />
     <Compile Include="Logic\Utilities.cs" />
     <Compile Include="MainForm.cs">

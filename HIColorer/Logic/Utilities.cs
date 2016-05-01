@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -11,6 +12,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             return s.Length >= find.Length && s.IndexOf(find, comparison) >= 0;
         }
+
         public static bool Contains(this string s, char c)
         {
             return s.Length > 0 && s.IndexOf(c) >= 0;
@@ -183,6 +185,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 idx = text.IndexOf(tag, idx + tag.Length, comparison);
             }
             return count;
+        }
+
+        public static string GetSettingsFileName()
+        {
+            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+            if (path.StartsWith("file:\\", StringComparison.Ordinal))
+                path = path.Remove(0, 6);
+            path = Path.Combine(path, "Plugins");
+            if (!Directory.Exists(path))
+                path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Plugins");
+            return Path.Combine(path, "HIColorer.xml");
         }
     }
 }
