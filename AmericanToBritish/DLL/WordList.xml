@@ -517,6 +517,8 @@
   <Word us="liter" br="litre" />
   <Word us="liters" br="litres" />
   <Word us="louver" br="louvre" />
+  <Word us="louvered" br="louvred" />
+  <Word us="louvers" br="louvres" />
   <Word us="luggage" br="baggage" />
   <Word us="luster" br="lustre" />
   <Word us="mailman" br="postman" />
@@ -540,6 +542,9 @@
   <Word us="marvelous" br="marvellous" />
   <Word us="marvelously" br="marvellously" />
   <Word us="marvelousness" br="marvellousness" />
+  <Word us="meager" br="meagre" />
+  <Word us="meagerly" br="meagrely" />
+  <Word us="meagerness" br="meagreness" />
   <Word us="medieval" br="mediaeval" />
   <Word us="mementos" br="mementoes" />
   <Word us="meter" br="metre" />
@@ -640,6 +645,9 @@
   <Word us="pajamas" br="pyjamas" />
   <Word us="paleolithic" br="palaeolithic" />
   <Word us="paleolithical" br="palaeolithical" />
+  <Word us="paleontological" br="palaeontological" />
+  <Word us="paleontologist" br="palaeontologist" />
+  <Word us="paleontologists" br="palaeontologists" />
   <Word us="paleontology" br="palaeontology" />
   <Word us="paneled" br="panelled" />
   <Word us="paneling" br="panelling" />
@@ -659,6 +667,19 @@
   <Word us="pedaled" br="pedalled" />
   <Word us="pedaling" br="pedalling" />
   <Word us="pediatric" br="paediatric" />
+  <Word us="pediatrically" br="paediatrically" />
+  <Word us="pediatrician" br="paediatrician" />
+  <Word us="pediatricians" br="paediatricians" />
+  <Word us="pediatrics" br="paediatrics" />
+  <Word us="pediatrist" br="paediatrist" />
+  <Word us="pediatrists" br="paediatrists" />
+  <Word us="pediatry" br="paediatry" />
+  <Word us="pedophile" br="paedophile" />
+  <Word us="pedophiles" br="paedophiles" />
+  <Word us="pedophilia" br="paedophilia" />
+  <Word us="pedophiliac" br="paedophiliac" />
+  <Word us="pedophiliacs" br="paedophiliacs" />
+  <Word us="pedophilic" br="paedophilic" />
   <Word us="penciled" br="pencilled" />
   <Word us="penciler" br="penciller" />
   <Word us="pencilers" br="pencillers" />
