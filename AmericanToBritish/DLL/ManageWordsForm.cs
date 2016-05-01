@@ -13,10 +13,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         private class WordPair : ListViewItem, IComparer
         {
-            private static readonly Dictionary<string, LinkedList<WordPair>> _pairsByUs = new Dictionary<string, LinkedList<WordPair>>();
+            private static readonly Dictionary<string, LinkedList<WordPair>> PairsByUs = new Dictionary<string, LinkedList<WordPair>>();
             private static uint _sortIndexCounter; // to enable stable sort
-            private static readonly Color _badBackColor = Color.FromArgb(255, 236, 236);
-            private static Color _okBackColor;
+            private static readonly Color HighlightColor = Color.FromArgb(255, 236, 236);
+            private static Color _defaultColor;
 
             private readonly LinkedListNode<WordPair> _pairNode;
             private readonly uint _sortIndex;
@@ -35,20 +35,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 _isOk = _usWord.Length > 1 && _gbWord.Length > 1 && _usWord != _gbWord && _usWord == americanWord && _gbWord == britishWord;
 
                 LinkedList<WordPair> list;
-                if (_pairsByUs.ContainsKey(_usWord))
+                if (PairsByUs.ContainsKey(_usWord))
                 {
-                    list = _pairsByUs[_usWord];
+                    list = PairsByUs[_usWord];
                 }
                 else
                 {
                     list = new LinkedList<WordPair>();
-                    _pairsByUs[_usWord] = list;
+                    PairsByUs[_usWord] = list;
                 }
                 if (list.Count > 0 || !_isOk)
                 {
                     if (list.Count == 1)
-                        list.First.Value.BackColor = _badBackColor;
-                    BackColor = _badBackColor;
+                        list.First.Value.BackColor = HighlightColor;
+                    BackColor = HighlightColor;
                 }
                 _pairNode = list.AddLast(this);
                 SubItems.Add(britishWord);
@@ -56,7 +56,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             public WordPair()
             {
-                _okBackColor = BackColor;
+                _defaultColor = BackColor;
+            }
+
+            public static void Shutdown()
+            {
+                _sortIndexCounter = 0;
+                PairsByUs.Clear();
             }
 
             public override void Remove()
@@ -64,9 +70,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 var list = _pairNode.List;
                 list.Remove(_pairNode);
                 if (list.Count == 0)
-                    _pairsByUs.Remove(_usWord);
+                    PairsByUs.Remove(_usWord);
                 else if (list.Count == 1 && list.First.Value._isOk)
-                    list.First.Value.BackColor = _okBackColor;
+                    list.First.Value.BackColor = _defaultColor;
                 _node.Remove();
                 base.Remove();
             }
@@ -197,6 +203,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (_path == null)
                 e.Cancel = true;
+        }
+
+        private void ManageWordsForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            WordPair.Shutdown();
         }
 
     }

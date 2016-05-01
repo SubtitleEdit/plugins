@@ -175,6 +175,7 @@
             this.Name = "ManageWordsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Word list manager";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ManageWordsForm_FormClosed);
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
