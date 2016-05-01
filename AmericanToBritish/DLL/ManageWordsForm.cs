@@ -65,6 +65,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 PairsByUs.Clear();
             }
 
+            public bool IsHighlighted
+            {
+                get
+                {
+                    return BackColor.ToArgb().Equals(HighlightColor.ToArgb());
+                }
+            }
+
             public override void Remove()
             {
                 var list = _pairNode.List;
@@ -92,6 +100,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
 
         }
+
+        private const int Down = 1;
+        private const int Up = -1;
 
         // readonly for built-in list (_path == null)
         private XDocument _xdoc;
@@ -208,6 +219,85 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void ManageWordsForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             WordPair.Shutdown();
+        }
+
+        private void ManageWordsForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Insert)
+            {
+                buttonAdd_Click(null, null);
+                e.SuppressKeyPress = true;
+            }
+        }
+
+        private void textBoxAmerican_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == (Keys.Control | Keys.Back))
+            {
+                e.SuppressKeyPress = true;
+            }
+        }
+
+        private void textBoxBritish_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == (Keys.Control | Keys.Back))
+            {
+                e.SuppressKeyPress = true;
+            }
+        }
+
+        private void listView1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Delete && _path != null)
+            {
+                toolStripMenuItemRemoveSelected_Click(null, null);
+                if (!string.IsNullOrWhiteSpace(textBoxAmerican.Text))
+                    textBoxBritish.Select();
+                e.SuppressKeyPress = true;
+            }
+            else if (e.KeyData == Keys.Left)
+            {
+                SetFocusToHighlighted(Up);
+                e.SuppressKeyPress = true;
+            }
+            else if (e.KeyData == Keys.Right)
+            {
+                SetFocusToHighlighted(Down);
+                e.SuppressKeyPress = true;
+            }
+        }
+
+        private void SetFocusToHighlighted(int direction)
+        {
+            var items = listView1.Items;
+            var item = listView1.FocusedItem as WordPair;
+            var start = item != null ? item.Index : direction > 0 ? 0 : items.Count - 1;
+
+            if (item != null && item.IsHighlighted)
+            {
+                var index = start;
+                do
+                {
+                    if ((index = (index + direction + items.Count) % items.Count) == start)
+                        return;
+                    item = items[index] as WordPair;
+                }
+                while (item.IsHighlighted);
+                start = index;
+            }
+            if (0 <= start && start < items.Count)
+            {
+                var index = start;
+                while (!(item = items[index] as WordPair).IsHighlighted)
+                {
+                    if ((index = (index + direction + items.Count) % items.Count) == start)
+                        return;
+                }
+                listView1.SelectedItems.Clear();
+                item.EnsureVisible();
+                item.Selected = true;
+                item.Focused = true;
+            }
         }
 
     }

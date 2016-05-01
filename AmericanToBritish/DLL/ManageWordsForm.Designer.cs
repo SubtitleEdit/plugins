@@ -60,6 +60,7 @@
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
+            this.listView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listView1_KeyDown);
             // 
             // columnHeaderAmerican
             // 
@@ -138,6 +139,7 @@
             this.textBoxAmerican.Name = "textBoxAmerican";
             this.textBoxAmerican.Size = new System.Drawing.Size(125, 20);
             this.textBoxAmerican.TabIndex = 6;
+            this.textBoxAmerican.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxAmerican_KeyDown);
             // 
             // textBoxBritish
             // 
@@ -145,6 +147,7 @@
             this.textBoxBritish.Name = "textBoxBritish";
             this.textBoxBritish.Size = new System.Drawing.Size(125, 20);
             this.textBoxBritish.TabIndex = 7;
+            this.textBoxBritish.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxBritish_KeyDown);
             // 
             // buttonAdd
             // 
@@ -171,11 +174,13 @@
             this.Controls.Add(this.labelSource);
             this.Controls.Add(this.listView1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.KeyPreview = true;
             this.MinimumSize = new System.Drawing.Size(660, 394);
             this.Name = "ManageWordsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Word list manager";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ManageWordsForm_FormClosed);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ManageWordsForm_KeyDown);
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
