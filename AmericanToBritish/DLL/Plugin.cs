@@ -47,11 +47,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (!string.IsNullOrEmpty(listViewLineSeparatorString))
                 Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
 
-            var list = subtitle.SplitToLines().ToList();
-
-            var sub = new Subtitle();
             var srt = new SubRip();
-            srt.LoadSubtitle(sub, list, subtitleFileName);
+            var sub = new Subtitle(srt);
+            srt.LoadSubtitle(sub, subtitle.SplitToLines(), subtitleFileName);
             if (srt.Errors > 0)
             {
                 var s = srt.Errors > 1 ? "s" : string.Empty;

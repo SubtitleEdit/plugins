@@ -6,34 +6,15 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
     internal class Subtitle
     {
         private List<Paragraph> _paragraphs;
-        private readonly SubRip _format = new SubRip();
+        private readonly SubRip _format;
 
         private bool _wasLoadedWithFrameNumbers;
-        public string Header { get; set; }
-        public string Footer { get; set; }
         public string FileName { get; set; }
-        public bool IsHearingImpaired { get; private set; }
-        public const int MaximumHistoryItems = 100;
 
-        public Subtitle()
+        public Subtitle(SubRip subrip)
         {
             _paragraphs = new List<Paragraph>();
             FileName = "Untitled";
-            //_format = new SubRip();
-        }
-
-        /// <summary>
-        /// Copy constructor (only paragraphs)
-        /// </summary>
-        /// <param name="subtitle">Subtitle to copy</param>
-        public Subtitle(Subtitle subtitle)
-            : this()
-        {
-            foreach (Paragraph p in subtitle.Paragraphs)
-            {
-                _paragraphs.Add(new Paragraph(p));
-            }
-            _wasLoadedWithFrameNumbers = subtitle.WasLoadedWithFrameNumbers;
         }
 
         public List<Paragraph> Paragraphs
@@ -47,18 +28,6 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
         public string ToText()
         {
             return _format.ToText(this, Path.GetFileNameWithoutExtension(FileName));
-        }
-
-        public bool WasLoadedWithFrameNumbers
-        {
-            get
-            {
-                return _wasLoadedWithFrameNumbers;
-            }
-            set
-            {
-                _wasLoadedWithFrameNumbers = value;
-            }
         }
 
         public void Renumber(int startNumber = 1)

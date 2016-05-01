@@ -7,8 +7,8 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
 {
     internal class SubRip
     {
-        private static readonly Regex _regexTimeCodes = new Regex(@"^-?\d+:-?\d+:-?\d+[:,]-?\d+\s*-->\s*-?\d+:-?\d+:-?\d+[:,]-?\d+$", RegexOptions.Compiled);
-        private static readonly Regex _regexTimeCodes2 = new Regex(@"^\d+:\d+:\d+,\d+\s*-->\s*\d+:\d+:\d+,\d+$", RegexOptions.Compiled);
+        private static readonly Regex RegexTimeCodes = new Regex(@"^-?\d+:-?\d+:-?\d+[:,]-?\d+\s*-->\s*-?\d+:-?\d+:-?\d+[:,]-?\d+$", RegexOptions.Compiled);
+        private static readonly Regex RegexTimeCodes2 = new Regex(@"^\d+:\d+:\d+,\d+\s*-->\s*\d+:\d+:\d+,\d+$", RegexOptions.Compiled);
         private ExpectingLine _expecting = ExpectingLine.Number;
         private int _lineNumber;
         private Paragraph _paragraph;
@@ -44,14 +44,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             get { return "SubRip"; }
         }
 
-        public bool IsMine(List<string> lines, string fileName)
-        {
-            var subtitle = new Subtitle();
-            LoadSubtitle(subtitle, lines, fileName);
-            return subtitle.Paragraphs.Count > _errorCount;
-        }
-
-        public void LoadSubtitle(Subtitle subtitle, List<string> lines, string fileName)
+        public void LoadSubtitle(Subtitle subtitle, IList<string> lines, string fileName)
         {
             bool doRenum = false;
             _lineNumber = 0;
@@ -74,12 +67,12 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
                 // A new line is missing between two paragraphs (buggy srt file)
                 if (_expecting == ExpectingLine.Text && i + 1 < lines.Count &&
                     _paragraph != null && !string.IsNullOrEmpty(_paragraph.Text) && Utilities.IsInteger(line) &&
-                    _regexTimeCodes.IsMatch(lines[i + 1]))
+                    RegexTimeCodes.IsMatch(lines[i + 1]))
                 {
                     _errorCount++;
                     ReadLine(subtitle, string.Empty, string.Empty);
                 }
-                if (_expecting == ExpectingLine.Number && _regexTimeCodes.IsMatch(line))
+                if (_expecting == ExpectingLine.Number && RegexTimeCodes.IsMatch(line))
                 {
                     _errorCount++;
                     _expecting = ExpectingLine.TimeCodes;
@@ -120,7 +113,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
 
         private bool IsText(string text)
         {
-            if (string.IsNullOrWhiteSpace(text) || Utilities.IsInteger(text) || _regexTimeCodes.IsMatch(text))
+            if (string.IsNullOrWhiteSpace(text) || Utilities.IsInteger(text) || RegexTimeCodes.IsMatch(text))
                 return false;
 
             return true;
@@ -171,7 +164,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
                     else if (string.IsNullOrEmpty(line) && string.IsNullOrEmpty(_paragraph.Text))
                     {
                         _paragraph.Text = string.Empty;
-                        if (!string.IsNullOrEmpty(next) && (Utilities.IsInteger(next) || _regexTimeCodes.IsMatch(next)))
+                        if (!string.IsNullOrEmpty(next) && (Utilities.IsInteger(next) || RegexTimeCodes.IsMatch(next)))
                         {
                             subtitle.Paragraphs.Add(_paragraph);
                             _paragraph = new Paragraph();
@@ -226,7 +219,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             if (line.Length >= 29 && line.Length <= 30 && ":;".Contains(line[25].ToString()))
                 line = line.Substring(0, 25) + ',' + line.Substring(25 + 1);
 
-            if (_regexTimeCodes.IsMatch(line) || _regexTimeCodes2.IsMatch(line))
+            if (RegexTimeCodes.IsMatch(line) || RegexTimeCodes2.IsMatch(line))
             {
                 string[] parts = line.Replace("-->", ":").Replace(" ", string.Empty).Split(':', ',');
                 try
