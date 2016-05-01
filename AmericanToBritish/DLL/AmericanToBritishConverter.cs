@@ -20,7 +20,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        public string FixText(string text)
+        public string Convert(string text)
         {
             if (string.IsNullOrWhiteSpace(text))
                 return text;

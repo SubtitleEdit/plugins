@@ -66,7 +66,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     if (item.Checked)
                     {
                         var paragraph = item.Tag as Paragraph;
-                        paragraph.Text = _converter.FixText(paragraph.Text);
+                        paragraph.Text = _converter.Convert(paragraph.Text);
                     }
                 }
                 FixedSubtitle = _subtitle.ToText();
@@ -99,7 +99,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             foreach (var paragraph in _subtitle.Paragraphs)
             {
                 var oldText = paragraph.Text.Trim();
-                var newText = _converter.FixText(oldText);
+                var newText = _converter.Convert(oldText);
                 if (newText != oldText)
                 {
                     AddFixToListView(paragraph, oldText, newText);
