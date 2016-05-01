@@ -78,6 +78,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Classes\StripableText.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="PluginForm.resx">

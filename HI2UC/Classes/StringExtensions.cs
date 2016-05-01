@@ -34,5 +34,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
             s = s.Replace(" \r\n", Environment.NewLine);
             return s;
         }
+
+        public static bool StartsWith(this string s, char c)
+        {
+            return s.Length > 0 && s[0] == c;
+        }
+
+        public static bool EndsWith(this string s, char c)
+        {
+            return s.Length > 0 && s[s.Length - 1] == c;
+        }
+
     }
 }

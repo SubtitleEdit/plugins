@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -22,7 +23,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private static readonly Regex RegexExtraSpaces = new Regex(@"(?<=[\(\[]) +| +(?=[\)\]])", RegexOptions.Compiled);
         private static readonly Regex RegexFirstChar1 = new Regex(@"\b\w", RegexOptions.Compiled);
         private static readonly Regex RegexFirstChar2 = new Regex("(?<!<)\\w", RegexOptions.Compiled); // Will also avoid matching <i> or <b>...
-        private readonly StringBuilder SB = new StringBuilder();
+        private static readonly StringBuilder SB = new StringBuilder();
 
         public PluginForm(Form parentForm, Subtitle subtitle, string name, string description)
         {
@@ -134,8 +135,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void comboBoxStyle_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxStyle.SelectedIndex < 0 || listViewFixes.Items.Count < 0)
+            if (listViewFixes.Items.Count < 0)
+            {
                 return;
+            }
             if ((int)_hiStyle != comboBoxStyle.SelectedIndex)
             {
                 _hiStyle = (HIStyle)comboBoxStyle.SelectedIndex;
@@ -160,26 +163,25 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 bool containsMood = false;
                 bool containsNarrator = false;
 
-                // (Moods and feelings)
-                if (text.ContainsAny(HIChars))
+                //Remove Extra Spaces inside brackets ( foobar ) to (foobar)
+                string beforeChanges = text;
+                if (checkBoxRemoveSpaces.Checked)
                 {
-                    //Remove Extra Spaces inside brackets ( foobar ) to (foobar)
-                    if (checkBoxRemoveSpaces.Checked)
-                        text = RegexExtraSpaces.Replace(text, string.Empty);
-                    string beforeChanges = text;
-                    text = ChangeMoodsToUppercase(text);
-                    containsMood = beforeChanges != text;
+                    text = RegexExtraSpaces.Replace(text, string.Empty);
                 }
+                // (Moods and feelings)
+                text = ChangeMoodsToUppercase(text);
+                containsMood = beforeChanges != text;
 
                 // Narrator:
                 if (checkBoxNames.Checked)
                 {
-                    string beforeChanges = text;
+                    beforeChanges = text;
                     text = NarratorToUpper(text);
                     containsNarrator = beforeChanges != text;
                 }
 
-                if (text != oldText)
+                if (containsMood || containsNarrator)
                 {
                     _fixedTexts.Add(p.Id, text);
                     oldText = Utilities.RemoveHtmlTags(oldText, true);
@@ -203,7 +205,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void AddFixToListView(Paragraph p, string before, string after, bool containsMood, bool containsNarrator)
         {
             var item = new ListViewItem() { Checked = true, UseItemStyleForSubItems = true, Tag = p };
-            item.SubItems.Add(p.Number.ToString());
+            item.SubItems.Add(p.Number.ToString(CultureInfo.InvariantCulture));
             if (containsMood && containsNarrator)
             {
                 item.SubItems.Add("Name & Mood");
@@ -223,7 +225,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (idx > 2)
             {
                 string firstLine = after.Substring(0, idx).Trim();
-                string secondLine = after.Substring(idx).Trim();
+                string secondLine = after.Substring(idx + Environment.NewLine.Length).Trim();
                 int idx1 = firstLine.IndexOf(':');
                 int idx2 = secondLine.IndexOf(':');
                 if (idx1 > 0xE || idx2 > 0xE)
@@ -240,10 +242,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.Items.Add(item);
         }
 
-        public int BracketsIndex(string text, int idx)
+        private string ChangeMoodsToUppercase(string text)
         {
+            text = text.Replace("()", string.Empty);
+            text = text.Replace("[]", string.Empty);
+
+            int idx = text.IndexOfAny(HIChars);
             if (idx < 0 || idx + 1 >= text.Length)
-                return -1;
+            {
+                return text;
+            }
 
             char openBracket = text[idx];
             char closeBracket = '\0';
@@ -257,9 +265,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     break;
             }
 
-            while (idx >= 0)
+            do
             {
                 int endIdx = text.IndexOf(closeBracket, idx + 1); // ] or )
+                // There most be at lease one chars inside brackets.
                 if (endIdx < idx + 2)
                 {
                     break;
@@ -269,27 +278,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 text = text.Remove(idx, endIdx - idx + 1).Insert(idx, moodText);
                 idx = text.IndexOf(openBracket, endIdx + 1); // ( or [
             }
-            return idx;
-        }
-
-
-        private string ChangeMoodsToUppercase(string text)
-        {
-            text = text.Replace("()", string.Empty);
-            text = text.Replace("[]", string.Empty);
-            BracketsIndex(text, text.IndexOfAny(HIChars));
+            while (idx >= 0);
             return text.FixExtraSpaces();
         }
 
-        private string StyleMoodsAndFeelings(string text)
+        private string StyleMoodsAndFeelings(string moodText)
         {
-            var before = text;
+            var st = new StripableText(moodText);
+            moodText = st.StrippedText;
             switch (_hiStyle)
             {
                 case HIStyle.UpperLowerCase:
                     SB.Clear();
                     bool isUpperTime = true;
-                    foreach (char myChar in text)
+                    foreach (char myChar in moodText)
                     {
                         if (!char.IsLetter(myChar))
                         {
@@ -301,26 +303,25 @@ namespace Nikse.SubtitleEdit.PluginLogic
                             isUpperTime = !isUpperTime;
                         }
                     }
-                    text = SB.ToString();
+                    moodText = SB.ToString();
                     break;
                 case HIStyle.FirstUppercase:
-                    text = RegexFirstChar1.Replace(text.ToLower(), x => x.Value.ToUpper()); // foobar to Foobar
+                    moodText = RegexFirstChar1.Replace(moodText.ToLower(), x => x.Value.ToUpper()); // foobar to Foobar
                     break;
                 case HIStyle.UpperCase:
-                    text = text.ToUpper();
+                    moodText = moodText.ToUpper();
                     break;
                 case HIStyle.LowerCase:
-                    text = text.ToLower();
+                    moodText = moodText.ToLower();
                     break;
             }
-            return text;
+            return st.CombineWithPrePost(moodText);
         }
 
-        //delegate void RefAction<in T>(ref T obj);
         private string NarratorToUpper(string text)
         {
             string before = text;
-            var t = Utilities.RemoveHtmlTags(text, true).TrimEnd().TrimEnd('"');
+            string t = Utilities.RemoveHtmlTags(text, true).TrimEnd().TrimEnd('"');
             var index = t.IndexOf(':');
 
             // like: "Ivandro Says:"
@@ -329,7 +330,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return text;
             }
 
-            var lines = text.SplitToLines();
+            string[] lines = text.SplitToLines();
             for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i];
@@ -339,16 +340,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     continue;
                 }
-
                 // Ivandro ismael:
                 // hello world!
                 if (i > 0 && index + 1 >= noTagText.Length)
                 {
                     continue;
                 }
-
-                // Now find : in original text
-                lines[i] = ConvertToUpper(line, line.IndexOf(':'));
+                int colonIndex = line.IndexOf(':');
+                var st = new StripableText(line.Substring(0, colonIndex + 1));
+                ConvertToUpper(st);
+                //st.StrippedText = preTextStyled;
+                lines[i] = st.MergedString + line.Substring(colonIndex + 1);
             }
             return string.Join(Environment.NewLine, lines);
         }
@@ -397,36 +399,21 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.Columns[4].Width = newWidth;
         }
 
-        private static string ConvertToUpper(string s, int colonIdx)
+        /// <summary>
+        /// Converts narrator/speaker name to uppercase.
+        /// </summary>
+        private void ConvertToUpper(StripableText st)
         {
-            var pre = s.Substring(0, colonIdx);
-
             // (Adele: ...)
-            if (pre.ContainsAny(HIChars) || s.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-                return s;
-
-            if (Utilities.RemoveHtmlTags(pre, true).Trim().Length > 1)
+            if (st.Pre.ContainsAny(HIChars) ||
+                st.StrippedText.StartsWith("http", StringComparison.OrdinalIgnoreCase) ||
+                st.StrippedText.EndsWith("https", StringComparison.OrdinalIgnoreCase) ||
+                st.StrippedText.EndsWith("http", StringComparison.OrdinalIgnoreCase))
             {
-                var firstChr = RegexFirstChar2.Match(pre).Value; // Note: this will prevent to fix tag pre narrator <i>John: Hey!</i>
-                int idx = pre.IndexOf(firstChr, StringComparison.Ordinal);
-                if (idx >= 0)
-                {
-                    var narrator = pre.Substring(idx, colonIdx - idx);
-                    var oldNarrator = narrator;
-                    // Filter http protocols
-                    if (narrator.TrimEnd().EndsWith("HTTPS", StringComparison.OrdinalIgnoreCase) ||
-                        narrator.TrimEnd().EndsWith("HTTP", StringComparison.OrdinalIgnoreCase))
-                        return s;
-
-                    narrator = narrator.ToUpper();
-                    // Return if narrator is already uppercase
-                    if (narrator == oldNarrator)
-                        return s;
-                    pre = pre.Remove(idx, colonIdx - idx).Insert(idx, narrator);
-                    s = s.Remove(0, colonIdx).Insert(0, pre);
-                }
+                return;
             }
-            return s;
+            string beforeChanges = st.StrippedText;
+            st.StrippedText = st.StrippedText.ToUpper();
         }
 
         private void listViewFixes_ItemChecked(object sender, ItemCheckedEventArgs e)
