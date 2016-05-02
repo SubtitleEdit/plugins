@@ -91,14 +91,14 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
 
         public string ToText(Subtitle subtitle, string title)
         {
-            const string paragraphWriteFormat = "{0}\r\n{1} --> {2}\r\n{3}\r\n\r\n";
+            const string paragraphWriteFormat = "{1}{0}{2} --> {3}{0}{4}{0}{0}";
             var sb = new StringBuilder();
             foreach (Paragraph p in subtitle.Paragraphs)
             {
                 string s = p.Text
                     .Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine)
                     .Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
-                sb.AppendFormat(paragraphWriteFormat, p.Number, p.StartTime, p.EndTime, s);
+                sb.AppendFormat(paragraphWriteFormat, Environment.NewLine, p.Number, p.StartTime, p.EndTime, s);
             }
             return sb.ToString().Trim();
         }

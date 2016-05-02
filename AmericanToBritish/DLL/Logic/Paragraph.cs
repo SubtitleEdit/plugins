@@ -13,8 +13,8 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
 
         public Paragraph()
         {
-            StartTime = new TimeCode(TimeSpan.FromSeconds(0));
-            EndTime = new TimeCode(TimeSpan.FromSeconds(0));
+            StartTime = new TimeCode(new TimeSpan(0));
+            EndTime = new TimeCode(new TimeSpan(0));
             Text = string.Empty;
         }
 
@@ -30,9 +30,8 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
 
         public override string ToString()
         {
-            const string format = "{0}\r\n{1} --> {2}\r\n{3}";
-            return string.Format(format, Number, StartTime, EndTime, Text);
-            //return StartTime + " --> " + EndTime + " " + Text;
+            const string format = "{1}{0}{2} --> {3}{0}{4}";
+            return string.Format(format, Environment.NewLine, Number, StartTime, EndTime, Text);
         }
     }
 }

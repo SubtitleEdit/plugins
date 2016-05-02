@@ -14,7 +14,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private class WordPair : ListViewItem, IComparer
         {
             private static readonly Dictionary<string, LinkedList<WordPair>> PairsByUs = new Dictionary<string, LinkedList<WordPair>>();
-            private static uint _sortIndexCounter; // to enable stable sort
+            private static uint _sortIndexCounter; // to emulate a stable sort
             private static readonly Color HighlightColor = Color.FromArgb(255, 236, 236);
             private static Color _defaultColor;
 
@@ -204,9 +204,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 listView1.BeginUpdate();
                 var items = new ArrayList(listView1.SelectedItems);
                 listView1.SelectedItems.Clear();
-                foreach (var item in items)
+                foreach (WordPair wp in items)
                 {
-                    (item as WordPair).Remove();
+                    wp.Remove();
                 }
                 listView1.EndUpdate();
                 labelTotalWords.Text = $"Total words: {listView1.Items.Count}";
@@ -296,11 +296,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             var items = listView1.Items;
             var item = listView1.FocusedItem as WordPair;
-            var start = item != null ? item.Index : direction > 0 ? 0 : items.Count - 1;
+            var index = item != null ? item.Index : direction > 0 ? 0 : items.Count - 1;
 
             if (item != null && item.IsHighlighted)
             {
-                var index = start;
+                var start = index;
                 do
                 {
                     if ((index = (index + direction + items.Count) % items.Count) == start)
@@ -308,11 +308,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     item = items[index] as WordPair;
                 }
                 while (item.IsHighlighted);
-                start = index;
             }
-            if (0 <= start && start < items.Count)
+            if (0 <= index && index < items.Count)
             {
-                var index = start;
+                var start = index;
                 while (!(item = items[index] as WordPair).IsHighlighted)
                 {
                     if ((index = (index + direction + items.Count) % items.Count) == start)

@@ -8,7 +8,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
 
         public TimeCode(TimeSpan timeSpan)
         {
-            TimeSpan = timeSpan;
+            _time = timeSpan;
         }
 
         public TimeCode(int hour, int minute, int seconds, int milliseconds)
@@ -42,14 +42,8 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
 
         public TimeSpan TimeSpan
         {
-            get
-            {
-                return _time;
-            }
-            set
-            {
-                _time = value;
-            }
+            get { return _time; }
+            set { _time = value; }
         }
 
         public double TotalMilliseconds
@@ -66,12 +60,12 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
 
         public override string ToString()
         {
-            string s = string.Format("{0:00}:{1:00}:{2:00},{3:000}", _time.Hours, _time.Minutes, _time.Seconds, _time.Milliseconds);
-
-            if (TotalMilliseconds >= 0)
-                return s;
-            else
-                return "-" + s.Replace("-", string.Empty);
+            if (_time.Ticks < 0)
+            {
+                var time = _time.Negate();
+                return string.Format("-{0:00}:{1:00}:{2:00},{3:000}", time.Hours, time.Minutes, time.Seconds, time.Milliseconds);
+            }
+            return string.Format("{0:00}:{1:00}:{2:00},{3:000}", _time.Hours, _time.Minutes, _time.Seconds, _time.Milliseconds);
         }
     }
 }
