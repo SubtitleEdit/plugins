@@ -139,7 +139,7 @@
             this.textBoxAmerican.Name = "textBoxAmerican";
             this.textBoxAmerican.Size = new System.Drawing.Size(125, 20);
             this.textBoxAmerican.TabIndex = 6;
-            this.textBoxAmerican.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxAmerican_KeyDown);
+            this.textBoxAmerican.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxBritishAmerican_KeyDown);
             // 
             // textBoxBritish
             // 
@@ -147,7 +147,7 @@
             this.textBoxBritish.Name = "textBoxBritish";
             this.textBoxBritish.Size = new System.Drawing.Size(125, 20);
             this.textBoxBritish.TabIndex = 7;
-            this.textBoxBritish.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxBritish_KeyDown);
+            this.textBoxBritish.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxBritishAmerican_KeyDown);
             // 
             // buttonAdd
             // 

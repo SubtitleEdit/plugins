@@ -35,14 +35,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 _isOk = _usWord.Length > 1 && _gbWord.Length > 1 && _usWord != _gbWord && _usWord == americanWord && _gbWord == britishWord;
 
                 LinkedList<WordPair> list;
-                if (PairsByUs.ContainsKey(_usWord))
-                {
-                    list = PairsByUs[_usWord];
-                }
-                else
+                if (!PairsByUs.TryGetValue(_usWord, out list))
                 {
                     list = new LinkedList<WordPair>();
-                    PairsByUs[_usWord] = list;
+                    PairsByUs.Add(_usWord, list);
                 }
                 if (list.Count > 0 || !_isOk)
                 {
@@ -62,7 +58,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             public static WordPair GetValueOrNull(string americanWord)
             {
                 LinkedList<WordPair> wpl;
-                return PairsByUs.TryGetValue(americanWord, out wpl) ? wpl.First.Value : null;
+                return PairsByUs.TryGetValue(americanWord.Trim().ToLowerInvariant(), out wpl) ? wpl.First.Value : null;
             }
 
             public static void Shutdown()
@@ -183,15 +179,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     if (textBoxBritish.Enabled)
                     {
                         textBoxBritish.Select();
+                        return;
                     }
-                    else
-                    {
-                        textBoxAmerican.SelectAll();
-                        textBoxAmerican.Select();
-                    }
-                    return;
+                    textBoxAmerican.SelectAll();
                 }
-                if (americanWord.Length > 1 && britishWord.Length > 1 && _xdoc != null)
+                else if (americanWord.Length > 1 && britishWord.Length > 1 && _xdoc != null)
                 {
                     var node = new XElement("Word", new XAttribute("us", americanWord), new XAttribute("br", britishWord));
                     listView1.Items.Add(new WordPair(americanWord, britishWord, node));
@@ -241,19 +233,41 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        private void textBoxAmerican_KeyDown(object sender, KeyEventArgs e)
+        private void textBoxBritishAmerican_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyData == (Keys.Control | Keys.Back))
             {
                 e.SuppressKeyPress = true;
             }
-        }
-
-        private void textBoxBritish_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyData == (Keys.Control | Keys.Back))
+            else if (e.KeyData == (Keys.Control | Keys.C))
             {
-                e.SuppressKeyPress = true;
+                var tb = sender as TextBox;
+                if (tb.TextLength > 0 && tb.SelectionLength == 0)
+                {
+                    var caret = tb.SelectionStart;
+                    if (caret > 0)
+                        tb.Select(0, caret);
+                    else
+                        tb.SelectAll();
+                    tb.Copy();
+                    tb.Select(caret, 0);
+                    e.SuppressKeyPress = true;
+                }
+            }
+            else if (e.KeyData == (Keys.Control | Keys.X))
+            {
+                var tb = sender as TextBox;
+                if (tb.TextLength > 0 && tb.SelectionLength == 0)
+                {
+                    var caret = tb.SelectionStart;
+                    if (caret > 0)
+                        tb.Select(0, caret);
+                    else
+                        tb.SelectAll();
+                    tb.Cut();
+                    tb.Select(0, 0);
+                    e.SuppressKeyPress = true;
+                }
             }
         }
 
