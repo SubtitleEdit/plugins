@@ -36,8 +36,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static string RemoveHtmlTags(string s, bool alsoSSA)
         {
-            if (s == null || s.Length < 3 || !s.Contains(s))
+            if (s == null || s.Length < 3)
+            {
                 return s;
+            }
             if (alsoSSA)
             {
                 const string ssaStart = "{\\";

@@ -52,6 +52,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.buttonApply = new System.Windows.Forms.Button();
             this.checkBoxRemoveSpaces = new System.Windows.Forms.CheckBox();
+            this.checkBoxMoods = new System.Windows.Forms.CheckBox();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -282,6 +283,19 @@
             this.checkBoxRemoveSpaces.UseVisualStyleBackColor = true;
             this.checkBoxRemoveSpaces.CheckedChanged += new System.EventHandler(this.checkBoxRemoveSpaces_CheckedChanged);
             // 
+            // checkBoxMoods
+            // 
+            this.checkBoxMoods.AutoSize = true;
+            this.checkBoxMoods.Checked = true;
+            this.checkBoxMoods.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxMoods.Location = new System.Drawing.Point(168, 10);
+            this.checkBoxMoods.Name = "checkBoxMoods";
+            this.checkBoxMoods.Size = new System.Drawing.Size(189, 17);
+            this.checkBoxMoods.TabIndex = 10;
+            this.checkBoxMoods.Text = "Moods. e.g: (foobar) => (FOOBAR)";
+            this.checkBoxMoods.UseVisualStyleBackColor = true;
+            this.checkBoxMoods.CheckedChanged += new System.EventHandler(this.checkBoxMoods_CheckedChanged);
+            // 
             // PluginForm
             // 
             this.AcceptButton = this.buttonConvert;
@@ -289,6 +303,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btn_Cancel;
             this.ClientSize = new System.Drawing.Size(918, 562);
+            this.Controls.Add(this.checkBoxMoods);
             this.Controls.Add(this.checkBoxRemoveSpaces);
             this.Controls.Add(this.buttonApply);
             this.Controls.Add(this.groupBox1);
@@ -339,6 +354,6 @@
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.Button buttonApply;
         private System.Windows.Forms.CheckBox checkBoxRemoveSpaces;
-
+        private System.Windows.Forms.CheckBox checkBoxMoods;
     }
 }

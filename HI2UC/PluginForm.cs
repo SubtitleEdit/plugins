@@ -11,7 +11,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
     internal partial class PluginForm : Form
     {
         public string FixedSubtitle { get; private set; }
-        private HIStyle _hiStyle = HIStyle.UpperCase;
         private int _totalChanged;
         private readonly Form _parentForm;
         private readonly Subtitle _subtitle;
@@ -19,11 +18,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private Dictionary<string, string> _fixedTexts = new Dictionary<string, string>();
         private HashSet<string> _notAllowedFixes = new HashSet<string>();
         private readonly List<Paragraph> _deletedParagarphs = new List<Paragraph>();
-        private static readonly char[] HIChars = { '(', '[' };
-        private static readonly Regex RegexExtraSpaces = new Regex(@"(?<=[\(\[]) +| +(?=[\)\]])", RegexOptions.Compiled);
-        private static readonly Regex RegexFirstChar1 = new Regex(@"\b\w", RegexOptions.Compiled);
-        private static readonly Regex RegexFirstChar2 = new Regex("(?<!<)\\w", RegexOptions.Compiled); // Will also avoid matching <i> or <b>...
         private static readonly StringBuilder SB = new StringBuilder();
+
+        private readonly HearingImpaired _hearingImpaired;
 
         public PluginForm(Form parentForm, Subtitle subtitle, string name, string description)
         {
@@ -31,6 +28,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _parentForm = parentForm;
             _subtitle = subtitle;
             labelDesc.Text = "Description: " + description;
+            _hearingImpaired = new HearingImpaired(new Configuration()
+            {
+                MoodsToUppercase = true,
+                NarratorToUppercase = true,
+                Style = HIStyle.UpperCase
+
+            });
             /*
             this.KeyDown += (s, e) =>
             {
@@ -87,8 +91,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void checkBoxNarrator_CheckedChanged(object sender, EventArgs e)
         {
-            if (_subtitle.Paragraphs.Count <= 0)
-                return;
+            _hearingImpaired.Config.NarratorToUppercase = checkBoxNames.Checked;
             GeneratePreview();
         }
 
@@ -139,15 +142,22 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 return;
             }
-            if ((int)_hiStyle != comboBoxStyle.SelectedIndex)
+            // Is this using ref passing? o.O
+            HIStyle currentStyle = _hearingImpaired.Config.Style;
+            if ((int)currentStyle != comboBoxStyle.SelectedIndex)
             {
-                _hiStyle = (HIStyle)comboBoxStyle.SelectedIndex;
+                currentStyle = (HIStyle)comboBoxStyle.SelectedIndex;
+                _hearingImpaired.Config.Style = currentStyle;
                 GeneratePreview();
             }
         }
 
         private void GeneratePreview()
         {
+            if (!(checkBoxMoods.Checked || checkBoxNames.Checked || checkBoxRemoveSpaces.Checked))
+            {
+                return;
+            }
             _totalChanged = 0;
             listViewFixes.BeginUpdate();
             listViewFixes.Items.Clear();
@@ -167,17 +177,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 string beforeChanges = text;
                 if (checkBoxRemoveSpaces.Checked)
                 {
-                    text = RegexExtraSpaces.Replace(text, string.Empty);
+                    _hearingImpaired.RemoveExtraSpacesInsideTag(text);
                 }
                 // (Moods and feelings)
-                text = ChangeMoodsToUppercase(text);
-                containsMood = beforeChanges != text;
-
+                if (checkBoxMoods.Checked)
+                {
+                    beforeChanges = text;
+                    text = _hearingImpaired.MoodsToUppercase(text);
+                    containsMood = beforeChanges != text;
+                }
                 // Narrator:
                 if (checkBoxNames.Checked)
                 {
                     beforeChanges = text;
-                    text = NarratorToUpper(text);
+                    text = _hearingImpaired.NarratorToUppercase(text);
                     containsNarrator = beforeChanges != text;
                 }
 
@@ -242,130 +255,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.Items.Add(item);
         }
 
-        private string ChangeMoodsToUppercase(string text)
-        {
-            text = text.Replace("()", string.Empty);
-            text = text.Replace("[]", string.Empty);
-
-            int idx = text.IndexOfAny(HIChars);
-            if (idx < 0 || idx + 1 >= text.Length)
-            {
-                return text;
-            }
-
-            char openBracket = text[idx];
-            char closeBracket = '\0';
-            switch (openBracket)
-            {
-                case '(':
-                    closeBracket = ')';
-                    break;
-                case '[':
-                    closeBracket = ']';
-                    break;
-            }
-
-            do
-            {
-                int endIdx = text.IndexOf(closeBracket, idx + 1); // ] or )
-                // There most be at lease one chars inside brackets.
-                if (endIdx < idx + 2)
-                {
-                    break;
-                }
-                string moodText = text.Substring(idx, endIdx - idx + 1);
-                moodText = StyleMoodsAndFeelings(moodText);
-                text = text.Remove(idx, endIdx - idx + 1).Insert(idx, moodText);
-                idx = text.IndexOf(openBracket, endIdx + 1); // ( or [
-            }
-            while (idx >= 0);
-            return text.FixExtraSpaces();
-        }
-
-        private string StyleMoodsAndFeelings(string moodText)
-        {
-            var st = new StripableText(moodText);
-            moodText = st.StrippedText;
-            switch (_hiStyle)
-            {
-                case HIStyle.UpperLowerCase:
-                    SB.Clear();
-                    bool isUpperTime = true;
-                    foreach (char myChar in moodText)
-                    {
-                        if (!char.IsLetter(myChar))
-                        {
-                            SB.Append(myChar);
-                        }
-                        else
-                        {
-                            SB.Append(isUpperTime ? char.ToUpper(myChar) : char.ToLower(myChar));
-                            isUpperTime = !isUpperTime;
-                        }
-                    }
-                    moodText = SB.ToString();
-                    break;
-                case HIStyle.FirstUppercase:
-                    moodText = RegexFirstChar1.Replace(moodText.ToLower(), x => x.Value.ToUpper()); // foobar to Foobar
-                    break;
-                case HIStyle.UpperCase:
-                    moodText = moodText.ToUpper();
-                    break;
-                case HIStyle.LowerCase:
-                    moodText = moodText.ToLower();
-                    break;
-            }
-            return st.CombineWithPrePost(moodText);
-        }
-
-        private string NarratorToUpper(string text)
-        {
-            string before = text;
-            string t = Utilities.RemoveHtmlTags(text, true).TrimEnd().TrimEnd('"');
-            var index = t.IndexOf(':');
-
-            // like: "Ivandro Says:"
-            if (index == t.Length - 1 || text.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-            {
-                return text;
-            }
-
-            string[] lines = text.SplitToLines();
-            for (int i = 0; i < lines.Length; i++)
-            {
-                string line = lines[i];
-                var noTagText = Utilities.RemoveHtmlTags(line, true).Trim();
-                index = noTagText.IndexOf(':');
-                if (index < 1 || !CanUpper(noTagText, index))
-                {
-                    continue;
-                }
-                // Ivandro ismael:
-                // hello world!
-                if (i > 0 && index + 1 >= noTagText.Length)
-                {
-                    continue;
-                }
-                int colonIndex = line.IndexOf(':');
-                var st = new StripableText(line.Substring(0, colonIndex + 1));
-                ConvertToUpper(st);
-                //st.StrippedText = preTextStyled;
-                lines[i] = st.MergedString + line.Substring(colonIndex + 1);
-            }
-            return string.Join(Environment.NewLine, lines);
-        }
-
-        private bool CanUpper(string line, int index)
-        {
-            if ((index + 1 >= line.Length) || char.IsDigit(line[index + 1]))
-                return false;
-            line = line.Substring(0, index);
-            if (line.EndsWith("improved by", StringComparison.OrdinalIgnoreCase) ||
-                line.EndsWith("corrected by", StringComparison.OrdinalIgnoreCase))
-                return false;
-            return true;
-        }
-
         private void buttonApply_Click(object sender, EventArgs e)
         {
             if (listViewFixes.Items.Count == 0)
@@ -399,23 +288,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.Columns[4].Width = newWidth;
         }
 
-        /// <summary>
-        /// Converts narrator/speaker name to uppercase.
-        /// </summary>
-        private void ConvertToUpper(StripableText st)
-        {
-            // (Adele: ...)
-            if (st.Pre.ContainsAny(HIChars) ||
-                st.StrippedText.StartsWith("http", StringComparison.OrdinalIgnoreCase) ||
-                st.StrippedText.EndsWith("https", StringComparison.OrdinalIgnoreCase) ||
-                st.StrippedText.EndsWith("http", StringComparison.OrdinalIgnoreCase))
-            {
-                return;
-            }
-            string beforeChanges = st.StrippedText;
-            st.StrippedText = st.StrippedText.ToUpper();
-        }
-
         private void listViewFixes_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
             Paragraph p = null;
@@ -429,6 +301,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 _notAllowedFixes.Add(p.Id);
             }
+        }
+
+        private void checkBoxMoods_CheckedChanged(object sender, EventArgs e)
+        {
+            _hearingImpaired.Config.MoodsToUppercase = checkBoxMoods.Checked;
+            GeneratePreview();
         }
     }
 }

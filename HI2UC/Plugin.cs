@@ -17,7 +17,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "Hearing Impaired to Uppercase";
 
-        decimal IPlugin.Version => 3.2M; //Gets or sets the major, minor, build, and revision numbers of the assembly
+        decimal IPlugin.Version => 3.3M; //Gets or sets the major, minor, build, and revision numbers of the assembly
 
         #endregion
 
@@ -46,7 +46,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // Load raws subtitle lines into Subtitle object
             srt.LoadSubtitle(sub, list, subtitleFileName);
 
-            IPlugin HI2UC = (IPlugin)this;
+            IPlugin HI2UC = this;
             using (var form = new PluginForm(parentForm, sub, HI2UC.Name, HI2UC.Description))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)

@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\HearingImpaired.cs" />
     <Compile Include="Classes\StringExtensions.cs" />
     <Compile Include="Enums\HIStyle.cs" />
     <Compile Include="Interfaces\ITextConverter.cs" />
