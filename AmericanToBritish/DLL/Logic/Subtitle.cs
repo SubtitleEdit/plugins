@@ -5,7 +5,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
 {
     internal class Subtitle
     {
-        private List<Paragraph> _paragraphs;
+        private readonly IList<Paragraph> _paragraphs;
         private readonly SubRip _format;
 
         private bool _wasLoadedWithFrameNumbers;
@@ -13,11 +13,12 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
 
         public Subtitle(SubRip subrip)
         {
+            _format = subrip;
             _paragraphs = new List<Paragraph>();
             FileName = "Untitled";
         }
 
-        public List<Paragraph> Paragraphs
+        public IList<Paragraph> Paragraphs
         {
             get
             {
