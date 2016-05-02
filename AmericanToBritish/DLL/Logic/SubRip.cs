@@ -34,11 +34,6 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             get { return ".srt"; }
         }
 
-        public bool IsTimeBased
-        {
-            get { return true; }
-        }
-
         public string Name
         {
             get { return "SubRip"; }
@@ -58,7 +53,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             {
                 _lineNumber++;
                 string line = lines[i].TrimEnd();
-                line = line.Trim(Convert.ToChar(127)); // 127=delete acscii
+                line = line.Trim('\u007F'); // 127=delete acscii
 
                 string next = string.Empty;
                 if (i + 1 < lines.Count)
@@ -87,9 +82,6 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             foreach (Paragraph p in subtitle.Paragraphs)
             {
                 p.Text = p.Text.Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
-                //if (Regex.IsMatch(p.Text, Utilities.REGEXHEARINGIMPAIRED))
-                //    p.HearingImpaired = true;
-                //p.GetHearingImpairedText(Paragraph.HearingImpairedType.FeelingsAndMoods);
             }
 
             if (_errorCount < 100)
@@ -113,10 +105,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
 
         private bool IsText(string text)
         {
-            if (string.IsNullOrWhiteSpace(text) || Utilities.IsInteger(text) || RegexTimeCodes.IsMatch(text))
-                return false;
-
-            return true;
+            return !(string.IsNullOrWhiteSpace(text) || Utilities.IsInteger(text) || RegexTimeCodes.IsMatch(text));
         }
 
         private void ReadLine(Subtitle subtitle, string line, string next)
@@ -181,11 +170,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             }
         }
 
-        private string RemoveBadChars(string line)
-        {
-            line = line.Replace('\0', ' ');
-            return line;
-        }
+        private string RemoveBadChars(string line) => line.Replace('\0', ' ');
 
         private bool TryReadTimeCodesLine(string line, Paragraph paragraph)
         {
