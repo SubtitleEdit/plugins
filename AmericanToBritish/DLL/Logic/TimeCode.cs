@@ -11,9 +11,9 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             _time = timeSpan;
         }
 
-        public TimeCode(int hour, int minute, int seconds, int milliseconds)
+        public TimeCode(int hours, int minutes, int seconds, int milliseconds)
         {
-            _time = new TimeSpan(0, hour, minute, seconds, milliseconds);
+            _time = new TimeSpan(0, hours, minutes, seconds, milliseconds);
         }
 
         public int Hours
