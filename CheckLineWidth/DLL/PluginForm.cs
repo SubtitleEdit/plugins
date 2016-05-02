@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    public partial class PluginForm : Form
+    internal partial class PluginForm : Form
     {
         private const string BreakChars = " \".!?,)([]<>:;♪{}-/#*|¿¡\r\n\t";
         public string FixedSubtitle { get; set; }
@@ -168,7 +168,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            FixedSubtitle = _subtitle.ToText(new SubRip());
+            FixedSubtitle = _subtitle.ToText();
             DialogResult = DialogResult.OK;
         }
 

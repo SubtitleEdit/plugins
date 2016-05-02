@@ -10,7 +10,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
     public static class Utilities
     {
 
-        internal static readonly char[] NewLineChars = Environment.NewLine.ToCharArray();
+        public static readonly char[] NewLineChars = Environment.NewLine.ToCharArray();
 
         public static bool StartsWith(this string s, char c)
         {
@@ -42,7 +42,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return source.IndexOf(value, comparisonType) >= 0;
         }
 
-        internal static string AssemblyVersion
+        public static string AssemblyVersion
         {
             get
             {
@@ -101,12 +101,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return RemoveHtmlFontTag(s).Trim();
         }
 
-        internal static string GetHtmlColorCode(Color color)
+        public static string GetHtmlColorCode(Color color)
         {
             return string.Format("#{0:x2}{1:x2}{2:x2}", color.R, color.G, color.B);
         }
 
-        internal static string RemoveParagraphTag(string s)
+        public static string RemoveParagraphTag(string s)
         {
             s = Regex.Replace(s, "(?i)</?p>", string.Empty, RegexOptions.Compiled);
             var idx = s.IndexOf("<p", StringComparison.OrdinalIgnoreCase);
@@ -154,7 +154,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return true;
         }
 
-        internal static string AutoBreakLine(string p)
+        public static string AutoBreakLine(string p)
         {
             return AutoBreakLine(p, 43, 10, "en");
         }
@@ -400,7 +400,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return s;
         }
 
-        internal static int GetNumberOfLines(string text)
+        public static int GetNumberOfLines(string text)
         {
             if (string.IsNullOrEmpty(text))
                 return 0;
