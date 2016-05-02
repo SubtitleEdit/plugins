@@ -8,15 +8,14 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
         private readonly IList<Paragraph> _paragraphs;
         private readonly SubRip _format;
 
-        private bool _wasLoadedWithFrameNumbers;
-        public string FileName { get; set; }
-
         public Subtitle(SubRip subrip)
         {
             _format = subrip;
             _paragraphs = new List<Paragraph>();
             FileName = "Untitled";
         }
+
+        public string FileName { get; set; }
 
         public IList<Paragraph> Paragraphs
         {

@@ -59,6 +59,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 _defaultColor = BackColor;
             }
 
+            public static WordPair GetValueOrNull(string americanWord)
+            {
+                LinkedList<WordPair> wpl;
+                return PairsByUs.TryGetValue(americanWord, out wpl) ? wpl.First.Value : null;
+            }
+
             public static void Shutdown()
             {
                 _sortIndexCounter = 0;
@@ -123,9 +129,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public void Initialize(Stream stream)
         {
             labelSource.Text = "Source: Embedded-List";
-            textBoxAmerican.Enabled = false;
             textBoxBritish.Enabled = false;
-            buttonAdd.Enabled = false;
+            buttonAdd.Text = "Find";
             InitializeListView(XDocument.Load(stream));
         }
 
@@ -163,24 +168,30 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             if (americanWord.Length > 0)
             {
-                foreach (ListViewItem item in listView1.Items)
+                var item = WordPair.GetValueOrNull(americanWord);
+                if (item != null)
                 {
-                    if (americanWord == item.Text.ToLowerInvariant())
-                    {
-                        listView1.SelectedItems.Clear();
-                        item.EnsureVisible();
-                        item.Selected = true;
-                        item.Focused = true;
-                        listView1.Select();
-                        return;
-                    }
+                    listView1.SelectedItems.Clear();
+                    item.EnsureVisible();
+                    item.Selected = true;
+                    item.Focused = true;
+                    listView1.Select();
+                    return;
                 }
                 if (britishWord.Length == 0 || americanWord == britishWord)
                 {
-                    textBoxBritish.Select();
+                    if (textBoxBritish.Enabled)
+                    {
+                        textBoxBritish.Select();
+                    }
+                    else
+                    {
+                        textBoxAmerican.SelectAll();
+                        textBoxAmerican.Select();
+                    }
                     return;
                 }
-                if (_xdoc != null)
+                if (americanWord.Length > 1 && britishWord.Length > 1 && _xdoc != null)
                 {
                     var node = new XElement("Word", new XAttribute("us", americanWord), new XAttribute("br", britishWord));
                     listView1.Items.Add(new WordPair(americanWord, britishWord, node));
@@ -255,14 +266,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     textBoxBritish.Select();
                 e.SuppressKeyPress = true;
             }
-            else if (e.KeyData == Keys.Left)
-            {
-                SetFocusToHighlighted(Up);
-                e.SuppressKeyPress = true;
-            }
             else if (e.KeyData == Keys.Right)
             {
                 SetFocusToHighlighted(Down);
+                e.SuppressKeyPress = true;
+            }
+            else if (e.KeyData == Keys.Left)
+            {
+                SetFocusToHighlighted(Up);
                 e.SuppressKeyPress = true;
             }
         }
