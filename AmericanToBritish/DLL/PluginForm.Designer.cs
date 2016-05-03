@@ -279,7 +279,9 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "PluginForm";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.PluginForm_FormClosed);
             this.Shown += new System.EventHandler(this.PluginForm_Shown);
+            this.SizeChanged += new System.EventHandler(this.PluginForm_SizeChanged);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PluginForm_KeyDown);
             this.Resize += new System.EventHandler(this.PluginForm_Resize);
             this.contextMenuStrip1.ResumeLayout(false);

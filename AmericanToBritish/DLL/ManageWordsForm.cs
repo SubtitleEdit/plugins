@@ -231,6 +231,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 buttonAdd_Click(null, null);
                 e.SuppressKeyPress = true;
             }
+            else if (e.KeyData == Keys.Escape)
+            {
+                DialogResult = DialogResult.Cancel;
+                e.SuppressKeyPress = true;
+            }
         }
 
         private void textBoxBritishAmerican_KeyDown(object sender, KeyEventArgs e)

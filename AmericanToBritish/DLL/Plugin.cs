@@ -53,8 +53,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (srt.Errors > 0)
             {
                 var s = srt.Errors > 1 ? "s" : string.Empty;
-                MessageBox.Show($"{srt.Errors} error{s} found while parsing .srt", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"{srt.Errors} error{s} found while parsing .srt", $"SubRip Parse Error{s}", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return string.Empty;
             }
+
             using (var form = new PluginForm(sub, (this as IPlugin).Name, (this as IPlugin).Description))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)

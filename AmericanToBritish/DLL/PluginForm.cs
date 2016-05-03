@@ -29,31 +29,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _subtitle = subtitle;
             _converter = new AmericanToBritishConverter();
             _localFileName = Utilities.GetWordListFileName();
-
-            SizeChanged += delegate
-            {
-                var width = (Width - (130 + listViewFixes.Left * 2)) / 2;
-                columnHeader7.Width = width;
-                columnHeader8.Width = width;
-            };
-
-            FormClosed += delegate
-            {
-                var extends = radioButtonBothLists.Checked || (radioButtonBuiltInList.Checked && _localFileExtendsBuiltIn);
-                if (extends != _localFileExtendsBuiltIn)
-                {
-                    try
-                    {
-                        var xmldoc = new System.Xml.XmlDocument { XmlResolver = null };
-                        xmldoc.Load(_localFileName);
-                        xmldoc.DocumentElement.SetAttribute("ExtendsBuiltInWordList", extends.ToString(CultureInfo.InvariantCulture));
-                        xmldoc.Save(_localFileName);
-                    }
-                    catch
-                    {
-                    }
-                }
-            };
         }
 
         private void buttonOK_Click(object sender, EventArgs e)
@@ -158,14 +133,29 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
                 GeneratePreview();
                 Enabled = true;
+                Cursor = Cursors.Default;
             }
             catch (Exception exception)
             {
+                Cursor = Cursors.Default;
                 MessageBox.Show(exception.Message);
             }
-            finally
+        }
+
+        private void PluginForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            var extends = radioButtonBothLists.Checked || (radioButtonBuiltInList.Checked && _localFileExtendsBuiltIn);
+            if (extends != _localFileExtendsBuiltIn)
             {
-                Cursor = Cursors.Default;
+                try
+                {
+                    var xdoc = XDocument.Load(_localFileName);
+                    xdoc.Root.SetAttributeValue("ExtendsBuiltInWordList", extends);
+                    xdoc.Save(_localFileName);
+                }
+                catch
+                {
+                }
             }
         }
 
@@ -186,10 +176,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.Columns[listViewFixes.Columns.Count - 1].Width = -1;
         }
 
+        private void PluginForm_SizeChanged(object sender, EventArgs e)
+        {
+            var width = Width - (130 + listViewFixes.Left * 2);
+            columnHeader7.Width = width / 2;
+            columnHeader8.Width = width - columnHeader7.Width;
+        }
+
         private void PluginForm_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape)
+            if (e.KeyData == Keys.Escape)
+            {
                 DialogResult = DialogResult.Cancel;
+                e.SuppressKeyPress = true;
+            }
         }
 
         private void toolStripMenuItemManageLocalwords_Click(object sender, EventArgs e)
