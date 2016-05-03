@@ -291,7 +291,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private bool CreateLocalWordList(bool emptyList)
         {
-            if (MessageBox.Show("Local word list does not exist, do you want to create one?", "Local word list not found!", MessageBoxButtons.YesNo) == DialogResult.OK)
+            if (MessageBox.Show("Local word list does not exist, do you want to create one?", "Local word list not found!", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 try
                 {
