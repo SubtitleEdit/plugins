@@ -12,7 +12,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private static readonly Regex RegexExtraSpaces = new Regex(@"(?<=[\(\[]) +| +(?=[\)\]])", RegexOptions.Compiled);
         private static readonly Regex RegexFirstChar = new Regex(@"\b\w", RegexOptions.Compiled);
 
-        private readonly StringBuilder Sbuilder = new StringBuilder();
+        private readonly Lazy<StringBuilder> _lazySb = new Lazy<StringBuilder>();
+        private StringBuilder _sb;
 
         public HearingImpaired(Configuration config)
         {
@@ -25,7 +26,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             int index = noTagText.IndexOf(':');
 
             // Skip single line that ends with ':'.
-            if ((index + 1 == noTagText.Length) || noTagText.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+            if ((index < 0) || (index + 1 == noTagText.Length) || noTagText.StartsWith("http", StringComparison.OrdinalIgnoreCase))
             {
                 return text;
             }
@@ -43,9 +44,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
                 if (IsQualifiedNarrator(line, colonIdx))
                 {
-                    string preText = line.Substring(0, colonIdx + 1);
+                    // Find index from original text.
+                    colonIdx = line.IndexOf(':') + 1;
+                    string preText = line.Substring(0, colonIdx);
                     preText = Customize(preText);
-                    lines[i] = preText + line.Substring(colonIdx + 1);
+                    lines[i] = preText + line.Substring(colonIdx);
                 }
             }
             return string.Join(Environment.NewLine, lines);
@@ -65,7 +68,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             int idx = text.IndexOfAny(HIChars);
             char moodStartChar = text[idx];
             char moodEndChar = (moodStartChar == '(') ? ')' : ']';
-
             do
             {
                 int endIdx = text.IndexOf(moodEndChar, idx + 1); // ] or )
@@ -80,7 +82,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 idx = text.IndexOf(moodStartChar, endIdx + 1); // ( or [
             }
             while (idx >= 0);
-            return text.FixExtraSpaces();
+            return text;
         }
 
         public string RemoveExtraSpacesInsideTag(string text) => RegexExtraSpaces.Replace(text, string.Empty);
@@ -92,21 +94,29 @@ namespace Nikse.SubtitleEdit.PluginLogic
             switch (Config.Style)
             {
                 case HIStyle.UpperLowerCase:
-                    Sbuilder.Clear();
+                    if (_sb == null)
+                    {
+                        _sb = _lazySb.Value;
+                    }
+                    else
+                    {
+                        _sb.Clear();
+                    }
                     bool isUpperTime = true;
+                    // TODO: Use StringInfo to fix issue with unicode chars?!
                     foreach (char myChar in strippedText)
                     {
                         if (!char.IsLetter(myChar))
                         {
-                            Sbuilder.Append(myChar);
+                            _sb.Append(myChar);
                         }
                         else
                         {
-                            Sbuilder.Append(isUpperTime ? char.ToUpper(myChar) : char.ToLower(myChar));
+                            _sb.Append(isUpperTime ? char.ToUpper(myChar) : char.ToLower(myChar));
                             isUpperTime = !isUpperTime;
                         }
                     }
-                    strippedText = Sbuilder.ToString();
+                    strippedText = _sb.ToString();
                     break;
                 case HIStyle.FirstUppercase:
                     // "foobar foobar" to (Foobar Foobar)

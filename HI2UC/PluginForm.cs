@@ -12,7 +12,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         public string FixedSubtitle { get; private set; }
         private int _totalChanged;
-        private readonly Form _parentForm;
         private readonly Subtitle _subtitle;
 
         private Dictionary<string, string> _fixedTexts = new Dictionary<string, string>();
@@ -22,10 +21,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private readonly HearingImpaired _hearingImpaired;
 
-        public PluginForm(Form parentForm, Subtitle subtitle, string name, string description)
+        public PluginForm(Subtitle subtitle, string name, string description)
         {
             InitializeComponent();
-            _parentForm = parentForm;
             _subtitle = subtitle;
             labelDesc.Text = "Description: " + description;
             _hearingImpaired = new HearingImpaired(new Configuration()
@@ -154,6 +152,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void GeneratePreview()
         {
+            // One of the options most be checked.
             if (!(checkBoxMoods.Checked || checkBoxNames.Checked || checkBoxRemoveSpaces.Checked))
             {
                 return;
@@ -169,11 +168,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             foreach (Paragraph p in _subtitle.Paragraphs)
             {
                 var text = p.Text;
-                var oldText = text;
                 bool containsMood = false;
                 bool containsNarrator = false;
 
-                //Remove Extra Spaces inside brackets ( foobar ) to (foobar)
+                // Remove Extra Spaces inside brackets ( foobar ) to (foobar)
                 string beforeChanges = text;
                 if (checkBoxRemoveSpaces.Checked)
                 {
@@ -184,7 +182,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     beforeChanges = text;
                     text = _hearingImpaired.MoodsToUppercase(text);
-                    containsMood = beforeChanges != text;
+                    if (beforeChanges != text)
+                    {
+                        text = text.FixExtraSpaces();
+                        containsMood = true;
+                    }
                 }
                 // Narrator:
                 if (checkBoxNames.Checked)
@@ -197,7 +199,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (containsMood || containsNarrator)
                 {
                     _fixedTexts.Add(p.Id, text);
-                    oldText = Utilities.RemoveHtmlTags(oldText, true);
+                    string oldText = Utilities.RemoveHtmlTags(p.Text, true);
                     text = Utilities.RemoveHtmlTags(text, true);
                     AddFixToListView(p, oldText, text, containsMood, containsNarrator);
                     _totalChanged++;

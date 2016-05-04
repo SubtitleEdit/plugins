@@ -47,7 +47,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             srt.LoadSubtitle(sub, list, subtitleFileName);
 
             IPlugin HI2UC = this;
-            using (var form = new PluginForm(parentForm, sub, HI2UC.Name, HI2UC.Description))
+            using (var form = new PluginForm(sub, HI2UC.Name, HI2UC.Description))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
                     return form.FixedSubtitle;
