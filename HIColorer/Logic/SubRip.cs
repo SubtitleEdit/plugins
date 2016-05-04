@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    internal class SubRip : SubtitleFormat
+    internal class SubRip
     {
         private static Regex _regexTimeCodes = new Regex(@"^-?\d+:-?\d+:-?\d+[:,]-?\d+\s*-->\s*-?\d+:-?\d+:-?\d+[:,]-?\d+$", RegexOptions.Compiled);
 
@@ -16,6 +16,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private int _lineNumber;
 
         private Paragraph _paragraph;
+        private int _errorCount;
 
         private enum ExpectingLine
         {
@@ -24,7 +25,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Text
         }
 
-        internal override List<string> AlternateExtensions
+        public List<string> AlternateExtensions
         {
             get
             {
@@ -32,31 +33,24 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        internal string Errors { get; private set; }
+        public string Errors { get; private set; }
 
-        internal override string Extension
+        public string Extension
         {
             get { return ".srt"; }
         }
 
-        internal override bool IsTimeBased
+        public bool IsTimeBased
         {
             get { return true; }
         }
 
-        internal override string Name
+        public string Name
         {
             get { return "SubRip"; }
         }
 
-        internal override bool IsMine(List<string> lines, string fileName)
-        {
-            var subtitle = new Subtitle();
-            LoadSubtitle(subtitle, lines, fileName);
-            return subtitle.Paragraphs.Count > _errorCount;
-        }
-
-        internal override void LoadSubtitle(Subtitle subtitle, List<string> lines, string fileName)
+        public void LoadSubtitle(Subtitle subtitle, IList<string> lines, string fileName)
         {
             bool doRenum = false;
             _lineNumber = 0;
@@ -92,21 +86,22 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
                 ReadLine(subtitle, line, next);
             }
-
-            if (_paragraph.Text.Trim().Length > 0)
+            if (!string.IsNullOrWhiteSpace(_paragraph.Text))
+            {
                 subtitle.Paragraphs.Add(_paragraph);
-
+            }
             foreach (Paragraph p in subtitle.Paragraphs)
+            {
                 p.Text = p.Text.Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
-
-            if (_errorCount < 100)
-                if (doRenum)
-                    subtitle.Renumber(1);
-
+            }
+            if (_errorCount < 100 && doRenum)
+            {
+                subtitle.Renumber(1);
+            }
             Errors = _errorCount.ToString();
         }
 
-        internal override string ToText(Subtitle subtitle, string title)
+        public string ToText(Subtitle subtitle, string title)
         {
             const string paragraphWriteFormat = "{0}\r\n{1} --> {2}\r\n{3}\r\n\r\n";
             var sb = new StringBuilder();
@@ -122,13 +117,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private bool IsText(string text)
         {
-            if (text.Trim().Length == 0)
-                return false;
-
-            if (Utilities.IsInteger(text) || _regexTimeCodes.IsMatch(text))
-                return false;
-
-            return true;
+            return !(string.IsNullOrWhiteSpace(text)) || Utilities.IsInteger(text) || _regexTimeCodes.IsMatch(text));
         }
 
         private void ReadLine(Subtitle subtitle, string line, string next)

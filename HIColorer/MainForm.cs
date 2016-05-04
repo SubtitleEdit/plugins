@@ -43,7 +43,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (sender == null) return;
             if (sender == buttonNarratorColor || sender == labelNarratorsColor)
             {
-                if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (colorDialog1.ShowDialog() == DialogResult.OK)
                 {
                     _narratorColor = colorDialog1.Color;
                     this.labelNarratorsColor.BackColor = _narratorColor;
@@ -52,7 +52,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             else
             {
-                if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (colorDialog1.ShowDialog() == DialogResult.OK)
                 {
                     _moodsColor = colorDialog1.Color;
                     this.labelMoodsColor.BackColor = _moodsColor;
@@ -76,24 +76,24 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (text != oldText)
                     p.Text = text;
             }
-            FixedSubtitle = _subtitle.ToText(new SubRip());
-            DialogResult = System.Windows.Forms.DialogResult.OK;
+            FixedSubtitle = _subtitle.ToText();
+            DialogResult = DialogResult.OK;
         }
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
             if (!checkBoxEnabledMoods.Checked && !checkBoxEnabledNarrator.Checked)
-                DialogResult = System.Windows.Forms.DialogResult.Cancel;
+                DialogResult = DialogResult.Cancel;
             FindHearingImpairedNotation();
-            FixedSubtitle = _subtitle.ToText(new SubRip());
+            FixedSubtitle = _subtitle.ToText();
             if (string.IsNullOrEmpty(FixedSubtitle))
-                DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            DialogResult = System.Windows.Forms.DialogResult.OK;
+                DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.OK;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
-            DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
 
         private void FindHearingImpairedNotation()

@@ -37,7 +37,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             get { return string.Empty; }
         }
 
-        string IPlugin.DoAction(System.Windows.Forms.Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
+        string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
             subtitle = subtitle.Trim();
             if (string.IsNullOrEmpty(subtitle))
@@ -46,11 +46,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return string.Empty;
             }
-            var lines = new List<String>();
-            lines = subtitle.Replace(Environment.NewLine, "\n").Replace('\r', '\n').Split('\n').ToList();
-            var sub = new Subtitle();
             var subRip = new SubRip();
-            subRip.LoadSubtitle(sub, lines, subtitleFileName);
+            var sub = new Subtitle(subRip);
+            subRip.LoadSubtitle(sub, subtitle.SplitToLines(), subtitleFileName);
             if (sub.Paragraphs.Count < 1)
                 return string.Empty;
 

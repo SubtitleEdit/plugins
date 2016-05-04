@@ -7,15 +7,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal static class Utilities
     {
-        public static bool Contains(this string s, string find, StringComparison comparison)
-        {
-            return s.Length >= find.Length && s.IndexOf(find, comparison) >= 0;
-        }
-        public static bool Contains(this string s, char c)
-        {
-            return s.Length > 0 && s.IndexOf(c) >= 0;
-        }
-
         public static string AssemblyVersion
         {
             get
