@@ -7,7 +7,7 @@ using Nikse.SubtitleEdit.PluginLogic;
 
 namespace Nikse.SubtitleEdit.PluginLogic.Controls
 {
-    public sealed class SubtitleListView : ListView
+    internal sealed class SubtitleListView : ListView
     {
         public const int ColumnIndexNumber = 0;
         public const int ColumnIndexStart = 1;
@@ -68,7 +68,6 @@ namespace Nikse.SubtitleEdit.PluginLogic.Controls
         public bool IsExtraColumnVisible { get; private set; }
         public bool DisplayExtraFromExtra { get; set; }
         public bool UseSyntaxColoring { get; set; }
-        private bool _saveColumnWidthChanges;
 
         public int FirstVisibleIndex
         {
@@ -259,7 +258,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Controls
             //if (_settings != null && _settings.General.ListViewColumnsRememberSize && _settings.General.ListViewNumberWidth > 1)
             //    Columns[ColumnIndexNumber].Width = _settings.General.ListViewNumberWidth;
             //else
-                Columns[ColumnIndexNumber].Width = 55;
+            Columns[ColumnIndexNumber].Width = 55;
 
             InitializeTimestampColumnWidths(parentForm);
 
@@ -408,9 +407,9 @@ namespace Nikse.SubtitleEdit.PluginLogic.Controls
             foreach (Paragraph paragraph in paragraphs)
             {
                 Add(paragraph);
-                if (DisplayExtraFromExtra && IsExtraColumnVisible && Items[i].SubItems.Count > ColumnIndexExtra)
-                    Items[i].SubItems[ColumnIndexExtra].Text = paragraph.Extra;
-//                SyntaxColorLine(paragraphs, i, paragraph);
+                //if (DisplayExtraFromExtra && IsExtraColumnVisible && Items[i].SubItems.Count > ColumnIndexExtra)
+                //    Items[i].SubItems[ColumnIndexExtra].Text = paragraph.Extra;
+                // SyntaxColorLine(paragraphs, i, paragraph);
                 i++;
             }
 
@@ -435,8 +434,8 @@ namespace Nikse.SubtitleEdit.PluginLogic.Controls
                 //Paragraph alternate = Utilities.GetOriginalParagraph(i, paragraph, paragraphsAlternate);
                 //if (alternate != null)
                 //    SetAlternateText(i, alternate.Text);
-                if (DisplayExtraFromExtra && IsExtraColumnVisible)
-                    SetExtraText(i, paragraph.Extra, ForeColor);
+                //if (DisplayExtraFromExtra && IsExtraColumnVisible)
+                //    SetExtraText(i, paragraph.Extra, ForeColor);
                 //SyntaxColorLine(paragraphs, i, paragraph);
                 i++;
             }
@@ -448,7 +447,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Controls
                 FirstVisibleIndex = -1;
         }
 
-      
+
 
         private void Add(Paragraph paragraph)
         {
@@ -477,13 +476,13 @@ namespace Nikse.SubtitleEdit.PluginLogic.Controls
                 //if (paragraph.StartTime.IsMaxTime)
                 //    subItem = new ListViewItem.ListViewSubItem(item, "-");
                 //else
-                    subItem = new ListViewItem.ListViewSubItem(item, paragraph.StartTime.ToString());
+                subItem = new ListViewItem.ListViewSubItem(item, paragraph.StartTime.ToString());
                 item.SubItems.Add(subItem);
 
                 //if (paragraph.EndTime.IsMaxTime)
                 //    subItem = new ListViewItem.ListViewSubItem(item, "-");
                 //else
-                    subItem = new ListViewItem.ListViewSubItem(item, paragraph.EndTime.ToString());
+                subItem = new ListViewItem.ListViewSubItem(item, paragraph.EndTime.ToString());
                 item.SubItems.Add(subItem);
 
                 subItem = new ListViewItem.ListViewSubItem(item, string.Format("{0},{1:000}", paragraph.Duration.Seconds, paragraph.Duration.Milliseconds));
@@ -626,12 +625,12 @@ namespace Nikse.SubtitleEdit.PluginLogic.Controls
                     //if (paragraph.StartTime.IsMaxTime)
                     //    item.SubItems[ColumnIndexStart].Text = "-";
                     //else
-                        item.SubItems[ColumnIndexStart].Text = paragraph.StartTime.ToString();
+                    item.SubItems[ColumnIndexStart].Text = paragraph.StartTime.ToString();
 
                     //if (paragraph.EndTime.IsMaxTime)
                     //    item.SubItems[ColumnIndexEnd].Text = "-";
                     //else
-                        item.SubItems[ColumnIndexEnd].Text = paragraph.EndTime.ToString();
+                    item.SubItems[ColumnIndexEnd].Text = paragraph.EndTime.ToString();
 
                     item.SubItems[ColumnIndexDuration].Text = string.Format("{0},{1:000}", paragraph.Duration.Seconds, paragraph.Duration.Milliseconds);
                 }
@@ -808,12 +807,12 @@ namespace Nikse.SubtitleEdit.PluginLogic.Controls
                     //if (paragraph.StartTime.IsMaxTime)
                     //    item.SubItems[ColumnIndexStart].Text = "-";
                     //else
-                        item.SubItems[ColumnIndexStart].Text = paragraph.StartTime.ToString();
+                    item.SubItems[ColumnIndexStart].Text = paragraph.StartTime.ToString();
 
                     //if (paragraph.EndTime.IsMaxTime)
                     //    item.SubItems[ColumnIndexEnd].Text = "-";
                     //else
-                        item.SubItems[ColumnIndexEnd].Text = paragraph.EndTime.ToString();
+                    item.SubItems[ColumnIndexEnd].Text = paragraph.EndTime.ToString();
 
                     item.SubItems[ColumnIndexDuration].Text = string.Format("{0},{1:000}", paragraph.Duration.Seconds, paragraph.Duration.Milliseconds);
                     item.SubItems[ColumnIndexEnd].Text = paragraph.EndTime.ToString();
@@ -845,12 +844,12 @@ namespace Nikse.SubtitleEdit.PluginLogic.Controls
                     //if (paragraph.StartTime.IsMaxTime)
                     //    item.SubItems[ColumnIndexStart].Text = "-";
                     //else
-                        item.SubItems[ColumnIndexStart].Text = paragraph.StartTime.ToString();
+                    item.SubItems[ColumnIndexStart].Text = paragraph.StartTime.ToString();
 
                     //if (paragraph.EndTime.IsMaxTime)
                     //    item.SubItems[ColumnIndexEnd].Text = "-";
                     //else
-                        item.SubItems[ColumnIndexEnd].Text = paragraph.EndTime.ToString();
+                    item.SubItems[ColumnIndexEnd].Text = paragraph.EndTime.ToString();
 
                     item.SubItems[ColumnIndexDuration].Text = string.Format("{0},{1:000}", paragraph.Duration.Seconds, paragraph.Duration.Milliseconds);
                 }

@@ -51,8 +51,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             var list = subtitle.Replace(Environment.NewLine, "\n").Split('\n').ToList();
 
-            var sub = new Subtitle();
             var srt = new SubRip();
+            var sub = new Subtitle(srt);
             srt.LoadSubtitle(sub, list, subtitleFileName);
             if (srt.ErrorCount > 0)
             {
