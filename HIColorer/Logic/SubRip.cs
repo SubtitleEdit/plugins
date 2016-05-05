@@ -117,7 +117,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private bool IsText(string text)
         {
-            return !(string.IsNullOrWhiteSpace(text)) || Utilities.IsInteger(text) || _regexTimeCodes.IsMatch(text));
+            return !(string.IsNullOrWhiteSpace(text) || Utilities.IsInteger(text) || _regexTimeCodes.IsMatch(text));
         }
 
         private void ReadLine(Subtitle subtitle, string line, string next)
