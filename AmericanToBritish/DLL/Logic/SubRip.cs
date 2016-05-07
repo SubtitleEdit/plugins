@@ -71,7 +71,8 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
 
             foreach (Paragraph p in subtitle.Paragraphs)
             {
-                p.Text = p.Text.Substring(Environment.NewLine.Length);
+                if (p.Text.Length > 0)
+                    p.Text = p.Text.Substring(Environment.NewLine.Length);
             }
             subtitle.FileName = fileName;
         }
