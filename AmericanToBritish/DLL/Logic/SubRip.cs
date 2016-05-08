@@ -69,11 +69,6 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             else if (_expecting != LineType.Number)
                 _errorCount++;
 
-            foreach (Paragraph p in subtitle.Paragraphs)
-            {
-                if (p.Text.Length > 0)
-                    p.Text = p.Text.Substring(Environment.NewLine.Length);
-            }
             subtitle.FileName = fileName;
         }
 
@@ -116,7 +111,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
                 }
                 else // (_expecting == LineType.Text)
                 {
-                    _paragraph.Text += Environment.NewLine + _currentLine;
+                    AddCurrentLineToParagraphText();
                 }
             }
             else if ((timecodes = RegexTimeCodes.Match(line)).Success)
@@ -162,7 +157,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
                 }
                 else // (_expecting == LineType.Text)
                 {
-                    _paragraph.Text += Environment.NewLine + _currentLine;
+                    AddCurrentLineToParagraphText();
                 }
             }
             else
@@ -178,10 +173,17 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
                 }
                 else // (_expecting == LineType.Text)
                 {
-                    _paragraph.Text += Environment.NewLine + _currentLine;
+                    AddCurrentLineToParagraphText();
                 }
             }
             return success;
+        }
+
+        private void AddCurrentLineToParagraphText()
+        {
+            if (_paragraph.Text.Length > 0)
+                _paragraph.Text += Environment.NewLine;
+            _paragraph.Text += _currentLine;
         }
 
     }
