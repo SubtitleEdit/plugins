@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
@@ -152,7 +151,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void GeneratePreview()
         {
-            // One of the options most be checked.
+            // One of the options must be checked.
             if (!(checkBoxMoods.Checked || checkBoxNames.Checked || checkBoxRemoveSpaces.Checked))
             {
                 return;
