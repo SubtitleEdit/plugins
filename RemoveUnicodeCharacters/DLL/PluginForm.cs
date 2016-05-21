@@ -142,7 +142,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 foreach (var c in p.Text)
                 {
-                    if (c > 255)
+                    if (c > 255 && !list.Contains(c))
                     {
                         list.Add(c);
                     }
@@ -177,7 +177,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             listViewFixes.BeginUpdate();
             foreach (ListViewItem item in listViewFixes.Items)
-                item.Checked = !item.Checked;
+                item.Checked = selectAll || !item.Checked;
             listViewFixes.EndUpdate();
             Refresh();
         }
@@ -254,9 +254,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 );
                 document.Save(fileName);
             }
-            catch (Exception ex)
+            catch 
             {
-                MessageBox.Show(ex.Message);
+                // ignore save errors
             }
         }
 
