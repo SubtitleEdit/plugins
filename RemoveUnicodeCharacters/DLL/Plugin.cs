@@ -10,7 +10,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "Remove Unicode characters...";
 
-        decimal IPlugin.Version => 0.2M;
+        decimal IPlugin.Version => 0.3M;
 
         string IPlugin.Description => "Remove Unicode characters - or replace them";
 

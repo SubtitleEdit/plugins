@@ -37,12 +37,13 @@
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.labelTotal = new System.Windows.Forms.Label();
             this.buttonInverseSelection = new System.Windows.Forms.Button();
             this.buttonSelectAll = new System.Windows.Forms.Button();
             this.checkBoxUseReplaceList = new System.Windows.Forms.CheckBox();
             this.buttonEditReplaceList = new System.Windows.Forms.Button();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.buttonGoogleIt = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttonOK
@@ -51,7 +52,7 @@
             this.buttonOK.Location = new System.Drawing.Point(795, 472);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
-            this.buttonOK.TabIndex = 0;
+            this.buttonOK.TabIndex = 4;
             this.buttonOK.Text = "&OK";
             this.buttonOK.UseVisualStyleBackColor = true;
             this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
@@ -63,7 +64,7 @@
             this.button1.Location = new System.Drawing.Point(876, 472);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 1;
+            this.button1.TabIndex = 5;
             this.button1.Text = "C&ancel";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.buttonCancel_Click);
@@ -96,9 +97,10 @@
             this.listViewFixes.Location = new System.Drawing.Point(12, 46);
             this.listViewFixes.Name = "listViewFixes";
             this.listViewFixes.Size = new System.Drawing.Size(939, 399);
-            this.listViewFixes.TabIndex = 101;
+            this.listViewFixes.TabIndex = 0;
             this.listViewFixes.UseCompatibleStateImageBehavior = false;
             this.listViewFixes.View = System.Windows.Forms.View.Details;
+            this.listViewFixes.SelectedIndexChanged += new System.EventHandler(this.listViewFixes_SelectedIndexChanged);
             // 
             // columnHeader4
             // 
@@ -124,6 +126,11 @@
             this.columnHeader8.Text = "After";
             this.columnHeader8.Width = 50;
             // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Lines";
+            this.columnHeader1.Width = 575;
+            // 
             // labelTotal
             // 
             this.labelTotal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -140,7 +147,7 @@
             this.buttonInverseSelection.Location = new System.Drawing.Point(93, 451);
             this.buttonInverseSelection.Name = "buttonInverseSelection";
             this.buttonInverseSelection.Size = new System.Drawing.Size(105, 23);
-            this.buttonInverseSelection.TabIndex = 103;
+            this.buttonInverseSelection.TabIndex = 2;
             this.buttonInverseSelection.Text = "Inverse selection";
             this.buttonInverseSelection.UseVisualStyleBackColor = true;
             this.buttonInverseSelection.Click += new System.EventHandler(this.buttonInverseSelection_Click);
@@ -151,7 +158,7 @@
             this.buttonSelectAll.Location = new System.Drawing.Point(12, 451);
             this.buttonSelectAll.Name = "buttonSelectAll";
             this.buttonSelectAll.Size = new System.Drawing.Size(75, 23);
-            this.buttonSelectAll.TabIndex = 104;
+            this.buttonSelectAll.TabIndex = 1;
             this.buttonSelectAll.Text = "Select all";
             this.buttonSelectAll.UseVisualStyleBackColor = true;
             this.buttonSelectAll.Click += new System.EventHandler(this.buttonSelectAll_Click);
@@ -162,7 +169,7 @@
             this.checkBoxUseReplaceList.Location = new System.Drawing.Point(729, 21);
             this.checkBoxUseReplaceList.Name = "checkBoxUseReplaceList";
             this.checkBoxUseReplaceList.Size = new System.Drawing.Size(98, 17);
-            this.checkBoxUseReplaceList.TabIndex = 105;
+            this.checkBoxUseReplaceList.TabIndex = 6;
             this.checkBoxUseReplaceList.Text = "Use replace list";
             this.checkBoxUseReplaceList.UseVisualStyleBackColor = true;
             this.checkBoxUseReplaceList.CheckedChanged += new System.EventHandler(this.checkBoxUseReplaceList_CheckedChanged);
@@ -173,21 +180,28 @@
             this.buttonEditReplaceList.Location = new System.Drawing.Point(833, 17);
             this.buttonEditReplaceList.Name = "buttonEditReplaceList";
             this.buttonEditReplaceList.Size = new System.Drawing.Size(118, 23);
-            this.buttonEditReplaceList.TabIndex = 106;
+            this.buttonEditReplaceList.TabIndex = 7;
             this.buttonEditReplaceList.Text = "Edit replace list";
             this.buttonEditReplaceList.UseVisualStyleBackColor = true;
             this.buttonEditReplaceList.Click += new System.EventHandler(this.EditReplaceList_Click);
             // 
-            // columnHeader1
+            // buttonGoogleIt
             // 
-            this.columnHeader1.Text = "Lines";
-            this.columnHeader1.Width = 575;
+            this.buttonGoogleIt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonGoogleIt.Location = new System.Drawing.Point(204, 451);
+            this.buttonGoogleIt.Name = "buttonGoogleIt";
+            this.buttonGoogleIt.Size = new System.Drawing.Size(162, 23);
+            this.buttonGoogleIt.TabIndex = 3;
+            this.buttonGoogleIt.Text = "Google it";
+            this.buttonGoogleIt.UseVisualStyleBackColor = true;
+            this.buttonGoogleIt.Click += new System.EventHandler(this.buttonGoogleIt_Click);
             // 
             // PluginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(963, 507);
+            this.Controls.Add(this.buttonGoogleIt);
             this.Controls.Add(this.buttonEditReplaceList);
             this.Controls.Add(this.checkBoxUseReplaceList);
             this.Controls.Add(this.buttonSelectAll);
@@ -228,5 +242,6 @@
         private System.Windows.Forms.CheckBox checkBoxUseReplaceList;
         private System.Windows.Forms.Button buttonEditReplaceList;
         private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.Button buttonGoogleIt;
     }
 }

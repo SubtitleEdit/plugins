@@ -16,12 +16,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public string FixedSubtitle { get; private set; }
         private readonly Subtitle _subtitle;
         private int _totalFixes;
-        private SortedDictionary<string, string> _replaceList = new SortedDictionary<string, string>() { { "♪", "#"}, { "♫", "#" } };
+
+        private SortedDictionary<string, string> _replaceList = new SortedDictionary<string, string>()
+        {
+            {"♪", "#"},
+            {"♫", "#"}
+        };
 
         public PluginForm(Subtitle subtitle, string name, string description)
         {
             InitializeComponent();
-
+            buttonGoogleIt.Visible = false;
             Text = name;
             labelDescription.Text = description;
             _subtitle = subtitle;
@@ -41,7 +46,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 if (item.Checked)
                 {
-                    var kvp = (KeyValuePair<char, List<Paragraph>>)item.Tag;
+                    var kvp = (KeyValuePair<char, List<Paragraph>>) item.Tag;
                     foreach (var paragraph in kvp.Value)
                     {
                         string replaceWith = string.Empty;
@@ -71,9 +76,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             DialogResult = DialogResult.Cancel;
         }
 
-        private void AddFixToListView(KeyValuePair<char, List<Paragraph>> kvp, string action, string before, string after)
+        private void AddFixToListView(KeyValuePair<char, List<Paragraph>> kvp, string action, string before,
+            string after)
         {
-            var item = new ListViewItem(string.Empty) { Checked = true, Tag = kvp };
+            var item = new ListViewItem(string.Empty) {Checked = true, Tag = kvp};
             item.SubItems.Add(kvp.Value.Count.ToString());
             item.SubItems.Add(action);
             item.SubItems.Add(before);
@@ -120,7 +126,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     replaceWith = _replaceList[kvp.Key.ToString()];
                 }
-                AddFixToListView(kvp, "\\u" + ((int)kvp.Key).ToString("X4") + "  " + kvp.Key, kvp.Key.ToString(), replaceWith);
+                AddFixToListView(kvp, "\\u" + ((int) kvp.Key).ToString("X4") + "  " + kvp.Key, kvp.Key.ToString(),
+                    replaceWith);
             }
             listViewFixes.EndUpdate();
             if (_totalFixes == 0)
@@ -151,7 +158,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             list.Sort();
             return list;
         }
-       
+
         private void buttonSelectAll_Click(object sender, EventArgs e)
         {
             if (!SubtitleLoaded())
@@ -213,7 +220,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 path = path.Remove(0, 6);
             path = Path.Combine(path, "Plugins");
             if (!Directory.Exists(path))
-                path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Plugins");
+                path =
+                    Path.Combine(
+                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                            "Subtitle Edit"), "Plugins");
             return Path.Combine(path, "RemoveUnicodeCharacters.xml");
         }
 
@@ -226,8 +236,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 foreach (XElement node in doc.Root.Element("ReplaceList").Elements())
                 {
                     string unicodeCharacter = node.Element("Unicode").Value;
-                    string ansiCharacter = node.Element("Ansi").Value;                    
-                    if (!string.IsNullOrEmpty(unicodeCharacter) && unicodeCharacter.Length == 1 &&  !_replaceList.ContainsKey(unicodeCharacter))
+                    string ansiCharacter = node.Element("Ansi").Value;
+                    if (!string.IsNullOrEmpty(unicodeCharacter) && unicodeCharacter.Length == 1 &&
+                        !_replaceList.ContainsKey(unicodeCharacter))
                     {
                         _replaceList.Add(unicodeCharacter, ansiCharacter);
                     }
@@ -242,23 +253,43 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 var fileName = GetSettingsFileName();
                 var document = new XDocument(
                     new XDeclaration("1.0", "utf8", "yes"),
-                    new XComment("This XML file defines the settings for the Subtitle Edit 'Remove Unicode characters' plugin"),
+                    new XComment(
+                        "This XML file defines the settings for the Subtitle Edit 'Remove Unicode characters' plugin"),
                     new XElement("RemoveUnicodeCharactersSettings",
                         new XElement("ReplaceList",
                             _replaceList.Where(p => p.Key.Length > 0).Select(kvp => new XElement("Item",
                                 new XElement("Unicode", kvp.Key),
                                 new XElement("Ansi", kvp.Value))
+                                )
                             )
                         )
-                    )
-                );
+                    );
                 document.Save(fileName);
             }
-            catch 
+            catch
             {
                 // ignore save errors
             }
         }
 
+        private void listViewFixes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listViewFixes.SelectedItems.Count != 1)
+            {
+                buttonGoogleIt.Visible = false;
+                return;
+            }
+
+            buttonGoogleIt.Visible = true;
+            var kvp = (KeyValuePair<char, List<Paragraph>>)listViewFixes.SelectedItems[0].Tag;
+            string hex = ((int)kvp.Key).ToString("X4");
+            buttonGoogleIt.Tag = hex;
+            buttonGoogleIt.Text = string.Format("Google '{0}'", hex);
+        }
+
+        private void buttonGoogleIt_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://www.google.com/search?q=" + buttonGoogleIt.Tag + "+Unicode");
+        }
     }
 }
