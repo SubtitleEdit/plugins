@@ -233,6 +233,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (File.Exists(fileName))
             {
                 XDocument doc = XDocument.Parse(File.ReadAllText(fileName));
+                var useReplaceListNode = doc.Root.Element("UseReplaceList");
+                if (useReplaceListNode != null)
+                    checkBoxUseReplaceList.Checked = Convert.ToBoolean(useReplaceListNode.Value);
+
                 foreach (XElement node in doc.Root.Element("ReplaceList").Elements())
                 {
                     string unicodeCharacter = node.Element("Unicode").Value;
@@ -256,6 +260,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     new XComment(
                         "This XML file defines the settings for the Subtitle Edit 'Remove Unicode characters' plugin"),
                     new XElement("RemoveUnicodeCharactersSettings",
+                        new XElement("UseReplaceList", checkBoxUseReplaceList.Checked.ToString()),
                         new XElement("ReplaceList",
                             _replaceList.Where(p => p.Key.Length > 0).Select(kvp => new XElement("Item",
                                 new XElement("Unicode", kvp.Key),
