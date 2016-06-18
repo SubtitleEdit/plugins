@@ -33,11 +33,14 @@
             this.buttonCancel = new System.Windows.Forms.Button();
             this.labelDescription = new System.Windows.Forms.Label();
             this.listViewFixes = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.contextMenuStripFixes = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItemEdit = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemReset = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparatorFixes1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItemSelectAll = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemInvert = new System.Windows.Forms.ToolStripMenuItem();
             this.labelTotal = new System.Windows.Forms.Label();
@@ -50,8 +53,11 @@
             this.toolStripMenuItemFile = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemManageLocalWords = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemViewBuiltInWords = new System.Windows.Forms.ToolStripMenuItem();
-            this.contextMenuStrip1.SuspendLayout();
+            this.panelEditAfter = new System.Windows.Forms.Panel();
+            this.textBoxEditAfter = new System.Windows.Forms.TextBox();
+            this.contextMenuStripFixes.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.panelEditAfter.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonOK
@@ -92,11 +98,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listViewFixes.CheckBoxes = true;
             this.listViewFixes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader4,
-            this.columnHeader5,
-            this.columnHeader7,
-            this.columnHeader8});
-            this.listViewFixes.ContextMenuStrip = this.contextMenuStrip1;
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3,
+            this.columnHeader4});
+            this.listViewFixes.ContextMenuStrip = this.contextMenuStripFixes;
             this.listViewFixes.FullRowSelect = true;
             this.listViewFixes.GridLines = true;
             this.listViewFixes.HideSelection = false;
@@ -106,34 +112,60 @@
             this.listViewFixes.TabIndex = 0;
             this.listViewFixes.UseCompatibleStateImageBehavior = false;
             this.listViewFixes.View = System.Windows.Forms.View.Details;
+            this.listViewFixes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listViewFixes_KeyDown);
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Apply";
+            this.columnHeader1.Width = 40;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Line #";
+            this.columnHeader2.Width = 50;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Before";
+            this.columnHeader3.Width = 364;
             // 
             // columnHeader4
             // 
-            this.columnHeader4.Text = "Apply";
-            this.columnHeader4.Width = 38;
+            this.columnHeader4.Text = "After";
+            this.columnHeader4.Width = 364;
             // 
-            // columnHeader5
+            // contextMenuStripFixes
             // 
-            this.columnHeader5.Text = "Line #";
-            this.columnHeader5.Width = 50;
-            // 
-            // columnHeader7
-            // 
-            this.columnHeader7.Text = "Before";
-            this.columnHeader7.Width = 378;
-            // 
-            // columnHeader8
-            // 
-            this.columnHeader8.Text = "After";
-            this.columnHeader8.Width = 371;
-            // 
-            // contextMenuStrip1
-            // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.contextMenuStripFixes.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemEdit,
+            this.toolStripMenuItemReset,
+            this.toolStripSeparatorFixes1,
             this.toolStripMenuItemSelectAll,
             this.toolStripMenuItemInvert});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(155, 48);
+            this.contextMenuStripFixes.Name = "contextMenuStripFixes";
+            this.contextMenuStripFixes.Size = new System.Drawing.Size(155, 98);
+            this.contextMenuStripFixes.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripFixes_Opening);
+            // 
+            // toolStripMenuItemEdit
+            // 
+            this.toolStripMenuItemEdit.Name = "toolStripMenuItemEdit";
+            this.toolStripMenuItemEdit.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
+            this.toolStripMenuItemEdit.Size = new System.Drawing.Size(154, 22);
+            this.toolStripMenuItemEdit.Text = "Edit";
+            this.toolStripMenuItemEdit.Click += new System.EventHandler(this.toolStripMenuItemEdit_Click);
+            // 
+            // toolStripMenuItemReset
+            // 
+            this.toolStripMenuItemReset.Name = "toolStripMenuItemReset";
+            this.toolStripMenuItemReset.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this.toolStripMenuItemReset.Size = new System.Drawing.Size(154, 22);
+            this.toolStripMenuItemReset.Text = "Reset";
+            this.toolStripMenuItemReset.Click += new System.EventHandler(this.toolStripMenuItemReset_Click);
+            // 
+            // toolStripSeparatorFixes1
+            // 
+            this.toolStripSeparatorFixes1.Name = "toolStripSeparatorFixes1";
+            this.toolStripSeparatorFixes1.Size = new System.Drawing.Size(151, 6);
             // 
             // toolStripMenuItemSelectAll
             // 
@@ -155,7 +187,7 @@
             this.labelTotal.AutoSize = true;
             this.labelTotal.Location = new System.Drawing.Point(9, 434);
             this.labelTotal.Name = "labelTotal";
-            this.labelTotal.Size = new System.Drawing.Size(34, 13);
+            this.labelTotal.Size = new System.Drawing.Size(35, 13);
             this.labelTotal.TabIndex = 1;
             this.labelTotal.Text = "Total:";
             // 
@@ -165,8 +197,8 @@
             this.linkLabelIssues.AutoSize = true;
             this.linkLabelIssues.Location = new System.Drawing.Point(12, 451);
             this.linkLabelIssues.Name = "linkLabelIssues";
-            this.linkLabelIssues.Size = new System.Drawing.Size(111, 13);
-            this.linkLabelIssues.TabIndex = 5;
+            this.linkLabelIssues.Size = new System.Drawing.Size(116, 13);
+            this.linkLabelIssues.TabIndex = 8;
             this.linkLabelIssues.TabStop = true;
             this.linkLabelIssues.Text = "Report missing word...";
             this.linkLabelIssues.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelIssues_LinkClicked);
@@ -177,8 +209,8 @@
             this.linkLabelWordList.AutoSize = true;
             this.linkLabelWordList.Location = new System.Drawing.Point(129, 451);
             this.linkLabelWordList.Name = "linkLabelWordList";
-            this.linkLabelWordList.Size = new System.Drawing.Size(80, 13);
-            this.linkLabelWordList.TabIndex = 6;
+            this.linkLabelWordList.Size = new System.Drawing.Size(84, 13);
+            this.linkLabelWordList.TabIndex = 9;
             this.linkLabelWordList.TabStop = true;
             this.linkLabelWordList.Text = "View word list...";
             this.linkLabelWordList.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelWordList_LinkClicked);
@@ -188,10 +220,10 @@
             this.radioButtonBuiltInList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.radioButtonBuiltInList.AutoSize = true;
             this.radioButtonBuiltInList.Checked = true;
-            this.radioButtonBuiltInList.Location = new System.Drawing.Point(578, 23);
+            this.radioButtonBuiltInList.Location = new System.Drawing.Point(576, 23);
             this.radioButtonBuiltInList.Name = "radioButtonBuiltInList";
-            this.radioButtonBuiltInList.Size = new System.Drawing.Size(92, 17);
-            this.radioButtonBuiltInList.TabIndex = 7;
+            this.radioButtonBuiltInList.Size = new System.Drawing.Size(94, 17);
+            this.radioButtonBuiltInList.TabIndex = 5;
             this.radioButtonBuiltInList.TabStop = true;
             this.radioButtonBuiltInList.Text = "Use built-in list";
             this.radioButtonBuiltInList.UseVisualStyleBackColor = true;
@@ -201,10 +233,10 @@
             // 
             this.radioButtonLocalList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.radioButtonLocalList.AutoSize = true;
-            this.radioButtonLocalList.Location = new System.Drawing.Point(676, 23);
+            this.radioButtonLocalList.Location = new System.Drawing.Point(677, 23);
             this.radioButtonLocalList.Name = "radioButtonLocalList";
-            this.radioButtonLocalList.Size = new System.Drawing.Size(84, 17);
-            this.radioButtonLocalList.TabIndex = 8;
+            this.radioButtonLocalList.Size = new System.Drawing.Size(83, 17);
+            this.radioButtonLocalList.TabIndex = 6;
             this.radioButtonLocalList.Text = "Use local list";
             this.radioButtonLocalList.UseVisualStyleBackColor = true;
             this.radioButtonLocalList.Click += new System.EventHandler(this.radioButtonLocalList_Click);
@@ -213,10 +245,10 @@
             // 
             this.radioButtonBothLists.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.radioButtonBothLists.AutoSize = true;
-            this.radioButtonBothLists.Location = new System.Drawing.Point(766, 23);
+            this.radioButtonBothLists.Location = new System.Drawing.Point(765, 23);
             this.radioButtonBothLists.Name = "radioButtonBothLists";
-            this.radioButtonBothLists.Size = new System.Drawing.Size(88, 17);
-            this.radioButtonBothLists.TabIndex = 9;
+            this.radioButtonBothLists.Size = new System.Drawing.Size(89, 17);
+            this.radioButtonBothLists.TabIndex = 7;
             this.radioButtonBothLists.Text = "Use both lists";
             this.radioButtonBothLists.UseVisualStyleBackColor = true;
             this.radioButtonBothLists.Click += new System.EventHandler(this.radioButtonBothLists_Click);
@@ -254,11 +286,36 @@
             this.toolStripMenuItemViewBuiltInWords.Text = "View built-in word list";
             this.toolStripMenuItemViewBuiltInWords.Click += new System.EventHandler(this.toolStripMenuItemViewBuiltInWords_Click);
             // 
+            // panelEditAfter
+            // 
+            this.panelEditAfter.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelEditAfter.Controls.Add(this.textBoxEditAfter);
+            this.panelEditAfter.Location = new System.Drawing.Point(32, 86);
+            this.panelEditAfter.Name = "panelEditAfter";
+            this.panelEditAfter.Padding = new System.Windows.Forms.Padding(5);
+            this.panelEditAfter.Size = new System.Drawing.Size(460, 83);
+            this.panelEditAfter.TabIndex = 11;
+            this.panelEditAfter.Visible = false;
+            this.panelEditAfter.Leave += new System.EventHandler(this.panelEditAfter_Leave);
+            // 
+            // textBoxEditAfter
+            // 
+            this.textBoxEditAfter.AcceptsReturn = true;
+            this.textBoxEditAfter.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBoxEditAfter.Location = new System.Drawing.Point(5, 5);
+            this.textBoxEditAfter.Multiline = true;
+            this.textBoxEditAfter.Name = "textBoxEditAfter";
+            this.textBoxEditAfter.Size = new System.Drawing.Size(448, 71);
+            this.textBoxEditAfter.TabIndex = 0;
+            this.textBoxEditAfter.WordWrap = false;
+            this.textBoxEditAfter.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxEditAfter_KeyDown);
+            // 
             // PluginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(866, 473);
+            this.Controls.Add(this.panelEditAfter);
             this.Controls.Add(this.radioButtonBothLists);
             this.Controls.Add(this.radioButtonLocalList);
             this.Controls.Add(this.radioButtonBuiltInList);
@@ -270,6 +327,7 @@
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.menuStrip1);
+            this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
             this.MinimizeBox = false;
@@ -283,10 +341,11 @@
             this.Shown += new System.EventHandler(this.PluginForm_Shown);
             this.SizeChanged += new System.EventHandler(this.PluginForm_SizeChanged);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PluginForm_KeyDown);
-            this.Resize += new System.EventHandler(this.PluginForm_Resize);
-            this.contextMenuStrip1.ResumeLayout(false);
+            this.contextMenuStripFixes.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.panelEditAfter.ResumeLayout(false);
+            this.panelEditAfter.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -298,10 +357,10 @@
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Label labelDescription;
         private System.Windows.Forms.ListView listViewFixes;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.ColumnHeader columnHeader4;
-        private System.Windows.Forms.ColumnHeader columnHeader5;
-        private System.Windows.Forms.ColumnHeader columnHeader7;
-        private System.Windows.Forms.ColumnHeader columnHeader8;
         private System.Windows.Forms.Label labelTotal;
         private System.Windows.Forms.LinkLabel linkLabelIssues;
         private System.Windows.Forms.LinkLabel linkLabelWordList;
@@ -312,8 +371,13 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemFile;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemManageLocalWords;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemViewBuiltInWords;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripFixes;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemEdit;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemReset;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparatorFixes1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSelectAll;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemInvert;
+        private System.Windows.Forms.Panel panelEditAfter;
+        private System.Windows.Forms.TextBox textBoxEditAfter;
     }
 }
