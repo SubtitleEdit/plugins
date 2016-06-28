@@ -84,5 +84,32 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             return lines;
         }
+
+        public static int CountTagInText(string text, char tag)
+        {
+            int count = 0;
+            int index = text.IndexOf(tag);
+            while (index >= 0)
+            {
+                count++;
+                if ((index + 1) == text.Length)
+                    return count;
+                index = text.IndexOf(tag, index + 1);
+            }
+            return count;
+        }
+
+        public static int LastIndexOfAny(this string s, string[] words, StringComparison comparisonType)
+        {
+            if (words == null || string.IsNullOrEmpty(s))
+                return -1;
+            for (int i = 0; i < words.Length; i++)
+            {
+                var idx = s.LastIndexOf(words[i], comparisonType);
+                if (idx >= 0)
+                    return idx;
+            }
+            return -1;
+        }
     }
 }

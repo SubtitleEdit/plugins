@@ -25,9 +25,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return 0;
         }
 
-        public TimeCode(TimeSpan timeSpan)
+        public TimeCode(double milliseconds)
         {
-            TimeSpan = timeSpan;
+            TimeSpan = TimeSpan.FromMilliseconds(milliseconds);
+        }
+
+        public TimeCode(TimeSpan ts)
+        {
+            TimeSpan = ts;
         }
 
         public TimeCode(int hour, int minute, int seconds, int milliseconds)
