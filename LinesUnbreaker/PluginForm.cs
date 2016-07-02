@@ -27,21 +27,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private readonly char[] MoodsChars = { '(', '[' };
         private readonly Regex NarratorRegex = new Regex(":\\B", RegexOptions.Compiled);
 
-        public PluginForm()
+        public PluginForm(Subtitle subtitle)
         {
             InitializeComponent();
-        }
-
-        public PluginForm(Subtitle subtitle, string name, string description, Form parentForm)
-            : this()
-        {
-            // TODO: Complete member initialization
             _subtitle = subtitle;
+
+            // Save user-configuartions on form-close.
             FormClosing += delegate
             {
                 LoadSettingsIfThereIs(false);
             };
 
+            // Load user-confugurations.
             LoadSettingsIfThereIs(true);
             GeneratePreview();
 

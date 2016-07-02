@@ -4,35 +4,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class LinesUnbreaker : IPlugin
     {
-        string IPlugin.Name
-        {
-            get { return "Lines Unbreaker"; }
-        }
-
-        string IPlugin.Text
-        {
-            get { return "Lines Unbreaker"; }
-        }
-
-        decimal IPlugin.Version
-        {
-            get { return 1.3M; }
-        }
-
-        string IPlugin.Description
-        {
-            get { return "Helps breaking short lines"; }
-        }
-
-        string IPlugin.ActionType
-        {
-            get { return "tool"; }
-        }
-
-        string IPlugin.Shortcut
-        {
-            get { return string.Empty; }
-        }
+        // Metadata
+        string IPlugin.Name => "Lines Unbreaker";
+        string IPlugin.Text => "Lines Unbreaker";
+        decimal IPlugin.Version => 1.3M;
+        string IPlugin.Description => "Helps unbreaking short-lines.";
+        string IPlugin.ActionType => "tool";
+        string IPlugin.Shortcut => string.Empty;
 
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
@@ -56,7 +34,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 MessageBox.Show(srt.Errors + " Errors found while parsing .srt",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-            using (var form = new PluginForm(sub, (this as IPlugin).Name, (this as IPlugin).Description, parentForm))
+            using (var form = new PluginForm(sub))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
                     return form.FixedSubtitle;
