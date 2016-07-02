@@ -105,11 +105,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Errors = _errorCount.ToString();
         }
 
-        public string ToText(Subtitle subtitle, string title)
+        public string ToText(IEnumerable<Paragraph> paragraphs)
         {
             const string paragraphWriteFormat = "{0}\r\n{1} --> {2}\r\n{3}\r\n\r\n";
             var sb = new StringBuilder();
-            foreach (Paragraph p in subtitle.Paragraphs)
+            foreach (Paragraph p in paragraphs)
             {
                 var s = p.Text
                     .Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine)

@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
+
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form

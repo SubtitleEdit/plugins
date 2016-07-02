@@ -39,12 +39,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             set { _time = TimeSpan.FromMilliseconds(value); }
         }
 
-        public double TotalSeconds
-        {
-            get { return _time.TotalSeconds; }
-            set { _time = TimeSpan.FromSeconds(value); }
-        }
-
         public override string ToString()
         {
             string s = string.Format("{0:00}:{1:00}:{2:00},{3:000}", _time.Hours, _time.Minutes, _time.Seconds, _time.Milliseconds);

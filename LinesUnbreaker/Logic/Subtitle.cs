@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal class Subtitle
     {
         private List<Paragraph> _paragraphs;
-        public string FileName { get; set; }
         private readonly SubRip _format;
 
         public Subtitle(SubRip subrip)
         {
             _paragraphs = new List<Paragraph>();
-            FileName = "Untitled";
             _format = subrip;
         }
 
@@ -28,7 +23,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public string ToText()
         {
-            return _format.ToText(this, Path.GetFileNameWithoutExtension(FileName));
+            return _format.ToText(_paragraphs);
         }
 
         public void Renumber(int startNumber = 1)

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -44,18 +43,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return false;
         }
 
-        public static string RemoveHtmlFontTag(string s)
-        {
-            s = Regex.Replace(s, "(?i)</?font>", string.Empty);
-            while (s.ToLower().Contains("<font"))
-            {
-                int startIndex = s.ToLower().IndexOf("<font");
-                int endIndex = Math.Max(s.IndexOf(">"), startIndex + 4);
-                s = s.Remove(startIndex, (endIndex - startIndex) + 1);
-            }
-            return s;
-        }
-
         public static string RemoveHtmlTags(string s, bool alsoSsa )
         {
             if (string.IsNullOrEmpty(s))
@@ -78,11 +65,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             idx = s.IndexOf('<');
             return Regex.Replace(s, "(?i)</?[iіbu]>", string.Empty);
-        }
-
-        public static string GetHtmlColorCode(Color color)
-        {
-            return string.Format("#{0:x2}{1:x2}{2:x2}", color.R, color.G, color.B);
         }
 
         public static int GetNumberOfLines(string s)

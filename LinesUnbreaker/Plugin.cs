@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -18,7 +16,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         decimal IPlugin.Version
         {
-            get { return 1.2M; }
+            get { return 1.3M; }
         }
 
         string IPlugin.Description
