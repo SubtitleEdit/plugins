@@ -17,7 +17,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         //private string path = Path.Combine("Plugins", "SeLinesUnbreaker.xml");
         private readonly Subtitle _subtitle;
         private XElement _xmlSetting;
-        private bool _allowFixes;
         private int _totalFixed;
         private int _maxLineLength;
 
@@ -39,7 +38,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _subtitle = subtitle;
             FormClosing += delegate
             {
-                LoadSettingsIfThereIs(false); // store in xml file
+                LoadSettingsIfThereIs(false);
             };
 
             LoadSettingsIfThereIs(true);
@@ -143,25 +142,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                 text = UnbreakLines(text);
                 var t = Utilities.RemoveHtmlTags(text, true);
-                if (text != oldText && t.Length < numericUpDown1.Value)
+                if (text.Length != oldText.Length && t.Length < _maxLineLength)
                 {
-                    //text = Regex.Replace(text, " +" + Environment.NewLine, Environment.NewLine).Trim();
-                    //text = Regex.Replace(text, Environment.NewLine + " +", Environment.NewLine).Trim();
-                    if (!_allowFixes)
-                    {
-                        FixedParagrahs.Add(p.Id, text);
-                        oldText = Utilities.RemoveHtmlTags(oldText, true);
-                        AddFixToListView(p, oldText, t, t.Length.ToString());
-                        _totalFixed++;
-                    }
+                    FixedParagrahs.Add(p.Id, text);
+                    oldText = Utilities.RemoveHtmlTags(oldText, true);
+                    AddFixToListView(p, oldText, t, t.Length.ToString());
+                    _totalFixed++;
                 }
             }
-
-            if (!_allowFixes)
-            {
-                labelTotal.Text = string.Format("Total: {0}", _totalFixed);
-                labelTotal.ForeColor = _totalFixed < 1 ? Color.Red : Color.Green;
-            }
+            labelTotal.Text = string.Format("Total: {0}", _totalFixed);
+            labelTotal.ForeColor = _totalFixed < 1 ? Color.Red : Color.Green;
             listView1.EndUpdate();
             //listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             //listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
@@ -221,8 +211,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            _allowFixes = true;
-            //GeneratePreview();
             foreach (ListViewItem item in listView1.Items)
             {
                 var p = item.Tag as Paragraph;
