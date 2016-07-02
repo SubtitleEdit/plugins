@@ -5,6 +5,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
     internal class TimeCode
     {
         private TimeSpan _time;
+        public const double BaseUnit = 1000.0; // Base unit of time
+
+        public TimeCode(double totalMilliseconds)
+        {
+            _time = TimeSpan.FromMilliseconds(totalMilliseconds);
+        }
 
         public TimeCode(TimeSpan timeSpan)
         {
@@ -14,30 +20,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public TimeCode(int hour, int minute, int seconds, int milliseconds)
         {
             _time = new TimeSpan(0, hour, minute, seconds, milliseconds);
-        }
-
-        public int Hours
-        {
-            get { return _time.Hours; }
-            set { _time = new TimeSpan(0, value, _time.Minutes, _time.Seconds, _time.Milliseconds); }
-        }
-
-        public int Milliseconds
-        {
-            get { return _time.Milliseconds; }
-            set { _time = new TimeSpan(0, _time.Hours, _time.Minutes, _time.Seconds, value); }
-        }
-
-        public int Minutes
-        {
-            get { return _time.Minutes; }
-            set { _time = new TimeSpan(0, _time.Hours, value, _time.Seconds, _time.Milliseconds); }
-        }
-
-        public int Seconds
-        {
-            get { return _time.Seconds; }
-            set { _time = new TimeSpan(0, _time.Hours, _time.Minutes, value, _time.Milliseconds); }
         }
 
         public TimeSpan TimeSpan
@@ -72,29 +54,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return s;
             else
                 return "-" + s.Replace("-", string.Empty);
-        }
-
-        public void AddTime(int hour, int minutes, int seconds, int milliseconds)
-        {
-            Hours += hour;
-            Minutes += minutes;
-            Seconds += seconds;
-            Milliseconds += milliseconds;
-        }
-
-        public void AddTime(long milliseconds)
-        {
-            _time = TimeSpan.FromMilliseconds(_time.TotalMilliseconds + milliseconds);
-        }
-
-        public void AddTime(TimeSpan timeSpan)
-        {
-            _time = TimeSpan.FromMilliseconds(_time.TotalMilliseconds + timeSpan.TotalMilliseconds);
-        }
-
-        public void AddTime(double milliseconds)
-        {
-            _time = TimeSpan.FromMilliseconds(_time.TotalMilliseconds + milliseconds);
         }
 
     }

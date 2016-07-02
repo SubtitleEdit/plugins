@@ -13,9 +13,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             get
             {
-                var timeCode = new TimeCode(EndTime.TimeSpan);
-                timeCode.AddTime(-StartTime.TotalMilliseconds);
-                return timeCode;
+                return new TimeCode(EndTime.TotalMilliseconds - StartTime.TotalMilliseconds);
             }
         }
         public int StartFrame { get; set; }
