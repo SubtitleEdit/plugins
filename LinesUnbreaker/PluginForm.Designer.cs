@@ -45,7 +45,6 @@
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.buttonCheckAll = new System.Windows.Forms.Button();
             this.buttonInvertCheck = new System.Windows.Forms.Button();
-            this.buttonUpdate = new System.Windows.Forms.Button();
             this.labelTotal = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -128,7 +127,6 @@
             this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Controls.Add(this.buttonCheckAll);
             this.groupBox1.Controls.Add(this.buttonInvertCheck);
-            this.groupBox1.Controls.Add(this.buttonUpdate);
             this.groupBox1.Location = new System.Drawing.Point(7, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(891, 130);
@@ -207,11 +205,12 @@
             0,
             0,
             0});
+            this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
             // 
             // buttonCheckAll
             // 
             this.buttonCheckAll.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.buttonCheckAll.Location = new System.Drawing.Point(689, 101);
+            this.buttonCheckAll.Location = new System.Drawing.Point(790, 101);
             this.buttonCheckAll.Name = "buttonCheckAll";
             this.buttonCheckAll.Size = new System.Drawing.Size(95, 23);
             this.buttonCheckAll.TabIndex = 10;
@@ -222,24 +221,13 @@
             // buttonInvertCheck
             // 
             this.buttonInvertCheck.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.buttonInvertCheck.Location = new System.Drawing.Point(588, 101);
+            this.buttonInvertCheck.Location = new System.Drawing.Point(689, 101);
             this.buttonInvertCheck.Name = "buttonInvertCheck";
             this.buttonInvertCheck.Size = new System.Drawing.Size(95, 23);
             this.buttonInvertCheck.TabIndex = 9;
             this.buttonInvertCheck.Text = "Inverse selection";
             this.buttonInvertCheck.UseVisualStyleBackColor = true;
             this.buttonInvertCheck.Click += new System.EventHandler(this.SelectionHandler);
-            // 
-            // buttonUpdate
-            // 
-            this.buttonUpdate.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.buttonUpdate.Location = new System.Drawing.Point(790, 101);
-            this.buttonUpdate.Name = "buttonUpdate";
-            this.buttonUpdate.Size = new System.Drawing.Size(95, 23);
-            this.buttonUpdate.TabIndex = 5;
-            this.buttonUpdate.Text = "Update";
-            this.buttonUpdate.UseVisualStyleBackColor = true;
-            this.buttonUpdate.Click += new System.EventHandler(this.buttonUpdate_Click);
             // 
             // labelTotal
             // 
@@ -289,7 +277,6 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
-        private System.Windows.Forms.Button buttonUpdate;
         private System.Windows.Forms.Label labelTotal;
         private System.Windows.Forms.CheckBox checkBoxSkipDialog;
         private System.Windows.Forms.CheckBox checkBoxMoods;

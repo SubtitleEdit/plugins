@@ -5,7 +5,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
     internal class TimeCode
     {
         private TimeSpan _time;
-        public const double BaseUnit = 1000.0; // Base unit of time
 
         public TimeCode(double totalMilliseconds)
         {

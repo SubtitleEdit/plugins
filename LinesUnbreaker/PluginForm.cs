@@ -10,6 +10,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form
     {
+        // Used to generate previews automatically.
+        private readonly Timer _timerUpdater = new Timer();
         private readonly Dictionary<string, string> FixedParagrahs = new Dictionary<string, string>();
         public string FixedSubtitle { get; private set; }
         //private string path = Path.Combine("Plugins", "SeLinesUnbreaker.xml");
@@ -19,8 +21,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private int _totalFixed;
         private int _maxLineLength;
 
+        // Var used to track user click.
+        private bool _updateListview;
+
         private readonly char[] MoodsChars = { '(', '[' };
-        private readonly Regex NarratorRegex = new Regex(":\\B");
+        private readonly Regex NarratorRegex = new Regex(":\\B", RegexOptions.Compiled);
+
         public PluginForm()
         {
             InitializeComponent();
@@ -35,8 +41,22 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 LoadSettingsIfThereIs(false); // store in xml file
             };
+
             LoadSettingsIfThereIs(true);
             GeneratePreview();
+
+            // Timer updater
+            _timerUpdater.Tick += _timerUpdater_Tick;
+            _timerUpdater.Interval = 500; // 1/5 second.
+            _timerUpdater.Start();
+        }
+
+        private void _timerUpdater_Tick(object sender, EventArgs e)
+        {
+            // Ignore event if was changed.
+            if (!_updateListview) return;
+            GeneratePreview();
+            _updateListview = false;
         }
 
         private void LoadSettingsIfThereIs(bool load)
@@ -162,7 +182,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var temp = Utilities.RemoveHtmlTags(s, true);
             temp = temp.Replace("  ", " ").Trim();
 
-            if (checkBoxSkipDialog.Checked && (temp.StartsWith('-') || temp.Contains("\r\n-")) && checkBoxSkipDialog.Checked)
+            if (checkBoxSkipDialog.Checked && (temp.StartsWith('-') || temp.Contains(Environment.NewLine + "-")))
             {
                 return s;
             }
@@ -192,13 +212,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             while (s.Contains("  "))
                 s = s.Replace("  ", " ");
             return s;
-        }
-
-        private void buttonUpdate_Click(object sender, EventArgs e)
-        {
-            buttonUpdate.Enabled = false;
-            GeneratePreview();
-            buttonUpdate.Enabled = true;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -253,6 +266,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var newWidth = (listView1.Width - l) >> 1;
             listView1.Columns[3].Width = newWidth;
             listView1.Columns[4].Width = newWidth;
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            _updateListview = true;
         }
     }
 }
