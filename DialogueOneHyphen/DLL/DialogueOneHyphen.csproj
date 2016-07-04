@@ -42,6 +42,7 @@
     <Compile Include="Logic\Configuration.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="Logic\Paragraph.cs" />
+    <Compile Include="Logic\RemoveHyphens.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginForm.cs">
       <SubType>Form</SubType>

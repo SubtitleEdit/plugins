@@ -29,15 +29,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            if (_fixedParagraphs != null && _fixedParagraphs.Count > 0)
+            if (_fixedParagraphs?.Count > 0)
             {
                 foreach (ListViewItem item in listViewFixes.Items)
                 {
-                    var p = item.Tag as Paragraph;
-                    if (!item.Checked || p == null || !_fixedParagraphs.ContainsKey(p.ID))
-                        continue;
-
-                    p.Text = _fixedParagraphs[p.ID];
+                    var p = (Paragraph)item.Tag;
+                    if (item.Checked && _fixedParagraphs.ContainsKey(p.ID))
+                    {
+                        p.Text = _fixedParagraphs[p.ID];
+                    }
                 }
                 FixedSubtitle = _subtitle.ToText();
                 DialogResult = DialogResult.OK;
@@ -74,37 +74,32 @@ namespace Nikse.SubtitleEdit.PluginLogic
             for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
             {
                 var p = _subtitle.Paragraphs[i];
-                var text = p.Text.Trim();
-
-                if (AnalyzeText(text))
+                var text = p.Text.TrimStart();
+                var prev = _subtitle.GetParagraphOrDefault(i - 1);
+                if (prev == null || !Utilities.RemoveHtmlTags(prev.Text).TrimEnd().EndsWith('-'))
                 {
-                    var prev = _subtitle.GetParagraphOrDefault(i - 1);
-                    if (prev == null || !Utilities.RemoveHtmlTags(prev.Text).TrimEnd().EndsWith('-'))
+                    // <i>- You delusional?
+                    //- I counted.</i>
+                    string oldText = text;
+                    if (checkBoxStripAll.Checked)
                     {
-                        // <i>- You delusional?
-                        //- I counted.</i>
-                        int index = text.IndexOf('-');
-                        if (index >= 0)
-                        {
-                            string oldText = text;
-                            text = RemoveHyphens(text, checkBoxStripAll.Checked);
-
-                            if (text.Length > 0 && text[index] == 0x14)
-                                text = RemoveExtraSpaces(text, index); //<i> Word => <i>Word
-
-                            if (text != oldText)
-                            {
-                                text = text.Replace(" " + Environment.NewLine, Environment.NewLine);
-                                text = text.Replace(Environment.NewLine + " ", Environment.NewLine);
-                                text = text.Replace(Environment.NewLine + " ", Environment.NewLine).Trim();
-                                _totalFixes++;
-                                // remove html tags before adding to listview
-                                _fixedParagraphs.Add(p.ID, text);
-                                text = Utilities.RemoveHtmlTags(text, true);
-                                oldText = Utilities.RemoveHtmlTags(oldText, true);
-                                AddFixToListView(p, fixAction, oldText, text);
-                            }
-                        }
+                        text = RemoveHyphens.RemoveAllHyphens(text);
+                    }
+                    else
+                    {
+                        text = RemoveHyphens.RemoveHyphenBeginningOnly(text);
+                    }
+                    if (text != oldText)
+                    {
+                        text = text.Replace("  ", " ");
+                        text = text.Replace(" " + Environment.NewLine, Environment.NewLine);
+                        text = text.Replace(Environment.NewLine + " ", Environment.NewLine);
+                        text = text.Replace(Environment.NewLine + " ", Environment.NewLine).Trim();
+                        _totalFixes++;
+                        _fixedParagraphs.Add(p.ID, text);
+                        text = Utilities.RemoveHtmlTags(text, true);
+                        oldText = Utilities.RemoveHtmlTags(oldText, true);
+                        AddFixToListView(p, fixAction, oldText, text);
                     }
                 }
             }
@@ -114,37 +109,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             labelTotal.ForeColor = _totalFixes > 0 ? Color.Blue : Color.Red;
         }
 
-        private string RemoveHyphens(string text, bool bothLines)
-        {
-            var lines = text.SplitToLines();
-            for (int i = 0; i < lines.Length; i++)
-            {
-                // Todo: check if line was ended with: ., !, ?.
-                var removeHyphen = Utilities.RemoveHtmlTags(lines[i], true).StartsWith('-');
-                if (removeHyphen)
-                {
-                    var hyphenIdx = lines[i].IndexOf('-');
-                    lines[i] = lines[i].Remove(hyphenIdx, 1);
-                }
-
-                // Quit at first loop
-                if (!bothLines)
-                    break;
-            }
-            return string.Join(Environment.NewLine, lines);
-        }
-
         private string RemoveExtraSpaces(string text, int index)
         {
             return text.Substring(0, index).Trim() + " " + text.Substring(index).TrimStart();
-        }
-
-        private bool AnalyzeText(string s)
-        {
-            s = Utilities.RemoveHtmlTags(s, true);
-            s = s.Replace("  ", " ");
-            s = s.Replace(Environment.NewLine + " ", Environment.NewLine);
-            return checkBoxStripAll.Checked ? s.StartsWith('-') || s.Contains(Environment.NewLine + "-") : s.StartsWith('-') && s.Contains(Environment.NewLine + "-");
         }
 
         private void buttonSelectAll_Click(object sender, EventArgs e)
@@ -161,13 +128,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             DoSelection(false);
         }
 
-        private bool SubtitleLoaded()
-        {
-            // TODO: Refact.
-            if (_subtitle == null || _subtitle.Paragraphs.Count < 1)
-                return false;
-            return true;
-        }
+        private bool SubtitleLoaded() => _subtitle?.Paragraphs.Count > 0;
 
         private void DoSelection(bool selectAll)
         {

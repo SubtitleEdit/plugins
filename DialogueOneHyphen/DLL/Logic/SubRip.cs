@@ -7,10 +7,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal class SubRip
     {
-        public string Errors { get; private set; }
-        private StringBuilder _errors;
-        private int _lineNumber;
-
         private enum ExpectingLine
         {
             Number,
@@ -46,8 +42,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public void LoadSubtitle(Subtitle subtitle, List<string> lines, string fileName)
         {
             bool doRenum = false;
-            _errors = new StringBuilder();
-            _lineNumber = 0;
+            int _lineNumber = 0;
 
             _paragraph = new Paragraph();
             _expecting = ExpectingLine.Number;
@@ -87,8 +82,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             if (doRenum)
                 subtitle.Renumber(1);
-
-            Errors = _errors.ToString();
         }
 
         private void ReadLine(Subtitle subtitle, string line, string next)
