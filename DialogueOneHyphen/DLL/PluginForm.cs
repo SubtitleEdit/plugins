@@ -163,6 +163,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private bool SubtitleLoaded()
         {
+            // TODO: Refact.
             if (_subtitle == null || _subtitle.Paragraphs.Count < 1)
                 return false;
             return true;

@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    internal class SubRip : SubtitleFormat
+    internal class SubRip
     {
         public string Errors { get; private set; }
         private StringBuilder _errors;
@@ -22,21 +22,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private ExpectingLine _expecting = ExpectingLine.Number;
         private static Regex _regexTimeCodes = new Regex(@"^-?\d+:-?\d+:-?\d+[:,]-?\d+\s*-->\s*-?\d+:-?\d+:-?\d+[:,]-?\d+$", RegexOptions.Compiled);
         private static Regex _regexTimeCodes2 = new Regex(@"^\d+:\d+:\d+,\d+\s*-->\s*\d+:\d+:\d+,\d+$", RegexOptions.Compiled);
+        private int _errorCount;
 
-        public override string Extension => ".srt";
+        public string Extension => ".srt";
 
-        public override string Name => "Subrip";
+        public string Name => "Subrip";
 
-        public override bool IsTimeBased => true;
+        public bool IsTimeBased => true;
 
-        public override bool IsMine(List<string> lines, string fileName)
-        {
-            var subtitle = new Subtitle();
-            LoadSubtitle(subtitle, lines, fileName);
-            return subtitle.Paragraphs.Count > _errorCount;
-        }
-
-        public override string ToText(Subtitle subtitle, string title)
+        public string ToText(Subtitle subtitle)
         {
             const string paragraphWriteFormat = "{0}\r\n{1} --> {2}\r\n{3}\r\n\r\n";
 
@@ -49,7 +43,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return sb.ToString().Trim();
         }
 
-        public override void LoadSubtitle(Subtitle subtitle, List<string> lines, string fileName)
+        public void LoadSubtitle(Subtitle subtitle, List<string> lines, string fileName)
         {
             bool doRenum = false;
             _errors = new StringBuilder();
@@ -221,6 +215,5 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return false;
         }
 
-        public override List<string> AlternateExtensions => new List<string> { ".wsrt" };
     }
 }

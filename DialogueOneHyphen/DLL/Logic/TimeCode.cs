@@ -5,25 +5,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
     internal class TimeCode
     {
         private TimeSpan _time;
-        public const double BaseUnit = 1000.0; // Base unit of time
-
-        public static double ParseToMilliseconds(string text)
-        {
-            var parts = text.Split(new[] { ':', ',', '.' }, StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length == 4)
-            {
-                int hours;
-                int minutes;
-                int seconds;
-                int milliseconds;
-                if (int.TryParse(parts[0], out hours) && int.TryParse(parts[1], out minutes) && int.TryParse(parts[2], out seconds) && int.TryParse(parts[3], out milliseconds))
-                {
-                    TimeSpan ts = new TimeSpan(0, hours, minutes, seconds, milliseconds);
-                    return ts.TotalMilliseconds;
-                }
-            }
-            return 0;
-        }
+        public const double BaseUnit = 1000.0; // Base unit of time 
 
         public TimeCode(double milliseconds)
         {
@@ -86,29 +68,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 _time = value;
             }
-        }
-
-        public void AddTime(int hour, int minutes, int seconds, int milliseconds)
-        {
-            Hours += hour;
-            Minutes += minutes;
-            Seconds += seconds;
-            Milliseconds += milliseconds;
-        }
-
-        public void AddTime(long milliseconds)
-        {
-            _time = TimeSpan.FromMilliseconds(_time.TotalMilliseconds + milliseconds);
-        }
-
-        public void AddTime(TimeSpan timeSpan)
-        {
-            _time = TimeSpan.FromMilliseconds(_time.TotalMilliseconds + timeSpan.TotalMilliseconds);
-        }
-
-        public void AddTime(double milliseconds)
-        {
-            _time = TimeSpan.FromMilliseconds(_time.TotalMilliseconds + milliseconds);
         }
 
         public override string ToString()

@@ -28,6 +28,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return string.Empty;
             }
+
             // set frame rate
             Configuration.CurrentFrameRate = frameRate;
 
@@ -36,11 +37,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
 
             // load subtitle text into object
-            var list = new List<string>();
-            foreach (string line in subtitle.SplitToLines())
-                list.Add(line);
-            var sub = new Subtitle();
+            var list = new List<string>(subtitle.SplitToLines());
+
             var srt = new SubRip();
+            var sub = new Subtitle(srt);
             srt.LoadSubtitle(sub, list, subtitleFileName);
 
             IPlugin plugin = this;
