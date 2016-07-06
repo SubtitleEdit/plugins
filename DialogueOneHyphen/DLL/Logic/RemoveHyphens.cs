@@ -1,17 +1,13 @@
-﻿using Nikse.SubtitleEdit.PluginLogic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     public static class RemoveHyphens
     {
-        private static readonly string[] _lineCloseStrings = { "! -", "? -", ". -" };
-
         public static string RemoveHyphenBeginningOnly(string text)
         {
+            // - Get lost!
+            // - Mister, I'll sing you any song...
             if (!text.Contains('-'))
             {
                 return text;
@@ -19,34 +15,33 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // Return already removed at beginning.
             string[] lines = text.SplitToLines();
             string line = lines[0];
-            string noTagLine = Utilities.RemoveHtmlTags(line, true).TrimStart();
+            string noTagLine = line;
 
-            int hyphensCount = Utilities.CountTagInText(line, '-');
-            if (hyphensCount == 1 && noTagLine.StartsWith('-'))
+            bool tagPresent = false;
+            if (noTagLine.Length > 0 && noTagLine[0] != '-' && !char.IsLetter(noTagLine[0]))
             {
-                int hyphenIndex = line.IndexOf('-');
-                line = line.Remove(hyphenIndex, 1);
+                Utilities.RemoveHtmlTags(line, true).TrimStart();
+                tagPresent = !tagPresent;
             }
-            else
+
+            if (noTagLine.StartsWith('-'))
             {
-                // Remove first index if next index is after: ./?/!.
-                if (noTagLine.StartsWith('-'))
+                if (tagPresent)
                 {
-                    int nextHyphenIdx = noTagLine.IndexOf('-', 1);
-                    if ((nextHyphenIdx > 2 && line[nextHyphenIdx - 2] == '!' || line[nextHyphenIdx - 2] == '?' || line[nextHyphenIdx - 2] == '.'))
-                    {
-                        int hyphenIdx = line.IndexOf('-');
-                        line = line.Remove(hyphenIdx, 1);
-                        // TODO: Remove white-space afte hyphen.
-                    }
+                    int hyphenIdx = line.IndexOf('-');
+                    string post = line.Substring(0, hyphenIdx);
+                    line = line.Remove(0, hyphenIdx + 1).Trim('-', ' ');
+                    line = post + line;
+                }
+                else
+                {
+                    line = line.Trim('-', ' ');
                 }
             }
-
             if (line.Length != lines[0].Length)
             {
                 lines[0] = line;
             }
-
             return string.Join(Environment.NewLine, lines);
         }
 
@@ -61,16 +56,23 @@ namespace Nikse.SubtitleEdit.PluginLogic
             for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i];
-                // string noTagLine = Utilities.RemoveHtmlTags(line, true);
-                int hyphenStartIdx = line.IndexOf('-');
-                while (Utilities.RemoveHtmlTags(line, true).StartsWith('-') || (hyphenStartIdx > 2 && (line[hyphenStartIdx - 2] == '!' || line[hyphenStartIdx - 2] == '?' || line[hyphenStartIdx - 2] == '.')))
+                int hyphenIndex = line.IndexOf('-');
+                while (hyphenIndex >= 0)
                 {
-                    line = line.Remove(hyphenStartIdx, 1);
-                    hyphenStartIdx = line.IndexOf('-', hyphenStartIdx);
-                    // TODO: Handle if hyphenStartIdx didn't match and there are still hyphen that should be removed.
+                    if (hyphenIndex == 0)
+                    {
+                        line = line.TrimStart('-', ' ');
+                    }
+                    else if (hyphenIndex > 2 && (line[hyphenIndex - 2] == '!' || line[hyphenIndex - 2] == '?' || line[hyphenIndex - 2] == '.'))
+                    {
+                        line = line.Remove(hyphenIndex, 1);
+                    }
+                    hyphenIndex = line.IndexOf('-', hyphenIndex + 1);
                 }
                 if (line.Length != lines[i].Length)
-                    lines[i] = line;
+                {
+                    lines[i] = line.Replace("  ", " ");
+                }
             }
             return string.Join(Environment.NewLine, lines);
         }

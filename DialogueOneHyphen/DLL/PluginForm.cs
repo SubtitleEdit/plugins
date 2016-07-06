@@ -75,32 +75,28 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 var p = _subtitle.Paragraphs[i];
                 var text = p.Text.TrimStart();
-                var prev = _subtitle.GetParagraphOrDefault(i - 1);
-                if (prev == null || !Utilities.RemoveHtmlTags(prev.Text).TrimEnd().EndsWith('-'))
+                // <i>- You delusional?
+                // - I counted.</i>
+                string oldText = text;
+                if (checkBoxStripAll.Checked)
                 {
-                    // <i>- You delusional?
-                    //- I counted.</i>
-                    string oldText = text;
-                    if (checkBoxStripAll.Checked)
-                    {
-                        text = RemoveHyphens.RemoveAllHyphens(text);
-                    }
-                    else
-                    {
-                        text = RemoveHyphens.RemoveHyphenBeginningOnly(text);
-                    }
-                    if (text != oldText)
-                    {
-                        text = text.Replace("  ", " ");
-                        text = text.Replace(" " + Environment.NewLine, Environment.NewLine);
-                        text = text.Replace(Environment.NewLine + " ", Environment.NewLine);
-                        text = text.Replace(Environment.NewLine + " ", Environment.NewLine).Trim();
-                        _totalFixes++;
-                        _fixedParagraphs.Add(p.ID, text);
-                        text = Utilities.RemoveHtmlTags(text, true);
-                        oldText = Utilities.RemoveHtmlTags(oldText, true);
-                        AddFixToListView(p, fixAction, oldText, text);
-                    }
+                    text = RemoveHyphens.RemoveAllHyphens(text);
+                }
+                else
+                {
+                    text = RemoveHyphens.RemoveHyphenBeginningOnly(text);
+                }
+                if (text != oldText)
+                {
+                    text = text.Replace("  ", " ");
+                    text = text.Replace(" " + Environment.NewLine, Environment.NewLine);
+                    text = text.Replace(Environment.NewLine + " ", Environment.NewLine);
+                    text = text.Replace(Environment.NewLine + " ", Environment.NewLine).Trim();
+                    _totalFixes++;
+                    _fixedParagraphs.Add(p.ID, text);
+                    text = Utilities.RemoveHtmlTags(text, true);
+                    oldText = Utilities.RemoveHtmlTags(oldText, true);
+                    AddFixToListView(p, fixAction, oldText, text);
                 }
             }
 
@@ -143,6 +139,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             // Todo: Warn the user that this action is irreversible!
             FindDialogueAndListFixes();
+        }
+
+        private void PluginForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                DialogResult = DialogResult.Cancel;
+            }
         }
     }
 }

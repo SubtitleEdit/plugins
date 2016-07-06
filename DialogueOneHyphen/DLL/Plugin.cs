@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
@@ -10,9 +9,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "Dialogues - remove hyphen in first line in dialogues...";
 
-        decimal IPlugin.Version => 0.5M;
+        decimal IPlugin.Version => 0.6M;
 
-        string IPlugin.Description => "Removes hyphens in first line in dialoguees";
+        string IPlugin.Description => "Removes hyphens in first line in dialogues";
 
         // Can be one of these: file, tool, sync, translate, spellcheck
         string IPlugin.ActionType => "tool";
