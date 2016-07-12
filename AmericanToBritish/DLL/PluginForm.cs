@@ -135,7 +135,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void PluginForm_Shown(object sender, EventArgs e)
         {
-            Cursor = Cursors.WaitCursor;
+            Cursor.Current = Cursors.WaitCursor;
             Enabled = false;
             Refresh();
             try
@@ -159,11 +159,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
                 GeneratePreview();
                 Enabled = true;
-                Cursor = Cursors.Default;
+                Cursor.Current = Cursors.Default;
             }
             catch (Exception exception)
             {
-                Cursor = Cursors.Default;
+                Cursor.Current = Cursors.Default;
                 MessageBox.Show(exception.Message);
             }
         }
