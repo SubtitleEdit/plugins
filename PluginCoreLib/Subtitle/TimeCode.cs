@@ -1,29 +1,46 @@
 ﻿using System;
+using System.Globalization;
 
-namespace Nikse.SubtitleEdit.PluginLogic
+namespace PluginCoreLib.Subtitle
 {
-    public class TimeCode
+    public partial class TimeCode
     {
         public static readonly TimeCode MaxTime = new TimeCode(99, 59, 59, 999);
 
         public const double BaseUnit = 1000.0; // Base unit of time
         private double _totalMilliseconds;
 
-        public bool IsMaxTime => Math.Abs(_totalMilliseconds - MaxTime.TotalMilliseconds) < 0.01;
+        public bool IsMaxTime
+        {
+            get
+            {
+                return Math.Abs(_totalMilliseconds - MaxTime.TotalMilliseconds) < 0.01;
+            }
+        }
+
+        public static TimeCode FromSeconds(double seconds)
+        {
+            return new TimeCode(seconds * BaseUnit);
+        }
+
+        public TimeCode() :
+            this(0)
+        {
+        }
 
         public TimeCode(TimeSpan timeSpan)
         {
             _totalMilliseconds = timeSpan.TotalMilliseconds;
         }
 
-        public TimeCode(double totalMilliseconds = 0.0D)
+        public TimeCode(double totalMilliseconds)
         {
             _totalMilliseconds = totalMilliseconds;
         }
 
-        public TimeCode(int hour, int minute, int seconds, int milliseconds)
+        public TimeCode(double hours, double minutes, double seconds, double milliseconds)
         {
-            _totalMilliseconds = hour * 60 * 60 * BaseUnit + minute * 60 * BaseUnit + seconds * BaseUnit + milliseconds;
+            _totalMilliseconds = hours * 60 * 60 * BaseUnit + minutes * 60 * BaseUnit + seconds * BaseUnit + milliseconds;
         }
 
         public int Hours
@@ -103,33 +120,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        public void AddTime(int hour, int minutes, int seconds, int milliseconds)
-        {
-            Hours += hour;
-            Minutes += minutes;
-            Seconds += seconds;
-            Milliseconds += milliseconds;
-        }
-
-        public void AddTime(long milliseconds)
-        {
-            _totalMilliseconds += milliseconds;
-        }
-
-        public void AddTime(TimeSpan timeSpan)
-        {
-            _totalMilliseconds += timeSpan.TotalMilliseconds;
-        }
-
-        public void AddTime(double milliseconds)
-        {
-            _totalMilliseconds += milliseconds;
-        }
-
         public override string ToString()
         {
+            return ToString(false);
+        }
+
+        public string ToString(bool localize)
+        {
             var ts = TimeSpan;
-            var s = $"{(ts.Hours + ts.Days * 24):00}:{ts.Minutes:00}:{ts.Seconds:00},{ts.Milliseconds:000}";
+            string decimalSeparator = localize ? CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator : ",";
+            string s = string.Format("{0:00}:{1:00}:{2:00}{3}{4:000}", ts.Hours + ts.Days * 24, ts.Minutes, ts.Seconds, decimalSeparator, ts.Milliseconds);
 
             if (TotalMilliseconds >= 0)
                 return s;

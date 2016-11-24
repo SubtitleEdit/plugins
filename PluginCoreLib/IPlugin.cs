@@ -1,5 +1,6 @@
 ﻿using System.Windows.Forms;
 
+// TODO: Change to PluginCoreLib
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     public interface IPlugin

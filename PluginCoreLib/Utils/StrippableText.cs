@@ -1,8 +1,8 @@
-﻿using System;
-
-namespace Nikse.SubtitleEdit.PluginLogic
+﻿namespace PluginCoreLib.Utils
 {
-    public class StripableText
+    using System;
+
+    public class StrippableText
     {
         public string Pre { get; set; }
         public string Post { get; set; }
@@ -14,12 +14,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
             get { return Pre + StrippedText + Post; }
         }
 
-        public StripableText(string text)
+        public StrippableText(string text)
             : this(text, " >-\"”“['‘`´¶(♪¿¡.…—", " -\"”“]'`´¶)♪.!?:…—")
         {
         }
 
-        public StripableText(string text, string stripStartCharacters, string stripEndCharacters)
+        public StrippableText(string text, string stripStartCharacters, string stripEndCharacters)
         {
             OriginalText = text;
 

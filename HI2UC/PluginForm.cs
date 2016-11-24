@@ -7,6 +7,9 @@ using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
+    using PluginCoreLib.Subtitle;
+    using PluginCoreLib.Utils;
+
     internal partial class PluginForm : Form
     {
         public string FixedSubtitle { get; private set; }
@@ -66,17 +69,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 ApplyChanges(false);
                 Cursor = Cursors.Default;
             }
-            FixedSubtitle = _subtitle.ToText();
+            FixedSubtitle = SubRip.ToText(_subtitle);
             DialogResult = DialogResult.OK;
         }
 
         private void ApplyChanges(bool generatePreview)
         {
-            if (_subtitle == null || _subtitle.Paragraphs == null || _subtitle.Paragraphs.Count == 0)
+            if (_subtitle == null || _subtitle.Count == 0)
                 return;
-            for (int i = _subtitle.Paragraphs.Count - 1; i >= 0; i--)
+            for (int i = _subtitle.Count - 1; i >= 0; i--)
             {
-                var p = _subtitle.Paragraphs[i];
+                var p = _subtitle[i];
                 if (!_notAllowedFixes.Contains(p.Id) && _fixedTexts.ContainsKey(p.Id))
                     p.Text = _fixedTexts[p.Id];
             }
@@ -125,7 +128,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     var p = listViewFixes.Items[idx].Tag as Paragraph;
                     if (p != null)
                     {
-                        _subtitle.RemoveLine(p.Number);
+                        _subtitle.RemoveById(p.Id);
                     }
                     listViewFixes.Items.RemoveAt(index);
                 }
@@ -164,7 +167,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _notAllowedFixes = new HashSet<string>();
 
             listViewFixes.ItemChecked -= listViewFixes_ItemChecked;
-            foreach (Paragraph p in _subtitle.Paragraphs)
+            foreach (Paragraph p in _subtitle)
             {
                 var text = p.Text;
                 bool containsMood = false;
@@ -198,8 +201,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (containsMood || containsNarrator)
                 {
                     _fixedTexts.Add(p.Id, text);
-                    string oldText = Utilities.RemoveHtmlTags(p.Text, true);
-                    text = Utilities.RemoveHtmlTags(text, true);
+                    string oldText = HtmlUtils.RemoveHtmlTags(p.Text, true);
+                    text = HtmlUtils.RemoveHtmlTags(text, true);
                     AddFixToListView(p, oldText, text, containsMood, containsNarrator);
                     _totalChanged++;
                 }
@@ -271,7 +274,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void checkBoxRemoveSpaces_CheckedChanged(object sender, EventArgs e)
         {
-            if (listViewFixes.Items.Count < 1 || _subtitle.Paragraphs.Count == 0)
+            if (listViewFixes.Items.Count < 1 || _subtitle.Count == 0)
                 return;
 
             GeneratePreview();

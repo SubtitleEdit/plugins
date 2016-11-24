@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PluginCoreLib.Utils;
+using System;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -22,7 +23,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public string NarratorToUppercase(string text)
         {
-            string noTagText = Utilities.RemoveHtmlTags(text, true).TrimEnd().TrimEnd('"');
+            string noTagText = HtmlUtils.RemoveHtmlTags(text, true).TrimEnd().TrimEnd('"');
             int index = noTagText.IndexOf(':');
 
             // Skip single line that ends with ':'.
@@ -34,7 +35,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i];
-                string noTagLine = Utilities.RemoveHtmlTags(line, true);
+                string noTagLine = HtmlUtils.RemoveHtmlTags(line, true);
                 int colonIdx = noTagLine.IndexOf(':');
 
                 // Only allow colon at last position if it's 1st line.
@@ -89,7 +90,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string Customize(string capturedText)
         {
-            var st = new StripableText(capturedText);
+            var st = new StrippableText(capturedText);
             string strippedText = st.StrippedText;
             switch (Config.Style)
             {
@@ -134,7 +135,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private static bool IsQualifiedNarrator(string line, int colonIdx)
         {
-            string noTagCapturedText = Utilities.RemoveHtmlTags(line.Substring(0, colonIdx + 1), true);
+            string noTagCapturedText = HtmlUtils.RemoveHtmlTags(line.Substring(0, colonIdx + 1), true);
             if (string.IsNullOrWhiteSpace(noTagCapturedText))
             {
                 return false;
