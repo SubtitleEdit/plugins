@@ -5,7 +5,7 @@
 
     public class Paragraph
     {
-        public string Id { get; private set; }
+        public string ID { get; private set; }
 
         public int Number { get; set; }
 
@@ -23,6 +23,9 @@
             }
         }
 
+        public int NumberOfLines => StringUtils.CountLines(Text);
+
+
         public Paragraph()
             : this(string.Empty, new TimeCode(), new TimeCode())
         {
@@ -35,13 +38,11 @@
 
         public Paragraph(string text, TimeCode startTime, TimeCode endTime)
         {
-            Id = Guid.NewGuid().ToString();
+            ID = Guid.NewGuid().ToString();
             StartTime = startTime;
             EndTime = endTime;
             Text = text;
         }
-
-        public int NumberOfLines => StringUtils.CountLines(Text);
 
         public override string ToString() => $"{StartTime} --> {EndTime} {Text}";
 

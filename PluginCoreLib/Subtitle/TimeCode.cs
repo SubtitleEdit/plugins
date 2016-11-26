@@ -28,11 +28,6 @@ namespace PluginCoreLib.Subtitle
         {
         }
 
-        public TimeCode(TimeSpan timeSpan)
-        {
-            _totalMilliseconds = timeSpan.TotalMilliseconds;
-        }
-
         public TimeCode(double totalMilliseconds)
         {
             _totalMilliseconds = totalMilliseconds;
@@ -53,7 +48,7 @@ namespace PluginCoreLib.Subtitle
             set
             {
                 var ts = TimeSpan;
-                _totalMilliseconds = new TimeSpan(0, value, ts.Minutes, ts.Seconds, ts.Milliseconds).TotalMilliseconds;
+                _totalMilliseconds = new TimeSpan(ts.Days, value, ts.Minutes, ts.Seconds, ts.Milliseconds).TotalMilliseconds;
             }
         }
 
@@ -66,7 +61,7 @@ namespace PluginCoreLib.Subtitle
             set
             {
                 var ts = TimeSpan;
-                _totalMilliseconds = new TimeSpan(0, ts.Hours, value, ts.Seconds, ts.Milliseconds).TotalMilliseconds;
+                _totalMilliseconds = new TimeSpan(ts.Days, ts.Hours, value, ts.Seconds, ts.Milliseconds).TotalMilliseconds;
             }
         }
 
@@ -79,7 +74,7 @@ namespace PluginCoreLib.Subtitle
             set
             {
                 var ts = TimeSpan;
-                _totalMilliseconds = new TimeSpan(0, ts.Hours, ts.Minutes, value, ts.Milliseconds).TotalMilliseconds;
+                _totalMilliseconds = new TimeSpan(ts.Days, ts.Hours, ts.Minutes, value, ts.Milliseconds).TotalMilliseconds;
             }
         }
 
@@ -92,7 +87,7 @@ namespace PluginCoreLib.Subtitle
             set
             {
                 var ts = TimeSpan;
-                _totalMilliseconds = new TimeSpan(0, ts.Hours, ts.Minutes, ts.Seconds, value).TotalMilliseconds;
+                _totalMilliseconds = new TimeSpan(ts.Days, ts.Hours, ts.Minutes, ts.Seconds, value).TotalMilliseconds;
             }
         }
 

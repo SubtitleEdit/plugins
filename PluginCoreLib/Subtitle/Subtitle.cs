@@ -8,6 +8,7 @@
     public class Subtitle : IList<Paragraph>
     {
         private List<Paragraph> _paragraphs;
+        public string FileName { get; set; }
 
         public Subtitle()
         {
@@ -120,7 +121,7 @@
             for (int i = 0; i < _paragraphs.Count; i++)
             {
                 Paragraph p = _paragraphs[i];
-                if (p.Id.Equals(id, StringComparison.Ordinal))
+                if (p.ID.Equals(id, StringComparison.Ordinal))
                 {
                     _paragraphs.Remove(p);
                     break;

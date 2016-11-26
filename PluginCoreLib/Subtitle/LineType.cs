@@ -1,6 +1,6 @@
 ﻿namespace PluginCoreLib.Subtitle
 {
-    public enum ExpectingLine
+    public enum LineType
     {
         Number,
         TimeCodes,

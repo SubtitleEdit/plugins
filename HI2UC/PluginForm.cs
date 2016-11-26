@@ -80,8 +80,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             for (int i = _subtitle.Count - 1; i >= 0; i--)
             {
                 var p = _subtitle[i];
-                if (!_notAllowedFixes.Contains(p.Id) && _fixedTexts.ContainsKey(p.Id))
-                    p.Text = _fixedTexts[p.Id];
+                if (!_notAllowedFixes.Contains(p.ID) && _fixedTexts.ContainsKey(p.ID))
+                    p.Text = _fixedTexts[p.ID];
             }
             if (generatePreview)
             {
@@ -128,7 +128,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     var p = listViewFixes.Items[idx].Tag as Paragraph;
                     if (p != null)
                     {
-                        _subtitle.RemoveById(p.Id);
+                        _subtitle.RemoveById(p.ID);
                     }
                     listViewFixes.Items.RemoveAt(index);
                 }
@@ -200,7 +200,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                 if (containsMood || containsNarrator)
                 {
-                    _fixedTexts.Add(p.Id, text);
+                    _fixedTexts.Add(p.ID, text);
                     string oldText = HtmlUtils.RemoveHtmlTags(p.Text, true);
                     text = HtmlUtils.RemoveHtmlTags(text, true);
                     AddFixToListView(p, oldText, text, containsMood, containsNarrator);
@@ -299,11 +299,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return;
             if (e.Item.Checked)
             {
-                _notAllowedFixes.Remove(p.Id);
+                _notAllowedFixes.Remove(p.ID);
             }
             else
             {
-                _notAllowedFixes.Add(p.Id);
+                _notAllowedFixes.Add(p.ID);
             }
         }
 
