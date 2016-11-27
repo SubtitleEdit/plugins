@@ -27,16 +27,16 @@
 
 
         public Paragraph()
-            : this(string.Empty, new TimeCode(), new TimeCode())
+            : this(string.Empty, 0, 0)
         {
         }
 
         public Paragraph(string text, double startSeconds, double endSeconds)
-            : this(text, new TimeCode(TimeCode.BaseUnit * startSeconds), new TimeCode(TimeCode.BaseUnit * endSeconds))
+            : this(new TimeCode(TimeCode.BaseUnit * startSeconds), new TimeCode(TimeCode.BaseUnit * endSeconds), text)
         {
         }
 
-        public Paragraph(string text, TimeCode startTime, TimeCode endTime)
+        public Paragraph(TimeCode startTime, TimeCode endTime, string text)
         {
             ID = Guid.NewGuid().ToString();
             StartTime = startTime;

@@ -52,6 +52,10 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Subtitle\ParagraphTest.cs" />
+    <Compile Include="Subtitle\SubRipTest.cs" />
+    <Compile Include="Subtitle\SubtitleTest.cs" />
+    <Compile Include="Subtitle\TimeCodeTest.cs" />
     <Compile Include="Utils\HtmlUtilsTests.cs" />
     <Compile Include="Utils\StringUtilsTests.cs" />
   </ItemGroup>

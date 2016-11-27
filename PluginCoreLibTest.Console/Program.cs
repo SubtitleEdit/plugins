@@ -7,15 +7,18 @@
 
     class Program
     {
-        private static readonly DirectoryInfo _pluginDirectory = new DirectoryInfo("..\\..\\..\\HI2UC\\bin\\Debug");
+        private static readonly DirectoryInfo _pluginDirectory = new DirectoryInfo(@"..\..\..\HI2UC\bin\Debug");
 
         private static void Main(string[] args)
         {
+            // TODO: Create an app-domain only for plugins.
+
             AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+
             string pluginfile = Path.Combine(_pluginDirectory.FullName, "HI2UC.dll");
             string pluginfile2 = Path.Combine(_pluginDirectory.FullName, "HIColorer.dll");
-            bool flag = !File.Exists(pluginfile);
-            if (flag)
+
+            if (!File.Exists(pluginfile))
             {
                 throw new InvalidOperationException();
             }
@@ -44,22 +47,12 @@
             //Console.ReadLine();
         }
 
-        // Token: 0x06000002 RID: 2 RVA: 0x0000214C File Offset: 0x0000034C
         private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
             string pluginCoreLibFile = Path.Combine(_pluginDirectory.FullName, "PluginCoreLib.dll");
-            bool flag = !File.Exists(pluginCoreLibFile);
-            Assembly result;
-            if (flag)
-            {
-                result = null;
-            }
-            else
-            {
-                byte[] assemblyBuffer = File.ReadAllBytes(pluginCoreLibFile);
-                result = Assembly.Load(assemblyBuffer);
-            }
-            return result;
+            if (!File.Exists(pluginCoreLibFile)) return null;
+            byte[] assemblyBuffer = File.ReadAllBytes(pluginCoreLibFile);
+            return Assembly.Load(assemblyBuffer);
         }
 
     }
