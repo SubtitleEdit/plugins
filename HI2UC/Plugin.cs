@@ -1,27 +1,28 @@
-﻿using System.Collections.Generic;
-using System.Windows.Forms;
-
-namespace Nikse.SubtitleEdit.PluginLogic
+﻿namespace Nikse.SubtitleEdit.PluginLogic
 {
+    using PluginCoreLib.Subtitle;
+    using System.Collections.Generic;
+    using System.Windows.Forms;
+
     public class HI2UC : IPlugin // dll file name must "<classname>.dll" - e.g. "Haxor.dll"
     {
         #region Metadata
 
-        string IPlugin.ActionType => "tool";// Can be one of these: file, tool, sync, translate, spellcheck
+        public string ActionType => "tool";// Can be one of these: file, tool, sync, translate, spellcheck
 
-        string IPlugin.Description => "Convert moods and Narrator to Uppercase";
+        public string Description => "Convert moods and Narrator to Uppercase";
 
-        string IPlugin.Name => "Hearing Impaired to Uppercase";
+        public string Name => "Hearing Impaired to Uppercase";
 
-        string IPlugin.Shortcut => string.Empty;
+        public string Shortcut => string.Empty;
 
-        string IPlugin.Text => "Hearing Impaired to Uppercase";
+        public string Text => "Hearing Impaired to Uppercase";
 
-        decimal IPlugin.Version => 3.3M; //Gets or sets the major, minor, build, and revision numbers of the assembly
+        public decimal Version => 3.3M; //Gets or sets the major, minor, build, and revision numbers of the assembly
 
         #endregion
 
-        string IPlugin.DoAction(Form parentForm, string subtitleText, double frameRate,
+        public string DoAction(Form parentForm, string subtitleText, double frameRate,
             string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
             // Make sure subtitle isn't null or empty
@@ -41,7 +42,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             list.AddRange(subtitleText.SplitToLines());
 
             var srt = new SubRip();
-            var sub = new Subtitle(srt);
+            var sub = new Subtitle();
 
             // Load raws subtitle lines into Subtitle object
             srt.LoadSubtitle(sub, list, subtitleFileName);

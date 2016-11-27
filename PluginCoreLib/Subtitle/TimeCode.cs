@@ -1,29 +1,41 @@
 ﻿using System;
+using System.Globalization;
 
-namespace Nikse.SubtitleEdit.PluginLogic
+namespace PluginCoreLib.Subtitle
 {
-    public class TimeCode
+    public partial class TimeCode
     {
         public static readonly TimeCode MaxTime = new TimeCode(99, 59, 59, 999);
 
         public const double BaseUnit = 1000.0; // Base unit of time
         private double _totalMilliseconds;
 
-        public bool IsMaxTime => Math.Abs(_totalMilliseconds - MaxTime.TotalMilliseconds) < 0.01;
-
-        public TimeCode(TimeSpan timeSpan)
+        public bool IsMaxTime
         {
-            _totalMilliseconds = timeSpan.TotalMilliseconds;
+            get
+            {
+                return Math.Abs(_totalMilliseconds - MaxTime.TotalMilliseconds) < 0.01;
+            }
         }
 
-        public TimeCode(double totalMilliseconds = 0.0D)
+        public static TimeCode FromSeconds(double seconds)
+        {
+            return new TimeCode(seconds * BaseUnit);
+        }
+
+        public TimeCode() :
+            this(0)
+        {
+        }
+
+        public TimeCode(double totalMilliseconds)
         {
             _totalMilliseconds = totalMilliseconds;
         }
 
-        public TimeCode(int hour, int minute, int seconds, int milliseconds)
+        public TimeCode(double hours, double minutes, double seconds, double milliseconds)
         {
-            _totalMilliseconds = hour * 60 * 60 * BaseUnit + minute * 60 * BaseUnit + seconds * BaseUnit + milliseconds;
+            _totalMilliseconds = hours * 60 * 60 * BaseUnit + minutes * 60 * BaseUnit + seconds * BaseUnit + milliseconds;
         }
 
         public int Hours
@@ -36,7 +48,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             set
             {
                 var ts = TimeSpan;
-                _totalMilliseconds = new TimeSpan(0, value, ts.Minutes, ts.Seconds, ts.Milliseconds).TotalMilliseconds;
+                _totalMilliseconds = new TimeSpan(ts.Days, value, ts.Minutes, ts.Seconds, ts.Milliseconds).TotalMilliseconds;
             }
         }
 
@@ -49,7 +61,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             set
             {
                 var ts = TimeSpan;
-                _totalMilliseconds = new TimeSpan(0, ts.Hours, value, ts.Seconds, ts.Milliseconds).TotalMilliseconds;
+                _totalMilliseconds = new TimeSpan(ts.Days, ts.Hours, value, ts.Seconds, ts.Milliseconds).TotalMilliseconds;
             }
         }
 
@@ -62,7 +74,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             set
             {
                 var ts = TimeSpan;
-                _totalMilliseconds = new TimeSpan(0, ts.Hours, ts.Minutes, value, ts.Milliseconds).TotalMilliseconds;
+                _totalMilliseconds = new TimeSpan(ts.Days, ts.Hours, ts.Minutes, value, ts.Milliseconds).TotalMilliseconds;
             }
         }
 
@@ -75,7 +87,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             set
             {
                 var ts = TimeSpan;
-                _totalMilliseconds = new TimeSpan(0, ts.Hours, ts.Minutes, ts.Seconds, value).TotalMilliseconds;
+                _totalMilliseconds = new TimeSpan(ts.Days, ts.Hours, ts.Minutes, ts.Seconds, value).TotalMilliseconds;
             }
         }
 
@@ -103,33 +115,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        public void AddTime(int hour, int minutes, int seconds, int milliseconds)
-        {
-            Hours += hour;
-            Minutes += minutes;
-            Seconds += seconds;
-            Milliseconds += milliseconds;
-        }
-
-        public void AddTime(long milliseconds)
-        {
-            _totalMilliseconds += milliseconds;
-        }
-
-        public void AddTime(TimeSpan timeSpan)
-        {
-            _totalMilliseconds += timeSpan.TotalMilliseconds;
-        }
-
-        public void AddTime(double milliseconds)
-        {
-            _totalMilliseconds += milliseconds;
-        }
-
         public override string ToString()
         {
+            return ToString(false);
+        }
+
+        public string ToString(bool localize)
+        {
             var ts = TimeSpan;
-            var s = $"{(ts.Hours + ts.Days * 24):00}:{ts.Minutes:00}:{ts.Seconds:00},{ts.Milliseconds:000}";
+            string decimalSeparator = localize ? CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator : ",";
+            string s = string.Format("{0:00}:{1:00}:{2:00}{3}{4:000}", ts.Hours + ts.Days * 24, ts.Minutes, ts.Seconds, decimalSeparator, ts.Milliseconds);
 
             if (TotalMilliseconds >= 0)
                 return s;
