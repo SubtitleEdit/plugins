@@ -55,6 +55,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\IPlugin.cs">
+      <Link>Interfaces\IPlugin.cs</Link>
+    </Compile>
     <Compile Include="Classes\HearingImpaired.cs" />
     <Compile Include="Classes\StringExtensions.cs" />
     <Compile Include="Enums\HIStyle.cs" />
@@ -66,7 +69,6 @@
     <Compile Include="PluginForm.Designer.cs">
       <DependentUpon>PluginForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interfaces\IPlugin.cs" />
     <Compile Include="Classes\Paragraph.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

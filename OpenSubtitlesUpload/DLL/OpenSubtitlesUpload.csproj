@@ -42,13 +42,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\IPlugin.cs">
+      <Link>IPlugin.cs</Link>
+    </Compile>
     <Compile Include="ImdbSearch.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ImdbSearch.Designer.cs">
       <DependentUpon>ImdbSearch.cs</DependentUpon>
     </Compile>
-    <Compile Include="IPlugin.cs" />
     <Compile Include="LanguageAutoDetect.cs" />
     <Compile Include="OpenSubtitlesApi.cs" />
     <Compile Include="Plugin.cs" />

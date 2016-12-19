@@ -41,6 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\IPlugin.cs">
+      <Link>IPlugin.cs</Link>
+    </Compile>
     <Compile Include="Controls\SubtitleListView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -50,7 +53,6 @@
     <Compile Include="CustomCharList.Designer.cs">
       <DependentUpon>CustomCharList.cs</DependentUpon>
     </Compile>
-    <Compile Include="IPlugin.cs" />
     <Compile Include="Logic\Configuration.cs" />
     <Compile Include="Logic\Paragraph.cs" />
     <Compile Include="Logic\SubRip.cs" />

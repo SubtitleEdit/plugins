@@ -40,10 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\IPlugin.cs">
+      <Link>IPlugin.cs</Link>
+    </Compile>
     <Compile Include="DropboxApi.cs" />
     <Compile Include="DropBoxFile.cs" />
     <Compile Include="DropboxRestApi.cs" />
-    <Compile Include="IPlugin.cs" />
     <Compile Include="JSON.cs" />
     <Compile Include="OAuth.cs" />
     <Compile Include="OAuthBase.cs" />

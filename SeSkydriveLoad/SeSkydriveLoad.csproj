@@ -64,6 +64,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\IPlugin.cs">
+      <Link>IPlugin.cs</Link>
+    </Compile>
     <Compile Include="Browser.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -77,7 +80,6 @@
       <DependentUpon>PluginForm.cs</DependentUpon>
     </Compile>
     <Compile Include="SkydriveApi.cs" />
-    <Compile Include="IPlugin.cs" />
     <Compile Include="JSON.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
