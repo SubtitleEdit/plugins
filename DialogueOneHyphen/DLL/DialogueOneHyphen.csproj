@@ -39,8 +39,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\IPlugin.cs">
+      <Link>IPlugin.cs</Link>
+    </Compile>
     <Compile Include="Logic\Configuration.cs" />
-    <Compile Include="IPlugin.cs" />
     <Compile Include="Logic\Paragraph.cs" />
     <Compile Include="Logic\RemoveHyphens.cs" />
     <Compile Include="Plugin.cs" />

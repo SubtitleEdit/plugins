@@ -40,6 +40,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\IPlugin.cs">
+      <Link>IPlugin.cs</Link>
+    </Compile>
     <Compile Include="EditReplaceList.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -47,7 +50,6 @@
       <DependentUpon>EditReplaceList.cs</DependentUpon>
     </Compile>
     <Compile Include="Logic\Configuration.cs" />
-    <Compile Include="IPlugin.cs" />
     <Compile Include="Logic\Paragraph.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginForm.cs">

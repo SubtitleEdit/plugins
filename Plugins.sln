@@ -56,6 +56,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetflixRulesCheck", "Netfli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaiduTranslate", "BaiduTranslate\DLL\BaiduTranslate.csproj", "{40433432-EA5C-42CE-B2C8-79DD2EC17162}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{2A237BA8-0E50-4E52-8B90-457C6775068A}"
+	ProjectSection(SolutionItems) = preProject
+		IPlugin.cs = IPlugin.cs
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
