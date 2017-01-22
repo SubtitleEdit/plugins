@@ -164,6 +164,8 @@ namespace GenericPluginTester
 
                 string rawText = textBox1.Text;
 
+                // If you have trouble debuggin in VS 2015 then set these check-boxes:
+                //  Tools -> Options -> Debugging: "Use managed compatibility mode" + "Use native compatibility mode"
                 string pluginResult = (string)mi.Invoke(pluginObject,
                                       new object[]
                                       {
@@ -200,7 +202,7 @@ namespace GenericPluginTester
             {
                 LoadPlugin(dll);
             }
-        }
+        }        
 
     }
 }

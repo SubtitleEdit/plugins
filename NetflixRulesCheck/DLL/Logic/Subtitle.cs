@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -283,6 +284,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
             }
             Paragraphs.Add(newParagraph);
+        }
+
+        public string GetAllTexts()
+        {
+            var sb = new StringBuilder();
+            foreach (Paragraph p in Paragraphs)
+            {
+                sb.AppendLine(p.Text);
+            }
+            return sb.ToString();
         }
     }
 }

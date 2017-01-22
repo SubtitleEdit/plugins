@@ -120,7 +120,8 @@
   <data name="textBox1.Text" xml:space="preserve">
     <value>0
 00:00:01,758 --&gt; 00:00:02,958
-Hallo
+1 line. 2 lines.
+3 lines.
 
 1
 00:00:05,758 --&gt; 00:00:05,958
@@ -172,7 +173,6 @@ Before: [Gunshots]
 11
 00:00:64,760 --&gt; 00:00:68,959
 I still got 3 dollars left.
-
 </value>
   </data>
   <metadata name="openFileDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">

@@ -41,6 +41,9 @@
             this.buttonInverseSelection = new System.Windows.Forms.Button();
             this.buttonSelectAll = new System.Windows.Forms.Button();
             this.groupBoxRules = new System.Windows.Forms.GroupBox();
+            this.checkBox17CharsPerSecond = new System.Windows.Forms.CheckBox();
+            this.comboBoxLanguage = new System.Windows.Forms.ComboBox();
+            this.labelLanguage = new System.Windows.Forms.Label();
             this.checkBoxWriteOutOneToTen = new System.Windows.Forms.CheckBox();
             this.checkBoxSpellOutStartNumbers = new System.Windows.Forms.CheckBox();
             this.checkBoxSquareBracketForHi = new System.Windows.Forms.CheckBox();
@@ -166,6 +169,9 @@
             // 
             this.groupBoxRules.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxRules.Controls.Add(this.checkBox17CharsPerSecond);
+            this.groupBoxRules.Controls.Add(this.comboBoxLanguage);
+            this.groupBoxRules.Controls.Add(this.labelLanguage);
             this.groupBoxRules.Controls.Add(this.checkBoxWriteOutOneToTen);
             this.groupBoxRules.Controls.Add(this.checkBoxSpellOutStartNumbers);
             this.groupBoxRules.Controls.Add(this.checkBoxSquareBracketForHi);
@@ -180,36 +186,70 @@
             this.groupBoxRules.TabStop = false;
             this.groupBoxRules.Text = "Rules";
             // 
+            // checkBox17CharsPerSecond
+            // 
+            this.checkBox17CharsPerSecond.AutoSize = true;
+            this.checkBox17CharsPerSecond.Checked = true;
+            this.checkBox17CharsPerSecond.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox17CharsPerSecond.Location = new System.Drawing.Point(20, 78);
+            this.checkBox17CharsPerSecond.Name = "checkBox17CharsPerSecond";
+            this.checkBox17CharsPerSecond.Size = new System.Drawing.Size(194, 17);
+            this.checkBox17CharsPerSecond.TabIndex = 10;
+            this.checkBox17CharsPerSecond.Text = "Maximum 17 characters per second";
+            this.checkBox17CharsPerSecond.UseVisualStyleBackColor = true;
+            this.checkBox17CharsPerSecond.CheckedChanged += new System.EventHandler(this.RuleCheckedChanged);
+            // 
+            // comboBoxLanguage
+            // 
+            this.comboBoxLanguage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxLanguage.FormattingEnabled = true;
+            this.comboBoxLanguage.Location = new System.Drawing.Point(945, 36);
+            this.comboBoxLanguage.Name = "comboBoxLanguage";
+            this.comboBoxLanguage.Size = new System.Drawing.Size(196, 21);
+            this.comboBoxLanguage.TabIndex = 9;
+            // 
+            // labelLanguage
+            // 
+            this.labelLanguage.AutoSize = true;
+            this.labelLanguage.Location = new System.Drawing.Point(942, 20);
+            this.labelLanguage.Name = "labelLanguage";
+            this.labelLanguage.Size = new System.Drawing.Size(55, 13);
+            this.labelLanguage.TabIndex = 8;
+            this.labelLanguage.Text = "Language";
+            // 
             // checkBoxWriteOutOneToTen
             // 
             this.checkBoxWriteOutOneToTen.AutoSize = true;
             this.checkBoxWriteOutOneToTen.Checked = true;
             this.checkBoxWriteOutOneToTen.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxWriteOutOneToTen.Location = new System.Drawing.Point(410, 77);
+            this.checkBoxWriteOutOneToTen.Location = new System.Drawing.Point(410, 101);
             this.checkBoxWriteOutOneToTen.Name = "checkBoxWriteOutOneToTen";
-            this.checkBoxWriteOutOneToTen.Size = new System.Drawing.Size(304, 17);
+            this.checkBoxWriteOutOneToTen.Size = new System.Drawing.Size(335, 17);
             this.checkBoxWriteOutOneToTen.TabIndex = 6;
-            this.checkBoxWriteOutOneToTen.Text = "From 1 to 10, numbers should be written out: en, to, tre, etc";
+            this.checkBoxWriteOutOneToTen.Text = "From 1 to 10, numbers should be written out: One, two, three, etc.";
             this.checkBoxWriteOutOneToTen.UseVisualStyleBackColor = true;
+            this.checkBoxWriteOutOneToTen.CheckedChanged += new System.EventHandler(this.RuleCheckedChanged);
             // 
             // checkBoxSpellOutStartNumbers
             // 
             this.checkBoxSpellOutStartNumbers.AutoSize = true;
             this.checkBoxSpellOutStartNumbers.Checked = true;
             this.checkBoxSpellOutStartNumbers.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxSpellOutStartNumbers.Location = new System.Drawing.Point(410, 54);
+            this.checkBoxSpellOutStartNumbers.Location = new System.Drawing.Point(410, 78);
             this.checkBoxSpellOutStartNumbers.Name = "checkBoxSpellOutStartNumbers";
             this.checkBoxSpellOutStartNumbers.Size = new System.Drawing.Size(341, 17);
             this.checkBoxSpellOutStartNumbers.TabIndex = 5;
             this.checkBoxSpellOutStartNumbers.Text = "When a number begins a sentence, it should always be spelled out";
             this.checkBoxSpellOutStartNumbers.UseVisualStyleBackColor = true;
+            this.checkBoxSpellOutStartNumbers.CheckedChanged += new System.EventHandler(this.RuleCheckedChanged);
             // 
             // checkBoxSquareBracketForHi
             // 
             this.checkBoxSquareBracketForHi.AutoSize = true;
             this.checkBoxSquareBracketForHi.Checked = true;
             this.checkBoxSquareBracketForHi.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxSquareBracketForHi.Location = new System.Drawing.Point(410, 31);
+            this.checkBoxSquareBracketForHi.Location = new System.Drawing.Point(410, 55);
             this.checkBoxSquareBracketForHi.Name = "checkBoxSquareBracketForHi";
             this.checkBoxSquareBracketForHi.Size = new System.Drawing.Size(286, 17);
             this.checkBoxSquareBracketForHi.TabIndex = 4;
@@ -222,7 +262,7 @@
             this.checkBoxDialogHypenNoSpace.AutoSize = true;
             this.checkBoxDialogHypenNoSpace.Checked = true;
             this.checkBoxDialogHypenNoSpace.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxDialogHypenNoSpace.Location = new System.Drawing.Point(20, 100);
+            this.checkBoxDialogHypenNoSpace.Location = new System.Drawing.Point(410, 31);
             this.checkBoxDialogHypenNoSpace.Name = "checkBoxDialogHypenNoSpace";
             this.checkBoxDialogHypenNoSpace.Size = new System.Drawing.Size(249, 17);
             this.checkBoxDialogHypenNoSpace.TabIndex = 3;
@@ -235,7 +275,7 @@
             this.checkBoxTwoLinesMax.AutoSize = true;
             this.checkBoxTwoLinesMax.Checked = true;
             this.checkBoxTwoLinesMax.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxTwoLinesMax.Location = new System.Drawing.Point(20, 77);
+            this.checkBoxTwoLinesMax.Location = new System.Drawing.Point(20, 101);
             this.checkBoxTwoLinesMax.Name = "checkBoxTwoLinesMax";
             this.checkBoxTwoLinesMax.Size = new System.Drawing.Size(117, 17);
             this.checkBoxTwoLinesMax.TabIndex = 2;
@@ -248,7 +288,7 @@
             this.checkBoxMinDuration.AutoSize = true;
             this.checkBoxMinDuration.Checked = true;
             this.checkBoxMinDuration.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxMinDuration.Location = new System.Drawing.Point(20, 54);
+            this.checkBoxMinDuration.Location = new System.Drawing.Point(20, 31);
             this.checkBoxMinDuration.Name = "checkBoxMinDuration";
             this.checkBoxMinDuration.Size = new System.Drawing.Size(224, 17);
             this.checkBoxMinDuration.TabIndex = 1;
@@ -261,7 +301,7 @@
             this.checkBoxMaxDuration.AutoSize = true;
             this.checkBoxMaxDuration.Checked = true;
             this.checkBoxMaxDuration.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxMaxDuration.Location = new System.Drawing.Point(20, 31);
+            this.checkBoxMaxDuration.Location = new System.Drawing.Point(20, 55);
             this.checkBoxMaxDuration.Name = "checkBoxMaxDuration";
             this.checkBoxMaxDuration.Size = new System.Drawing.Size(250, 17);
             this.checkBoxMaxDuration.TabIndex = 0;
@@ -319,5 +359,8 @@
         private System.Windows.Forms.CheckBox checkBoxMaxDuration;
         private System.Windows.Forms.CheckBox checkBoxSpellOutStartNumbers;
         private System.Windows.Forms.CheckBox checkBoxWriteOutOneToTen;
+        private System.Windows.Forms.ComboBox comboBoxLanguage;
+        private System.Windows.Forms.Label labelLanguage;
+        private System.Windows.Forms.CheckBox checkBox17CharsPerSecond;
     }
 }

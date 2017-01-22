@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Nikse.SubtitleEdit.PluginLogic;
+using SubtitleEdit.Logic;
 
 namespace SubtitleEdit
 {
@@ -12,6 +15,12 @@ namespace SubtitleEdit
         private readonly Subtitle _subtitle;
         private int _totalFixes;
         private Dictionary<string, string> _fixedParagraphs;
+        private string _language;
+        private static readonly Regex NumberStart = new Regex(@"^\d+ [A-Za-z]", RegexOptions.Compiled);
+        private static readonly Regex NumberStartInside = new Regex(@"[\.,!] \d+ [A-Za-z]", RegexOptions.Compiled);
+        private static readonly Regex NumberStartInside2 = new Regex(@"[\.,!]\r\n\d+ [A-Za-z]", RegexOptions.Compiled);
+        private static readonly Regex NumberOneToNine = new Regex(@"\b\d\b", RegexOptions.Compiled);
+        private static readonly Regex NumberTen = new Regex(@"\b10\b", RegexOptions.Compiled);
 
         public PluginForm(Subtitle subtitle, string name, string description)
         {
@@ -25,7 +34,36 @@ namespace SubtitleEdit
                 int idx = listViewFixes.Columns.Count - 1;
                 listViewFixes.Columns[idx].Width = -2;
             };
+            InitializeLanguages(subtitle);
             FindAndListNetflixRulesFixes();
+        }
+
+        private void InitializeLanguages(Subtitle subtitle)
+        {
+            var autoDetectGoogleLanguage = LanguageAutoDetect.AutoDetectGoogleLanguage(subtitle);
+            var ci = CultureInfo.GetCultureInfo(autoDetectGoogleLanguage);
+            comboBoxLanguage.Items.Clear();
+            foreach (var x in CultureInfo.GetCultures(CultureTypes.NeutralCultures))
+                comboBoxLanguage.Items.Add(x);
+            comboBoxLanguage.Sorted = true;
+            int languageIndex = 0;
+            int j = 0;
+            foreach (var x in comboBoxLanguage.Items)
+            {
+                var xci = (CultureInfo)x;
+                if (xci.TwoLetterISOLanguageName == ci.TwoLetterISOLanguageName)
+                {
+                    languageIndex = j;
+                    break;
+                }
+                if (xci.TwoLetterISOLanguageName == "en")
+                {
+                    languageIndex = j;
+                }
+                j++;
+            }
+            comboBoxLanguage.SelectedIndex = languageIndex;
+            comboBoxLanguage.SelectedIndexChanged += RuleCheckedChanged;
         }
 
         private void buttonOK_Click(object sender, EventArgs e)
@@ -64,8 +102,23 @@ namespace SubtitleEdit
             listViewFixes.Items.Add(item);
         }
 
+        private string GetLanguage()
+        {
+            var idx = comboBoxLanguage.SelectedIndex;
+            if (idx >= 0)
+            {
+                var x = (CultureInfo)comboBoxLanguage.Items[idx];
+                if (x != null)
+                {
+                    return x.TwoLetterISOLanguageName;
+                }
+            }
+            return "en";
+        }
+
         private void FindAndListNetflixRulesFixes()
         {
+            _language = GetLanguage();
             listViewFixes.BeginUpdate();
             listViewFixes.Items.Clear();
             _totalFixes = 0;
@@ -108,26 +161,37 @@ namespace SubtitleEdit
                 {
                     if (p.Text.SplitToLines().Length > 2)
                     {
-                        //TODO- auto-break
+                        //TODO: auto-break
                         _totalFixes++;
                         AddFixToListView(p, "Two lines maximum", text, text);
                     }
                 }
 
                 //- Two frames gap
-
+                double frameRate = 25.0;
+                double twoFramesGap = 1000.0 / frameRate * 2.0;
+                if (next != null && p.EndTime.TotalMilliseconds + twoFramesGap > next.StartTime.TotalMilliseconds)
+                {
+                    p.EndTime.TotalMilliseconds = next.StartTime.TotalMilliseconds - twoFramesGap;
+                    //TODO: check for min time/speed
+                    _totalFixes++;
+                    AddFixToListView(p, "Mininum two frames gap", text, text);
+                }
 
                 ////- Speed - 17 characters per second --- is it max 17 characters per second
-                var charactersPerSeconds = Utilities.GetCharactersPerSecond(p);
-                if (charactersPerSeconds > 17)
+                if (checkBox17CharsPerSecond.Checked)
                 {
-                    var tempP = new Paragraph(p);
-                    while (Utilities.GetCharactersPerSecond(tempP) > 17)
+                    var charactersPerSeconds = Utilities.GetCharactersPerSecond(p);
+                    if (charactersPerSeconds > 17)
                     {
-                        tempP.EndTime.TotalMilliseconds++;
+                        var tempP = new Paragraph(p);
+                        while (Utilities.GetCharactersPerSecond(tempP) > 17)
+                        {
+                            tempP.EndTime.TotalMilliseconds++;
+                        }
+                        _totalFixes++;
+                        AddFixToListView(p, "Minimum 17 characters per second", text, text);
                     }
-                    _totalFixes++;
-                    AddFixToListView(p, "Minimum 17 characters per second", text, text);
                 }
 
                 //- Dual Speakers: Use a hyphen without a space
@@ -207,7 +271,30 @@ namespace SubtitleEdit
                 if (checkBoxSpellOutStartNumbers.Checked)
                 {
                     string newText = p.Text;
-                    var arr = p.Text.SplitToLines();
+
+                    var m = NumberStart.Match(newText);
+                    while (m.Success)
+                    {
+                        int length = m.Length - 2;
+                        newText = newText.Remove(m.Index, length).Insert(m.Index, ConvertNumberToString(m.Value.Substring(0, length), true));
+                        m = NumberStart.Match(newText, m.Index + 1);
+                    }
+
+                    m = NumberStartInside.Match(newText);
+                    while (m.Success)
+                    {
+                        int length = m.Length - 4;
+                        newText = newText.Remove(m.Index + 2, length).Insert(m.Index + 2, ConvertNumberToString(m.Value.Substring(2, length), true));
+                        m = NumberStartInside.Match(newText, m.Index + 1);
+                    }
+
+                    m = NumberStartInside2.Match(newText);
+                    while (m.Success)
+                    {
+                        int length = m.Length - 5;
+                        newText = newText.Remove(m.Index + 3, length).Insert(m.Index + 3, ConvertNumberToString(m.Value.Substring(3, length), true));
+                        m = NumberStartInside2.Match(newText, m.Index + 1);
+                    }
 
                     if (newText != text)
                     {
@@ -220,7 +307,19 @@ namespace SubtitleEdit
                 if (checkBoxWriteOutOneToTen.Checked)
                 {
                     string newText = p.Text;
-                    var arr = p.Text.SplitToLines();
+                    var m = NumberOneToNine.Match(newText);
+                    while (m.Success)
+                    {
+                        newText = newText.Remove(m.Index, 1).Insert(m.Index, ConvertNumberToString(m.Value.Substring(0, 1), false));
+                        m = NumberOneToNine.Match(newText, m.Index + 1);
+                    }
+
+                    m = NumberTen.Match(newText);
+                    while (m.Success)
+                    {
+                        newText = newText.Remove(m.Index, 2).Insert(m.Index, "ten");
+                        m = NumberTen.Match(newText, m.Index + 1);
+                    }
 
                     if (newText != text)
                     {
@@ -233,6 +332,80 @@ namespace SubtitleEdit
             listViewFixes.EndUpdate();
             labelTotal.Text = "Total: " + _totalFixes;
             labelTotal.ForeColor = _totalFixes > 0 ? Color.Red : Color.Green;
+        }
+
+        private string ConvertNumberToString(string value, bool startWithUppercase)
+        {
+            value = value.Trim();
+            if (_language == "en")
+            {
+                if (value.Equals("0", StringComparison.Ordinal)) value = "zero";
+                if (value.Equals("1", StringComparison.Ordinal)) value = "one";
+                if (value.Equals("2", StringComparison.Ordinal)) value = "two";
+                if (value.Equals("3", StringComparison.Ordinal)) value = "three";
+                if (value.Equals("4", StringComparison.Ordinal)) value = "four";
+                if (value.Equals("5", StringComparison.Ordinal)) value = "five";
+                if (value.Equals("6", StringComparison.Ordinal)) value = "six";
+                if (value.Equals("7", StringComparison.Ordinal)) value = "seven";
+                if (value.Equals("8", StringComparison.Ordinal)) value = "eight";
+                if (value.Equals("9", StringComparison.Ordinal)) value = "nine";
+                if (value.Equals("10", StringComparison.Ordinal)) value = "ten";
+                if (value.Equals("11", StringComparison.Ordinal)) value = "eleven";
+                if (value.StartsWith("12", StringComparison.Ordinal)) value = "twelve";
+                if (value.StartsWith("13", StringComparison.Ordinal)) value = "thirteen";
+                if (value.StartsWith("14", StringComparison.Ordinal)) value = "fourteen";
+                if (value.StartsWith("15", StringComparison.Ordinal)) value = "fifteen";
+                if (value.StartsWith("16", StringComparison.Ordinal)) value = "sixteen";
+                if (value.StartsWith("17", StringComparison.Ordinal)) value = "seventeen";
+                if (value.StartsWith("18", StringComparison.Ordinal)) value = "eighteen";
+                if (value.StartsWith("19", StringComparison.Ordinal)) value = "nineteen";
+                if (value.StartsWith("20", StringComparison.Ordinal)) value = "twenty";
+                if (value.StartsWith("30", StringComparison.Ordinal)) value = "thirty";
+                if (value.StartsWith("40", StringComparison.Ordinal)) value = "forty";
+                if (value.StartsWith("50", StringComparison.Ordinal)) value = "fifty";
+                if (value.StartsWith("60", StringComparison.Ordinal)) value = "sixty";
+                if (value.StartsWith("70", StringComparison.Ordinal)) value = "seventy";
+                if (value.StartsWith("80", StringComparison.Ordinal)) value = "eighty";
+                if (value.StartsWith("90", StringComparison.Ordinal)) value = "ninety";
+                if (value.StartsWith("100", StringComparison.Ordinal)) value = "one hundred";
+            }
+            if (_language == "da")
+            {
+                if (value.Equals("0", StringComparison.Ordinal)) value = "nul";
+                if (value.Equals("1", StringComparison.Ordinal)) value = "en";
+                if (value.Equals("2", StringComparison.Ordinal)) value = "to";
+                if (value.Equals("3", StringComparison.Ordinal)) value = "tre";
+                if (value.Equals("4", StringComparison.Ordinal)) value = "fire";
+                if (value.Equals("5", StringComparison.Ordinal)) value = "fem";
+                if (value.Equals("6", StringComparison.Ordinal)) value = "seks";
+                if (value.Equals("7", StringComparison.Ordinal)) value = "syv";
+                if (value.Equals("8", StringComparison.Ordinal)) value = "otte";
+                if (value.Equals("9", StringComparison.Ordinal)) value = "ni";
+                if (value.Equals("10", StringComparison.Ordinal)) value = "ti";
+                if (value.Equals("11", StringComparison.Ordinal)) value = "elve";
+                if (value.StartsWith("12", StringComparison.Ordinal)) value = "tolv";
+                if (value.StartsWith("13", StringComparison.Ordinal)) value = "tretten";
+                if (value.StartsWith("14", StringComparison.Ordinal)) value = "fjorten";
+                if (value.StartsWith("15", StringComparison.Ordinal)) value = "femten";
+                if (value.StartsWith("16", StringComparison.Ordinal)) value = "seksten";
+                if (value.StartsWith("17", StringComparison.Ordinal)) value = "sytten";
+                if (value.StartsWith("18", StringComparison.Ordinal)) value = "atten";
+                if (value.StartsWith("19", StringComparison.Ordinal)) value = "nitten";
+                if (value.StartsWith("20", StringComparison.Ordinal)) value = "tyve";
+                if (value.StartsWith("30", StringComparison.Ordinal)) value = "tredieve";
+                if (value.StartsWith("40", StringComparison.Ordinal)) value = "fyrre";
+                if (value.StartsWith("50", StringComparison.Ordinal)) value = "halvtreds";
+                if (value.StartsWith("60", StringComparison.Ordinal)) value = "treds";
+                if (value.StartsWith("70", StringComparison.Ordinal)) value = "halvfjerds";
+                if (value.StartsWith("80", StringComparison.Ordinal)) value = "first";
+                if (value.StartsWith("90", StringComparison.Ordinal)) value = "halvfems";
+                if (value.StartsWith("100", StringComparison.Ordinal)) value = "ethunderede";
+            }
+            if (startWithUppercase && value.Length > 0)
+            {
+                value = value[0].ToString().ToUpper()[0] + value.Remove(0, 1);
+            }
+            return value;
         }
 
         private void buttonSelectAll_Click(object sender, EventArgs e)
