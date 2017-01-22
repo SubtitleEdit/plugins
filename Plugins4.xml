@@ -126,4 +126,11 @@
     <Date>2016-02-14</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/NamesListManager.zip</Url>
   </Plugin>
+  <Plugin>
+    <Name>Netflix rules</Name>
+    <Description>BETA</Description>
+    <Version>0.5</Version>
+    <Date>2017-01-22</Date>
+    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/NetflixRulesCheck.zip</Url>
+  </Plugin>
 </Plugins>
