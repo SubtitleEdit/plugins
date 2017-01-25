@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -14,13 +13,13 @@ namespace SubtitleEdit
         public string FixedSubtitle { get; private set; }
         private readonly Subtitle _subtitle;
         private int _totalFixes;
-        private Dictionary<string, string> _fixedParagraphs;
         private string _language;
         private static readonly Regex NumberStart = new Regex(@"^\d+ [A-Za-z]", RegexOptions.Compiled);
         private static readonly Regex NumberStartInside = new Regex(@"[\.,!] \d+ [A-Za-z]", RegexOptions.Compiled);
         private static readonly Regex NumberStartInside2 = new Regex(@"[\.,!]\r\n\d+ [A-Za-z]", RegexOptions.Compiled);
         private static readonly Regex NumberOneToNine = new Regex(@"\b\d\b", RegexOptions.Compiled);
         private static readonly Regex NumberTen = new Regex(@"\b10\b", RegexOptions.Compiled);
+        private readonly GlyphReader _glyphReader;
 
         public PluginForm(Subtitle subtitle, string name, string description)
         {
@@ -35,6 +34,7 @@ namespace SubtitleEdit
                 listViewFixes.Columns[idx].Width = -2;
             };
             InitializeLanguages(subtitle);
+            _glyphReader = new GlyphReader();
             FindAndListNetflixRulesFixes();
         }
 
@@ -68,23 +68,18 @@ namespace SubtitleEdit
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            if (_fixedParagraphs != null && _fixedParagraphs.Count > 0)
+            int count = 0;
+            foreach (ListViewItem item in listViewFixes.Items)
             {
-                foreach (ListViewItem item in listViewFixes.Items)
+                var p = item.Tag as Paragraph;
+                if (item.Checked && p != null)
                 {
-                    var p = item.Tag as Paragraph;
-                    if (!item.Checked || p == null || !_fixedParagraphs.ContainsKey(p.ID))
-                        continue;
-
-                    p.Text = _fixedParagraphs[p.ID];
+                    p.Text = item.SubItems[4].Text.Replace(Configuration.ListViewLineSeparatorString, Environment.NewLine).Trim();
                 }
-                FixedSubtitle = _subtitle.ToText();
-                DialogResult = DialogResult.OK;
+                count++;
             }
-            else
-            {
-                DialogResult = DialogResult.Cancel;
-            }
+            FixedSubtitle = _subtitle.ToText();
+            DialogResult = count > 0 ? DialogResult.OK : DialogResult.Cancel;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -122,8 +117,6 @@ namespace SubtitleEdit
             listViewFixes.BeginUpdate();
             listViewFixes.Items.Clear();
             _totalFixes = 0;
-            _fixedParagraphs = new Dictionary<string, string>();
-
 
             // https://backlothelp.netflix.com/hc/en-us/articles/215758617-Timed-Text-Style-Guide-General-Requirements
 
@@ -145,14 +138,14 @@ namespace SubtitleEdit
                     }
                 }
 
-                // Minimum duration: 5/6 second (833.3 ms)
+                // Minimum duration: 5/6 second (833 ms) - also see https://github.com/SubtitleEdit/plugins/issues/129
                 if (checkBoxMinDuration.Checked)
                 {
-                    if (p.Duration.TotalMilliseconds < 833.333)
+                    if (p.Duration.TotalMilliseconds < 833)
                     {
                         p.Duration.TotalMilliseconds = 834;
                         _totalFixes++;
-                        AddFixToListView(p, "Minimum duration: 5/6 second (833.3 ms)", text, text);
+                        AddFixToListView(p, "Minimum duration: 5/6 second (833 ms)", text, text);
                     }
                 }
 
@@ -160,25 +153,27 @@ namespace SubtitleEdit
                 if (checkBoxTwoLinesMax.Checked)
                 {
                     if (p.Text.SplitToLines().Length > 2)
-                    {
-                        //TODO: auto-break
+                    {                        
                         _totalFixes++;
-                        AddFixToListView(p, "Two lines maximum", text, text);
+                        AddFixToListView(p, "Two lines maximum", text, AutoBreaker.AutoBreakLine(text));
                     }
                 }
 
-                //- Two frames gap
-                double frameRate = 25.0;
-                double twoFramesGap = 1000.0 / frameRate * 2.0;
-                if (next != null && p.EndTime.TotalMilliseconds + twoFramesGap > next.StartTime.TotalMilliseconds)
-                {
-                    p.EndTime.TotalMilliseconds = next.StartTime.TotalMilliseconds - twoFramesGap;
-                    //TODO: check for min time/speed
-                    _totalFixes++;
-                    AddFixToListView(p, "Mininum two frames gap", text, text);
+                // Two frames gap minimum
+                if (checkBoxGapMinTwoFrames.Checked)
+                { 
+                    double frameRate = 25.0;
+                    double twoFramesGap = 1000.0 / frameRate * 2.0;
+                    if (next != null && p.EndTime.TotalMilliseconds + twoFramesGap > next.StartTime.TotalMilliseconds)
+                    {
+                        p.EndTime.TotalMilliseconds = next.StartTime.TotalMilliseconds - twoFramesGap;
+                        //TODO: check for min time/speed
+                        _totalFixes++;
+                        AddFixToListView(p, "Mininum two frames gap", text, text);
+                    }
                 }
 
-                ////- Speed - 17 characters per second --- is it max 17 characters per second
+                //- Speed - 17 characters per second --- is it max 17 characters per second
                 if (checkBox17CharsPerSecond.Checked)
                 {
                     var charactersPerSeconds = Utilities.GetCharactersPerSecond(p);
@@ -190,7 +185,7 @@ namespace SubtitleEdit
                             tempP.EndTime.TotalMilliseconds++;
                         }
                         _totalFixes++;
-                        AddFixToListView(p, "Minimum 17 characters per second", text, text);
+                        AddFixToListView(p, "Maximum 17 characters per second", text, text);
                     }
                 }
 
@@ -255,7 +250,7 @@ namespace SubtitleEdit
                         }
                         if ((arr[1].StartsWith("-(") && arr[1].EndsWith(")")) || (arr[1].StartsWith("-{") && arr[1].EndsWith("}")))
                         {
-                            arr[1] = "-[" + newText.Substring(2, newText.Length - 3) + "]";
+                            arr[1] = "-[" + arr[1].Substring(2, arr[1].Length - 3) + "]";
                         }
                         newText = arr[0] + Environment.NewLine + arr[1];
                     }
@@ -325,6 +320,17 @@ namespace SubtitleEdit
                     {
                         _totalFixes++;
                         AddFixToListView(p, "From 1 to 10, numbers should be written out: one, two, three, etc", text, newText);
+                    }
+                }
+
+                // Glyph List - Only text/ characters included in the NETFLIX Glyph List (version 2) can be used.
+                if (checkBoxCheckValidGlyphs.Checked)
+                {
+                    string badGlyphs;
+                    if (_glyphReader.ContainsIllegalGlyphs(p.Text, out badGlyphs))
+                    {                        
+                        _totalFixes++;
+                        AddFixToListView(p, "Only use valid characters (not " + badGlyphs + ")", text, _glyphReader.CleanText(text));
                     }
                 }
             }

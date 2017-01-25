@@ -41,6 +41,8 @@
             this.buttonInverseSelection = new System.Windows.Forms.Button();
             this.buttonSelectAll = new System.Windows.Forms.Button();
             this.groupBoxRules = new System.Windows.Forms.GroupBox();
+            this.checkBoxGapMinTwoFrames = new System.Windows.Forms.CheckBox();
+            this.checkBoxCheckValidGlyphs = new System.Windows.Forms.CheckBox();
             this.checkBox17CharsPerSecond = new System.Windows.Forms.CheckBox();
             this.comboBoxLanguage = new System.Windows.Forms.ComboBox();
             this.labelLanguage = new System.Windows.Forms.Label();
@@ -169,6 +171,8 @@
             // 
             this.groupBoxRules.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxRules.Controls.Add(this.checkBoxGapMinTwoFrames);
+            this.groupBoxRules.Controls.Add(this.checkBoxCheckValidGlyphs);
             this.groupBoxRules.Controls.Add(this.checkBox17CharsPerSecond);
             this.groupBoxRules.Controls.Add(this.comboBoxLanguage);
             this.groupBoxRules.Controls.Add(this.labelLanguage);
@@ -181,10 +185,36 @@
             this.groupBoxRules.Controls.Add(this.checkBoxMaxDuration);
             this.groupBoxRules.Location = new System.Drawing.Point(15, 13);
             this.groupBoxRules.Name = "groupBoxRules";
-            this.groupBoxRules.Size = new System.Drawing.Size(1216, 133);
+            this.groupBoxRules.Size = new System.Drawing.Size(1216, 151);
             this.groupBoxRules.TabIndex = 105;
             this.groupBoxRules.TabStop = false;
             this.groupBoxRules.Text = "Rules";
+            // 
+            // checkBoxGapMinTwoFrames
+            // 
+            this.checkBoxGapMinTwoFrames.AutoSize = true;
+            this.checkBoxGapMinTwoFrames.Checked = true;
+            this.checkBoxGapMinTwoFrames.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxGapMinTwoFrames.Location = new System.Drawing.Point(20, 101);
+            this.checkBoxGapMinTwoFrames.Name = "checkBoxGapMinTwoFrames";
+            this.checkBoxGapMinTwoFrames.Size = new System.Drawing.Size(168, 17);
+            this.checkBoxGapMinTwoFrames.TabIndex = 6;
+            this.checkBoxGapMinTwoFrames.Text = "Frame gap:  minimum 2 frames";
+            this.checkBoxGapMinTwoFrames.UseVisualStyleBackColor = true;
+            this.checkBoxGapMinTwoFrames.CheckedChanged += new System.EventHandler(this.RuleCheckedChanged);
+            // 
+            // checkBoxCheckValidGlyphs
+            // 
+            this.checkBoxCheckValidGlyphs.AutoSize = true;
+            this.checkBoxCheckValidGlyphs.Checked = true;
+            this.checkBoxCheckValidGlyphs.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxCheckValidGlyphs.Location = new System.Drawing.Point(410, 124);
+            this.checkBoxCheckValidGlyphs.Name = "checkBoxCheckValidGlyphs";
+            this.checkBoxCheckValidGlyphs.Size = new System.Drawing.Size(330, 17);
+            this.checkBoxCheckValidGlyphs.TabIndex = 21;
+            this.checkBoxCheckValidGlyphs.Text = "Only text/characters included in the Netflix Glyph List (version 2) ";
+            this.checkBoxCheckValidGlyphs.UseVisualStyleBackColor = true;
+            this.checkBoxCheckValidGlyphs.CheckedChanged += new System.EventHandler(this.RuleCheckedChanged);
             // 
             // checkBox17CharsPerSecond
             // 
@@ -194,7 +224,7 @@
             this.checkBox17CharsPerSecond.Location = new System.Drawing.Point(20, 78);
             this.checkBox17CharsPerSecond.Name = "checkBox17CharsPerSecond";
             this.checkBox17CharsPerSecond.Size = new System.Drawing.Size(194, 17);
-            this.checkBox17CharsPerSecond.TabIndex = 10;
+            this.checkBox17CharsPerSecond.TabIndex = 5;
             this.checkBox17CharsPerSecond.Text = "Maximum 17 characters per second";
             this.checkBox17CharsPerSecond.UseVisualStyleBackColor = true;
             this.checkBox17CharsPerSecond.CheckedChanged += new System.EventHandler(this.RuleCheckedChanged);
@@ -207,7 +237,7 @@
             this.comboBoxLanguage.Location = new System.Drawing.Point(945, 36);
             this.comboBoxLanguage.Name = "comboBoxLanguage";
             this.comboBoxLanguage.Size = new System.Drawing.Size(196, 21);
-            this.comboBoxLanguage.TabIndex = 9;
+            this.comboBoxLanguage.TabIndex = 30;
             // 
             // labelLanguage
             // 
@@ -226,7 +256,7 @@
             this.checkBoxWriteOutOneToTen.Location = new System.Drawing.Point(410, 101);
             this.checkBoxWriteOutOneToTen.Name = "checkBoxWriteOutOneToTen";
             this.checkBoxWriteOutOneToTen.Size = new System.Drawing.Size(335, 17);
-            this.checkBoxWriteOutOneToTen.TabIndex = 6;
+            this.checkBoxWriteOutOneToTen.TabIndex = 17;
             this.checkBoxWriteOutOneToTen.Text = "From 1 to 10, numbers should be written out: One, two, three, etc.";
             this.checkBoxWriteOutOneToTen.UseVisualStyleBackColor = true;
             this.checkBoxWriteOutOneToTen.CheckedChanged += new System.EventHandler(this.RuleCheckedChanged);
@@ -239,7 +269,7 @@
             this.checkBoxSpellOutStartNumbers.Location = new System.Drawing.Point(410, 78);
             this.checkBoxSpellOutStartNumbers.Name = "checkBoxSpellOutStartNumbers";
             this.checkBoxSpellOutStartNumbers.Size = new System.Drawing.Size(341, 17);
-            this.checkBoxSpellOutStartNumbers.TabIndex = 5;
+            this.checkBoxSpellOutStartNumbers.TabIndex = 15;
             this.checkBoxSpellOutStartNumbers.Text = "When a number begins a sentence, it should always be spelled out";
             this.checkBoxSpellOutStartNumbers.UseVisualStyleBackColor = true;
             this.checkBoxSpellOutStartNumbers.CheckedChanged += new System.EventHandler(this.RuleCheckedChanged);
@@ -252,7 +282,7 @@
             this.checkBoxSquareBracketForHi.Location = new System.Drawing.Point(410, 55);
             this.checkBoxSquareBracketForHi.Name = "checkBoxSquareBracketForHi";
             this.checkBoxSquareBracketForHi.Size = new System.Drawing.Size(286, 17);
-            this.checkBoxSquareBracketForHi.TabIndex = 4;
+            this.checkBoxSquareBracketForHi.TabIndex = 11;
             this.checkBoxSquareBracketForHi.Text = "Use brackets[] to enclose speaker IDs or sound effects";
             this.checkBoxSquareBracketForHi.UseVisualStyleBackColor = true;
             this.checkBoxSquareBracketForHi.CheckedChanged += new System.EventHandler(this.RuleCheckedChanged);
@@ -265,7 +295,7 @@
             this.checkBoxDialogHypenNoSpace.Location = new System.Drawing.Point(410, 31);
             this.checkBoxDialogHypenNoSpace.Name = "checkBoxDialogHypenNoSpace";
             this.checkBoxDialogHypenNoSpace.Size = new System.Drawing.Size(249, 17);
-            this.checkBoxDialogHypenNoSpace.TabIndex = 3;
+            this.checkBoxDialogHypenNoSpace.TabIndex = 9;
             this.checkBoxDialogHypenNoSpace.Text = " Dual Speakers: Use a hyphen without a space";
             this.checkBoxDialogHypenNoSpace.UseVisualStyleBackColor = true;
             this.checkBoxDialogHypenNoSpace.CheckedChanged += new System.EventHandler(this.RuleCheckedChanged);
@@ -275,10 +305,10 @@
             this.checkBoxTwoLinesMax.AutoSize = true;
             this.checkBoxTwoLinesMax.Checked = true;
             this.checkBoxTwoLinesMax.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxTwoLinesMax.Location = new System.Drawing.Point(20, 101);
+            this.checkBoxTwoLinesMax.Location = new System.Drawing.Point(20, 124);
             this.checkBoxTwoLinesMax.Name = "checkBoxTwoLinesMax";
             this.checkBoxTwoLinesMax.Size = new System.Drawing.Size(117, 17);
-            this.checkBoxTwoLinesMax.TabIndex = 2;
+            this.checkBoxTwoLinesMax.TabIndex = 7;
             this.checkBoxTwoLinesMax.Text = "Two lines maximum";
             this.checkBoxTwoLinesMax.UseVisualStyleBackColor = true;
             this.checkBoxTwoLinesMax.CheckedChanged += new System.EventHandler(this.RuleCheckedChanged);
@@ -290,9 +320,9 @@
             this.checkBoxMinDuration.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxMinDuration.Location = new System.Drawing.Point(20, 31);
             this.checkBoxMinDuration.Name = "checkBoxMinDuration";
-            this.checkBoxMinDuration.Size = new System.Drawing.Size(224, 17);
+            this.checkBoxMinDuration.Size = new System.Drawing.Size(212, 17);
             this.checkBoxMinDuration.TabIndex = 1;
-            this.checkBoxMinDuration.Text = " Minimum duration: 5/6 second (833.3 ms)";
+            this.checkBoxMinDuration.Text = "Minimum duration: 5/6 second (833 ms)";
             this.checkBoxMinDuration.UseVisualStyleBackColor = true;
             this.checkBoxMinDuration.CheckedChanged += new System.EventHandler(this.RuleCheckedChanged);
             // 
@@ -304,7 +334,7 @@
             this.checkBoxMaxDuration.Location = new System.Drawing.Point(20, 55);
             this.checkBoxMaxDuration.Name = "checkBoxMaxDuration";
             this.checkBoxMaxDuration.Size = new System.Drawing.Size(250, 17);
-            this.checkBoxMaxDuration.TabIndex = 0;
+            this.checkBoxMaxDuration.TabIndex = 3;
             this.checkBoxMaxDuration.Text = "Maximum duration: 7 seconds per subtitle event";
             this.checkBoxMaxDuration.UseVisualStyleBackColor = true;
             this.checkBoxMaxDuration.CheckedChanged += new System.EventHandler(this.RuleCheckedChanged);
@@ -362,5 +392,7 @@
         private System.Windows.Forms.ComboBox comboBoxLanguage;
         private System.Windows.Forms.Label labelLanguage;
         private System.Windows.Forms.CheckBox checkBox17CharsPerSecond;
+        private System.Windows.Forms.CheckBox checkBoxCheckValidGlyphs;
+        private System.Windows.Forms.CheckBox checkBoxGapMinTwoFrames;
     }
 }

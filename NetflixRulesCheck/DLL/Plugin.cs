@@ -11,7 +11,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "Check/fix Netflix rules...";
 
-        decimal IPlugin.Version => 0.5M;
+        decimal IPlugin.Version => 0.6M; // also edit Plugins4.xml (version/date) when changing version here
 
         string IPlugin.Description => "Check/fix Netflix rules";
 
