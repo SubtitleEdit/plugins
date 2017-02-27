@@ -1,55 +1,42 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    internal class Subtitle
+    internal class Subtitle : IEnumerable<Paragraph>
     {
-        private List<Paragraph> _paragraphs;
+        private IList<Paragraph> _paragraphs;
         private SubRip _format;
-        public string Header { get; set; }
-        public string Footer { get; set; }
-        public string FileName { get; set; }
-        public bool IsHearingImpaired { get; private set; }
 
-        public const int MaximumHistoryItems = 100;
-
-        public List<Paragraph> Paragraphs { get { return _paragraphs; } }
+        public IList<Paragraph> Paragraphs { get => _paragraphs; }
 
         public Subtitle(SubRip subrip)
         {
             _paragraphs = new List<Paragraph>();
-            FileName = "Untitled";
             _format = subrip;
         }
 
-        public Paragraph GetParagraphOrDefault(int index)
-        {
-            if (_paragraphs == null || _paragraphs.Count <= index || index < 0)
-                return null;
-            return _paragraphs[index];
-        }
+        public string ToText() => _format.ToText(this);
 
-        public string ToText()
+        public void Renumber(int lineNum = 1)
         {
-            return _format.ToText(this, Path.GetFileNameWithoutExtension(FileName));
-        }
-        
-        public void Renumber(int startNumber)
-        {
-            int i;
-            if (startNumber < 0)
-                i = 0;
-            else
-                i = startNumber;
             foreach (Paragraph p in _paragraphs)
             {
-                p.Number = i;
-                i++;
+                p.Number = lineNum++;
             }
         }
 
+        public IEnumerator<Paragraph> GetEnumerator()
+        {
+            return _paragraphs.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _paragraphs.GetEnumerator();
+        }
     }
 }

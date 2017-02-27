@@ -9,10 +9,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return s.Replace(Environment.NewLine, "\n").Replace('\r', '\n').Split('\n');
         }
 
-        public static bool Contains(this string s, char c)
-        {
-            return s.Length > 0 && s.IndexOf(c) >= 0;
-        }
+        public static bool Contains(this string s, char c) => s.Length > 0 && s.IndexOf(c) >= 0;
 
         public static bool Contains(this string s, string find, StringComparison comparison)
         {
@@ -28,14 +25,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return s;
         }
 
-        public static bool StartsWith(this string s, char c)
-        {
-            return s.Length > 0 && s[0] == c;
-        }
+        public static bool StartsWith(this string s, char c) => s.Length > 0 && s[0] == c;
 
-        public static bool EndsWith(this string s, char c)
-        {
-            return s.Length > 0 && s[s.Length - 1] == c;
-        }
+        public static bool EndsWith(this string s, char c) => s.Length > 0 && s[s.Length - 1] == c;
     }
 }

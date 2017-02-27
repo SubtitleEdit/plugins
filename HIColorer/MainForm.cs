@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -16,15 +17,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private Color _moodsColor = Color.Empty;
         private Subtitle _subtitle;
 
-        public MainForm()
+        internal MainForm(Subtitle sub, string name, string ver)
         {
             InitializeComponent();
-        }
-
-        internal MainForm(Subtitle sub, string name, string ver)
-            : this()
-        {
-            this._subtitle = sub;
+            _subtitle = sub;
             LoadingSettings();
         }
 
@@ -159,7 +155,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             const string writeFormat = "<font color=\"{0}\">{1}</font>";
             Func<string, string> SetColor = (narrator) =>
             {
-                if (narrator.ToLower().Contains("by") || narrator.ToLower().Contains("http"))
+                string narratorLower = narrator.ToLower();
+                if (narratorLower.Contains("by") || narratorLower.Contains("http"))
                     return narrator;
                 return string.Format(writeFormat, htmlColor, narrator.Trim());
             };
@@ -224,7 +221,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return pre;
         }
 
-
         private string GetSettingsFileName()
         {
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
@@ -272,6 +268,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void SaveSettings()
         {
             string fileName = GetSettingsFileName();
+
+            // Store settings in xml file.
             try
             {
                 XmlDocument doc = new XmlDocument();
@@ -280,7 +278,23 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 doc.DocumentElement.SelectSingleNode("ColorMoods").InnerText = Convert.ToString(_moodsColor.ToArgb());
                 doc.Save(fileName);
             }
-            catch { }
+            catch
+            {
+                
+            }
+
+            // Use Windows-Registry to store Configurations.
+            using (var regkey = Registry.CurrentUser.OpenSubKey("Software", true))
+            {
+                RegistryKey pluginsRegKey = regkey.OpenSubKey(@"SubtitleEdit\Plugins\HIColorer\Settings", true);
+                if (pluginsRegKey == null)
+                {
+                    pluginsRegKey = regkey.CreateSubKey(@"SubtitleEdit\Plugins\HIColorer\Settings");
+                }
+                pluginsRegKey.SetValue("ColorNarrator", _narratorColor.ToArgb(), RegistryValueKind.DWord);
+                pluginsRegKey.SetValue("ColorMoods", _moodsColor.ToArgb(), RegistryValueKind.DWord);
+                pluginsRegKey.Dispose();
+            }
         }
 
         private void labelColor_DoubleClick(object sender, EventArgs e)

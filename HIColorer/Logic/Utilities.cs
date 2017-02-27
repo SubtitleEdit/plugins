@@ -7,13 +7,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal static class Utilities
     {
-        public static string AssemblyVersion
-        {
-            get
-            {
-                return Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            }
-        }
+        public static string AssemblyVersion => Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
         public static bool IsInteger(string s)
         {
@@ -57,7 +51,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (!s.Contains('<'))
                 return s;
             s = Regex.Replace(s, "(?i)</?[uib]>", string.Empty);
-            s = RemoveParagraphTag(s);
             return RemoveHtmlFontTag(s).Trim();
         }
 
@@ -126,21 +119,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             fontTag = fontTag.Replace("<font>", string.Empty);
 
             return fontTag;
-        }
-
-        public static string RemoveParagraphTag(string s)
-        {
-            s = Regex.Replace(s, "(?i)</?p>", string.Empty);
-            var idx = s.IndexOf("<p", StringComparison.OrdinalIgnoreCase);
-            while (idx >= 0)
-            {
-                var endIdx = s.IndexOf('>', idx + 2);
-                if (endIdx < idx)
-                    break;
-                s = s.Remove(idx, endIdx - idx + 1);
-                idx = s.IndexOf("<p", idx, StringComparison.OrdinalIgnoreCase);
-            }
-            return s = s.Replace("  ", " ");
         }
 
         public unsafe static int CountTagInText(string text, char tag)

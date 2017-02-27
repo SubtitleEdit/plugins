@@ -1,41 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class HIColorer : IPlugin
     {
-        string IPlugin.Name
-        {
-            get { return "HI Colorer"; }
-        }
+        string IPlugin.Name => "HI Colorer";
 
-        string IPlugin.Text
-        {
-            get { return "HI Colorer"; }
-        }
+        string IPlugin.Text => "HI Colorer";
 
-        decimal IPlugin.Version
-        {
-            get { return 0.3M; }
-        }
+        decimal IPlugin.Version => 0.3M;
 
-        string IPlugin.Description
-        {
-            get { return "Set color for Hearing Impaired annotations (by Ivandrofly)"; }
-        }
+        string IPlugin.Description => "Set color for Hearing Impaired annotations (by Ivandrofly)";
 
-        string IPlugin.ActionType
-        {
-            get { return "tool"; }
-        }
+        string IPlugin.ActionType => "tool";
 
-        string IPlugin.Shortcut
-        {
-            get { return string.Empty; }
-        }
+        string IPlugin.Shortcut => string.Empty;
 
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
