@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    internal class Subtitle : IEnumerable<Paragraph>
+    internal class Subtitle
     {
         private IList<Paragraph> _paragraphs;
         private SubRip _format;
@@ -27,16 +24,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 p.Number = lineNum++;
             }
-        }
-
-        public IEnumerator<Paragraph> GetEnumerator()
-        {
-            return _paragraphs.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _paragraphs.GetEnumerator();
         }
     }
 }

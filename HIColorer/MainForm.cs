@@ -42,8 +42,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (colorDialog1.ShowDialog() == DialogResult.OK)
                 {
                     _narratorColor = colorDialog1.Color;
-                    this.labelNarratorsColor.BackColor = _narratorColor;
-                    this.labelNarratorsColor.Text = Utilities.GetHtmlColorCode(_narratorColor);
+                    labelNarratorsColor.BackColor = _narratorColor;
+                    labelNarratorsColor.Text = Utilities.GetHtmlColorCode(_narratorColor);
                 }
             }
             else
@@ -51,9 +51,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (colorDialog1.ShowDialog() == DialogResult.OK)
                 {
                     _moodsColor = colorDialog1.Color;
-                    this.labelMoodsColor.BackColor = _moodsColor;
+                    labelMoodsColor.BackColor = _moodsColor;
                     // TODO: When the backcolor is to drak/lighty fix the forecolor
-                    this.labelMoodsColor.Text = Utilities.GetHtmlColorCode(_moodsColor);
+                    labelMoodsColor.Text = Utilities.GetHtmlColorCode(_moodsColor);
                 }
             }
         }
@@ -79,12 +79,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void buttonOK_Click(object sender, EventArgs e)
         {
             if (!checkBoxEnabledMoods.Checked && !checkBoxEnabledNarrator.Checked)
+            {
                 DialogResult = DialogResult.Cancel;
-            FindHearingImpairedNotation();
-            FixedSubtitle = _subtitle.ToText();
-            if (string.IsNullOrEmpty(FixedSubtitle))
-                DialogResult = DialogResult.Cancel;
-            DialogResult = DialogResult.OK;
+            }
+            else
+            {
+                FindHearingImpairedNotation();
+                FixedSubtitle = _subtitle.ToText();
+                if (string.IsNullOrEmpty(FixedSubtitle))
+                {
+                    DialogResult = DialogResult.Cancel;
+                }
+                DialogResult = DialogResult.OK;
+            }
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -253,13 +260,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 _narratorColor = Color.FromArgb(argNarrator);
                 if (!_moodsColor.IsEmpty)
                 {
-                    this.labelMoodsColor.BackColor = _moodsColor;
-                    this.labelMoodsColor.Text = Utilities.GetHtmlColorCode(_moodsColor);
+                    labelMoodsColor.BackColor = _moodsColor;
+                    labelMoodsColor.Text = Utilities.GetHtmlColorCode(_moodsColor);
                 }
                 if (!_narratorColor.IsEmpty)
                 {
-                    this.labelNarratorsColor.BackColor = _narratorColor;
-                    this.labelNarratorsColor.Text = Utilities.GetHtmlColorCode(_narratorColor);
+                    labelNarratorsColor.BackColor = _narratorColor;
+                    labelNarratorsColor.Text = Utilities.GetHtmlColorCode(_narratorColor);
                 }
             }
             catch { }
@@ -280,21 +287,23 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             catch
             {
-                
+
             }
 
+#if DEBUG
             // Use Windows-Registry to store Configurations.
             using (var regkey = Registry.CurrentUser.OpenSubKey("Software", true))
             {
-                RegistryKey pluginsRegKey = regkey.OpenSubKey(@"SubtitleEdit\Plugins\HIColorer\Settings", true);
+                RegistryKey pluginsRegKey = regkey.OpenSubKey(@"Subtitle Edit\Plugins\HIColorer\Settings", true);
                 if (pluginsRegKey == null)
                 {
-                    pluginsRegKey = regkey.CreateSubKey(@"SubtitleEdit\Plugins\HIColorer\Settings");
+                    pluginsRegKey = regkey.CreateSubKey(@"Subtitle Edit\Plugins\HIColorer\Settings");
                 }
                 pluginsRegKey.SetValue("ColorNarrator", _narratorColor.ToArgb(), RegistryValueKind.DWord);
                 pluginsRegKey.SetValue("ColorMoods", _moodsColor.ToArgb(), RegistryValueKind.DWord);
                 pluginsRegKey.Dispose();
             }
+#endif
         }
 
         private void labelColor_DoubleClick(object sender, EventArgs e)

@@ -12,9 +12,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
         }
 
-        public TimeCode(double totalMilliseconds) :
-            this(0, 0, 0, (int)Math.Round(totalMilliseconds))
+        public TimeCode(double totalMilliseconds)
         {
+            _totalMilliseconds = totalMilliseconds;
         }
 
         public TimeCode(int hours, int minutes, int seconds, int milliseconds)
@@ -24,18 +24,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public double TotalMilliseconds
         {
-            get { return _time.TotalMilliseconds; }
-            set { _time = TimeSpan.FromMilliseconds(value); }
+            get => _totalMilliseconds;
+            set => _totalMilliseconds = value;
         }
 
         public override string ToString()
         {
-            string s = string.Format("{0:00}:{1:00}:{2:00},{3:000}", _time.Hours, _time.Minutes, _time.Seconds, _time.Milliseconds);
-
-            if (TotalMilliseconds >= 0)
-                return s;
-            else
-                return "-" + s.Replace("-", string.Empty);
+            var t = TimeSpan.FromMilliseconds(_totalMilliseconds);
+            string ts = $"{t.Hours:00}:{t.Minutes:00}:{t.Seconds:00},{t.Milliseconds:000}";
+            if (_totalMilliseconds < 0)
+                return "-" + ts.Replace("-", string.Empty);
+            return ts;
         }
 
     }

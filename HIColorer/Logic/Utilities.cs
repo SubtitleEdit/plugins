@@ -8,16 +8,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
     internal static class Utilities
     {
         public static string AssemblyVersion => Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        private static readonly Regex _regexHtmlEngFontTag = new Regex("</?font>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public static bool IsInteger(string s)
-        {
-            int i;
-            return int.TryParse(s, out i);
-        }
+        public static bool IsInteger(string s) => int.TryParse(s, out int i);
 
         public static string RemoveHtmlFontTag(string s)
         {
-            s = Regex.Replace(s, "(?i)</?font>", string.Empty, RegexOptions.Compiled);
+            s = _regexHtmlEngFontTag.Replace(s, m => string.Empty);
             var idx = s.IndexOf("<font", StringComparison.OrdinalIgnoreCase);
             while (idx >= 0)
             {
@@ -54,10 +51,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return RemoveHtmlFontTag(s).Trim();
         }
 
-        public static string GetHtmlColorCode(Color color)
-        {
-            return string.Format("#{0:x2}{1:x2}{2:x2}", color.R, color.G, color.B);
-        }
+        public static string GetHtmlColorCode(Color c) => $"#{ c.R:x2}{ c.G:x2}{ c.B:x2}";
 
         public static string RemoveHtmlColorTags(string s)
         {
@@ -74,8 +68,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     var fontTag = s.Substring(startIndex, endIndex - startIndex + 1);
                     fontTag = StripColorAnnotation(fontTag);
 
-                    var countStart = Utilities.CountTagInText(s, "<font", StringComparison.InvariantCultureIgnoreCase);
-                    var countEnd = Utilities.CountTagInText(s, "</font>", StringComparison.InvariantCultureIgnoreCase);
+                    var countStart = CountTagInText(s, "<font", StringComparison.InvariantCultureIgnoreCase);
+                    var countEnd = CountTagInText(s, "</font>", StringComparison.InvariantCultureIgnoreCase);
                     var mod = countStart + countEnd % 2;
                     if (mod != 0 && countEnd > countStart)
                     {
@@ -137,10 +131,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return count;
         }
 
-        public static int CountTagInText(string text, string tag)
-        {
-            return CountTagInText(text, tag, StringComparison.Ordinal);
-        }
+        public static int CountTagInText(string text, string tag) => CountTagInText(text, tag, StringComparison.Ordinal);
 
         public static int CountTagInText(string text, string tag, StringComparison comparison)
         {

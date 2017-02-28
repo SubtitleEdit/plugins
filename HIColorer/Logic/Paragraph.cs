@@ -13,8 +13,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public Paragraph()
         {
-            StartTime = new TimeCode(TimeSpan.FromSeconds(0));
-            EndTime = new TimeCode(TimeSpan.FromSeconds(0));
+            StartTime = new TimeCode();
+            EndTime = new TimeCode();
             Text = string.Empty;
         }
 
@@ -26,7 +26,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 if (string.IsNullOrEmpty(Text))
                     return 0;
-                return Text.Length - Text.Replace(Environment.NewLine, string.Empty).Length;
+                return Utilities.CountTagInText(Text, '\n') + 1;
             }
         }
     }
