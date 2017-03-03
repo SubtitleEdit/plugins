@@ -223,9 +223,9 @@
             this.checkBox17CharsPerSecond.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox17CharsPerSecond.Location = new System.Drawing.Point(20, 78);
             this.checkBox17CharsPerSecond.Name = "checkBox17CharsPerSecond";
-            this.checkBox17CharsPerSecond.Size = new System.Drawing.Size(194, 17);
+            this.checkBox17CharsPerSecond.Size = new System.Drawing.Size(290, 17);
             this.checkBox17CharsPerSecond.TabIndex = 5;
-            this.checkBox17CharsPerSecond.Text = "Maximum 17 characters per second";
+            this.checkBox17CharsPerSecond.Text = "Maximum 17 characters per second (excl. white spaces)";
             this.checkBox17CharsPerSecond.UseVisualStyleBackColor = true;
             this.checkBox17CharsPerSecond.CheckedChanged += new System.EventHandler(this.RuleCheckedChanged);
             // 

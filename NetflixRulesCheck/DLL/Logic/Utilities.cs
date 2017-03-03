@@ -93,7 +93,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             const string zeroWidthSpace = "\u200B";
             const string zeroWidthNoBreakSpace = "\uFEFF";
 
-            string s = paragraph.Text.Replace(Environment.NewLine, string.Empty).Replace(zeroWidthSpace, string.Empty).Replace(zeroWidthNoBreakSpace, string.Empty);
+            string s = paragraph.Text.Replace(Environment.NewLine, string.Empty).Replace(zeroWidthSpace, string.Empty).Replace(zeroWidthNoBreakSpace, string.Empty).Replace(" ", string.Empty);
             s = RemoveHtmlTags(s, true);
             return s.Length / paragraph.Duration.TotalSeconds;
         }

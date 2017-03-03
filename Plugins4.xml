@@ -129,8 +129,8 @@
   <Plugin>
     <Name>Netflix rules</Name>
     <Description>BETA</Description>
-    <Version>0.6</Version>
-    <Date>2017-01-25</Date>
+    <Version>0.7</Version>
+    <Date>2017-03-03</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/NetflixRulesCheck.zip</Url>
   </Plugin>
 </Plugins>
