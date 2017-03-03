@@ -305,14 +305,22 @@ namespace SubtitleEdit
                     var m = NumberOneToNine.Match(newText);
                     while (m.Success)
                     {
-                        newText = newText.Remove(m.Index, 1).Insert(m.Index, ConvertNumberToString(m.Value.Substring(0, 1), false));
+                        bool ok = newText.Length > m.Index + 1 && !":.".Contains(newText[m.Index + 1].ToString()) || newText.Length <= m.Index + 1;
+                        if (ok && m.Index > 0 && ":.".Contains(newText[m.Index - 1].ToString()))
+                            ok = false;
+                        if (ok)
+                            newText = newText.Remove(m.Index, 1).Insert(m.Index, ConvertNumberToString(m.Value.Substring(0, 1), false));
                         m = NumberOneToNine.Match(newText, m.Index + 1);
                     }
 
                     m = NumberTen.Match(newText);
                     while (m.Success)
                     {
-                        newText = newText.Remove(m.Index, 2).Insert(m.Index, "ten");
+                        bool ok = newText.Length > m.Index + 2 && newText[m.Index + 2] != ':' || newText.Length <= m.Index + 2;
+                        if (ok && m.Index > 0 && ":.".Contains(newText[m.Index - 1].ToString()))
+                            ok = false;
+                        if (ok)
+                            newText = newText.Remove(m.Index, 2).Insert(m.Index, "ten");
                         m = NumberTen.Match(newText, m.Index + 1);
                     }
 
