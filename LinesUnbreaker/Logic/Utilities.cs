@@ -27,21 +27,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         #endregion
 
-        public static string AssemblyVersion
-        {
-            get
-            {
-                return Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            }
-        }
-
-        public static bool IsInteger(string s)
-        {
-            int i;
-            if (int.TryParse(s, out i))
-                return true;
-            return false;
-        }
+        public static bool IsInteger(string s) => int.TryParse(s, out int i);
 
         public static string RemoveHtmlTags(string s, bool alsoSsa )
         {
@@ -80,6 +66,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             return totalLines;
         }
+
+        public static string RemoveNullChars(string inp) => inp.Replace('\0', ' ');
 
     }
 }

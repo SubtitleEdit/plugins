@@ -4,49 +4,37 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal class TimeCode
     {
-        private TimeSpan _time;
+        public const double BaseUnit = 1000.00;
+
+        private double _totalMilliseconds = 0d;
+
+        public TimeCode()
+        {
+        }
 
         public TimeCode(double totalMilliseconds)
         {
-            _time = TimeSpan.FromMilliseconds(totalMilliseconds);
+            _totalMilliseconds = totalMilliseconds;
         }
 
-        public TimeCode(TimeSpan timeSpan)
+        public TimeCode(int hours, int minutes, int seconds, int milliseconds)
         {
-            TimeSpan = timeSpan;
-        }
-
-        public TimeCode(int hour, int minute, int seconds, int milliseconds)
-        {
-            _time = new TimeSpan(0, hour, minute, seconds, milliseconds);
-        }
-
-        public TimeSpan TimeSpan
-        {
-            get
-            {
-                return _time;
-            }
-            set
-            {
-                _time = value;
-            }
+            _totalMilliseconds = hours * 60 * 60 * BaseUnit + minutes * 60 * BaseUnit + seconds * BaseUnit + milliseconds;
         }
 
         public double TotalMilliseconds
         {
-            get { return _time.TotalMilliseconds; }
-            set { _time = TimeSpan.FromMilliseconds(value); }
+            get => _totalMilliseconds;
+            set => _totalMilliseconds = value;
         }
 
         public override string ToString()
         {
-            string s = string.Format("{0:00}:{1:00}:{2:00},{3:000}", _time.Hours, _time.Minutes, _time.Seconds, _time.Milliseconds);
-
-            if (TotalMilliseconds >= 0)
-                return s;
-            else
-                return "-" + s.Replace("-", string.Empty);
+            var t = TimeSpan.FromMilliseconds(_totalMilliseconds);
+            string ts = $"{t.Hours:00}:{t.Minutes:00}:{t.Seconds:00},{t.Milliseconds:000}";
+            if (_totalMilliseconds < 0)
+                return "-" + ts.Replace("-", string.Empty);
+            return ts;
         }
 
     }

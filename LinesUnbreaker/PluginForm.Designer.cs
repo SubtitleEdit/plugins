@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.listView1 = new System.Windows.Forms.ListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -56,9 +55,7 @@
             this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.listView1.CheckBoxes = true;
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
             this.columnHeader2,
             this.columnHeader5,
             this.columnHeader3,
@@ -72,11 +69,6 @@
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
             this.listView1.Resize += new System.EventHandler(this.listView1_Resize);
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "Apply";
-            this.columnHeader1.Width = 38;
             // 
             // columnHeader2
             // 
@@ -159,6 +151,7 @@
             this.checkBoxSkipDialog.TabIndex = 6;
             this.checkBoxSkipDialog.Text = "Skip Dialog";
             this.checkBoxSkipDialog.UseVisualStyleBackColor = true;
+            this.checkBoxSkipDialog.CheckedChanged += new System.EventHandler(this.ConfigurationChanged);
             // 
             // checkBoxSkipNarrator
             // 
@@ -169,6 +162,7 @@
             this.checkBoxSkipNarrator.TabIndex = 7;
             this.checkBoxSkipNarrator.Text = "Skip Narrator";
             this.checkBoxSkipNarrator.UseVisualStyleBackColor = true;
+            this.checkBoxSkipNarrator.CheckedChanged += new System.EventHandler(this.ConfigurationChanged);
             // 
             // checkBoxMoods
             // 
@@ -179,6 +173,7 @@
             this.checkBoxMoods.TabIndex = 8;
             this.checkBoxMoods.Text = "Skip Moods";
             this.checkBoxMoods.UseVisualStyleBackColor = true;
+            this.checkBoxMoods.CheckedChanged += new System.EventHandler(this.ConfigurationChanged);
             // 
             // label1
             // 
@@ -205,7 +200,7 @@
             0,
             0,
             0});
-            this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
+            this.numericUpDown1.ValueChanged += new System.EventHandler(this.ConfigurationChanged);
             // 
             // buttonCheckAll
             // 
@@ -268,7 +263,6 @@
         #endregion
 
         private System.Windows.Forms.ListView listView1;
-        private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.ColumnHeader columnHeader4;

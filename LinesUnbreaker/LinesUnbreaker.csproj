@@ -42,12 +42,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IPlugin.cs" />
+    <Compile Include="LinesUnbreakerController.cs" />
     <Compile Include="Logic\Configuration.cs" />
+    <Compile Include="Logic\ExpectingLine.cs" />
     <Compile Include="Logic\Paragraph.cs" />
     <Compile Include="Logic\SubRip.cs" />
     <Compile Include="Logic\Subtitle.cs" />
     <Compile Include="Logic\TimeCode.cs" />
     <Compile Include="Logic\Utilities.cs" />
+    <Compile Include="ParagraphEventArgs.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginForm.cs">
       <SubType>Form</SubType>

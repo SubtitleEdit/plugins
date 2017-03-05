@@ -7,8 +7,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         // Metadata
         string IPlugin.Name => "Lines Unbreaker";
         string IPlugin.Text => "Lines Unbreaker";
-        decimal IPlugin.Version => 1.3M;
-        string IPlugin.Description => "Helps unbreaking short-lines.";
+        decimal IPlugin.Version => 1.4M;
+        string IPlugin.Description => "Helps unbreaking unnecessary shorten lines.";
         string IPlugin.ActionType => "tool";
         string IPlugin.Shortcut => string.Empty;
 
@@ -31,7 +31,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             srt.LoadSubtitle(sub, list, subtitleFileName);
             if (srt.ErrorCount > 0)
             {
-                MessageBox.Show(srt.Errors + " Errors found while parsing .srt",
+                MessageBox.Show(srt.ErrorCount + " Errors found while parsing .srt",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             using (var form = new PluginForm(sub))

@@ -7,33 +7,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private List<Paragraph> _paragraphs;
         private readonly SubRip _format;
 
+        public int Errors { get; set; }
+
         public Subtitle(SubRip subrip)
         {
             _paragraphs = new List<Paragraph>();
             _format = subrip;
         }
 
-        public List<Paragraph> Paragraphs
-        {
-            get
-            {
-                return _paragraphs;
-            }
-        }
+        public List<Paragraph> Paragraphs => _paragraphs;
 
-        public string ToText()
-        {
-            return _format.ToText(_paragraphs);
-        }
-
-        public void Renumber(int startNumber = 1)
-        {
-            if (startNumber < 0)
-                startNumber = 1;
-            foreach (Paragraph p in _paragraphs)
-            {
-                p.Number = startNumber++;
-            }
-        }
+        public string ToText() =>  _format.ToText(_paragraphs);
     }
 }
