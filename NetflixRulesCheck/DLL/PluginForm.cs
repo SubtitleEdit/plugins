@@ -68,7 +68,6 @@ namespace SubtitleEdit
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            int count = 0;
             foreach (ListViewItem item in listViewFixes.Items)
             {
                 var p = item.Tag as Paragraph;
@@ -76,10 +75,9 @@ namespace SubtitleEdit
                 {
                     p.Text = item.SubItems[4].Text.Replace(Configuration.ListViewLineSeparatorString, Environment.NewLine).Trim();
                 }
-                count++;
             }
             FixedSubtitle = _subtitle.ToText();
-            DialogResult = count > 0 ? DialogResult.OK : DialogResult.Cancel;
+            DialogResult = listViewFixes.Items.Count > 0 ? DialogResult.OK : DialogResult.Cancel;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)

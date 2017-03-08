@@ -6,7 +6,6 @@ namespace SubtitleEdit
 {
     internal static class HtmlUtil
     {
-
         public const string TagItalic = "i";
         public const string TagBold = "b";
         public const string TagUnderline = "u";

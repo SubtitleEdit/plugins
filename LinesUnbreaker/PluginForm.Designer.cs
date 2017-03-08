@@ -42,8 +42,6 @@
             this.checkBoxMoods = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.buttonCheckAll = new System.Windows.Forms.Button();
-            this.buttonInvertCheck = new System.Windows.Forms.Button();
             this.labelTotal = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -117,8 +115,6 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.groupBox2);
-            this.groupBox1.Controls.Add(this.buttonCheckAll);
-            this.groupBox1.Controls.Add(this.buttonInvertCheck);
             this.groupBox1.Location = new System.Drawing.Point(7, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(891, 130);
@@ -133,9 +129,10 @@
             this.groupBox2.Controls.Add(this.checkBoxMoods);
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.numericUpDown1);
+            this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox2.Location = new System.Drawing.Point(6, 19);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(462, 100);
+            this.groupBox2.Size = new System.Drawing.Size(418, 100);
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Unbreak Rules:";
@@ -145,9 +142,10 @@
             this.checkBoxSkipDialog.AutoSize = true;
             this.checkBoxSkipDialog.Checked = true;
             this.checkBoxSkipDialog.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxSkipDialog.Location = new System.Drawing.Point(14, 67);
+            this.checkBoxSkipDialog.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBoxSkipDialog.Location = new System.Drawing.Point(14, 70);
             this.checkBoxSkipDialog.Name = "checkBoxSkipDialog";
-            this.checkBoxSkipDialog.Size = new System.Drawing.Size(80, 17);
+            this.checkBoxSkipDialog.Size = new System.Drawing.Size(98, 21);
             this.checkBoxSkipDialog.TabIndex = 6;
             this.checkBoxSkipDialog.Text = "Skip Dialog";
             this.checkBoxSkipDialog.UseVisualStyleBackColor = true;
@@ -156,9 +154,10 @@
             // checkBoxSkipNarrator
             // 
             this.checkBoxSkipNarrator.AutoSize = true;
-            this.checkBoxSkipNarrator.Location = new System.Drawing.Point(14, 21);
+            this.checkBoxSkipNarrator.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBoxSkipNarrator.Location = new System.Drawing.Point(14, 22);
             this.checkBoxSkipNarrator.Name = "checkBoxSkipNarrator";
-            this.checkBoxSkipNarrator.Size = new System.Drawing.Size(88, 17);
+            this.checkBoxSkipNarrator.Size = new System.Drawing.Size(111, 21);
             this.checkBoxSkipNarrator.TabIndex = 7;
             this.checkBoxSkipNarrator.Text = "Skip Narrator";
             this.checkBoxSkipNarrator.UseVisualStyleBackColor = true;
@@ -167,9 +166,10 @@
             // checkBoxMoods
             // 
             this.checkBoxMoods.AutoSize = true;
-            this.checkBoxMoods.Location = new System.Drawing.Point(14, 44);
+            this.checkBoxMoods.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBoxMoods.Location = new System.Drawing.Point(14, 46);
             this.checkBoxMoods.Name = "checkBoxMoods";
-            this.checkBoxMoods.Size = new System.Drawing.Size(82, 17);
+            this.checkBoxMoods.Size = new System.Drawing.Size(100, 21);
             this.checkBoxMoods.TabIndex = 8;
             this.checkBoxMoods.Text = "Skip Moods";
             this.checkBoxMoods.UseVisualStyleBackColor = true;
@@ -178,22 +178,23 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(131, 21);
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(214, 69);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(68, 13);
+            this.label1.Size = new System.Drawing.Size(91, 17);
             this.label1.TabIndex = 4;
             this.label1.Text = "Shorter than:";
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(134, 37);
+            this.numericUpDown1.Location = new System.Drawing.Point(321, 69);
             this.numericUpDown1.Minimum = new decimal(new int[] {
             10,
             0,
             0,
             0});
             this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(81, 20);
+            this.numericUpDown1.Size = new System.Drawing.Size(81, 23);
             this.numericUpDown1.TabIndex = 3;
             this.numericUpDown1.Value = new decimal(new int[] {
             35,
@@ -201,28 +202,6 @@
             0,
             0});
             this.numericUpDown1.ValueChanged += new System.EventHandler(this.ConfigurationChanged);
-            // 
-            // buttonCheckAll
-            // 
-            this.buttonCheckAll.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.buttonCheckAll.Location = new System.Drawing.Point(790, 101);
-            this.buttonCheckAll.Name = "buttonCheckAll";
-            this.buttonCheckAll.Size = new System.Drawing.Size(95, 23);
-            this.buttonCheckAll.TabIndex = 10;
-            this.buttonCheckAll.Text = "Select all";
-            this.buttonCheckAll.UseVisualStyleBackColor = true;
-            this.buttonCheckAll.Click += new System.EventHandler(this.SelectionHandler);
-            // 
-            // buttonInvertCheck
-            // 
-            this.buttonInvertCheck.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.buttonInvertCheck.Location = new System.Drawing.Point(689, 101);
-            this.buttonInvertCheck.Name = "buttonInvertCheck";
-            this.buttonInvertCheck.Size = new System.Drawing.Size(95, 23);
-            this.buttonInvertCheck.TabIndex = 9;
-            this.buttonInvertCheck.Text = "Inverse selection";
-            this.buttonInvertCheck.UseVisualStyleBackColor = true;
-            this.buttonInvertCheck.Click += new System.EventHandler(this.SelectionHandler);
             // 
             // labelTotal
             // 
@@ -276,8 +255,6 @@
         private System.Windows.Forms.CheckBox checkBoxMoods;
         private System.Windows.Forms.CheckBox checkBoxSkipNarrator;
         private System.Windows.Forms.ColumnHeader columnHeader5;
-        private System.Windows.Forms.Button buttonCheckAll;
-        private System.Windows.Forms.Button buttonInvertCheck;
         private System.Windows.Forms.GroupBox groupBox2;
     }
 }

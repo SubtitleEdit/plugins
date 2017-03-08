@@ -241,6 +241,7 @@
             // 
             // labelLanguage
             // 
+            this.labelLanguage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.labelLanguage.AutoSize = true;
             this.labelLanguage.Location = new System.Drawing.Point(942, 20);
             this.labelLanguage.Name = "labelLanguage";

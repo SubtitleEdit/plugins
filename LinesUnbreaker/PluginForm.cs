@@ -93,14 +93,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void AddToListView(Paragraph paragraph, string newText)
         {
             var item = new ListViewItem(paragraph.Number.ToString()) { UseItemStyleForSubItems = true };
-            // item.SubItems.Add(paragraph.Number.ToString());
             item.SubItems.Add(paragraph.Text.Length.ToString());
-            // TODO: Clean up HTML tags.
-            item.SubItems.Add(paragraph.Text.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
-            item.SubItems.Add(newText.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
+            item.SubItems.Add(Utilities.RemoveHtmlTags(paragraph.Text, true).Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
+            item.SubItems.Add(Utilities.RemoveHtmlTags(newText, true).Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
             listView1.Items.Add(item);
         }
-
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
@@ -119,20 +116,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (e.KeyCode == Keys.Escape)
                 DialogResult = DialogResult.Cancel;
-        }
-
-        private void SelectionHandler(object sender, EventArgs e)
-        {
-            if (listView1.Items.Count <= 0)
-                return;
-
-            listView1.BeginUpdate();
-            bool selAll = sender == buttonCheckAll;
-            foreach (ListViewItem item in listView1.Items)
-            {
-                item.Checked = selAll ? selAll : !item.Checked;
-            }
-            listView1.EndUpdate();
         }
 
         private void listView1_Resize(object sender, EventArgs e)
