@@ -21,6 +21,6 @@ Framework version: If possible compile with .NET 4.0 (can be used with 4+).
 
 ## Requirements
 
-Use `Nikse.SubtitleEdit.PluginLogic` as Entry point namespace, take a look [here](https://github.com/SubtitleEdit/plugins/blob/master/LinesUnbreaker/Plugin.cs).
+Use `Nikse.SubtitleEdit.PluginLogic` as Entry point namespace, take a look [here](https://github.com/SubtitleEdit/plugins/blob/master/LinesUnbreaker/Plugin.cs#L3).
 
 The DLL filename must be `<classname>.dll` - e.g. `SyncViaOtherSubtitle.dll`.
