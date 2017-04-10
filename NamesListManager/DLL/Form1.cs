@@ -23,7 +23,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             labelCount.Text = string.Empty;
             labelImportCount.Text = string.Empty;
             labelTransfered.Text = string.Empty;
-            string defaultFileName = @"C:\Data\SubtitleEdit\subtitleedit\Dictionaries\names_etc.xml";
+            string defaultFileName = @"C:\Data\SubtitleEdit\subtitleedit\Dictionaries\names.xml";
             if (File.Exists(defaultFileName))
             {
                 LoadNamesFile(defaultFileName);
@@ -165,7 +165,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonBrowse_Click(object sender, EventArgs e)
         {
-            openFileDialog1.Filter = "Names etc files|*names_etc*.xml";
+            openFileDialog1.Filter = "Names etc files|*names*.xml";
             openFileDialog1.FileName = string.Empty;
             if (openFileDialog1.ShowDialog(this) == DialogResult.OK)
             {
@@ -175,7 +175,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonImport_Click(object sender, EventArgs e)
         {
-            openFileDialog1.Filter = "Names files|*names_etc*.xml|Text files|*.txt";
+            openFileDialog1.Filter = "Names files|*names*.xml|Text files|*.txt";
             openFileDialog1.FileName = string.Empty;
             if (openFileDialog1.ShowDialog(this) == DialogResult.OK)
             {
@@ -299,7 +299,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void removeNamesContainedInFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            openFileDialog1.Filter = "Names etc files|*names_etc*.xml";
+            openFileDialog1.Filter = "Names etc files|*names*.xml";
             openFileDialog1.FileName = string.Empty;
             if (openFileDialog1.ShowDialog(this) == DialogResult.OK)
             {
