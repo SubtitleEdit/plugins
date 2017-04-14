@@ -195,7 +195,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonBrowse_Click(object sender, EventArgs e)
         {
-            openFileDialog1.Filter = "Names etc files|*names_etc*.xml";
+            openFileDialog1.Filter = "Names etc files|*names.xml";
             openFileDialog1.FileName = string.Empty;
             if (openFileDialog1.ShowDialog(this) == DialogResult.OK)
             {

@@ -600,12 +600,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private string GetNamesEtcFileName()
         {
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-            if (path.StartsWith("file:\\"))
+            if (path.StartsWith("file:\\", StringComparison.Ordinal))
                 path = path.Remove(0, 6);
             path = Path.Combine(path, "Dictionaries");
             if (!Directory.Exists(path))
                 path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Dictionaries");
-            return Path.Combine(path, "names_etc.xml");
+            return Path.Combine(path, "names.xml");
         }
 
         private void LoadNamesEtcWithCulture()
@@ -617,14 +617,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _namesEtcLocalFileName = null;
             if (comboBoxDictionaries.SelectedIndex > 0)
             {
-                if (_spellCheckLanguages[comboBoxDictionaries.SelectedIndex - 1].Name.StartsWith("English"))
+                if (_spellCheckLanguages[comboBoxDictionaries.SelectedIndex - 1].Name.StartsWith("English", StringComparison.Ordinal))
                 {
-                    _namesEtcLocalFileName = namesEtcFileName.Replace("names_ect.xml", "en_US_names_etc.xml");
+                    _namesEtcLocalFileName = namesEtcFileName.Replace("names.xml", "en_names.xml");
                     LoadNamesEtc(_namesEtcList, _namesEtcMultiWordList, _namesEtcLocalFileName);
                 }
-                else if (_spellCheckLanguages[comboBoxDictionaries.SelectedIndex - 1].Name.StartsWith("Dansk"))
+                else if (_spellCheckLanguages[comboBoxDictionaries.SelectedIndex - 1].Name.StartsWith("Dansk", StringComparison.Ordinal))
                 {
-                    _namesEtcLocalFileName = namesEtcFileName.Replace("names_ect.xml", "da_DK_names_etc.xml");
+                    _namesEtcLocalFileName = namesEtcFileName.Replace("names.xml", "da_names.xml");
+                    LoadNamesEtc(_namesEtcList, _namesEtcMultiWordList, _namesEtcLocalFileName);
+                }
+                else if (_spellCheckLanguages[comboBoxDictionaries.SelectedIndex - 1].Name.StartsWith("Deutch", StringComparison.Ordinal))
+                {
+                    _namesEtcLocalFileName = namesEtcFileName.Replace("names.xml", "de_names.xml");
                     LoadNamesEtc(_namesEtcList, _namesEtcMultiWordList, _namesEtcLocalFileName);
                 }
             }

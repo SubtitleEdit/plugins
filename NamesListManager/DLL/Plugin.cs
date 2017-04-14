@@ -23,7 +23,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Description
         {
-            get { return "Add/delete names from names_etc list"; }
+            get { return "Add/delete names from names list"; }
         }
 
         string IPlugin.ActionType // Can be one of these: file, tool, sync, translate, spellcheck

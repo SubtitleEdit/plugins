@@ -20,7 +20,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         decimal IPlugin.Version
         {
-            get { return 1.2M; }
+            get { return 1.3M; }
         }
 
         string IPlugin.Description

@@ -22,7 +22,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
 
         private static readonly string DictionaryFolder = GetDicTionaryFolder();
-        private static List<string> _listNames = LoadNames(Path.Combine(DictionaryFolder, "names_etc.xml")); // Uppercase names
+        private static List<string> _listNames = LoadNames(Path.Combine(DictionaryFolder, "names.xml")); // Uppercase names
         private static List<string> _listNewName = LoadNames(Path.Combine(DictionaryFolder, "narratorNames.xml"));
 
         public static ICollection<string> ListNames
@@ -32,7 +32,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static List<string> LoadNames(string fileName)
         {
-            if (_listNames != null && fileName.EndsWith("names_etc.xml", StringComparison.OrdinalIgnoreCase))
+            if (_listNames != null && fileName.EndsWith("names.xml", StringComparison.OrdinalIgnoreCase))
                 _listNames.Clear();
 
             if (File.Exists(fileName))
