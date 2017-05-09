@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    public class NamesListManager : IPlugin // dll file name must "<classname>.dll" - e.g. "Haxor.dll"
+    public class NameListManager : IPlugin // dll file name must "<classname>.dll" - e.g. "Haxor.dll"
     {
         string IPlugin.Name
         {
-            get { return "NamesListManager"; }
+            get { return "NameListManager"; }
         }
 
         string IPlugin.Text
         {
-            get { return "Names list manager"; }
+            get { return "Name list manager"; }
         }
 
         decimal IPlugin.Version
@@ -23,7 +21,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Description
         {
-            get { return "Add/delete names from names list"; }
+            get { return "Add/delete names from name list"; }
         }
 
         string IPlugin.ActionType // Can be one of these: file, tool, sync, translate, spellcheck

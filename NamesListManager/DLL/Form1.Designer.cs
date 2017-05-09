@@ -233,7 +233,7 @@
             this.Controls.Add(this.listBoxNames);
             this.MinimumSize = new System.Drawing.Size(750, 560);
             this.Name = "Form1";
-            this.Text = "SE Names list manager";
+            this.Text = "SE \"name list\" manager";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);

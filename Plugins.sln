@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSpellCheck", "WordSpellCheck\DLL\WordSpellCheck.csproj", "{40D9F0DB-1C62-4CFC-A412-796E753AA057}"
 EndProject
@@ -44,7 +44,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MergeTwoSrtToAss", "MergeTw
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NarratorOutParentheses", "NarratorOutParentheses\NarratorOutParentheses.csproj", "{A075780C-6BAB-4E78-9FB2-B477219DDD72}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NamesListManager", "NamesListManager\DLL\NamesListManager.csproj", "{A43D5899-DF99-45F2-85A9-810C1533FEAB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NameListManager", "NamesListManager\DLL\NameListManager.csproj", "{A43D5899-DF99-45F2-85A9-810C1533FEAB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenericPluginTester", "GenericPluginTester\GenericPluginTester.csproj", "{BC0C7567-5755-4CCA-9A04-86C073354F89}"
 EndProject
