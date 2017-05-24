@@ -24,15 +24,15 @@
   <Plugin>
     <Name>Load from Dropbox</Name>
     <Description>Load subtitles from Dropbox</Description>
-    <Version>1.0</Version>
-    <Date>2013-05-29</Date>
+    <Version>1.1</Version>
+    <Date>2017-05-24</Date>
     <Url>http://www.nikse.dk/Content/SubtitleEdit/Plugins/SeDropBoxLoad.zip</Url>
   </Plugin>
   <Plugin>
     <Name>Save to Dropbox</Name>
     <Description>Save subtitles to Dropbox</Description>
-    <Version>1.0</Version>
-    <Date>2013-05-29</Date>
+    <Version>1.1</Version>
+    <Date>2017-05-24</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/SeDropBoxSave.zip</Url>
   </Plugin>
   <Plugin>

@@ -36,18 +36,22 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DropboxApi.cs" />
-    <Compile Include="DropboxRestApi.cs" />
     <Compile Include="DropBoxFile.cs" />
+    <Compile Include="GetDropBoxCode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GetDropBoxCode.Designer.cs">
+      <DependentUpon>GetDropBoxCode.cs</DependentUpon>
+    </Compile>
     <Compile Include="IPlugin.cs" />
     <Compile Include="JSON.cs" />
-    <Compile Include="OAuth.cs" />
-    <Compile Include="OAuthBase.cs" />
-    <Compile Include="OAuthToken.cs" />
+    <Compile Include="OAuth2Token.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginForm.cs">
       <SubType>Form</SubType>
@@ -59,6 +63,9 @@
     <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="GetDropBoxCode.resx">
+      <DependentUpon>GetDropBoxCode.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PluginForm.resx">
       <DependentUpon>PluginForm.cs</DependentUpon>
     </EmbeddedResource>

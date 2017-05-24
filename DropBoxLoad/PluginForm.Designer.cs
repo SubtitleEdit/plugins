@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PluginForm));
             this.buttonOK = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.labelDescription = new System.Windows.Forms.Label();
@@ -36,6 +38,7 @@
             this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderDateModified = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.SuspendLayout();
             // 
             // buttonOK
@@ -75,7 +78,7 @@
             this.labelInfo.AutoSize = true;
             this.labelInfo.Location = new System.Drawing.Point(13, 331);
             this.labelInfo.Name = "labelInfo";
-            this.labelInfo.Size = new System.Drawing.Size(126, 13);
+            this.labelInfo.Size = new System.Drawing.Size(125, 13);
             this.labelInfo.TabIndex = 3;
             this.labelInfo.Text = "Connecting to Dropbox...";
             // 
@@ -95,9 +98,11 @@
             this.listViewFiles.MultiSelect = false;
             this.listViewFiles.Name = "listViewFiles";
             this.listViewFiles.Size = new System.Drawing.Size(508, 282);
+            this.listViewFiles.SmallImageList = this.imageList1;
             this.listViewFiles.TabIndex = 4;
             this.listViewFiles.UseCompatibleStateImageBehavior = false;
             this.listViewFiles.View = System.Windows.Forms.View.Details;
+            this.listViewFiles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listViewFiles_KeyDown);
             this.listViewFiles.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listViewFiles_MouseDoubleClick);
             // 
             // columnHeaderName
@@ -115,6 +120,13 @@
             this.columnHeaderSize.Text = "Size";
             this.columnHeaderSize.Width = 100;
             // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "default_file16x16.png");
+            this.imageList1.Images.SetKeyName(1, "default_folder16x16.png");
+            // 
             // PluginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -125,15 +137,18 @@
             this.Controls.Add(this.labelDescription);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.buttonOK);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(549, 392);
             this.Name = "PluginForm";
             this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "PluginForm";
             this.Shown += new System.EventHandler(this.PluginForm_Shown);
+            this.ResizeEnd += new System.EventHandler(this.PluginForm_ResizeEnd);
+            this.Resize += new System.EventHandler(this.PluginForm_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -149,6 +164,6 @@
         private System.Windows.Forms.ColumnHeader columnHeaderName;
         private System.Windows.Forms.ColumnHeader columnHeaderDateModified;
         private System.Windows.Forms.ColumnHeader columnHeaderSize;
-
+        private System.Windows.Forms.ImageList imageList1;
     }
 }

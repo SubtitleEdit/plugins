@@ -4,97 +4,147 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
-using System.Web;
-using OAuthProtocol;
+using System.Globalization;
+using System.Web.Script.Serialization;
 
 namespace Dropbox.Api
 {
     public class DropboxApi
     {
-        private readonly OAuthToken _accessToken;
-        private readonly string _consumerKey;
-        private readonly string _consumerSecret;
+        public const string ApiVersion = "2";
+        public const string BaseUri = "https://api.dropbox.com/" + ApiVersion + "/";
+        public const string AuthorizeBaseUri = "https://www.dropbox.com/" + ApiVersion + "/";
+        public const string ApiContentServer = "https://content.dropboxapi.com/" + ApiVersion + "/";
+        public const string OAuthUrl = "https://www.dropbox.com/oauth2/";
 
-        public DropboxApi(string consumerKey, string consumerSecret, OAuthToken accessToken)
+        public OAuth2Token Accesstoken { get; private set; }
+        private readonly string _appKey;
+        private readonly string _appSecret;
+
+        public DropboxApi(string appKey, string appSecret, OAuth2Token accessToken)
         {
-            _consumerKey = consumerKey;
-            _consumerSecret = consumerSecret;
-            _accessToken = accessToken;
+            _appKey = appKey;
+            _appSecret = appSecret;
+            Accesstoken = accessToken;
         }
 
-        private string GetResponse(Uri uri)
+        public string GetPromptForCodeUrl()
         {
-            var oauth = new OAuth();
-            var requestUri = oauth.SignRequest(uri, _consumerKey, _consumerSecret, _accessToken);
-            var request = (HttpWebRequest)WebRequest.Create(requestUri);
-            request.Method = WebRequestMethods.Http.Get;
+            var uri = new Uri(OAuthUrl + "authorize");
+            StringBuilder requestUri = new StringBuilder(uri.ToString());
+            requestUri.AppendFormat("?response_type={0}&", "code"); // code will supply an code to be copy pasted - for more info see https://www.dropbox.com/developers/documentation/http/documentation#oauth2-authorize
+            requestUri.AppendFormat("client_id={0}", _appKey);
+            return requestUri.ToString();
+        }
+
+        public OAuth2Token GetAccessToken(string code)
+        {
+            var uri = OAuthUrl + "token";
+            var requestUri = new StringBuilder(uri);
+            requestUri.AppendFormat("?code={0}&", code);
+            requestUri.Append("grant_type=authorization_code");
+            var webRequest = WebRequest.Create(requestUri.ToString());
+            webRequest.ContentType = "application/json";
+            webRequest.Headers.Add("Authorization", "Basic " + GenerateBasicAuth());
+            var request = (HttpWebRequest)webRequest;
+            request.Method = WebRequestMethods.Http.Post;
+            var response = request.GetResponse();
+            var reader = new StreamReader(response.GetResponseStream());
+            var json = reader.ReadToEnd();
+            JavaScriptSerializer jss = new JavaScriptSerializer();
+            OAuth2Token oAuth2token = jss.Deserialize<OAuth2Token>(json);
+            Accesstoken = oAuth2token;
+            return oAuth2token;
+        }
+
+        private string GenerateBasicAuth()
+        {
+            return Base64Encode(_appKey + ":" + _appSecret);
+        }
+
+        public static string Base64Encode(string plainText)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return System.Convert.ToBase64String(plainTextBytes);
+        }
+
+        private string GetResponse(Uri uri, string body)
+        {
+            var webRequest = WebRequest.Create(uri);
+            webRequest.ContentType = "application/json";
+            webRequest.Headers.Add("Authorization", "Bearer " + Accesstoken.access_token);
+            var request = (HttpWebRequest)webRequest;
+            request.Method = WebRequestMethods.Http.Post;
+            byte[] buf = Encoding.UTF8.GetBytes(body);
+            webRequest.ContentLength = buf.Length;
+            webRequest.GetRequestStream().Write(buf, 0, buf.Length);
             var response = request.GetResponse();
             var reader = new StreamReader(response.GetResponseStream());
             return reader.ReadToEnd();
         }
 
-        //public Account GetAccountInfo()
-        //{
-        //    var uri = new Uri(new Uri(DropboxRestApi.BaseUri), "account/info");
-        //    var json = GetResponse(uri);
-        //    return ParseJson<Account>(json);
-        //}
-
-        public DropboxFile GetFiles(string root, string path)
+        private Stream GetResponseStream(Uri uri, string arg)
         {
-            var uri = new Uri(new Uri(DropboxRestApi.BaseUri), String.Format("metadata/{0}/{1}", root, path));
-            var json = GetResponse(uri);
+            var webRequest = WebRequest.Create(uri);
+            webRequest.Headers.Add("Authorization", "Bearer " + Accesstoken.access_token);
+            webRequest.Headers.Add("Dropbox-API-Arg", arg);
+            var request = (HttpWebRequest)webRequest;
+            request.Method = WebRequestMethods.Http.Post;
+            var response = request.GetResponse();
+            return response.GetResponseStream();
+        }
 
-            Hashtable o = (Hashtable)Nikse.Json.JSON.JsonDecode(json);
-            DropboxFile f = new DropboxFile();
-            f.Size = o["size"].ToString();
-            List<DropboxFile> list = new List<DropboxFile>();
-            foreach (Hashtable ht in (o["contents"] as System.Collections.ArrayList))
+        public static string FormatBytesToDisplayFileSize(long fileSize)
+        {
+            if (fileSize <= 1024)
+                return string.Format("{0} bytes", fileSize);
+            if (fileSize <= 1024 * 1024)
+                return string.Format("{0} kb", fileSize / 1024);
+            if (fileSize <= 1024 * 1024 * 1024)
+                return string.Format("{0:0.0} mb", (float)fileSize / (1024 * 1024));
+            return string.Format("{0:0.0} gb", (float)fileSize / (1024 * 1024 * 1024));
+        }
+
+        public DropboxFile GetFiles(string path)
+        {
+            if (path.Length > 0)
             {
-                DropboxFile file = new DropboxFile();
-                if (Convert.ToBoolean(ht["is_dir"]) == false)
+                path = "/" + path.TrimStart('/');
+            }
+            var uri = new Uri(new Uri(DropboxApi.BaseUri), "files/list_folder");
+            var json = GetResponse(uri, "{\"path\":\"" + path + "\"}");
+            var o = (Hashtable)Nikse.Json.JSON.JsonDecode(json);
+            var f = new DropboxFile();
+            List<DropboxFile> list = new List<DropboxFile>();
+            foreach (Hashtable ht in (o["entries"] as ArrayList))
+            {
+                var file = new DropboxFile();
+                var tag = ht[".tag"].ToString().ToLowerInvariant();
+                if (tag == "file" || tag == "folder")
                 {
-                    file.Path = ht["path"].ToString().TrimStart('/').Trim();
-                    file.IsDirectory = Convert.ToBoolean(ht["is_dir"]);
-                    file.Bytes = Convert.ToInt64(ht["bytes"]);
-                    file.Size = ht["size"].ToString().Trim();
-                    file.Modified = DateTime.Parse(ht["modified"].ToString());
+                    file.Path = ht["path_display"].ToString().TrimStart('/').Trim();
+                    file.IsDirectory = tag == "folder";
+                    if (tag == "file")
+                    {
+                        file.Bytes = Convert.ToInt64(ht["size"].ToString().Trim(), CultureInfo.InvariantCulture);
+                        file.Description = FormatBytesToDisplayFileSize(file.Bytes);
+                        file.Modified = DateTime.Parse(ht["client_modified"].ToString());
+                    }
+                    else
+                    {
+                        file.Description = "<Folder>";
+                    }
                     list.Add(file);
                 }
             }
             f.Contents = list;
-
             return f;
         }
 
-        //public FileSystemInfo CreateFolder(string root, string path)
-        //{
-        //    var uri = new Uri(new Uri(DropboxRestApi.BaseUri),
-        //        String.Format("fileops/create_folder?root={0}&path={1}",
-        //        root, UpperCaseUrlEncode(path)));
-        //    var json = GetResponse(uri);
-        //    return ParseJson<FileSystemInfo>(json);
-        //}
-
-        public DropboxFile DownloadFile(string root, string path)
+        public DropboxFile DownloadFile(DropboxFile target)
         {
-            var uri = new Uri(new Uri(DropboxRestApi.ApiContentServer), String.Format("files?root={0}&path={1}", root, UpperCaseUrlEncode(path)));
-            var oauth = new OAuth();
-            var requestUri = oauth.SignRequest(uri, _consumerKey, _consumerSecret, _accessToken);
-
-            var request = (HttpWebRequest)WebRequest.Create(requestUri);
-            request.Method = WebRequestMethods.Http.Get;
-            var response = request.GetResponse();
-
-            var metadata = response.Headers["x-dropbox-metadata"];
-            //var file = ParseJson<FileSystemInfo>(metadata);
-            Hashtable o = (Hashtable)Nikse.Json.JSON.JsonDecode(metadata);
-            DropboxFile file = new DropboxFile();
-            file.Bytes = Convert.ToInt64(o["bytes"]);
-            file.Path = o["path"].ToString().TrimStart('/').Trim();
-            file.IsDirectory = Convert.ToBoolean(o["is_dir"]);
-
-            using (Stream responseStream = response.GetResponseStream())
+            var uri = new Uri(new Uri(ApiContentServer), "files/download");
+            using (Stream responseStream = GetResponseStream(uri, "{\"path\":\"/" + target.Path.TrimStart('/') + "\"}"))
             using (MemoryStream memoryStream = new MemoryStream())
             {
                 byte[] buffer = new byte[1024];
@@ -105,68 +155,39 @@ namespace Dropbox.Api
                     memoryStream.Write(buffer, 0, bytesRead);
                 } while (bytesRead > 0);
 
-                file.Data = memoryStream.ToArray();
+                target.Data = memoryStream.ToArray();
             }
-
-            return file;
+            return target;
         }
 
-        public DropboxFile UploadFile(string root, string path, byte[] buffer)
+        public DropboxFile UploadFile(string path, byte[] buffer)
         {
-            var uri = new Uri(new Uri(DropboxRestApi.ApiContentServer), String.Format("files_put/{0}/{1}", root, UpperCaseUrlEncode(path)));
-            var oauth = new OAuth();
-            var requestUri = oauth.SignRequest(uri, _consumerKey, _consumerSecret, _accessToken, "PUT");
-
-            var request = (HttpWebRequest)WebRequest.Create(requestUri);
-            request.Method = WebRequestMethods.Http.Put;
+            path = "/" + path.TrimStart('/');
+            var uri = new Uri(ApiContentServer + "files/upload");
+            var webRequest = WebRequest.Create(uri);
+            webRequest.ContentType = "application/octet-stream";
+            webRequest.Headers.Add("Authorization", "Bearer " + Accesstoken.access_token);
+            var arg = "{\"path\": \"" + path + "\",\"mode\": \"add\",\"autorename\": true,\"mute\": false}";
+            webRequest.Headers.Add("Dropbox-API-Arg", arg);
+            var request = (HttpWebRequest)webRequest;
+            request.Method = WebRequestMethods.Http.Post;
             request.KeepAlive = true;
-
             request.ContentLength = buffer.Length;
             using (var requestStream = request.GetRequestStream())
             {
                 requestStream.Write(buffer, 0, buffer.Length);
             }
-
             var response = request.GetResponse();
             var reader = new StreamReader(response.GetResponseStream());
             var json = reader.ReadToEnd();
-
-            //return ParseJson<FileSystemInfo>(json);
-
             Hashtable o = (Hashtable)Nikse.Json.JSON.JsonDecode(json);
             DropboxFile fsi = new DropboxFile();
-            fsi.Bytes = Convert.ToInt64(o["bytes"]);
-            fsi.Path = o["path"].ToString().TrimStart('/');
-            fsi.IsDirectory = Convert.ToBoolean(o["is_dir"]);
-            fsi.Size = o["size"].ToString().Trim();
+            fsi.Bytes = Convert.ToInt64(o["size"]);
+            fsi.Path = o["path_display"].ToString().TrimStart('/');
+            fsi.IsDirectory = false;
+            fsi.Description = FormatBytesToDisplayFileSize(fsi.Bytes);
             return fsi;
         }
 
-        private static string UpperCaseUrlEncode(string s)
-        {
-            char[] temp = HttpUtility.UrlEncode(s).ToCharArray();
-            for (int i = 0; i < temp.Length - 2; i++)
-            {
-                if (temp[i] == '%')
-                {
-                    temp[i + 1] = char.ToUpper(temp[i + 1]);
-                    temp[i + 2] = char.ToUpper(temp[i + 2]);
-                }
-            }
-
-            var values = new Dictionary<string, string>()
-            {
-                { "+", "%20" },
-                { "(", "%28" },
-                { ")", "%29" }
-            };
-
-            var data = new StringBuilder(new string(temp));
-            foreach (string character in values.Keys)
-            {
-                data.Replace(character, values[character]);
-            }
-            return data.ToString();
-        }
     }
 }

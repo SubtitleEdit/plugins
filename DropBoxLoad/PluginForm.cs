@@ -1,105 +1,33 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
 using System.Reflection;
 using System.Text;
-using System.Web;
 using System.Windows.Forms;
 using System.Xml;
 using Dropbox.Api;
-using OAuthProtocol;
+using SeDropBoxLoad;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form
     {
-        private const string SeConsumerKey = "CLIENT_KEY";
-        private const string SeConsumerSecret = "CLIENT_SECRET";
+        private const string SeAppKey = "CLIENT_KEY";
+        private const string SeAppsecret = "CLIENT_SECRET";
+        private OAuth2Token _oAuth2token;
+        private Stack<string> _folder = new Stack<string>();
 
         public string LoadedSubtitle { get; private set; }
 
         private DropboxFile _fileList;
         private int _connectTries = 0;
 
-        private static OAuthToken GetRequestToken()
-        {
-            var uri = new Uri("https://api.dropbox.com/1/oauth/request_token");
-
-            // Generate a signature
-            OAuthBase oAuth = new OAuthBase();
-            string nonce = oAuth.GenerateNonce();
-            string timeStamp = oAuth.GenerateTimeStamp();
-            string parameters;
-            string normalizedUrl;
-            string signature = oAuth.GenerateSignature(uri, SeConsumerKey, SeConsumerSecret, String.Empty, String.Empty, "GET", timeStamp, nonce, OAuthBase.SignatureTypes.HMACSHA1,
-                                                       out normalizedUrl, out parameters);
-
-            signature = HttpUtility.UrlEncode(signature);
-
-            StringBuilder requestUri = new StringBuilder(uri.ToString());
-            requestUri.AppendFormat("?oauth_consumer_key={0}&", SeConsumerKey);
-            requestUri.AppendFormat("oauth_nonce={0}&", nonce);
-            requestUri.AppendFormat("oauth_timestamp={0}&", timeStamp);
-            requestUri.AppendFormat("oauth_signature_method={0}&", "HMAC-SHA1");
-            requestUri.AppendFormat("oauth_version={0}&", "1.0");
-            requestUri.AppendFormat("oauth_signature={0}", signature);
-
-            var request = (HttpWebRequest)WebRequest.Create(new Uri(requestUri.ToString()));
-            request.Method = WebRequestMethods.Http.Get;
-
-            var response = request.GetResponse();
-            var queryString = new StreamReader(response.GetResponseStream()).ReadToEnd();
-            var parts = queryString.Split('&');
-            var token = parts[1].Substring(parts[1].IndexOf('=') + 1);
-            var secret = parts[0].Substring(parts[0].IndexOf('=') + 1);
-
-            return new OAuthToken(token, secret);
-        }
-
-        private static OAuthToken GetAccessToken(OAuthToken oauthToken)
-        {
-            var uri = "https://api.dropbox.com/1/oauth/access_token";
-
-            OAuthBase oAuth = new OAuthBase();
-
-            var nonce = oAuth.GenerateNonce();
-            var timeStamp = oAuth.GenerateTimeStamp();
-            string parameters;
-            string normalizedUrl;
-            var signature = oAuth.GenerateSignature(new Uri(uri), SeConsumerKey, SeConsumerSecret,
-                oauthToken.Token, oauthToken.Secret, "GET", timeStamp, nonce,
-                OAuthBase.SignatureTypes.HMACSHA1, out normalizedUrl, out parameters);
-
-            signature = HttpUtility.UrlEncode(signature);
-
-            var requestUri = new StringBuilder(uri);
-            requestUri.AppendFormat("?oauth_consumer_key={0}&", SeConsumerKey);
-            requestUri.AppendFormat("oauth_token={0}&", oauthToken.Token);
-            requestUri.AppendFormat("oauth_nonce={0}&", nonce);
-            requestUri.AppendFormat("oauth_timestamp={0}&", timeStamp);
-            requestUri.AppendFormat("oauth_signature_method={0}&", "HMAC-SHA1");
-            requestUri.AppendFormat("oauth_version={0}&", "1.0");
-            requestUri.AppendFormat("oauth_signature={0}", signature);
-
-            var request = (HttpWebRequest)WebRequest.Create(requestUri.ToString());
-            request.Method = WebRequestMethods.Http.Get;
-
-            var response = request.GetResponse();
-            var reader = new StreamReader(response.GetResponseStream());
-            var accessToken = reader.ReadToEnd();
-
-            var parts = accessToken.Split('&');
-            var token = parts[1].Substring(parts[1].IndexOf('=') + 1);
-            var secret = parts[0].Substring(parts[0].IndexOf('=') + 1);
-
-            return new OAuthToken(token, secret);
-        }
-
         private string GetSettingsFileName()
         {
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-            if (path.StartsWith("file:\\"))
+            if (path != null && path.StartsWith("file:\\", StringComparison.Ordinal))
                 path = path.Remove(0, 6);
             path = Path.Combine(path, "Plugins");
             if (!Directory.Exists(path))
@@ -109,26 +37,34 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private static string EncodeTo64(string toEncode)
         {
-            byte[] toEncodeAsBytes = System.Text.Encoding.Unicode.GetBytes(toEncode);
-            return System.Convert.ToBase64String(toEncodeAsBytes);
+            byte[] toEncodeAsBytes = Encoding.Unicode.GetBytes(toEncode);
+            return Convert.ToBase64String(toEncodeAsBytes);
         }
 
         public static string DecodeFrom64(string encodedData)
         {
-            byte[] encodedDataAsBytes = System.Convert.FromBase64String(encodedData);
-            return System.Text.Encoding.Unicode.GetString(encodedDataAsBytes);
+            byte[] encodedDataAsBytes = Convert.FromBase64String(encodedData);
+            return Encoding.Unicode.GetString(encodedDataAsBytes);
         }
 
-        private OAuthToken GetSavedToken()
+        private OAuth2Token GetSavedToken()
         {
             string fileName = GetSettingsFileName();
             try
             {
-                XmlDocument doc = new XmlDocument();
+                var doc = new XmlDocument();
                 doc.Load(fileName);
-                string token = DecodeFrom64(doc.DocumentElement.SelectSingleNode("Token").InnerText);
-                string secret = DecodeFrom64(doc.DocumentElement.SelectSingleNode("Secret").InnerText);
-                return new OAuthToken(token, secret);
+                string accessToken = DecodeFrom64(doc.DocumentElement.SelectSingleNode("Accesstoken").InnerText);
+                string uid = DecodeFrom64(doc.DocumentElement.SelectSingleNode("UId").InnerText);
+                string accountId = DecodeFrom64(doc.DocumentElement.SelectSingleNode("AccountId").InnerText);
+                string tokenType = DecodeFrom64(doc.DocumentElement.SelectSingleNode("TokenType").InnerText);
+                return new OAuth2Token()
+                {
+                    access_token = accessToken,
+                    uid = uid,
+                    account_id = accountId,
+                    token_type = tokenType
+                };
             }
             catch
             {
@@ -136,15 +72,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        private void SaveToken(string token, string secret)
+        private void SaveToken(OAuth2Token token)
         {
             string fileName = GetSettingsFileName();
             try
             {
-                XmlDocument doc = new XmlDocument();
-                doc.LoadXml("<SeDropbox><Token/><Secret/></SeDropbox>");
-                doc.DocumentElement.SelectSingleNode("Token").InnerText = EncodeTo64(token);
-                doc.DocumentElement.SelectSingleNode("Secret").InnerText = EncodeTo64(secret);
+                var doc = new XmlDocument();
+                doc.LoadXml("<SeDropbox><Accesstoken/><UId/><AccountId/><TokenType/></SeDropbox>");
+                doc.DocumentElement.SelectSingleNode("Accesstoken").InnerText = EncodeTo64(token.access_token);
+                doc.DocumentElement.SelectSingleNode("UId").InnerText = EncodeTo64(token.uid);
+                doc.DocumentElement.SelectSingleNode("AccountId").InnerText = EncodeTo64(token.account_id);
+                doc.DocumentElement.SelectSingleNode("TokenType").InnerText = EncodeTo64(token.token_type);
                 doc.Save(fileName);
             }
             catch
@@ -166,17 +104,54 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             string fileName = listViewFiles.SelectedItems[0].Text;
 
-            labelInfo.Text = "Downloading...";
             this.Refresh();
-            OAuthToken accessToken = GetSavedToken();
             try
             {
                 Cursor = Cursors.WaitCursor;
-                var api = new DropboxApi(SeConsumerKey, SeConsumerSecret, accessToken);
-                var fileDown = api.DownloadFile("sandbox", fileName);
-                LoadedSubtitle = Encoding.UTF8.GetString(fileDown.Data);
-                Cursor = Cursors.Default;
-                DialogResult = DialogResult.OK;
+                var f = listViewFiles.SelectedItems[0].Tag as DropboxFile;
+                if (f != null)
+                {
+                    var api = new DropboxApi(SeAppKey, SeAppsecret, _oAuth2token);
+                    if (f.IsDirectory)
+                    {
+                        labelInfo.Text = "Getting file list...";
+                        labelDescription.Text = f.Path;
+                        this.Refresh();
+                        _fileList = api.GetFiles(f.Path);
+                        if (f.Description == "..")
+                        {
+                            if (_folder.Count > 0)
+                            {
+                                var path = _folder.Pop();
+                                var list = _fileList.Contents.ToList();
+                                if (path != string.Empty)
+                                {
+                                    list.Insert(0, new DropboxFile { Path = GetWithoutPart(path), IsDirectory = true, Description = ".." });
+                                }
+                                _fileList.Contents = list;
+                            }
+                        }
+                        else
+                        {
+                            string s = GetWithoutPart(f.Path);
+                            _folder.Push(s);
+                            var list = _fileList.Contents.ToList();
+                            list.Insert(0, new DropboxFile { Path = s, IsDirectory = true, Description = ".." });
+                            _fileList.Contents = list;
+                        }
+
+                        FillListView();
+                    }
+                    else
+                    {
+                        labelInfo.Text = "Downloading...";
+                        this.Refresh();
+                        var fileDown = api.DownloadFile(listViewFiles.SelectedItems[0].Tag as DropboxFile);
+                        LoadedSubtitle = Encoding.UTF8.GetString(fileDown.Data);
+                        DialogResult = DialogResult.OK;
+                    }
+                    Cursor = Cursors.Default;
+                }
                 labelInfo.Text = string.Empty;
                 this.Refresh();
             }
@@ -195,23 +170,28 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void PluginForm_Shown(object sender, EventArgs e)
         {
             this.Refresh();
-            OAuthToken accessToken = GetSavedToken();
-            if (accessToken == null)
+            _oAuth2token = GetSavedToken();
+            var api = new DropboxApi(SeAppKey, SeAppsecret, _oAuth2token);
+            if (_oAuth2token == null)
             {
                 try
                 {
-                    // Step 1/3: Get request token
-                    OAuthToken oauthToken = GetRequestToken();
-
-                    // Step 2/3: Authorize application
-                    var queryString = String.Format("oauth_token={0}", oauthToken.Token);
-                    var authorizeUrl = "https://www.dropbox.com/1/oauth/authorize?" + queryString;
-                    Process.Start(authorizeUrl);
-                    MessageBox.Show("Accept App request from Subtitle Edit - and press OK");
+                    Process.Start(api.GetPromptForCodeUrl());
+                    using (var form = new GetDropBoxCode())
+                    {
+                        var result = form.ShowDialog(this);
+                        if (result == DialogResult.OK && form.Code.Length > 10)
+                        {
+                            _oAuth2token = api.GetAccessToken(form.Code);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Code skipped - no DropBox :(");
+                            return;
+                        }
+                    }
                     labelInfo.Text = string.Empty;
-
-                    accessToken = GetAccessToken(oauthToken);
-                    SaveToken(accessToken.Token, accessToken.Secret);
+                    SaveToken(_oAuth2token);
                 }
                 catch (Exception exception)
                 {
@@ -232,10 +212,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             labelInfo.Text = "Getting file list...";
             Cursor = Cursors.WaitCursor;
             this.Refresh();
-            var api = new DropboxApi(SeConsumerKey, SeConsumerSecret, accessToken);
             try
             {
-                _fileList = api.GetFiles("sandbox", string.Empty);
+                _fileList = api.GetFiles("");
                 Cursor = Cursors.Default;
             }
             catch (Exception exception)
@@ -253,14 +232,50 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return;
             }
             labelInfo.Text = string.Empty;
+            FillListView();
+        }
 
+        private string GetLastPart(string path)
+        {
+            var idx = path.LastIndexOf("/");
+            if (idx < 0)
+            {
+                return path;
+            }
+            return path.Remove(0, idx).TrimStart('/');
+        }
+
+        private string GetWithoutPart(string path)
+        {
+            var idx = path.LastIndexOf("/");
+            if (idx > 0)
+                return path.Substring(0, idx);
+            else
+                return string.Empty;
+        }
+
+        private void FillListView()
+        {
+            listViewFiles.BeginUpdate();
+            listViewFiles.Items.Clear();
             foreach (DropboxFile f in _fileList.Contents)
             {
-                ListViewItem item = new ListViewItem(f.Path);
+                string name = f.Path;
+                if (f.IsDirectory && f.Description == "..")
+                {
+                    name = "..";
+                }
+                ListViewItem item = new ListViewItem(GetLastPart(name));
+                item.Tag = f;
+                if (f.IsDirectory)
+                    item.ImageIndex = 1;
+                else
+                    item.ImageIndex = 0;
                 item.SubItems.Add(f.Modified.ToShortDateString() + f.Modified.ToShortTimeString());
-                item.SubItems.Add(f.Size);
+                item.SubItems.Add(f.Description);
                 listViewFiles.Items.Add(item);
             }
+            listViewFiles.EndUpdate();
             if (listViewFiles.Items.Count > 0)
                 listViewFiles.Items[0].Selected = true;
         }
@@ -270,5 +285,53 @@ namespace Nikse.SubtitleEdit.PluginLogic
             buttonOK_Click(sender, e);
         }
 
+        private void listViewFiles_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                buttonOK_Click(sender, e);
+            }
+            else if (e.KeyCode == Keys.Back)
+            {
+                if (listViewFiles.Items.Count > 0)
+                {
+                    var f = listViewFiles.Items[0].Tag as DropboxFile;
+                    if (f.IsDirectory && f.Description == "..")
+                    {
+                        listViewFiles.BeginUpdate();
+                        for (int i = 1; i < listViewFiles.Items.Count; i++)
+                        {
+                            listViewFiles.Items[i].Selected = false;
+                        }
+                        listViewFiles.Items[0].Selected = true;
+                        listViewFiles.Items[0].Focused = true;
+                        listViewFiles.EndUpdate();
+                        buttonOK_Click(sender, e);
+                    }
+                }
+            }
+        }
+
+        private void PluginForm_ResizeEnd(object sender, EventArgs e)
+        {
+            var w = listViewFiles.Width - 120 - 100;
+            if (w > 0)
+            {
+                listViewFiles.Columns[0].Width = w;
+                listViewFiles.Columns[1].Width = 120;
+            }
+
+            listViewFiles.Columns[2].Width = -2;
+        }
+
+        private void PluginForm_Resize(object sender, EventArgs e)
+        {
+            var w = listViewFiles.Width - 120 - 100;
+            if (w > 0)
+            {
+                listViewFiles.Columns[0].Width = w;
+                listViewFiles.Columns[1].Width = 120;
+            }
+        }
     }
 }
