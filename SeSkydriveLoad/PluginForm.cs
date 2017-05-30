@@ -5,22 +5,25 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using System.Globalization;
 
-namespace SeSkydriveLoad
+namespace OneDriveLoad
 {
     public partial class PluginForm : Form
     {
-        private SkydriveApi _api;
+        private const string ClientId = "737a5bf2-01f2-4ede-9429-e703d2598923";
+        private const string ClientWebsite = "msal737a5bf2-01f2-4ede-9429-e703d2598923://auth";
+        private OneDriveApi _api;
         public string LoadedSubtitle { get; private set; }
-        private System.Collections.Generic.Stack<string> _roots;
+        private Stack<string> _roots;
 
         public PluginForm(string name, string description)
         {
             InitializeComponent();
-            this.Text = name;
+            Text = name;
             labelDescription.Text = description;
-            labelInfo.Text = "Connecting to Skydrive...";
-            _api = new SkydriveApi("wl.skydrive_update");
+            labelInfo.Text = "Connecting to OneDrive...";
+            _api = new OneDriveApi("files.read", ClientId, ClientWebsite);
         }
 
         public static string FormatBytesToDisplayFileSize(long fileSize)
@@ -44,33 +47,31 @@ namespace SeSkydriveLoad
             path = Path.Combine(path, "Plugins");
             if (!Directory.Exists(path))
                 path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Plugins");
-            return Path.Combine(path, "SeSkydrive.xml");
+            return Path.Combine(path, "OneDrive.xml");
         }
 
         private static string EncodeTo64(string toEncode)
         {
-            byte[] toEncodeAsBytes = System.Text.Encoding.Unicode.GetBytes(toEncode);
-            return System.Convert.ToBase64String(toEncodeAsBytes);
+            byte[] toEncodeAsBytes = Encoding.Unicode.GetBytes(toEncode);
+            return Convert.ToBase64String(toEncodeAsBytes);
         }
 
         public static string DecodeFrom64(string encodedData)
         {
-            byte[] encodedDataAsBytes = System.Convert.FromBase64String(encodedData);
-            return System.Text.Encoding.Unicode.GetString(encodedDataAsBytes);
+            byte[] encodedDataAsBytes = Convert.FromBase64String(encodedData);
+            return Encoding.Unicode.GetString(encodedDataAsBytes);
         }
 
-        private string GetSavedToken()
+        private OAuth2Token GetSavedToken()
         {
             string fileName = GetSettingsFileName();
             try
             {
-                XmlDocument doc = new XmlDocument();
+                var oAuth2Token = new OAuth2Token();
+                var doc = new XmlDocument();
                 doc.Load(fileName);
-                DateTime expires = Convert.ToDateTime(DecodeFrom64(doc.DocumentElement.SelectSingleNode("Expires").InnerText));
-                if (expires.AddMinutes(5) < DateTime.Now)
-                    return null; // token expired
-                string token = DecodeFrom64(doc.DocumentElement.SelectSingleNode("Token").InnerText);
-                return token;
+                oAuth2Token.access_token = DecodeFrom64(doc.DocumentElement.SelectSingleNode("AccessToken").InnerText);
+                return oAuth2Token;
             }
             catch
             {
@@ -78,15 +79,15 @@ namespace SeSkydriveLoad
             }
         }
 
-        private void SaveToken(string token, DateTime expires)
+        private void SaveToken(OAuth2Token oAuth2Token)
         {
             string fileName = GetSettingsFileName();
             try
             {
-                XmlDocument doc = new XmlDocument();
-                doc.LoadXml("<SeSkydrive><Expires/><Token/></SeSkydrive>");
-                doc.DocumentElement.SelectSingleNode("Expires").InnerText = EncodeTo64(expires.ToString("s"));
-                doc.DocumentElement.SelectSingleNode("Token").InnerText = EncodeTo64(token);
+                var doc = new XmlDocument();
+                doc.LoadXml("<OneDrive><Expires/><RefreshToken/><AccessToken/></OneDrive>");
+                doc.DocumentElement.SelectSingleNode("Expires").InnerText = EncodeTo64(oAuth2Token.expires_in.ToString(CultureInfo.InvariantCulture));
+                doc.DocumentElement.SelectSingleNode("AccessToken").InnerText = EncodeTo64(oAuth2Token.access_token);
                 doc.Save(fileName);
             }
             catch
@@ -100,18 +101,18 @@ namespace SeSkydriveLoad
             {
                 _roots = new Stack<string>();
                 Refresh();
-                string t = GetSavedToken();
-                if (t == null)
+                var t = GetSavedToken();
+                if (true) //t == null) //TODO: use refresh token?
                 {
                     var b = new Browser(_api.LoginUrl);
-                    if (b.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+                    if (b.ShowDialog(this) == DialogResult.OK)
                     {
-                        if (!string.IsNullOrEmpty(b.Token))
+                        if (!string.IsNullOrEmpty(b.Code))
                         {
                             Cursor.Current = Cursors.WaitCursor;
-                            _api.AccessToken = b.Token;
-                            SaveToken(_api.AccessToken, b.Expires);
-                            LoadFiles("me/skydrive");
+                            _api.InitTokens(b.Code);
+                            SaveToken(_api.OAuth2Token);
+                            LoadFiles(string.Empty);
                             Cursor.Current = Cursors.Default;
                         }
                         else
@@ -123,9 +124,9 @@ namespace SeSkydriveLoad
                 }
                 else
                 {
-                    _api.AccessToken = t;
+                    _api.OAuth2Token = t;
                     Cursor = Cursors.WaitCursor;
-                    LoadFiles("me/skydrive");
+                    LoadFiles(string.Empty);
                     Cursor = Cursors.Default;
                 }
                 labelInfo.Text = string.Empty;
@@ -144,14 +145,14 @@ namespace SeSkydriveLoad
             if (_roots.Count > 0)
             {
                 ListViewItem item = new ListViewItem("..");
-                SkydriveContent sc = new SkydriveContent();
+                OneDriveContent sc = new OneDriveContent();
                 sc.ParentId = _roots.Peek();
                 item.Tag = sc;
                 item.ImageIndex = 1;
                 listViewFiles.Items.Add(item);
             }
 
-            foreach (SkydriveContent f in _api.GetFiles(path))
+            foreach (OneDriveContent f in _api.GetFiles(path))
             {
                 if (f.IsFile || f.IsFolder)
                 {
@@ -179,7 +180,7 @@ namespace SeSkydriveLoad
             if (listViewFiles.SelectedItems.Count < 1)
                 return;
 
-            SkydriveContent sc = (SkydriveContent)listViewFiles.SelectedItems[0].Tag;
+            OneDriveContent sc = (OneDriveContent)listViewFiles.SelectedItems[0].Tag;
             try
             {
                 if (listViewFiles.SelectedItems[0].Text == "..")

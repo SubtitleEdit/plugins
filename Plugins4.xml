@@ -50,18 +50,18 @@
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/OpenSubtitlesUpload.zip</Url>
   </Plugin>
   <Plugin>
-    <Name>Save to Skydrive</Name>
-    <Description>Upload a subtitle quickly to Skydrive</Description>
-    <Version>0.2</Version>
-    <Date>2013-05-29</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/SeSkydriveSave.zip</Url>
+    <Name>Save to  OneDrive</Name>
+    <Description>Upload a subtitle quickly to Microsoft OneDrive</Description>
+    <Version>1.0</Version>
+    <Date>2013-05-30</Date>
+    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/OneDriveSave.zip</Url>
   </Plugin>
   <Plugin>
-    <Name>Load from Skydrive</Name>
-    <Description>Save a subtitle quickly to Skydrive</Description>
-    <Version>0.2</Version>
-    <Date>2013-05-29</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/SeSkydriveLoad.zip</Url>
+    <Name>Load from OneDrive</Name>
+    <Description>Load a subtitle quickly to Microsoft OneDrive</Description>
+    <Version>1.0</Version>
+    <Date>2017-05-30</Date>
+    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/OneDriveLoad.zip</Url>
   </Plugin>
   <Plugin>
     <Name>Word spell check</Name>

@@ -3,26 +3,26 @@ using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    public class SeSkydriveSave : IPlugin // dll file name must "<classname>.dll" - e.g. "SyncViaOtherSubtitle.dll"
+    public class OneDriveSave : IPlugin // dll file name must "<classname>.dll" - e.g. "SyncViaOtherSubtitle.dll"
     {
         string IPlugin.Name
         {
-            get { return "Save to Skydrive"; }
+            get { return "Save to OneDrive"; }
         }
 
         string IPlugin.Text
         {
-            get { return "Save subtitle to Skydrive..."; } // text in interface
+            get { return "Save subtitle to OneDrive..."; } // text in interface
         }
 
         decimal IPlugin.Version
         {
-            get { return 0.2M; }
+            get { return 1.0M; }
         }
 
         string IPlugin.Description
         {
-            get { return "Save subtitle from Skydrive"; }
+            get { return "Save subtitle from OneDrive"; }
         }
 
         string IPlugin.ActionType // Can be one of these: file, tool, sync, translate, spellcheck

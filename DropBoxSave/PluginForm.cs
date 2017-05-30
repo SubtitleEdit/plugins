@@ -92,7 +92,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             InitializeComponent();
             this.Text = name;
             buttonOK.Enabled = false;
-            labelDescription.Text = "Connecting to DropBox...";
+            labelDescription.Text = "Connecting to Dropbox...";
             _rawText = rawText;
             if (string.IsNullOrEmpty(fileName))
                 fileName = "Untitled.srt";
@@ -102,13 +102,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
+            var s = textBoxFileName.Text;
+            if (s.Length == 0)
+                return;
+
             labelInfo.Text = "Saving...";
-            this.Refresh();
+            Refresh();
             _oAuth2token = GetSavedToken();
             try
             {
                 var api = new DropboxApi(SeAppKey, SeAppsecret, _oAuth2token);
-                var fileUp = api.UploadFile(Path.GetFileName(_fileName), Encoding.UTF8.GetBytes(_rawText));
+                var fileUp = api.UploadFile(s, Encoding.UTF8.GetBytes(_rawText));
                 DialogResult = DialogResult.OK;
                 labelInfo.Text = string.Empty;
                 this.Refresh();
@@ -142,7 +146,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         }
                         else
                         {
-                            MessageBox.Show("Code skipped - no DropBox :(");
+                            MessageBox.Show("Code skipped - no Dropbox :(");
                             return;
                         }
                     }

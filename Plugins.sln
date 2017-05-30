@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSpellCheck", "WordSpellCheck\DLL\WordSpellCheck.csproj", "{40D9F0DB-1C62-4CFC-A412-796E753AA057}"
 EndProject
@@ -15,9 +15,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HI2UC", "HI2UC\HI2UC.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DialogueOneHyphen", "DialogueOneHyphen\DLL\DialogueOneHyphen.csproj", "{156A3B1C-12BB-42D4-B008-BD56A0181B75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeSkydriveLoad", "SeSkydriveLoad\SeSkydriveLoad.csproj", "{83A18914-ACB3-4CE6-B9B2-1179839568E2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneDriveLoad", "SeSkydriveLoad\OneDriveLoad.csproj", "{83A18914-ACB3-4CE6-B9B2-1179839568E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeSkydriveSave", "SeSkydriveSave\SeSkydriveSave.csproj", "{CE839BB2-5F2A-4A00-A8A9-24BE511764FC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneDriveSave", "SeSkydriveSave\OneDriveSave.csproj", "{CE839BB2-5F2A-4A00-A8A9-24BE511764FC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nikse", "Nikse", "{65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}"
 EndProject

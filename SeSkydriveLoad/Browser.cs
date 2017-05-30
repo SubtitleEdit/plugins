@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace SeSkydriveLoad
+namespace OneDriveLoad
 {
     public partial class Browser : Form
     {
-        public string Token { get; private set; }
-        public DateTime Expires { get; private set; }
+        public string Code { get; private set; }
 
         public Browser(string url)
         {
@@ -18,32 +17,14 @@ namespace SeSkydriveLoad
         private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             string url = webBrowser1.Url.AbsoluteUri;
-            int startOfAccesstoken = url.IndexOf("access_token=");
+            int startOfAccesstoken = url.IndexOf("code=");
             if (startOfAccesstoken > 0)
             {
-                url = url.Substring(startOfAccesstoken + 13);
+                url = url.Substring(startOfAccesstoken + 5);
                 int endOfAccessToken = url.IndexOf("&");
                 if (endOfAccessToken > 0)
                     url = url.Substring(0, endOfAccessToken);
-                Token = url;
-
-                try
-                {
-                    url = webBrowser1.Url.AbsoluteUri;
-                    startOfAccesstoken = url.IndexOf("expires_in=");
-                    if (startOfAccesstoken > 0)
-                    {
-                        url = url.Substring(startOfAccesstoken + 11);
-                        endOfAccessToken = url.IndexOf("&");
-                        if (endOfAccessToken > 0)
-                            url = url.Substring(0, endOfAccessToken);
-                    }
-                    Expires = DateTime.Now.AddSeconds(Convert.ToInt32(url));
-                }
-                catch
-                {
-                    Expires = DateTime.Now;
-                }
+                Code = url;
                 DialogResult = DialogResult.OK;
             }
         }
@@ -51,7 +32,7 @@ namespace SeSkydriveLoad
         private void Browser_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
-                this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+                DialogResult = DialogResult.Cancel;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace SeSkydriveLoad
+﻿namespace OneDriveLoad
 {
     partial class PluginForm
     {

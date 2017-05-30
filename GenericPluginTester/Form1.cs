@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 
 namespace GenericPluginTester
@@ -16,7 +17,7 @@ namespace GenericPluginTester
             string currentPath = System.Reflection.Assembly.GetEntryAssembly().Location;
             var pluginPath = Directory.GetParent(currentPath).Parent.Parent.Parent;
             if (File.Exists("LastLoadedPlugin.txt"))
-                _lastLoadedPlugin = File.ReadAllText("LastLoadedPlugin.txt");   
+                _lastLoadedPlugin = File.ReadAllText("LastLoadedPlugin.txt");
             LoadPlugins(pluginPath.FullName, _dllFiles);
             RefillDrownDown();
         }
@@ -145,7 +146,7 @@ namespace GenericPluginTester
                 File.WriteAllText("LastLoadedPlugin.txt", fileName);
             }
             catch (Exception)
-            {                                
+            {
             }
         }
 
@@ -173,7 +174,7 @@ namespace GenericPluginTester
                                         rawText,
                                         25,
                                         "<br />",
-                                        "",
+                                        GetRandomName() + ".srt",
                                         "",
                                         rawText
                                       });
@@ -189,6 +190,17 @@ namespace GenericPluginTester
             }
         }
 
+        private string GetRandomName()
+        {
+            var random = new Random();
+            var sb = new StringBuilder();
+            for (int i = 0; i < random.Next(2, 6); i++)
+            {
+                sb.Append(char.ConvertFromUtf32(random.Next(97, 97 + 20)));
+            }
+            return sb.ToString();
+        }
+
         private void checkBoxShowOnlyDebug_CheckedChanged(object sender, EventArgs e)
         {
             RefillDrownDown();
@@ -202,7 +214,7 @@ namespace GenericPluginTester
             {
                 LoadPlugin(dll);
             }
-        }        
+        }
 
     }
 }

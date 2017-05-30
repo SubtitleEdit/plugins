@@ -186,7 +186,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         }
                         else
                         {
-                            MessageBox.Show("Code skipped - no DropBox :(");
+                            MessageBox.Show("Code skipped - no Dropbox :(");
                             return;
                         }
                     }
