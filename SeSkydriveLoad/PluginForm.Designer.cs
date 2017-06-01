@@ -137,13 +137,18 @@
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
             this.KeyPreview = true;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(629, 367);
             this.Name = "PluginForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "PluginForm";
             this.Shown += new System.EventHandler(this.PluginForm_Shown);
+            this.ResizeEnd += new System.EventHandler(this.PluginForm_ResizeEnd);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PluginForm_KeyDown);
+            this.Resize += new System.EventHandler(this.PluginForm_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();
 

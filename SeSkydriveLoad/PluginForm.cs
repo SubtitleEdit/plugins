@@ -230,5 +230,28 @@ namespace OneDriveLoad
             if (e.KeyCode == Keys.Escape)
                 DialogResult = DialogResult.Cancel;
         }
+
+        private void PluginForm_Resize(object sender, EventArgs e)
+        {
+            var w = listViewFiles.Width - 120 - 100;
+            if (w > 0)
+            {
+                listViewFiles.Columns[0].Width = w;
+                listViewFiles.Columns[1].Width = 120;
+            }
+        }
+
+        private void PluginForm_ResizeEnd(object sender, EventArgs e)
+        {
+            var w = listViewFiles.Width - 120 - 100;
+            if (w > 0)
+            {
+                listViewFiles.Columns[0].Width = w;
+                listViewFiles.Columns[1].Width = 120;
+            }
+
+            listViewFiles.Columns[2].Width = -2;
+        }
+
     }
 }
