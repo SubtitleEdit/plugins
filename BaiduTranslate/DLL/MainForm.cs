@@ -16,11 +16,12 @@ namespace SubtitleEdit
     public partial class MainForm : Form
     {
         private readonly Subtitle _subtitle;
-        private static string _baiduParameterT = "1471889368713";
-        private static string _baiduParameterToken = "b1067b2fc50ed1ef7813c4547f26f482";
         private static string _from = "en";
         private static string _to = "zh";
         private bool _abort;
+        private const string HostFanyiBaidu = "api.fanyi.baidu.com";
+        private const string HostBaiduV2 = "translate.baidu.com/v2transapi";
+        private string _host = HostFanyiBaidu;
 
         public class BaiduTranslationPair
         {
@@ -48,6 +49,10 @@ namespace SubtitleEdit
         public MainForm()
         {
             InitializeComponent();
+            comboBoxHost.Items.Clear();
+            comboBoxHost.Items.Add(HostFanyiBaidu);
+            comboBoxHost.Items.Add(HostBaiduV2);
+            comboBoxHost.SelectedIndex = 0;
             KeyDown += (s, e) =>
             {
                 if (e.KeyCode == Keys.Escape)
@@ -80,27 +85,6 @@ namespace SubtitleEdit
                     new BaiduTranslationPair("Japanese", "jp", "Chinese", "zh"),
                 });
             comboBoxLanguagePair.SelectedIndex = 0;
-
-            var wc = new WebClient();
-            wc.DownloadStringCompleted += (sender, args) =>
-            {
-                if (args != null && args.Error == null && !string.IsNullOrWhiteSpace(args.Result))
-                {
-                    var idx = args.Result.IndexOf("TOKEN=", StringComparison.Ordinal);
-                    if (idx > 0)
-                    {
-                        var token = args.Result.Substring(idx + 7, 50).Trim().Trim('"');
-                        idx = token.IndexOf('"');
-                        if (idx > 0)
-                        {
-                            token = token.Substring(0, idx);
-                            _baiduParameterToken = token;
-                            textBox1.AppendText("Token: " + token + Environment.NewLine + Environment.NewLine);
-                        }
-                    }
-                }
-            };
-            wc.DownloadStringAsync(new Uri("http://translate.baidu.com/"));
         }
 
         public MainForm(Subtitle sub, string title, string description, Form parentForm)
@@ -201,7 +185,16 @@ namespace SubtitleEdit
         {
             var startAndEndsWithItalic = p.Text.StartsWith("<i>", StringComparison.Ordinal) && p.Text.EndsWith("</i>", StringComparison.Ordinal);
             string s = p.Text.Replace("<i>", string.Empty).Replace("</i>", string.Empty);
-            var result = BaiduTranslate(UrlEncode(Utilities.RemoveHtmlTags(s, true)), _from, _to, log);
+            string result;
+            if (_host == HostFanyiBaidu)
+            {
+                var fanyiBaiduTranslator = new BaiduTranslator("20151113000005349", "osubCEzlGjzvw8qdQc41");
+                result = fanyiBaiduTranslator.Translate(s, _from, _to, log);
+            }
+            else
+            {
+                result = BaiduTranslate(UrlEncode(Utilities.RemoveHtmlTags(s, true)), _from, _to, log);
+            }
             if (startAndEndsWithItalic)
                 result = "<i>" + result + "</i>";
             log.AppendLine();
@@ -327,99 +320,6 @@ namespace SubtitleEdit
             });
         }
 
-        private string BaiduTranslateOld(string text, string from, string to, StringBuilder log, int retryLevel = 0)
-        {
-            const int maxNumberOfRetries = 2;
-            string url = "http://translate.baidu.com/transcontent?monLang=en";
-            var req = WebRequest.Create(url);
-            req.Method = "POST";
-            req.Headers.Add("cache-control", "no-cache");
-            req.ContentType = "application/x-www-form-urlencoded";
-            (req as HttpWebRequest).Accept = "application/json";
-            (req as HttpWebRequest).KeepAlive = false;
-            (req as HttpWebRequest).ServicePoint.Expect100Continue = false;
-            var data = "ie=utf-8&source=txt&query=" + text + "&t=" + _baiduParameterT + "&token=" + _baiduParameterToken + "&from=" + from + "&to=" + to;
-            log.AppendLine("Input to Baidu: " + data);
-            byte[] bytes = Encoding.UTF8.GetBytes(data);
-            req.ContentLength = bytes.Length;
-            var os = req.GetRequestStream();
-            os.Write(bytes, 0, bytes.Length);
-            os.Close();
-
-            try
-            {
-                using (var response = req.GetResponse() as HttpWebResponse)
-                {
-                    if (response == null)
-                    {
-                        return null;
-                    }
-                    var responseStream = response.GetResponseStream();
-                    if (responseStream == null)
-                    {
-                        if (retryLevel < maxNumberOfRetries)
-                        {
-                            retryLevel++;
-                            log.AppendLine("Retry: " + retryLevel);
-                            return BaiduTranslate(text, from, to, log, retryLevel);
-                        }
-                        return null;
-                    }
-
-                    using (var reader = new StreamReader(responseStream, Encoding.UTF8))
-                    {
-                        string s = reader.ReadToEnd();
-                        log.AppendLine("Result from Baidu: " + s);
-                        var idx = s.IndexOf("dst\":", StringComparison.Ordinal);
-                        if (idx > 0)
-                        {
-                            var sb = new StringBuilder();
-                            while (idx > 0)
-                            {
-                                s = s.Substring(idx + 6).TrimStart().TrimStart('"');
-                                idx = s.IndexOf('"');
-                                if (idx > 0)
-                                {
-                                    sb.AppendLine(s.Substring(0, idx) + Environment.NewLine);
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                                idx = s.IndexOf("dst\":", StringComparison.Ordinal);
-                            }
-                            s = sb.ToString().TrimEnd();
-                        }
-                        else
-                        {
-                            idx = s.IndexOf("cont\\\":", StringComparison.Ordinal);
-                            if (idx > 0)
-                            {
-                                s = s.Substring(idx + 7).TrimStart().TrimStart('{').TrimStart().TrimStart('\\').TrimStart().TrimStart('"');
-                                idx = s.IndexOfAny(new[] { '"', '，' });
-                                if (idx > 0)
-                                {
-                                    s = s.Substring(0, idx).TrimEnd('\\');
-                                }
-                            }
-                        }
-                        return s;
-                    }
-                }
-            }
-            catch (Exception exception)
-            {
-                log.AppendLine(exception.Message + ": " + exception.StackTrace);
-                if (retryLevel < maxNumberOfRetries)
-                {
-                    retryLevel++;
-                    log.AppendLine("Retry: " + retryLevel);
-                    return BaiduTranslate(text, from, to, log, retryLevel);
-                }
-            }
-            return null;
-        }
-
         private void AddToListView(Paragraph p, string before, string after)
         {
             var item = new ListViewItem(p.Number.ToString(CultureInfo.InvariantCulture)) { Tag = p };
@@ -448,6 +348,7 @@ namespace SubtitleEdit
 
         private void buttonTranslate_Click(object sender, EventArgs e)
         {
+            _host = comboBoxHost.Items[comboBoxHost.SelectedIndex].ToString();
             var index = comboBoxLanguagePair.SelectedIndex;
             if (index < 0)
                 return;

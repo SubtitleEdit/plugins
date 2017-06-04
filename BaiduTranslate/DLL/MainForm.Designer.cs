@@ -41,6 +41,7 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.buttonCancelTranslate = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.comboBoxHost = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // listView1
@@ -168,6 +169,18 @@
             this.progressBar1.TabIndex = 4;
             this.progressBar1.Visible = false;
             // 
+            // comboBoxHost
+            // 
+            this.comboBoxHost.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxHost.FormattingEnabled = true;
+            this.comboBoxHost.Items.AddRange(new object[] {
+            "translate.baidu.com/v2transapi",
+            "api.fanyi.baidu.com"});
+            this.comboBoxHost.Location = new System.Drawing.Point(155, 533);
+            this.comboBoxHost.Name = "comboBoxHost";
+            this.comboBoxHost.Size = new System.Drawing.Size(245, 21);
+            this.comboBoxHost.TabIndex = 9;
+            // 
             // MainForm
             // 
             this.AcceptButton = this.buttonOk;
@@ -175,6 +188,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(831, 557);
+            this.Controls.Add(this.comboBoxHost);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.buttonCancelTranslate);
             this.Controls.Add(this.textBox1);
@@ -212,5 +226,6 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button buttonCancelTranslate;
         private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.ComboBox comboBoxHost;
     }
 }
