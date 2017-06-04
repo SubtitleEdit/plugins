@@ -126,4 +126,11 @@
     <Date>2017-05-22</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/NameListManager.zip</Url>
   </Plugin>
+  <Plugin>
+    <Name>Baidu Translate</Name>
+    <Description>Translate with Baidu</Description>
+    <Version>0.3</Version>
+    <Date>2017-06-04</Date>
+    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/BaiduTranslate.zip</Url>
+  </Plugin>
 </Plugins>

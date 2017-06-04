@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace SubtitleEdit
 {
@@ -54,7 +55,7 @@ namespace SubtitleEdit
                 else if (e.KeyCode == Keys.F1)
                     textBox1.Visible = !textBox1.Visible;
             };
-            textBox1.Visible = false;            
+            textBox1.Visible = false;
             listView1.Columns[2].Width = -2;
             buttonCancelTranslate.Enabled = false;
             comboBoxLanguagePair.Items.Clear();
@@ -147,9 +148,9 @@ namespace SubtitleEdit
                 var after = string.Empty;
                 if (setText)
                 {
-                    var arg = new BackgroundWorkerParameter {P = p, Index = index, Log = new StringBuilder()};
+                    var arg = new BackgroundWorkerParameter { P = p, Index = index, Log = new StringBuilder() };
                     threadPool.First(bw => !bw.IsBusy).RunWorkerAsync(arg);
-                    while (threadPool.All(bw=>bw.IsBusy))
+                    while (threadPool.All(bw => bw.IsBusy))
                     {
                         Application.DoEvents();
                         System.Threading.Thread.Sleep(100);
@@ -165,7 +166,7 @@ namespace SubtitleEdit
                     return;
                 }
             }
-            while (threadPool.Any(bw=>bw.IsBusy))
+            while (threadPool.Any(bw => bw.IsBusy))
             {
                 Application.DoEvents();
                 System.Threading.Thread.Sleep(100);
@@ -191,7 +192,7 @@ namespace SubtitleEdit
 
         private void OnBwOnDoWork(object sender, DoWorkEventArgs args)
         {
-            var parameter = (BackgroundWorkerParameter) args.Argument;
+            var parameter = (BackgroundWorkerParameter)args.Argument;
             parameter.Result = Translate(parameter.P, parameter.Log);
             args.Result = parameter;
         }
@@ -223,6 +224,110 @@ namespace SubtitleEdit
         }
 
         private string BaiduTranslate(string text, string from, string to, StringBuilder log, int retryLevel = 0)
+        {
+            const int maxNumberOfRetries = 2;
+            string url = "http://translate.baidu.com/v2transapi";
+            var req = WebRequest.Create(url);
+            req.Method = "POST";
+            req.Headers.Add("cache-control", "no-cache");
+            req.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
+            (req as HttpWebRequest).Accept = "*/*";
+            (req as HttpWebRequest).KeepAlive = false;
+            (req as HttpWebRequest).ServicePoint.Expect100Continue = false;
+            var data = "from=" + from + "&to=" + to + "&query=" + text + "&simple_means_flag=3";
+            log.AppendLine("Input to Baidu: " + data);
+            byte[] bytes = Encoding.UTF8.GetBytes(data);
+            req.ContentLength = bytes.Length;
+            var os = req.GetRequestStream();
+            os.Write(bytes, 0, bytes.Length);
+            os.Close();
+
+            try
+            {
+                using (var response = req.GetResponse() as HttpWebResponse)
+                {
+                    if (response == null)
+                    {
+                        return null;
+                    }
+                    var responseStream = response.GetResponseStream();
+                    if (responseStream == null)
+                    {
+                        if (retryLevel < maxNumberOfRetries)
+                        {
+                            retryLevel++;
+                            log.AppendLine("Retry: " + retryLevel);
+                            return BaiduTranslate(text, from, to, log, retryLevel);
+                        }
+                        return null;
+                    }
+
+                    using (var reader = new StreamReader(responseStream, Encoding.UTF8))
+                    {
+                        string s = reader.ReadToEnd();
+                        log.AppendLine("Result from Baidu: " + s);
+                        var idx = s.IndexOf("dst\":", StringComparison.Ordinal);
+                        if (idx > 0)
+                        {
+                            var sb = new StringBuilder();
+                            while (idx > 0)
+                            {
+                                s = s.Substring(idx + 6).TrimStart().TrimStart('"');
+                                idx = s.IndexOf('"');
+                                if (idx > 0)
+                                {
+                                    sb.AppendLine(s.Substring(0, idx) + Environment.NewLine);
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                                idx = s.IndexOf("dst\":", StringComparison.Ordinal);
+                            }
+                            s = sb.ToString().TrimEnd();
+                        }
+                        else
+                        {
+                            idx = s.IndexOf("cont\\\":", StringComparison.Ordinal);
+                            if (idx > 0)
+                            {
+                                s = s.Substring(idx + 7).TrimStart().TrimStart('{').TrimStart().TrimStart('\\').TrimStart().TrimStart('"');
+                                idx = s.IndexOfAny(new[] { '"', '，' });
+                                if (idx > 0)
+                                {
+                                    s = s.Substring(0, idx).TrimEnd('\\');
+                                }
+                            }
+                        }
+                        log.AppendLine();
+                        s = DecodeEncodedNonAsciiCharacters(s);
+                        return s;
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                log.AppendLine(exception.Message + ": " + exception.StackTrace);
+                if (retryLevel < maxNumberOfRetries)
+                {
+                    retryLevel++;
+                    log.AppendLine("Retry: " + retryLevel);
+                    return BaiduTranslate(text, from, to, log, retryLevel);
+                }
+            }
+            log.AppendLine();
+            return null;
+        }
+
+        static string DecodeEncodedNonAsciiCharacters(string value)
+        {
+            return Regex.Replace(value,@"\\u(?<Value>[a-zA-Z0-9]{4})", m => 
+            {
+                return ((char)int.Parse(m.Groups["Value"].Value, NumberStyles.HexNumber)).ToString();
+            });
+        }
+
+        private string BaiduTranslateOld(string text, string from, string to, StringBuilder log, int retryLevel = 0)
         {
             const int maxNumberOfRetries = 2;
             string url = "http://translate.baidu.com/transcontent?monLang=en";
