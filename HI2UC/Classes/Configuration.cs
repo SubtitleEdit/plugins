@@ -8,5 +8,6 @@
         public HIStyle Style { get; set; }
         public bool MoodsToUppercase { get; set; }
         public bool NarratorToUppercase { get; set; }
+        public bool SingleLineNarrator { get; set; }
     }
 }

@@ -26,10 +26,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
             int index = noTagText.IndexOf(':');
 
             // Skip single line that ends with ':'.
-            if ((index < 0) || (index + 1 == noTagText.Length) || noTagText.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+            if (index < 0 || noTagText.StartsWith("http", StringComparison.OrdinalIgnoreCase))
             {
                 return text;
             }
+
+            // Lena:
+            // A ring?!
+            int newLineIdx = noTagText.IndexOf(Environment.NewLine, StringComparison.Ordinal);
+            if (!Config.SingleLineNarrator && index + 1 == newLineIdx)
+            {
+                return text;
+            }
+
             string[] lines = text.SplitToLines();
             for (int i = 0; i < lines.Length; i++)
             {
@@ -144,6 +153,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 return false;
             }
+
+            // Foobar[?!] Narrator: Hello (Note: not really sure if "." (dot) should be include since there are names
+            // that are prefixed with Mr. Ivandro Ismael)
+            if (noTagCapturedText.ContainsAny(new[] { '!', '?' }))
+            {
+                return false;
+            }
+
             if (noTagCapturedText.StartsWith("http", StringComparison.OrdinalIgnoreCase) ||
                 noTagCapturedText.EndsWith("improved by", StringComparison.OrdinalIgnoreCase) ||
                 noTagCapturedText.EndsWith("corrected by", StringComparison.OrdinalIgnoreCase) ||

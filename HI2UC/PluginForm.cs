@@ -17,7 +17,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private HashSet<string> _notAllowedFixes = new HashSet<string>();
         private readonly List<Paragraph> _deletedParagarphs = new List<Paragraph>();
         private static readonly StringBuilder SB = new StringBuilder();
-
         private readonly HearingImpaired _hearingImpaired;
 
         public PluginForm(Subtitle subtitle, string name, string description)
@@ -29,8 +28,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 MoodsToUppercase = true,
                 NarratorToUppercase = true,
-                Style = HIStyle.UpperCase
-
+                Style = HIStyle.UpperCase,
+                SingleLineNarrator = true
             });
             /*
             this.KeyDown += (s, e) =>
@@ -192,7 +191,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     beforeChanges = text;
                     text = _hearingImpaired.NarratorToUppercase(text);
-                    containsNarrator = beforeChanges != text;
+                    containsNarrator = !beforeChanges.Equals(text, StringComparison.Ordinal);
                 }
 
                 if (containsMood || containsNarrator)
@@ -293,7 +292,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             Paragraph p = null;
             if (e.Item == null || (p = e.Item.Tag as Paragraph) == null)
+            {
                 return;
+            }
             if (e.Item.Checked)
             {
                 _notAllowedFixes.Remove(p.Id);
@@ -307,6 +308,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void checkBoxMoods_CheckedChanged(object sender, EventArgs e)
         {
             _hearingImpaired.Config.MoodsToUppercase = checkBoxMoods.Checked;
+            GeneratePreview();
+        }
+
+        private void checkBoxSingleLineNarrator_CheckedChanged(object sender, EventArgs e)
+        {
+            _hearingImpaired.Config.SingleLineNarrator = checkBoxSingleLineNarrator.Checked;
             GeneratePreview();
         }
     }

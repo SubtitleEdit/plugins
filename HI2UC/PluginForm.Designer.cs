@@ -53,6 +53,7 @@
             this.buttonApply = new System.Windows.Forms.Button();
             this.checkBoxRemoveSpaces = new System.Windows.Forms.CheckBox();
             this.checkBoxMoods = new System.Windows.Forms.CheckBox();
+            this.checkBoxSingleLineNarrator = new System.Windows.Forms.CheckBox();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -196,9 +197,9 @@
             this.checkBoxNames.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxNames.Location = new System.Drawing.Point(15, 10);
             this.checkBoxNames.Name = "checkBoxNames";
-            this.checkBoxNames.Size = new System.Drawing.Size(146, 17);
+            this.checkBoxNames.Size = new System.Drawing.Size(206, 17);
             this.checkBoxNames.TabIndex = 3;
-            this.checkBoxNames.Text = "Narrator. John: => JOHN:";
+            this.checkBoxNames.Text = "Narrator. John: Hello! => JOHN: Hello!";
             this.toolTip1.SetToolTip(this.checkBoxNames, "This will change the Narrator Text\r\nEx: Harry: Hello! -> HARRY: Hello!");
             this.checkBoxNames.UseVisualStyleBackColor = true;
             this.checkBoxNames.CheckedChanged += new System.EventHandler(this.checkBoxNarrator_CheckedChanged);
@@ -288,13 +289,26 @@
             this.checkBoxMoods.AutoSize = true;
             this.checkBoxMoods.Checked = true;
             this.checkBoxMoods.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxMoods.Location = new System.Drawing.Point(168, 10);
+            this.checkBoxMoods.Location = new System.Drawing.Point(260, 10);
             this.checkBoxMoods.Name = "checkBoxMoods";
             this.checkBoxMoods.Size = new System.Drawing.Size(189, 17);
             this.checkBoxMoods.TabIndex = 10;
             this.checkBoxMoods.Text = "Moods. e.g: (foobar) => (FOOBAR)";
             this.checkBoxMoods.UseVisualStyleBackColor = true;
             this.checkBoxMoods.CheckedChanged += new System.EventHandler(this.checkBoxMoods_CheckedChanged);
+            // 
+            // checkBoxSingleLineNarrator
+            // 
+            this.checkBoxSingleLineNarrator.AutoSize = true;
+            this.checkBoxSingleLineNarrator.Checked = true;
+            this.checkBoxSingleLineNarrator.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxSingleLineNarrator.Location = new System.Drawing.Point(260, 33);
+            this.checkBoxSingleLineNarrator.Name = "checkBoxSingleLineNarrator";
+            this.checkBoxSingleLineNarrator.Size = new System.Drawing.Size(226, 17);
+            this.checkBoxSingleLineNarrator.TabIndex = 11;
+            this.checkBoxSingleLineNarrator.Text = "Lena:<br/>A ring?! => LENA:<br/>A ring?!";
+            this.checkBoxSingleLineNarrator.UseVisualStyleBackColor = true;
+            this.checkBoxSingleLineNarrator.CheckedChanged += new System.EventHandler(this.checkBoxSingleLineNarrator_CheckedChanged);
             // 
             // PluginForm
             // 
@@ -303,6 +317,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btn_Cancel;
             this.ClientSize = new System.Drawing.Size(918, 562);
+            this.Controls.Add(this.checkBoxSingleLineNarrator);
             this.Controls.Add(this.checkBoxMoods);
             this.Controls.Add(this.checkBoxRemoveSpaces);
             this.Controls.Add(this.buttonApply);
@@ -355,5 +370,6 @@
         private System.Windows.Forms.Button buttonApply;
         private System.Windows.Forms.CheckBox checkBoxRemoveSpaces;
         private System.Windows.Forms.CheckBox checkBoxMoods;
+        private System.Windows.Forms.CheckBox checkBoxSingleLineNarrator;
     }
 }
