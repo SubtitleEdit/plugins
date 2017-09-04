@@ -17,7 +17,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "Hearing Impaired to Uppercase";
 
-        decimal IPlugin.Version => 3.4M; //Gets or sets the major, minor, build, and revision numbers of the assembly
+        decimal IPlugin.Version => 3.5M; //Gets or sets the major, minor, build, and revision numbers of the assembly
 
         #endregion
 

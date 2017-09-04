@@ -10,13 +10,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
     internal partial class PluginForm : Form
     {
         public string FixedSubtitle { get; private set; }
-        private int _totalChanged;
         private readonly Subtitle _subtitle;
 
         private Dictionary<string, string> _fixedTexts = new Dictionary<string, string>();
-        private HashSet<string> _notAllowedFixes = new HashSet<string>();
-        private readonly List<Paragraph> _deletedParagarphs = new List<Paragraph>();
-        private static readonly StringBuilder SB = new StringBuilder();
         private readonly HearingImpaired _hearingImpaired;
 
         public PluginForm(Subtitle subtitle, string name, string description)
@@ -62,27 +58,38 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 Cursor = Cursors.WaitCursor;
                 listViewFixes.Resize -= listViewFixes_Resize;
-                ApplyChanges(false);
+                ApplyChanges();
                 Cursor = Cursors.Default;
             }
             FixedSubtitle = _subtitle.ToText();
             DialogResult = DialogResult.OK;
         }
 
-        private void ApplyChanges(bool generatePreview)
+        private void ApplyChanges()
         {
             if (_subtitle == null || _subtitle.Paragraphs == null || _subtitle.Paragraphs.Count == 0)
+            {
                 return;
-            for (int i = _subtitle.Paragraphs.Count - 1; i >= 0; i--)
+            }
+
+            listViewFixes.BeginUpdate();
+            int count = listViewFixes.Items.Count;
+            for (int i = count - 1; i >= 0; i--)
             {
-                var p = _subtitle.Paragraphs[i];
-                if (!_notAllowedFixes.Contains(p.Id) && _fixedTexts.ContainsKey(p.Id))
+                ListViewItem item = listViewFixes.Items[i];
+                if (!item.Checked)
+                {
+                    continue;
+                }
+                var p = GetParagraph(item);
+                if (_fixedTexts.ContainsKey(p.Id))
+                {
                     p.Text = _fixedTexts[p.Id];
+                    _fixedTexts.Remove(p.Id);
+                    listViewFixes.Items.Remove(item);
+                }
             }
-            if (generatePreview)
-            {
-                GeneratePreview();
-            }
+            listViewFixes.EndUpdate();
         }
 
         private void checkBoxNarrator_CheckedChanged(object sender, EventArgs e)
@@ -155,14 +162,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 return;
             }
-            _totalChanged = 0;
+
             listViewFixes.BeginUpdate();
             listViewFixes.Items.Clear();
 
             _fixedTexts = new Dictionary<string, string>();
-            _notAllowedFixes = new HashSet<string>();
 
-            listViewFixes.ItemChecked -= listViewFixes_ItemChecked;
             foreach (Paragraph p in _subtitle.Paragraphs)
             {
                 var text = p.Text;
@@ -200,14 +205,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     string oldText = Utilities.RemoveHtmlTags(p.Text, true);
                     text = Utilities.RemoveHtmlTags(text, true);
                     AddFixToListView(p, oldText, text, containsMood, containsNarrator);
-                    _totalChanged++;
                 }
 
             }
 
-            listViewFixes.ItemChecked += listViewFixes_ItemChecked;
-            groupBox1.ForeColor = _totalChanged <= 0 ? Color.Red : Color.Green;
-            groupBox1.Text = string.Format("Total Found: {0}", _totalChanged);
+            int totalConvertParagraphs = _fixedTexts.Count;
+
+            groupBox1.ForeColor = totalConvertParagraphs <= 0 ? Color.Red : Color.Green;
+            groupBox1.Text = string.Format("Total Found: {0}", totalConvertParagraphs);
             /*this.listViewFixes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             this.listViewFixes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);*/
             //Application.DoEvents();
@@ -262,8 +267,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             Cursor = Cursors.WaitCursor;
             listViewFixes.Resize -= listViewFixes_Resize;
-            GeneratePreview();
-            ApplyChanges(true);
+            ApplyChanges();
             listViewFixes.Resize += listViewFixes_Resize;
             Cursor = Cursors.Default;
         }
@@ -288,23 +292,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.Columns[4].Width = newWidth;
         }
 
-        private void listViewFixes_ItemChecked(object sender, ItemCheckedEventArgs e)
-        {
-            Paragraph p = null;
-            if (e.Item == null || (p = e.Item.Tag as Paragraph) == null)
-            {
-                return;
-            }
-            if (e.Item.Checked)
-            {
-                _notAllowedFixes.Remove(p.Id);
-            }
-            else
-            {
-                _notAllowedFixes.Add(p.Id);
-            }
-        }
-
         private void checkBoxMoods_CheckedChanged(object sender, EventArgs e)
         {
             _hearingImpaired.Config.MoodsToUppercase = checkBoxMoods.Checked;
@@ -316,5 +303,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _hearingImpaired.Config.SingleLineNarrator = checkBoxSingleLineNarrator.Checked;
             GeneratePreview();
         }
+
+        private static Paragraph GetParagraph(ListViewItem lvi) => lvi.Tag as Paragraph;
     }
 }
