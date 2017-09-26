@@ -36,6 +36,13 @@
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/SeDropBoxSave13.zip</Url>
   </Plugin>
   <Plugin>
+    <Name>DeepL Translate</Name>
+    <Description>Translate with DeepL.com</Description>
+    <Version>0.2</Version>
+    <Date>2016-09-26</Date>
+    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/DeeplTranslate.zip</Url>
+  </Plugin>
+  <Plugin>
     <Name>Haxor</Name>
     <Description>Translates subtitle to Haxor</Description>
     <Version>1.5</Version>
