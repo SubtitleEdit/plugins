@@ -313,8 +313,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return true;
         }
 
-        private static string _lastNoBreakAfterListLanguage;      
-
         public static string AutoBreakLineMoreThanTwoLines(string text, int maximumLineLength, string language)
         {
             if (text == null || text.Length < 3)

@@ -136,71 +136,92 @@ namespace SubtitleEdit
           //  const int max = 90; // DeepL uses max 90 chars at a time
             if (_subtitle == null)
                 return;
-            _abort = false;
-            int numberOfThreads = 4;
-            var threadPool = new List<BackgroundWorker>();
-            for (int i = 0; i < numberOfThreads; i++)
+
+            try
             {
-                var bw = new BackgroundWorker();
-                bw.DoWork += OnBwOnDoWork;
-                bw.RunWorkerCompleted += OnBwRunWorkerCompleted;
-                threadPool.Add(bw);
-            }
-            var textToTranslate = new StringBuilder();
-            var indexesToTranslate = new List<int>();
-            for (int index = 0; index < _subtitle.Paragraphs.Count; index++)
-            {
-                Paragraph p = _subtitle.Paragraphs[index];
-                string text = SetFormattingTypeAndSplitting(index, p.Text, (comboBoxLanguageFrom.SelectedItem as TranslationLanguage).Code.StartsWith("ZH"));
-                var before = text;
-                var after = string.Empty;
-                if (setText)
+                _abort = false;
+                int numberOfThreads = 4;
+                var threadPool = new List<BackgroundWorker>();
+                for (int i = 0; i < numberOfThreads; i++)
                 {
-                    //if (text.Length + textToTranslate.Length > max) - max is too low for merging texts to really have any effect
+                    var bw = new BackgroundWorker();
+                    bw.DoWork += OnBwOnDoWork;
+                    bw.RunWorkerCompleted += OnBwRunWorkerCompleted;
+                    threadPool.Add(bw);
+                }
+                var textToTranslate = new StringBuilder();
+                var indexesToTranslate = new List<int>();
+                for (int index = 0; index < _subtitle.Paragraphs.Count; index++)
+                {
+                    Paragraph p = _subtitle.Paragraphs[index];
+                    string text = SetFormattingTypeAndSplitting(index, p.Text, (comboBoxLanguageFrom.SelectedItem as TranslationLanguage).Code.StartsWith("ZH"));
+                    var before = text;
+                    var after = string.Empty;
+                    if (setText)
                     {
-                        var arg = new BackgroundWorkerParameter { Text = textToTranslate.ToString().TrimEnd().TrimEnd('*').TrimEnd(), Indexes = indexesToTranslate, Log = new StringBuilder() };
-                        textToTranslate = new StringBuilder();
-                        indexesToTranslate = new List<int>();
-                        threadPool.First(bw => !bw.IsBusy).RunWorkerAsync(arg);
-                        while (threadPool.All(bw => bw.IsBusy))
+                        //if (text.Length + textToTranslate.Length > max) - max is too low for merging texts to really have any effect
                         {
-                            Application.DoEvents();
-                            System.Threading.Thread.Sleep(100);
+                            var arg = new BackgroundWorkerParameter { Text = textToTranslate.ToString().TrimEnd().TrimEnd('*').TrimEnd(), Indexes = indexesToTranslate, Log = new StringBuilder() };
+                            textToTranslate = new StringBuilder();
+                            indexesToTranslate = new List<int>();
+                            threadPool.First(bw => !bw.IsBusy).RunWorkerAsync(arg);
+                            while (threadPool.All(bw => bw.IsBusy))
+                            {
+                                Application.DoEvents();
+                                System.Threading.Thread.Sleep(100);
+                            }
                         }
+                        textToTranslate.AppendLine(text);
+                        textToTranslate.AppendLine(ParagraphSplitter);
+                        indexesToTranslate.Add(index);
                     }
-                    textToTranslate.AppendLine(text);
-                    textToTranslate.AppendLine(ParagraphSplitter);
-                    indexesToTranslate.Add(index);
+                    else
+                    {
+                        AddToListView(p, before, after);
+                    }
+                    if (_abort)
+                    {
+                        _abort = false;
+                        return;
+                    }
                 }
-                else
+                if (textToTranslate.Length > 0)
                 {
-                    AddToListView(p, before, after);
+                    while (threadPool.All(bw => bw.IsBusy))
+                    {
+                        Application.DoEvents();
+                        System.Threading.Thread.Sleep(100);
+                    }
+                    var arg = new BackgroundWorkerParameter { Text = textToTranslate.ToString().TrimEnd().TrimEnd('*').TrimEnd(), Indexes = indexesToTranslate, Log = new StringBuilder() };
+                    threadPool.First(bw => !bw.IsBusy).RunWorkerAsync(arg);
                 }
-                if (_abort)
+                while (threadPool.Any(bw => bw.IsBusy))
                 {
-                    _abort = false;
-                    return;
+                    Application.DoEvents();
+                    System.Threading.Thread.Sleep(100);
+                }
+                try
+                {
+                    foreach (var backgroundWorker in threadPool)
+                    {
+                        backgroundWorker.Dispose();
+                    }
+                }
+                catch
+                {
                 }
             }
-            if (textToTranslate.Length > 0)
+            catch (Exception exception)
             {
-                var arg = new BackgroundWorkerParameter { Text = textToTranslate.ToString().TrimEnd().TrimEnd('*').TrimEnd(), Indexes = indexesToTranslate, Log = new StringBuilder() };
-                threadPool.First(bw => !bw.IsBusy).RunWorkerAsync(arg);
-            }
-            while (threadPool.Any(bw => bw.IsBusy))
-            {
-                Application.DoEvents();
-                System.Threading.Thread.Sleep(100);
-            }
-            foreach (var backgroundWorker in threadPool)
-            {
-                backgroundWorker.Dispose();
+                MessageBox.Show(exception.Message + Environment.NewLine + exception.StackTrace);
             }
         }
 
         private void OnBwRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs runWorkerCompletedEventArgs)
         {
-            progressBar1.Value++;
+            if (progressBar1.Value < progressBar1.Maximum)
+                progressBar1.Value++;
+
             var parameter = (BackgroundWorkerParameter)runWorkerCompletedEventArgs.Result;
             var results = GetTextResults(parameter.Result, parameter.Indexes.Count);
 
