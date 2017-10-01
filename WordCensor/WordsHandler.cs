@@ -9,11 +9,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
     class WordsHandler
     {
         private static readonly Random _random = new Random();
-        private static readonly char[] _censorChars = { '@', '#', '!', '?', '$', '%', '&' };
-        private IList<string> _wordList;
+        private static readonly char[] _grawlixChars = { '@', '#', '!', '?', '$', '%', '&' };
         private readonly WordsHandlerConfigs _configs;
-        // private static readonly Regex _regexWords = new Regex("\\b\\w+\\b", RegexOptions.Compiled);
         private static readonly Regex _regexNonWord = new Regex("\\W", RegexOptions.Compiled);
+
         public WordsHandler(WordsHandlerConfigs configs)
         {
             _configs = configs;
@@ -39,9 +38,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     if (allOkay)
                     {
                         string procWord = ProcessWord(word);
+                        if (_configs.ColorRed)
+                        {
+                            procWord = WordsHelper.ColorWordRed(procWord);
+                        }
+                        // take out old word
                         text = text.Remove(idx, word.Length);
+                        // insert new word/colored word.
                         text = text.Insert(idx, procWord);
                     }
+                    // keep looking for more words in same text.
                     idx = text.IndexOf(word, idx + word.Length, StringComparison.OrdinalIgnoreCase);
                 }
             }
@@ -59,11 +65,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var sb = new StringBuilder(len);
             foreach (char ch in charsToCensor)
             {
-                char symbol = _censorChars[_random.Next(0, _censorChars.Length)];
-                sb.Append(symbol);
+                char grawlix = _grawlixChars[_random.Next(0, _grawlixChars.Length)];
+                sb.Append(grawlix);
             }
-            string censoredWord = sb + curseWord.Substring(len);
-            return censoredWord;
+            // grawlixed word
+            return sb + curseWord.Substring(len);
         }
     }
 }

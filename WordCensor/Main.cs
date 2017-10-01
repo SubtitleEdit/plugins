@@ -34,7 +34,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void ReloadConfiguration()
         {
-
+            _configs.ColorRed = checkBoxColor.Checked;
         }
 
         public string FixedSubtitle { get; private set; }

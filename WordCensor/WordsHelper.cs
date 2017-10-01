@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 
@@ -44,6 +45,8 @@ fellate
 fellatio
 felching
 fuck
+fucking
+fucked
 f u c k
 fudgepacker
 fudge packer
@@ -94,5 +97,13 @@ wtf";
             // fu**
             // d%ick
         }
+
+        public static string ColorWordRed(string word)
+        {
+            Color c = Color.Red;
+            string colorString = string.Format("#{0:x2}{1:x2}{2:x2}", c.R, c.G, c.B);
+            return $"<font color=\"{colorString}\">{word}</font>";
+        }
+
     }
 }
