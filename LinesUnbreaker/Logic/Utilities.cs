@@ -69,5 +69,28 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static string RemoveNullChars(string inp) => inp.Replace('\0', ' ');
 
+        public static string UnbreakLine(string text)
+        {
+            var lines = text.SplitToLines();
+            if (lines.Length == 1)
+                return text;
+
+            var singleLine = string.Join(" ", lines);
+            while (singleLine.Contains("  "))
+                singleLine = singleLine.Replace("  ", " ");
+
+            if (singleLine.Contains("</")) // Fix tag
+            {
+                singleLine = singleLine.Replace("</i> <i>", " ");
+                singleLine = singleLine.Replace("</i><i>", " ");
+
+                singleLine = singleLine.Replace("</b> <b>", " ");
+                singleLine = singleLine.Replace("</b><b>", " ");
+
+                singleLine = singleLine.Replace("</u> <u>", " ");
+                singleLine = singleLine.Replace("</u><u>", " ");
+            }
+            return singleLine;
+        }
     }
 }

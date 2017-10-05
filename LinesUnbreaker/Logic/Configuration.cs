@@ -29,7 +29,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             LoadConfigurations();
         }
 
-        private string GetSettingsFileName()
+        private static string GetSettingsFileName()
         {
             var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
             if (path.StartsWith(@"file:\", StringComparison.Ordinal))
@@ -42,30 +42,26 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void LoadConfigurations()
         {
-            var path = GetSettingsFileName();
-            if (!File.Exists(path))
-            {
-                return;
-            }
             try
             {
-                int.TryParse(_xmlSetting.Element("Shorterthan").Value, out int val);
-                if (val > 0)
-                {
-                    MaxLineLength = val;
-                }
-                else
-                {
-                    MaxLineLength = 35;
-                }
-
                 // load
-                if (File.Exists(path))
+                if (File.Exists(_configFile))
                 {
-                    _xmlSetting = XElement.Load(path);
-                    SkipDialogs = bool.Parse(_xmlSetting.Element("SkipDialog").Value);
-                    SkipNarrator = bool.Parse(_xmlSetting.Element("SkipNarrator").Value);
-                    SkipMoods = bool.Parse(_xmlSetting.Element("SkipMoods").Value);
+                    _xmlSetting = XElement.Load(_configFile);
+
+                    SkipDialogs = Convert.ToBoolean(_xmlSetting.Element("SkipDialog").Value);
+                    SkipNarrator = Convert.ToBoolean(_xmlSetting.Element("SkipNarrator").Value);
+                    SkipMoods = Convert.ToBoolean(_xmlSetting.Element("SkipMoods").Value);
+
+                    int.TryParse(_xmlSetting.Element("Shorterthan").Value, out int val);
+                    if (val > 0)
+                    {
+                        MaxLineLength = val;
+                    }
+                    else
+                    {
+                        MaxLineLength = 35;
+                    }
                 }
                 else
                 {
@@ -76,22 +72,22 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         new XElement("SkipNarrator", true),
                         new XElement("SkipMoods", false)
                         );
-                    try
-                    {
-                        _xmlSetting.Save(path);
-                    }
-                    catch
-                    {
-                    }
+                    _xmlSetting.Save(_configFile);
+
+                    LoadDefaultOptions();
                 }
             }
             catch
             {
-                // Default configuration.
-                SkipDialogs = true;
-                SkipNarrator = true;
-                SkipMoods = false;
+                LoadDefaultOptions();
             }
+        }
+
+        public void LoadDefaultOptions()
+        {
+            SkipDialogs = true;
+            SkipNarrator = true;
+            SkipMoods = false;
         }
 
         public void SaveConfiguration()
@@ -111,7 +107,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             catch
             {
-                throw;
+                // ignore
             }
         }
 

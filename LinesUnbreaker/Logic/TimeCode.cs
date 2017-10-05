@@ -8,11 +8,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private double _totalMilliseconds = 0d;
 
-        public TimeCode()
-        {
-        }
-
-        public TimeCode(double totalMilliseconds)
+        public TimeCode(double totalMilliseconds = 0)
         {
             _totalMilliseconds = totalMilliseconds;
         }

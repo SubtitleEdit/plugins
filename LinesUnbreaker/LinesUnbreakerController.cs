@@ -62,22 +62,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return s;
             }
 
-            s = s.Replace(Environment.NewLine, " ");
-            if (s.Contains("</"))
-            {
-                s = s.Replace("</i> <i>", " ");
-                s = s.Replace("</i><i>", " ");
-
-                s = s.Replace("</b> <b>", " ");
-                s = s.Replace("</b><b>", " ");
-
-                s = s.Replace("</u> <u>", " ");
-                s = s.Replace("</u><u>", " ");
-            }
-
-            while (s.Contains("  "))
-                s = s.Replace("  ", " ");
-            return s;
+            return Utilities.UnbreakLine(s);
         }
 
     }

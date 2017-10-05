@@ -24,12 +24,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private readonly LinesUnbreakerController _lineUnbreakerController;
 
         private readonly Configuration _configs;
+        private bool _loading;
 
         public PluginForm(Subtitle subtitle)
         {
             InitializeComponent();
             _subtitle = subtitle;
-
 
             // Save user-configuartions on form-close.
             FormClosing += delegate
@@ -39,6 +39,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _configs = new Configuration();
             _lineUnbreakerController = new LinesUnbreakerController(subtitle.Paragraphs, _configs);
             _lineUnbreakerController.TextUnbreaked += _lineUnbreakerController_TextUnbreaked;
+
+            _loading = true;
             // Load user configurations.
             checkBoxMoods.Checked = _configs.SkipMoods;
             checkBoxSkipDialog.Checked = _configs.SkipDialogs;
@@ -47,8 +49,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 _configs.MaxLineLength = Convert.ToInt32(numericUpDown1.Minimum);
             }
-
-
+            _loading = false;
         }
 
         private void _lineUnbreakerController_TextUnbreaked(object sender, ParagraphEventArgs e)
@@ -132,6 +133,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void ConfigurationChanged(object sender, EventArgs e)
         {
+            // TODO: Unhookah
+            if (_loading)
+            {
+                return;
+            }
+
             GeneratePreview();
         }
     }
