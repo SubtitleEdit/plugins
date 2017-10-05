@@ -133,7 +133,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void ConfigurationChanged(object sender, EventArgs e)
         {
-            // TODO: Unhookah
+            // TODO: fix this!
             if (_loading)
             {
                 return;
