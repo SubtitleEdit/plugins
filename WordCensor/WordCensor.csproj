@@ -41,14 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IPlugin.cs" />
     <Compile Include="Logic\Configuration.cs" />
-    <Compile Include="Logic\Paragraph.cs" />
-    <Compile Include="Logic\StringExtensions.cs" />
-    <Compile Include="Logic\SubRip.cs" />
-    <Compile Include="Logic\Subtitle.cs" />
-    <Compile Include="Logic\TimeCode.cs" />
-    <Compile Include="Logic\Utilities.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -66,5 +59,6 @@
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

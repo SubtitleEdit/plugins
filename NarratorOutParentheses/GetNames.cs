@@ -33,7 +33,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (idx < 0)
                     continue;
 
-                var noTagLines = Utilities.RemoveHtmlTags(text).Replace(Environment.NewLine, "\n").Split('\n');
+                var noTagLines = HtmlUtils.RemoveTags(text).Replace(Environment.NewLine, "\n").Split('\n');
 
                 // single line (Sighs)
                 if (noTagLines.Length == 1)
@@ -115,7 +115,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             // todo: check if name is in ignore list if: true return
             var noTagName = name.Trim('(', ')');
-            if (!listBox1.Items.Contains(name) && !Utilities.ListNames.Contains(noTagName.ToUpperInvariant()))
+            if (!listBox1.Items.Contains(name) && !NameList.ListNames.Contains(noTagName.ToUpperInvariant()))
             {
                 this.listBox1.Items.Add(name);
                 _list.Add(text);
@@ -151,7 +151,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 var name = listBox1.Items[idx].ToString();
                 name = name.Trim('(', ')');
-                Utilities.AddNameToList(name);
+                NameList.AddNameToList(name);
                 listBox1.Items.RemoveAt(idx);
                 _list.RemoveAt(idx);
                 if (idx < listBox1.Items.Count)
@@ -170,7 +170,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return;
 
             // if file doesn't exist create a new one, check iisn't already in list
-            var path = System.IO.Path.Combine(Utilities.GetDicTionaryFolder(), "moodsIgnore.xml");
+            var path = System.IO.Path.Combine(NameList.GetDicTionaryFolder(), "moodsIgnore.xml");
             XDocument xdoc = null;
             if (System.IO.File.Exists(path))
             {
@@ -181,7 +181,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 var listIgnore = new List<string>();
                 foreach (var item in listBox1.Items)
                 {
-                    if (!Utilities.ListNames.Contains(item.ToString().ToUpperInvariant()))
+                    if (!NameList.ListNames.Contains(item.ToString().ToUpperInvariant()))
                         listIgnore.Add(item.ToString());
                 }
 

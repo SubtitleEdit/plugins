@@ -1,17 +1,19 @@
-﻿using System;
+﻿using Nikse.SubtitleEdit.PluginLogic.Models;
+using System;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class MainForm : Form
     {
+        private readonly Configs _configs;
         public string FixedSubtitle { get; private set; }
 
         private Subtitle _subtitle;
         private string _fileName;
         private bool _allowFixes;
 
-        public MainForm()
+        public MainForm(Subtitle sub, Configs configs, string fileName, string description)
         {
             // TODO: Complete member initialization
             InitializeComponent();
@@ -25,17 +27,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 columnHeaderActual.Width = width;
                 columnHeaderAfter.Width = width;
             };
-        }
-
-        public MainForm(Subtitle sub, string fileName, string description)
-            : this()
-        {
             _subtitle = sub;
             _fileName = fileName;
+            _configs = configs;
             GeneratePreview();
         }
 
         private static readonly char[] ExpectedChars = { '(', '[' };
+
         public void GeneratePreview()
         {
             listViewFixes.BeginUpdate();
@@ -56,7 +55,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         break;
                     char tagOpen = text[idx];
                     var mood = text.Substring(idx, endIdx - idx + 1).Trim(tagOpen, ' ', tagClose);
-                    if (Utilities.IsInListName(mood))
+                    if (NameList.IsInListName(mood))
                     {
                         // Todo: if name contains <i>: note that there may be italic tag at begining
                         text = text.Remove(idx, endIdx - idx + 1).TrimStart(':', ' ');
@@ -88,10 +87,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private const string EndLineChars = ".?)]!";
         private string AddHyphenOnBothLine(string text)
         {
-            if (!text.Contains(Environment.NewLine) || Utilities.CountTagInText(text, ':') < 1)
+            if (!text.Contains(Environment.NewLine) || StringUtils.CountTagInText(text, ':') < 1)
                 return text;
 
-            var noTagText = Utilities.RemoveHtmlTags(text);
+            var noTagText = HtmlUtils.RemoveTags(text);
             bool addHyphen = false;
             var noTagLines = noTagText.SplitToLines();
             for (int i = 0; i < noTagLines.Length; i++)
@@ -101,7 +100,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 var idx = line.IndexOf(':');
                 // (John): Day's getting on.
                 // We got work to do.
-                addHyphen = ((idx >= 0 && !Utilities.IsBetweenNumbers(line, idx)) && (preLine == null || EndLineChars.IndexOf(preLine[preLine.Length - 1]) >= 0)) ? true : false;
+                addHyphen = ((idx >= 0 && !StringUtils.IsBetweenNumbers(line, idx)) && (preLine == null || EndLineChars.IndexOf(preLine[preLine.Length - 1]) >= 0)) ? true : false;
             }
             /*
             foreach (var noTagLine in noTagText.Replace("\r\n", "\n").Split('\n'))
@@ -137,12 +136,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonToNarrator_Click(object sender, EventArgs e)
         {
-            var len = Utilities.ListNames.Count;
+            var len = NameList.ListNames.Count;
             var name = textBoxName.Text.Trim();
             if (name.Length == 0)
                 return;
-            Utilities.AddNameToList(name);
-            if (len != Utilities.ListNames.Count)
+            NameList.AddNameToList(name);
+            if (len != NameList.ListNames.Count)
             {
                 listViewFixes.BeginUpdate();
                 listViewFixes.Items.Clear();
@@ -156,8 +155,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             var item = new ListViewItem() { Checked = true, UseItemStyleForSubItems = true, Tag = p };
             item.SubItems.Add(p.Number.ToString());
-            item.SubItems.Add(before.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
-            item.SubItems.Add(after.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
+            item.SubItems.Add(before.Replace(Environment.NewLine, _configs.UILineBreak));
+            item.SubItems.Add(after.Replace(Environment.NewLine, _configs.UILineBreak));
             listViewFixes.Items.Add(item);
         }
 

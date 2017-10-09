@@ -46,21 +46,14 @@
     <Compile Include="GetNames.Designer.cs">
       <DependentUpon>GetNames.cs</DependentUpon>
     </Compile>
-    <Compile Include="Logic\Configuration.cs" />
-    <Compile Include="Logic\Paragraph.cs" />
-    <Compile Include="Logic\SubRip.cs" />
-    <Compile Include="Logic\Subtitle.cs" />
-    <Compile Include="Logic\SubtitleFormat.cs" />
-    <Compile Include="Logic\TimeCode.cs" />
-    <Compile Include="Logic\Utilities.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="NameList.cs" />
     <Compile Include="Plugin.cs" />
-    <Compile Include="IPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -71,6 +64,7 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

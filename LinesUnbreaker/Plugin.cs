@@ -29,15 +29,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var srt = new SubRip();
             var sub = new Subtitle(srt);
             srt.LoadSubtitle(sub, list, subtitleFileName);
-            if (srt.ErrorCount > 0)
-            {
-                MessageBox.Show(srt.ErrorCount + " Errors found while parsing .srt",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
             using (var form = new PluginForm(sub))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
+                {
                     return form.FixedSubtitle;
+                }
             }
             return string.Empty;
         }
