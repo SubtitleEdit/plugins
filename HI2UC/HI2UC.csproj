@@ -56,9 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\HearingImpaired.cs" />
-    <Compile Include="Classes\StringExtensions.cs" />
     <Compile Include="Enums\HIStyle.cs" />
-    <Compile Include="Interfaces\ITextConverter.cs" />
     <Compile Include="Classes\Configuration.cs" />
     <Compile Include="PluginForm.cs">
       <SubType>Form</SubType>
@@ -66,20 +64,13 @@
     <Compile Include="PluginForm.Designer.cs">
       <DependentUpon>PluginForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interfaces\IPlugin.cs" />
-    <Compile Include="Classes\Paragraph.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Classes\SubRip.cs" />
-    <Compile Include="Classes\Subtitle.cs" />
-    <Compile Include="Classes\TimeCode.cs" />
-    <Compile Include="Classes\Utilities.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Classes\StripableText.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="PluginForm.resx">
@@ -93,6 +84,7 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

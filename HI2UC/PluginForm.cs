@@ -82,10 +82,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     continue;
                 }
                 var p = GetParagraph(item);
-                if (_fixedTexts.ContainsKey(p.Id))
+                if (_fixedTexts.ContainsKey(p.ID))
                 {
-                    p.Text = _fixedTexts[p.Id];
-                    _fixedTexts.Remove(p.Id);
+                    p.Text = _fixedTexts[p.ID];
+                    _fixedTexts.Remove(p.ID);
                     listViewFixes.Items.Remove(item);
                 }
             }
@@ -201,9 +201,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                 if (containsMood || containsNarrator)
                 {
-                    _fixedTexts.Add(p.Id, text);
-                    string oldText = Utilities.RemoveHtmlTags(p.Text, true);
-                    text = Utilities.RemoveHtmlTags(text, true);
+                    _fixedTexts.Add(p.ID, text);
+                    string oldText = StringUtils.RemoveHtmlTags(p.Text, true);
+                    text = StringUtils.RemoveHtmlTags(text, true);
                     AddFixToListView(p, oldText, text, containsMood, containsNarrator);
                 }
 

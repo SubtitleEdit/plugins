@@ -11,11 +11,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public bool IsMaxTime => Math.Abs(_totalMilliseconds - MaxTime.TotalMilliseconds) < 0.01;
 
-        public TimeCode(TimeSpan timeSpan)
-        {
-            _totalMilliseconds = timeSpan.TotalMilliseconds;
-        }
-
         public TimeCode(double totalMilliseconds = 0.0D)
         {
             _totalMilliseconds = totalMilliseconds;
@@ -101,29 +96,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 _totalMilliseconds = value.TotalMilliseconds;
             }
-        }
-
-        public void AddTime(int hour, int minutes, int seconds, int milliseconds)
-        {
-            Hours += hour;
-            Minutes += minutes;
-            Seconds += seconds;
-            Milliseconds += milliseconds;
-        }
-
-        public void AddTime(long milliseconds)
-        {
-            _totalMilliseconds += milliseconds;
-        }
-
-        public void AddTime(TimeSpan timeSpan)
-        {
-            _totalMilliseconds += timeSpan.TotalMilliseconds;
-        }
-
-        public void AddTime(double milliseconds)
-        {
-            _totalMilliseconds += milliseconds;
         }
 
         public override string ToString()

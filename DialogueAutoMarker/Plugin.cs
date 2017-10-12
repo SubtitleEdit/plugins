@@ -52,8 +52,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             foreach (string line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
                 list.Add(line);
 
-            Subtitle sub = new Subtitle();
-            SubRip srt = new SubRip();
+            var srt = new SubRip();
+            var sub = new Subtitle(srt);
             srt.LoadSubtitle(sub, list, subtitleFileName);
             using (var form = new Main(parentForm, sub, (this as IPlugin).Name, (this as IPlugin).Description))
             {

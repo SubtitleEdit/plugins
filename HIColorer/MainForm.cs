@@ -43,7 +43,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     _narratorColor = colorDialog1.Color;
                     labelNarratorsColor.BackColor = _narratorColor;
-                    labelNarratorsColor.Text = Utilities.GetHtmlColorCode(_narratorColor);
+                    labelNarratorsColor.Text = HtmlUtils.ColorToHtml(_narratorColor);
                 }
             }
             else
@@ -53,7 +53,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     _moodsColor = colorDialog1.Color;
                     labelMoodsColor.BackColor = _moodsColor;
                     // TODO: When the backcolor is to drak/lighty fix the forecolor
-                    labelMoodsColor.Text = Utilities.GetHtmlColorCode(_moodsColor);
+                    labelMoodsColor.Text = HtmlUtils.ColorToHtml(_moodsColor);
                 }
             }
         }
@@ -68,7 +68,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (!text.Contains("<font", StringComparison.OrdinalIgnoreCase))
                     continue;
                 var oldText = text;
-                text = Utilities.RemoveHtmlColorTags(text);
+                text = HtmlUtils.RemoveTags(text, Tags.Font);
                 if (text != oldText)
                     p.Text = text;
             }
@@ -125,7 +125,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 string text = p.Text;
                 string oldText = text;
                 if (text.Contains("<font", StringComparison.OrdinalIgnoreCase))
-                    text = Utilities.RemoveHtmlFontTag(text);
+                    text = HtmlUtils.RemoveTags(text, Tags.All);
 
                 if (Regex.IsMatch(text, ":\\B") && checkBoxEnabledNarrator.Checked)
                 {
@@ -153,7 +153,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string SetColorForNarrator(string text)
         {
-            var noTagText = Utilities.RemoveHtmlTags(text);
+            var noTagText = HtmlUtils.RemoveTags(text, Tags.All);
             int index = noTagText.IndexOf(':');
             if (index + 1 == noTagText.Length)
                 return text;
@@ -172,7 +172,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             for (int i = 0; i < lines.Length; i++)
             {
                 //TODO: if text contains 2 hearing text
-                var cleanText = Utilities.RemoveHtmlTags(lines[i], true).TrimEnd('"', '\'').TrimEnd();
+                var cleanText = StringUtils.RemoveHtmlTags(lines[i], true).TrimEnd('"', '\'').TrimEnd();
                 index = cleanText.IndexOf(':');
 
                 if ((index + 1 < cleanText.Length && char.IsDigit(cleanText[index + 1])) ||// filtered above \B
@@ -191,7 +191,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                     //- MAN: Baby, I put it right over there.
                     //- JUNE: No, you did not.
-                    if (Utilities.RemoveHtmlTags(pre, true).Trim().Length > 1)
+                    if (StringUtils.RemoveHtmlTags(pre, true).Trim().Length > 1)
                     {
                         // <i> i shall be \w that is way (?<!<)
                         string firstChr = Regex.Match(pre, "(?<!<)\\w", RegexOptions.Compiled).Value;
@@ -261,12 +261,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (!_moodsColor.IsEmpty)
                 {
                     labelMoodsColor.BackColor = _moodsColor;
-                    labelMoodsColor.Text = Utilities.GetHtmlColorCode(_moodsColor);
+                    labelMoodsColor.Text = HtmlUtils.ColorToHtml(_moodsColor);
                 }
                 if (!_narratorColor.IsEmpty)
                 {
                     labelNarratorsColor.BackColor = _narratorColor;
-                    labelNarratorsColor.Text = Utilities.GetHtmlColorCode(_narratorColor);
+                    labelNarratorsColor.Text = HtmlUtils.ColorToHtml(_narratorColor);
                 }
             }
             catch { }

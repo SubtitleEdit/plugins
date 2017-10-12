@@ -38,12 +38,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
         /// This action of callsed when Subtitle Edit calls plugin
         /// </summary>
         /// <param name="parentForm">Main form in Subtitle Edit</param>
-        /// <param name="subtitle">SubRip text</param>
+        /// <param name="srtText">SubRip text</param>
         /// <param name="frameRate">Current frame rate</param>
-        /// <param name="subtitleFileName">Current subtitle file name</param>
+        /// <param name="fileName">Current subtitle file name</param>
         /// <param name="videoFileName">Current video file name</param>
         /// <param name="rawText">Subtitle raw format</param>
         /// <returns>Dialog</returns>
-        string DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText);
+        string DoAction(Form parentForm, string srtText, double frameRate, string UILineBreak, string fileName, string videoFileName, string rawText);
     }
 }

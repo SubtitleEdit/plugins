@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Nikse.SubtitleEdit.PluginLogic.Models;
+using System;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -36,29 +37,25 @@ namespace Nikse.SubtitleEdit.PluginLogic
             get { return string.Empty; }
         }
 
-        string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
+        string IPlugin.DoAction(Form parentForm, string content, double frameRate, string uiLineBreak, string fileName, string videoFileName, string rawText)
         {
-            if (string.IsNullOrWhiteSpace(subtitle))
+            if (string.IsNullOrWhiteSpace(content))
             {
                 MessageBox.Show("No subtitle loaded", parentForm.Text,
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return string.Empty;
             }
 
-            if (!string.IsNullOrEmpty(listViewLineSeparatorString))
-                Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
-
-            var list = subtitle.SplitToLines().ToList();
-
-            var sub = new Subtitle();
-            var srt = new SubRip();
-            srt.LoadSubtitle(sub, list, subtitleFileName);
-            if (srt.ErrorCount > 0)
+            var configs = new Configs()
             {
-                MessageBox.Show(srt.Errors + " Errors found while parsing .srt",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            using (var form = new MainForm(sub, (this as IPlugin).Name, (this as IPlugin).Description))
+                UILineBreak = uiLineBreak
+            };
+
+            var list = content.SplitToLines().ToList();
+            var subrip = new SubRip();
+            var subtitle = new Subtitle(subrip);
+            subrip.LoadSubtitle(subtitle, list, fileName);
+            using (var form = new MainForm(subtitle, configs, (this as IPlugin).Name, (this as IPlugin).Description))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
                     return form.FixedSubtitle;

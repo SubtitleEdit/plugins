@@ -29,7 +29,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     var oldText = p.Text;
                     var text = UnbreakLines(p.Text);
-                    var t = Utilities.RemoveHtmlTags(text, true);
+                    var t = StringUtils.RemoveHtmlTags(text, true);
                     if (text.Length != oldText.Length && t.Length < _configs.MaxLineLength)
                     {
                         //TODO: oldText = Utilities.RemoveHtmlTags(oldText, true);
@@ -46,7 +46,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string UnbreakLines(string s)
         {
-            var temp = Utilities.RemoveHtmlTags(s, true);
+            var temp = StringUtils.RemoveHtmlTags(s, true);
             temp = temp.Replace("  ", " ").Trim();
 
             if (_configs.SkipDialogs && (temp.StartsWith('-') || temp.Contains(Environment.NewLine + "-")))
@@ -62,7 +62,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return s;
             }
 
-            return Utilities.UnbreakLine(s);
+            return StringUtils.UnbreakLine(s);
         }
 
     }

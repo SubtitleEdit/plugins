@@ -56,7 +56,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (text.Replace(Environment.NewLine, string.Empty).Length == text.Length)
                 return false;
 
-            var s = Utilities.RemoveHtmlTags(text);
+            var s = HtmlUtils.RemoveTags(text);
             if (s.StartsWith("-") && s.Contains(Environment.NewLine + "-"))
                 return false;
             int index = text.IndexOf(Environment.NewLine);
@@ -65,8 +65,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 string firstLine = text.Substring(0, index).Trim();
                 string secondLine = text.Substring(index).Trim();
-                firstLine = Utilities.RemoveHtmlTags(firstLine).Trim();
-                secondLine = Utilities.RemoveHtmlTags(secondLine).Trim();
+                firstLine = HtmlUtils.RemoveTags(firstLine).Trim();
+                secondLine = HtmlUtils.RemoveTags(secondLine).Trim();
                 if (!firstLine.Contains(".") && !firstLine.Contains("!") && !firstLine.Contains("?"))
                 { return false; }
             }
@@ -154,7 +154,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 else
                 {
                     string text = this.textBox1.Text.Trim();
-                    if (Utilities.RemoveHtmlTags(text).Length > 0)
+                    if (HtmlUtils.RemoveTags(text).Length > 0)
                         this.textBox1.Text = text.ToLower();
                 }
             }
@@ -243,9 +243,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     case DialogueType.SingleDash:
                         // removes the first dash
-                        temp = Utilities.RemoveHtmlTags(text).Trim();
+                        temp = HtmlUtils.RemoveTags(text).Trim();
                         var val = text.Substring(0, text.IndexOf(Environment.NewLine));
-                        if (Utilities.RemoveHtmlTags(val).Trim().Length > 2 && val.StartsWith("-"))
+                        if (HtmlUtils.RemoveTags(val).Trim().Length > 2 && val.StartsWith("-"))
                         {
                             int index = text.IndexOf("-");
                             text = text.Remove(index, 1);
@@ -264,7 +264,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         break;
 
                     case DialogueType.DoubleDash:
-                        temp = Utilities.RemoveHtmlTags(text);
+                        temp = HtmlUtils.RemoveTags(text);
                         if (!temp.StartsWith("-"))
                         {
                             text = text.Insert(0, "- ");
@@ -415,7 +415,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             string text = this.textBox1.Text.Trim();
             if (!string.IsNullOrEmpty(text))
             {
-                text = Utilities.RemoveHtmlTags(text);
+                text = HtmlUtils.RemoveTags(text);
                 if (text.Length > 0)
                 {
                     return true;
@@ -427,7 +427,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void buttonOk_Click(object sender, EventArgs e)
         {
             buttonNext_Click(null, null);
-            this.FixedSubtitle = _subtitle.ToText(new SubRip());
+            this.FixedSubtitle = _subtitle.ToText();
             if (!string.IsNullOrEmpty(this.FixedSubtitle.Trim()))
             {
                 DialogResult = System.Windows.Forms.DialogResult.OK;
@@ -446,7 +446,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             string text = this.textBox1.Text;
             if (!string.IsNullOrEmpty(text))
             {
-                text = Utilities.RemoveHtmlTags(text).Trim();
+                text = HtmlUtils.RemoveTags(text).Trim();
 
                 if (text.Length > 2)
                 {
@@ -497,7 +497,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (IsThereText())
             {
-                string text = Utilities.RemoveHtmlTags(textBox1.Text).Trim();
+                string text = HtmlUtils.RemoveTags(textBox1.Text).Trim();
                 if (text.Length > 0 && text.Length < 47)
                 {
                     textBox1.Text = textBox1.Text.Replace(Environment.NewLine, " ");
