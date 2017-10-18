@@ -202,8 +202,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (containsMood || containsNarrator)
                 {
                     _fixedTexts.Add(p.ID, text);
-                    string oldText = StringUtils.RemoveHtmlTags(p.Text, true);
-                    text = StringUtils.RemoveHtmlTags(text, true);
+                    string oldText = HtmlUtils.RemoveTags(p.Text, true);
+                    text = HtmlUtils.RemoveTags(text, true);
                     AddFixToListView(p, oldText, text, containsMood, containsNarrator);
                 }
 

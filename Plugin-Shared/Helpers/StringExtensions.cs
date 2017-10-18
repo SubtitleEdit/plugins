@@ -53,6 +53,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return false;
         }
 
+        public static int IndexOfAny(this string s, string[] words, StringComparison comparisonType)
+        {
+            if (words == null || string.IsNullOrEmpty(s))
+                return -1;
+            for (int i = 0; i < words.Length; i++)
+            {
+                var idx = s.IndexOf(words[i], comparisonType);
+                if (idx >= 0)
+                    return idx;
+            }
+            return -1;
+        }
+
         public static string[] SplitToLines(this string source)
         {
             return source.Replace("\r\r\n", "\n").Replace("\r\n", "\n").Replace('\r', '\n').Replace('\u2028', '\n').Split('\n');

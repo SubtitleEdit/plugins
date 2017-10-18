@@ -95,8 +95,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             var item = new ListViewItem(paragraph.Number.ToString()) { UseItemStyleForSubItems = true };
             item.SubItems.Add(paragraph.Text.Length.ToString());
-            item.SubItems.Add(StringUtils.RemoveHtmlTags(paragraph.Text, true).Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
-            item.SubItems.Add(StringUtils.RemoveHtmlTags(newText, true).Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
+            item.SubItems.Add(HtmlUtils.RemoveTags(paragraph.Text, true).Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
+            item.SubItems.Add(HtmlUtils.RemoveTags(newText, true).Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
             listView1.Items.Add(item);
         }
 

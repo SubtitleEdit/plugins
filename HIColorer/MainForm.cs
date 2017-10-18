@@ -13,15 +13,45 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         public string FixedSubtitle { get; private set; }
 
-        private Color _narratorColor = Color.Empty;
-        private Color _moodsColor = Color.Empty;
+        private readonly Configs _configs;
+
         private Subtitle _subtitle;
 
-        internal MainForm(Subtitle sub, string name, string ver)
+        public MainForm(Subtitle sub, string name, string ver)
         {
             InitializeComponent();
             _subtitle = sub;
-            LoadingSettings();
+
+            string settingFile = Path.Combine(FileUtils.PluginDirectory, "hicolor.xml");
+            if (File.Exists(settingFile))
+            {
+                _configs = Settings<Configs>.LoadConfiguration(settingFile);
+
+                // set configuration file
+                if (string.IsNullOrEmpty(_configs.SettingFile))
+                {
+                    _configs.SettingFile = settingFile;
+                }
+            }
+            else
+            {
+                _configs = new Configs()
+                {
+                    Narrator = Color.GreenYellow.ToArgb(),
+                    Moods = Color.Maroon.ToArgb(),
+                    SettingFile = settingFile
+                };
+                _configs.SaveConfigurations();
+            }
+            UpdateUIOnColorChange();
+        }
+
+        private void UpdateUIOnColorChange()
+        {
+            labelNarratorsColor.Text = HtmlUtils.ColorToHtml(Color.FromArgb(_configs.Narrator));
+            labelMoodsColor.Text = HtmlUtils.ColorToHtml(Color.FromArgb(_configs.Moods));
+            labelNarratorsColor.BackColor = Color.FromArgb(_configs.Narrator);
+            labelMoodsColor.BackColor = Color.FromArgb(_configs.Moods);
         }
 
         private void buttonNarratorColor_Click(object sender, EventArgs e)
@@ -41,21 +71,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 if (colorDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    _narratorColor = colorDialog1.Color;
-                    labelNarratorsColor.BackColor = _narratorColor;
-                    labelNarratorsColor.Text = HtmlUtils.ColorToHtml(_narratorColor);
+                    _configs.Narrator = colorDialog1.Color.ToArgb();
                 }
             }
             else
             {
                 if (colorDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    _moodsColor = colorDialog1.Color;
-                    labelMoodsColor.BackColor = _moodsColor;
-                    // TODO: When the backcolor is to drak/lighty fix the forecolor
-                    labelMoodsColor.Text = HtmlUtils.ColorToHtml(_moodsColor);
+                    _configs.Moods = colorDialog1.Color.ToArgb();
                 }
             }
+            UpdateUIOnColorChange();
         }
 
         private void buttonRemove_Click(object sender, EventArgs e)
@@ -66,11 +92,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 var text = p.Text;
                 if (!text.Contains("<font", StringComparison.OrdinalIgnoreCase))
+                {
                     continue;
+                }
+
                 var oldText = text;
-                text = HtmlUtils.RemoveTags(text, Tags.Font);
+                text = HtmlUtils.RemoveOpenCloseTags(text, HtmlUtils.TagFont);
                 if (text != oldText)
+                {
                     p.Text = text;
+                }
             }
             FixedSubtitle = _subtitle.ToText();
             DialogResult = DialogResult.OK;
@@ -102,7 +133,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void FindHearingImpairedNotation()
         {
             if (_subtitle == null || _subtitle.Paragraphs.Count == 0)
+            {
                 return;
+            }
+
             Func<string, char, char, string> brackesType = (text, bOpen, bClose) =>
             {
                 int idx = text.IndexOf(bOpen);
@@ -110,9 +144,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     var endIdx = text.IndexOf(bClose, idx + 1);
                     if (endIdx < idx + 1)
+                    {
                         break;
+                    }
+
                     var t = text.Substring(idx, endIdx - idx + 1);
-                    t = SetHtmlColorCode(_moodsColor, t);
+                    t = SetHtmlColorCode(Color.FromArgb(_configs.Moods), t);
                     text = text.Remove(idx, endIdx - idx + 1).Insert(idx, t);
                     idx = text.IndexOf(bOpen, idx + t.Length);
                 }
@@ -125,7 +162,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 string text = p.Text;
                 string oldText = text;
                 if (text.Contains("<font", StringComparison.OrdinalIgnoreCase))
-                    text = HtmlUtils.RemoveTags(text, Tags.All);
+                    text = HtmlUtils.RemoveTags(text);
 
                 if (Regex.IsMatch(text, ":\\B") && checkBoxEnabledNarrator.Checked)
                 {
@@ -146,19 +183,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         internal static string SetHtmlColorCode(Color color, string text)
         {
-            string colorCode = string.Format("#{0:x2}{1:x2}{2:x2}", color.R, color.G, color.B);
             const string writeFormat = "<font color=\"{0}\">{1}</font>";
-            return string.Format(writeFormat, colorCode.ToUpperInvariant(), text.Trim());
+            return string.Format(writeFormat, HtmlUtils.ColorToHtml(color).ToUpperInvariant(), text.Trim());
         }
 
         private string SetColorForNarrator(string text)
         {
-            var noTagText = HtmlUtils.RemoveTags(text, Tags.All);
+            var noTagText = HtmlUtils.RemoveTags(text);
             int index = noTagText.IndexOf(':');
             if (index + 1 == noTagText.Length)
                 return text;
 
-            string htmlColor = string.Format("#{0:x2}{1:x2}{2:x2}", _narratorColor.R, _narratorColor.G, _narratorColor.B);
+            string htmlColor = HtmlUtils.ColorToHtml(Color.FromArgb(_configs.Narrator));
             const string writeFormat = "<font color=\"{0}\">{1}</font>";
             Func<string, string> SetColor = (narrator) =>
             {
@@ -172,7 +208,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             for (int i = 0; i < lines.Length; i++)
             {
                 //TODO: if text contains 2 hearing text
-                var cleanText = StringUtils.RemoveHtmlTags(lines[i], true).TrimEnd('"', '\'').TrimEnd();
+                var cleanText = HtmlUtils.RemoveTags(lines[i], true).TrimEnd('"', '\'').TrimEnd();
                 index = cleanText.IndexOf(':');
 
                 if ((index + 1 < cleanText.Length && char.IsDigit(cleanText[index + 1])) ||// filtered above \B
@@ -187,11 +223,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     var line = lines[i];
                     string pre = line.Substring(0, index).TrimStart();
                     if (pre.Length == 0 || pre.Contains('(') || pre.Contains('(') || pre.Contains('('))
+                    {
                         continue;
+                    }
 
                     //- MAN: Baby, I put it right over there.
                     //- JUNE: No, you did not.
-                    if (StringUtils.RemoveHtmlTags(pre, true).Trim().Length > 1)
+                    if (HtmlUtils.RemoveTags(pre, true).Trim().Length > 1)
                     {
                         // <i> i shall be \w that is way (?<!<)
                         string firstChr = Regex.Match(pre, "(?<!<)\\w", RegexOptions.Compiled).Value;
@@ -228,51 +266,43 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return pre;
         }
 
-        private string GetSettingsFileName()
-        {
-            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-            if (path.StartsWith("file:\\"))
-                path = path.Remove(0, 6);
-            path = Path.Combine(path, "Plugins");
-            if (!Directory.Exists(path))
-                path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Plugins");
-            return Path.Combine(path, "HIColorer.xml");
-        }
-
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            SaveSettings();
+            _configs.SaveConfigurations();
         }
 
-        private void LoadingSettings()
-        {
-            string fileName = GetSettingsFileName();
-            if (!Path.IsPathRooted(fileName))
-                return;
-            try
-            {
-                XmlDocument doc = new XmlDocument();
-                doc.Load(fileName);
+        //private void LoadingSettings()
+        //{
+        //    string fileName = GetSettingsFileName();
+        //    if (!Path.IsPathRooted(fileName))
+        //    {
+        //        return;
+        //    }
 
-                int argNarrator = Convert.ToInt32(doc.DocumentElement.SelectSingleNode("ColorNarrator").InnerText);
-                int argMoods = Convert.ToInt32(doc.DocumentElement.SelectSingleNode("ColorMoods").InnerText);
-                _moodsColor = Color.FromArgb(argMoods);
-                _narratorColor = Color.FromArgb(argNarrator);
-                if (!_moodsColor.IsEmpty)
-                {
-                    labelMoodsColor.BackColor = _moodsColor;
-                    labelMoodsColor.Text = HtmlUtils.ColorToHtml(_moodsColor);
-                }
-                if (!_narratorColor.IsEmpty)
-                {
-                    labelNarratorsColor.BackColor = _narratorColor;
-                    labelNarratorsColor.Text = HtmlUtils.ColorToHtml(_narratorColor);
-                }
-            }
-            catch { }
-        }
+        //    try
+        //    {
+        //        XmlDocument doc = new XmlDocument();
+        //        doc.Load(fileName);
 
-        private void SaveSettings()
+        //        int argNarrator = Convert.ToInt32(doc.DocumentElement.SelectSingleNode("ColorNarrator").InnerText);
+        //        int argMoods = Convert.ToInt32(doc.DocumentElement.SelectSingleNode("ColorMoods").InnerText);
+        //        _moodsColor = Color.FromArgb(argMoods);
+        //        _narratorColor = Color.FromArgb(argNarrator);
+        //        if (!_moodsColor.IsEmpty)
+        //        {
+        //            labelMoodsColor.BackColor = _moodsColor;
+        //            labelMoodsColor.Text = HtmlUtils.ColorToHtml(_moodsColor);
+        //        }
+        //        if (!_narratorColor.IsEmpty)
+        //        {
+        //            labelNarratorsColor.BackColor = _narratorColor;
+        //            labelNarratorsColor.Text = HtmlUtils.ColorToHtml(_narratorColor);
+        //        }
+        //    }
+        //    catch { }
+        //}
+
+        /*private void SaveSettings()
         {
             string fileName = GetSettingsFileName();
 
@@ -304,7 +334,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 pluginsRegKey.Dispose();
             }
 #endif
-        }
+        }*/
 
         private void labelColor_DoubleClick(object sender, EventArgs e)
         {
