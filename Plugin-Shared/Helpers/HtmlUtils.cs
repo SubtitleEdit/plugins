@@ -99,7 +99,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return text;
         }
 
-        public static string ColorToHtml(Color c) => $"#{c.R:x2}{c.G:x2}{ c.B:x2}";
+        public static string ColorToHtml(Color c) => $"#{c.R:x2}{c.G:x2}{ c.B:x2}".ToLowerInvariant();
 
         public static string RemoveHtmlColorTags(string s)
         {

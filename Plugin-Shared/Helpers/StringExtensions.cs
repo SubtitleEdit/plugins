@@ -154,5 +154,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return s;
         }
 
+        public static bool ContainsColor(this string s) => s?.IndexOf("<font", StringComparison.OrdinalIgnoreCase) >= 0;
     }
 }

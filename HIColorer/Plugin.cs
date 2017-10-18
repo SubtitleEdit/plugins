@@ -34,7 +34,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             using (var mainForm = new MainForm(sub, subtitleFileName, (this as IPlugin).Version.ToString()))
             {
                 if (mainForm.ShowDialog() == DialogResult.OK)
-                    return mainForm.FixedSubtitle;
+                    return mainForm.Subtitle;
             }
             return string.Empty;
         }
