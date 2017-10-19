@@ -20,12 +20,22 @@ namespace Nikse.SubtitleEdit.PluginLogic
             InitializeComponent();
             _subtitle = sub;
 
+            // TODO: Get rid of this in up next version
+            try
+            {
+                // delete old configuration
+                File.Delete("hicolor.xml");
+            }
+            catch
+            {
+            }
+
             string settingFile = Path.Combine(FileUtils.PluginDirectory, "hi-color.xml");
             if (File.Exists(settingFile))
             {
                 // TODO: try reading previous config file and delete the old file
 
-                _configs = Settings<Configs>.LoadConfiguration(settingFile);
+                _configs = Configuration<Configs>.LoadConfiguration(settingFile);
 
                 // set configuration file
                 if (string.IsNullOrEmpty(_configs.SettingFile))

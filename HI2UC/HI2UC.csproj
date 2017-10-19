@@ -57,7 +57,7 @@
   <ItemGroup>
     <Compile Include="Classes\HearingImpaired.cs" />
     <Compile Include="Enums\HIStyle.cs" />
-    <Compile Include="Classes\Configuration.cs" />
+    <Compile Include="Classes\HIConfigs.cs" />
     <Compile Include="PluginForm.cs">
       <SubType>Form</SubType>
     </Compile>

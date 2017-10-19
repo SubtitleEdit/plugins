@@ -6,14 +6,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class MainForm : Form
     {
-        private readonly Configs _configs;
+        private readonly Options _configs;
         public string FixedSubtitle { get; private set; }
 
         private Subtitle _subtitle;
         private string _fileName;
         private bool _allowFixes;
 
-        public MainForm(Subtitle sub, Configs configs, string fileName, string description)
+        public MainForm(Subtitle sub, Options configs, string fileName, string description)
         {
             // TODO: Complete member initialization
             InitializeComponent();

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Nikse.SubtitleEdit.PluginLogic
+﻿namespace Nikse.SubtitleEdit.PluginLogic
 {
     interface IConfigurable
     {

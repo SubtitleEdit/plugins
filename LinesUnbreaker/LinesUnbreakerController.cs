@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Nikse.SubtitleEdit.PluginLogic
@@ -10,12 +8,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         private readonly Regex _regexNarrator = new Regex(":\\B", RegexOptions.Compiled);
         private readonly IList<Paragraph> _paragraphs;
-        private readonly Configuration _configs;
+        private readonly UnBreakConfigs _configs;
         private readonly char[] _moodChars = { '(', '[' };
 
         public event EventHandler<ParagraphEventArgs> TextUnbreaked;
 
-        public LinesUnbreakerController(IList<Paragraph> paragraphs, Configuration configs)
+        public LinesUnbreakerController(IList<Paragraph> paragraphs, UnBreakConfigs configs)
         {
             _paragraphs = paragraphs;
             _configs = configs;

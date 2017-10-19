@@ -62,7 +62,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             // Use custom separator for list view new lines
             if (!string.IsNullOrEmpty(uiLineBreak))
-                Configuration.ListViewLineSeparatorString = uiLineBreak;
+            {
+                Options.UILineBreak = uiLineBreak;
+            }
 
             // Get subtitle raw lines
             var list = new List<string>();

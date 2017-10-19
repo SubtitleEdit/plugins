@@ -2,7 +2,7 @@
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    public class Configs : Settings<Configs>
+    public class Configs : Configuration<Configs>
     {
         /// <summary>
         /// Narrators color.

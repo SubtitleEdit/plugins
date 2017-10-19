@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
@@ -13,6 +14,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private readonly Subtitle _subtitle;
 
         private Dictionary<string, string> _fixedTexts = new Dictionary<string, string>();
+        private readonly HIConfigs _hiConfigs;
         private readonly HearingImpaired _hearingImpaired;
 
         public PluginForm(Subtitle subtitle, string name, string description)
@@ -20,13 +22,27 @@ namespace Nikse.SubtitleEdit.PluginLogic
             InitializeComponent();
             _subtitle = subtitle;
             labelDesc.Text = "Description: " + description;
-            _hearingImpaired = new HearingImpaired(new Configuration()
+
+            string settingFile = FileUtils.GetConfigFile("hi-configs.xml");
+            if (File.Exists(settingFile))
             {
-                MoodsToUppercase = true,
-                NarratorToUppercase = true,
-                Style = HIStyle.UpperCase,
-                SingleLineNarrator = true
-            });
+                _hiConfigs = HIConfigs.LoadConfiguration(settingFile);
+                _hiConfigs.SettingFile = settingFile;
+            }
+            else
+            {
+                _hiConfigs = new HIConfigs
+                {
+                    SettingFile = settingFile
+                };
+            }
+            _hearingImpaired = new HearingImpaired(_hiConfigs);
+
+            this.FormClosed += (s, e) =>
+            {
+                _hiConfigs.SaveConfigurations();
+            };
+
             /*
             this.KeyDown += (s, e) =>
             {
@@ -34,6 +50,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             };
              */
+        }
+
+        private void InitUIFromConfig(HIConfigs configs)
+        {
+
+            // TODO:
+            checkBoxMoods.Checked = configs.MoodsToUppercase;
+            checkBoxSingleLineNarrator.Checked = configs.MoodsToUppercase;
+            checkBoxMoods.Checked = configs.MoodsToUppercase;
+
         }
 
         private void PluginForm_Load(object sender, EventArgs e)
@@ -236,8 +262,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 item.SubItems.Add("Narrator");
             }
-            item.SubItems.Add(before.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
-            item.SubItems.Add(after.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
+            item.SubItems.Add(before.Replace(Environment.NewLine, Options.UILineBreak));
+            item.SubItems.Add(after.Replace(Environment.NewLine, Options.UILineBreak));
 
             int idx = after.IndexOf(Environment.NewLine, StringComparison.Ordinal);
             if (idx > 2)

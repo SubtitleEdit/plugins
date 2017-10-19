@@ -18,17 +18,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         static FileUtils()
         {
+            // look for portable version's plugin directory first
+            string path = Assembly.GetExecutingAssembly().CodeBase;
+            if (path.StartsWith(@"file:\", StringComparison.OrdinalIgnoreCase))
+            {
+                path = path.Substring(6);
+            }
+            path = Path.GetDirectoryName(path);
             // app-data-roaming
-            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit");
             if (!Directory.Exists(path))
             {
-                path = Assembly.GetExecutingAssembly().CodeBase;
-                if (path.StartsWith(@"file:\", StringComparison.OrdinalIgnoreCase))
-                {
-                    path = path.Substring(6);
-                }
-                path = Path.GetDirectoryName(path);
-
+                path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit");
                 // portable mode?
             }
             PluginDirectory = Path.Combine(path, "Plugins");
@@ -36,5 +36,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // TODO: Check if plugin is running on a portable version of subtitle edit
             // and upate *IsPortableMode
         }
+
+        public static string GetConfigFile(string fileName) => Path.Combine(PluginDirectory, fileName);
     }
 }

@@ -6,7 +6,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class HearingImpaired
     {
-        public Configuration Config { get; private set; }
+        public HIConfigs Config { get; private set; }
 
         private static readonly char[] HIChars = { '(', '[' };
         private static readonly Regex RegexExtraSpaces = new Regex(@"(?<=[\(\[]) +| +(?=[\)\]])", RegexOptions.Compiled);
@@ -15,7 +15,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private readonly Lazy<StringBuilder> _lazySb = new Lazy<StringBuilder>();
         private StringBuilder _sb;
 
-        public HearingImpaired(Configuration config)
+        public HearingImpaired(HIConfigs config)
         {
             Config = config;
         }

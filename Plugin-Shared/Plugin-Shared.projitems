@@ -15,10 +15,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\CharUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\FileUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\HtmlUtils.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Settings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Configuration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IConfigurable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IPlugin.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\Configs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Options.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Paragraph.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\StringExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\StripableText.cs" />

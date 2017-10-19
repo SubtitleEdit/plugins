@@ -1,30 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form
     {
-        // Used to generate previews automatically.
-        private readonly Dictionary<string, string> FixedParagrahs = new Dictionary<string, string>();
-        public string FixedSubtitle { get; private set; }
+
         //private string path = Path.Combine("Plugins", "SeLinesUnbreaker.xml");
         private readonly Subtitle _subtitle;
         private int _totalFixed;
+
+        public string Subtiitle { get; private set; }
 
         // Var used to track user click.
         private bool _updateListview;
 
         private readonly LinesUnbreakerController _lineUnbreakerController;
 
-        private readonly Configuration _configs;
-        private bool _loading;
+        private readonly UnBreakConfigs _configs;
+        private bool _isLoading;
 
         public PluginForm(Subtitle subtitle)
         {
@@ -34,25 +30,49 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // Save user-configuartions on form-close.
             FormClosing += delegate
             {
-                _configs.SaveConfiguration();
+                _configs.SaveConfigurations();
             };
-            _configs = new Configuration();
-            _lineUnbreakerController = new LinesUnbreakerController(subtitle.Paragraphs, _configs);
-            _lineUnbreakerController.TextUnbreaked += _lineUnbreakerController_TextUnbreaked;
 
-            _loading = true;
+            string configFile = Path.Combine(FileUtils.PluginDirectory, "lines-unbreaker.xml");
+
+
+            // load configuration from file
+            if (File.Exists(configFile))
+            {
+                // TODO: Fix this, can't deserialize boolean
+                _configs = UnBreakConfigs.LoadConfiguration(configFile);
+                _configs.SettingFile = configFile;
+            }
+            else
+            {
+                // NOTE: Without configFile, this would throw an exception!
+                _configs = new UnBreakConfigs() { SettingFile = configFile };
+                // create file
+                _configs.SaveConfigurations();
+            }
+
+            _lineUnbreakerController = new LinesUnbreakerController(subtitle.Paragraphs, _configs);
+            _lineUnbreakerController.TextUnbreaked += LineUnbreakerControllerTextUnbreaked;
+
+            _isLoading = true;
+
             // Load user configurations.
             checkBoxMoods.Checked = _configs.SkipMoods;
             checkBoxSkipDialog.Checked = _configs.SkipDialogs;
             checkBoxSkipNarrator.Checked = _configs.SkipNarrator;
+            
             if (_configs.MaxLineLength < numericUpDown1.Minimum)
             {
                 _configs.MaxLineLength = Convert.ToInt32(numericUpDown1.Minimum);
             }
-            _loading = false;
+            else
+            {
+                numericUpDown1.Value = _configs.MaxLineLength;
+            }
+            _isLoading = false;
         }
 
-        private void _lineUnbreakerController_TextUnbreaked(object sender, ParagraphEventArgs e)
+        private void LineUnbreakerControllerTextUnbreaked(object sender, ParagraphEventArgs e)
         {
             // Update View
             if (_updateListview)
@@ -69,7 +89,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void GeneratePreview()
         {
             _totalFixed = 0;
-            FixedParagrahs.Clear();
             listView1.BeginUpdate();
             listView1.Items.Clear();
             UpdateConfigurations();
@@ -95,8 +114,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             var item = new ListViewItem(paragraph.Number.ToString()) { UseItemStyleForSubItems = true };
             item.SubItems.Add(paragraph.Text.Length.ToString());
-            item.SubItems.Add(HtmlUtils.RemoveTags(paragraph.Text, true).Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
-            item.SubItems.Add(HtmlUtils.RemoveTags(newText, true).Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
+            item.SubItems.Add(HtmlUtils.RemoveTags(paragraph.Text, true).Replace(Environment.NewLine, Options.UILineBreak));
+            item.SubItems.Add(HtmlUtils.RemoveTags(newText, true).Replace(Environment.NewLine, Options.UILineBreak));
             listView1.Items.Add(item);
         }
 
@@ -109,7 +128,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             _updateListview = false;
             _lineUnbreakerController.Action();
-            FixedSubtitle = _subtitle.ToText();
+            Subtiitle = _subtitle.ToText();
             DialogResult = DialogResult.OK;
         }
 
@@ -119,7 +138,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 DialogResult = DialogResult.Cancel;
         }
 
-        private void listView1_Resize(object sender, EventArgs e)
+        private void ListView1_Resize(object sender, EventArgs e)
         {
             var l = 0;
             for (int i = 0; i < 2; i++)
@@ -134,7 +153,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void ConfigurationChanged(object sender, EventArgs e)
         {
             // TODO: fix this!
-            if (_loading)
+            if (_isLoading)
             {
                 return;
             }

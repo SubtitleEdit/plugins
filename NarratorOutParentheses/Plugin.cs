@@ -46,7 +46,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return string.Empty;
             }
 
-            var configs = new Configs()
+            var configs = new Options()
             {
                 UILineBreak = uiLineBreak
             };

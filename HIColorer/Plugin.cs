@@ -8,7 +8,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "HI Colorer";
 
-        decimal IPlugin.Version => 0.3M;
+        decimal IPlugin.Version => 0.4M;
 
         string IPlugin.Description => "Set color for Hearing Impaired annotations (by Ivandrofly)";
 
@@ -29,7 +29,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var sub = new Subtitle(subRip);
             subRip.LoadSubtitle(sub, subtitle.SplitToLines(), subtitleFileName);
             if (sub.Paragraphs.Count < 1)
+            {
                 return string.Empty;
+            }
 
             using (var mainForm = new MainForm(sub, subtitleFileName, (this as IPlugin).Version.ToString()))
             {
