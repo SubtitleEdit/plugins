@@ -11,10 +11,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public bool IsMaxTime => Math.Abs(_totalMilliseconds - MaxTime.TotalMilliseconds) < 0.01;
 
-        public TimeCode(double totalMilliseconds = 0.0D)
-        {
-            _totalMilliseconds = totalMilliseconds;
-        }
+        public TimeCode(double totalMilliseconds = 0.0D) => _totalMilliseconds = totalMilliseconds;
 
         public TimeCode(int hour, int minute, int seconds, int milliseconds)
         {

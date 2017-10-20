@@ -4,22 +4,21 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Xml;
-using System.Xml.Serialization;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     public abstract class Configuration<TConfig>
     {
+        private static BindingFlags _bindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
+
+        // NOTE: XmlSerializer sucks :(!
         //private readonly static XmlSerializer _serializer;
-        private string _settingFile;
+        private readonly string _configFile;
 
         //[XmlIgnore]
-        public string SettingFile { get => _settingFile; set => _settingFile = value; }
+        public string ConfigFile => _configFile;
 
-        static Configuration()
-        {
-            //_serializer = new XmlSerializer(typeof(TConfig));
-        }
+        public Configuration(string configFile) => _configFile = configFile;
 
         public void SaveConfigurations()
         {
@@ -29,8 +28,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             //}
 
             Type type = GetType();
-            BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
-            PropertyInfo[] properties = type.GetProperties(bindingFlags);
+            PropertyInfo[] properties = type.GetProperties(_bindingFlags);
 
             var xmlWriterSettings = new XmlWriterSettings()
             {
@@ -43,8 +41,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var sb = new StringBuilder();
             using (var xmlWriter = XmlWriter.Create(sb, xmlWriterSettings))
             {
-                // https://stackoverflow.com/questions/9459184/why-is-the-xmlwriter-always-outputing-utf-16-encoding
+                // NOTE: Do not write XML declaration (for example, <?xml version='1.0'?> )
                 //xmlWriter.WriteStartDocument();
+                // see: https://stackoverflow.com/questions/9459184/why-is-the-xmlwriter-always-outputing-utf-16-encoding
+
                 xmlWriter.WriteStartElement(type.Assembly.GetName().Name);
                 foreach (PropertyInfo propInfo in properties)
                 {
@@ -57,28 +57,22 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     //xmlWriter.WriteEndElement();
                 }
                 xmlWriter.WriteEndElement();
+
                 //xmlWriter.WriteEndDocument();
-                //xmlWriter.Flush();
             }
-            File.WriteAllText(_settingFile, sb.ToString(), Encoding.UTF8);
+
+            File.WriteAllText(_configFile, sb.ToString(), Encoding.UTF8);
+
         }
 
-        public static TConfig LoadConfiguration(string settingFile)
+        public static TConfig LoadConfiguration(string configFile)
         {
-            //using (FileStream fs = new FileStream(settingFile, FileMode.Open, FileAccess.Read, FileShare.Read))
-            //{
-            //    return (TConfig)_serializer.Deserialize(fs);
-            //}
-            //var xmlReaderSettings = new XmlReaderSettings()
-            //{
-            //};
-
             Type type = typeof(TConfig);
 
             // initialize everything with default value
-            object obj = Activator.CreateInstance(type);
+            object obj = Activator.CreateInstance(type, configFile);
 
-            using (XmlReader xmlReader = XmlReader.Create(settingFile))
+            using (XmlReader xmlReader = XmlReader.Create(configFile))
             {
                 while (xmlReader.Read())
                 {
@@ -88,7 +82,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                             // this is the name of the property that the value will be set
                             string localName = xmlReader.LocalName;
-                            PropertyInfo propInfo = type.GetProperty(localName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
+                            PropertyInfo propInfo = type.GetProperty(localName, _bindingFlags);
 
                             // propperty not defined
                             if (propInfo == null)
@@ -97,7 +91,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                             }
 
                             // if property is defined try read next xml node which
-                            // we are expecing the value of the property
+                            // we are expecting the value of the property
                             xmlReader.Read();
 
                             if (xmlReader.NodeType == XmlNodeType.Text)
@@ -112,7 +106,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                                 }
                                 else
                                 {
-                                    value = Enum.Parse(propInfo.PropertyType, xmlReader.Value);
+                                    // special parse for enums type
+                                    if (Enum.IsDefined(propInfo.PropertyType, xmlReader.Value))
+                                    {
+                                        value = Enum.Parse(propInfo.PropertyType, xmlReader.Value);
+                                    }
                                 }
 
                                 propInfo.SetValue(obj, value, null);
@@ -120,20 +118,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
                             else
                             {
                                 // NOTE: ALREADY INITIALIZED WITH DEFAULT!
-                                //Type propType = propInfo.PropertyType;
-                                //object defaultValue = default(propType);
-                                //propInfo.SetValue(obj, defaultValue, null);
+                                // Type propType = propInfo.PropertyType;
+                                // object defaultValue = default(propType);
+                                // propInfo.SetValue(obj, defaultValue, null);
                             }
 
                             break;
 
                         case XmlNodeType.Attribute:
-                            //case XmlNodeType.Text:
-                            //    Trace.WriteLine(xmlReader.ValueType);
-                            //    Trace.WriteLine(xmlReader.Value);
+                            Debug.WriteLine(xmlReader.ValueType);
+                            Debug.WriteLine(xmlReader.Value);
                             break;
                     }
-
                 }
             }
 

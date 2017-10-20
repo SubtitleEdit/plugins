@@ -1,5 +1,4 @@
-﻿using Nikse.SubtitleEdit.PluginLogic.Models;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {

@@ -47,7 +47,7 @@
     <Compile Include="Artists\MoodsArtist.cs" />
     <Compile Include="Artists\NarratorArtist.cs" />
     <Compile Include="Artists\Palette.cs" />
-    <Compile Include="Configs.cs" />
+    <Compile Include="ColorConfig.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

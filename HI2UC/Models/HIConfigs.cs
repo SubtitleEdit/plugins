@@ -2,7 +2,7 @@
 {
     public class HIConfigs : Configuration<HIConfigs>
     {
-        public HIConfigs()
+        public HIConfigs(string configFile) : base(configFile)
         {
             Style = HIStyle.UpperCase;
             MoodsToUppercase = true;
@@ -14,6 +14,7 @@
         public bool MoodsToUppercase { get; set; }
         public bool NarratorToUppercase { get; set; }
         public bool SingleLineNarrator { get; set; }
+        public bool RemoveExtraSpaces { get; set; }
 
     }
 }

@@ -112,7 +112,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     var endIndex = s.IndexOf('>', startIndex + 5);
                     if (endIndex < startIndex)
+                    {
                         break;
+                    }
+
                     var fontTag = s.Substring(startIndex, endIndex - startIndex + 1);
                     fontTag = StripColorAnnotation(fontTag);
 

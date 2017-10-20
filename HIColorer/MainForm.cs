@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -7,52 +6,25 @@ using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    public partial class MainForm : Form
+    public partial class MainForm : Form, IConfigurable
     {
         public string Subtitle { get; private set; }
 
-        private readonly Configs _configs;
+        private ColorConfig _configs;
 
         private Subtitle _subtitle;
 
         public MainForm(Subtitle sub, string name, string ver)
         {
             InitializeComponent();
+
+            FormClosed += (s, e) =>
+            {
+                SaveConfigurations();
+            };
+
             _subtitle = sub;
-
-            // TODO: Get rid of this in up next version
-            try
-            {
-                // delete old configuration
-                File.Delete("hicolor.xml");
-            }
-            catch
-            {
-            }
-
-            string settingFile = Path.Combine(FileUtils.PluginDirectory, "hi-color.xml");
-            if (File.Exists(settingFile))
-            {
-                // TODO: try reading previous config file and delete the old file
-
-                _configs = Configuration<Configs>.LoadConfiguration(settingFile);
-
-                // set configuration file
-                if (string.IsNullOrEmpty(_configs.SettingFile))
-                {
-                    _configs.SettingFile = settingFile;
-                }
-            }
-            else
-            {
-                _configs = new Configs()
-                {
-                    Narrator = Color.GreenYellow.ToArgb(),
-                    Moods = Color.Maroon.ToArgb(),
-                    SettingFile = settingFile
-                };
-                _configs.SaveConfigurations();
-            }
+            LoadConfigurations();
             UpdateUIOnColorChange();
         }
 
@@ -64,19 +36,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             labelMoodsColor.BackColor = Color.FromArgb(_configs.Moods);
         }
 
-        private void buttonNarratorColor_Click(object sender, EventArgs e)
+        private void ChangeColorHandler(object sender, EventArgs e)
         {
-            SetColor(sender);
-        }
-
-        private void buttonMoodsColor_Click(object sender, EventArgs e)
-        {
-            SetColor(sender);
-        }
-
-        private void SetColor(object sender)
-        {
-            if (sender == null) return;
             if (sender == buttonNarratorColor || sender == labelNarratorsColor)
             {
                 if (colorDialog1.ShowDialog() == DialogResult.OK)
@@ -96,11 +57,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void ButtonRemove_Click(object sender, EventArgs e)
         {
-            if (_subtitle.Paragraphs.Count == 0)
-            {
-                return;
-            }
-
             foreach (Paragraph p in _subtitle.Paragraphs)
             {
                 var text = p.Text;
@@ -143,44 +99,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             DialogResult = DialogResult.OK;
         }
 
-
-
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            _configs.SaveConfigurations();
-        }
-
-        //private void LoadingSettings()
-        //{
-        //    string fileName = GetSettingsFileName();
-        //    if (!Path.IsPathRooted(fileName))
-        //    {
-        //        return;
-        //    }
-
-        //    try
-        //    {
-        //        XmlDocument doc = new XmlDocument();
-        //        doc.Load(fileName);
-
-        //        int argNarrator = Convert.ToInt32(doc.DocumentElement.SelectSingleNode("ColorNarrator").InnerText);
-        //        int argMoods = Convert.ToInt32(doc.DocumentElement.SelectSingleNode("ColorMoods").InnerText);
-        //        _moodsColor = Color.FromArgb(argMoods);
-        //        _narratorColor = Color.FromArgb(argNarrator);
-        //        if (!_moodsColor.IsEmpty)
-        //        {
-        //            labelMoodsColor.BackColor = _moodsColor;
-        //            labelMoodsColor.Text = HtmlUtils.ColorToHtml(_moodsColor);
-        //        }
-        //        if (!_narratorColor.IsEmpty)
-        //        {
-        //            labelNarratorsColor.BackColor = _narratorColor;
-        //            labelNarratorsColor.Text = HtmlUtils.ColorToHtml(_narratorColor);
-        //        }
-        //    }
-        //    catch { }
-        //}
-
         /*private void SaveSettings()
         {
             string fileName = GetSettingsFileName();
@@ -215,12 +133,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 #endif
         }*/
 
-        private void labelColor_DoubleClick(object sender, EventArgs e)
-        {
-            SetColor(sender);
-        }
-
-        private void linkLabelIvandrofly_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void LinkLabelIvandrofly_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start(linkLabelIvandrofly.Tag.ToString());
         }
@@ -244,5 +157,35 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 Color = Color.FromArgb(argbCode)
             };
         }
+
+        public void LoadConfigurations()
+        {
+            // TODO: Get rid of this in up next version
+            try
+            {
+                File.Delete("hicolor.xml");
+            }
+            catch
+            {
+            }
+
+            string settingFile = Path.Combine(FileUtils.Plugins, "hicolor-config.xml");
+            if (File.Exists(settingFile))
+            {
+                // TODO: try reading previous config file and delete the old file
+                _configs = Configuration<ColorConfig>.LoadConfiguration(settingFile);
+            }
+            else
+            {
+                _configs = new ColorConfig(settingFile)
+                {
+                    Narrator = Color.GreenYellow.ToArgb(),
+                    Moods = Color.Maroon.ToArgb()
+                };
+                _configs.SaveConfigurations();
+            }
+        }
+
+        public void SaveConfigurations() => _configs.SaveConfigurations();
     }
 }

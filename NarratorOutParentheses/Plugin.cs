@@ -1,6 +1,4 @@
-﻿using Nikse.SubtitleEdit.PluginLogic.Models;
-using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
@@ -46,19 +44,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return string.Empty;
             }
 
-            var configs = new Options()
+            if (string.IsNullOrEmpty(uiLineBreak))
             {
-                UILineBreak = uiLineBreak
-            };
+                Options.UILineBreak = uiLineBreak;
+            }
 
             var list = content.SplitToLines().ToList();
             var subrip = new SubRip();
             var subtitle = new Subtitle(subrip);
             subrip.LoadSubtitle(subtitle, list, fileName);
-            using (var form = new MainForm(subtitle, configs, (this as IPlugin).Name, (this as IPlugin).Description))
+            using (var form = new MainForm(subtitle, (this as IPlugin).Name, (this as IPlugin).Description))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
-                    return form.FixedSubtitle;
+                    return form.Subtitle;
             }
             return string.Empty;
         }

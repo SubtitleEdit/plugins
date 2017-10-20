@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    internal partial class PluginForm : Form
+    internal partial class PluginForm : Form, IConfigurable
     {
         public string FixedSubtitle { get; private set; }
         private readonly Subtitle _subtitle;
 
         private Dictionary<string, string> _fixedTexts = new Dictionary<string, string>();
-        private readonly HIConfigs _hiConfigs;
-        private readonly HearingImpaired _hearingImpaired;
+        private HIConfigs _hiConfigs;
+        private HearingImpaired _hearingImpaired;
 
         public PluginForm(Subtitle subtitle, string name, string description)
         {
@@ -23,26 +22,29 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _subtitle = subtitle;
             labelDesc.Text = "Description: " + description;
 
-            string settingFile = FileUtils.GetConfigFile("hi-configs.xml");
-            if (File.Exists(settingFile))
-            {
-                _hiConfigs = HIConfigs.LoadConfiguration(settingFile);
-                _hiConfigs.SettingFile = settingFile;
-            }
-            else
-            {
-                _hiConfigs = new HIConfigs
-                {
-                    SettingFile = settingFile
-                };
-            }
-            _hearingImpaired = new HearingImpaired(_hiConfigs);
+            LoadConfigurations();
 
-            this.FormClosed += (s, e) =>
+            FormClosed += (s, e) =>
             {
-                _hiConfigs.SaveConfigurations();
+                // update config
+                //_hiConfigs.NarratorToUppercase = checkBoxNames.Checked;
+                //_hiConfigs.MoodsToUppercase = checkBoxMoods.Checked;
+                //_hiConfigs.RemoveExtraSpaces = checkBoxRemoveSpaces.Checked;
+                //_hiConfigs.Style = (HIStyle)Enum.Parse(typeof(HIStyle), comboBoxStyle.SelectedValue.ToString());
+                //_hiConfigs.Style = ((ComboBoxItem)comboBoxStyle.SelectedItem).Style;
+                // TypeConverter converter = TypeDescriptor.GetConverter(typeof(HIStyle));
+
+                SaveConfigurations();
             };
 
+            Resize += delegate
+            {
+                listViewFixes.Columns[listViewFixes.Columns.Count - 1].Width = -2;
+            };
+
+            InitComboBoxHITyle();
+            UpdateUIFromConfigs(_hiConfigs);
+            GeneratePreview();
             /*
             this.KeyDown += (s, e) =>
             {
@@ -52,25 +54,32 @@ namespace Nikse.SubtitleEdit.PluginLogic
              */
         }
 
-        private void InitUIFromConfig(HIConfigs configs)
+        private void UpdateUIFromConfigs(HIConfigs configs)
         {
-
             // TODO:
-            checkBoxMoods.Checked = configs.MoodsToUppercase;
-            checkBoxSingleLineNarrator.Checked = configs.MoodsToUppercase;
+            checkBoxSingleLineNarrator.Checked = configs.SingleLineNarrator;
+            checkBoxRemoveSpaces.Checked = configs.RemoveExtraSpaces;
+            checkBoxNames.Checked = configs.NarratorToUppercase;
             checkBoxMoods.Checked = configs.MoodsToUppercase;
 
+            for (int i = 0; i < comboBoxStyle.Items.Count; i++)
+            {
+                var cbi = (ComboBoxItem)comboBoxStyle.Items[i];
+                if (cbi.Style == configs.Style)
+                {
+                    //MessageBox.Show($"Test {i}");
+                    comboBoxStyle.SelectedIndex = i;
+                    break;
+                }
+            }
         }
 
-        private void PluginForm_Load(object sender, EventArgs e)
+        private void InitComboBoxHITyle()
         {
-            comboBoxStyle.SelectedIndexChanged -= comboBoxStyle_SelectedIndexChanged;
-            comboBoxStyle.SelectedIndex = 0;
-            comboBoxStyle.SelectedIndexChanged += comboBoxStyle_SelectedIndexChanged;
-            Resize += delegate
-            {
-                listViewFixes.Columns[listViewFixes.Columns.Count - 1].Width = -2;
-            };
+            comboBoxStyle.Items.Add(new ComboBoxItem("Upper case", "(HELLO)", HIStyle.UpperCase));
+            comboBoxStyle.Items.Add(new ComboBoxItem("Lower case", "(hello)", HIStyle.LowerCase));
+            comboBoxStyle.Items.Add(new ComboBoxItem("Title case", "(Hello World)", HIStyle.TitleCase));
+            comboBoxStyle.Items.Add(new ComboBoxItem("Upper/Lower case", "(HeLlo WoRlD)", HIStyle.UpperLowerCase));
         }
 
         private void btn_Cancel_Click(object sender, EventArgs e)
@@ -172,11 +181,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return;
             }
             // Is this using ref passing? o.O
-            HIStyle currentStyle = _hearingImpaired.Config.Style;
+            HIStyle currentStyle = _hiConfigs.Style;
             if ((int)currentStyle != comboBoxStyle.SelectedIndex)
             {
                 currentStyle = (HIStyle)comboBoxStyle.SelectedIndex;
-                _hearingImpaired.Config.Style = currentStyle;
+                _hiConfigs.Style = currentStyle;
                 GeneratePreview();
             }
         }
@@ -286,10 +295,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.Items.Add(item);
         }
 
-        private void buttonApply_Click(object sender, EventArgs e)
+        private void ButtonApply_Click(object sender, EventArgs e)
         {
             if (listViewFixes.Items.Count == 0)
+            {
                 return;
+            }
 
             Cursor = Cursors.WaitCursor;
             listViewFixes.Resize -= listViewFixes_Resize;
@@ -300,14 +311,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void checkBoxRemoveSpaces_CheckedChanged(object sender, EventArgs e)
         {
-            if (listViewFixes.Items.Count < 1 || _subtitle.Paragraphs.Count == 0)
+            if (listViewFixes.Items.Count == 0 || _subtitle.Paragraphs.Count == 0)
+            {
                 return;
-
-            GeneratePreview();
-        }
-
-        private void PluginForm_Shown(object sender, EventArgs e)
-        {
+            }
             GeneratePreview();
         }
 
@@ -331,5 +338,24 @@ namespace Nikse.SubtitleEdit.PluginLogic
         }
 
         private static Paragraph GetParagraph(ListViewItem lvi) => lvi.Tag as Paragraph;
+
+        public void LoadConfigurations()
+        {
+            string configFile = FileUtils.GetConfigFile("hi2uc-config.xml");
+
+            // load from existing file
+            if (File.Exists(configFile))
+            {
+                _hiConfigs = HIConfigs.LoadConfiguration(configFile);
+            }
+            else
+            {
+                _hiConfigs = new HIConfigs(configFile);
+                _hiConfigs.SaveConfigurations();
+            }
+            _hearingImpaired = new HearingImpaired(_hiConfigs);
+        }
+
+        public void SaveConfigurations() => _hiConfigs.SaveConfigurations();
     }
 }

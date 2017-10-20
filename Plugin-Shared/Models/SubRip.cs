@@ -15,13 +15,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private int _errorCount;
 
-        public string Errors { get; private set; }
-
-        public string Extension => ".srt";
-
-        public bool IsTimeBased => true;
-
-        public string Name => "SubRip";
+        public int ErrorCount => _errorCount;
 
         public void LoadSubtitle(Subtitle subtitle, IList<string> lines, string fileName)
         {
@@ -69,7 +63,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (doRenum)
                     subtitle.Renumber();
 
-            Errors = _errorCount.ToString();
         }
 
         public string ToText(Subtitle subtitle, string title)
@@ -143,28 +136,29 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private static bool TryReadTimeCodesLine(string line, Paragraph paragraph)
         {
-            if (RegexTimeCodes.IsMatch(line) || RegexTimeCodes2.IsMatch(line))
+            if (!(RegexTimeCodes.IsMatch(line) || RegexTimeCodes2.IsMatch(line)))
             {
-                string[] parts = line.Replace("-->", ":").Replace(" ", string.Empty).Split(':', ',');
-                try
-                {
-                    int startHours = int.Parse(parts[0]);
-                    int startMinutes = int.Parse(parts[1]);
-                    int startSeconds = int.Parse(parts[2]);
-                    int startMilliseconds = int.Parse(parts[3]);
+                return false;
+            }
+            string[] parts = line.Replace("-->", ":").Replace(" ", string.Empty).Split(':', ',');
+            try
+            {
+                int startHours = int.Parse(parts[0]);
+                int startMinutes = int.Parse(parts[1]);
+                int startSeconds = int.Parse(parts[2]);
+                int startMilliseconds = int.Parse(parts[3]);
 
-                    int endHours = int.Parse(parts[4]);
-                    int endMinutes = int.Parse(parts[5]);
-                    int endSeconds = int.Parse(parts[6]);
-                    int endMilliseconds = int.Parse(parts[7]);
+                int endHours = int.Parse(parts[4]);
+                int endMinutes = int.Parse(parts[5]);
+                int endSeconds = int.Parse(parts[6]);
+                int endMilliseconds = int.Parse(parts[7]);
 
-                    paragraph.StartTime = new TimeCode(startHours, startMinutes, startSeconds, startMilliseconds);
-                    paragraph.EndTime = new TimeCode(endHours, endMinutes, endSeconds, endMilliseconds);
-                    return true;
-                }
-                catch
-                {
-                }
+                paragraph.StartTime = new TimeCode(startHours, startMinutes, startSeconds, startMilliseconds);
+                paragraph.EndTime = new TimeCode(endHours, endMinutes, endSeconds, endMilliseconds);
+                return true;
+            }
+            catch
+            {
             }
             return false;
         }

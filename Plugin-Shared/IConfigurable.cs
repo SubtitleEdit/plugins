@@ -2,8 +2,8 @@
 {
     interface IConfigurable
     {
-        void LoadConfigs();
+        void LoadConfigurations();
 
-        void SaveConfigs();
+        void SaveConfigurations();
     }
 }

@@ -55,9 +55,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\HearingImpaired.cs" />
+    <Compile Include="Models\ComboBoxItem.cs" />
+    <Compile Include="Models\HearingImpaired.cs" />
     <Compile Include="Enums\HIStyle.cs" />
-    <Compile Include="Classes\HIConfigs.cs" />
+    <Compile Include="Models\HIConfigs.cs" />
     <Compile Include="PluginForm.cs">
       <SubType>Form</SubType>
     </Compile>

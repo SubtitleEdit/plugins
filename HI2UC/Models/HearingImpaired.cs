@@ -127,7 +127,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     }
                     strippedText = _sb.ToString();
                     break;
-                case HIStyle.FirstUppercase:
+                case HIStyle.TitleCase:
                     // "foobar foobar" to (Foobar Foobar)
                     strippedText = RegexFirstChar.Replace(strippedText.ToLower(), x => x.Value.ToUpper());
                     break;

@@ -10,7 +10,7 @@
 
         public int MaxLineLength { get; set; }
 
-        public UnBreakConfigs()
+        public UnBreakConfigs(string configFile) : base(configFile)
         {
             SkipDialogs = true;
             SkipNarrator = true;

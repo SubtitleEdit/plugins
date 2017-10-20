@@ -2,7 +2,7 @@
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    public class Configs : Configuration<Configs>
+    public class ColorConfig : Configuration<ColorConfig>
     {
         /// <summary>
         /// Narrators color.
@@ -14,7 +14,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         /// </summary>
         public int Moods { get; set; }
 
-        public Configs()
+        public ColorConfig(string configFile) : base(configFile)
         {
             Narrator = Color.Blue.ToArgb();
             Moods = Color.Maroon.ToArgb();

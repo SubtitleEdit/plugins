@@ -5,9 +5,8 @@ using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    internal partial class PluginForm : Form
+    internal partial class PluginForm : Form, IConfigurable
     {
-
         //private string path = Path.Combine("Plugins", "SeLinesUnbreaker.xml");
         private readonly Subtitle _subtitle;
         private int _totalFixed;
@@ -19,12 +18,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private readonly LinesUnbreakerController _lineUnbreakerController;
 
-        private readonly UnBreakConfigs _configs;
+        private UnBreakConfigs _configs;
         private bool _isLoading;
 
         public PluginForm(Subtitle subtitle)
         {
             InitializeComponent();
+
             _subtitle = subtitle;
 
             // Save user-configuartions on form-close.
@@ -33,42 +33,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 _configs.SaveConfigurations();
             };
 
-            string configFile = Path.Combine(FileUtils.PluginDirectory, "lines-unbreaker.xml");
-
-
-            // load configuration from file
-            if (File.Exists(configFile))
-            {
-                // TODO: Fix this, can't deserialize boolean
-                _configs = UnBreakConfigs.LoadConfiguration(configFile);
-                _configs.SettingFile = configFile;
-            }
-            else
-            {
-                // NOTE: Without configFile, this would throw an exception!
-                _configs = new UnBreakConfigs() { SettingFile = configFile };
-                // create file
-                _configs.SaveConfigurations();
-            }
-
+            _isLoading = true;
+            LoadConfigurations();
             _lineUnbreakerController = new LinesUnbreakerController(subtitle.Paragraphs, _configs);
             _lineUnbreakerController.TextUnbreaked += LineUnbreakerControllerTextUnbreaked;
-
-            _isLoading = true;
-
-            // Load user configurations.
-            checkBoxMoods.Checked = _configs.SkipMoods;
-            checkBoxSkipDialog.Checked = _configs.SkipDialogs;
-            checkBoxSkipNarrator.Checked = _configs.SkipNarrator;
-            
-            if (_configs.MaxLineLength < numericUpDown1.Minimum)
-            {
-                _configs.MaxLineLength = Convert.ToInt32(numericUpDown1.Minimum);
-            }
-            else
-            {
-                numericUpDown1.Value = _configs.MaxLineLength;
-            }
             _isLoading = false;
         }
 
@@ -160,5 +128,37 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             GeneratePreview();
         }
+
+        public void LoadConfigurations()
+        {
+            string configFile = Path.Combine(FileUtils.Plugins, "linesunbreaker-config.xml");
+
+            // load configuration from file
+            if (File.Exists(configFile))
+            {
+                _configs = UnBreakConfigs.LoadConfiguration(configFile);
+            }
+            else
+            {
+                _configs = new UnBreakConfigs(configFile);
+                _configs.SaveConfigurations();
+            }
+
+            checkBoxMoods.Checked = _configs.SkipMoods;
+            checkBoxSkipDialog.Checked = _configs.SkipDialogs;
+            checkBoxSkipNarrator.Checked = _configs.SkipNarrator;
+
+            if (_configs.MaxLineLength < numericUpDown1.Minimum)
+            {
+                _configs.MaxLineLength = Convert.ToInt32(numericUpDown1.Minimum);
+                numericUpDown1.Minimum = 0;
+            }
+            else
+            {
+                numericUpDown1.Value = _configs.MaxLineLength;
+            }
+        }
+
+        public void SaveConfigurations() => _configs.SaveConfigurations();
     }
 }
