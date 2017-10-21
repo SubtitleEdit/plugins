@@ -169,19 +169,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
             }
 
-            string settingFile = Path.Combine(FileUtils.Plugins, "hicolor-config.xml");
-            if (File.Exists(settingFile))
+            string configFile = FileUtils.GetConfigFile("hicolor-config.xml");
+            if (File.Exists(configFile))
             {
-                // TODO: try reading previous config file and delete the old file
-                _configs = Configuration<ColorConfig>.LoadConfiguration(settingFile);
+                _configs = Configuration<ColorConfig>.LoadConfiguration(configFile);
             }
             else
             {
-                _configs = new ColorConfig(settingFile)
-                {
-                    Narrator = Color.GreenYellow.ToArgb(),
-                    Moods = Color.Maroon.ToArgb()
-                };
+                _configs = new ColorConfig(configFile);
                 _configs.SaveConfigurations();
             }
         }

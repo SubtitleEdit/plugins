@@ -10,7 +10,6 @@ namespace Plugin_Updater
 {
     public partial class Main : Form
     {
-
         private string _metaFile = string.Empty;
         private XDocument _xDoc;
         private IList<PluginInfo> _plugins;

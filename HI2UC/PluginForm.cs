@@ -9,12 +9,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form, IConfigurable
     {
-        public string FixedSubtitle { get; private set; }
+        public string Subtitle { get; private set; }
         private readonly Subtitle _subtitle;
 
         private Dictionary<string, string> _fixedTexts = new Dictionary<string, string>();
         private HIConfigs _hiConfigs;
         private HearingImpaired _hearingImpaired;
+
+        private readonly bool _isLoading = true;
 
         public PluginForm(Subtitle subtitle, string name, string description)
         {
@@ -44,6 +46,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             InitComboBoxHITyle();
             UpdateUIFromConfigs(_hiConfigs);
+
+            _isLoading = false;
             GeneratePreview();
             /*
             this.KeyDown += (s, e) =>
@@ -56,7 +60,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void UpdateUIFromConfigs(HIConfigs configs)
         {
-            // TODO:
             checkBoxSingleLineNarrator.Checked = configs.SingleLineNarrator;
             checkBoxRemoveSpaces.Checked = configs.RemoveExtraSpaces;
             checkBoxNames.Checked = configs.NarratorToUppercase;
@@ -96,7 +99,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 ApplyChanges();
                 Cursor = Cursors.Default;
             }
-            FixedSubtitle = _subtitle.ToText();
+            Subtitle = _subtitle.ToText();
             DialogResult = DialogResult.OK;
         }
 
@@ -127,11 +130,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.EndUpdate();
         }
 
-        private void checkBoxNarrator_CheckedChanged(object sender, EventArgs e)
-        {
-            _hearingImpaired.Config.NarratorToUppercase = checkBoxNames.Checked;
-            GeneratePreview();
-        }
+        private void checkBoxNarrator_CheckedChanged(object sender, EventArgs e) => GeneratePreview();
 
         private void CheckTypeStyle(object sender, EventArgs e)
         {
@@ -174,29 +173,21 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        private void comboBoxStyle_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (listViewFixes.Items.Count < 0)
-            {
-                return;
-            }
-            // Is this using ref passing? o.O
-            HIStyle currentStyle = _hiConfigs.Style;
-            if ((int)currentStyle != comboBoxStyle.SelectedIndex)
-            {
-                currentStyle = (HIStyle)comboBoxStyle.SelectedIndex;
-                _hiConfigs.Style = currentStyle;
-                GeneratePreview();
-            }
-        }
+        private void comboBoxStyle_SelectedIndexChanged(object sender, EventArgs e) => GeneratePreview();
 
         private void GeneratePreview()
         {
-            // One of the options must be checked.
-            if (!(checkBoxMoods.Checked || checkBoxNames.Checked || checkBoxRemoveSpaces.Checked))
+            if (_isLoading)
             {
                 return;
             }
+
+            // update configuration
+            _hiConfigs.NarratorToUppercase = checkBoxNames.Checked;
+            _hiConfigs.MoodsToUppercase = checkBoxMoods.Checked;
+            _hiConfigs.RemoveExtraSpaces = checkBoxRemoveSpaces.Checked;
+            _hiConfigs.SingleLineNarrator = checkBoxSingleLineNarrator.Checked;
+            _hiConfigs.Style = ((ComboBoxItem)comboBoxStyle.SelectedItem).Style;
 
             listViewFixes.BeginUpdate();
             listViewFixes.Items.Clear();
@@ -309,14 +300,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Cursor = Cursors.Default;
         }
 
-        private void checkBoxRemoveSpaces_CheckedChanged(object sender, EventArgs e)
-        {
-            if (listViewFixes.Items.Count == 0 || _subtitle.Paragraphs.Count == 0)
-            {
-                return;
-            }
-            GeneratePreview();
-        }
+        private void checkBoxRemoveSpaces_CheckedChanged(object sender, EventArgs e) => GeneratePreview();
 
         private void listViewFixes_Resize(object sender, EventArgs e)
         {
@@ -325,17 +309,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.Columns[4].Width = newWidth;
         }
 
-        private void checkBoxMoods_CheckedChanged(object sender, EventArgs e)
-        {
-            _hearingImpaired.Config.MoodsToUppercase = checkBoxMoods.Checked;
-            GeneratePreview();
-        }
+        private void checkBoxMoods_CheckedChanged(object sender, EventArgs e) => GeneratePreview();
 
-        private void checkBoxSingleLineNarrator_CheckedChanged(object sender, EventArgs e)
-        {
-            _hearingImpaired.Config.SingleLineNarrator = checkBoxSingleLineNarrator.Checked;
-            GeneratePreview();
-        }
+        private void checkBoxSingleLineNarrator_CheckedChanged(object sender, EventArgs e) => GeneratePreview();
 
         private static Paragraph GetParagraph(ListViewItem lvi) => lvi.Tag as Paragraph;
 

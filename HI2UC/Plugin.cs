@@ -80,7 +80,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             using (var form = new PluginForm(sub, HI2UC.Name, HI2UC.Description))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
-                    return form.FixedSubtitle;
+                    return form.Subtitle;
             }
             return string.Empty;
         }

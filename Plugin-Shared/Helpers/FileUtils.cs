@@ -7,9 +7,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
     public static class FileUtils
     {
         /// <summary>
-        /// Returns the directory where the SubtitleEdit.exe file is located
+        /// Returns data directory.
         /// </summary>
-        public static string Installation { get; set; }
+        public static string DataDirectory { get; set; }
 
         /// <summary>
         /// Return plugins installation directory.
@@ -43,22 +43,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
             string path = new Uri(assembly.CodeBase).LocalPath; // path\SubtitleEdit.exe
 
             // the directory where the datas are located
-            Installation = Path.GetDirectoryName(path);
-
-            Dictionary = Path.Combine(Installation, "Dictionaries");
-
-            string pluginDirectory = Path.Combine(path, "Plugins");
-            if (!Directory.Exists(path))
+            DataDirectory = Path.GetDirectoryName(path);
+            Dictionary = Path.Combine(DataDirectory, "Dictionaries");
+            Plugins = Path.Combine(DataDirectory, "Plugins");
+            if (!Directory.Exists(Plugins))
             {
-                pluginDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit");
-                pluginDirectory = Path.Combine(path, "Plugins");
+                DataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit");
+                Dictionary = Path.Combine(DataDirectory, "Dictionaries");
+                Plugins = Path.Combine(DataDirectory, "Plugins");
                 IsPortableMode = false;
             }
             else
             {
                 IsPortableMode = true;
             }
-            Plugins = pluginDirectory;
         }
 
         public static string GetConfigFile(string fileName) => Path.Combine(Plugins, fileName);

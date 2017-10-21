@@ -51,7 +51,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     //xmlWriter.WriteStartElement(propInfo.Name);
 
                     string propValue = propInfo.GetValue(this, null).ToString();
-
                     xmlWriter.WriteElementString(propInfo.Name, propValue);
 
                     //xmlWriter.WriteEndElement();
@@ -60,7 +59,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                 //xmlWriter.WriteEndDocument();
             }
-
             File.WriteAllText(_configFile, sb.ToString(), Encoding.UTF8);
 
         }
