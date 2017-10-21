@@ -118,7 +118,7 @@
             this.labelNarratorsColor.Size = new System.Drawing.Size(234, 23);
             this.labelNarratorsColor.TabIndex = 4;
             this.labelNarratorsColor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.labelNarratorsColor.DoubleClick += new System.EventHandler(this.labelColor_DoubleClick);
+            this.labelNarratorsColor.DoubleClick += new System.EventHandler(ChangeColorHandler);
             // 
             // buttonNarratorColor
             // 
@@ -128,7 +128,7 @@
             this.buttonNarratorColor.TabIndex = 1;
             this.buttonNarratorColor.Text = "Pick color";
             this.buttonNarratorColor.UseVisualStyleBackColor = true;
-            this.buttonNarratorColor.Click += new System.EventHandler(this.buttonNarratorColor_Click);
+            this.buttonNarratorColor.Click += new System.EventHandler(ChangeColorHandler);
             // 
             // buttonMoodsColor
             // 
@@ -138,7 +138,7 @@
             this.buttonMoodsColor.TabIndex = 3;
             this.buttonMoodsColor.Text = "Pick color";
             this.buttonMoodsColor.UseVisualStyleBackColor = true;
-            this.buttonMoodsColor.Click += new System.EventHandler(this.buttonMoodsColor_Click);
+            this.buttonMoodsColor.Click += new System.EventHandler(ChangeColorHandler);
             // 
             // labelMoodsColor
             // 
@@ -150,7 +150,7 @@
             this.labelMoodsColor.Size = new System.Drawing.Size(234, 23);
             this.labelMoodsColor.TabIndex = 5;
             this.labelMoodsColor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.labelMoodsColor.DoubleClick += new System.EventHandler(this.labelColor_DoubleClick);
+            this.labelMoodsColor.DoubleClick += new System.EventHandler(ChangeColorHandler);
             // 
             // label2
             // 
@@ -179,7 +179,6 @@
             this.buttonCancel.TabIndex = 3;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
             // buttonOK
             // 
@@ -189,7 +188,7 @@
             this.buttonOK.TabIndex = 2;
             this.buttonOK.Text = "OK";
             this.buttonOK.UseVisualStyleBackColor = true;
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
             // 
             // buttonRemove
             // 
@@ -199,7 +198,7 @@
             this.buttonRemove.TabIndex = 1;
             this.buttonRemove.Text = "Remove color/s";
             this.buttonRemove.UseVisualStyleBackColor = true;
-            this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_Click);
+            this.buttonRemove.Click += new System.EventHandler(this.ButtonRemove_Click);
             // 
             // linkLabelIvandrofly
             // 
@@ -211,7 +210,7 @@
             this.linkLabelIvandrofly.TabStop = true;
             this.linkLabelIvandrofly.Tag = "https://github.com/ivandrofly";
             this.linkLabelIvandrofly.Text = "By: @ivandrofly";
-            this.linkLabelIvandrofly.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelIvandrofly_LinkClicked);
+            this.linkLabelIvandrofly.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelIvandrofly_LinkClicked);
             // 
             // MainForm
             // 
@@ -233,7 +232,6 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Hearing Impaired Colorer";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);

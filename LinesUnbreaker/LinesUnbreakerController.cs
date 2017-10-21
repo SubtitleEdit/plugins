@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Nikse.SubtitleEdit.PluginLogic
@@ -10,12 +8,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         private readonly Regex _regexNarrator = new Regex(":\\B", RegexOptions.Compiled);
         private readonly IList<Paragraph> _paragraphs;
-        private readonly Configuration _configs;
+        private readonly UnBreakConfigs _configs;
         private readonly char[] _moodChars = { '(', '[' };
 
         public event EventHandler<ParagraphEventArgs> TextUnbreaked;
 
-        public LinesUnbreakerController(IList<Paragraph> paragraphs, Configuration configs)
+        public LinesUnbreakerController(IList<Paragraph> paragraphs, UnBreakConfigs configs)
         {
             _paragraphs = paragraphs;
             _configs = configs;
@@ -29,7 +27,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     var oldText = p.Text;
                     var text = UnbreakLines(p.Text);
-                    var t = StringUtils.RemoveHtmlTags(text, true);
+                    var t = HtmlUtils.RemoveTags(text, true);
                     if (text.Length != oldText.Length && t.Length < _configs.MaxLineLength)
                     {
                         //TODO: oldText = Utilities.RemoveHtmlTags(oldText, true);
@@ -46,7 +44,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string UnbreakLines(string s)
         {
-            var temp = StringUtils.RemoveHtmlTags(s, true);
+            var temp = HtmlUtils.RemoveTags(s, true);
             temp = temp.Replace("  ", " ").Trim();
 
             if (_configs.SkipDialogs && (temp.StartsWith('-') || temp.Contains(Environment.NewLine + "-")))

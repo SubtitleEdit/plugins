@@ -214,11 +214,6 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxStyle.FormattingEnabled = true;
-            this.comboBoxStyle.Items.AddRange(new object[] {
-            "Uppercase (HELLO)",
-            "Lowercase (hello)",
-            "First Char in Word (Hello Hello)",
-            "UpperLower (HeLlO)"});
             this.comboBoxStyle.Location = new System.Drawing.Point(756, 38);
             this.comboBoxStyle.MaxDropDownItems = 5;
             this.comboBoxStyle.Name = "comboBoxStyle";
@@ -270,7 +265,7 @@
             this.buttonApply.TabIndex = 8;
             this.buttonApply.Text = "&Apply";
             this.buttonApply.UseVisualStyleBackColor = true;
-            this.buttonApply.Click += new System.EventHandler(this.buttonApply_Click);
+            this.buttonApply.Click += new System.EventHandler(this.ButtonApply_Click);
             // 
             // checkBoxRemoveSpaces
             // 
@@ -334,8 +329,6 @@
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Hearing Impaired to Uppercase";
-            this.Load += new System.EventHandler(this.PluginForm_Load);
-            this.Shown += new System.EventHandler(this.PluginForm_Shown);
             this.contextMenuStrip1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);

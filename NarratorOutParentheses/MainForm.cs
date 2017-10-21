@@ -1,19 +1,17 @@
-﻿using Nikse.SubtitleEdit.PluginLogic.Models;
-using System;
+﻿using System;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class MainForm : Form
     {
-        private readonly Configs _configs;
-        public string FixedSubtitle { get; private set; }
+        public string Subtitle { get; private set; }
 
         private Subtitle _subtitle;
         private string _fileName;
         private bool _allowFixes;
 
-        public MainForm(Subtitle sub, Configs configs, string fileName, string description)
+        public MainForm(Subtitle sub, string fileName, string description)
         {
             // TODO: Complete member initialization
             InitializeComponent();
@@ -29,7 +27,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             };
             _subtitle = sub;
             _fileName = fileName;
-            _configs = configs;
             GeneratePreview();
         }
 
@@ -55,7 +52,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         break;
                     char tagOpen = text[idx];
                     var mood = text.Substring(idx, endIdx - idx + 1).Trim(tagOpen, ' ', tagClose);
-                    if (NameList.IsInListName(mood))
+                    if (NameList.Contains(mood))
                     {
                         // Todo: if name contains <i>: note that there may be italic tag at begining
                         text = text.Remove(idx, endIdx - idx + 1).TrimStart(':', ' ');
@@ -155,8 +152,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             var item = new ListViewItem() { Checked = true, UseItemStyleForSubItems = true, Tag = p };
             item.SubItems.Add(p.Number.ToString());
-            item.SubItems.Add(before.Replace(Environment.NewLine, _configs.UILineBreak));
-            item.SubItems.Add(after.Replace(Environment.NewLine, _configs.UILineBreak));
+            item.SubItems.Add(before.Replace(Environment.NewLine, Options.UILineBreak));
+            item.SubItems.Add(after.Replace(Environment.NewLine, Options.UILineBreak));
             listViewFixes.Items.Add(item);
         }
 
@@ -164,7 +161,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             _allowFixes = true;
             GeneratePreview();
-            FixedSubtitle = _subtitle.ToText();
+            Subtitle = _subtitle.ToText();
         }
 
         private void buttonGetNames_Click(object sender, EventArgs e)
@@ -183,7 +180,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             _allowFixes = true;
             GeneratePreview();
-            FixedSubtitle = _subtitle.ToText();
+            Subtitle = _subtitle.ToText();
             _allowFixes = !_allowFixes;
             listViewFixes.Items.Clear();
             GeneratePreview();

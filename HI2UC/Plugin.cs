@@ -1,31 +1,59 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    public class HI2UC : IPlugin // dll file name must "<classname>.dll" - e.g. "Haxor.dll"
+    // dll file name must "<classname>.dll" - e.g. "Haxor.dll"
+    public class HI2UC : IPlugin
     {
         #region Metadata
 
-        string IPlugin.ActionType => "tool";// Can be one of these: file, tool, sync, translate, spellcheck
+        public string ActionType => "tool";
 
-        string IPlugin.Description => "Convert moods and Narrator to Uppercase";
+        public string Description { get; }
 
-        string IPlugin.Name => "Hearing Impaired to Uppercase";
+        public string Name { get; }
 
-        string IPlugin.Shortcut => string.Empty;
+        public string Shortcut { get; }
 
-        string IPlugin.Text => "Hearing Impaired to Uppercase";
+        // the text that will be displaying when subtitle edit context-menu
+        public string Text { get; }
 
-        decimal IPlugin.Version => 3.5M; //Gets or sets the major, minor, build, and revision numbers of the assembly
+        public decimal Version { get; }
 
         #endregion
 
-        string IPlugin.DoAction(Form parentForm, string subtitleText, double frameRate,
-            string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
+        public HI2UC()
+        {
+            // get metadata from assembly
+            //var descriptionAttribute = Assembly.GetExecutingAssembly()
+            //    .GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false)
+            //    .OfType<AssemblyDescriptionAttribute>().FirstOrDefault();
+
+            var thisAssembly = Assembly.GetExecutingAssembly();
+            var descriptionAttribute = AssemblyUtils.GetCustomAttribute<AssemblyDescriptionAttribute>(thisAssembly);
+            AssemblyName assemblyName = thisAssembly.GetName();
+
+            //var AssemblyTitleAttribute = AssemblyUtils.GetCustomAttribute<AssemblyTitleAttribute>(thisAssembly);
+            //Name = AssemblyTitleAttribute.Title;
+            //Trace.WriteLine(Name);
+
+            Name = assemblyName.Name;
+            Text = assemblyName.Name;
+
+            Description = descriptionAttribute.Description;
+            Version = Convert.ToDecimal(assemblyName.Version.ToString(2));
+
+            Shortcut = string.Empty;
+        }
+
+
+        public string DoAction(Form parentForm, string srtText, double frame, string uiLineBreak, string file, string videFile, string rawText)
         {
             // Make sure subtitle isn't null or empty
-            if (string.IsNullOrWhiteSpace(subtitleText))
+            if (string.IsNullOrWhiteSpace(srtText))
             {
                 MessageBox.Show("No subtitle loaded", parentForm.Text,
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -33,18 +61,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
 
             // Use custom separator for list view new lines
-            if (!string.IsNullOrEmpty(listViewLineSeparatorString))
-                Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
+            if (!string.IsNullOrEmpty(uiLineBreak))
+            {
+                Options.UILineBreak = uiLineBreak;
+            }
 
             // Get subtitle raw lines
             var list = new List<string>();
-            list.AddRange(subtitleText.SplitToLines());
+            list.AddRange(srtText.SplitToLines());
 
             var srt = new SubRip();
             var sub = new Subtitle(srt);
 
             // Load raws subtitle lines into Subtitle object
-            srt.LoadSubtitle(sub, list, subtitleFileName);
+            srt.LoadSubtitle(sub, list, file);
 
             IPlugin HI2UC = this;
             using (var form = new PluginForm(sub, HI2UC.Name, HI2UC.Description))
@@ -54,5 +84,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             return string.Empty;
         }
+
     }
 }

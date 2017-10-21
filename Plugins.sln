@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2000
+VisualStudioVersion = 15.0.27009.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSpellCheck", "WordSpellCheck\DLL\WordSpellCheck.csproj", "{40D9F0DB-1C62-4CFC-A412-796E753AA057}"
 EndProject
@@ -63,6 +63,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordCensor", "WordCensor\WordCensor.csproj", "{8500E79B-A64B-4FDF-924C-B959A93A5717}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Plugin-Shared", "Plugin-Shared\Plugin-Shared.shproj", "{59AA41AA-6C3E-456F-8EC1-3C0C90E31811}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin-Updater", "Plugin-Updater\Plugin-Updater.csproj", "{59019475-D4A5-4F30-A73A-BAB4524E3B70}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -174,6 +176,10 @@ Global
 		{8500E79B-A64B-4FDF-924C-B959A93A5717}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8500E79B-A64B-4FDF-924C-B959A93A5717}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8500E79B-A64B-4FDF-924C-B959A93A5717}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59019475-D4A5-4F30-A73A-BAB4524E3B70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59019475-D4A5-4F30-A73A-BAB4524E3B70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59019475-D4A5-4F30-A73A-BAB4524E3B70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59019475-D4A5-4F30-A73A-BAB4524E3B70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

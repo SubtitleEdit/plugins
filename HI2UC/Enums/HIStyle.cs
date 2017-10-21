@@ -4,7 +4,7 @@
     {
         UpperCase,
         LowerCase,
-        FirstUppercase,
+        TitleCase,
         UpperLowerCase
     }
 }

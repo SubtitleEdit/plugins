@@ -6,7 +6,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class HearingImpaired
     {
-        public Configuration Config { get; private set; }
+        public HIConfigs Config { get; private set; }
 
         private static readonly char[] HIChars = { '(', '[' };
         private static readonly Regex RegexExtraSpaces = new Regex(@"(?<=[\(\[]) +| +(?=[\)\]])", RegexOptions.Compiled);
@@ -15,14 +15,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private readonly Lazy<StringBuilder> _lazySb = new Lazy<StringBuilder>();
         private StringBuilder _sb;
 
-        public HearingImpaired(Configuration config)
+        public HearingImpaired(HIConfigs config)
         {
             Config = config;
         }
 
         public string NarratorToUppercase(string text)
         {
-            string noTagText = StringUtils.RemoveHtmlTags(text, true).TrimEnd().TrimEnd('"');
+            string noTagText = HtmlUtils.RemoveTags(text, true).TrimEnd().TrimEnd('"');
             int index = noTagText.IndexOf(':');
 
             // Skip single line that ends with ':'.
@@ -43,7 +43,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i];
-                string noTagLine = StringUtils.RemoveHtmlTags(line, true);
+                string noTagLine = HtmlUtils.RemoveTags(line, true);
                 int colonIdx = noTagLine.IndexOf(':');
 
                 // Only allow colon at last position if it's 1st line.
@@ -127,7 +127,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     }
                     strippedText = _sb.ToString();
                     break;
-                case HIStyle.FirstUppercase:
+                case HIStyle.TitleCase:
                     // "foobar foobar" to (Foobar Foobar)
                     strippedText = RegexFirstChar.Replace(strippedText.ToLower(), x => x.Value.ToUpper());
                     break;
@@ -143,7 +143,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private static bool IsQualifiedNarrator(string line, int colonIdx)
         {
-            string noTagCapturedText = StringUtils.RemoveHtmlTags(line.Substring(0, colonIdx + 1), true);
+            string noTagCapturedText = HtmlUtils.RemoveTags(line.Substring(0, colonIdx + 1), true);
             if (string.IsNullOrWhiteSpace(noTagCapturedText))
             {
                 return false;

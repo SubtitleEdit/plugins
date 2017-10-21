@@ -46,36 +46,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static bool IsInteger(string s) => int.TryParse(s, out int i);
 
-        public static string RemoveHtmlTags(string s, bool alsoSSA)
-        {
-            if (s == null || s.Length < 3)
-            {
-                return s;
-            }
-            if (alsoSSA)
-            {
-                const string ssaStart = "{\\";
-                var startIdx = s.IndexOf(ssaStart, StringComparison.Ordinal);
-                while (startIdx >= 0)
-                {
-                    var endIdx = s.IndexOf('}', startIdx + 2);
-                    if (endIdx < startIdx) // Invalid SSA
-                        break;
-                    s = s.Remove(startIdx, endIdx - startIdx + 1);
-                    startIdx = s.IndexOf(ssaStart, startIdx);
-                }
-            }
-            var idx = s.IndexOf('<');
-            while (idx >= 0)
-            {
-                var endIdx = s.IndexOf('>', idx + 1);
-                if (endIdx < idx) break;
-                s = s.Remove(idx, endIdx - idx + 1);
-                idx = s.IndexOf('<', idx);
-            }
-            return s;
-        }
-
         //public static string TryFixBrokenBrackets(string text, char bracketType, int nextIdx, Subtitle sub)
         //{
         //    var before = text;
@@ -158,5 +128,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
         }
 
         public static string RemoveBadChars(string line) => line.Replace('\0', ' ');
+
+        public static string RemoveSsaTags(string s)
+        {
+            var idx = s.IndexOf('{');
+            while (idx >= 0)
+            {
+                var endIdx = s.IndexOf('}', idx + 1);
+                if (endIdx < 0)
+                    break;
+                s = s.Remove(idx, endIdx - idx + 1);
+                idx = s.IndexOf('{', idx);
+            }
+            return s;
+        }
+
     }
 }

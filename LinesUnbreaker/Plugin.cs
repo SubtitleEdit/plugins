@@ -16,13 +16,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (string.IsNullOrWhiteSpace(subtitle))
             {
-                MessageBox.Show("No subtitle loaded", parentForm.Text,
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("No subtitle loaded", parentForm.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return string.Empty;
             }
 
             if (!string.IsNullOrEmpty(listViewLineSeparatorString))
-                Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
+            {
+                Options.UILineBreak = listViewLineSeparatorString;
+            }
 
             var list = subtitle.SplitToLines();
 
@@ -33,7 +34,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
                 {
-                    return form.FixedSubtitle;
+                    return form.Subtiitle;
                 }
             }
             return string.Empty;

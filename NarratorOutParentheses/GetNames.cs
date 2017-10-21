@@ -170,7 +170,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return;
 
             // if file doesn't exist create a new one, check iisn't already in list
-            var path = System.IO.Path.Combine(NameList.GetDicTionaryFolder(), "moodsIgnore.xml");
+            var path = System.IO.Path.Combine(NameList.GetDictionaryFolder(), "moodsIgnore.xml");
             XDocument xdoc = null;
             if (System.IO.File.Exists(path))
             {
