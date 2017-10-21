@@ -1,4 +1,5 @@
-﻿<Plugins>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Plugins>
   <SubtitleEditVersion>3.3</SubtitleEditVersion>
   <Plugin>
     <Name>Dialogue one hyphen</Name>
@@ -10,15 +11,15 @@
   <Plugin>
     <Name>Hearing Impaired to Uppercase</Name>
     <Description>Converts text inside "[]" / "()" to Uppercase (by Ivandrofly)</Description>
-    <Version>3.5</Version>
-    <Date>2017-09-4</Date>
+    <Version>3.6</Version>
+    <Date>2017-10-21</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/HI2UC.zip</Url>
   </Plugin>
   <Plugin>
     <Name>Lines Unbreaker</Name>
     <Description>Helps unbreaking unnecessary shorten lines (by Ivandrofly)</Description>
-    <Version>1.6</Version>
-    <Date>2017-10-05</Date>
+    <Version>1.7</Version>
+    <Date>2017-10-21</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/LinesUnbreaker.zip</Url>
   </Plugin>
   <Plugin>
@@ -87,8 +88,8 @@
   <Plugin>
     <Name>Hearing Impaired Colorer</Name>
     <Description>Set color for Hearing Impaired annotations (by Ivandrofly)</Description>
-    <Version>0.3</Version>
-    <Date>2017-02-28</Date>
+    <Version>0.5</Version>
+    <Date>2017-10-21</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/HIColorer.zip</Url>
   </Plugin>
   <Plugin>
