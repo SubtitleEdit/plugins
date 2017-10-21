@@ -155,12 +155,22 @@ namespace Plugin_Updater
 
             try
             {
-                PluginInfo pluginInfo = (PluginInfo)listViewPluginInfo.SelectedItems[0].Tag;
+                ListViewItem lvi = listViewPluginInfo.SelectedItems[0];
+                PluginInfo pluginInfo = (PluginInfo)lvi.Tag;
                 pluginInfo.Name = textBoxName.Text;
                 pluginInfo.Description = textBoxDescription.Text;
                 pluginInfo.Version = numericUpDown1.Value;
                 pluginInfo.Date = dateTimePicker1.Value;
                 pluginInfo.Url = new Uri(textBoxUrl.Text);
+
+                // update listview
+                lvi.Text = pluginInfo.Name;
+                lvi.SubItems[1].Text = pluginInfo.Description;
+                lvi.SubItems[2].Text = pluginInfo.Version.ToString();
+                lvi.SubItems[3].Text = pluginInfo.Date.ToString("yyyy-MM-dd");
+                lvi.SubItems[4].Text = pluginInfo.Url.ToString();
+
+                MessageBox.Show("Plugin updated :)");
             }
             catch (Exception ex)
             {
@@ -198,7 +208,3 @@ namespace Plugin_Updater
         }
     }
 }
-
-
-// TODO:
-// - Add quicker way to select today in date-time
