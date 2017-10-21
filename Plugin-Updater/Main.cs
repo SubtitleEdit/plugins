@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -197,5 +192,14 @@ namespace Plugin_Updater
             }
             Application.Exit();
         }
+
+        private void buttonCancel_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }
+
+
+// TODO:
+// - Add quicker way to select today in date-time
