@@ -179,11 +179,11 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(214, 69);
+            this.label1.Location = new System.Drawing.Point(184, 70);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(91, 17);
+            this.label1.Size = new System.Drawing.Size(131, 17);
             this.label1.TabIndex = 4;
-            this.label1.Text = "Shorter than:";
+            this.label1.Text = "Shorter or equal to:";
             // 
             // numericUpDown1
             // 

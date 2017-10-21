@@ -23,24 +23,29 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             foreach (var p in _paragraphs)
             {
-                if (p.NumberOfLines >= 2)
+                if (p.NumberOfLines == 1)
                 {
-                    var oldText = p.Text;
-                    var text = UnbreakLines(p.Text);
-                    var t = HtmlUtils.RemoveTags(text, true);
-                    if (text.Length != oldText.Length && t.Length < _configs.MaxLineLength)
-                    {
-                        //TODO: oldText = Utilities.RemoveHtmlTags(oldText, true);
-                        OnTextUnbreaked(p, text);
-                    }
+                    continue;
+                }
+
+                var oldText = p.Text;
+                var text = UnbreakLines(p.Text);
+
+                // only unbreak if text length <= MaxLineLenth
+                if (HtmlUtils.RemoveTags(text, true).Length > _configs.MaxLineLength)
+                {
+                    continue;
+                }
+
+                if (text.Length != oldText.Length)
+                {
+                    //TODO: oldText = Utilities.RemoveHtmlTags(oldText, true);
+                    OnTextUnbreaked(p, text);
                 }
             }
         }
 
-        private void OnTextUnbreaked(Paragraph p, string newText)
-        {
-            TextUnbreaked?.Invoke(this, new ParagraphEventArgs(p, newText));
-        }
+        private void OnTextUnbreaked(Paragraph p, string newText) => TextUnbreaked?.Invoke(this, new ParagraphEventArgs(p, newText));
 
         private string UnbreakLines(string s)
         {

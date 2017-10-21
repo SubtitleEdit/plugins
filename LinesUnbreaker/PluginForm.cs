@@ -19,7 +19,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private readonly LinesUnbreakerController _lineUnbreakerController;
 
         private UnBreakConfigs _configs;
-        private bool _isLoading;
+
+        private bool _isLoading = true;
 
         public PluginForm(Subtitle subtitle)
         {
@@ -33,11 +34,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 _configs.SaveConfigurations();
             };
 
-            _isLoading = true;
             LoadConfigurations();
             _lineUnbreakerController = new LinesUnbreakerController(subtitle.Paragraphs, _configs);
             _lineUnbreakerController.TextUnbreaked += LineUnbreakerControllerTextUnbreaked;
             _isLoading = false;
+            GeneratePreview();
         }
 
         private void LineUnbreakerControllerTextUnbreaked(object sender, ParagraphEventArgs e)
