@@ -44,7 +44,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Text = assemblyName.Name;
 
             Description = descriptionAttribute.Description;
-            Version = Convert.ToDecimal(assemblyName.Version.ToString(2));
+
+            try
+            {
+                // seem to throw when culture is cs-CZ - Czech (Czech Republic)
+                // TODO: Fix
+                Version = Convert.ToDecimal(assemblyName.Version.ToString(2));
+            }
+            catch
+            {
+                Version = 3.7M;
+            }
 
             Shortcut = string.Empty;
         }
