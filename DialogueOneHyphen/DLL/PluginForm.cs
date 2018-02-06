@@ -88,14 +88,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
                 if (text != oldText)
                 {
+                    if (text.StartsWith("<i> "))
+                        text = text.Remove(3, 1);
                     text = text.Replace("  ", " ");
                     text = text.Replace(" " + Environment.NewLine, Environment.NewLine);
                     text = text.Replace(Environment.NewLine + " ", Environment.NewLine);
                     text = text.Replace(Environment.NewLine + " ", Environment.NewLine).Trim();
                     _totalFixes++;
                     _fixedParagraphs.Add(p.ID, text);
-                    text = Utilities.RemoveHtmlTags(text, true);
-                    oldText = Utilities.RemoveHtmlTags(oldText, true);
                     AddFixToListView(p, fixAction, oldText, text);
                 }
             }

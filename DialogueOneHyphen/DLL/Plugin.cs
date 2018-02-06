@@ -9,7 +9,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "Dialogues - remove hyphen in first line in dialogues...";
 
-        decimal IPlugin.Version => 0.6M;
+        decimal IPlugin.Version => 0.7M;
 
         string IPlugin.Description => "Removes hyphens in first line in dialogues";
 
@@ -18,13 +18,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Shortcut => string.Empty;
 
-        string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName,
-            string videoFileName, string rawText)
+        string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString,
+                                string subtitleFileName, string videoFileName, string rawText)
         {
             if (string.IsNullOrWhiteSpace(subtitle))
             {
-                MessageBox.Show("No subtitle loaded", parentForm.Text,
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("No subtitle loaded", parentForm.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return string.Empty;
             }
 

@@ -8,41 +8,21 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             // - Get lost!
             // - Mister, I'll sing you any song...
-            if (!text.Contains('-'))
-            {
+            if (!text.Contains('-') || !Utilities.RemoveHtmlTags(text, true).TrimStart().StartsWith("-", StringComparison.Ordinal))
                 return text;
-            }
-            // Return already removed at beginning.
-            string[] lines = text.SplitToLines();
-            string line = lines[0];
-            string noTagLine = line;
+            var lines = text.SplitToLines();
+            if (lines.Length != 2)
+                return text;
+            if (!lines[1].Contains(':') && !Utilities.RemoveHtmlTags(lines[1], true).TrimStart().StartsWith("-", StringComparison.Ordinal))
+                return text;
 
-            bool tagPresent = false;
-            if (noTagLine.Length > 0 && noTagLine[0] != '-' && !char.IsLetter(noTagLine[0]))
-            {
-                Utilities.RemoveHtmlTags(line, true).TrimStart();
-                tagPresent = !tagPresent;
-            }
-
-            if (noTagLine.StartsWith('-'))
-            {
-                if (tagPresent)
-                {
-                    int hyphenIdx = line.IndexOf('-');
-                    string post = line.Substring(0, hyphenIdx);
-                    line = line.Remove(0, hyphenIdx + 1).Trim('-', ' ');
-                    line = post + line;
-                }
-                else
-                {
-                    line = line.Trim('-', ' ');
-                }
-            }
-            if (line.Length != lines[0].Length)
-            {
-                lines[0] = line;
-            }
-            return string.Join(Environment.NewLine, lines);
+            int hyphenIdx = text.IndexOf('-');
+            text = text.Remove(hyphenIdx, 1);
+            if (hyphenIdx > 0 && hyphenIdx < text.Length + 1 && " >}".Contains(text[hyphenIdx - 1].ToString()) && text[hyphenIdx] == ' ')
+                text = text.Remove(hyphenIdx, 1);
+            if (hyphenIdx > 0 && hyphenIdx < text.Length + 2 && " >}".Contains(text[hyphenIdx].ToString()) && text[hyphenIdx + 1] == ' ')
+                text = text.Remove(hyphenIdx + 1, 1);
+            return text.TrimStart();
         }
 
         public static string RemoveAllHyphens(string text)
