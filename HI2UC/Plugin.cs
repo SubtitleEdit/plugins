@@ -36,25 +36,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var descriptionAttribute = AssemblyUtils.GetCustomAttribute<AssemblyDescriptionAttribute>(thisAssembly);
             AssemblyName assemblyName = thisAssembly.GetName();
 
-            //var AssemblyTitleAttribute = AssemblyUtils.GetCustomAttribute<AssemblyTitleAttribute>(thisAssembly);
-            //Name = AssemblyTitleAttribute.Title;
-            //Trace.WriteLine(Name);
+            // var AssemblyTitleAttribute = AssemblyUtils.GetCustomAttribute<AssemblyTitleAttribute>(thisAssembly);
+            // Name = AssemblyTitleAttribute.Title;
+            // Trace.WriteLine(Name);
 
             Name = assemblyName.Name;
             Text = assemblyName.Name;
 
             Description = descriptionAttribute.Description;
 
-            try
-            {
-                // seem to throw when culture is cs-CZ - Czech (Czech Republic)
-                // TODO: Fix
-                Version = Convert.ToDecimal(assemblyName.Version.ToString(2));
-            }
-            catch
-            {
-                Version = 3.7M;
-            }
+            // use invariant-culture due to some culture uses "," as decimal separator
+            Version = decimal.Parse(assemblyName.Version.ToString(2), System.Globalization.CultureInfo.InvariantCulture);
 
             Shortcut = string.Empty;
         }
