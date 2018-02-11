@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Nikse.SubtitleEdit.PluginLogic;
-using System.Windows.Forms;
-using System.Reflection;
-using System.Linq.Expressions;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Windows.Forms;
 using System.Xml.Linq;
-using static System.Windows.Forms.ListView;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -48,7 +45,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var configFile = Path.Combine(FileUtils.Plugins, "jack-se-config.xml");
             if (File.Exists(configFile))
             {
-                // Xml tamplate
+                // Xml template
                 /*
                  * <urls>
                  *  <url titlie="Ivandrofly (github)">https://wwww.github.com/ivnadrofly</url>
