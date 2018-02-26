@@ -40,6 +40,7 @@ namespace SubtitleEdit
         private static string _to = "DE";
         private const string ParagraphSplitter = "*";
         private bool _abort;
+        private bool _tooManyRequests = false;
 
         public class TranslationLanguage
         {
@@ -133,7 +134,7 @@ namespace SubtitleEdit
 
         private void GeneratePreview(bool setText)
         {
-          //  const int max = 90; // DeepL uses max 90 chars at a time
+            //  const int max = 90; // DeepL uses max 90 chars at a time
             if (_subtitle == null)
                 return;
 
@@ -153,6 +154,15 @@ namespace SubtitleEdit
                 var indexesToTranslate = new List<int>();
                 for (int index = 0; index < _subtitle.Paragraphs.Count; index++)
                 {
+                    if (index < listView1.Items.Count)
+                    {
+                        var listViewItem = listView1.Items[index];
+                        if (!string.IsNullOrWhiteSpace(listViewItem.SubItems[2].Text))
+                        {
+                            continue;
+                        }
+                    }
+
                     Paragraph p = _subtitle.Paragraphs[index];
                     string text = SetFormattingTypeAndSplitting(index, p.Text, (comboBoxLanguageFrom.SelectedItem as TranslationLanguage).Code.StartsWith("ZH"));
                     var before = text;
@@ -182,6 +192,12 @@ namespace SubtitleEdit
                     if (_abort)
                     {
                         _abort = false;
+                        return;
+                    }
+                    if (_tooManyRequests)
+                    {
+                        _tooManyRequests = false;
+                        MessageBox.Show("DeepL returned 'Too many requests' - please wait a while!");
                         return;
                     }
                 }
@@ -224,7 +240,6 @@ namespace SubtitleEdit
 
             var parameter = (BackgroundWorkerParameter)runWorkerCompletedEventArgs.Result;
             var results = GetTextResults(parameter.Result, parameter.Indexes.Count);
-
             textBox1.AppendText(parameter.Log.ToString());
             lock (_myLock)
             {
@@ -264,6 +279,7 @@ namespace SubtitleEdit
                     _subtitle.Paragraphs[index].Text = cleanText;
                     var item = listView1.Items[index];
                     item.SubItems[2].Text = _subtitle.Paragraphs[index].Text;
+                    listView1.EnsureVisible(index);
                     i++;
                 }
             }
@@ -271,6 +287,9 @@ namespace SubtitleEdit
 
         private List<string> GetTextResults(string text, int count)
         {
+            if (string.IsNullOrEmpty(text))
+                return new List<string> { string.Empty };
+
             var result = new string[count];
             var sb = new StringBuilder();
             int index = 0;
@@ -324,15 +343,6 @@ namespace SubtitleEdit
                 .Replace("FROM_LANGUAGE", from)
                 .Replace("TO_LANGUAGE", to);
 
-            //using (var client = new HttpClient())
-            //{
-            //    client.BaseAddress = new Uri("https://www.deepl.com");
-            //    var content = new StringContent(payload, Encoding.UTF8, "application/json");
-            //    var result = client.PostAsync("jsonrpc", content).Result;
-            //    string resultContent = result.Content.ReadAsStringAsync().Result;
-            //    return resultContent;
-            //}
-
             const int maxNumberOfRetries = 2;
             string url = "https://www.deepl.com/jsonrpc";
             var req = WebRequest.Create(url);
@@ -383,9 +393,13 @@ namespace SubtitleEdit
                             {
                                 s = s.Substring(idx + tag.Length).TrimStart().TrimStart('"');
                                 idx = s.IndexOf('"');
+                                while (idx > 0 && s.Substring(idx - 1, 1) == "\\" && idx + 2 < s.Length)
+                                {
+                                    idx = s.IndexOf('"', idx + 1);
+                                }
                                 if (idx > 0)
                                 {
-                                    sb.AppendLine(s.Substring(0, idx) + Environment.NewLine);
+                                    sb.AppendLine(s.Substring(0, idx).Replace("\\\"", "\"") + Environment.NewLine);
                                 }
                             }
                             s = sb.ToString().TrimEnd();
@@ -398,6 +412,10 @@ namespace SubtitleEdit
             }
             catch (Exception exception)
             {
+                if (exception.Message.Contains("(429) Too Many Requests."))
+                {
+                    _tooManyRequests = true;
+                }
                 log.AppendLine(exception.Message + ": " + exception.StackTrace);
                 if (retryLevel < maxNumberOfRetries)
                 {

@@ -189,7 +189,6 @@
             this.Controls.Add(this.comboBoxLanguageTo);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.buttonCancelTranslate);
-            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.buttonTranslate);
             this.Controls.Add(this.comboBoxLanguageFrom);
             this.Controls.Add(this.linkLabel1);
@@ -197,6 +196,7 @@
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOk);
             this.Controls.Add(this.listView1);
+            this.Controls.Add(this.textBox1);
             this.KeyPreview = true;
             this.MinimumSize = new System.Drawing.Size(733, 478);
             this.Name = "MainForm";

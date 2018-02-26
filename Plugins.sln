@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSpellCheck", "WordSpellCheck\DLL\WordSpellCheck.csproj", "{40D9F0DB-1C62-4CFC-A412-796E753AA057}"
 EndProject
@@ -68,6 +68,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin-Updater", "Plugin-Up
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PapagoTranslate", "PapagoTranslate\DLL\PapagoTranslate.csproj", "{535E50EE-A58D-4A35-86E7-74540A4548E4}"
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JackSE", "JackSE\JackSE.csproj", "{D678802E-5D3A-4DB0-94E9-104790D3044B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IspraviMeTranslate", "IspraviMeTranslate\DLL\IspraviMeTranslate.csproj", "{4DB30F73-5A8E-477E-9C18-A1DC59148DE5}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
