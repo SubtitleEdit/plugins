@@ -40,7 +40,8 @@ namespace SubtitleEdit
         private static string _to = "DE";
         private const string ParagraphSplitter = "*";
         private bool _abort;
-        private bool _tooManyRequests = false;
+        private bool _tooManyRequests;
+        private bool _exit;
 
         public class TranslationLanguage
         {
@@ -192,11 +193,13 @@ namespace SubtitleEdit
                     if (_abort)
                     {
                         _abort = false;
+                        _exit = true;
                         return;
                     }
                     if (_tooManyRequests)
                     {
                         _tooManyRequests = false;
+                        _exit = true;
                         MessageBox.Show("DeepL returned 'Too many requests' - please wait a while!");
                         return;
                     }
@@ -235,63 +238,66 @@ namespace SubtitleEdit
 
         private void OnBwRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs runWorkerCompletedEventArgs)
         {
-            if (progressBar1.Value < progressBar1.Maximum)
-                progressBar1.Value++;
+            if (_exit)
+                return;
 
-            var parameter = (BackgroundWorkerParameter)runWorkerCompletedEventArgs.Result;
-            var results = GetTextResults(parameter.Result, parameter.Indexes.Count);
-            textBox1.AppendText(parameter.Log.ToString());
-            lock (_myLock)
+            try
             {
-                int i = 0;
-                foreach (var index in parameter.Indexes)
+                if (progressBar1.Value < progressBar1.Maximum)
+                    progressBar1.Value++;
+
+                var parameter = (BackgroundWorkerParameter)runWorkerCompletedEventArgs.Result;
+                var results = GetTextResults(parameter.Result, parameter.Indexes.Count);
+                textBox1.AppendText(parameter.Log.ToString());
+                lock (_myLock)
                 {
-                    var cleanText = results[i];
-                    if (_autoSplit[index])
+                    int i = 0;
+                    foreach (var index in parameter.Indexes)
                     {
-                        cleanText = Utilities.AutoBreakLine(cleanText);
-                    }
-                    if (Utilities.GetNumberOfLines(cleanText) == 1 && Utilities.GetNumberOfLines(_subtitle.Paragraphs[index].Text) == 2)
-                    {
-                        if (!_autoSplit[index])
+                        var cleanText = results[i];
+                        if (_autoSplit[index])
                         {
                             cleanText = Utilities.AutoBreakLine(cleanText);
                         }
-                    }
+                        if (Utilities.GetNumberOfLines(cleanText) == 1 && Utilities.GetNumberOfLines(_subtitle.Paragraphs[index].Text) == 2)
+                        {
+                            if (!_autoSplit[index])
+                            {
+                                cleanText = Utilities.AutoBreakLine(cleanText);
+                            }
+                        }
 
-                    if (_formattingTypes[index] == FormattingType.ItalicTwoLines || _formattingTypes[index] == FormattingType.Italic)
-                    {
-                        _subtitle.Paragraphs[index].Text = "<i>" + cleanText + "</i>";
-                    }
-                    else if (_formattingTypes[index] == FormattingType.Parentheses)
-                    {
-                        _subtitle.Paragraphs[index].Text = "(" + cleanText + ")";
-                    }
-                    else if (_formattingTypes[index] == FormattingType.SquareBrackets)
-                    {
-                        _subtitle.Paragraphs[index].Text = "[" + cleanText + "]";
-                    }
-                    else
-                    {
-                        _subtitle.Paragraphs[index].Text = cleanText;
-                    }
+                        if (_formattingTypes[index] == FormattingType.ItalicTwoLines || _formattingTypes[index] == FormattingType.Italic)
+                        {
+                            _subtitle.Paragraphs[index].Text = "<i>" + cleanText + "</i>";
+                        }
+                        else if (_formattingTypes[index] == FormattingType.Parentheses)
+                        {
+                            _subtitle.Paragraphs[index].Text = "(" + cleanText + ")";
+                        }
+                        else if (_formattingTypes[index] == FormattingType.SquareBrackets)
+                        {
+                            _subtitle.Paragraphs[index].Text = "[" + cleanText + "]";
+                        }
+                        else
+                        {
+                            _subtitle.Paragraphs[index].Text = cleanText;
+                        }
 
-                    // follow newly translated lines
-                    try
-                    {
+                        // follow newly translated lines
                         _subtitle.Paragraphs[index].Text = cleanText;
                         var item = listView1.Items[index];
                         item.SubItems[2].Text = _subtitle.Paragraphs[index].Text;
                         if (listView1.CanFocus)
                             listView1.EnsureVisible(index);
                     }
-                    catch
-                    {
-                        // ignore
-                    }
 
                     i++;
                 }
+            }
+            catch
+            {
+                // ignore
             }
         }
 
