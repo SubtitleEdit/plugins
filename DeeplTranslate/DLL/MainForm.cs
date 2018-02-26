@@ -276,10 +276,20 @@ namespace SubtitleEdit
                         _subtitle.Paragraphs[index].Text = cleanText;
                     }
 
-                    _subtitle.Paragraphs[index].Text = cleanText;
-                    var item = listView1.Items[index];
-                    item.SubItems[2].Text = _subtitle.Paragraphs[index].Text;
-                    listView1.EnsureVisible(index);
+                    // follow newly translated lines
+                    try
+                    {
+                        _subtitle.Paragraphs[index].Text = cleanText;
+                        var item = listView1.Items[index];
+                        item.SubItems[2].Text = _subtitle.Paragraphs[index].Text;
+                        if (listView1.CanFocus)
+                            listView1.EnsureVisible(index);
+                    }
+                    catch
+                    {
+                        // ignore
+                    }
+
                     i++;
                 }
             }
