@@ -67,6 +67,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin-Updater", "Plugin-Updater\Plugin-Updater.csproj", "{59019475-D4A5-4F30-A73A-BAB4524E3B70}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PapagoTranslate", "PapagoTranslate\DLL\PapagoTranslate.csproj", "{535E50EE-A58D-4A35-86E7-74540A4548E4}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JackSE", "JackSE\JackSE.csproj", "{D678802E-5D3A-4DB0-94E9-104790D3044B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IspraviMeTranslate", "IspraviMeTranslate\DLL\IspraviMeTranslate.csproj", "{4DB30F73-5A8E-477E-9C18-A1DC59148DE5}"
@@ -194,6 +195,10 @@ Global
 		{D678802E-5D3A-4DB0-94E9-104790D3044B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D678802E-5D3A-4DB0-94E9-104790D3044B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D678802E-5D3A-4DB0-94E9-104790D3044B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DB30F73-5A8E-477E-9C18-A1DC59148DE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DB30F73-5A8E-477E-9C18-A1DC59148DE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DB30F73-5A8E-477E-9C18-A1DC59148DE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DB30F73-5A8E-477E-9C18-A1DC59148DE5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
