@@ -43,7 +43,24 @@ namespace SubtitleEdit
         private bool _abort;
         private bool _tooManyRequests;
         private bool _exit;
-        private static Dictionary<string, string> _translateLookup = new Dictionary<string, string> { { "", "" }, { "...", "..." } };
+        private static Dictionary<string, string> _translateLookup = new Dictionary<string, string>
+        {
+            { "EN", "" },
+            { "DE", "" },
+            { "FR", "" },
+            { "ES", "" },
+            { "IT", "" },
+            { "NL", "" },
+            { "PL", "" },
+
+            { "EN...", "..." },
+            { "DE...", "..." },
+            { "FR...", "..." },
+            { "ES...", "..." },
+            { "IT...", "..." },
+            { "NL...", "..." },
+            { "PL...", "..." },
+        };
 
         public class TranslationLanguage
         {
@@ -67,13 +84,6 @@ namespace SubtitleEdit
         public MainForm()
         {
             InitializeComponent();
-            KeyDown += (s, e) =>
-            {
-                if (e.KeyCode == Keys.Escape)
-                    DialogResult = DialogResult.Cancel;
-                else if (e.KeyCode == Keys.F1)
-                    textBox1.Visible = !textBox1.Visible;
-            };
             textBox1.Visible = false;
             listView1.Columns[2].Width = -2;
             buttonCancelTranslate.Enabled = false;
@@ -174,18 +184,7 @@ namespace SubtitleEdit
                     var after = string.Empty;
                     if (setText)
                     {
-                        if (_translateLookup.ContainsKey(text))
-                        {
-                            SetFormatting(index, _translateLookup[text]);
-                            var item = listView1.Items[index];
-                            item.SubItems[2].Text = _subtitle.Paragraphs[index].Text;
-                            if (listView1.CanFocus)
-                                listView1.EnsureVisible(index);
-                            textToTranslate = new StringBuilder();
-                        }
-
                         //if (text.Length + textToTranslate.Length > max) - max is too low for merging texts to really have any effect
-                        else
                         {
                             var arg = new BackgroundWorkerParameter { Text = textToTranslate.ToString().TrimEnd().TrimEnd('*').TrimEnd(), Indexes = indexesToTranslate, Log = new StringBuilder() };
                             textToTranslate = new StringBuilder();
@@ -282,14 +281,7 @@ namespace SubtitleEdit
                             }
                         }
 
-                        lock (_lookupLock)
-                        {
-                            if (!_translateLookup.ContainsKey(_subtitleOriginal.Paragraphs[index].Text))
-                                _translateLookup.Add(_subtitleOriginal.Paragraphs[index].Text, _subtitle.Paragraphs[index].Text);
-                        }
-
                         SetFormatting(index, cleanText);
-
 
                         // follow newly translated lines
                         var item = listView1.Items[index];
@@ -361,7 +353,27 @@ namespace SubtitleEdit
         private void OnBwOnDoWork(object sender, DoWorkEventArgs args)
         {
             var parameter = (BackgroundWorkerParameter)args.Argument;
-            parameter.Result = Translate(parameter.Text, parameter.Log);
+
+            if (_translateLookup.ContainsKey(_from + parameter.Text))
+            {
+                parameter.Result = _translateLookup[_from + parameter.Text];
+                parameter.Log.AppendLine("Using cache: " + _from + parameter.Text + " -> " + parameter.Result);
+                parameter.Log.AppendLine();
+            }
+            else
+            {
+                parameter.Result = Translate(parameter.Text, parameter.Log);
+
+                if (parameter.Indexes.Count == 1)
+                {
+                    lock (_lookupLock)
+                    {
+                        var index = parameter.Indexes.First();
+                        if (!_translateLookup.ContainsKey(_from + _subtitleOriginal.Paragraphs[index].Text))
+                            _translateLookup.Add(_from +  _subtitleOriginal.Paragraphs[index].Text, parameter.Result);
+                    }
+                }
+            }
             args.Result = parameter;
         }
 
@@ -594,5 +606,24 @@ namespace SubtitleEdit
             return text.TrimEnd();
         }
 
+        private void MainForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                DialogResult = DialogResult.Cancel;
+            }
+            else if (e.KeyCode == Keys.F1)
+            {
+                if (textBox1.Visible)
+                {
+                    textBox1.Visible = false;
+                }
+                else
+                {
+                    textBox1.Visible = true;
+                    textBox1.BringToFront();
+                }
+            }
+        }
     }
 }
