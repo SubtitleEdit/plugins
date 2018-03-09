@@ -15,7 +15,7 @@ namespace SubtitleEdit
 {
     /// <summary>
     /// DeepL.com translate
-    /// SE gitub issue - https://github.com/SubtitleEdit/subtitleedit/issues/2574
+    /// SE github issue - https://github.com/SubtitleEdit/subtitleedit/issues/2574
     /// Example code:
     ///   https://github.com/vsetka/deepl-translator/blob/master/index.js
     ///   https://github.com/chriskonnertz/DeepLy/blob/master/src/ChrisKonnertz/DeepLy/DeepLy.php
@@ -36,12 +36,14 @@ namespace SubtitleEdit
         private bool[] _autoSplit;
 
         private readonly Subtitle _subtitle;
+        private readonly Subtitle _subtitleOriginal;
         private static string _from = "EN";
         private static string _to = "DE";
         private const string ParagraphSplitter = "*";
         private bool _abort;
         private bool _tooManyRequests;
         private bool _exit;
+        private static Dictionary<string, string> _translateLookup = new Dictionary<string, string> { { "", "" }, { "...", "..." } };
 
         public class TranslationLanguage
         {
@@ -109,6 +111,7 @@ namespace SubtitleEdit
         {
             Text = title;
             _subtitle = sub;
+            _subtitleOriginal = new Subtitle(sub);
             var languageCode = LanguageAutoDetect.AutoDetectGoogleLanguage(_subtitle);
             _formattingTypes = new FormattingType[_subtitle.Paragraphs.Count];
             _autoSplit = new bool[_subtitle.Paragraphs.Count];
@@ -132,6 +135,7 @@ namespace SubtitleEdit
         }
 
         private readonly object _myLock = new object();
+        private readonly object _lookupLock = new object();
 
         private void GeneratePreview(bool setText)
         {
@@ -170,7 +174,18 @@ namespace SubtitleEdit
                     var after = string.Empty;
                     if (setText)
                     {
+                        if (_translateLookup.ContainsKey(text))
+                        {
+                            SetFormatting(index, _translateLookup[text]);
+                            var item = listView1.Items[index];
+                            item.SubItems[2].Text = _subtitle.Paragraphs[index].Text;
+                            if (listView1.CanFocus)
+                                listView1.EnsureVisible(index);
+                            textToTranslate = new StringBuilder();
+                        }
+
                         //if (text.Length + textToTranslate.Length > max) - max is too low for merging texts to really have any effect
+                        else
                         {
                             var arg = new BackgroundWorkerParameter { Text = textToTranslate.ToString().TrimEnd().TrimEnd('*').TrimEnd(), Indexes = indexesToTranslate, Log = new StringBuilder() };
                             textToTranslate = new StringBuilder();
@@ -267,25 +282,16 @@ namespace SubtitleEdit
                             }
                         }
 
-                        if (_formattingTypes[index] == FormattingType.ItalicTwoLines || _formattingTypes[index] == FormattingType.Italic)
+                        lock (_lookupLock)
                         {
-                            _subtitle.Paragraphs[index].Text = "<i>" + cleanText + "</i>";
-                        }
-                        else if (_formattingTypes[index] == FormattingType.Parentheses)
-                        {
-                            _subtitle.Paragraphs[index].Text = "(" + cleanText + ")";
-                        }
-                        else if (_formattingTypes[index] == FormattingType.SquareBrackets)
-                        {
-                            _subtitle.Paragraphs[index].Text = "[" + cleanText + "]";
-                        }
-                        else
-                        {
-                            _subtitle.Paragraphs[index].Text = cleanText;
+                            if (!_translateLookup.ContainsKey(_subtitleOriginal.Paragraphs[index].Text))
+                                _translateLookup.Add(_subtitleOriginal.Paragraphs[index].Text, _subtitle.Paragraphs[index].Text);
                         }
 
+                        SetFormatting(index, cleanText);
+
+
                         // follow newly translated lines
-                        _subtitle.Paragraphs[index].Text = cleanText;
                         var item = listView1.Items[index];
                         item.SubItems[2].Text = _subtitle.Paragraphs[index].Text;
                         if (listView1.CanFocus)
@@ -298,6 +304,26 @@ namespace SubtitleEdit
             catch
             {
                 // ignore
+            }
+        }
+
+        private void SetFormatting(int index, string cleanText)
+        {
+            if (_formattingTypes[index] == FormattingType.ItalicTwoLines || _formattingTypes[index] == FormattingType.Italic)
+            {
+                _subtitle.Paragraphs[index].Text = "<i>" + cleanText + "</i>";
+            }
+            else if (_formattingTypes[index] == FormattingType.Parentheses)
+            {
+                _subtitle.Paragraphs[index].Text = "(" + cleanText + ")";
+            }
+            else if (_formattingTypes[index] == FormattingType.SquareBrackets)
+            {
+                _subtitle.Paragraphs[index].Text = "[" + cleanText + "]";
+            }
+            else
+            {
+                _subtitle.Paragraphs[index].Text = cleanText;
             }
         }
 
@@ -565,7 +591,7 @@ namespace SubtitleEdit
                 text = Utilities.RemoveLineBreaks(text);
             }
 
-            return text;
+            return text.TrimEnd();
         }
 
     }
