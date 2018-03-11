@@ -122,7 +122,9 @@ namespace SubtitleEdit
             Text = title;
             _subtitle = sub;
             _subtitleOriginal = new Subtitle(sub);
-            var languageCode = LanguageAutoDetect.AutoDetectGoogleLanguage(_subtitle);
+            foreach (var p in sub.Paragraphs)
+                p.Text = string.Empty;
+            var languageCode = LanguageAutoDetect.AutoDetectGoogleLanguage(_subtitleOriginal);
             _formattingTypes = new FormattingType[_subtitle.Paragraphs.Count];
             _autoSplit = new bool[_subtitle.Paragraphs.Count];
             SetLanguages(comboBoxLanguageFrom, languageCode);
@@ -180,7 +182,7 @@ namespace SubtitleEdit
                         }
                     }
 
-                    Paragraph p = _subtitle.Paragraphs[index];
+                    Paragraph p = _subtitleOriginal.Paragraphs[index];
                     string text = SetFormattingTypeAndSplitting(index, p.Text, (comboBoxLanguageFrom.SelectedItem as TranslationLanguage).Code.StartsWith("ZH"));
                     var before = text;
                     var after = string.Empty;
@@ -275,7 +277,7 @@ namespace SubtitleEdit
                         {
                             cleanText = Utilities.AutoBreakLine(cleanText);
                         }
-                        if (Utilities.GetNumberOfLines(cleanText) == 1 && Utilities.GetNumberOfLines(_subtitle.Paragraphs[index].Text) == 2)
+                        if (Utilities.GetNumberOfLines(cleanText) == 1 && Utilities.GetNumberOfLines(_subtitleOriginal.Paragraphs[index].Text) == 2)
                         {
                             if (!_autoSplit[index])
                             {
