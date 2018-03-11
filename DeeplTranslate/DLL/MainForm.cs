@@ -174,6 +174,8 @@ namespace SubtitleEdit
                         var listViewItem = listView1.Items[index];
                         if (!string.IsNullOrWhiteSpace(listViewItem.SubItems[2].Text))
                         {
+                            if (progressBar1.Value < progressBar1.Maximum)
+                                progressBar1.Value++;
                             continue;
                         }
                     }
@@ -539,6 +541,9 @@ namespace SubtitleEdit
 
         private void buttonTranslate_Click(object sender, EventArgs e)
         {
+            _tooManyRequests = false;
+            _exit = false;
+            _abort = false;
             buttonTranslate.Enabled = false;
             buttonCancelTranslate.Enabled = true;
             progressBar1.Maximum = _subtitle.Paragraphs.Count;
