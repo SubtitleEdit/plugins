@@ -252,7 +252,7 @@ namespace SubtitleEdit
             try
             {
                 _abort = false;
-                int numberOfThreads = 1;
+                int numberOfThreads = 4;
                 var threadPool = new List<BackgroundWorker>();
                 for (int i = 0; i < numberOfThreads; i++)
                 {
