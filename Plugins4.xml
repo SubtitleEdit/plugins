@@ -44,6 +44,13 @@
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/DeeplTranslate.zip</Url>
   </Plugin>
   <Plugin>
+    <Name>Yandex Translate</Name>
+    <Description>Translate with Yandex</Description>
+    <Version>0.1</Version>
+    <Date>2018-03-16</Date>
+    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/YandexTranslate.zip</Url>
+  </Plugin>
+  <Plugin>
     <Name>Haxor</Name>
     <Description>Translates subtitle to Haxor</Description>
     <Version>1.5</Version>
