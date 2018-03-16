@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    public class DeeplTranslate : IPlugin // dll file name must "<classname>.dll" - e.g. "Haxor.dll"
+    public class YandexTranslate : IPlugin // dll file name must "<classname>.dll" - e.g. "Haxor.dll"
     {
         string IPlugin.Name
         {
