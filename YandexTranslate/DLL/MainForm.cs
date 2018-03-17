@@ -21,7 +21,7 @@ namespace SubtitleEdit
     public partial class MainForm : Form
     {
 
-        private enum FormattingType
+        public enum FormattingType
         {
             None,
             Italic,
@@ -30,7 +30,13 @@ namespace SubtitleEdit
             SquareBrackets
         }
 
-        private FormattingType[] _formattingTypes;
+        public class FormattingLine
+        {
+            public FormattingType Formatting { get; set; }
+            public string Prefix { get; set; }
+        }
+
+        private FormattingLine[] _formattingTypes;
         private bool[] _autoSplit;
 
         private readonly Subtitle _subtitle;
@@ -41,6 +47,8 @@ namespace SubtitleEdit
         private bool _abort;
         private bool _tooManyRequests;
         private bool _exit;
+        private string _lastLanguage = null;
+
         private static Dictionary<string, string> _translateLookup = new Dictionary<string, string>
         {
             { "en", "" },
@@ -220,7 +228,11 @@ namespace SubtitleEdit
             foreach (var p in sub.Paragraphs)
                 p.Text = string.Empty;
             var languageCode = LanguageAutoDetect.AutoDetectGoogleLanguage(_subtitleOriginal);
-            _formattingTypes = new FormattingType[_subtitle.Paragraphs.Count];
+            _formattingTypes = new FormattingLine[_subtitle.Paragraphs.Count];
+            for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
+            {
+                _formattingTypes[i] = new FormattingLine { Formatting = FormattingType.None, Prefix = string.Empty };
+            }
             _autoSplit = new bool[_subtitle.Paragraphs.Count];
             SetLanguages(comboBoxLanguageFrom, languageCode);
             SetLanguages(comboBoxLanguageTo, _to);
@@ -268,7 +280,7 @@ namespace SubtitleEdit
                     if (index < listView1.Items.Count)
                     {
                         var listViewItem = listView1.Items[index];
-                        if (!string.IsNullOrWhiteSpace(listViewItem.SubItems[2].Text))
+                        if (!string.IsNullOrWhiteSpace(listViewItem.SubItems[2].Text) && _from + _to == _lastLanguage)
                         {
                             if (progressBar1.Value < progressBar1.Maximum)
                                 progressBar1.Value++;
@@ -399,15 +411,15 @@ namespace SubtitleEdit
 
         private void SetFormatting(int index, string cleanText)
         {
-            if (_formattingTypes[index] == FormattingType.ItalicTwoLines || _formattingTypes[index] == FormattingType.Italic)
+            if (_formattingTypes[index].Formatting == FormattingType.ItalicTwoLines || _formattingTypes[index].Formatting == FormattingType.Italic)
             {
                 _subtitle.Paragraphs[index].Text = "<i>" + cleanText + "</i>";
             }
-            else if (_formattingTypes[index] == FormattingType.Parentheses)
+            else if (_formattingTypes[index].Formatting == FormattingType.Parentheses)
             {
                 _subtitle.Paragraphs[index].Text = "(" + cleanText + ")";
             }
-            else if (_formattingTypes[index] == FormattingType.SquareBrackets)
+            else if (_formattingTypes[index].Formatting == FormattingType.SquareBrackets)
             {
                 _subtitle.Paragraphs[index].Text = "[" + cleanText + "]";
             }
@@ -415,6 +427,7 @@ namespace SubtitleEdit
             {
                 _subtitle.Paragraphs[index].Text = cleanText;
             }
+            _subtitle.Paragraphs[index].Text = _formattingTypes[index].Prefix + _subtitle.Paragraphs[index].Text;
         }
 
         private List<string> GetTextResults(string text, int count)
@@ -486,7 +499,7 @@ namespace SubtitleEdit
         {
             // see https://tech.yandex.com/translate/doc/dg/reference/translate-docpage/
             const int maxNumberOfRetries = 2;
-            string url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key=" + textBoxApiKey.Text.Trim() + "&lang=" + from + "-" + to + "&format=html";
+            string url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key=" + textBoxApiKey.Text.Trim() + "&lang=" + from + "-" + to; // + "&format=html";
             var req = WebRequest.Create(url);
             req.Method = "POST";
             req.Headers.Add("cache-control", "no-cache");
@@ -494,7 +507,7 @@ namespace SubtitleEdit
             (req as HttpWebRequest).Accept = "*/*";
             (req as HttpWebRequest).KeepAlive = false;
             (req as HttpWebRequest).ServicePoint.Expect100Continue = false;
-            string postData = $"text={System.Web.HttpUtility.UrlEncode(text, Encoding.UTF8)}";
+            string postData = $"text={System.Web.HttpUtility.UrlEncode(Utilities.RemoveHtmlTags(text, true), Encoding.UTF8)}";
             log.AppendLine("Input to Yandex: " + postData);
             byte[] bytes = Encoding.UTF8.GetBytes(postData);
             req.ContentLength = bytes.Length;
@@ -549,6 +562,7 @@ namespace SubtitleEdit
                             s = sb.ToString().TrimEnd();
                         }
                         log.AppendLine();
+                        s = s.Replace("\\n", Environment.NewLine);
                         s = DecodeEncodedNonAsciiCharacters(s);
                         return string.Join(Environment.NewLine, s.SplitToLines());
                     }
@@ -649,6 +663,7 @@ namespace SubtitleEdit
                 _from = ((TranslationLanguage)comboBoxLanguageFrom.Items[comboBoxLanguageFrom.SelectedIndex]).Code;
                 _to = ((TranslationLanguage)comboBoxLanguageTo.Items[comboBoxLanguageTo.SelectedIndex]).Code;
                 GeneratePreview(true);
+                _lastLanguage = _from + _to;
             }
             finally
             {
@@ -666,29 +681,37 @@ namespace SubtitleEdit
         private string SetFormattingTypeAndSplitting(int i, string text, bool skipSplit)
         {
             text = text.Trim();
+
+            if (text.StartsWith("{\\") && text.Contains("}"))
+            {
+                int endIndex = text.IndexOf("}") + 1;
+                _formattingTypes[i].Prefix = text.Substring(0, endIndex).Trim();
+                text = text.Remove(0, endIndex).Trim();
+            }
+
             if (text.StartsWith("<i>", StringComparison.Ordinal) && text.EndsWith("</i>", StringComparison.Ordinal) && text.Contains("</i>" + Environment.NewLine + "<i>") && Utilities.GetNumberOfLines(text) == 2 && Utilities.CountTagInText(text, "<i>") == 1)
             {
-                _formattingTypes[i] = FormattingType.ItalicTwoLines;
+                _formattingTypes[i].Formatting = FormattingType.ItalicTwoLines;
                 text = HtmlUtil.RemoveOpenCloseTags(text, HtmlUtil.TagItalic);
             }
             else if (text.StartsWith("<i>", StringComparison.Ordinal) && text.EndsWith("</i>", StringComparison.Ordinal) && Utilities.CountTagInText(text, "<i>") == 1)
             {
-                _formattingTypes[i] = FormattingType.Italic;
+                _formattingTypes[i].Formatting = FormattingType.Italic;
                 text = text.Substring(3, text.Length - 7);
             }
             else if (text.StartsWith("(", StringComparison.Ordinal) && text.EndsWith(")", StringComparison.Ordinal))
             {
-                _formattingTypes[i] = FormattingType.Parentheses;
+                _formattingTypes[i].Formatting = FormattingType.Parentheses;
                 text = text.Substring(1, text.Length - 2);
             }
             else if (text.StartsWith("[", StringComparison.Ordinal) && text.EndsWith("]", StringComparison.Ordinal))
             {
-                _formattingTypes[i] = FormattingType.SquareBrackets;
+                _formattingTypes[i].Formatting = FormattingType.SquareBrackets;
                 text = text.Substring(1, text.Length - 2);
             }
             else
             {
-                _formattingTypes[i] = FormattingType.None;
+                _formattingTypes[i].Formatting = FormattingType.None;
             }
 
             if (skipSplit)
