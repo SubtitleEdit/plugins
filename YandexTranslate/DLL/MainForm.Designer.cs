@@ -166,6 +166,8 @@
             // 
             // progressBar1
             // 
+            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar1.Location = new System.Drawing.Point(607, 11);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(212, 23);
@@ -183,7 +185,8 @@
             // 
             // textBoxApiKey
             // 
-            this.textBoxApiKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxApiKey.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxApiKey.Location = new System.Drawing.Point(147, 44);
             this.textBoxApiKey.Name = "textBoxApiKey";
             this.textBoxApiKey.Size = new System.Drawing.Size(672, 20);
@@ -191,7 +194,6 @@
             // 
             // linkLabel2
             // 
-            this.linkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.linkLabel2.AutoSize = true;
             this.linkLabel2.Location = new System.Drawing.Point(99, 44);
             this.linkLabel2.Name = "linkLabel2";

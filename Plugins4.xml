@@ -46,7 +46,7 @@
   <Plugin>
     <Name>Yandex Translate</Name>
     <Description>Translate with Yandex</Description>
-    <Version>0.2</Version>
+    <Version>0.3</Version>
     <Date>2018-03-17</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/YandexTranslate.zip</Url>
   </Plugin>

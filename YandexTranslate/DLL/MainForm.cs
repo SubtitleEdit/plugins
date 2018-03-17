@@ -395,7 +395,7 @@ namespace SubtitleEdit
 
                         // follow newly translated lines
                         var item = listView1.Items[index];
-                        item.SubItems[2].Text = _subtitle.Paragraphs[index].Text;
+                        item.SubItems[2].Text = _subtitle.Paragraphs[index].Text.Replace(Environment.NewLine, "<br />");
                         if (listView1.CanFocus)
                             listView1.EnsureVisible(index);
                     }
@@ -586,27 +586,6 @@ namespace SubtitleEdit
             return null;
         }
 
-        public static string EncodeJsonText(string text)
-        {
-            var sb = new StringBuilder(text.Length);
-            foreach (var c in text)
-            {
-                switch (c)
-                {
-                    case '\\':
-                        sb.Append("\\\\");
-                        break;
-                    case '"':
-                        sb.Append("\\\"");
-                        break;
-                    default:
-                        sb.Append(c);
-                        break;
-                }
-            }
-            return sb.ToString().Replace(Environment.NewLine, "<br />");
-        }
-
         static string DecodeEncodedNonAsciiCharacters(string value)
         {
             return Regex.Replace(value, @"\\u(?<Value>[a-zA-Z0-9]{4})", m =>
@@ -618,8 +597,8 @@ namespace SubtitleEdit
         private void AddToListView(Paragraph p, string before, string after)
         {
             var item = new ListViewItem(p.Number.ToString(CultureInfo.InvariantCulture)) { Tag = p };
-            item.SubItems.Add(before);
-            item.SubItems.Add(after);
+            item.SubItems.Add(before.Replace(Environment.NewLine, "<br />"));
+            item.SubItems.Add(after.Replace(Environment.NewLine, "<br />"));
             listView1.Items.Add(item);
         }
 
