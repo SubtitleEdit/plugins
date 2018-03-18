@@ -589,9 +589,9 @@ namespace SubtitleEdit
         static string DecodeEncodedNonAsciiCharacters(string value)
         {
             return Regex.Replace(value, @"\\u(?<Value>[a-zA-Z0-9]{4})", m =>
-             {
-                 return ((char)int.Parse(m.Groups["Value"].Value, NumberStyles.HexNumber)).ToString();
-             });
+            {
+                return ((char)int.Parse(m.Groups["Value"].Value, NumberStyles.HexNumber)).ToString();
+            });
         }
 
         private void AddToListView(Paragraph p, string before, string after)

@@ -39,8 +39,6 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.buttonCancelTranslate = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.label2 = new System.Windows.Forms.Label();
-            this.textBoxKey = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // listView1
@@ -105,19 +103,19 @@
             this.linkLabelPoweredBy.AutoSize = true;
             this.linkLabelPoweredBy.Location = new System.Drawing.Point(9, 536);
             this.linkLabelPoweredBy.Name = "linkLabelPoweredBy";
-            this.linkLabelPoweredBy.Size = new System.Drawing.Size(102, 13);
+            this.linkLabelPoweredBy.Size = new System.Drawing.Size(71, 13);
             this.linkLabelPoweredBy.TabIndex = 6;
             this.linkLabelPoweredBy.TabStop = true;
-            this.linkLabelPoweredBy.Text = "Powered by papago";
+            this.linkLabelPoweredBy.Text = "Powered by x";
             this.linkLabelPoweredBy.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // buttonTranslate
             // 
-            this.buttonTranslate.Location = new System.Drawing.Point(383, 10);
+            this.buttonTranslate.Location = new System.Drawing.Point(369, 10);
             this.buttonTranslate.Name = "buttonTranslate";
-            this.buttonTranslate.Size = new System.Drawing.Size(113, 23);
+            this.buttonTranslate.Size = new System.Drawing.Size(127, 23);
             this.buttonTranslate.TabIndex = 2;
-            this.buttonTranslate.Text = "Translate";
+            this.buttonTranslate.Text = "Check grammer";
             this.buttonTranslate.UseVisualStyleBackColor = true;
             this.buttonTranslate.Click += new System.EventHandler(this.buttonTranslate_Click);
             // 
@@ -151,24 +149,6 @@
             this.progressBar1.TabIndex = 4;
             this.progressBar1.Visible = false;
             // 
-            // label2
-            // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(624, 52);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(28, 13);
-            this.label2.TabIndex = 11;
-            this.label2.Text = "Key:";
-            // 
-            // textBoxKey
-            // 
-            this.textBoxKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxKey.Location = new System.Drawing.Point(658, 49);
-            this.textBoxKey.Name = "textBoxKey";
-            this.textBoxKey.Size = new System.Drawing.Size(161, 20);
-            this.textBoxKey.TabIndex = 12;
-            // 
             // MainForm
             // 
             this.AcceptButton = this.buttonOk;
@@ -176,8 +156,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(831, 557);
-            this.Controls.Add(this.textBoxKey);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.buttonCancelTranslate);
             this.Controls.Add(this.textBox1);
@@ -211,7 +189,5 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button buttonCancelTranslate;
         private System.Windows.Forms.ProgressBar progressBar1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBoxKey;
     }
 }

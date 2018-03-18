@@ -1,6 +1,5 @@
 ﻿using SubtitleEdit;
-using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
@@ -9,12 +8,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         string IPlugin.Name
         {
-            get { return "Ispravi Translate"; }
+            get { return "Ispravi"; }
         }
 
         string IPlugin.Text
         {
-            get { return "Translate with papago.naver.com"; }
+            get { return "Croatian grammer checker"; }
         }
 
         decimal IPlugin.Version
@@ -24,12 +23,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Description
         {
-            get { return "Translate subtitle withpapago.naver.com"; }
+            get { return "Check Croatian grammer with Ispravi"; }
         }
 
         string IPlugin.ActionType // Can be one of these: file, tool, sync, translate, spellcheck
         {
-            get { return "translate"; }
+            get { return "spellcheck"; }
         }
 
         string IPlugin.Shortcut
@@ -50,9 +49,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (!string.IsNullOrEmpty(listViewLineSeparatorString))
                 Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
 
-            var list = new List<string>();
-            foreach (string line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
-                list.Add(line);
+            var list = subtitle.SplitToLines().ToList();
 
             var sub = new Subtitle();
             var srt = new SubRip();

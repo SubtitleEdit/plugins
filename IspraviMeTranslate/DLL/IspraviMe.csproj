@@ -41,17 +41,19 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IspraviMeTranslator.cs" />
-    <Compile Include="ITranslator.cs" />
+    <Compile Include="IspraviError.cs" />
+    <Compile Include="IspraviMeApi.cs" />
     <Compile Include="Logic\Configuration.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="Logic\HtmlUtil.cs" />
+    <Compile Include="Logic\Json.cs" />
     <Compile Include="Logic\LanguageAutoDetect.cs" />
     <Compile Include="Logic\StringExtensions.cs" />
     <Compile Include="MainForm.cs">

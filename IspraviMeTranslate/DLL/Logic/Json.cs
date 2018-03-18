@@ -1,0 +1,304 @@
+﻿using SubtitleEdit.Logic;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Nikse.SubtitleEdit.Core.SubtitleFormats
+{
+    public class Json
+    {
+
+        public static string EncodeJsonText(string text)
+        {
+            var sb = new StringBuilder(text.Length);
+            foreach (var c in text)
+            {
+                switch (c)
+                {
+                    case '\\':
+                        sb.Append("\\\\");
+                        break;
+                    case '"':
+                        sb.Append("\\\"");
+                        break;
+                    default:
+                        sb.Append(c);
+                        break;
+                }
+            }
+            return sb.ToString().Replace(Environment.NewLine, "<br />");
+        }
+
+        public static string DecodeJsonText(string text)
+        {
+            text = text.Replace("<br />", Environment.NewLine);
+            text = text.Replace("<br>", Environment.NewLine);
+            text = text.Replace("<br/>", Environment.NewLine);
+            text = text.Replace("\\n", Environment.NewLine);
+            bool keepNext = false;
+            var sb = new StringBuilder(text.Length);
+            foreach (var c in text)
+            {
+                if (c == '\\' && !keepNext)
+                {
+                    keepNext = true;
+                }
+                else
+                {
+                    sb.Append(c);
+                    keepNext = false;
+                }
+            }
+            return sb.ToString();
+        }
+
+        public static string ConvertJsonSpecialCharacters(string s)
+        {
+            if (s.Contains("\\u00"))
+            {
+                for (int i = 33; i < 200; i++)
+                {
+                    var tag = "\\u" + i.ToString("x4");
+                    if (s.Contains(tag))
+                        s = s.Replace(tag, Convert.ToChar(i).ToString());
+                }
+            }
+            return s;
+        }
+
+        private static readonly char[] CommaAndEndCurlyBracket = { ',', '}' };
+
+        public static string ReadTag(string s, string tag)
+        {
+            var startIndex = s.IndexOfAny(new[] { "\"" + tag + "\"", "'" + tag + "'" }, StringComparison.Ordinal);
+            if (startIndex < 0)
+                return null;
+            var res = s.Substring(startIndex + 3 + tag.Length).Trim().TrimStart(':').TrimStart();
+            if (res.StartsWith('"'))
+            { // text
+                res = ConvertJsonSpecialCharacters(res);
+                res = res.Replace("\\\"", "@__1");
+                int endIndex = res.IndexOf("\"}", StringComparison.Ordinal);
+                if (endIndex == -1)
+                {
+                    endIndex = res.LastIndexOf('"');
+                }
+                int endAlternate = res.IndexOf("\",", StringComparison.Ordinal);
+                if (endIndex < 0)
+                    endIndex = endAlternate;
+                else if (endAlternate > 0 && endAlternate < endIndex)
+                    endIndex = endAlternate;
+                if (endIndex < 0 && res.EndsWith("\"", StringComparison.Ordinal))
+                    endIndex = res.Length - 1;
+                if (endIndex < 0)
+                    return null;
+                if (res.Length > 1)
+                    return res.Substring(1, endIndex - 1).Replace("@__1", "\\\"");
+                return string.Empty;
+            }
+            else
+            { // number
+                var endIndex = res.IndexOfAny(CommaAndEndCurlyBracket);
+                if (endIndex < 0)
+                    return null;
+                return res.Substring(0, endIndex);
+            }
+        }
+
+        public static List<string> ReadArray(string s, string tag)
+        {
+            var list = new List<string>();
+
+            var startIndex = s.IndexOfAny(new[] { "\"" + tag + "\"", "'" + tag + "'" }, StringComparison.Ordinal);
+            if (startIndex < 0)
+                return list;
+
+            startIndex += tag.Length + 2;
+            string res = s.Substring(startIndex).TrimStart().TrimStart(':').TrimStart(); //.TrimStart('[').TrimStart();
+            int tagLevel = 1;
+            int oldStart = 0;
+            if (oldStart < res.Length && res[oldStart] == '[')
+            {
+                oldStart++;
+            }
+            int nextTag = oldStart;
+            while (tagLevel >= 1 && nextTag >= 0 && nextTag + 1 < res.Length)
+            {
+                while (oldStart < res.Length && res[oldStart] == ' ')
+                {
+                    oldStart++;
+                }
+
+                if (oldStart < res.Length && res[oldStart] == '"')
+                {
+                    nextTag = res.IndexOf('"', oldStart + 1);
+
+                    while (nextTag > 0 && nextTag + 1 < res.Length && res[nextTag - 1] == '\\')
+                        nextTag = res.IndexOf('"', nextTag + 1);
+
+                    if (nextTag > 0)
+                    {
+                        string newValue = res.Substring(oldStart, nextTag - oldStart);
+                        list.Add(newValue.Remove(0, 1));
+                        oldStart = nextTag + 1;
+                        while (oldStart < res.Length && "\r\n\t ".Contains(res[oldStart]))
+                        {
+                            oldStart++;
+                        }
+                        if (oldStart < res.Length && res[oldStart] == ']')
+                        {
+                            oldStart++;
+                        }
+                        while (oldStart < res.Length && "\r\n\t ".Contains(res[oldStart]))
+                        {
+                            oldStart++;
+                        }
+                        if (oldStart < res.Length && res[oldStart] == ',')
+                        {
+                            oldStart++;
+                        }
+                        while (oldStart < res.Length && "\r\n\t ".Contains(res[oldStart]))
+                        {
+                            oldStart++;
+                        }
+                        if (oldStart < res.Length && res[oldStart] == '[')
+                        {
+                            oldStart++;
+                        }
+                        while (oldStart < res.Length && "\r\n\t ".Contains(res[oldStart]))
+                        {
+                            oldStart++;
+                        }
+                    }
+                }
+                else if (oldStart < res.Length && res[oldStart] != '[' && res[oldStart] != ']')
+                {
+                    nextTag = res.IndexOf(',', oldStart + 1);
+                    if (nextTag > 0)
+                    {
+                        string newValue = res.Substring(oldStart, nextTag - oldStart);
+                        if (newValue.EndsWith(']'))
+                        {
+                            newValue = newValue.TrimEnd(']');
+                            tagLevel = -10; // return
+                        }
+                        list.Add(newValue.Trim());
+                        oldStart = nextTag + 1;
+                    }
+                }
+                else
+                {
+                    int nextBegin = res.IndexOf('[', nextTag);
+                    int nextEnd = res.IndexOf(']', nextTag);
+                    if (nextBegin < nextEnd && nextBegin != -1)
+                    {
+                        nextTag = nextBegin + 1;
+                        tagLevel++;
+                    }
+                    else
+                    {
+                        nextTag = nextEnd + 1;
+                        tagLevel--;
+                        if (tagLevel == 1)
+                        {
+                            string newValue = res.Substring(oldStart, nextTag - oldStart);
+                            list.Add(newValue);
+                            if (res[nextTag] == ']')
+                                tagLevel--;
+                            oldStart = nextTag + 1;
+                        }
+                    }
+                }
+            }
+            return list;
+        }
+
+        internal static List<string> ReadArray(string text)
+        {
+            var list = new List<string>();
+            text = text.Trim();
+            if (text.StartsWith('[') && text.EndsWith(']'))
+            {
+                text = text.Trim('[', ']');
+                text = text.Trim();
+
+                text = text.Replace("<br />", Environment.NewLine);
+                text = text.Replace("<br>", Environment.NewLine);
+                text = text.Replace("<br/>", Environment.NewLine);
+                text = text.Replace("\\n", Environment.NewLine);
+
+                bool keepNext = false;
+                var sb = new StringBuilder();
+                foreach (var c in text)
+                {
+                    if (c == '\\' && !keepNext)
+                    {
+                        keepNext = true;
+                    }
+                    else if (!keepNext && c == ',')
+                    {
+                        list.Add(sb.ToString());
+                        sb.Clear();
+                    }
+                    else
+                    {
+                        sb.Append(c);
+                        keepNext = false;
+                    }
+                }
+                if (sb.Length > 0)
+                    list.Add(sb.ToString());
+            }
+            return list;
+        }
+
+        public static List<string> ReadObjectArray(string text)
+        {
+            var list = new List<string>();
+            text = text.Trim();
+            if (text.StartsWith('[') && text.EndsWith(']'))
+            {
+                text = text.Trim('[', ']').Trim();
+                int onCount = 0;
+                bool keepNext = false;
+                var sb = new StringBuilder();
+                foreach (var c in text)
+                {
+                    if (keepNext)
+                    {
+                        sb.Append(c);
+                        keepNext = false;
+                    }
+                    else if (c == '\\')
+                    {
+                        sb.Append(c);
+                        keepNext = true;
+                    }
+                    else if (c == '{')
+                    {
+                        sb.Append(c);
+                        onCount++;
+                    }
+                    else if (c == '}')
+                    {
+                        sb.Append(c);
+                        onCount--;
+                    }
+                    else if (c == ',' && onCount == 0)
+                    {
+                        list.Add(sb.ToString().Trim());
+                        sb.Clear();
+                    }
+                    else
+                    {
+                        sb.Append(c);
+                    }
+                }
+                if (sb.Length > 0)
+                    list.Add(sb.ToString().Trim());
+            }
+            return list;
+        }
+
+    }
+}

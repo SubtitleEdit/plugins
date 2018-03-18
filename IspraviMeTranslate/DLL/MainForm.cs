@@ -19,7 +19,7 @@ namespace SubtitleEdit
     public partial class MainForm : Form
     {
 
-        private ITranslator _translator;
+        private IspraviMeApi _translator;
 
         private enum FormattingType
         {
@@ -42,6 +42,7 @@ namespace SubtitleEdit
         public MainForm()
         {
             InitializeComponent();
+            _translator = new IspraviMeApi("SubtitleEdit");
             KeyDown += (s, e) =>
             {
                 if (e.KeyCode == Keys.Escape)
@@ -58,7 +59,6 @@ namespace SubtitleEdit
         public MainForm(Subtitle sub, string title, string description, Form parentForm)
             : this()
         {
-            _translator = new IspraviMeTranslator();
             linkLabelPoweredBy.Text = "Powered by " + _translator.GetName();
             Text = title;
             _subtitle = sub;
@@ -79,7 +79,7 @@ namespace SubtitleEdit
             internal StringBuilder Log { get; set; }
             internal string Text { get; set; }
             internal List<int> Indexes { get; set; }
-            internal string Result { get; set; }
+            internal IspraviResult Result { get; set; }
         }
 
         private readonly object _myLock = new object();
@@ -92,7 +92,7 @@ namespace SubtitleEdit
             try
             {
                 _abort = false;
-                int numberOfThreads = 4;
+                int numberOfThreads = 1;
                 var threadPool = new List<BackgroundWorker>();
                 for (int i = 0; i < numberOfThreads; i++)
                 {
@@ -175,93 +175,24 @@ namespace SubtitleEdit
                 progressBar1.Value++;
 
             var parameter = (BackgroundWorkerParameter)runWorkerCompletedEventArgs.Result;
-            var results = GetTextResults(parameter.Result, parameter.Indexes.Count);
 
             textBox1.AppendText(parameter.Log.ToString());
             lock (_myLock)
             {
-                int i = 0;
-                foreach (var index in parameter.Indexes)
-                {
-                    var cleanText = results[i];
-                    if (_autoSplit[index])
-                    {
-                        cleanText = Utilities.AutoBreakLine(cleanText);
-                    }
-                    if (Utilities.GetNumberOfLines(cleanText) == 1 && Utilities.GetNumberOfLines(_subtitle.Paragraphs[index].Text) == 2)
-                    {
-                        if (!_autoSplit[index])
-                        {
-                            cleanText = Utilities.AutoBreakLine(cleanText);
-                        }
-                    }
-
-                    if (_formattingTypes[index] == FormattingType.ItalicTwoLines || _formattingTypes[index] == FormattingType.Italic)
-                    {
-                        _subtitle.Paragraphs[index].Text = "<i>" + cleanText + "</i>";
-                    }
-                    else if (_formattingTypes[index] == FormattingType.Parentheses)
-                    {
-                        _subtitle.Paragraphs[index].Text = "(" + cleanText + ")";
-                    }
-                    else if (_formattingTypes[index] == FormattingType.SquareBrackets)
-                    {
-                        _subtitle.Paragraphs[index].Text = "[" + cleanText + "]";
-                    }
-                    else
-                    {
-                        _subtitle.Paragraphs[index].Text = cleanText;
-                    }
-
-                    _subtitle.Paragraphs[index].Text = cleanText;
-                    var item = listView1.Items[index];
-                    item.SubItems[2].Text = _subtitle.Paragraphs[index].Text;
-                    i++;
-                }
             }
         }
 
-        private List<string> GetTextResults(string text, int count)
-        {
-            if (text == null)
-                text = string.Empty;
-
-            var result = new string[count];
-            var sb = new StringBuilder();
-            int index = 0;
-            text = text.Replace("<br />", Environment.NewLine);
-            text = text.Replace("<br/>", Environment.NewLine);
-            foreach (var line in text.SplitToLines())
-            {
-                if (line == ParagraphSplitter.ToString())
-                {
-                    if (index < count)
-                        result[index] = sb.ToString().Trim();
-                    index++;
-                    sb.Clear();
-                }
-                else
-                {
-                    sb.AppendLine(line.Trim());
-                }
-            }
-            if (sb.Length > 0 && index < count)
-            {
-                result[index] = sb.ToString().Trim();
-            }
-            return result.ToList();
-        }
 
         private void OnBwOnDoWork(object sender, DoWorkEventArgs args)
         {
             var parameter = (BackgroundWorkerParameter)args.Argument;
-            parameter.Result = Translate(parameter.Text, parameter.Log);
+            parameter.Result = CheckGrammer(parameter.Text, parameter.Log);
             args.Result = parameter;
         }
 
-        private string Translate(string text, StringBuilder log)
+        private IspraviResult CheckGrammer(string text, StringBuilder log)
         {
-            var result = _translator.Translate(null, null, text, log);
+            var result = _translator.CheckGrammer(text, log);
             log.AppendLine();
             return result;
         }
@@ -295,14 +226,6 @@ namespace SubtitleEdit
 
         private void buttonTranslate_Click(object sender, EventArgs e)
         {
-            _translator.Key = textBoxKey.Text.Trim();
-
-            if (string.IsNullOrEmpty(_translator.Key))
-            {
-                MessageBox.Show("Please obtain a valid 'Key' from https://ispravi.me/info/api/registracija-za-api/");
-                return;
-            }
-
             buttonTranslate.Enabled = false;
             buttonCancelTranslate.Enabled = true;
             progressBar1.Maximum = _subtitle.Paragraphs.Count;
@@ -376,7 +299,7 @@ namespace SubtitleEdit
             path = Path.Combine(path, "Plugins");
             if (!Directory.Exists(path))
                 path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Plugins");
-            return Path.Combine(path, "PapagoTranslator.xml");
+            return Path.Combine(path, "IspraviMe.xml");
         }
 
         private void RestoreSettings()
@@ -386,7 +309,7 @@ namespace SubtitleEdit
             {
                 var doc = new XmlDocument();
                 doc.Load(fileName);
-                textBoxKey.Text = DecodeFrom64(doc.DocumentElement.SelectSingleNode("Key").InnerText);
+               // textBoxKey.Text = DecodeFrom64(doc.DocumentElement.SelectSingleNode("Key").InnerText);
             }
             catch
             {
@@ -399,8 +322,8 @@ namespace SubtitleEdit
             try
             {
                 var doc = new XmlDocument();
-                doc.LoadXml("<PapagoTranslator><ClientId/><ClientSecret/></PapagoTranslator>");
-                doc.DocumentElement.SelectSingleNode("Key").InnerText = EncodeTo64(textBoxKey.Text.Trim());
+                doc.LoadXml("<IspraviMe></IspraviMe>");
+                // doc.DocumentElement.SelectSingleNode("Key").InnerText = EncodeTo64(textBoxKey.Text.Trim());
                 doc.Save(fileName);
             }
             catch
@@ -417,7 +340,7 @@ namespace SubtitleEdit
         public static string DecodeFrom64(string encodedData)
         {
             byte[] encodedDataAsBytes = Convert.FromBase64String(encodedData);
-            return System.Text.Encoding.Unicode.GetString(encodedDataAsBytes);
+            return Encoding.Unicode.GetString(encodedDataAsBytes);
         }
 
     }
