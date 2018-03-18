@@ -10,6 +10,7 @@ using System.Linq;
 using System.IO;
 using System.Reflection;
 using System.Xml;
+using System.Drawing;
 
 namespace SubtitleEdit
 {
@@ -103,7 +104,13 @@ namespace SubtitleEdit
                 }
                 var textToTranslate = new StringBuilder();
                 var indexesToTranslate = new List<int>();
-                for (int index = 0; index < _subtitle.Paragraphs.Count; index++)
+                int start = 0;
+                if (setText && listView1.SelectedItems.Count > 0)
+                {
+                    start = listView1.SelectedItems[0].Index;
+                }
+
+                for (int index = start; index < _subtitle.Paragraphs.Count; index++)
                 {
                     Paragraph p = _subtitle.Paragraphs[index];
                     string text = SetFormattingTypeAndSplitting(index, p.Text, false);
@@ -179,9 +186,149 @@ namespace SubtitleEdit
             textBox1.AppendText(parameter.Log.ToString());
             lock (_myLock)
             {
+                if (parameter.Result != null && parameter.Result.response != null && parameter.Result.response.errors > 0)
+                {
+                    _abort = true;
+                    _grammerErrorIndex = -1;
+                    int i = 0;
+                    foreach (var index in parameter.Indexes)
+                    {
+                        if (parameter.Result.response.errors > 0)
+                        {
+                            var item = listView1.Items[index];
+                            item.Tag = parameter.Result.response;
+                            if (listView1.CanFocus)
+                                listView1.EnsureVisible(index);
+
+                            _grammerParagraphIndex = index;
+                            _grammerErrorIndex = 0;
+
+                            ShowGrammerError();
+
+                            var sb = new StringBuilder();
+                            foreach (var error in parameter.Result.response.error)
+                            {
+                                sb.Append(error.suspicious + " ");
+                            }
+                            item.SubItems[2].Text = parameter.Result.response.errors.ToString() + ": " + sb.ToString();
+                        }
+                    }
+
+                    i++;
+                }
             }
         }
 
+        private void ShowGrammerError()
+        {
+            if (_grammerParagraphIndex < 0)
+                return;
+
+            var r = (IspraviResponse)listView1.Items[_grammerParagraphIndex].Tag;
+            if (r == null || r.error == null || r.error.Count == 0)
+                return;
+
+            richTextBoxParagraph.Text = _subtitle.Paragraphs[_grammerParagraphIndex].Text;
+            richTextBoxParagraph.SelectAll();
+            richTextBoxParagraph.SelectionColor = Control.DefaultForeColor;
+            richTextBoxParagraph.SelectionLength = 0;
+
+            if (r.error != null && _grammerErrorIndex >= 0 && _grammerErrorIndex < r.error.Count)
+            {
+                var error = r.error[_grammerErrorIndex];
+                HighLightWord(richTextBoxParagraph, error.suspicious);
+                textBoxWord.Text = error.suspicious;
+
+                groupBoxWordNotFound.Text = "Suspicious word (" + error.@class + ")";
+
+                listBoxSuggestions.Items.Clear();
+                if (error.suggestions != null)
+                {
+                    foreach (var item in error.suggestions)
+                    {
+                        listBoxSuggestions.Items.Add(item);
+                    }
+                }
+            }
+        }
+
+        private void ShowNextGrammerError()
+        {
+            var idx = _grammerParagraphIndex;
+            if (idx < 0 || idx >= _subtitle.Paragraphs.Count)
+            {
+                return;
+            }
+
+            var r = listView1.Items[idx].Tag as IspraviResponse;
+            if (r == null || r.error == null || r.error.Count == 0)
+            {
+                return;
+            }
+
+            _grammerErrorIndex++;
+            if (_grammerErrorIndex >= r.error.Count)
+            {
+                _grammerParagraphIndex++;
+                if (_grammerParagraphIndex >= _subtitle.Paragraphs.Count)
+                {
+                    return; // done
+                }
+                _grammerErrorIndex = 0;
+                listView1.EnsureVisible(_grammerParagraphIndex);
+                listView1.SelectedItems.Clear();
+                listView1.Items[_grammerParagraphIndex].Selected = true;
+                listView1.FocusedItem = listView1.Items[_grammerParagraphIndex];
+                buttonTranslate_Click(null, null);
+                return;
+            }
+
+            ShowGrammerError();
+        }
+
+
+        private static void HighLightWord(RichTextBox richTextBoxParagraph, string word)
+        {
+            if (word != null && richTextBoxParagraph.Text.Contains(word))
+            {
+                const string expectedWordBoundaryChars = " <>-\"”„“«»[]'‘`´¶()♪¿¡.…—!?,:;/\r\n؛،؟";
+                for (int i = 0; i < richTextBoxParagraph.Text.Length; i++)
+                {
+                    if (richTextBoxParagraph.Text.Substring(i).StartsWith(word, StringComparison.Ordinal))
+                    {
+                        bool startOk = i == 0;
+                        if (!startOk)
+                            startOk = expectedWordBoundaryChars.Contains(richTextBoxParagraph.Text[i - 1]);
+                        if (startOk)
+                        {
+                            bool endOk = (i + word.Length == richTextBoxParagraph.Text.Length);
+                            if (!endOk)
+                                endOk = expectedWordBoundaryChars.Contains(richTextBoxParagraph.Text[i + word.Length]);
+                            if (endOk)
+                            {
+                                richTextBoxParagraph.SelectionStart = i + 1;
+                                richTextBoxParagraph.SelectionLength = word.Length;
+                                while (richTextBoxParagraph.SelectedText != word && richTextBoxParagraph.SelectionStart > 0)
+                                {
+                                    richTextBoxParagraph.SelectionStart = richTextBoxParagraph.SelectionStart - 1;
+                                    richTextBoxParagraph.SelectionLength = word.Length;
+                                }
+                                if (richTextBoxParagraph.SelectedText == word)
+                                {
+                                    richTextBoxParagraph.SelectionColor = Color.Red;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                richTextBoxParagraph.SelectionLength = 0;
+                richTextBoxParagraph.SelectionStart = 0;
+            }
+        }
+
+        private int _grammerParagraphIndex = -1;
+        private int _grammerErrorIndex = -1;
 
         private void OnBwOnDoWork(object sender, DoWorkEventArgs args)
         {
@@ -309,7 +456,7 @@ namespace SubtitleEdit
             {
                 var doc = new XmlDocument();
                 doc.Load(fileName);
-               // textBoxKey.Text = DecodeFrom64(doc.DocumentElement.SelectSingleNode("Key").InnerText);
+                // textBoxKey.Text = DecodeFrom64(doc.DocumentElement.SelectSingleNode("Key").InnerText);
             }
             catch
             {
@@ -343,5 +490,26 @@ namespace SubtitleEdit
             return Encoding.Unicode.GetString(encodedDataAsBytes);
         }
 
+        private void buttonGoogleIt_Click(object sender, EventArgs e)
+        {
+            string text = textBoxWord.Text.Trim();
+            if (!string.IsNullOrWhiteSpace(text))
+                Process.Start("https://www.google.com/search?q=" + Uri.EscapeDataString(text));
+        }
+
+        private void buttonSkipOnce_Click(object sender, EventArgs e)
+        {
+            ShowNextGrammerError();
+        }
+
+        private void buttonSkipAll_Click(object sender, EventArgs e)
+        {
+            var s = textBoxWord.Text.Trim();
+            if (!string.IsNullOrEmpty(s))
+                _skipAll.Add(s);
+            ShowNextGrammerError();
+        }
+
+        private List<string> _skipAll = new List<string>();
     }
 }

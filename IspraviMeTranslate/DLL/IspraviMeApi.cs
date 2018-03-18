@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.Serialization.Json;
@@ -23,7 +24,7 @@ namespace SubtitleEdit
 
         internal string GetUrl()
         {
-            throw new NotImplementedException();
+            return "https://ispravi.me";
         }
 
         internal IspraviResult CheckGrammer(string text, StringBuilder log)
@@ -67,10 +68,103 @@ namespace SubtitleEdit
                 //   "response" : null
                 //}
 
+                //  example of error result
+//{
+//    "response" : {
+//      "errors" : 4,
+//      "error" : [
+//         {
+//            "class" : "moderate",
+//            "length" : 6,
+//            "position" : [
+//               6
+//            ],
+//            "suspicious" : "živoat",
+//            "occurrences" : 1,
+//            "suggestions" : [
+//               "života",
+//               "živost",
+//               "život",
+//               "živcat"
+//            ]
+//    },
+//         {
+//            "position" : [
+//               23
+//            ],
+//            "length" : 6,
+//            "class" : "moderate",
+//            "suggestions" : [
+//               "buduće"
+//            ],
+//            "occurrences" : 1,
+//            "suspicious" : "buduce"
+//         },
+//         {
+//            "class" : "minor",
+//            "position" : [
+//               0
+//            ],
+//            "length" : 5,
+//            "suggestions" : [
+//               "Cìlog",
+//               "eLog",
+//               "Velog",
+//               "Clog",
+//               "Celeg",
+//               "Celom",
+//               "Celon",
+//               "Celox",
+//               "Belog",
+//               "Telog"
+//            ],
+//            "occurrences" : 1,
+//            "suspicious" : "Celog"
+//         },
+//         {
+//            "class" : "minor",
+//            "length" : 7,
+//            "position" : [
+//               13
+//            ],
+//            "occurrences" : 1,
+//            "suggestions" : [
+//               "vjerujem",
+//               "vezujem"
+//            ],
+//            "suspicious" : "verujem"
+//         }
+//      ]
+//   },
+//   "request" : {
+//      "newuser" : true,
+//      "commonerrors" : false,
+//      "from" : "undef",
+//      "session" : "ceada31a0b1f886bd9fc82fdaeb81fd1",
+//      "contenttype" : "text/plain; charset=UTF-8",
+//      "remoteip" : "62.44.134.100",
+//      "contextual" : true,
+//      "key" : "F2F09D38-2AC3-11E8-8531-4AB7E1FE0083",
+//      "fixpunctuation" : false,
+//      "textlength" : 36
+//   },
+//   "status" : {
+//      "code" : 200,
+//      "time" : 2.422875,
+//      "href" : null,
+//      "text" : "OK"
+//   }
+//}
                 string s = res.Content.ReadAsStringAsync().Result;
                 Type serializationTargetType = typeof(IspraviResult);
                 DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(serializationTargetType);
                 IspraviResult jsonDeserialized = (IspraviResult)jsonSerializer.ReadObject(new MemoryStream(Encoding.UTF8.GetBytes(s)));
+
+                // sort by start position
+                if (jsonDeserialized != null && jsonDeserialized.response != null && 
+                    jsonDeserialized.response.error != null)
+                    jsonDeserialized.response.error = jsonDeserialized.response.error.OrderBy(p => p.position.FirstOrDefault()).ToList();
+
                 return jsonDeserialized;
             }
             else
