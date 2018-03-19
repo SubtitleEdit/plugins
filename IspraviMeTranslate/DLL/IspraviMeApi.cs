@@ -156,14 +156,24 @@ namespace SubtitleEdit
 //   }
 //}
                 string s = res.Content.ReadAsStringAsync().Result;
+
+                log.AppendLine("Success result from " + GetName() + ": " + s);
+
                 Type serializationTargetType = typeof(IspraviResult);
                 DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(serializationTargetType);
                 IspraviResult jsonDeserialized = (IspraviResult)jsonSerializer.ReadObject(new MemoryStream(Encoding.UTF8.GetBytes(s)));
 
                 // sort by start position
-                if (jsonDeserialized != null && jsonDeserialized.response != null && 
-                    jsonDeserialized.response.error != null)
-                    jsonDeserialized.response.error = jsonDeserialized.response.error.OrderBy(p => p.position.FirstOrDefault()).ToList();
+                try
+                {
+                    if (jsonDeserialized != null && jsonDeserialized.response != null &&
+                        jsonDeserialized.response.error != null)
+                        jsonDeserialized.response.error = jsonDeserialized.response.error.OrderBy(p => p.position.FirstOrDefault()).ToList();
+                }
+                catch
+                {
+                    // ignore
+                }
 
                 return jsonDeserialized;
             }

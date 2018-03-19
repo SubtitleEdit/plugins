@@ -31,26 +31,24 @@ namespace SubtitleEdit
             SquareBrackets
         }
 
+        public static readonly string SplitChars = " -.,?!:;\"“”()[]{}|<>/+\r\n¿¡…—–♪♫„«»‹›؛،؟";
         private FormattingType[] _formattingTypes;
         private bool[] _autoSplit;
-
         private readonly Subtitle _subtitle;
         private const char ParagraphSplitter = '*';
         private bool _abort;
+        private List<string> _skipAllList;
+        private Dictionary<string, string> _changeAllDictionary;
+        private string _currentWord;
 
         public string FixedSubtitle { get; private set; }
 
         public MainForm()
         {
             InitializeComponent();
+            _skipAllList = new List<string>();
+            _changeAllDictionary = new Dictionary<string, string>();
             _translator = new IspraviMeApi("SubtitleEdit");
-            KeyDown += (s, e) =>
-            {
-                if (e.KeyCode == Keys.Escape)
-                    DialogResult = DialogResult.Cancel;
-                else if (e.KeyCode == Keys.F1)
-                    textBox1.Visible = !textBox1.Visible;
-            };
             textBox1.Visible = false;
             listView1.Columns[2].Width = -2;
             buttonCancelTranslate.Enabled = false;
@@ -67,6 +65,8 @@ namespace SubtitleEdit
             _formattingTypes = new FormattingType[_subtitle.Paragraphs.Count];
             _autoSplit = new bool[_subtitle.Paragraphs.Count];
             GeneratePreview(false);
+            if (listView1.Items.Count > 0)
+                listView1.Items[0].Selected = true;
         }
 
         public sealed override string Text
@@ -186,6 +186,8 @@ namespace SubtitleEdit
             textBox1.AppendText(parameter.Log.ToString());
             lock (_myLock)
             {
+                if (_abort)
+                    return;
                 if (parameter.Result != null && parameter.Result.response != null && parameter.Result.response.errors > 0)
                 {
                     _abort = true;
@@ -202,7 +204,6 @@ namespace SubtitleEdit
 
                             _grammerParagraphIndex = index;
                             _grammerErrorIndex = 0;
-
                             ShowGrammerError();
 
                             var sb = new StringBuilder();
@@ -236,8 +237,16 @@ namespace SubtitleEdit
             if (r.error != null && _grammerErrorIndex >= 0 && _grammerErrorIndex < r.error.Count)
             {
                 var error = r.error[_grammerErrorIndex];
+                if (_skipAllList.Contains(error.suspicious))
+                {
+                    ShowNextGrammerError();
+                    return;
+                }
+
+                groupBoxWordNotFound.Enabled = true;
                 HighLightWord(richTextBoxParagraph, error.suspicious);
                 textBoxWord.Text = error.suspicious;
+                _currentWord = error.suspicious;
 
                 groupBoxWordNotFound.Text = "Suspicious word (" + error.@class + ")";
 
@@ -249,11 +258,25 @@ namespace SubtitleEdit
                         listBoxSuggestions.Items.Add(item);
                     }
                 }
+                if (listBoxSuggestions.Items.Count > 0)
+                {
+                    listBoxSuggestions.SelectedIndex = 0;
+                    groupBoxSuggestions.Enabled = true;
+                }
+                else
+                {
+                    groupBoxSuggestions.Enabled = false;
+                }
             }
         }
 
         private void ShowNextGrammerError()
         {
+            groupBoxWordNotFound.Enabled = false;
+            groupBoxSuggestions.Enabled = false;
+            richTextBoxParagraph.Text = string.Empty;
+            textBoxWord.Text = string.Empty;
+            _currentWord = null;
             var idx = _grammerParagraphIndex;
             if (idx < 0 || idx >= _subtitle.Paragraphs.Count)
             {
@@ -506,10 +529,138 @@ namespace SubtitleEdit
         {
             var s = textBoxWord.Text.Trim();
             if (!string.IsNullOrEmpty(s))
-                _skipAll.Add(s);
+                _skipAllList.Add(s);
             ShowNextGrammerError();
         }
 
-        private List<string> _skipAll = new List<string>();
+        private void MainForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F1)
+            {
+                if (textBox1.Visible)
+                {
+                    textBox1.Visible = false;
+                    listView1.Visible = true;
+                }
+                else
+                {
+                    textBox1.Visible = true;
+                    listView1.Visible = false;
+                    //textBox1.BringToFront();
+                    //listView1.SendToBack();
+                }
+            }
+        }
+
+        private void buttonChangeAll_Click(object sender, EventArgs e)
+        {
+            if (!_changeAllDictionary.ContainsKey(_currentWord))
+                _changeAllDictionary.Add(_currentWord, textBoxWord.Text.Trim());
+        }
+
+        private void textBoxWord_TextChanged(object sender, EventArgs e)
+        {
+            buttonChange.Enabled = _currentWord != null && textBoxWord.Text.Trim() != _currentWord;
+            buttonChangeAll.Enabled = _currentWord != null && textBoxWord.Text.Trim() != _currentWord;
+        }
+
+        public void CorrectWord(string changeWord, string oldWord, int wordIndex)
+        {
+            var p = _subtitle.Paragraphs[_grammerParagraphIndex];
+            int startIndex = p.Text.IndexOf(oldWord, StringComparison.Ordinal);
+            if (wordIndex >= 0)
+            {
+                startIndex = p.Text.IndexOf(oldWord, GetPositionFromWordIndex(p.Text, wordIndex), StringComparison.Ordinal);
+            }
+            while (startIndex >= 0 && startIndex < p.Text.Length && p.Text.Substring(startIndex).Contains(oldWord))
+            {
+                bool startOk = startIndex == 0 ||
+                               "«»“” <>-—+/'\"[](){}¿¡….,;:!?%&$£\r\n؛،؟".Contains(p.Text[startIndex - 1]) ||
+                               startIndex == p.Text.Length - oldWord.Length;
+                if (startOk)
+                {
+                    int end = startIndex + oldWord.Length;
+                    if (end <= p.Text.Length && end == p.Text.Length || ("«»“” ,.!?:;'()<>\"-—+/[]{}%&$£…\r\n؛،؟").Contains(p.Text[end]))
+                    {
+                        p.Text = p.Text.Remove(startIndex, oldWord.Length).Insert(startIndex, changeWord);
+                    }
+                }
+                if (startIndex + 2 >= p.Text.Length)
+                    startIndex = -1;
+                else
+                    startIndex = p.Text.IndexOf(oldWord, startIndex + 2, StringComparison.Ordinal);
+
+                // stop if using index
+                if (wordIndex >= 0)
+                    startIndex = -1;
+            }
+            listView1.Items[_grammerParagraphIndex].SubItems[1].Text = p.Text.Replace(Environment.NewLine, "<br />");
+        }
+
+        private int GetPositionFromWordIndex(string text, int wordIndex)
+        {
+            var sb = new StringBuilder();
+            int index = -1;
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (SplitChars.Contains(text[i]))
+                {
+                    if (sb.Length > 0)
+                    {
+                        index++;
+                        if (index == wordIndex)
+                        {
+                            int pos = i - sb.Length;
+                            if (pos > 0)
+                                pos--;
+                            if (pos >= 0)
+                                return pos;
+                        }
+                    }
+                    sb.Clear();
+                }
+                else
+                {
+                    sb.Append(text[i]);
+                }
+            }
+            if (sb.Length > 0)
+            {
+                index++;
+                if (index == wordIndex)
+                {
+                    int pos = text.Length - 1 - sb.Length;
+                    if (pos >= 0)
+                        return pos;
+                }
+            }
+            return 0;
+        }
+
+        private void buttonChange_Click(object sender, EventArgs e)
+        {
+            CorrectWord(textBoxWord.Text.Trim(), _currentWord, -1);
+            ShowNextGrammerError();
+        }
+
+        private void buttonUseSuggestion_Click(object sender, EventArgs e)
+        {
+            if (listBoxSuggestions.SelectedIndex < 0)
+                return;
+
+            CorrectWord(listBoxSuggestions.Items[listBoxSuggestions.SelectedIndex].ToString().Trim(), _currentWord, -1);
+            ShowNextGrammerError();
+        }
+
+        private void buttonUseSuggestionAlways_Click(object sender, EventArgs e)
+        {
+            if (listBoxSuggestions.SelectedIndex < 0)
+                return;
+
+            var newWord = listBoxSuggestions.Items[listBoxSuggestions.SelectedIndex].ToString().Trim();
+            _changeAllDictionary.Add(newWord, _currentWord);
+            CorrectWord(newWord, _currentWord, -1);
+            ShowNextGrammerError();
+        }
     }
 }

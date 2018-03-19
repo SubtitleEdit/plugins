@@ -84,13 +84,13 @@
             // 
             // columnHeader2
             // 
-            this.columnHeader2.Text = "Original";
-            this.columnHeader2.Width = 303;
+            this.columnHeader2.Text = "Text";
+            this.columnHeader2.Width = 310;
             // 
             // columnHeader3
             // 
-            this.columnHeader3.Text = "Grammer issue";
-            this.columnHeader3.Width = 335;
+            this.columnHeader3.Text = "Suspicious words";
+            this.columnHeader3.Width = 327;
             // 
             // buttonOk
             // 
@@ -128,7 +128,8 @@
             // 
             // buttonTranslate
             // 
-            this.buttonTranslate.Location = new System.Drawing.Point(326, 302);
+            this.buttonTranslate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonTranslate.Location = new System.Drawing.Point(375, 316);
             this.buttonTranslate.Name = "buttonTranslate";
             this.buttonTranslate.Size = new System.Drawing.Size(127, 23);
             this.buttonTranslate.TabIndex = 2;
@@ -150,11 +151,12 @@
             // 
             // buttonCancelTranslate
             // 
-            this.buttonCancelTranslate.Location = new System.Drawing.Point(525, 302);
+            this.buttonCancelTranslate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonCancelTranslate.Location = new System.Drawing.Point(508, 316);
             this.buttonCancelTranslate.Name = "buttonCancelTranslate";
             this.buttonCancelTranslate.Size = new System.Drawing.Size(99, 23);
             this.buttonCancelTranslate.TabIndex = 3;
-            this.buttonCancelTranslate.Text = "Cancel";
+            this.buttonCancelTranslate.Text = "Stop";
             this.buttonCancelTranslate.UseVisualStyleBackColor = true;
             this.buttonCancelTranslate.Click += new System.EventHandler(this.buttonCancelTranslate_Click);
             // 
@@ -186,6 +188,7 @@
             this.groupBoxSuggestions.Controls.Add(this.buttonUseSuggestion);
             this.groupBoxSuggestions.Controls.Add(this.buttonUseSuggestionAlways);
             this.groupBoxSuggestions.Controls.Add(this.listBoxSuggestions);
+            this.groupBoxSuggestions.Enabled = false;
             this.groupBoxSuggestions.Location = new System.Drawing.Point(319, 380);
             this.groupBoxSuggestions.Name = "groupBoxSuggestions";
             this.groupBoxSuggestions.Size = new System.Drawing.Size(386, 170);
@@ -195,21 +198,23 @@
             // 
             // buttonUseSuggestion
             // 
-            this.buttonUseSuggestion.Location = new System.Drawing.Point(93, 17);
+            this.buttonUseSuggestion.Location = new System.Drawing.Point(7, 15);
             this.buttonUseSuggestion.Name = "buttonUseSuggestion";
             this.buttonUseSuggestion.Size = new System.Drawing.Size(90, 21);
             this.buttonUseSuggestion.TabIndex = 0;
             this.buttonUseSuggestion.Text = "Use";
             this.buttonUseSuggestion.UseVisualStyleBackColor = true;
+            this.buttonUseSuggestion.Click += new System.EventHandler(this.buttonUseSuggestion_Click);
             // 
             // buttonUseSuggestionAlways
             // 
-            this.buttonUseSuggestionAlways.Location = new System.Drawing.Point(189, 17);
+            this.buttonUseSuggestionAlways.Location = new System.Drawing.Point(103, 15);
             this.buttonUseSuggestionAlways.Name = "buttonUseSuggestionAlways";
             this.buttonUseSuggestionAlways.Size = new System.Drawing.Size(90, 21);
             this.buttonUseSuggestionAlways.TabIndex = 1;
             this.buttonUseSuggestionAlways.Text = "Use always";
             this.buttonUseSuggestionAlways.UseVisualStyleBackColor = true;
+            this.buttonUseSuggestionAlways.Click += new System.EventHandler(this.buttonUseSuggestionAlways_Click);
             // 
             // listBoxSuggestions
             // 
@@ -242,6 +247,7 @@
             this.groupBoxWordNotFound.Controls.Add(this.textBoxWord);
             this.groupBoxWordNotFound.Controls.Add(this.buttonSkipAll);
             this.groupBoxWordNotFound.Controls.Add(this.buttonChange);
+            this.groupBoxWordNotFound.Enabled = false;
             this.groupBoxWordNotFound.Location = new System.Drawing.Point(15, 380);
             this.groupBoxWordNotFound.Name = "groupBoxWordNotFound";
             this.groupBoxWordNotFound.Size = new System.Drawing.Size(292, 170);
@@ -287,6 +293,7 @@
             this.buttonChangeAll.TabIndex = 2;
             this.buttonChangeAll.Text = "Change all";
             this.buttonChangeAll.UseVisualStyleBackColor = true;
+            this.buttonChangeAll.Click += new System.EventHandler(this.buttonChangeAll_Click);
             // 
             // textBoxWord
             // 
@@ -294,6 +301,7 @@
             this.textBoxWord.Name = "textBoxWord";
             this.textBoxWord.Size = new System.Drawing.Size(280, 20);
             this.textBoxWord.TabIndex = 0;
+            this.textBoxWord.TextChanged += new System.EventHandler(this.textBoxWord_TextChanged);
             // 
             // buttonSkipAll
             // 
@@ -313,6 +321,7 @@
             this.buttonChange.TabIndex = 1;
             this.buttonChange.Text = "Change";
             this.buttonChange.UseVisualStyleBackColor = true;
+            this.buttonChange.Click += new System.EventHandler(this.buttonChange_Click);
             // 
             // MainForm
             // 
@@ -340,6 +349,7 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "MainForm";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             this.groupBoxSuggestions.ResumeLayout(false);
             this.groupBoxWordNotFound.ResumeLayout(false);
             this.groupBoxWordNotFound.PerformLayout();
