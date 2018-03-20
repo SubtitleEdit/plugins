@@ -24,7 +24,6 @@ namespace SubtitleEdit
         public static readonly string SplitChars = " -.,?!:;\"“”()[]{}|<>/+\r\n¿¡…—–♪♫„«»‹›؛،؟";
         private readonly Subtitle _subtitle;
         private readonly Subtitle _original;
-        private const char ParagraphSplitter = '*';
         private bool _abort;
         private List<string> _skipAllList;
         private Dictionary<string, string> _changeAllDictionary;
@@ -33,6 +32,7 @@ namespace SubtitleEdit
         private int _grammarParagraphIndex = -1;
         private int _grammarErrorIndex = -1;
         BackgroundWorker _bw2 = new BackgroundWorker();
+        BackgroundWorker _bw3 = new BackgroundWorker();
 
 
         public string FixedSubtitle { get; private set; }
@@ -52,6 +52,10 @@ namespace SubtitleEdit
             _bw2 = new BackgroundWorker();
             _bw2.DoWork += OnBwOnDoWork;
             _bw2.RunWorkerCompleted += OnBwRunWorkerCompletedForward;
+
+            _bw3 = new BackgroundWorker();
+            _bw3.DoWork += OnBwOnDoWork;
+            _bw3.RunWorkerCompleted += OnBwRunWorkerCompletedForward;
         }
 
         public MainForm(Subtitle sub, string title, string description, Form parentForm)
@@ -135,14 +139,9 @@ namespace SubtitleEdit
                     indexesToTranslate = new List<int>();
                     threadPool.First(bw => !bw.IsBusy).RunWorkerAsync(arg);
 
-                    // add some multi threading (just one extra thread)
-                    if (_bw2.IsBusy && index + 3 < _subtitle.Paragraphs.Count)
-                    {
-                        var idx2 = index + 2;
-                        var p2 = _subtitle.Paragraphs[idx2];
-                        var parameter = new BackgroundWorkerParameter { Text = p2.Text, Indexes = new List<int> { idx2 }, Log = new StringBuilder() };
-                        _bw2.RunWorkerAsync(parameter);
-                    }
+                    // add some multi threading 
+                    CacheForward(index + 2, _bw2);
+                    CacheForward(index + 3, _bw3);
 
                     while (threadPool.All(bw => bw.IsBusy))
                     {
@@ -150,7 +149,6 @@ namespace SubtitleEdit
                         System.Threading.Thread.Sleep(100);
                     }
                     textToTranslate.AppendLine(p.Text);
-                    textToTranslate.AppendLine(ParagraphSplitter.ToString());
                     indexesToTranslate.Add(index);
                     if (_abort)
                     {
@@ -186,6 +184,16 @@ namespace SubtitleEdit
             catch (Exception exception)
             {
                 MessageBox.Show(exception.Message + Environment.NewLine + exception.StackTrace);
+            }
+        }
+
+        private void CacheForward(int index, BackgroundWorker bw)
+        {
+            if (!bw.IsBusy && index + 1 < _subtitle.Paragraphs.Count)
+            {
+                var p2 = _subtitle.Paragraphs[index];
+                var parameter = new BackgroundWorkerParameter { Text = p2.Text, Indexes = new List<int> { index }, Log = new StringBuilder() };
+                bw.RunWorkerAsync(parameter);
             }
         }
 
