@@ -134,7 +134,7 @@
             this.buttonTranslate.Name = "buttonTranslate";
             this.buttonTranslate.Size = new System.Drawing.Size(127, 23);
             this.buttonTranslate.TabIndex = 2;
-            this.buttonTranslate.Text = "Nađi slovne pogreške";
+            this.buttonTranslate.Text = "Nađi zatipke";
             this.buttonTranslate.UseVisualStyleBackColor = true;
             this.buttonTranslate.Click += new System.EventHandler(this.buttonTranslate_Click);
             // 
@@ -282,7 +282,7 @@
             this.buttonSkipOnce.Name = "buttonSkipOnce";
             this.buttonSkipOnce.Size = new System.Drawing.Size(136, 21);
             this.buttonSkipOnce.TabIndex = 3;
-            this.buttonSkipOnce.Text = "Preskoči &jednom";
+            this.buttonSkipOnce.Text = "Preskoči";
             this.buttonSkipOnce.UseVisualStyleBackColor = true;
             this.buttonSkipOnce.Click += new System.EventHandler(this.buttonSkipOnce_Click);
             // 
@@ -292,7 +292,7 @@
             this.buttonChangeAll.Name = "buttonChangeAll";
             this.buttonChangeAll.Size = new System.Drawing.Size(138, 21);
             this.buttonChangeAll.TabIndex = 2;
-            this.buttonChangeAll.Text = "Promijeni sve";
+            this.buttonChangeAll.Text = "Primijeni na sve";
             this.buttonChangeAll.UseVisualStyleBackColor = true;
             this.buttonChangeAll.Click += new System.EventHandler(this.buttonChangeAll_Click);
             // 
@@ -320,7 +320,7 @@
             this.buttonChange.Name = "buttonChange";
             this.buttonChange.Size = new System.Drawing.Size(136, 21);
             this.buttonChange.TabIndex = 1;
-            this.buttonChange.Text = "Promijeni";
+            this.buttonChange.Text = "Primijeni";
             this.buttonChange.UseVisualStyleBackColor = true;
             this.buttonChange.Click += new System.EventHandler(this.buttonChange_Click);
             // 
