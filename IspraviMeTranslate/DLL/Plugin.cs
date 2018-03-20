@@ -18,7 +18,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         decimal IPlugin.Version
         {
-            get { return 0.1M; }
+            get { return 0.2M; }
         }
 
         string IPlugin.Description
@@ -41,8 +41,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             subtitle = subtitle.Trim();
             if (string.IsNullOrEmpty(subtitle))
             {
-                MessageBox.Show("No subtitle loaded", parentForm.Text,
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("No subtitle loaded", parentForm.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return string.Empty;
             }
 

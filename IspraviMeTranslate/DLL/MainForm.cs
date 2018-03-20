@@ -35,11 +35,13 @@ namespace SubtitleEdit
         private FormattingType[] _formattingTypes;
         private bool[] _autoSplit;
         private readonly Subtitle _subtitle;
+        private readonly Subtitle _original;
         private const char ParagraphSplitter = '*';
         private bool _abort;
         private List<string> _skipAllList;
         private Dictionary<string, string> _changeAllDictionary;
         private string _currentWord;
+        private Dictionary<string, IspraviResult> _cache;
 
         public string FixedSubtitle { get; private set; }
 
@@ -48,6 +50,7 @@ namespace SubtitleEdit
             InitializeComponent();
             _skipAllList = new List<string>();
             _changeAllDictionary = new Dictionary<string, string>();
+            _cache = new Dictionary<string, IspraviResult>();
             _translator = new IspraviMeApi("SubtitleEdit");
             textBox1.Visible = false;
             listView1.Columns[2].Width = -2;
@@ -61,10 +64,30 @@ namespace SubtitleEdit
             linkLabelPoweredBy.Text = "Powered by " + _translator.GetName();
             Text = title;
             _subtitle = sub;
+            _original = new Subtitle(sub);
             var languageCode = LanguageAutoDetect.AutoDetectGoogleLanguage(_subtitle);
             _formattingTypes = new FormattingType[_subtitle.Paragraphs.Count];
             _autoSplit = new bool[_subtitle.Paragraphs.Count];
-            GeneratePreview(false);
+            InitializeListView();
+        }
+
+        private void InitializeListView()
+        {
+            int start = 0;
+            if (listView1.SelectedItems.Count > 0)
+            {
+                start = listView1.SelectedItems[0].Index;
+            }
+
+            for (int index = start; index < _subtitle.Paragraphs.Count; index++)
+            {
+                Paragraph p = _subtitle.Paragraphs[index];
+                var item = new ListViewItem(p.Number.ToString(CultureInfo.InvariantCulture)) { Tag = p };
+                item.SubItems.Add(p.Text);
+                item.SubItems.Add(string.Empty);
+                listView1.Items.Add(item);
+            }
+
             if (listView1.Items.Count > 0)
                 listView1.Items[0].Selected = true;
         }
@@ -92,7 +115,6 @@ namespace SubtitleEdit
 
             try
             {
-                _abort = false;
                 int numberOfThreads = 1;
                 var threadPool = new List<BackgroundWorker>();
                 for (int i = 0; i < numberOfThreads; i++)
@@ -113,34 +135,20 @@ namespace SubtitleEdit
                 for (int index = start; index < _subtitle.Paragraphs.Count; index++)
                 {
                     Paragraph p = _subtitle.Paragraphs[index];
-                    string text = SetFormattingTypeAndSplitting(index, p.Text, false);
-                    var before = text;
-                    var after = string.Empty;
-                    if (setText)
+                    var arg = new BackgroundWorkerParameter { Text = textToTranslate.ToString().TrimEnd().TrimEnd(ParagraphSplitter).TrimEnd(), Indexes = indexesToTranslate, Log = new StringBuilder() };
+                    textToTranslate = new StringBuilder();
+                    indexesToTranslate = new List<int>();
+                    threadPool.First(bw => !bw.IsBusy).RunWorkerAsync(arg);
+                    while (threadPool.All(bw => bw.IsBusy))
                     {
-                        //if (text.Length + textToTranslate.Length > max) - max is too low for merging texts to really have any effect
-                        {
-                            var arg = new BackgroundWorkerParameter { Text = textToTranslate.ToString().TrimEnd().TrimEnd(ParagraphSplitter).TrimEnd(), Indexes = indexesToTranslate, Log = new StringBuilder() };
-                            textToTranslate = new StringBuilder();
-                            indexesToTranslate = new List<int>();
-                            threadPool.First(bw => !bw.IsBusy).RunWorkerAsync(arg);
-                            while (threadPool.All(bw => bw.IsBusy))
-                            {
-                                Application.DoEvents();
-                                System.Threading.Thread.Sleep(100);
-                            }
-                        }
-                        textToTranslate.AppendLine(text);
-                        textToTranslate.AppendLine(ParagraphSplitter.ToString());
-                        indexesToTranslate.Add(index);
+                        Application.DoEvents();
+                        System.Threading.Thread.Sleep(100);
                     }
-                    else
-                    {
-                        AddToListView(p, before, after);
-                    }
+                    textToTranslate.AppendLine(p.Text);
+                    textToTranslate.AppendLine(ParagraphSplitter.ToString());
+                    indexesToTranslate.Add(index);
                     if (_abort)
                     {
-                        _abort = false;
                         return;
                     }
                 }
@@ -186,8 +194,20 @@ namespace SubtitleEdit
             textBox1.AppendText(parameter.Log.ToString());
             lock (_myLock)
             {
+                if (parameter.Indexes.Count > 0 && !_cache.ContainsKey(parameter.Text))
+                    _cache.Add(parameter.Text, parameter.Result);
+
                 if (_abort)
                     return;
+                if (parameter.Indexes.Count > 0)
+                {
+                    var item = listView1.Items[parameter.Indexes[0]];
+                    item.Tag = parameter.Result.response;
+                    listView1.EnsureVisible(parameter.Indexes[0]);
+                    listView1.SelectedItems.Clear();
+                    item.Selected = true;
+                }
+
                 if (parameter.Result != null && parameter.Result.response != null && parameter.Result.response.errors > 0)
                 {
                     _abort = true;
@@ -195,13 +215,13 @@ namespace SubtitleEdit
                     int i = 0;
                     foreach (var index in parameter.Indexes)
                     {
+                        var item = listView1.Items[index];
+                        item.Tag = parameter.Result.response;
+                        listView1.EnsureVisible(index);
+                        listView1.SelectedItems.Clear();
+                        item.Selected = true;
                         if (parameter.Result.response.errors > 0)
                         {
-                            var item = listView1.Items[index];
-                            item.Tag = parameter.Result.response;
-                            if (listView1.CanFocus)
-                                listView1.EnsureVisible(index);
-
                             _grammerParagraphIndex = index;
                             _grammerErrorIndex = 0;
                             ShowGrammerError();
@@ -214,7 +234,6 @@ namespace SubtitleEdit
                             item.SubItems[2].Text = parameter.Result.response.errors.ToString() + ": " + sb.ToString();
                         }
                     }
-
                     i++;
                 }
             }
@@ -225,13 +244,14 @@ namespace SubtitleEdit
             if (_grammerParagraphIndex < 0)
                 return;
 
+            Text = "Croatian grammer checker - " + (_grammerParagraphIndex + 1) + "/" + _subtitle.Paragraphs.Count + 1;
             var r = (IspraviResponse)listView1.Items[_grammerParagraphIndex].Tag;
             if (r == null || r.error == null || r.error.Count == 0)
                 return;
 
             richTextBoxParagraph.Text = _subtitle.Paragraphs[_grammerParagraphIndex].Text;
             richTextBoxParagraph.SelectAll();
-            richTextBoxParagraph.SelectionColor = Control.DefaultForeColor;
+            richTextBoxParagraph.SelectionColor = DefaultForeColor;
             richTextBoxParagraph.SelectionLength = 0;
 
             if (r.error != null && _grammerErrorIndex >= 0 && _grammerErrorIndex < r.error.Count)
@@ -239,6 +259,13 @@ namespace SubtitleEdit
                 var error = r.error[_grammerErrorIndex];
                 if (_skipAllList.Contains(error.suspicious))
                 {
+                    ShowNextGrammerError();
+                    return;
+                }
+
+                if (_changeAllDictionary.ContainsKey(error.suspicious))
+                {
+                    CorrectWord(error.suspicious, _changeAllDictionary[error.suspicious], -1);
                     ShowNextGrammerError();
                     return;
                 }
@@ -356,7 +383,15 @@ namespace SubtitleEdit
         private void OnBwOnDoWork(object sender, DoWorkEventArgs args)
         {
             var parameter = (BackgroundWorkerParameter)args.Argument;
-            parameter.Result = CheckGrammer(parameter.Text, parameter.Log);
+            if (_cache.ContainsKey(parameter.Text))
+            {
+                parameter.Log.AppendLine("Using cache from '" + parameter.Text + "'");
+                parameter.Result = _cache[parameter.Text];
+            }
+            else
+            {
+                parameter.Result = CheckGrammer(parameter.Text, parameter.Log);
+            }
             args.Result = parameter;
         }
 
@@ -365,14 +400,6 @@ namespace SubtitleEdit
             var result = _translator.CheckGrammer(text, log);
             log.AppendLine();
             return result;
-        }
-
-        private void AddToListView(Paragraph p, string before, string after)
-        {
-            var item = new ListViewItem(p.Number.ToString(CultureInfo.InvariantCulture)) { Tag = p };
-            item.SubItems.Add(before);
-            item.SubItems.Add(after);
-            listView1.Items.Add(item);
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
@@ -401,6 +428,7 @@ namespace SubtitleEdit
             progressBar1.Maximum = _subtitle.Paragraphs.Count;
             progressBar1.Value = 0;
             progressBar1.Visible = true;
+            _abort = false;
             try
             {
                 GeneratePreview(true);
@@ -661,6 +689,11 @@ namespace SubtitleEdit
             _changeAllDictionary.Add(newWord, _currentWord);
             CorrectWord(newWord, _currentWord, -1);
             ShowNextGrammerError();
+        }
+
+        private void MainForm_ResizeEnd(object sender, EventArgs e)
+        {
+            listView1.Columns[listView1.Columns.Count - 1].Width = -2;
         }
     }
 }

@@ -71,7 +71,7 @@
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(12, 12);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(693, 243);
+            this.listView1.Size = new System.Drawing.Size(737, 294);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -85,17 +85,17 @@
             // columnHeader2
             // 
             this.columnHeader2.Text = "Text";
-            this.columnHeader2.Width = 310;
+            this.columnHeader2.Width = 410;
             // 
             // columnHeader3
             // 
             this.columnHeader3.Text = "Suspicious words";
-            this.columnHeader3.Width = 327;
+            this.columnHeader3.Width = 250;
             // 
             // buttonOk
             // 
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOk.Location = new System.Drawing.Point(549, 575);
+            this.buttonOk.Location = new System.Drawing.Point(593, 626);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 7;
@@ -107,7 +107,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(630, 575);
+            this.buttonCancel.Location = new System.Drawing.Point(674, 626);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 8;
@@ -118,7 +118,7 @@
             // 
             this.linkLabelPoweredBy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.linkLabelPoweredBy.AutoSize = true;
-            this.linkLabelPoweredBy.Location = new System.Drawing.Point(12, 558);
+            this.linkLabelPoweredBy.Location = new System.Drawing.Point(12, 609);
             this.linkLabelPoweredBy.Name = "linkLabelPoweredBy";
             this.linkLabelPoweredBy.Size = new System.Drawing.Size(71, 13);
             this.linkLabelPoweredBy.TabIndex = 6;
@@ -129,7 +129,8 @@
             // buttonTranslate
             // 
             this.buttonTranslate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonTranslate.Location = new System.Drawing.Point(375, 316);
+            this.buttonTranslate.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonTranslate.Location = new System.Drawing.Point(326, 356);
             this.buttonTranslate.Name = "buttonTranslate";
             this.buttonTranslate.Size = new System.Drawing.Size(127, 23);
             this.buttonTranslate.TabIndex = 2;
@@ -146,13 +147,13 @@
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(693, 243);
+            this.textBox1.Size = new System.Drawing.Size(737, 294);
             this.textBox1.TabIndex = 5;
             // 
             // buttonCancelTranslate
             // 
             this.buttonCancelTranslate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonCancelTranslate.Location = new System.Drawing.Point(508, 316);
+            this.buttonCancelTranslate.Location = new System.Drawing.Point(459, 356);
             this.buttonCancelTranslate.Name = "buttonCancelTranslate";
             this.buttonCancelTranslate.Size = new System.Drawing.Size(99, 23);
             this.buttonCancelTranslate.TabIndex = 3;
@@ -164,9 +165,9 @@
             // 
             this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar1.Location = new System.Drawing.Point(15, 575);
+            this.progressBar1.Location = new System.Drawing.Point(15, 626);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(528, 23);
+            this.progressBar1.Size = new System.Drawing.Size(572, 23);
             this.progressBar1.TabIndex = 4;
             this.progressBar1.Visible = false;
             // 
@@ -174,7 +175,7 @@
             // 
             this.richTextBoxParagraph.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.richTextBoxParagraph.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.richTextBoxParagraph.Location = new System.Drawing.Point(15, 305);
+            this.richTextBoxParagraph.Location = new System.Drawing.Point(15, 356);
             this.richTextBoxParagraph.Name = "richTextBoxParagraph";
             this.richTextBoxParagraph.ReadOnly = true;
             this.richTextBoxParagraph.Size = new System.Drawing.Size(292, 54);
@@ -189,9 +190,9 @@
             this.groupBoxSuggestions.Controls.Add(this.buttonUseSuggestionAlways);
             this.groupBoxSuggestions.Controls.Add(this.listBoxSuggestions);
             this.groupBoxSuggestions.Enabled = false;
-            this.groupBoxSuggestions.Location = new System.Drawing.Point(319, 380);
+            this.groupBoxSuggestions.Location = new System.Drawing.Point(319, 431);
             this.groupBoxSuggestions.Name = "groupBoxSuggestions";
-            this.groupBoxSuggestions.Size = new System.Drawing.Size(386, 170);
+            this.groupBoxSuggestions.Size = new System.Drawing.Size(430, 170);
             this.groupBoxSuggestions.TabIndex = 10;
             this.groupBoxSuggestions.TabStop = false;
             this.groupBoxSuggestions.Text = "Suggestions";
@@ -224,14 +225,14 @@
             this.listBoxSuggestions.FormattingEnabled = true;
             this.listBoxSuggestions.Location = new System.Drawing.Point(7, 42);
             this.listBoxSuggestions.Name = "listBoxSuggestions";
-            this.listBoxSuggestions.Size = new System.Drawing.Size(367, 108);
+            this.listBoxSuggestions.Size = new System.Drawing.Size(411, 108);
             this.listBoxSuggestions.TabIndex = 2;
             // 
             // labelFullText
             // 
             this.labelFullText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelFullText.AutoSize = true;
-            this.labelFullText.Location = new System.Drawing.Point(12, 286);
+            this.labelFullText.Location = new System.Drawing.Point(12, 337);
             this.labelFullText.Name = "labelFullText";
             this.labelFullText.Size = new System.Drawing.Size(43, 13);
             this.labelFullText.TabIndex = 11;
@@ -248,7 +249,7 @@
             this.groupBoxWordNotFound.Controls.Add(this.buttonSkipAll);
             this.groupBoxWordNotFound.Controls.Add(this.buttonChange);
             this.groupBoxWordNotFound.Enabled = false;
-            this.groupBoxWordNotFound.Location = new System.Drawing.Point(15, 380);
+            this.groupBoxWordNotFound.Location = new System.Drawing.Point(15, 431);
             this.groupBoxWordNotFound.Name = "groupBoxWordNotFound";
             this.groupBoxWordNotFound.Size = new System.Drawing.Size(292, 170);
             this.groupBoxWordNotFound.TabIndex = 9;
@@ -329,7 +330,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(717, 606);
+            this.ClientSize = new System.Drawing.Size(761, 657);
             this.Controls.Add(this.richTextBoxParagraph);
             this.Controls.Add(this.groupBoxSuggestions);
             this.Controls.Add(this.labelFullText);
@@ -349,6 +350,7 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "MainForm";
+            this.ResizeEnd += new System.EventHandler(this.MainForm_ResizeEnd);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             this.groupBoxSuggestions.ResumeLayout(false);
             this.groupBoxWordNotFound.ResumeLayout(false);
