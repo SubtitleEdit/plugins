@@ -13,17 +13,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text
         {
-            get { return "Croatian grammer checker"; }
+            get { return "Ispravi.me grammer checker"; }
         }
 
         decimal IPlugin.Version
         {
-            get { return 0.2M; }
+            get { return 0.3M; }
         }
 
         string IPlugin.Description
         {
-            get { return "Check Croatian grammer with Ispravi"; }
+            get { return "Croatian grammer checker"; }
         }
 
         string IPlugin.ActionType // Can be one of these: file, tool, sync, translate, spellcheck

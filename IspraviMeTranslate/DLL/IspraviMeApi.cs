@@ -41,6 +41,10 @@ namespace SubtitleEdit
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             var request = new HttpRequestMessage(HttpMethod.Post, url) { Content = new FormUrlEncodedContent(nvc) };
+
+            log.AppendLine("Calling " + GetName() + " with: " + new FormUrlEncodedContent(nvc).ReadAsStringAsync().Result);
+
+
             var res = client.SendAsync(request).Result;
             if (res.IsSuccessStatusCode)
             {
