@@ -42,6 +42,9 @@ namespace SubtitleEdit
         private Dictionary<string, string> _changeAllDictionary;
         private string _currentWord;
         private Dictionary<string, IspraviResult> _cache;
+        private int _grammarParagraphIndex = -1;
+        private int _grammarErrorIndex = -1;
+
 
         public string FixedSubtitle { get; private set; }
 
@@ -201,17 +204,19 @@ namespace SubtitleEdit
                     return;
                 if (parameter.Indexes.Count > 0)
                 {
-                    var item = listView1.Items[parameter.Indexes[0]];
+                    var idx = parameter.Indexes[0];
+                    var item = listView1.Items[idx];
                     item.Tag = parameter.Result.response;
-                    listView1.EnsureVisible(parameter.Indexes[0]);
+                    listView1.EnsureVisible(idx);
                     listView1.SelectedItems.Clear();
                     item.Selected = true;
+                    Text = "Isprave.me grammar checker - " + (idx + 1) + "/" + _subtitle.Paragraphs.Count;
                 }
 
                 if (parameter.Result != null && parameter.Result.response != null && parameter.Result.response.errors > 0)
                 {
                     _abort = true;
-                    _grammerErrorIndex = -1;
+                    _grammarErrorIndex = -1;
                     int i = 0;
                     foreach (var index in parameter.Indexes)
                     {
@@ -222,9 +227,9 @@ namespace SubtitleEdit
                         item.Selected = true;
                         if (parameter.Result.response.errors > 0)
                         {
-                            _grammerParagraphIndex = index;
-                            _grammerErrorIndex = 0;
-                            ShowGrammerError();
+                            _grammarParagraphIndex = index;
+                            _grammarErrorIndex = 0;
+                            ShowGrammarError();
 
                             var sb = new StringBuilder();
                             foreach (var error in parameter.Result.response.error)
@@ -239,34 +244,33 @@ namespace SubtitleEdit
             }
         }
 
-        private void ShowGrammerError()
+        private void ShowGrammarError()
         {
-            if (_grammerParagraphIndex < 0)
+            if (_grammarParagraphIndex < 0)
                 return;
 
-            Text = "Croatian grammer checker - " + (_grammerParagraphIndex + 1) + "/" + _subtitle.Paragraphs.Count + 1;
-            var r = (IspraviResponse)listView1.Items[_grammerParagraphIndex].Tag;
+            var r = (IspraviResponse)listView1.Items[_grammarParagraphIndex].Tag;
             if (r == null || r.error == null || r.error.Count == 0)
                 return;
 
-            richTextBoxParagraph.Text = _subtitle.Paragraphs[_grammerParagraphIndex].Text;
+            richTextBoxParagraph.Text = _subtitle.Paragraphs[_grammarParagraphIndex].Text;
             richTextBoxParagraph.SelectAll();
             richTextBoxParagraph.SelectionColor = DefaultForeColor;
             richTextBoxParagraph.SelectionLength = 0;
 
-            if (r.error != null && _grammerErrorIndex >= 0 && _grammerErrorIndex < r.error.Count)
+            if (r.error != null && _grammarErrorIndex >= 0 && _grammarErrorIndex < r.error.Count)
             {
-                var error = r.error[_grammerErrorIndex];
+                var error = r.error[_grammarErrorIndex];
                 if (_skipAllList.Contains(error.suspicious))
                 {
-                    ShowNextGrammerError();
+                    ShowNextGrammarError();
                     return;
                 }
 
                 if (_changeAllDictionary.ContainsKey(error.suspicious))
                 {
                     CorrectWord(error.suspicious, _changeAllDictionary[error.suspicious], -1);
-                    ShowNextGrammerError();
+                    ShowNextGrammarError();
                     return;
                 }
 
@@ -297,14 +301,14 @@ namespace SubtitleEdit
             }
         }
 
-        private void ShowNextGrammerError()
+        private void ShowNextGrammarError()
         {
             groupBoxWordNotFound.Enabled = false;
             groupBoxSuggestions.Enabled = false;
             richTextBoxParagraph.Text = string.Empty;
             textBoxWord.Text = string.Empty;
             _currentWord = null;
-            var idx = _grammerParagraphIndex;
+            var idx = _grammarParagraphIndex;
             if (idx < 0 || idx >= _subtitle.Paragraphs.Count)
             {
                 return;
@@ -316,24 +320,24 @@ namespace SubtitleEdit
                 return;
             }
 
-            _grammerErrorIndex++;
-            if (_grammerErrorIndex >= r.error.Count)
+            _grammarErrorIndex++;
+            if (_grammarErrorIndex >= r.error.Count)
             {
-                _grammerParagraphIndex++;
-                if (_grammerParagraphIndex >= _subtitle.Paragraphs.Count)
+                _grammarParagraphIndex++;
+                if (_grammarParagraphIndex >= _subtitle.Paragraphs.Count)
                 {
                     return; // done
                 }
-                _grammerErrorIndex = 0;
-                listView1.EnsureVisible(_grammerParagraphIndex);
+                _grammarErrorIndex = 0;
+                listView1.EnsureVisible(_grammarParagraphIndex);
                 listView1.SelectedItems.Clear();
-                listView1.Items[_grammerParagraphIndex].Selected = true;
-                listView1.FocusedItem = listView1.Items[_grammerParagraphIndex];
+                listView1.Items[_grammarParagraphIndex].Selected = true;
+                listView1.FocusedItem = listView1.Items[_grammarParagraphIndex];
                 buttonTranslate_Click(null, null);
                 return;
             }
 
-            ShowGrammerError();
+            ShowGrammarError();
         }
 
 
@@ -376,9 +380,6 @@ namespace SubtitleEdit
                 richTextBoxParagraph.SelectionStart = 0;
             }
         }
-
-        private int _grammerParagraphIndex = -1;
-        private int _grammerErrorIndex = -1;
 
         private void OnBwOnDoWork(object sender, DoWorkEventArgs args)
         {
@@ -550,7 +551,7 @@ namespace SubtitleEdit
 
         private void buttonSkipOnce_Click(object sender, EventArgs e)
         {
-            ShowNextGrammerError();
+            ShowNextGrammarError();
         }
 
         private void buttonSkipAll_Click(object sender, EventArgs e)
@@ -558,7 +559,7 @@ namespace SubtitleEdit
             var s = textBoxWord.Text.Trim();
             if (!string.IsNullOrEmpty(s))
                 _skipAllList.Add(s);
-            ShowNextGrammerError();
+            ShowNextGrammarError();
         }
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
@@ -574,8 +575,6 @@ namespace SubtitleEdit
                 {
                     textBox1.Visible = true;
                     listView1.Visible = false;
-                    //textBox1.BringToFront();
-                    //listView1.SendToBack();
                 }
             }
         }
@@ -594,7 +593,7 @@ namespace SubtitleEdit
 
         public void CorrectWord(string changeWord, string oldWord, int wordIndex)
         {
-            var p = _subtitle.Paragraphs[_grammerParagraphIndex];
+            var p = _subtitle.Paragraphs[_grammarParagraphIndex];
             int startIndex = p.Text.IndexOf(oldWord, StringComparison.Ordinal);
             if (wordIndex >= 0)
             {
@@ -622,7 +621,7 @@ namespace SubtitleEdit
                 if (wordIndex >= 0)
                     startIndex = -1;
             }
-            listView1.Items[_grammerParagraphIndex].SubItems[1].Text = p.Text.Replace(Environment.NewLine, "<br />");
+            listView1.Items[_grammarParagraphIndex].SubItems[1].Text = p.Text.Replace(Environment.NewLine, "<br />");
         }
 
         private int GetPositionFromWordIndex(string text, int wordIndex)
@@ -668,7 +667,7 @@ namespace SubtitleEdit
         private void buttonChange_Click(object sender, EventArgs e)
         {
             CorrectWord(textBoxWord.Text.Trim(), _currentWord, -1);
-            ShowNextGrammerError();
+            ShowNextGrammarError();
         }
 
         private void buttonUseSuggestion_Click(object sender, EventArgs e)
@@ -677,7 +676,7 @@ namespace SubtitleEdit
                 return;
 
             CorrectWord(listBoxSuggestions.Items[listBoxSuggestions.SelectedIndex].ToString().Trim(), _currentWord, -1);
-            ShowNextGrammerError();
+            ShowNextGrammarError();
         }
 
         private void buttonUseSuggestionAlways_Click(object sender, EventArgs e)
@@ -688,7 +687,7 @@ namespace SubtitleEdit
             var newWord = listBoxSuggestions.Items[listBoxSuggestions.SelectedIndex].ToString().Trim();
             _changeAllDictionary.Add(newWord, _currentWord);
             CorrectWord(newWord, _currentWord, -1);
-            ShowNextGrammerError();
+            ShowNextGrammarError();
         }
 
         private void MainForm_ResizeEnd(object sender, EventArgs e)

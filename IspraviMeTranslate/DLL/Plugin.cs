@@ -13,7 +13,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text
         {
-            get { return "Ispravi.me grammer checker"; }
+            get { return "Ispravi.me grammar checker"; }
         }
 
         decimal IPlugin.Version
@@ -23,7 +23,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Description
         {
-            get { return "Croatian grammer checker"; }
+            get { return "Croatian grammar checker"; }
         }
 
         string IPlugin.ActionType // Can be one of these: file, tool, sync, translate, spellcheck
