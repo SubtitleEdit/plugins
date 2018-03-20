@@ -13,7 +13,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text
         {
-            get { return "Ispravi.me grammar checker"; }
+            get { return "Ispravi.me [Hascheck] spellchecker"; }
         }
 
         decimal IPlugin.Version
@@ -23,7 +23,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Description
         {
-            get { return "Croatian grammar checker"; }
+            get { return "Croatian spellchecker"; }
         }
 
         string IPlugin.ActionType // Can be one of these: file, tool, sync, translate, spellcheck
@@ -41,7 +41,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             subtitle = subtitle.Trim();
             if (string.IsNullOrEmpty(subtitle))
             {
-                MessageBox.Show("No subtitle loaded", parentForm.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Titl nije učitan", parentForm.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return string.Empty;
             }
 
