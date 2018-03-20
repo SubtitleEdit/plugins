@@ -79,7 +79,7 @@
             // 
             // columnHeader1
             // 
-            this.columnHeader1.Text = "Line #";
+            this.columnHeader1.Text = "Linija #";
             this.columnHeader1.Width = 48;
             // 
             // columnHeader2
@@ -89,7 +89,7 @@
             // 
             // columnHeader3
             // 
-            this.columnHeader3.Text = "Suspicious words";
+            this.columnHeader3.Text = "Sumnjive riječi";
             this.columnHeader3.Width = 250;
             // 
             // buttonOk
@@ -111,7 +111,7 @@
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 8;
-            this.buttonCancel.Text = "Cancel";
+            this.buttonCancel.Text = "Otkaži";
             this.buttonCancel.UseVisualStyleBackColor = true;
             // 
             // linkLabelPoweredBy
@@ -123,7 +123,7 @@
             this.linkLabelPoweredBy.Size = new System.Drawing.Size(71, 13);
             this.linkLabelPoweredBy.TabIndex = 6;
             this.linkLabelPoweredBy.TabStop = true;
-            this.linkLabelPoweredBy.Text = "Powered by x";
+            this.linkLabelPoweredBy.Text = "Omogućuje x";
             this.linkLabelPoweredBy.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // buttonTranslate
@@ -134,7 +134,7 @@
             this.buttonTranslate.Name = "buttonTranslate";
             this.buttonTranslate.Size = new System.Drawing.Size(127, 23);
             this.buttonTranslate.TabIndex = 2;
-            this.buttonTranslate.Text = "Check grammer";
+            this.buttonTranslate.Text = "Nađi slovne pogreške";
             this.buttonTranslate.UseVisualStyleBackColor = true;
             this.buttonTranslate.Click += new System.EventHandler(this.buttonTranslate_Click);
             // 
@@ -157,7 +157,7 @@
             this.buttonCancelTranslate.Name = "buttonCancelTranslate";
             this.buttonCancelTranslate.Size = new System.Drawing.Size(99, 23);
             this.buttonCancelTranslate.TabIndex = 3;
-            this.buttonCancelTranslate.Text = "Stop";
+            this.buttonCancelTranslate.Text = "Stani";
             this.buttonCancelTranslate.UseVisualStyleBackColor = true;
             this.buttonCancelTranslate.Click += new System.EventHandler(this.buttonCancelTranslate_Click);
             // 
@@ -195,7 +195,7 @@
             this.groupBoxSuggestions.Size = new System.Drawing.Size(430, 170);
             this.groupBoxSuggestions.TabIndex = 10;
             this.groupBoxSuggestions.TabStop = false;
-            this.groupBoxSuggestions.Text = "Suggestions";
+            this.groupBoxSuggestions.Text = "Prijedlozi";
             // 
             // buttonUseSuggestion
             // 
@@ -203,7 +203,7 @@
             this.buttonUseSuggestion.Name = "buttonUseSuggestion";
             this.buttonUseSuggestion.Size = new System.Drawing.Size(90, 21);
             this.buttonUseSuggestion.TabIndex = 0;
-            this.buttonUseSuggestion.Text = "Use";
+            this.buttonUseSuggestion.Text = "Koristi";
             this.buttonUseSuggestion.UseVisualStyleBackColor = true;
             this.buttonUseSuggestion.Click += new System.EventHandler(this.buttonUseSuggestion_Click);
             // 
@@ -213,7 +213,7 @@
             this.buttonUseSuggestionAlways.Name = "buttonUseSuggestionAlways";
             this.buttonUseSuggestionAlways.Size = new System.Drawing.Size(90, 21);
             this.buttonUseSuggestionAlways.TabIndex = 1;
-            this.buttonUseSuggestionAlways.Text = "Use always";
+            this.buttonUseSuggestionAlways.Text = "Koristi uvijek";
             this.buttonUseSuggestionAlways.UseVisualStyleBackColor = true;
             this.buttonUseSuggestionAlways.Click += new System.EventHandler(this.buttonUseSuggestionAlways_Click);
             // 
@@ -236,7 +236,7 @@
             this.labelFullText.Name = "labelFullText";
             this.labelFullText.Size = new System.Drawing.Size(43, 13);
             this.labelFullText.TabIndex = 11;
-            this.labelFullText.Text = "Full text";
+            this.labelFullText.Text = "Pun tekst";
             // 
             // groupBoxWordNotFound
             // 
@@ -254,7 +254,7 @@
             this.groupBoxWordNotFound.Size = new System.Drawing.Size(292, 170);
             this.groupBoxWordNotFound.TabIndex = 9;
             this.groupBoxWordNotFound.TabStop = false;
-            this.groupBoxWordNotFound.Text = "Suspicious word";
+            this.groupBoxWordNotFound.Text = "Sumnjiva riječ";
             // 
             // buttonGoogleIt
             // 
@@ -272,7 +272,7 @@
             this.buttonUndo.Name = "buttonUndo";
             this.buttonUndo.Size = new System.Drawing.Size(280, 21);
             this.buttonUndo.TabIndex = 8;
-            this.buttonUndo.Text = "Undo: skip all \'A\'";
+            this.buttonUndo.Text = "Poništi: preskoči sve \'A\'";
             this.buttonUndo.UseVisualStyleBackColor = true;
             this.buttonUndo.Visible = false;
             // 
@@ -282,7 +282,7 @@
             this.buttonSkipOnce.Name = "buttonSkipOnce";
             this.buttonSkipOnce.Size = new System.Drawing.Size(136, 21);
             this.buttonSkipOnce.TabIndex = 3;
-            this.buttonSkipOnce.Text = "Skip &once";
+            this.buttonSkipOnce.Text = "Preskoči &jednom";
             this.buttonSkipOnce.UseVisualStyleBackColor = true;
             this.buttonSkipOnce.Click += new System.EventHandler(this.buttonSkipOnce_Click);
             // 
@@ -292,7 +292,7 @@
             this.buttonChangeAll.Name = "buttonChangeAll";
             this.buttonChangeAll.Size = new System.Drawing.Size(138, 21);
             this.buttonChangeAll.TabIndex = 2;
-            this.buttonChangeAll.Text = "Change all";
+            this.buttonChangeAll.Text = "Promijeni sve";
             this.buttonChangeAll.UseVisualStyleBackColor = true;
             this.buttonChangeAll.Click += new System.EventHandler(this.buttonChangeAll_Click);
             // 
@@ -310,7 +310,7 @@
             this.buttonSkipAll.Name = "buttonSkipAll";
             this.buttonSkipAll.Size = new System.Drawing.Size(138, 21);
             this.buttonSkipAll.TabIndex = 4;
-            this.buttonSkipAll.Text = "&Skip all";
+            this.buttonSkipAll.Text = "&Preskoči sve";
             this.buttonSkipAll.UseVisualStyleBackColor = true;
             this.buttonSkipAll.Click += new System.EventHandler(this.buttonSkipAll_Click);
             // 
@@ -320,7 +320,7 @@
             this.buttonChange.Name = "buttonChange";
             this.buttonChange.Size = new System.Drawing.Size(136, 21);
             this.buttonChange.TabIndex = 1;
-            this.buttonChange.Text = "Change";
+            this.buttonChange.Text = "Promijeni";
             this.buttonChange.UseVisualStyleBackColor = true;
             this.buttonChange.Click += new System.EventHandler(this.buttonChange_Click);
             // 

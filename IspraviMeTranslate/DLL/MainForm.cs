@@ -212,7 +212,7 @@ namespace SubtitleEdit
                     listView1.EnsureVisible(idx);
                     listView1.SelectedItems.Clear();
                     item.Selected = true;
-                    Text = "Isprave.me grammar checker - " + (idx + 1) + "/" + _subtitle.Paragraphs.Count;
+                    Text = "Ispravi.me grammar checker - " + (idx + 1) + "/" + _subtitle.Paragraphs.Count;
                 }
 
                 if (parameter.Result != null && parameter.Result.response != null && parameter.Result.response.errors > 0)
