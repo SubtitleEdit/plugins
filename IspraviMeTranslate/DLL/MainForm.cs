@@ -21,19 +21,7 @@ namespace SubtitleEdit
     {
 
         private IspraviMeApi _translator;
-
-        private enum FormattingType
-        {
-            None,
-            Italic,
-            ItalicTwoLines,
-            Parentheses,
-            SquareBrackets
-        }
-
         public static readonly string SplitChars = " -.,?!:;\"“”()[]{}|<>/+\r\n¿¡…—–♪♫„«»‹›؛،؟";
-        private FormattingType[] _formattingTypes;
-        private bool[] _autoSplit;
         private readonly Subtitle _subtitle;
         private readonly Subtitle _original;
         private const char ParagraphSplitter = '*';
@@ -44,6 +32,7 @@ namespace SubtitleEdit
         private Dictionary<string, IspraviResult> _cache;
         private int _grammarParagraphIndex = -1;
         private int _grammarErrorIndex = -1;
+        BackgroundWorker _bw2 = new BackgroundWorker();
 
 
         public string FixedSubtitle { get; private set; }
@@ -59,6 +48,10 @@ namespace SubtitleEdit
             listView1.Columns[2].Width = -2;
             buttonCancelTranslate.Enabled = false;
             RestoreSettings();
+
+            _bw2 = new BackgroundWorker();
+            _bw2.DoWork += OnBwOnDoWork;
+            _bw2.RunWorkerCompleted += OnBwRunWorkerCompletedForward;
         }
 
         public MainForm(Subtitle sub, string title, string description, Form parentForm)
@@ -69,8 +62,6 @@ namespace SubtitleEdit
             _subtitle = sub;
             _original = new Subtitle(sub);
             var languageCode = LanguageAutoDetect.AutoDetectGoogleLanguage(_subtitle);
-            _formattingTypes = new FormattingType[_subtitle.Paragraphs.Count];
-            _autoSplit = new bool[_subtitle.Paragraphs.Count];
             InitializeListView();
         }
 
@@ -86,7 +77,7 @@ namespace SubtitleEdit
             {
                 Paragraph p = _subtitle.Paragraphs[index];
                 var item = new ListViewItem(p.Number.ToString(CultureInfo.InvariantCulture)) { Tag = p };
-                item.SubItems.Add(p.Text);
+                item.SubItems.Add(p.Text.Replace(Environment.NewLine, "<br />"));
                 item.SubItems.Add(string.Empty);
                 listView1.Items.Add(item);
             }
@@ -111,7 +102,8 @@ namespace SubtitleEdit
 
         private readonly object _myLock = new object();
 
-        private void GeneratePreview(bool setText)
+
+        private void CheckGrammar()
         {
             if (_subtitle == null)
                 return;
@@ -130,7 +122,7 @@ namespace SubtitleEdit
                 var textToTranslate = new StringBuilder();
                 var indexesToTranslate = new List<int>();
                 int start = 0;
-                if (setText && listView1.SelectedItems.Count > 0)
+                if (listView1.SelectedItems.Count > 0)
                 {
                     start = listView1.SelectedItems[0].Index;
                 }
@@ -138,10 +130,20 @@ namespace SubtitleEdit
                 for (int index = start; index < _subtitle.Paragraphs.Count; index++)
                 {
                     Paragraph p = _subtitle.Paragraphs[index];
-                    var arg = new BackgroundWorkerParameter { Text = textToTranslate.ToString().TrimEnd().TrimEnd(ParagraphSplitter).TrimEnd(), Indexes = indexesToTranslate, Log = new StringBuilder() };
+                    var arg = new BackgroundWorkerParameter { Text = textToTranslate.ToString().TrimEnd(), Indexes = indexesToTranslate, Log = new StringBuilder() };
                     textToTranslate = new StringBuilder();
                     indexesToTranslate = new List<int>();
                     threadPool.First(bw => !bw.IsBusy).RunWorkerAsync(arg);
+
+                    // add some multi threading (just one extra thread)
+                    if (_bw2.IsBusy && index + 3 < _subtitle.Paragraphs.Count)
+                    {
+                        var idx2 = index + 2;
+                        var p2 = _subtitle.Paragraphs[idx2];
+                        var parameter = new BackgroundWorkerParameter { Text = p2.Text, Indexes = new List<int> { idx2 }, Log = new StringBuilder() };
+                        _bw2.RunWorkerAsync(parameter);
+                    }
+
                     while (threadPool.All(bw => bw.IsBusy))
                     {
                         Application.DoEvents();
@@ -162,7 +164,7 @@ namespace SubtitleEdit
                         Application.DoEvents();
                         System.Threading.Thread.Sleep(100);
                     }
-                    var arg = new BackgroundWorkerParameter { Text = textToTranslate.ToString().TrimEnd().TrimEnd(ParagraphSplitter).TrimEnd(), Indexes = indexesToTranslate, Log = new StringBuilder() };
+                    var arg = new BackgroundWorkerParameter { Text = textToTranslate.ToString().TrimEnd(), Indexes = indexesToTranslate, Log = new StringBuilder() };
                     threadPool.First(bw => !bw.IsBusy).RunWorkerAsync(arg);
                 }
                 while (threadPool.Any(bw => bw.IsBusy))
@@ -241,6 +243,17 @@ namespace SubtitleEdit
                     }
                     i++;
                 }
+            }
+        }
+
+
+        private void OnBwRunWorkerCompletedForward(object sender, RunWorkerCompletedEventArgs runWorkerCompletedEventArgs)
+        {
+            var parameter = (BackgroundWorkerParameter)runWorkerCompletedEventArgs.Result;
+            lock (_myLock)
+            {
+                if (parameter.Indexes.Count > 0 && !_cache.ContainsKey(parameter.Text))
+                    _cache.Add(parameter.Text, parameter.Result);
             }
         }
 
@@ -432,7 +445,7 @@ namespace SubtitleEdit
             _abort = false;
             try
             {
-                GeneratePreview(true);
+                CheckGrammar();
             }
             finally
             {
@@ -445,49 +458,6 @@ namespace SubtitleEdit
         private void buttonCancelTranslate_Click(object sender, EventArgs e)
         {
             _abort = true;
-        }
-
-        private string SetFormattingTypeAndSplitting(int i, string text, bool skipSplit)
-        {
-            text = text.Trim();
-            if (text.StartsWith("<i>", StringComparison.Ordinal) && text.EndsWith("</i>", StringComparison.Ordinal) && text.Contains("</i>" + Environment.NewLine + "<i>") && Utilities.GetNumberOfLines(text) == 2 && Utilities.CountTagInText(text, "<i>") == 1)
-            {
-                _formattingTypes[i] = FormattingType.ItalicTwoLines;
-                text = HtmlUtil.RemoveOpenCloseTags(text, HtmlUtil.TagItalic);
-            }
-            else if (text.StartsWith("<i>", StringComparison.Ordinal) && text.EndsWith("</i>", StringComparison.Ordinal) && Utilities.CountTagInText(text, "<i>") == 1)
-            {
-                _formattingTypes[i] = FormattingType.Italic;
-                text = text.Substring(3, text.Length - 7);
-            }
-            else if (text.StartsWith("(", StringComparison.Ordinal) && text.EndsWith(")", StringComparison.Ordinal))
-            {
-                _formattingTypes[i] = FormattingType.Parentheses;
-                text = text.Substring(1, text.Length - 2);
-            }
-            else if (text.StartsWith("[", StringComparison.Ordinal) && text.EndsWith("]", StringComparison.Ordinal))
-            {
-                _formattingTypes[i] = FormattingType.SquareBrackets;
-                text = text.Substring(1, text.Length - 2);
-            }
-            else
-            {
-                _formattingTypes[i] = FormattingType.None;
-            }
-
-            if (skipSplit)
-            {
-                return text;
-            }
-
-            var lines = text.SplitToLines();
-            if (lines.Length == 2 && !string.IsNullOrEmpty(lines[0]) && (Utilities.AllLettersAndNumbers + ",").Contains(lines[0].Substring(lines[0].Length - 1)))
-            {
-                _autoSplit[i] = true;
-                text = Utilities.RemoveLineBreaks(text);
-            }
-
-            return text;
         }
 
         private string GetSettingsFileName()
@@ -685,7 +655,8 @@ namespace SubtitleEdit
                 return;
 
             var newWord = listBoxSuggestions.Items[listBoxSuggestions.SelectedIndex].ToString().Trim();
-            _changeAllDictionary.Add(newWord, _currentWord);
+            if (!_changeAllDictionary.ContainsKey(_currentWord))
+                _changeAllDictionary.Add(_currentWord, newWord);
             CorrectWord(newWord, _currentWord, -1);
             ShowNextGrammarError();
         }
