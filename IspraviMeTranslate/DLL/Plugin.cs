@@ -8,22 +8,22 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         string IPlugin.Name
         {
-            get { return "Ispravi"; }
+            get { return "Ispravi.me [Hascheck] spell checker"; }
         }
 
         string IPlugin.Text
         {
-            get { return "Ispravi.me [Hascheck] spellchecker"; }
+            get { return "Ispravi.me [Hascheck] spell checker"; }
         }
 
         decimal IPlugin.Version
         {
-            get { return 0.5M; }
+            get { return 0.6M; }
         }
 
         string IPlugin.Description
         {
-            get { return "Croatian spellchecker"; }
+            get { return "Croatian spell checker"; }
         }
 
         string IPlugin.ActionType // Can be one of these: file, tool, sync, translate, spellcheck

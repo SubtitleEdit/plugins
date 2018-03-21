@@ -33,6 +33,7 @@ namespace SubtitleEdit
         private int _grammarErrorIndex = -1;
         BackgroundWorker _bw2 = new BackgroundWorker();
         BackgroundWorker _bw3 = new BackgroundWorker();
+        BackgroundWorker _bw4 = new BackgroundWorker();
 
 
         public string FixedSubtitle { get; private set; }
@@ -56,6 +57,10 @@ namespace SubtitleEdit
             _bw3 = new BackgroundWorker();
             _bw3.DoWork += OnBwOnDoWork;
             _bw3.RunWorkerCompleted += OnBwRunWorkerCompletedForward;
+
+            _bw4 = new BackgroundWorker();
+            _bw4.DoWork += OnBwOnDoWork;
+            _bw4.RunWorkerCompleted += OnBwRunWorkerCompletedForward;
         }
 
         public MainForm(Subtitle sub, string title, string description, Form parentForm)
@@ -141,7 +146,8 @@ namespace SubtitleEdit
 
                     // add some multi threading 
                     CacheForward(index + 2, _bw2);
-                    CacheForward(index + 3, _bw3);
+                    CacheForward(index + 4, _bw3);
+                    CacheForward(index + 6, _bw4);
 
                     while (threadPool.All(bw => bw.IsBusy))
                     {
