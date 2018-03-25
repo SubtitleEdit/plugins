@@ -169,7 +169,12 @@ namespace SubtitleEdit
                 }
                 var textToTranslate = new StringBuilder();
                 var indexesToTranslate = new List<int>();
-                for (int index = 0; index < _subtitle.Paragraphs.Count; index++)
+                int start = 0;
+                if (listView1.SelectedItems.Count > 0)
+                {
+                    start = listView1.SelectedItems[0].Index;
+                }
+                for (int index = start; index < _subtitle.Paragraphs.Count; index++)
                 {
                     if (index < listView1.Items.Count)
                     {
@@ -289,7 +294,7 @@ namespace SubtitleEdit
 
                         // follow newly translated lines
                         var item = listView1.Items[index];
-                        item.SubItems[2].Text = _subtitle.Paragraphs[index].Text;
+                        item.SubItems[2].Text = _subtitle.Paragraphs[index].Text.Replace(Environment.NewLine, "<br />");
                         if (listView1.CanFocus)
                             listView1.EnsureVisible(index);
                     }
@@ -374,7 +379,7 @@ namespace SubtitleEdit
                     {
                         var index = parameter.Indexes.First();
                         if (!_translateLookup.ContainsKey(_from + _subtitleOriginal.Paragraphs[index].Text))
-                            _translateLookup.Add(_from +  _subtitleOriginal.Paragraphs[index].Text, parameter.Result);
+                            _translateLookup.Add(_from + _subtitleOriginal.Paragraphs[index].Text, parameter.Result);
                     }
                 }
             }
@@ -518,8 +523,8 @@ namespace SubtitleEdit
         private void AddToListView(Paragraph p, string before, string after)
         {
             var item = new ListViewItem(p.Number.ToString(CultureInfo.InvariantCulture)) { Tag = p };
-            item.SubItems.Add(before);
-            item.SubItems.Add(after);
+            item.SubItems.Add(p.Text.Replace(Environment.NewLine, "<br />"));
+            item.SubItems.Add(after.Replace(Environment.NewLine, "<br />"));
             listView1.Items.Add(item);
         }
 
