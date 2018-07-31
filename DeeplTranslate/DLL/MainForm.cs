@@ -407,7 +407,7 @@ namespace SubtitleEdit
                 .Replace("TO_LANGUAGE", to);
 
             const int maxNumberOfRetries = 2;
-            string url = "https://www.deepl.com/jsonrpc";
+            string url = "https://www2.deepl.com/jsonrpc";
             var req = WebRequest.Create(url);
             req.Method = "POST";
             req.Headers.Add("cache-control", "no-cache");
