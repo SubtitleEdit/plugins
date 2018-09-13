@@ -81,9 +81,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void AddToListView(Paragraph paragraph, string newText)
         {
+            string noTagText = HtmlUtils.RemoveTags(paragraph.Text, false);
             var item = new ListViewItem(paragraph.Number.ToString()) { UseItemStyleForSubItems = true };
-            item.SubItems.Add(paragraph.Text.Length.ToString());
-            item.SubItems.Add(HtmlUtils.RemoveTags(paragraph.Text, true).Replace(Environment.NewLine, Options.UILineBreak));
+            item.SubItems.Add(noTagText.Length.ToString());
+            item.SubItems.Add(noTagText.Replace(Environment.NewLine, Options.UILineBreak));
             item.SubItems.Add(HtmlUtils.RemoveTags(newText, true).Replace(Environment.NewLine, Options.UILineBreak));
             listView1.Items.Add(item);
         }

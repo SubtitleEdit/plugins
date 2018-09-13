@@ -12,9 +12,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return text;
 
             var singleLine = string.Join(" ", lines);
-            while (singleLine.Contains("  "))
-                singleLine = singleLine.Replace("  ", " ");
-
+            singleLine = singleLine.FixExtraSpaces();
             if (singleLine.Contains("</")) // Fix tag
             {
                 singleLine = singleLine.Replace("</i> <i>", " ");
