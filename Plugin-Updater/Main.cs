@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
@@ -17,6 +18,12 @@ namespace Plugin_Updater
         public Main()
         {
             InitializeComponent();
+
+            this.Resize += delegate
+            {
+                listViewPluginInfo.Columns[listViewPluginInfo.Columns.Count - 1].Width = -2;
+            };
+
             this.listViewPluginInfo.SelectedIndexChanged += ListViewPluginInfo_SelectedIndexChanged;
             TryLocatingMetadataFile();
         }
@@ -109,7 +116,7 @@ namespace Plugin_Updater
         private void PushToListView(IList<PluginInfo> plugins)
         {
             listViewPluginInfo.BeginUpdate();
-            foreach (PluginInfo pluginInfo in plugins)
+            foreach (PluginInfo pluginInfo in plugins.OrderBy(plugin => plugin.Name))
             {
                 var lvi = new ListViewItem(pluginInfo.Name) { Tag = pluginInfo };
                 // description
