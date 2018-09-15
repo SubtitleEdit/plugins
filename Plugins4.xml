@@ -11,7 +11,7 @@
   </Plugin>
   <Plugin>
     <Name>Hearing Impaired to Uppercase</Name>
-    <Description>Converts text inside "[]" / "()" to Uppercase (by Ivandrofly)</Description>
+    <Description>Converts text inside "[]" / "()" to Uppercase</Description>
     <Version>3.7</Version>
     <Date>2017-11-06</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/HI2UC.zip</Url>
@@ -19,7 +19,7 @@
   </Plugin>
   <Plugin>
     <Name>Lines Unbreaker</Name>
-    <Description>Helps unbreaking unnecessary shorten lines (by Ivandrofly)</Description>
+    <Description>Helps unbreaking unnecessary shorten lines</Description>
     <Version>1.8</Version>
     <Date>2017-10-21</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/LinesUnbreaker.zip</Url>
@@ -99,7 +99,7 @@
   </Plugin>
   <Plugin>
     <Name>Dialogue AutoMarker</Name>
-    <Description>Helps find and format dialogue (by Ivandrofly)</Description>
+    <Description>Helps find and format dialogue</Description>
     <Version>0.1</Version>
     <Date>2014-02-04</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/DialogueAutoMarker.zip</Url>
@@ -107,7 +107,7 @@
   </Plugin>
   <Plugin>
     <Name>Hearing Impaired Colorer</Name>
-    <Description>Set color for Hearing Impaired annotations (by Ivandrofly)</Description>
+    <Description>Set color for Hearing Impaired annotations</Description>
     <Version>0.5</Version>
     <Date>2017-10-21</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/HIColorer.zip</Url>
