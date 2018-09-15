@@ -7,6 +7,7 @@
     <Version>0.7</Version>
     <Date>2018-02-06</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/DiaOneHyphen.zip</Url>
+    <Author>Nikse</Author>
   </Plugin>
   <Plugin>
     <Name>Hearing Impaired to Uppercase</Name>
@@ -14,6 +15,7 @@
     <Version>3.7</Version>
     <Date>2017-11-06</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/HI2UC.zip</Url>
+    <Author>ivandrofly</Author>
   </Plugin>
   <Plugin>
     <Name>Lines Unbreaker</Name>
@@ -21,6 +23,7 @@
     <Version>1.8</Version>
     <Date>2017-10-21</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/LinesUnbreaker.zip</Url>
+    <Author>ivandrofly</Author>
   </Plugin>
   <Plugin>
     <Name>Load from Dropbox</Name>
@@ -28,6 +31,7 @@
     <Version>1.2</Version>
     <Date>2017-05-29</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/SeDropBoxLoad12.zip</Url>
+    <Author>Nikse</Author>
   </Plugin>
   <Plugin>
     <Name>Save to Dropbox</Name>
@@ -35,6 +39,7 @@
     <Version>1.3</Version>
     <Date>2017-05-30</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/SeDropBoxSave13.zip</Url>
+    <Author>Nikse</Author>
   </Plugin>
   <Plugin>
     <Name>DeepL Translate</Name>
@@ -42,6 +47,7 @@
     <Version>0.92</Version>
     <Date>2018-07-31</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/DeeplTranslate.zip</Url>
+    <Author>Nikse</Author>
   </Plugin>
   <Plugin>
     <Name>Yandex Translate</Name>
@@ -49,6 +55,7 @@
     <Version>0.3</Version>
     <Date>2018-03-17</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/YandexTranslate.zip</Url>
+    <Author>Nikse</Author>
   </Plugin>
   <Plugin>
     <Name>Haxor</Name>
@@ -56,6 +63,7 @@
     <Version>1.5</Version>
     <Date>2015-09-29</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/Haxor.zip</Url>
+    <Author>Nikse</Author>
   </Plugin>
   <Plugin>
     <Name>Upload subtitle to OpenSubtitles.org</Name>
@@ -63,6 +71,7 @@
     <Version>2.0</Version>
     <Date>2016-01-30</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/OpenSubtitlesUpload.zip</Url>
+    <Author>Nikse</Author>
   </Plugin>
   <Plugin>
     <Name>Save to  OneDrive</Name>
@@ -70,6 +79,7 @@
     <Version>1.2</Version>
     <Date>2013-06-01</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/OneDriveSave.zip</Url>
+    <Author>Nikse</Author>
   </Plugin>
   <Plugin>
     <Name>Load from OneDrive</Name>
@@ -77,6 +87,7 @@
     <Version>1.2</Version>
     <Date>2017-06-01</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/OneDriveLoad.zip</Url>
+    <Author>Nikse</Author>
   </Plugin>
   <Plugin>
     <Name>Word spell check</Name>
@@ -84,6 +95,7 @@
     <Version>1.4</Version>
     <Date>2017-05-22</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/WordSpellCheck.zip</Url>
+    <Author>Nikse</Author>
   </Plugin>
   <Plugin>
     <Name>Dialogue AutoMarker</Name>
@@ -91,6 +103,7 @@
     <Version>0.1</Version>
     <Date>2014-02-04</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/DialogueAutoMarker.zip</Url>
+    <Author>ivandrofly</Author>
   </Plugin>
   <Plugin>
     <Name>Hearing Impaired Colorer</Name>
@@ -98,6 +111,7 @@
     <Version>0.5</Version>
     <Date>2017-10-21</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/HIColorer.zip</Url>
+    <Author>ivandrofly</Author>
   </Plugin>
   <Plugin>
     <Name>Check Line Width</Name>
@@ -105,6 +119,7 @@
     <Version>0.7</Version>
     <Date>2015-12-13</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/CheckLineWidth.zip</Url>
+    <Author>Nikse</Author>
   </Plugin>
   <Plugin>
     <Name>American English to British English</Name>
@@ -112,6 +127,7 @@
     <Version>0.4</Version>
     <Date>2016-03-23</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/AmericanToBritish.zip</Url>
+    <Author>Nikse</Author>
   </Plugin>
   <Plugin>
     <Name>Merge two SRT files to one ASS/SSA</Name>
@@ -119,6 +135,7 @@
     <Version>1.0</Version>
     <Date>2015-08-13</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/MergeTwoSrtToAss.zip</Url>
+    <Author>Nikse</Author>
   </Plugin>
   <Plugin>
     <Name>Narrator Out Parentheses</Name>
@@ -126,6 +143,7 @@
     <Version>0.3</Version>
     <Date>2017-05-22</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/NarratorOutParentheses.zip</Url>
+    <Author>ivandrofly</Author>
   </Plugin>
   <Plugin>
     <Name>Remove Unicode characters</Name>
@@ -133,6 +151,7 @@
     <Version>0.4</Version>
     <Date>2016-05-23</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/RemoveUnicodeCharacters.zip</Url>
+    <Author>Nikse</Author>
   </Plugin>
   <Plugin>
     <Name>Names list manager</Name>
@@ -140,6 +159,7 @@
     <Version>1.1</Version>
     <Date>2017-05-22</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/NameListManager.zip</Url>
+    <Author>Nikse</Author>
   </Plugin>
   <Plugin>
     <Name>Ispravi.me [Hascheck] spell checker</Name>
@@ -147,6 +167,7 @@
     <Version>0.6</Version>
     <Date>2018-03-20</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/Ispravi.zip</Url>
+    <Author>Nikse</Author>
   </Plugin>
   <Plugin>
     <Name>Baidu Translate</Name>
@@ -154,5 +175,6 @@
     <Version>0.4</Version>
     <Date>2017-06-04</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/BaiduTranslate.zip</Url>
+    <Author>Nikse</Author>
   </Plugin>
 </Plugins>

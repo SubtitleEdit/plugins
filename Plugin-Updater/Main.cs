@@ -86,19 +86,18 @@ namespace Plugin_Updater
             {
                 return;
             }
-            //try
-            //{
             _xDoc = XDocument.Load(metaFile);
             _plugins = new List<PluginInfo>();
             foreach (XElement el in _xDoc.Root.Elements("Plugin"))
             {
-                var pluginInfo = new PluginInfo()
+                var pluginInfo = new PluginInfo
                 {
-                    Name = el.Element("Name").Value,
-                    Description = el.Element("Description").Value,
-                    Version = Convert.ToDecimal(el.Element("Version").Value),
-                    Date = Convert.ToDateTime(el.Element("Date").Value.Replace('-', '/')),
-                    Url = new Uri(el.Element("Url").Value),
+                    Name = el.Element(nameof(PluginInfo.Name)).Value,
+                    Description = el.Element(nameof(PluginInfo.Description)).Value,
+                    Version = Convert.ToDecimal(el.Element(nameof(PluginInfo.Version)).Value),
+                    Date = Convert.ToDateTime(el.Element(nameof(PluginInfo.Date)).Value.Replace('-', '/')),
+                    Url = new Uri(el.Element(nameof(PluginInfo.Url)).Value),
+                    Author = el.Element(nameof(PluginInfo.Author))?.Value,
                     Element = el
                 };
 
@@ -106,11 +105,6 @@ namespace Plugin_Updater
             }
 
             PushToListView(_plugins);
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message);
-            //}
         }
 
         private void PushToListView(IList<PluginInfo> plugins)
@@ -119,15 +113,11 @@ namespace Plugin_Updater
             foreach (PluginInfo pluginInfo in plugins.OrderBy(plugin => plugin.Name))
             {
                 var lvi = new ListViewItem(pluginInfo.Name) { Tag = pluginInfo };
-                // description
                 lvi.SubItems.Add(pluginInfo.Description);
-                // version
                 lvi.SubItems.Add(pluginInfo.Version.ToString());
-                // date
                 lvi.SubItems.Add(pluginInfo.Date.ToString("yyyy-MM-dd"));
-                // url
+                lvi.SubItems.Add(pluginInfo.Author);
                 lvi.SubItems.Add(pluginInfo.Url.ToString());
-
                 listViewPluginInfo.Items.Add(lvi);
             }
 
@@ -149,6 +139,7 @@ namespace Plugin_Updater
             textBoxDescription.Text = pluginInfo.Description;
             numericUpDown1.Value = pluginInfo.Version;
             dateTimePicker1.Value = pluginInfo.Date;
+            textBoxAuthor.Text = pluginInfo.Author;
             textBoxUrl.Text = pluginInfo.Url.ToString();
         }
 
@@ -169,13 +160,15 @@ namespace Plugin_Updater
                 pluginInfo.Version = numericUpDown1.Value;
                 pluginInfo.Date = dateTimePicker1.Value;
                 pluginInfo.Url = new Uri(textBoxUrl.Text);
+                pluginInfo.Author = textBoxAuthor.Text.Trim();
 
                 // update listview
                 lvi.Text = pluginInfo.Name;
                 lvi.SubItems[1].Text = pluginInfo.Description;
                 lvi.SubItems[2].Text = pluginInfo.Version.ToString();
                 lvi.SubItems[3].Text = pluginInfo.Date.ToString("yyyy-MM-dd");
-                lvi.SubItems[4].Text = pluginInfo.Url.ToString();
+                lvi.SubItems[4].Text = pluginInfo.Author;
+                lvi.SubItems[5].Text = pluginInfo.Url.ToString();
 
                 MessageBox.Show("Plugin updated :)");
             }
@@ -186,7 +179,7 @@ namespace Plugin_Updater
             }
         }
 
-        private void buttonOK_Click(object sender, EventArgs e)
+        private void buttonSave_Click(object sender, EventArgs e)
         {
             // leave the app
             if (_plugins == null)
@@ -201,12 +194,14 @@ namespace Plugin_Updater
                     pluginInfo.UpdateXElement();
                 }
                 _xDoc?.Save(_metaFile);
+
+                MessageBox.Show("Saved with success!", "Changes saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // just do nothing if anything bad happened
+                MessageBox.Show(ex.Message);
             }
-            Application.Exit();
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
