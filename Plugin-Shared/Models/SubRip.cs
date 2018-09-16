@@ -10,7 +10,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private readonly static Regex RegexTimeCodes = new Regex(@"^-?\d+:-?\d+:-?\d+[:,]-?\d+\s*-->\s*-?\d+:-?\d+:-?\d+[:,]-?\d+$", RegexOptions.Compiled);
         private readonly static Regex RegexTimeCodes2 = new Regex(@"^\d+:\d+:\d+,\d+\s*-->\s*\d+:\d+:\d+,\d+$", RegexOptions.Compiled);
         private ExpectingLine _expecting = ExpectingLine.Number;
-        private int _lineNumber;
         private Paragraph _paragraph;
 
         private int _errorCount;
@@ -20,7 +19,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public void LoadSubtitle(Subtitle subtitle, IList<string> lines, string fileName)
         {
             bool doRenum = false;
-            _lineNumber = 0;
 
             _paragraph = new Paragraph();
             _expecting = ExpectingLine.Number;
@@ -28,7 +26,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             for (int i = 0; i < lines.Count; i++)
             {
-                _lineNumber++;
                 var line = lines[i].TrimEnd();
                 line = line.Trim('\u007F'); // Strip DEL ASCII
 
