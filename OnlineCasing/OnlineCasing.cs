@@ -29,6 +29,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var subRip = new SubRip();
             var subtitle = new Subtitle(subRip);
             subRip.LoadSubtitle(subtitle, rawText.SplitToLines(), file);
+
             //Application.UserAppDataRegistry
             using (var mainForm = new Main(subtitle))
             {
@@ -37,13 +38,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     return mainForm.Subtitle;
                 }
             }
+
             // hack SE through parentForm
             // Nikse.SubtitleEdit.Core.FixCasing.cs is the file to hack
-
-            var formType = parentForm.GetType();
-
-            var fixCasingType = formType.Assembly.GetType("Nikse.SubtitleEdit.Core.FixCasing");
-
+            //var formType = parentForm.GetType();
+            //var fixCasingType = formType.Assembly.GetType("Nikse.SubtitleEdit.Core.FixCasing");
             // 
             //Activator.CreateInstance(fixCasingType, BindingFlags.Instance | BindingFlags.Public, parentForm);
 
