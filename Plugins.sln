@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2019
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSpellCheck", "WordSpellCheck\DLL\WordSpellCheck.csproj", "{40D9F0DB-1C62-4CFC-A412-796E753AA057}"
 EndProject
@@ -74,9 +74,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IspraviMe", "IspraviMeTrans
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YandexTranslate", "YandexTranslate\DLL\YandexTranslate.csproj", "{FE4B957C-F682-41A5-BBDC-BEA8CF9B4CFB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineCasing", "OnlineCasing\OnlineCasing.csproj", "{52A7C014-3BE1-4C7A-90AA-E864CEFC63A0}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Plugin-Shared\Plugin-Shared.projitems*{16b4be52-050a-4161-b0e3-9b07aa5f650b}*SharedItemsImports = 4
+		Plugin-Shared\Plugin-Shared.projitems*{52a7c014-3be1-4c7a-90aa-e864cefc63a0}*SharedItemsImports = 4
 		Plugin-Shared\Plugin-Shared.projitems*{59aa41aa-6c3e-456f-8ec1-3c0c90e31811}*SharedItemsImports = 13
 		Plugin-Shared\Plugin-Shared.projitems*{705be92d-37ff-4320-85fd-90133c009c8c}*SharedItemsImports = 4
 		Plugin-Shared\Plugin-Shared.projitems*{7b7c681e-960e-414f-b5ea-1b9beba71b09}*SharedItemsImports = 4
@@ -205,6 +208,10 @@ Global
 		{FE4B957C-F682-41A5-BBDC-BEA8CF9B4CFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE4B957C-F682-41A5-BBDC-BEA8CF9B4CFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE4B957C-F682-41A5-BBDC-BEA8CF9B4CFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52A7C014-3BE1-4C7A-90AA-E864CEFC63A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52A7C014-3BE1-4C7A-90AA-E864CEFC63A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52A7C014-3BE1-4C7A-90AA-E864CEFC63A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52A7C014-3BE1-4C7A-90AA-E864CEFC63A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -239,6 +246,7 @@ Global
 		{D678802E-5D3A-4DB0-94E9-104790D3044B} = {21BBD88D-F935-419F-A68B-E8DA9F08E9C1}
 		{4DB30F73-5A8E-477E-9C18-A1DC59148DE5} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 		{FE4B957C-F682-41A5-BBDC-BEA8CF9B4CFB} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
+		{52A7C014-3BE1-4C7A-90AA-E864CEFC63A0} = {21BBD88D-F935-419F-A68B-E8DA9F08E9C1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8BBF401C-6D00-4F22-BFC0-DE2673213D5B}
