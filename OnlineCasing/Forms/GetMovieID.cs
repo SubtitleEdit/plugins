@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using TMDbLib.Client;
+using TMDbLib.Objects.General;
 using TMDbLib.Objects.Search;
 
 namespace OnlineCasing.Forms
@@ -24,10 +25,21 @@ namespace OnlineCasing.Forms
                 return;
             }
 
-            var searchResult = await Client.SearchMovieAsync(textBoxSearchQuery.Text);
-
+            progressBar1.Style = ProgressBarStyle.Marquee;
+            progressBar1.Visible = true;
             listViewMovies.BeginUpdate();
             listViewMovies.Items.Clear();
+
+            SearchContainer<SearchMovie> searchResult = await Client.SearchMovieAsync(textBoxSearchQuery.Text).ConfigureAwait(true);
+
+            progressBar1.Visible = false;
+            progressBar1.Style = ProgressBarStyle.Blocks;
+            if (searchResult == null || searchResult.Results.Count == 0)
+            {
+                MessageBox.Show("No movie found using the specified query!", "No movie found!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                listViewMovies.EndUpdate();
+                return;
+            }
 
             //AppDomain
             //AppDomainSetup
@@ -36,7 +48,10 @@ namespace OnlineCasing.Forms
             foreach (SearchMovie movieResult in searchResult.Results)
             {
                 if (!ShouldDisplayInfo(movieResult))
+                {
                     continue;
+                }
+
                 var lvi = new ListViewItem(movieResult.Title);
                 lvi.SubItems.Add(movieResult.ReleaseDate.Value.Year.ToString());
                 lvi.Tag = movieResult;
@@ -61,6 +76,14 @@ namespace OnlineCasing.Forms
             var movieSearch = listViewMovies.SelectedItems[0].Tag as SearchMovie;
             ID = movieSearch.Id;
             DialogResult = DialogResult.OK;
+        }
+
+        private void TextBoxSearchQuery_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                ButtonSearch_Click(null, EventArgs.Empty);
+            }
         }
     }
 }

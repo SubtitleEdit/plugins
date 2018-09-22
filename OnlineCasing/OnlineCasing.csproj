@@ -49,6 +49,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\ApiForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ApiForm.Designer.cs">
+      <DependentUpon>ApiForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -63,8 +69,13 @@
     </Compile>
     <Compile Include="OnlineCasing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SECasingApi.cs" />
+    <Compile Include="SettingUtils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\ApiForm.resx">
+      <DependentUpon>ApiForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
@@ -76,6 +87,10 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /y $(TargetPath) "C:\Users\bigtech-dev\source\repos\subtitleedit\src\bin\Debug\plugins\"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
