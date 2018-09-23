@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Plugin_Updater.Helpers;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -19,13 +21,15 @@ namespace Plugin_Updater
         {
             InitializeComponent();
 
-            this.Resize += delegate
+            Resize += delegate
             {
                 listViewPluginInfo.Columns[listViewPluginInfo.Columns.Count - 1].Width = -2;
             };
 
-            this.listViewPluginInfo.SelectedIndexChanged += ListViewPluginInfo_SelectedIndexChanged;
-            TryLocatingMetadataFile();
+            listViewPluginInfo.SelectedIndexChanged += ListViewPluginInfo_SelectedIndexChanged;
+            //TryLocatingMetadataFile();
+            string metafile = Utils.GetMetaFile();
+            LoadInfoFromMetadata(Utils.GetMetaFile());
         }
 
         private void TryLocatingMetadataFile()
@@ -61,7 +65,7 @@ namespace Plugin_Updater
 
         }
 
-        private void buttonBrowse_Click(object sender, EventArgs e)
+        private void ButtonBrowse_Click(object sender, EventArgs e)
         {
             // only request to provide file if it couldn't be loaded
             // automatically
@@ -86,6 +90,7 @@ namespace Plugin_Updater
             {
                 return;
             }
+
             _xDoc = XDocument.Load(metaFile);
             _plugins = new List<PluginInfo>();
             foreach (XElement el in _xDoc.Root.Elements("Plugin"))
@@ -120,7 +125,6 @@ namespace Plugin_Updater
                 lvi.SubItems.Add(pluginInfo.Url.ToString());
                 listViewPluginInfo.Items.Add(lvi);
             }
-
             listViewPluginInfo.EndUpdate();
         }
 
@@ -137,13 +141,13 @@ namespace Plugin_Updater
             // push info to textbox
             textBoxName.Text = pluginInfo.Name;
             textBoxDescription.Text = pluginInfo.Description;
-            numericUpDown1.Value = pluginInfo.Version;
+            numericUpDownVersion.Value = pluginInfo.Version;
             dateTimePicker1.Value = pluginInfo.Date;
             textBoxAuthor.Text = pluginInfo.Author;
             textBoxUrl.Text = pluginInfo.Url.ToString();
         }
 
-        private void buttonUpdate_Click(object sender, EventArgs e)
+        private void ButtonUpdate_Click(object sender, EventArgs e)
         {
             // really? :D
             if (listViewPluginInfo.SelectedItems.Count == 0)
@@ -157,7 +161,7 @@ namespace Plugin_Updater
                 PluginInfo pluginInfo = (PluginInfo)lvi.Tag;
                 pluginInfo.Name = textBoxName.Text;
                 pluginInfo.Description = textBoxDescription.Text;
-                pluginInfo.Version = numericUpDown1.Value;
+                pluginInfo.Version = numericUpDownVersion.Value;
                 pluginInfo.Date = dateTimePicker1.Value;
                 pluginInfo.Url = new Uri(textBoxUrl.Text);
                 pluginInfo.Author = textBoxAuthor.Text.Trim();
@@ -179,7 +183,7 @@ namespace Plugin_Updater
             }
         }
 
-        private void buttonSave_Click(object sender, EventArgs e)
+        private void ButtonSave_Click(object sender, EventArgs e)
         {
             // leave the app
             if (_plugins == null)
@@ -204,9 +208,82 @@ namespace Plugin_Updater
             }
         }
 
-        private void buttonCancel_Click(object sender, EventArgs e)
+        private void ButtonCancel_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void ButtonAdd_Click(object sender, EventArgs e)
+        {
+            var pluginInfo = new PluginInfo
+            {
+                Name = textBoxName.Text,
+                Author = textBoxAuthor.Text,
+                Version = numericUpDownVersion.Value,
+                Date = dateTimePicker1.Value,
+                Description = textBoxDescription.Text,
+                Url = new Uri(textBoxUrl.Text),
+            };
+
+            string metaFile = Utils.GetMetaFile();
+
+            var pluginInfoEls = pluginInfo.GetType()
+                .GetProperties()
+                .Where(p => p.GetType() != typeof(XElement))
+                .Select(p => new XElement(p.Name, p.GetValue(pluginInfo)));
+
+            var xDoc = XDocument.Load(metaFile);
+
+            // check if plugin with save name doesn't already exits
+            if (xDoc.Root.Elements("Plugin").Any(p => p.Element("Name").Value.Equals(pluginInfo.Name, StringComparison.OrdinalIgnoreCase)))
+            {
+                MessageBox.Show("Plugin already exits with same name!", "Trying to add duplicated plugin",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            xDoc.Root.Add(new XElement("Plugin", pluginInfoEls));
+
+            try
+            {
+                xDoc.Save(metaFile);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
+            LoadInfoFromMetadata(metaFile);
+        }
+
+        private void LoadInfoFromMetadata(string metaFile)
+        {
+            listViewPluginInfo.BeginUpdate();
+            listViewPluginInfo.Items.Clear();
+
+            XDocument xDoc = XDocument.Load(metaFile);
+
+            var pluginsInfo = xDoc.Root.Elements("Plugin").Select(el => new PluginInfo
+            {
+                Name = el.Element("Name").Value,
+                Description = el.Element("Description").Value,
+                Version = Convert.ToDecimal(el.Element("Version").Value),
+                Date = Convert.ToDateTime(el.Element("Date").Value),
+                Author = el.Element("Author").Value,
+                Url = new Uri(el.Element("Url").Value),
+            });
+
+            var lvItems = pluginsInfo.Select(p => new ListViewItem(p.Name)
+            {
+                SubItems =
+                {
+                    p.Description, p.Version.ToString(), p.Date.ToString("yyy-MM-dd"), p.Author, p.Url.ToString()
+                },
+                Tag = p
+            }).ToArray();
+
+            listViewPluginInfo.Items.AddRange(lvItems);
+            listViewPluginInfo.EndUpdate();
         }
     }
 }
