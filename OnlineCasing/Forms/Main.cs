@@ -26,7 +26,6 @@ namespace OnlineCasing.Forms
 #endif
             // load apiKey
             APIKey = SettingUtils.GetApiKey();
-
             if (!string.IsNullOrEmpty(APIKey))
             {
                 _client = new TMDbClient(APIKey, true);
@@ -63,7 +62,6 @@ namespace OnlineCasing.Forms
                     if (apiForm.ShowDialog(this) == DialogResult.OK)
                     {
                         APIKey = SettingUtils.GetApiKey();
-
                     }
                 }
 
@@ -77,14 +75,14 @@ namespace OnlineCasing.Forms
 
             }
 
-            _client = _client ?? new TMDbClient(APIKey);
-            
+            //var guest = await _client.AuthenticationCreateGuestSessionAsync();
+
+            _client = _client ?? new TMDbClient(APIKey, true);
+
             buttonGetMovieID.Enabled = false;
             int movieId = 0;
 
-            string movieIdS = comboBoxMovieID.Text.Trim();
-
-            if (movieIdS.Length == 0)
+            if (comboBoxMovieID.Text.Trim().Length == 0)
             {
                 using (var getMovieID = new GetMovieID(_client))
                 {
@@ -93,17 +91,17 @@ namespace OnlineCasing.Forms
                         comboBoxMovieID.Items.Add(getMovieID.ID.ToString().Trim());
                         comboBoxMovieID.SelectedIndex = comboBoxMovieID.Items.Count - 1;
                     }
-                    else
-                    {
-                        return;
-                    }
                 }
             }
-            else
+
+            string movieIdString = comboBoxMovieID.SelectedItem.ToString();
+            if (string.IsNullOrEmpty(movieIdString))
             {
-                movieId = int.Parse(movieIdS);
+                buttonGetMovieID.Enabled = true;
+                return;
             }
 
+            movieId = int.Parse(movieIdString);
             Movie movie = await _client.GetMovieAsync(movieId, MovieMethods.Credits).ConfigureAwait(true);
 
             HashSet<string> names = null;

@@ -2,7 +2,6 @@
 using OnlineCasing.Forms;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -120,7 +119,6 @@ namespace OnlineCasing
             foreach (Paragraph p in context.Paragraphs)
             {
                 object stripTextObj = Activator.CreateInstance(stripTextT, p.Text);
-                Debug.WriteLine("is name null: " + stripTextObj == null);
                 if (preParagraph != null)
                 {
                     gaps = p.StartTime.TotalMilliseconds - preParagraph.EndTime.TotalMilliseconds;

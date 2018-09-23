@@ -8,7 +8,6 @@ namespace OnlineCasing.Forms
         public List<string> Names { get; set; }
         public bool CheckLastLine { get; set; }
         public bool UppercaseAfterLineBreak { get; set; }
-
         public List<Paragraph> Paragraphs { get; set; }
     }
 }
