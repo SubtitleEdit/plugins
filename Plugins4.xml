@@ -177,4 +177,12 @@
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/BaiduTranslate.zip</Url>
     <Author>Nikse</Author>
   </Plugin>
+  <Plugin>
+    <Name>Online casing</Name>
+    <Description>Do casing via themoviedb</Description>
+    <Version>1</Version>
+    <Date>2018-09-23</Date>
+    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/OnlineCasing.zip</Url>
+    <Author>ivandrofly</Author>
+  </Plugin>
 </Plugins>
