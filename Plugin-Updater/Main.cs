@@ -1,11 +1,6 @@
 ﻿using Plugin_Updater.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -15,8 +10,6 @@ namespace Plugin_Updater
     {
         private string _metaFile = string.Empty;
         private XDocument _xDoc;
-        private IList<PluginInfo> _plugins;
-
         public Main()
         {
             InitializeComponent();
@@ -28,105 +21,102 @@ namespace Plugin_Updater
 
             listViewPluginInfo.SelectedIndexChanged += ListViewPluginInfo_SelectedIndexChanged;
             //TryLocatingMetadataFile();
-            string metafile = Utils.GetMetaFile();
-            LoadInfoFromMetadata(Utils.GetMetaFile());
+            _metaFile = Utils.GetMetaFile();
+            textBoxMetaFilePath.Text = _metaFile;
+            _xDoc = XDocument.Load(_metaFile);
+            LoadInfoFromMetadata();
         }
 
-        private void TryLocatingMetadataFile()
-        {
-            // try get Plugin4.xml location
-            // C:\Users\{user-name}\...\plugins\Plugin-Updater\bin\Debug
-            string debugFolder = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            string[] paths = debugFolder.Split(Path.DirectorySeparatorChar);
-            var sb = new StringBuilder();
+        //private void TryLocatingMetadataFile()
+        //{
+        //    // try get Plugin4.xml location
+        //    // C:\Users\{user-name}\...\plugins\Plugin-Updater\bin\Debug
+        //    string debugFolder = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+        //    string[] paths = debugFolder.Split(Path.DirectorySeparatorChar);
+        //    var sb = new StringBuilder();
 
-            string separator = string.Empty;
-            for (int i = 0; i < paths.Length; i++)
-            {
-                string path = paths[i];
-                if (i > 0)
-                {
-                    separator = Path.DirectorySeparatorChar.ToString();
-                }
-                sb.Append(separator + path);
-                if (path.Equals("plugins", StringComparison.OrdinalIgnoreCase))
-                {
-                    break;
-                }
-            }
+        //    string separator = string.Empty;
+        //    for (int i = 0; i < paths.Length; i++)
+        //    {
+        //        string path = paths[i];
+        //        if (i > 0)
+        //        {
+        //            separator = Path.DirectorySeparatorChar.ToString();
+        //        }
+        //        sb.Append(separator + path);
+        //        if (path.Equals("plugins", StringComparison.OrdinalIgnoreCase))
+        //        {
+        //            break;
+        //        }
+        //    }
 
-            string plugin4xml = Path.Combine(sb.ToString(), "Plugins4.xml");
-            if (File.Exists(plugin4xml))
-            {
-                _metaFile = plugin4xml;
-                textBoxMetaFilePath.Text = _metaFile;
-                ReadContent(_metaFile);
-            }
+        //    string plugin4xml = Path.Combine(sb.ToString(), "Plugins4.xml");
+        //    if (File.Exists(plugin4xml))
+        //    {
+        //        _metaFile = plugin4xml;
+        //        textBoxMetaFilePath.Text = _metaFile;
+        //        //ReadContent(_metaFile);
+        //    }
 
-        }
+        //}
 
         private void ButtonBrowse_Click(object sender, EventArgs e)
         {
-            // only request to provide file if it couldn't be loaded
-            // automatically
-            if (!File.Exists(_metaFile))
+            using (var fileDialog = new OpenFileDialog())
             {
-                using (var fileDialog = new OpenFileDialog())
+                if (fileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    if (fileDialog.ShowDialog() == DialogResult.OK)
-                    {
-                        _metaFile = fileDialog.FileName;
-                    }
+                    _metaFile = fileDialog.FileName;
                 }
             }
             textBoxMetaFilePath.Text = _metaFile;
-            // read content from file
-            ReadContent(_metaFile);
+            _xDoc = XDocument.Load(_metaFile);
+            LoadInfoFromMetadata();
         }
 
-        private void ReadContent(string metaFile)
-        {
-            if (!Path.IsPathRooted(metaFile))
-            {
-                return;
-            }
+        //private void ReadContent(string metaFile)
+        //{
+        //    if (!Path.IsPathRooted(metaFile))
+        //    {
+        //        return;
+        //    }
 
-            _xDoc = XDocument.Load(metaFile);
-            _plugins = new List<PluginInfo>();
-            foreach (XElement el in _xDoc.Root.Elements("Plugin"))
-            {
-                var pluginInfo = new PluginInfo
-                {
-                    Name = el.Element(nameof(PluginInfo.Name)).Value,
-                    Description = el.Element(nameof(PluginInfo.Description)).Value,
-                    Version = Convert.ToDecimal(el.Element(nameof(PluginInfo.Version)).Value),
-                    Date = Convert.ToDateTime(el.Element(nameof(PluginInfo.Date)).Value.Replace('-', '/')),
-                    Url = new Uri(el.Element(nameof(PluginInfo.Url)).Value),
-                    Author = el.Element(nameof(PluginInfo.Author))?.Value,
-                    Element = el
-                };
+        //    _xDoc = XDocument.Load(metaFile);
+        //    _plugins = new List<PluginInfo>();
+        //    foreach (XElement el in _xDoc.Root.Elements("Plugin"))
+        //    {
+        //        var pluginInfo = new PluginInfo
+        //        {
+        //            Name = el.Element(nameof(PluginInfo.Name)).Value,
+        //            Description = el.Element(nameof(PluginInfo.Description)).Value,
+        //            Version = Convert.ToDecimal(el.Element(nameof(PluginInfo.Version)).Value),
+        //            Date = Convert.ToDateTime(el.Element(nameof(PluginInfo.Date)).Value.Replace('-', '/')),
+        //            Url = new Uri(el.Element(nameof(PluginInfo.Url)).Value),
+        //            Author = el.Element(nameof(PluginInfo.Author))?.Value,
+        //            Element = el
+        //        };
 
-                _plugins.Add(pluginInfo);
-            }
+        //        _plugins.Add(pluginInfo);
+        //    }
 
-            PushToListView(_plugins);
-        }
+        //    PushToListView(_plugins);
+        //}
 
-        private void PushToListView(IList<PluginInfo> plugins)
-        {
-            listViewPluginInfo.BeginUpdate();
-            foreach (PluginInfo pluginInfo in plugins.OrderBy(plugin => plugin.Name))
-            {
-                var lvi = new ListViewItem(pluginInfo.Name) { Tag = pluginInfo };
-                lvi.SubItems.Add(pluginInfo.Description);
-                lvi.SubItems.Add(pluginInfo.Version.ToString());
-                lvi.SubItems.Add(pluginInfo.Date.ToString("yyyy-MM-dd"));
-                lvi.SubItems.Add(pluginInfo.Author);
-                lvi.SubItems.Add(pluginInfo.Url.ToString());
-                listViewPluginInfo.Items.Add(lvi);
-            }
-            listViewPluginInfo.EndUpdate();
-        }
+        //private void PushToListView(IList<PluginInfo> plugins)
+        //{
+        //    listViewPluginInfo.BeginUpdate();
+        //    foreach (PluginInfo pluginInfo in plugins.OrderBy(plugin => plugin.Name))
+        //    {
+        //        var lvi = new ListViewItem(pluginInfo.Name) { Tag = pluginInfo };
+        //        lvi.SubItems.Add(pluginInfo.Description);
+        //        lvi.SubItems.Add(pluginInfo.Version.ToString());
+        //        lvi.SubItems.Add(pluginInfo.Date.ToString("yyyy-MM-dd"));
+        //        lvi.SubItems.Add(pluginInfo.Author);
+        //        lvi.SubItems.Add(pluginInfo.Url.ToString());
+        //        listViewPluginInfo.Items.Add(lvi);
+        //    }
+        //    listViewPluginInfo.EndUpdate();
+        //}
 
         private void ListViewPluginInfo_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -185,20 +175,14 @@ namespace Plugin_Updater
 
         private void ButtonSave_Click(object sender, EventArgs e)
         {
-            // leave the app
-            if (_plugins == null)
-            {
-                return;
-            }
-
             try
             {
-                foreach (PluginInfo pluginInfo in _plugins)
+                foreach (ListViewItem item in listViewPluginInfo.Items)
                 {
+                    PluginInfo pluginInfo = (PluginInfo)item.Tag;
                     pluginInfo.UpdateXElement();
                 }
-                _xDoc?.Save(_metaFile);
-
+                _xDoc.Save(_metaFile);
                 MessageBox.Show("Saved with success!", "Changes saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
@@ -225,45 +209,40 @@ namespace Plugin_Updater
                 Url = new Uri(textBoxUrl.Text),
             };
 
-            string metaFile = Utils.GetMetaFile();
-
             var pluginInfoEls = pluginInfo.GetType()
                 .GetProperties()
                 .Where(p => p.GetType() != typeof(XElement))
-                .Select(p => new XElement(p.Name, p.GetValue(pluginInfo)));
-
-            var xDoc = XDocument.Load(metaFile);
+                .Select(p => new XElement(p.Name, p.GetValue(pluginInfo))).ToList();
 
             // check if plugin with save name doesn't already exits
-            if (xDoc.Root.Elements("Plugin").Any(p => p.Element("Name").Value.Equals(pluginInfo.Name, StringComparison.OrdinalIgnoreCase)))
+            if (_xDoc.Root.Elements("Plugin").Any(p => p.Element("Name").Value.Equals(pluginInfo.Name, StringComparison.OrdinalIgnoreCase)))
             {
                 MessageBox.Show("Plugin already exits with same name!", "Trying to add duplicated plugin",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            xDoc.Root.Add(new XElement("Plugin", pluginInfoEls));
+            _xDoc.Root.Add(new XElement("Plugin", pluginInfoEls));
 
             try
             {
-                xDoc.Save(metaFile);
+                _xDoc.Save(_metaFile);
+                MessageBox.Show("Plugin added with success!", "New plugin added!", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                MessageBox.Show(ex.Message);
             }
 
-            LoadInfoFromMetadata(metaFile);
+            LoadInfoFromMetadata();
         }
 
-        private void LoadInfoFromMetadata(string metaFile)
+        private void LoadInfoFromMetadata()
         {
             listViewPluginInfo.BeginUpdate();
             listViewPluginInfo.Items.Clear();
 
-            XDocument xDoc = XDocument.Load(metaFile);
-
-            var pluginsInfo = xDoc.Root.Elements("Plugin").Select(el => new PluginInfo
+            IOrderedEnumerable<PluginInfo> pluginsInfo = _xDoc.Root.Elements("Plugin").Select(el => new PluginInfo
             {
                 Name = el.Element("Name").Value,
                 Description = el.Element("Description").Value,
@@ -271,9 +250,10 @@ namespace Plugin_Updater
                 Date = Convert.ToDateTime(el.Element("Date").Value),
                 Author = el.Element("Author").Value,
                 Url = new Uri(el.Element("Url").Value),
-            });
+                Element = el
+            }).OrderBy(p => p.Name);
 
-            var lvItems = pluginsInfo.Select(p => new ListViewItem(p.Name)
+            ListViewItem[] lvItems = pluginsInfo.Select(p => new ListViewItem(p.Name)
             {
                 SubItems =
                 {
@@ -283,6 +263,27 @@ namespace Plugin_Updater
             }).ToArray();
 
             listViewPluginInfo.Items.AddRange(lvItems);
+            listViewPluginInfo.EndUpdate();
+        }
+
+        private void ButtonRemove_Click(object sender, EventArgs e)
+        {
+            ListViewItem lvi = listViewPluginInfo.SelectedItems.Cast<ListViewItem>().FirstOrDefault();
+            if (lvi == null)
+            {
+                return;
+            }
+
+            // remove from metafile
+            var elToRemove = _xDoc.Root.Elements("Plugin")
+                .FirstOrDefault(el => el.Element("Name").Value
+                .Equals(((PluginInfo)lvi.Tag).Name, StringComparison.OrdinalIgnoreCase));
+
+            elToRemove?.Remove();
+
+            // remove from listview 
+            listViewPluginInfo.BeginUpdate();
+            listViewPluginInfo.Items.Remove(lvi);
             listViewPluginInfo.EndUpdate();
         }
     }
