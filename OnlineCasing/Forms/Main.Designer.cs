@@ -48,6 +48,7 @@
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aPIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.labelCount = new System.Windows.Forms.Label();
+            this.helpProvider1 = new System.Windows.Forms.HelpProvider();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -302,5 +303,6 @@
         private System.Windows.Forms.CheckBox checkBoxCheckLastLine;
         private System.Windows.Forms.CheckBox checkBoxUppercaseAfterBreak;
         private System.Windows.Forms.Label labelCount;
+        private System.Windows.Forms.HelpProvider helpProvider1;
     }
 }

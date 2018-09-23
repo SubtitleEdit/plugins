@@ -58,14 +58,27 @@ namespace OnlineCasing.Forms
 
             if (string.IsNullOrEmpty(APIKey))
             {
-                MessageBox.Show("Api key not found!\r\nPlease sign up https://www.themoviedb.org/account/signup",
-                    "Api key", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                using (var apiForm = new ApiForm())
+                {
+                    if (apiForm.ShowDialog(this) == DialogResult.OK)
+                    {
+                        APIKey = SettingUtils.GetApiKey();
+
+                    }
+                }
+
+                // check if still null then return...
+                if (string.IsNullOrEmpty(APIKey))
+                {
+                    MessageBox.Show("Api key not found!\r\nPlease sign up https://www.themoviedb.org/account/signup",
+                              "Api key", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
             }
 
             _client = _client ?? new TMDbClient(APIKey);
-
-
+            
             buttonGetMovieID.Enabled = false;
             int movieId = 0;
 

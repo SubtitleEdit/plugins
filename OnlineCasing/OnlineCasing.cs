@@ -15,7 +15,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public string Text => "Online casing";
 
-        public decimal Version => .1m;
+        public decimal Version => 1m;
 
         public string Description => "Change casing using online names from IMBD";
 
