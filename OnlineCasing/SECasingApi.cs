@@ -1,7 +1,6 @@
 ﻿using Nikse.SubtitleEdit.PluginLogic;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -34,26 +33,25 @@ namespace OnlineCasing
             // constructed generic list of paragraphs
             Type genericListOfParagraph = typeof(List<>).MakeGenericType(paragraphT);
 
+            // create instance of generic list of paragraph
             object genericList = Activator.CreateInstance(genericListOfParagraph);
 
+            // get Add method of generic list of paragraph
             MethodInfo methodAdd = genericListOfParagraph.GetMethod("Add");
 
             //marshall this plugin's Paragraph type to SubtileEdit.exe's
             foreach (Paragraph p in paragraphs)
             {
-                var marshalP = Activator.CreateInstance(paragraphT, p.Text, p.StartTime.TotalMilliseconds, p.EndTime.TotalMilliseconds);
-                methodAdd.Invoke(genericList, new[] { marshalP });
+                // make instance of generic of marshall paragraph
+                var marshallP = Activator.CreateInstance(paragraphT, p.Text, p.StartTime.TotalMilliseconds, p.EndTime.TotalMilliseconds);
+                methodAdd.Invoke(genericList, new[] { marshallP });
             }
 
+            // get subtitle type of/from libse.dll
             Type subtitleT = _libse.GetType($"{DefaultNameSpace}.Subtitle");
-            ConstructorInfo constructInfo = subtitleT.GetConstructor(new[] { genericListOfParagraph });
 
-            // object of subtile edit
-            var subtitle = constructInfo.Invoke(new[] { genericList });
-
-            Debug.WriteLine($"is subtile: {subtitle == null}");
             // create instance of SubtileEdit.exe's Subtitle type passing the object marshalled to libse.dll type.
-            //object subObj = Activator.CreateInstance(_libse.GetType($"{DefaultNameSpace}.Subtitle"), x);
+            ConstructorInfo constructInfo = subtitleT.GetConstructor(new[] { genericListOfParagraph });
 
             Type fixCasingT = _fixCasing.GetType();
 
@@ -69,30 +67,27 @@ namespace OnlineCasing
             // *readnly field set new names to do casing with
             FieldInfo fieldNames = fixCasingT.GetField("_names", BindingFlags.Instance | BindingFlags.NonPublic);
 
+            // make FixCasing name point to passed names instead of subtitle edit built-in name.
             fieldNames.SetValue(_fixCasing, names);
 
-            foreach (string name in (List<string>)fieldNames.GetValue(_fixCasing))
-            {
-                Debug.WriteLine(name);
-            }
+            // object of subtile edit
+            object subtitle = constructInfo.Invoke(new[] { genericList });
 
             // invoke method and pass the instance and the paragraphs marshalled to libse.dll paragraph type.
-            //fixMethod.Invoke(_fixCasing, prgObjs.ToArray());
             fixMethod.Invoke(_fixCasing, new[] { subtitle });
-
 
             // make indexer property accessor
             // genericListOfParagraph.GetProperty("Item") // this is the indexer prop for all generic list
             // select indexer property
 
             PropertyInfo indexProp = genericListOfParagraph.GetProperties().Where(p => p.GetIndexParameters().Length > 0).First();
-            
+
             // marshall back the result and store them in local paragraphs
             int count = paragraphs.Count;
             for (int i = 0; i < count; i++)
             {
                 // marshall back to online-casing's paragraph type
-                var pSE = indexProp.GetValue(genericList, new object[] { i });
+                object pSE = indexProp.GetValue(genericList, new object[] { i });
                 string text = (string)pSE.GetType()
                     .GetProperty("Text", BindingFlags.Instance | BindingFlags.Public)
                     .GetValue(pSE);
@@ -104,6 +99,6 @@ namespace OnlineCasing
             }
 
         }
-        
+
     }
 }

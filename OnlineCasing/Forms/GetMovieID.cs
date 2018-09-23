@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using TMDbLib.Client;
 using TMDbLib.Objects.General;
@@ -25,15 +27,17 @@ namespace OnlineCasing.Forms
                 return;
             }
 
-            progressBar1.Style = ProgressBarStyle.Marquee;
             progressBar1.Visible = true;
+            progressBar1.Style = ProgressBarStyle.Marquee;
+
             listViewMovies.BeginUpdate();
             listViewMovies.Items.Clear();
 
             SearchContainer<SearchMovie> searchResult = await Client.SearchMovieAsync(textBoxSearchQuery.Text).ConfigureAwait(true);
 
-            progressBar1.Visible = false;
             progressBar1.Style = ProgressBarStyle.Blocks;
+            progressBar1.Visible = false;
+
             if (searchResult == null || searchResult.Results.Count == 0)
             {
                 MessageBox.Show("No movie found using the specified query!", "No movie found!", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -45,18 +49,15 @@ namespace OnlineCasing.Forms
             //AppDomainSetup
             //Assembly
 
-            foreach (SearchMovie movieResult in searchResult.Results)
+            IEnumerable<ListViewItem> foundMovies = searchResult.Results
+            .Where(movie => ShouldDisplayInfo(movie))
+            .Select(movie => new ListViewItem(movie.Title)
             {
-                if (!ShouldDisplayInfo(movieResult))
-                {
-                    continue;
-                }
+                SubItems = { movie.ReleaseDate.Value.Year.ToString() },
+                Tag = movie
+            });
 
-                var lvi = new ListViewItem(movieResult.Title);
-                lvi.SubItems.Add(movieResult.ReleaseDate.Value.Year.ToString());
-                lvi.Tag = movieResult;
-                listViewMovies.Items.Add(lvi);
-            }
+            listViewMovies.Items.AddRange(foundMovies.ToArray());
             listViewMovies.EndUpdate();
         }
 

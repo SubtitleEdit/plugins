@@ -100,7 +100,7 @@ namespace OnlineCasing.Forms
             progressBar1.Visible = false;
 
             HashSet<string> names = null;
-            foreach (var name in movie.Credits.Cast.SelectMany(cast => cast.Character.Split(' ')))
+            foreach (string name in movie.Credits.Cast.SelectMany(cast => cast.Character.Split(' ')))
             {
                 names = names ?? new HashSet<string>();
 
@@ -139,13 +139,7 @@ namespace OnlineCasing.Forms
                 return;
             }
 
-            checkedListBoxNames.BeginUpdate();
-            foreach (var name in names)
-            {
-                checkedListBoxNames.Items.Add(name);
-                checkedListBoxNames.SetItemChecked(checkedListBoxNames.Items.Count - 1, true);
-            }
-            checkedListBoxNames.EndUpdate();
+            UpdateListView(names);
 
             // invoke SubtitleEdit method for casing
             DoCasingViaAPI(names);
@@ -153,44 +147,56 @@ namespace OnlineCasing.Forms
             buttonGetMovieID.Enabled = true;
         }
 
-        private void DoCasingViaAPI(IEnumerable<string> names)
+        private void UpdateListView(IEnumerable<string> names)
         {
-            var paragraphOld = new List<Paragraph>();
-            foreach (var p in _subtitle.Paragraphs)
+            checkedListBoxNames.BeginUpdate();
+            checkedListBoxNames.Items.Clear();
+            foreach (var name in names.OrderBy(name => name))
             {
-                paragraphOld.Add(new Paragraph(p.StartTime, p.EndTime, p.Text)
-                {
-                    Number = p.Number
-                });
+                checkedListBoxNames.Items.Add(name);
+                checkedListBoxNames.SetItemChecked(checkedListBoxNames.Items.Count - 1, true);
             }
-
-            var seCasingApi = new SECasingApi();
-            seCasingApi.DoCasing(_subtitle.Paragraphs, names.ToList());
-            UpdateListView(paragraphOld, _subtitle.Paragraphs);
+            checkedListBoxNames.EndUpdate();
         }
 
-        private void UpdateListView(List<Paragraph> paragraphsOld, List<Paragraph> paragraphs)
+        private void DoCasingViaAPI(IEnumerable<string> names)
+        {
+            IEnumerable<Paragraph> copyParagraphs = _subtitle.Paragraphs.Select(p => new Paragraph(p.StartTime, p.EndTime, p.Text)
+            {
+                Number = p.Number
+            });
+
+            var paragraphs = new List<Paragraph>(copyParagraphs);
+
+            var seCasingApi = new SECasingApi();
+            seCasingApi.DoCasing(paragraphs, names.ToList());
+            UpdateListView(_subtitle.Paragraphs, paragraphs);
+        }
+
+        private void UpdateListView(List<Paragraph> paragaphs, List<Paragraph> newParagraphs)
         {
             listViewFixes.BeginUpdate();
             listViewFixes.Items.Clear();
+            int count = paragaphs.Count;
 
-            int count = paragraphs.Count;
             for (int i = 0; i < count; i++)
             {
                 // nothng changed
-                if (paragraphsOld[i].Text.Equals(paragraphs[i].Text))
+                if (paragaphs[i].Text.Equals(newParagraphs[i].Text, StringComparison.Ordinal))
                 {
                     continue;
                 }
 
-                var lvi = new ListViewItem(paragraphs[i].Number.ToString())
+                ListViewItem lvi = new ListViewItem(newParagraphs[i].Number.ToString())
                 {
-                    SubItems = { paragraphsOld[i].Text.Replace(Environment.NewLine, _uILineBreak),
-                        paragraphs[i].Text.Replace(Environment.NewLine, _uILineBreak) }
+                    SubItems = { paragaphs[i].Text.Replace(Environment.NewLine, _uILineBreak), newParagraphs[i].Text.Replace(Environment.NewLine, _uILineBreak) }
                 };
+
+                lvi.Tag = paragaphs[i];
 
                 listViewFixes.Items.Add(lvi);
             }
+
             listViewFixes.EndUpdate();
         }
 
@@ -207,28 +213,26 @@ namespace OnlineCasing.Forms
             xdoc.Save("d:\\names.xml");
         }
 
-        private static bool IsClose(char ch)
+        private void ButtonOK_Click(object sender, EventArgs e)
         {
-            return char.IsLetter(ch) ? false : true;
-            //UnicodeCategory uc = char.GetUnicodeCategory(ch);
-        }
+            const int fixedTextIndex = 2;
 
-        private void ButtonOK_Click(object sender, System.EventArgs e)
-        {
+            foreach (ListViewItem lvi in listViewFixes.Items.Cast<ListViewItem>())
+            {
+                string fixedText = lvi.SubItems[fixedTextIndex].Text;
+                ((Paragraph)lvi.Tag).Text = fixedText.Replace(_uILineBreak, Environment.NewLine);
+            }
+
             Subtitle = _subtitle.ToText();
             DialogResult = DialogResult.OK;
-        }
-
-        private void CheckedListBoxNames_ItemCheck(object sender, ItemCheckEventArgs e)
-        {
-            //UpdateListView();
         }
 
         private void ButtonUpdate_Click(object sender, EventArgs e)
         {
             var checkedNames = new List<string>();
 
-            for (int i = 0; i < checkedListBoxNames.Items.Count; i++)
+            int count = checkedListBoxNames.Items.Count;
+            for (int i = 0; i < count; i++)
             {
                 if (checkedListBoxNames.GetItemChecked(i) == false)
                 {
@@ -238,6 +242,7 @@ namespace OnlineCasing.Forms
                 checkedNames.Add(checkedListBoxNames.Items[i].ToString());
             }
 
+            // do/redo casing with filtered names
             DoCasingViaAPI(checkedNames);
         }
 
@@ -253,5 +258,20 @@ namespace OnlineCasing.Forms
                 apiForm.ShowDialog(this);
             }
         }
+
+        private void ButtonFixNames_Click(object sender, EventArgs e)
+        {
+            IEnumerable<string> names = checkedListBoxNames.Items.Cast<string>()
+                .Select(name => name.Trim('#', '"', '\'').Trim())
+                .Where(name => name.Length > 0);
+
+            UpdateListView(names);
+            DoCasingViaAPI(names);
+        }
+
     }
 }
+
+// TODO: 
+// - save names 
+// - load saved names

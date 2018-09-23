@@ -40,7 +40,6 @@
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.buttonFixNames = new System.Windows.Forms.Button();
             this.buttonUpdate = new System.Windows.Forms.Button();
             this.checkedListBoxNames = new System.Windows.Forms.CheckedListBox();
             this.labelNames = new System.Windows.Forms.Label();
@@ -170,27 +169,18 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(208, 517);
+            this.progressBar1.Location = new System.Drawing.Point(205, 517);
             this.progressBar1.Margin = new System.Windows.Forms.Padding(4);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(595, 28);
             this.progressBar1.TabIndex = 4;
             this.progressBar1.Visible = false;
             // 
-            // buttonFixNames
-            // 
-            this.buttonFixNames.Location = new System.Drawing.Point(21, 486);
-            this.buttonFixNames.Name = "buttonFixNames";
-            this.buttonFixNames.Size = new System.Drawing.Size(84, 23);
-            this.buttonFixNames.TabIndex = 13;
-            this.buttonFixNames.Text = "Fix names";
-            this.buttonFixNames.UseVisualStyleBackColor = true;
-            // 
             // buttonUpdate
             // 
-            this.buttonUpdate.Location = new System.Drawing.Point(114, 486);
+            this.buttonUpdate.Location = new System.Drawing.Point(21, 486);
             this.buttonUpdate.Name = "buttonUpdate";
-            this.buttonUpdate.Size = new System.Drawing.Size(84, 23);
+            this.buttonUpdate.Size = new System.Drawing.Size(177, 23);
             this.buttonUpdate.TabIndex = 12;
             this.buttonUpdate.Text = "Update";
             this.buttonUpdate.UseVisualStyleBackColor = true;
@@ -256,7 +246,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1064, 560);
             this.Controls.Add(this.linkLabel1);
-            this.Controls.Add(this.buttonFixNames);
             this.Controls.Add(this.buttonUpdate);
             this.Controls.Add(this.checkedListBoxNames);
             this.Controls.Add(this.labelNames);
@@ -293,7 +282,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button buttonGetMovieID;
         private System.Windows.Forms.ProgressBar progressBar1;
-        private System.Windows.Forms.Button buttonFixNames;
         private System.Windows.Forms.Button buttonUpdate;
         private System.Windows.Forms.CheckedListBox checkedListBoxNames;
         private System.Windows.Forms.Label labelNames;
