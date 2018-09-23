@@ -55,6 +55,7 @@
     <Compile Include="Forms\ApiForm.Designer.cs">
       <DependentUpon>ApiForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="CasingContext.cs" />
     <Compile Include="Forms\Main.cs">
       <SubType>Form</SubType>
     </Compile>

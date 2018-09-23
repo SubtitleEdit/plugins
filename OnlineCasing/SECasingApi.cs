@@ -1,6 +1,8 @@
 ﻿using Nikse.SubtitleEdit.PluginLogic;
+using OnlineCasing.Forms;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -43,7 +45,7 @@ namespace OnlineCasing
             foreach (Paragraph p in paragraphs)
             {
                 // make instance of generic of marshall paragraph
-                var marshallP = Activator.CreateInstance(paragraphT, p.Text, p.StartTime.TotalMilliseconds, p.EndTime.TotalMilliseconds);
+                object marshallP = Activator.CreateInstance(paragraphT, p.Text, p.StartTime.TotalMilliseconds, p.EndTime.TotalMilliseconds);
                 methodAdd.Invoke(genericList, new[] { marshallP });
             }
 
@@ -98,7 +100,39 @@ namespace OnlineCasing
                 }
             }
 
+            // NOTE:
+            // IN ORDER FOR THIS METHOD WORK, SUBTITLE EDIT METHOD Fix(string text, string lastLine, List<string> nameList, CultureInfo subtitleCulture, double millisecondsFromLast)
+            // NEEDS TO BE CHANGED WHERE casing = false to true,
+        }
+
+
+        public void DoCasing(CasingContext context)
+        {
+            Type stripTextT = _libse.GetType(DefaultNameSpace + ".StrippableText");
+            MethodInfo fixCasing = stripTextT.GetMethod("FixCasing", BindingFlags.Public | BindingFlags.Instance);
+
+            // public void FixCasing(List<string> nameList, bool changeNameCases,
+            // bool makeUppercaseAfterBreak, bool checkLastLine, string lastLine,
+            // double millisecondsFromLast = 0)
+
+            Paragraph preParagraph = null;
+            double gaps = 10000;
+            foreach (Paragraph p in context.Paragraphs)
+            {
+                object stripTextObj = Activator.CreateInstance(stripTextT, p.Text);
+                Debug.WriteLine("is name null: " + stripTextObj == null);
+                if (preParagraph != null)
+                {
+                    gaps = p.StartTime.TotalMilliseconds - preParagraph.EndTime.TotalMilliseconds;
+                }
+
+                fixCasing.Invoke(stripTextObj, new object[] { context.Names, true, context.UppercaseAfterLineBreak, context.CheckLastLine, p?.Text, gaps });
+                p.Text = (string)stripTextT.GetProperty("MergedString", BindingFlags.Public | BindingFlags.Instance).GetValue(stripTextObj);
+            }
+
         }
 
     }
 }
+
+// Author: Ivandro Ismael Gomes Jao (@ivandrofly)

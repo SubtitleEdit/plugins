@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Text;
 using System.Windows.Forms;
 
@@ -24,6 +25,11 @@ namespace OnlineCasing.Forms
             MessageBox.Show("API key stored successfully!", "Api stored!", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             DialogResult = DialogResult.OK;
+        }
+
+        private void LinkLabelSignUP_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(linkLabelSignUP.Tag as string);
         }
     }
 }

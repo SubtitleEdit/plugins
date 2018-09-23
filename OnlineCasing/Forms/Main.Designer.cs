@@ -33,13 +33,13 @@
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.checkBoxCheckLastLine = new System.Windows.Forms.CheckBox();
+            this.checkBoxUppercaseAfterBreak = new System.Windows.Forms.CheckBox();
             this.comboBoxMovieID = new System.Windows.Forms.ComboBox();
-            this.linkLabelSignUP = new System.Windows.Forms.LinkLabel();
             this.buttonGetMovieID = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.buttonUpdate = new System.Windows.Forms.Button();
             this.checkedListBoxNames = new System.Windows.Forms.CheckedListBox();
             this.labelNames = new System.Windows.Forms.Label();
@@ -47,6 +47,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aPIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.labelCount = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -62,10 +63,10 @@
             this.columnHeader3});
             this.listViewFixes.FullRowSelect = true;
             this.listViewFixes.GridLines = true;
-            this.listViewFixes.Location = new System.Drawing.Point(205, 138);
+            this.listViewFixes.Location = new System.Drawing.Point(205, 153);
             this.listViewFixes.Margin = new System.Windows.Forms.Padding(4);
             this.listViewFixes.Name = "listViewFixes";
-            this.listViewFixes.Size = new System.Drawing.Size(835, 371);
+            this.listViewFixes.Size = new System.Drawing.Size(835, 356);
             this.listViewFixes.TabIndex = 0;
             this.listViewFixes.UseCompatibleStateImageBehavior = false;
             this.listViewFixes.View = System.Windows.Forms.View.Details;
@@ -89,8 +90,9 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.checkBoxCheckLastLine);
+            this.groupBox1.Controls.Add(this.checkBoxUppercaseAfterBreak);
             this.groupBox1.Controls.Add(this.comboBoxMovieID);
-            this.groupBox1.Controls.Add(this.linkLabelSignUP);
             this.groupBox1.Controls.Add(this.buttonGetMovieID);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(18, 31);
@@ -101,6 +103,26 @@
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             // 
+            // checkBoxCheckLastLine
+            // 
+            this.checkBoxCheckLastLine.AutoSize = true;
+            this.checkBoxCheckLastLine.Location = new System.Drawing.Point(750, 52);
+            this.checkBoxCheckLastLine.Name = "checkBoxCheckLastLine";
+            this.checkBoxCheckLastLine.Size = new System.Drawing.Size(113, 20);
+            this.checkBoxCheckLastLine.TabIndex = 6;
+            this.checkBoxCheckLastLine.Text = "Check last line";
+            this.checkBoxCheckLastLine.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxUppercaseAfterBreak
+            // 
+            this.checkBoxUppercaseAfterBreak.AutoSize = true;
+            this.checkBoxUppercaseAfterBreak.Location = new System.Drawing.Point(750, 26);
+            this.checkBoxUppercaseAfterBreak.Name = "checkBoxUppercaseAfterBreak";
+            this.checkBoxUppercaseAfterBreak.Size = new System.Drawing.Size(196, 20);
+            this.checkBoxUppercaseAfterBreak.TabIndex = 5;
+            this.checkBoxUppercaseAfterBreak.Text = "Make uppercase after break";
+            this.checkBoxUppercaseAfterBreak.UseVisualStyleBackColor = true;
+            // 
             // comboBoxMovieID
             // 
             this.comboBoxMovieID.FormattingEnabled = true;
@@ -108,18 +130,6 @@
             this.comboBoxMovieID.Name = "comboBoxMovieID";
             this.comboBoxMovieID.Size = new System.Drawing.Size(240, 24);
             this.comboBoxMovieID.TabIndex = 4;
-            // 
-            // linkLabelSignUP
-            // 
-            this.linkLabelSignUP.AutoSize = true;
-            this.linkLabelSignUP.Location = new System.Drawing.Point(764, 45);
-            this.linkLabelSignUP.Name = "linkLabelSignUP";
-            this.linkLabelSignUP.Size = new System.Drawing.Size(233, 16);
-            this.linkLabelSignUP.TabIndex = 3;
-            this.linkLabelSignUP.TabStop = true;
-            this.linkLabelSignUP.Tag = "https://www.themoviedb.org/account/signup";
-            this.linkLabelSignUP.Text = "Don\'t have a API key yet? (Click here!)";
-            this.linkLabelSignUP.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelSignUP_LinkClicked);
             // 
             // buttonGetMovieID
             // 
@@ -167,20 +177,11 @@
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             // 
-            // progressBar1
-            // 
-            this.progressBar1.Location = new System.Drawing.Point(205, 517);
-            this.progressBar1.Margin = new System.Windows.Forms.Padding(4);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(595, 28);
-            this.progressBar1.TabIndex = 4;
-            this.progressBar1.Visible = false;
-            // 
             // buttonUpdate
             // 
-            this.buttonUpdate.Location = new System.Drawing.Point(21, 486);
+            this.buttonUpdate.Location = new System.Drawing.Point(692, 517);
             this.buttonUpdate.Name = "buttonUpdate";
-            this.buttonUpdate.Size = new System.Drawing.Size(177, 23);
+            this.buttonUpdate.Size = new System.Drawing.Size(112, 28);
             this.buttonUpdate.TabIndex = 12;
             this.buttonUpdate.Text = "Update";
             this.buttonUpdate.UseVisualStyleBackColor = true;
@@ -189,16 +190,16 @@
             // checkedListBoxNames
             // 
             this.checkedListBoxNames.FormattingEnabled = true;
-            this.checkedListBoxNames.Location = new System.Drawing.Point(21, 153);
+            this.checkedListBoxNames.Location = new System.Drawing.Point(18, 165);
             this.checkedListBoxNames.Name = "checkedListBoxNames";
-            this.checkedListBoxNames.Size = new System.Drawing.Size(177, 327);
+            this.checkedListBoxNames.Size = new System.Drawing.Size(177, 344);
             this.checkedListBoxNames.TabIndex = 11;
             this.checkedListBoxNames.ThreeDCheckBoxes = true;
             // 
             // labelNames
             // 
             this.labelNames.AutoSize = true;
-            this.labelNames.Location = new System.Drawing.Point(18, 134);
+            this.labelNames.Location = new System.Drawing.Point(15, 146);
             this.labelNames.Name = "labelNames";
             this.labelNames.Size = new System.Drawing.Size(55, 16);
             this.labelNames.TabIndex = 10;
@@ -240,16 +241,25 @@
             this.aPIToolStripMenuItem.Text = "API Key";
             this.aPIToolStripMenuItem.Click += new System.EventHandler(this.aPIToolStripMenuItem_Click);
             // 
+            // labelCount
+            // 
+            this.labelCount.AutoSize = true;
+            this.labelCount.Location = new System.Drawing.Point(202, 522);
+            this.labelCount.Name = "labelCount";
+            this.labelCount.Size = new System.Drawing.Size(45, 16);
+            this.labelCount.TabIndex = 16;
+            this.labelCount.Text = "Count:";
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1064, 560);
+            this.Controls.Add(this.labelCount);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.buttonUpdate);
             this.Controls.Add(this.checkedListBoxNames);
             this.Controls.Add(this.labelNames);
-            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.groupBox1);
@@ -281,15 +291,16 @@
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button buttonGetMovieID;
-        private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Button buttonUpdate;
         private System.Windows.Forms.CheckedListBox checkedListBoxNames;
         private System.Windows.Forms.Label labelNames;
-        private System.Windows.Forms.LinkLabel linkLabelSignUP;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.ComboBox comboBoxMovieID;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aPIToolStripMenuItem;
+        private System.Windows.Forms.CheckBox checkBoxCheckLastLine;
+        private System.Windows.Forms.CheckBox checkBoxUppercaseAfterBreak;
+        private System.Windows.Forms.Label labelCount;
     }
 }

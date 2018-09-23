@@ -1,7 +1,6 @@
 ﻿using Nikse.SubtitleEdit.PluginLogic;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -33,6 +32,7 @@ namespace OnlineCasing.Forms
                 _client = new TMDbClient(APIKey, true);
             }
 
+            labelCount.Text = "Total: 0";
             _subtitle = subtitle;
             _uILineBreak = UILineBreak;
 
@@ -77,8 +77,6 @@ namespace OnlineCasing.Forms
                 {
                     if (getMovieID.ShowDialog(this) == DialogResult.OK)
                     {
-                        progressBar1.Visible = true;
-                        progressBar1.Style = ProgressBarStyle.Marquee;
                         comboBoxMovieID.Items.Add(getMovieID.ID.ToString().Trim());
                         comboBoxMovieID.SelectedIndex = comboBoxMovieID.Items.Count - 1;
                     }
@@ -94,10 +92,6 @@ namespace OnlineCasing.Forms
             }
 
             Movie movie = await _client.GetMovieAsync(movieId, MovieMethods.Credits).ConfigureAwait(true);
-
-            //result.Credits.Cast.
-            progressBar1.Style = ProgressBarStyle.Blocks;
-            progressBar1.Visible = false;
 
             HashSet<string> names = null;
             foreach (string name in movie.Credits.Cast.SelectMany(cast => cast.Character.Split(' ')))
@@ -142,7 +136,7 @@ namespace OnlineCasing.Forms
             UpdateListView(names);
 
             // invoke SubtitleEdit method for casing
-            DoCasingViaAPI(names);
+            DoCasingViaAPI(names.ToList());
 
             buttonGetMovieID.Enabled = true;
         }
@@ -159,7 +153,7 @@ namespace OnlineCasing.Forms
             checkedListBoxNames.EndUpdate();
         }
 
-        private void DoCasingViaAPI(IEnumerable<string> names)
+        private void DoCasingViaAPI(List<string> names)
         {
             IEnumerable<Paragraph> copyParagraphs = _subtitle.Paragraphs.Select(p => new Paragraph(p.StartTime, p.EndTime, p.Text)
             {
@@ -169,7 +163,18 @@ namespace OnlineCasing.Forms
             var paragraphs = new List<Paragraph>(copyParagraphs);
 
             var seCasingApi = new SECasingApi();
-            seCasingApi.DoCasing(paragraphs, names.ToList());
+
+            var context = new CasingContext
+            {
+                Names = names,
+                CheckLastLine = checkBoxCheckLastLine.Checked,
+                Paragraphs = paragraphs,
+                UppercaseAfterLineBreak = checkBoxUppercaseAfterBreak.Checked,
+            };
+
+            seCasingApi.DoCasing(context);
+            // seCasingApi.DoCasing(paragraphs, names.ToList());
+
             UpdateListView(_subtitle.Paragraphs, paragraphs);
         }
 
@@ -197,6 +202,7 @@ namespace OnlineCasing.Forms
                 listViewFixes.Items.Add(lvi);
             }
 
+            labelCount.Text = $"Total: {count}";
             listViewFixes.EndUpdate();
         }
 
@@ -246,11 +252,6 @@ namespace OnlineCasing.Forms
             DoCasingViaAPI(checkedNames);
         }
 
-        private void LinkLabelSignUP_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            Process.Start(linkLabelSignUP.Tag as string);
-        }
-
         private void aPIToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (var apiForm = new ApiForm())
@@ -261,9 +262,9 @@ namespace OnlineCasing.Forms
 
         private void ButtonFixNames_Click(object sender, EventArgs e)
         {
-            IEnumerable<string> names = checkedListBoxNames.Items.Cast<string>()
-                .Select(name => name.Trim('#', '"', '\'').Trim())
-                .Where(name => name.Length > 0);
+            var names = checkedListBoxNames.Items.Cast<string>()
+            .Select(name => name.Trim('#', '"', '\'').Trim())
+            .Where(name => name.Length > 0).ToList();
 
             UpdateListView(names);
             DoCasingViaAPI(names);
