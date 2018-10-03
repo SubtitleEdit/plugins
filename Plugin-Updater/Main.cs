@@ -24,7 +24,18 @@ namespace Plugin_Updater
             _metaFile = Utils.GetMetaFile();
             textBoxMetaFilePath.Text = _metaFile;
             _xDoc = XDocument.Load(_metaFile);
-            LoadInfoFromMetadata();
+
+            // init columns order
+            foreach (ColumnHeader ch in listViewPluginInfo.Columns)
+            {
+                ch.Tag = new SortContext
+                {
+                    SortOrder = SortOrder.Ascending,
+                    SortType = (SortType)Enum.Parse(typeof(SortType), ch.Text)
+                };
+            }
+
+            LoadInfoFromMetadata(SortContext.DefaultContext);
         }
 
         //private void TryLocatingMetadataFile()
@@ -68,10 +79,14 @@ namespace Plugin_Updater
                 {
                     _metaFile = fileDialog.FileName;
                 }
+                else
+                {
+                    return;
+                }
             }
             textBoxMetaFilePath.Text = _metaFile;
             _xDoc = XDocument.Load(_metaFile);
-            LoadInfoFromMetadata();
+            LoadInfoFromMetadata(SortContext.DefaultContext);
         }
 
         //private void ReadContent(string metaFile)
@@ -234,15 +249,15 @@ namespace Plugin_Updater
                 MessageBox.Show(ex.Message);
             }
 
-            LoadInfoFromMetadata();
+            LoadInfoFromMetadata(new SortContext { SortType = SortType.Name, SortOrder = SortOrder.Ascending });
         }
 
-        private void LoadInfoFromMetadata()
+        private void LoadInfoFromMetadata(SortContext sortContext)
         {
             listViewPluginInfo.BeginUpdate();
             listViewPluginInfo.Items.Clear();
 
-            IOrderedEnumerable<PluginInfo> pluginsInfo = _xDoc.Root.Elements("Plugin").Select(el => new PluginInfo
+            var pluginsInfo = _xDoc.Root.Elements("Plugin").Select(el => new PluginInfo
             {
                 Name = el.Element("Name").Value,
                 Description = el.Element("Description").Value,
@@ -251,9 +266,90 @@ namespace Plugin_Updater
                 Author = el.Element("Author").Value,
                 Url = new Uri(el.Element("Url").Value),
                 Element = el
-            }).OrderBy(p => p.Name);
+            });
 
-            ListViewItem[] lvItems = pluginsInfo.Select(p => new ListViewItem(p.Name)
+            IOrderedEnumerable<PluginInfo> orderedList = null;
+            //if (sortContext.SortOrder == SortOrder.Ascending)
+            //{
+            //    orderedList = pluginsInfo.OrderBy(p => GetSortProp(p, sortContext));
+            //}
+            //else
+            //{
+            //    orderedList = pluginsInfo.OrderByDescending(p => GetSortProp(p, sortContext));
+            //}
+
+            // # 2 version
+            switch (sortContext.SortType)
+            {
+                case SortType.Name:
+                    switch (sortContext.SortOrder)
+                    {
+                        case SortOrder.Ascending:
+                            orderedList = pluginsInfo.OrderBy(p => p.Name);
+                            break;
+                        case SortOrder.Descending:
+                            orderedList = pluginsInfo.OrderByDescending(p => p.Name);
+                            break;
+                    }
+                    break;
+                case SortType.Description:
+                    switch (sortContext.SortOrder)
+                    {
+                        case SortOrder.Ascending:
+                            orderedList = pluginsInfo.OrderBy(p => p.Description);
+                            break;
+                        case SortOrder.Descending:
+                            orderedList = pluginsInfo.OrderByDescending(p => p.Description);
+                            break;
+                    }
+                    break;
+                case SortType.Version:
+                    switch (sortContext.SortOrder)
+                    {
+                        case SortOrder.Ascending:
+                            orderedList = pluginsInfo.OrderBy(p => p.Version);
+                            break;
+                        case SortOrder.Descending:
+                            orderedList = pluginsInfo.OrderByDescending(p => p.Version);
+                            break;
+                    }
+                    break;
+                case SortType.Author:
+                    switch (sortContext.SortOrder)
+                    {
+                        case SortOrder.Ascending:
+                            orderedList = pluginsInfo.OrderBy(p => p.Author);
+                            break;
+                        case SortOrder.Descending:
+                            orderedList = pluginsInfo.OrderByDescending(p => p.Author);
+                            break;
+                    }
+                    break;
+                case SortType.Date:
+                    switch (sortContext.SortOrder)
+                    {
+                        case SortOrder.Ascending:
+                            orderedList = pluginsInfo.OrderBy(p => p.Date);
+                            break;
+                        case SortOrder.Descending:
+                            orderedList = pluginsInfo.OrderByDescending(p => p.Date);
+                            break;
+                    }
+                    break;
+                //case SortType.Url:
+                //    switch (sortContext.SortOrder)
+                //    {
+                //        case SortOrder.Ascending:
+                //            orderedList = pluginsInfo.OrderBy(p => p.Url);
+                //            break;
+                //        case SortOrder.Descending:
+                //            orderedList = pluginsInfo.OrderByDescending(p => p.Url);
+                //            break;
+                //    }
+                    //break;
+            }
+
+            ListViewItem[] lvItems = orderedList.Select(p => new ListViewItem(p.Name)
             {
                 SubItems =
                 {
@@ -264,6 +360,21 @@ namespace Plugin_Updater
 
             listViewPluginInfo.Items.AddRange(lvItems);
             listViewPluginInfo.EndUpdate();
+        }
+
+        private string GetSortProp(PluginInfo p, SortContext sc)
+        {
+            //ColumnHeader column = listViewPluginInfo.Columns[sc.ColumnIdx];
+
+            // map clicked column with PluginInfo type property
+            //PropertyInfo propInfo = typeof(PluginInfo).GetProperties(BindingFlags.Instance | BindingFlags.Public)
+            //    .FirstOrDefault(prop => prop.Name.StartsWith(column.Text, StringComparison.OrdinalIgnoreCase));
+
+            // UNDONE! THERE IS NOT ONLY TYPE STRING IN LISTVIEW
+            // HANDLE DATETIME, VERSION, URL...
+            //return propInfo.GetValue(p) as string;
+
+            throw new NotImplementedException();
         }
 
         private void ButtonRemove_Click(object sender, EventArgs e)
@@ -286,5 +397,45 @@ namespace Plugin_Updater
             listViewPluginInfo.Items.Remove(lvi);
             listViewPluginInfo.EndUpdate();
         }
+
+        private void ListViewPluginInfo_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            ColumnHeader column = listViewPluginInfo.Columns[e.Column];
+            SortContext sc = (SortContext)column.Tag;
+            //var newOrder = (SortOrder)(sortOrder + 1 % 2);
+            //listViewPluginInfo.Columns[e.Column].Tag = newOrder;
+
+            sc.SortOrder = sc.SortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
+            LoadInfoFromMetadata(sc);
+        }
+    }
+
+    internal class SortContext
+    {
+        public static SortContext DefaultContext;
+
+        static SortContext()
+        {
+            DefaultContext = new SortContext
+            {
+                SortType = SortType.Name,
+                SortOrder = SortOrder.Ascending,
+            };
+        }
+
+        public SortType SortType { get; set; }
+
+        public SortOrder SortOrder { get; set; }
+    }
+
+    internal enum SortType
+    {
+        None,
+        Name,
+        Description,
+        Version,
+        Author,
+        Date,
+        Url,
     }
 }

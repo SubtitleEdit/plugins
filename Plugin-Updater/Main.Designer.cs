@@ -36,6 +36,7 @@
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.buttonRemove = new System.Windows.Forms.Button();
             this.buttonAdd = new System.Windows.Forms.Button();
             this.textBoxAuthor = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -56,7 +57,6 @@
             this.label6 = new System.Windows.Forms.Label();
             this.textBoxMetaFilePath = new System.Windows.Forms.TextBox();
             this.buttonBrowse = new System.Windows.Forms.Button();
-            this.buttonRemove = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownVersion)).BeginInit();
             this.SuspendLayout();
@@ -82,6 +82,7 @@
             this.listViewPluginInfo.TabIndex = 0;
             this.listViewPluginInfo.UseCompatibleStateImageBehavior = false;
             this.listViewPluginInfo.View = System.Windows.Forms.View.Details;
+            this.listViewPluginInfo.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.ListViewPluginInfo_ColumnClick);
             // 
             // columnHeader1
             // 
@@ -110,7 +111,7 @@
             // 
             // columnHeader6
             // 
-            this.columnHeader6.Text = "URL";
+            this.columnHeader6.Text = "Url";
             this.columnHeader6.Width = 163;
             // 
             // groupBox1
@@ -139,6 +140,16 @@
             this.groupBox1.Size = new System.Drawing.Size(1060, 251);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
+            // 
+            // buttonRemove
+            // 
+            this.buttonRemove.Location = new System.Drawing.Point(570, 193);
+            this.buttonRemove.Name = "buttonRemove";
+            this.buttonRemove.Size = new System.Drawing.Size(115, 28);
+            this.buttonRemove.TabIndex = 16;
+            this.buttonRemove.Text = "Remove";
+            this.buttonRemove.UseVisualStyleBackColor = true;
+            this.buttonRemove.Click += new System.EventHandler(this.ButtonRemove_Click);
             // 
             // buttonAdd
             // 
@@ -337,16 +348,6 @@
             this.buttonBrowse.Text = "Browse file";
             this.buttonBrowse.UseVisualStyleBackColor = true;
             this.buttonBrowse.Click += new System.EventHandler(this.ButtonBrowse_Click);
-            // 
-            // buttonRemove
-            // 
-            this.buttonRemove.Location = new System.Drawing.Point(570, 193);
-            this.buttonRemove.Name = "buttonRemove";
-            this.buttonRemove.Size = new System.Drawing.Size(115, 28);
-            this.buttonRemove.TabIndex = 16;
-            this.buttonRemove.Text = "Remove";
-            this.buttonRemove.UseVisualStyleBackColor = true;
-            this.buttonRemove.Click += new System.EventHandler(this.ButtonRemove_Click);
             // 
             // Main
             // 
