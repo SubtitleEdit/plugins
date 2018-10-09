@@ -1,5 +1,6 @@
 ﻿using Plugin_Updater.Helpers;
 using System;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -14,6 +15,10 @@ namespace Plugin_Updater
         {
             InitializeComponent();
 
+            listViewPluginInfo.OwnerDraw = true;
+            listViewPluginInfo.DrawItem += ListViewPluginInfo_DrawItem;
+            listViewPluginInfo.DrawSubItem += ListViewPluginInfo_DrawSubItem;
+            listViewPluginInfo.DrawColumnHeader += ListViewPluginInfo_DrawColumnHeader;
             Resize += delegate
             {
                 listViewPluginInfo.Columns[listViewPluginInfo.Columns.Count - 1].Width = -2;
@@ -36,6 +41,58 @@ namespace Plugin_Updater
             }
 
             LoadInfoFromMetadata(SortContext.DefaultContext);
+        }
+
+        private void ListViewPluginInfo_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
+        {
+            e.DrawDefault = true;
+        }
+
+        private void ListViewPluginInfo_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
+        {
+            using (var sf = new StringFormat())
+            {
+                switch (e.Header.TextAlign)
+                {
+                    case HorizontalAlignment.Left:
+                        sf.Alignment = StringAlignment.Near;
+                        break;
+                    case HorizontalAlignment.Right:
+                        sf.Alignment = StringAlignment.Far;
+                        break;
+                    case HorizontalAlignment.Center:
+                        sf.Alignment = StringAlignment.Center;
+                        break;
+                }
+
+                if (e.Item.Selected)
+                {
+                    e.Graphics.FillRectangle(Brushes.LightBlue, e.Bounds);
+
+                    TextRenderer.DrawText(e.Graphics, e.Item.SubItems[e.ColumnIndex].Text, listViewPluginInfo.Font,
+                        new Point(e.Bounds.Left + 3, e.Bounds.Top + 2), e.Item.ForeColor, TextFormatFlags.RightToLeft);
+                }
+                else
+                {
+                    e.DrawDefault = true;
+                }
+            }
+        }
+
+
+        private void ListViewPluginInfo_DrawItem(object sender, DrawListViewItemEventArgs e)
+        {
+            // listview focus
+            if (listViewPluginInfo.Focused)
+            {
+                e.DrawDefault = true;
+                return;
+            }
+            // items focus
+            if (e.Item.Focused)
+            {
+                e.DrawFocusRectangle();
+            }
         }
 
         //private void TryLocatingMetadataFile()
@@ -84,6 +141,7 @@ namespace Plugin_Updater
                     return;
                 }
             }
+
             textBoxMetaFilePath.Text = _metaFile;
             _xDoc = XDocument.Load(_metaFile);
             LoadInfoFromMetadata(SortContext.DefaultContext);
@@ -292,6 +350,7 @@ namespace Plugin_Updater
                             break;
                     }
                     break;
+
                 case SortType.Description:
                     switch (sortContext.SortOrder)
                     {
@@ -303,6 +362,7 @@ namespace Plugin_Updater
                             break;
                     }
                     break;
+
                 case SortType.Version:
                     switch (sortContext.SortOrder)
                     {
@@ -314,6 +374,7 @@ namespace Plugin_Updater
                             break;
                     }
                     break;
+
                 case SortType.Author:
                     switch (sortContext.SortOrder)
                     {
@@ -325,6 +386,7 @@ namespace Plugin_Updater
                             break;
                     }
                     break;
+
                 case SortType.Date:
                     switch (sortContext.SortOrder)
                     {
@@ -336,16 +398,16 @@ namespace Plugin_Updater
                             break;
                     }
                     break;
-                //case SortType.Url:
-                //    switch (sortContext.SortOrder)
-                //    {
-                //        case SortOrder.Ascending:
-                //            orderedList = pluginsInfo.OrderBy(p => p.Url);
-                //            break;
-                //        case SortOrder.Descending:
-                //            orderedList = pluginsInfo.OrderByDescending(p => p.Url);
-                //            break;
-                //    }
+                    //case SortType.Url:
+                    //    switch (sortContext.SortOrder)
+                    //    {
+                    //        case SortOrder.Ascending:
+                    //            orderedList = pluginsInfo.OrderBy(p => p.Url);
+                    //            break;
+                    //        case SortOrder.Descending:
+                    //            orderedList = pluginsInfo.OrderByDescending(p => p.Url);
+                    //            break;
+                    //    }
                     //break;
             }
 
