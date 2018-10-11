@@ -24,6 +24,7 @@ namespace Plugin_Updater
                 listViewPluginInfo.Columns[listViewPluginInfo.Columns.Count - 1].Width = -2;
             };
 
+            this.OnResize(EventArgs.Empty);
             listViewPluginInfo.SelectedIndexChanged += ListViewPluginInfo_SelectedIndexChanged;
             //TryLocatingMetadataFile();
             _metaFile = Utils.GetMetaFile();
@@ -71,6 +72,9 @@ namespace Plugin_Updater
 
                     TextRenderer.DrawText(e.Graphics, e.Item.SubItems[e.ColumnIndex].Text, listViewPluginInfo.Font,
                         new Point(e.Bounds.Left + 3, e.Bounds.Top + 2), e.Item.ForeColor, TextFormatFlags.RightToLeft);
+
+                    //e.Graphics.DrawString("", null, null, null, new StringFormat(StringFormatFlags.))
+
                 }
                 else
                 {
@@ -398,24 +402,24 @@ namespace Plugin_Updater
                             break;
                     }
                     break;
-                    //case SortType.Url:
-                    //    switch (sortContext.SortOrder)
-                    //    {
-                    //        case SortOrder.Ascending:
-                    //            orderedList = pluginsInfo.OrderBy(p => p.Url);
-                    //            break;
-                    //        case SortOrder.Descending:
-                    //            orderedList = pluginsInfo.OrderByDescending(p => p.Url);
-                    //            break;
-                    //    }
-                    //break;
+                case SortType.Url:
+                    switch (sortContext.SortOrder)
+                    {
+                        case SortOrder.Ascending:
+                            orderedList = pluginsInfo.OrderBy(p => p.Url.AbsolutePath);
+                            break;
+                        case SortOrder.Descending:
+                            orderedList = pluginsInfo.OrderByDescending(p => p.Url.AbsolutePath);
+                            break;
+                    }
+                    break;
             }
 
             ListViewItem[] lvItems = orderedList.Select(p => new ListViewItem(p.Name)
             {
                 SubItems =
                 {
-                    p.Description, p.Version.ToString(), p.Date.ToString("yyy-MM-dd"), p.Author, p.Url.ToString()
+                    p.Description, p.Version.ToString("#0.00"), p.Date.ToString("yyy-MM-dd"), p.Author, p.Url.ToString()
                 },
                 Tag = p
             }).ToArray();
