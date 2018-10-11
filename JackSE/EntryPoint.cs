@@ -10,12 +10,29 @@ using System.Xml.Linq;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
+    [InvokeOnLoading]
     public class JackSE : IPlugin
     {
+        public JackSE()
+        {
+            //AppDomain.CurrentDomain.GetAssemblies();
+            Type mainForm = Assembly.GetEntryAssembly().GetType("Nikse.SubtitleEdit.Forms.Main");
+
+            //AppDomain.CurrentDomain.
+
+            if (mainForm != null)
+            {
+                //AddMergeLinesButton((Form)mainForm);
+            }
+
+            //AppDomain.CurrentDomain
+            // TODO: check if main is already jacked
+        }
+
         /// <summary>
         /// Private members binding flags.
         /// </summary>
-        private BindingFlags _privateMembersFlags = BindingFlags.Instance | BindingFlags.NonPublic;
+        private readonly BindingFlags _privateMembersFlags = BindingFlags.Instance | BindingFlags.NonPublic;
 
         private Form _parentForm;
         private Func<object, MenuStrip> MenuStripProvider;
@@ -27,6 +44,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private Func<object, bool> ShouldInvokeMergeExp;
         private Action<object, EventArgs> InsertLineInvoker;
+
         public string Name => "JackSE";
         public string Text => "JackSE";
         public decimal Version => 1;
@@ -42,7 +60,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // url format in configuration
             // {"name": "https://www.github.com/ivandrofly"}
             BuildProviders();
-            var configFile = Path.Combine(FileUtils.Plugins, "jack-se-config.xml");
+            string configFile = Path.Combine(FileUtils.Plugins, "jack-se-config.xml");
             if (File.Exists(configFile))
             {
                 // Xml template
@@ -143,7 +161,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             // # USING REFLECTION
             FieldInfo lvFielInfo = _parentForm.GetType().GetField(fieldName, _privateMembersFlags);
-            var mainListview = (ListView) lvFielInfo.GetValue(_parentForm);
+            var mainListview = (ListView)lvFielInfo.GetValue(_parentForm);
             ShouldInvokeMerge = () => mainListview.SelectedItems.Count > 0;
 
             // # USING EXPRESSION
@@ -154,11 +172,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             UnaryExpression lvexp = Expression.TypeAs(Expression.Field(convertExp, fieldName), typeof(ListView));
 
             // from that field access Property named SelectedItems
-            var selitemsExp = Expression.Property(lvexp, "SelectedItems");
+            MemberExpression selitemsExp = Expression.Property(lvexp, "SelectedItems");
             // from selected items select property named Count
-            var countExp = Expression.Property(selitemsExp, "Count");
+            MemberExpression countExp = Expression.Property(selitemsExp, "Count");
             // from prop named Count text if it's greater than zero (0)
-            var testExp = Expression.GreaterThan(countExp, Expression.Constant(0));
+            BinaryExpression testExp = Expression.GreaterThan(countExp, Expression.Constant(0));
 
             // this takes param of object -> target
             ShouldInvokeMergeExp = Expression.Lambda<Func<object, bool>>(testExp, paramExp).Compile();
@@ -183,8 +201,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             ConstantExpression targetObject = Expression.Constant(_parentForm, mainType);
             MethodCallExpression methodCallExp = Expression.Call(targetObject, insertClick, senderParam, eventArgParam);
             // TODO: BUILD THE HANDLER
-            InsertLineInvoker = Expression.Lambda<Action<object, EventArgs>>(methodCallExp, senderParam, eventArgParam)
-                .Compile();
+            InsertLineInvoker = Expression.Lambda<Action<object, EventArgs>>(methodCallExp, senderParam, eventArgParam).Compile();
         }
 
         private void AddMergeLinesButton(Form parentForm)
@@ -207,8 +224,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             // get the type which is main
             Type formType = parentForm.GetType();
-            GroupBox groupBox = (GroupBox) formType.GetField("groupBoxEdit", _privateMembersFlags).GetValue(parentForm);
+            GroupBox groupBox = (GroupBox)formType.GetField("groupBoxEdit", _privateMembersFlags).GetValue(parentForm);
+
             Control seTextbox = null;
+
+            Control textBoxListViewText = groupBox.Controls.Cast<Control>()
+                .FirstOrDefault(c => c.Name.Equals("textBoxListViewText", StringComparison.Ordinal));
+
             // get subtitle's main textbox
             // which will be used to get the cordinates to copy to merge lines button
             foreach (Control control in groupBox.Controls)
@@ -244,7 +266,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 // TODO: handle when no item is selected from listview (which throws exception)
                 if ( /*ShouldInvokeMerge()*/ ShouldInvokeMergeExp(_parentForm))
                 {
-                    methodInfo.Invoke(parentForm, new object[] {false});
+                    methodInfo.Invoke(parentForm, new object[] { false });
                 }
             };
 
@@ -262,11 +284,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // toolsToolStripMenuItem
             var mainType = _parentForm.GetType();
             FieldInfo fieldInfo = mainType.GetField("toolsToolStripMenuItem", _privateMembersFlags);
-            var toolStripMenu = (ToolStripMenuItem) fieldInfo.GetValue(_parentForm);
+            var toolStripMenu = (ToolStripMenuItem)fieldInfo.GetValue(_parentForm);
             for (int i = toolStripMenu.DropDown.Items.Count - 1; i >= 0; i--)
             {
                 ToolStripItem tsi = toolStripMenu.DropDown.Items[i];
-                if (tsi.Text.Equals(this.Text) || tsi.Text.Equals(this.Name))
+                if (tsi.Text.Equals(this.Text, StringComparison.OrdinalIgnoreCase) || tsi.Text.Equals(this.Name, StringComparison.OrdinalIgnoreCase))
                 {
                     toolStripMenu.DropDownItems.RemoveAt(i);
                     break;
