@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2019
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSpellCheck", "WordSpellCheck\DLL\WordSpellCheck.csproj", "{40D9F0DB-1C62-4CFC-A412-796E753AA057}"
 EndProject
@@ -75,6 +75,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YandexTranslate", "YandexTranslate\DLL\YandexTranslate.csproj", "{FE4B957C-F682-41A5-BBDC-BEA8CF9B4CFB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineCasing", "OnlineCasing\OnlineCasing.csproj", "{52A7C014-3BE1-4C7A-90AA-E864CEFC63A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReversoTranslate", "ReversoTranslate\DLL\ReversoTranslate.csproj", "{635D332C-8A90-4634-B258-D31CFFC40F88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeeplProTranslate", "DeeplProTranslate\DLL\DeeplProTranslate.csproj", "{FEF62028-9A0A-42EE-B13B-E19F9B73A5BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTScreenScraper", "GTScreenScraper\DLL\GTScreenScraper.csproj", "{BC28A13A-5CCD-4B4C-886D-0CD632BAA6A6}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -212,6 +218,18 @@ Global
 		{52A7C014-3BE1-4C7A-90AA-E864CEFC63A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52A7C014-3BE1-4C7A-90AA-E864CEFC63A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52A7C014-3BE1-4C7A-90AA-E864CEFC63A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{635D332C-8A90-4634-B258-D31CFFC40F88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{635D332C-8A90-4634-B258-D31CFFC40F88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{635D332C-8A90-4634-B258-D31CFFC40F88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{635D332C-8A90-4634-B258-D31CFFC40F88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEF62028-9A0A-42EE-B13B-E19F9B73A5BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEF62028-9A0A-42EE-B13B-E19F9B73A5BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEF62028-9A0A-42EE-B13B-E19F9B73A5BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEF62028-9A0A-42EE-B13B-E19F9B73A5BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC28A13A-5CCD-4B4C-886D-0CD632BAA6A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC28A13A-5CCD-4B4C-886D-0CD632BAA6A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC28A13A-5CCD-4B4C-886D-0CD632BAA6A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC28A13A-5CCD-4B4C-886D-0CD632BAA6A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -247,6 +265,9 @@ Global
 		{4DB30F73-5A8E-477E-9C18-A1DC59148DE5} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 		{FE4B957C-F682-41A5-BBDC-BEA8CF9B4CFB} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 		{52A7C014-3BE1-4C7A-90AA-E864CEFC63A0} = {21BBD88D-F935-419F-A68B-E8DA9F08E9C1}
+		{635D332C-8A90-4634-B258-D31CFFC40F88} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
+		{FEF62028-9A0A-42EE-B13B-E19F9B73A5BD} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
+		{BC28A13A-5CCD-4B4C-886D-0CD632BAA6A6} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8BBF401C-6D00-4F22-BFC0-DE2673213D5B}

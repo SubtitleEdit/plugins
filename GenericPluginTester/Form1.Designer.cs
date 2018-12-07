@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.button1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.listBox1 = new System.Windows.Forms.ListBox();
@@ -79,7 +78,8 @@
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBox1.Size = new System.Drawing.Size(414, 194);
             this.textBox1.TabIndex = 3;
-            this.textBox1.Text = resources.GetString("textBox1.Text");
+            this.textBox1.Text = "1\r\n00:00:01,758 --> 00:00:02,958\r\nHallo World!\r\n\r\n2\r\n00:00:04,758 --> 00:00:06,95" +
+    "8\r\nGod morning.\r\nHow are you?\r\n";
             // 
             // textBox2
             // 

@@ -117,24 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="textBox1.Text" xml:space="preserve">
-    <value>1
-00:00:01,758 --&gt; 00:00:02,958
-Celog živoat verujem u buduce sutra. 
-
-2
-00:00:04,758 --&gt; 00:00:06,958
-Svetionik je svetlucao.
-
-3
-00:00:14,758 --&gt; 00:00:16,958
-Nevjerovatno da u našjo knjizari nema mesta za knjige.
-
-4
-00:00:24,758 --&gt; 00:00:26,958
-Promjenimo li ustav, svijetska organizacija će nas više cjeniti. 
-</value>
-  </data>
   <metadata name="openFileDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>

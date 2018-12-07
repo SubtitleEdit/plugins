@@ -11,3 +11,4 @@ obj/
 /src/.nuget/NuGet.exe
 /src/.nuget/NuGet.Config
 /src/packages/
+/packages/Microsoft.Toolkit.Forms.UI.Controls.WebView.5.0.1
