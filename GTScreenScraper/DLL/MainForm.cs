@@ -115,7 +115,7 @@ namespace WebViewTranslate
                 {
                     Paragraph p = _subtitleOriginal.Paragraphs[i];
                     sourceLength += Uri.EscapeDataString(p.Text).Length;
-                    if ((sourceLength >= maxTextSize || sourceParagraphs.Count > maximumRequestArrayLength) && sourceParagraphs.Count > 0)
+                    if ((sourceLength >= maxTextSize || sourceParagraphs.Count >= maximumRequestArrayLength) && sourceParagraphs.Count > 0)
                     {
                         translator.Translate(source, target, sourceParagraphs, log);
                         List<string> result = null;
@@ -302,7 +302,7 @@ namespace WebViewTranslate
             {
                 _from = ((TranslationPair)comboBoxLanguageFrom.Items[comboBoxLanguageFrom.SelectedIndex]).Code;
                 _to = ((TranslationPair)comboBoxLanguageTo.Items[comboBoxLanguageTo.SelectedIndex]).Code;
-                Translate(_from, _to, new GoogleScreenScraper2(_webView, comboBoxGoogleTranslateUrl.SelectedItem.ToString()), (int)numericUpDownMaxBytes.Value, 100);
+                Translate(_from, _to, new GoogleScreenScraper2(_webView, comboBoxGoogleTranslateUrl.SelectedItem.ToString()), (int)numericUpDownMaxBytes.Value, 1);
             }
             finally
             {

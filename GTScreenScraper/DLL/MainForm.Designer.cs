@@ -192,7 +192,7 @@
             this.comboBoxGoogleTranslateUrl.FormattingEnabled = true;
             this.comboBoxGoogleTranslateUrl.Items.AddRange(new object[] {
             "https://translate.google.com",
-            "https:://translate.google.cn"});
+            "https://translate.google.cn"});
             this.comboBoxGoogleTranslateUrl.Location = new System.Drawing.Point(260, 530);
             this.comboBoxGoogleTranslateUrl.Name = "comboBoxGoogleTranslateUrl";
             this.comboBoxGoogleTranslateUrl.Size = new System.Drawing.Size(168, 21);
@@ -219,6 +219,7 @@
             this.label3.Size = new System.Drawing.Size(78, 13);
             this.label3.TabIndex = 13;
             this.label3.Text = "Bulk max bytes";
+            this.label3.Visible = false;
             // 
             // numericUpDownMaxBytes
             // 
@@ -242,6 +243,7 @@
             0,
             0,
             0});
+            this.numericUpDownMaxBytes.Visible = false;
             // 
             // MainForm
             // 
