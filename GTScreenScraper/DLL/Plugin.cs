@@ -20,12 +20,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         decimal IPlugin.Version
         {
-            get { return 0.1M; }
+            get { return 0.3M; }
         }
 
         string IPlugin.Description
         {
-            get { return "GT screen-scraper: Requires Edge and .net 4.6.2+"; }
+            get { return "GT screen-scraper: .net 4.6.2+ and Win10/April-2018"; }
         }
 
         string IPlugin.ActionType // Can be one of these: file, tool, sync, translate, spellcheck

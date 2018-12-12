@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using WebViewTranslate.Logic;
 
@@ -40,18 +39,13 @@ namespace WebViewTranslate.Translator
             }
 
             // Un-break line
-            var allowedLanguages = new List<string> { "en", "da", "nl", "de", "sv", "nb", "fr", "it" };
-            if (allowedLanguages.Contains(source))
+            var lines = HtmlUtil.RemoveHtmlTags(text).SplitToLines();
+            if (lines.Length == 2 && !string.IsNullOrEmpty(lines[0]) && !string.IsNullOrEmpty(lines[1]) &&
+                char.IsLetterOrDigit(lines[0][lines[0].Length - 1]) &&
+                char.IsLower(lines[1][0]))
             {
-                var lines = HtmlUtil.RemoveHtmlTags(text).SplitToLines();
-                if (lines.Length == 2 && !string.IsNullOrEmpty(lines[0]) && !string.IsNullOrEmpty(lines[1]) &&
-                    char.IsLetterOrDigit(lines[0][lines[0].Length - 1]) &&
-                    char.IsLower(lines[1][0]))
-                {
-                    text = text.Replace(Environment.NewLine, " ")
-                               .Replace("  ", " ");
-                    AutoBreak = true;
-                }
+                text = text.Replace(Environment.NewLine, " ").Replace("  ", " ");
+                AutoBreak = true;
             }
 
             return text.Trim();

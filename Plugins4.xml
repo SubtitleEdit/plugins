@@ -60,8 +60,8 @@
   <Plugin>
     <Name>GT Screen-Scraper</Name>
     <Description>GT screen-scraper: Requires Edge and .net 4.6.2+</Description>
-    <Version>0.2</Version>
-    <Date>2018-12-10</Date>
+    <Version>0.3</Version>
+    <Date>2018-12-12</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/GTScreenScraper.zip</Url>
     <Author></Author>
   </Plugin>

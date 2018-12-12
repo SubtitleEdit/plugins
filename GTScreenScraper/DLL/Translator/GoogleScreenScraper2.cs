@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using Microsoft.Toolkit.Forms.UI.Controls;
 using WebViewTranslate.Logic;
 
@@ -12,16 +13,17 @@ namespace WebViewTranslate.Translator
     /// <summary>
     /// Google translate screen scraper
     /// </summary>
-    public class GoogleScreenScraper2 
+    public class GoogleScreenScraper2
     {
         private readonly WebView _webView;
         private string _translateResult;
+        private string _lastTranslateResult;
         private bool _loaded;
         private StringBuilder _log;
-        private string _googleUrl;
-        Formatting[] _formattings;
+        private readonly string _googleUrl;
+        private Formatting[] _formattings;
 
-        public GoogleScreenScraper2(WebView webView, string googleUrl = "https://translate.google.com")
+        public GoogleScreenScraper2(WebView webView, string googleUrl, string source, string target)
         {
             if (webView == null)
                 return;
@@ -30,23 +32,21 @@ namespace WebViewTranslate.Translator
             _webView = webView;
             _webView.NavigationCompleted += _webView_NavigationCompleted;
             _webView.DOMContentLoaded += _webView_DOMContentLoaded;
+            _webView.Navigate(new Uri(_googleUrl + "/?sl=" + source + "&tl=" + target));
         }
 
         private void _webView_DOMContentLoaded(object sender, Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT.WebViewControlDOMContentLoadedEventArgs e)
         {
-            System.Threading.Thread.Sleep(100);
             _loaded = true;
             _log?.AppendLine("_webView_DOMContentLoaded called");
-            string html = _webView.InvokeScript("eval", "document.documentElement.outerHTML;");
-            SetTranslatedText(html);
         }
 
         private void _webView_NavigationCompleted(object sender, Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT.WebViewControlNavigationCompletedEventArgs e)
         {
-           // _log?.AppendLine("_webView_NavigationCompleted called" + Environment.NewLine);            
+            // _log?.AppendLine("_webView_NavigationCompleted called" + Environment.NewLine);            
         }
 
-        public List<TranslationPair> GetTranslationPairs()
+        public static List<TranslationPair> GetTranslationPairs()
         {
             return new List<TranslationPair>
             {
@@ -172,9 +172,17 @@ namespace WebViewTranslate.Translator
 
         public void Translate(string sourceLanguage, string targetLanguage, List<Paragraph> paragraphs, StringBuilder log)
         {
+            for (int i = 0; i < 10; i++)
+            {
+                if (!_loaded)
+                {
+                    System.Windows.Forms.Application.DoEvents();
+                    System.Threading.Thread.Sleep(10);
+                }
+            }
+
             _translateResult = null;
             _log = log;
-            var baseUrl = GetUrl();
             var input = new StringBuilder();
             _formattings = new Formatting[paragraphs.Count];
             for (var index = 0; index < paragraphs.Count; index++)
@@ -183,45 +191,116 @@ namespace WebViewTranslate.Translator
                 var f = new Formatting();
                 _formattings[index] = f;
                 if (input.Length > 0)
-                    input.Append(" | ");
+                    input.Append(Environment.NewLine + Environment.NewLine);
                 var text = f.SetTagsAndReturnTrimmed(TranslationHelper.PreTranslate(p.Text, sourceLanguage), sourceLanguage);
-                input.Append(Uri.EscapeDataString(text));
+                while (text.Contains(Environment.NewLine + Environment.NewLine))
+                    text = text.Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
+                text = text.Replace(Environment.NewLine, "\n");
+                input.Append(text);
             }
             // https://translate.google.com/?hl=en&eotf=1&sl=en&tl=da&q=How%20are%20you
             // or perhaps https://translate.google.com/#view=home&op=translate&sl=da&tl=en&text=Surkål
-            string uri = $"{baseUrl}/?hl=en&eotf=1&sl={sourceLanguage}&tl={targetLanguage}&q={input}";
-            log.AppendLine("GET Request: " + uri + Environment.NewLine);
+            //string uri = $"{baseUrl}/?hl=en&eotf=1&sl={sourceLanguage}&tl={targetLanguage}&q={input.ToString()}";
+            //log.AppendLine("GET Request: " + uri + Environment.NewLine);
+            //_loaded = false;
+            //_webView.Source = null;
+            //_translateResult = null;
+            //_webView.Navigate(new Uri(uri));
+
             _loaded = false;
-            _webView.Source = null;
-            _translateResult = null;
-            _webView.Navigate(new Uri(uri));
+            _webView.Navigate(new Uri(_googleUrl + "/#view=home&op=translate&sl=" + sourceLanguage + "&tl=" + targetLanguage + "&text=" + WebUtility.UrlEncode(input.ToString())));
+
+            //var encodedText = HttpUtility.JavaScriptStringEncode(input.ToString().Trim());
+            //string functionString = $"document.getElementById('source').innerText = '{encodedText}';";
+            //_webView.InvokeScript("eval", functionString);
+            for (int i = 0; i < 100; i++)
+            {
+                System.Windows.Forms.Application.DoEvents();
+                System.Threading.Thread.Sleep(10);
+                if (_loaded)
+                    break;
+            }
         }
 
-        public List<string> GetTranslationResult(string targetLanguage, int count)
+        public List<string> GetTranslationResult(string targetLanguage, List<Paragraph> paragraphs)
         {
-            if (!_loaded)
-                return null;
+            for (int i = 0; i < 100; i++)
+            {
+                if (!_loaded)
+                {
+                    System.Threading.Thread.Sleep(10);
+                    System.Windows.Forms.Application.DoEvents();
+                }
+            }
 
-            string html = _webView.InvokeScript("eval", "document.documentElement.outerHTML;");
-            _log?.AppendLine("Translate 5+ seconds: " + html + Environment.NewLine);
-            SetTranslatedText(html);
-            if (string.IsNullOrEmpty(_translateResult))
+            try
+            {
+                _translateResult = _webView.InvokeScript("eval", "document.getElementsByClassName('tlid-translation translation')[0].innerText");
+                if (_translateResult == _lastTranslateResult)
+                {
+                    _lastTranslateResult = null;
+                    return null;
+                }
+
+                if (string.IsNullOrEmpty(_translateResult))
+                    return null;
+
+                _lastTranslateResult = _translateResult;
+                var list = MakeList(_translateResult, targetLanguage, _formattings);
+
+                if (list.Count > paragraphs.Count)
+                {
+                    return list.Where(p => !string.IsNullOrEmpty(p)).ToList();
+                }
+
+                if (list.Count < paragraphs.Count)
+                {
+                    var splitList = SplitMergedLines(list, paragraphs);
+                    if (splitList.Count == paragraphs.Count)
+                        return splitList;
+                }
+
+                return list;
+            }
+            catch (Exception e)
+            {
                 return null;
-            return MakeList(_translateResult, targetLanguage, _formattings, count);
+            }
         }
 
-        private List<string> MakeList(string res, string targetLanguage, Formatting[] formattings, int count)
+        private List<string> MakeList(string res, string targetLanguage, Formatting[] formattings)
         {
             res = Regex.Unescape(res);
-            var lines = res.Split('|').ToList();
+            var lines = new List<string>();
+
+            var sb = new StringBuilder();
+            foreach (var l in res.SplitToLines())
+            {
+                if (string.IsNullOrEmpty(l))
+                {
+                    if (sb.Length > 0)
+                        lines.Add(sb.ToString().Trim());
+                    sb.Clear();
+                }
+                else
+                {
+                    sb.AppendLine(l);
+                }
+            }
+            if (sb.Length > 0)
+                lines.Add(sb.ToString().Trim());
+
             var resultList = new List<string>();
             for (var index = 0; index < lines.Count; index++)
             {
                 var line = lines[index].Trim();
                 var s = WebUtility.HtmlDecode(line);
                 s = s.Replace("<I>", "<i>");
+                s = s.Replace("<I >", "<i>");
+                s = s.Replace("< I >", "<i>");
                 s = s.Replace("< i >", "<i>");
                 s = s.Replace("</I>", "</i>");
+                s = s.Replace("</I >", "</i>");
                 s = s.Replace("</ I>", "</i>");
                 s = s.Replace("</ i>", "</i>");
                 s = s.Replace("< / i>", "</i>");
@@ -234,70 +313,62 @@ namespace WebViewTranslate.Translator
                 s = s.Replace(" " + Environment.NewLine, Environment.NewLine).Trim();
                 if (formattings.Length > index)
                     s = formattings[index].ReAddFormatting(s);
-                resultList.Add( s.Replace("  ", " "));
+                resultList.Add(s.Replace("  ", " "));
             }
-
-            if (resultList.Count > count)
-            {
-                resultList = resultList.Where(p => !string.IsNullOrEmpty(p)).ToList();
-            }
-
             return resultList;
         }
 
-        private void SetTranslatedText(string html)
+        private static List<string> SplitMergedLines(List<string> input, List<Paragraph> paragraphs)
         {
-            if (string.IsNullOrEmpty(html) || _translateResult != null)
-                return;
-
-            //      log.AppendLine("GET Response: " + uri + Environment.NewLine + "---------------------" + Environment.NewLine);
-
-            string startTag = "class=\"tlid-translation translation";
-            int start = html.IndexOf(startTag, StringComparison.Ordinal);
-            if (start < 0)
-                return;
-
-            start = html.IndexOf(">", start, StringComparison.Ordinal);
-            if (start < 0)
-                return;
-
-            var sb = new StringBuilder();
-            int level = 0;
-            bool textOn = true;
-            for (int i = start + 1; i < html.Length - 5; i++)
+            var hits = 0;
+            var results = new List<string>();
+            for (var index = 0; index < input.Count; index++)
             {
-                var ch = html[i];
-                if (!textOn && ch == '>')
+                var line = input[index];
+                var text = paragraphs[index].Text;
+                var badPoints = 0;
+                if (text.StartsWith("[") && !line.StartsWith("["))
+                    badPoints++;
+                if (text.StartsWith("-") && !line.StartsWith("-"))
+                    badPoints++;
+                if (text.Length > 0 && char.IsUpper(text[0]) && line.Length > 0 && !char.IsUpper(line[0]))
+                    badPoints++;
+                if (text.EndsWith(".") && !line.EndsWith("."))
+                    badPoints++;
+                if (text.EndsWith("!") && !line.EndsWith("!"))
+                    badPoints++;
+                if (text.EndsWith("?") && !line.EndsWith("?"))
+                    badPoints++;
+                if (text.EndsWith(",") && !line.EndsWith(","))
+                    badPoints++;
+                if (text.EndsWith(":") && !line.EndsWith(":"))
+                    badPoints++;
+                var added = false;
+                if (badPoints > 0 && hits + input.Count < paragraphs.Count)
                 {
-                    textOn = true;
-                    sb.Append(" ");
-                }
-                else if (textOn && ch == '<')
-                {
-                    textOn = false;
-                    if (html[i + 1] == '/')
+                    var percent = line.Length * 100.0 / text.Length;
+                    if (percent > 150)
                     {
-                        level--;
+                        var temp = Utilities.AutoBreakLine(line).SplitToLines();
+                        if (temp.Length == 2)
+                        {
+                            hits++;
+                            results.Add(temp[0]);
+                            results.Add(temp[1]);
+                            added = true;
+                        }
                     }
-                    else
-                    {
-                        level++;
-                    }
                 }
-                else if (!textOn && html.Substring(i, 4).Replace(" ", string.Empty).StartsWith("/>", StringComparison.Ordinal))
+                if (!added)
                 {
-                    level--;
+                    results.Add(line);
                 }
-                else if (textOn)
-                {
-                    sb.Append(ch);
-                }
-
-                if (level < 0)
-                    break;
             }
-            _translateResult = sb.ToString().Replace("  ", " ").Trim();
-        }
 
+            if (results.Count == paragraphs.Count)
+                return results;
+
+            return input;
+        }
     }
 }

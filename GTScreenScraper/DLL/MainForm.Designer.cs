@@ -219,7 +219,6 @@
             this.label3.Size = new System.Drawing.Size(78, 13);
             this.label3.TabIndex = 13;
             this.label3.Text = "Bulk max bytes";
-            this.label3.Visible = false;
             // 
             // numericUpDownMaxBytes
             // 
@@ -239,11 +238,10 @@
             this.numericUpDownMaxBytes.Size = new System.Drawing.Size(57, 20);
             this.numericUpDownMaxBytes.TabIndex = 14;
             this.numericUpDownMaxBytes.Value = new decimal(new int[] {
-            500,
+            1000,
             0,
             0,
             0});
-            this.numericUpDownMaxBytes.Visible = false;
             // 
             // MainForm
             // 

@@ -41,15 +41,14 @@ namespace WebViewTranslate
         private void SetLanguages(ComboBox comboBox, string language)
         {
             comboBox.Items.Clear();
-            foreach (var pair in new GoogleScreenScraper2(null).GetTranslationPairs())
+            foreach (var pair in GoogleScreenScraper2.GetTranslationPairs())
             {
                 comboBox.Items.Add(pair);
             }
             int i = 0;
             foreach (var l in comboBox.Items)
             {
-                var tl = l as TranslationPair;
-                if (tl != null && tl.Code.Equals(language, StringComparison.OrdinalIgnoreCase))
+                if (l is TranslationPair tl && tl.Code.Equals(language, StringComparison.OrdinalIgnoreCase))
                 {
                     comboBox.SelectedIndex = i;
                     return;
@@ -122,17 +121,17 @@ namespace WebViewTranslate
                         var T = DateTime.UtcNow;
                         while (result == null)
                         {
-                            result = translator.GetTranslationResult(target, sourceParagraphs.Count);
-                            System.Threading.Thread.Sleep(100);
+                            result = translator.GetTranslationResult(target, sourceParagraphs);
+                            Thread.Sleep(10);
                             Application.DoEvents();
                             var seconds = (DateTime.UtcNow - T).TotalSeconds;
-                            if (seconds > 15 || _abort)
-                            {                                
+                            if (seconds > 15 && result == null || _abort)
+                            {
                                 log.AppendLine("No response from webview!" + Environment.NewLine);
                                 result = new List<string>();
                             }
                         }
-                        
+
                         textBoxLog.Text = log.ToString().Trim();
                         if (log.Length > 1000000)
                             log.Clear();
@@ -157,8 +156,7 @@ namespace WebViewTranslate
                     var T = DateTime.UtcNow;
                     while (result == null)
                     {
-                        result = translator.GetTranslationResult(target, sourceParagraphs.Count);
-                        Thread.Sleep(100);
+                        result = translator.GetTranslationResult(target, sourceParagraphs);
                         Application.DoEvents();
                         var seconds = (DateTime.UtcNow - T).TotalSeconds;
                         if (seconds > 15 || _abort)
@@ -278,7 +276,7 @@ namespace WebViewTranslate
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start(new GoogleScreenScraper2(null).GetUrl());
+            Process.Start("https://translate.google.com");
         }
 
         private void buttonTranslate_Click(object sender, EventArgs e)
@@ -302,7 +300,7 @@ namespace WebViewTranslate
             {
                 _from = ((TranslationPair)comboBoxLanguageFrom.Items[comboBoxLanguageFrom.SelectedIndex]).Code;
                 _to = ((TranslationPair)comboBoxLanguageTo.Items[comboBoxLanguageTo.SelectedIndex]).Code;
-                Translate(_from, _to, new GoogleScreenScraper2(_webView, comboBoxGoogleTranslateUrl.SelectedItem.ToString()), (int)numericUpDownMaxBytes.Value, 1);
+                Translate(_from, _to, new GoogleScreenScraper2(_webView, comboBoxGoogleTranslateUrl.SelectedItem.ToString(), _from, _to), (int)numericUpDownMaxBytes.Value);
             }
             finally
             {
@@ -357,7 +355,7 @@ namespace WebViewTranslate
                 doc.Load(fileName);
                 _to = doc.DocumentElement.SelectSingleNode("Target").InnerText;
                 comboBoxGoogleTranslateUrl.SelectedIndex = int.Parse(doc.DocumentElement.SelectSingleNode("UrlIndex").InnerText);
-                numericUpDownMaxBytes.Value = decimal.Parse(doc.DocumentElement.SelectSingleNode("BulkSize").InnerText);
+                numericUpDownMaxBytes.Value = decimal.Parse(doc.DocumentElement.SelectSingleNode("UrlMaxSize").InnerText);
             }
             catch
             {
@@ -373,7 +371,7 @@ namespace WebViewTranslate
                 doc.LoadXml("<Translator><ApiKey/><Target/><UrlIndex/><BulkSize/></Translator>");
                 doc.DocumentElement.SelectSingleNode("Target").InnerText = _to;
                 doc.DocumentElement.SelectSingleNode("UrlIndex").InnerText = comboBoxGoogleTranslateUrl.SelectedIndex.ToString();
-                doc.DocumentElement.SelectSingleNode("BulkSize").InnerText = ((int)numericUpDownMaxBytes.Value).ToString();
+                doc.DocumentElement.SelectSingleNode("UrlMaxSize").InnerText = ((int)numericUpDownMaxBytes.Value).ToString();
                 doc.Save(fileName);
             }
             catch (Exception e)
