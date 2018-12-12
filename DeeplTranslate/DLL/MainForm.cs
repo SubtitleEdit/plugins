@@ -52,6 +52,7 @@ namespace SubtitleEdit
             { "IT", "" },
             { "NL", "" },
             { "PL", "" },
+            { "PT", "" },
 
             { "EN...", "..." },
             { "DE...", "..." },
@@ -60,6 +61,7 @@ namespace SubtitleEdit
             { "IT...", "..." },
             { "NL...", "..." },
             { "PL...", "..." },
+            { "PT...", "..." },
         };
 
         public class TranslationLanguage
@@ -101,6 +103,7 @@ namespace SubtitleEdit
                 new TranslationLanguage("IT", "Italian"),
                 new TranslationLanguage("NL", "Dutch"),
                 new TranslationLanguage("PL", "Polish"),
+                new TranslationLanguage("PT", "Portuguese"),
             });
             int i = 0;
             foreach (var l in comboBox.Items)
