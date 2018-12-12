@@ -70,7 +70,7 @@ namespace WebViewTranslate
             SetLanguages(comboBoxLanguageFrom, _from);
             GeneratePreview();
             RestoreSettings();
-            if (string.IsNullOrEmpty(_to))
+            if (string.IsNullOrEmpty(_to) || _to == _from)
             {
                 _to = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
                 if (_to == _from)
@@ -82,6 +82,14 @@ namespace WebViewTranslate
                             break;
                     }
                 }
+            }
+            if (_to == _from && _from == "en")
+            {
+                _to = "es";
+            }
+            if(_to == _from && _from == "es")
+            {
+                _to = "en";
             }
             SetLanguages(comboBoxLanguageTo, _to);
         }
