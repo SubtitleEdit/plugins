@@ -66,6 +66,14 @@
     <Author></Author>
   </Plugin>
   <Plugin>
+    <Name>BT Screen-Scraper</Name>
+    <Description>BT screen-scraper: Requires .net 4.6.2+</Description>
+    <Version>0.1</Version>
+    <Date>2018-12-20</Date>
+    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/BTScreenScraper.zip</Url>
+    <Author></Author>
+  </Plugin>
+  <Plugin>
     <Name>Haxor</Name>
     <Description>Translates subtitle to Haxor</Description>
     <Version>1.5</Version>
