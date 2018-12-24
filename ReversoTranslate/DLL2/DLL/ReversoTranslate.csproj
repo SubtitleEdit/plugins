@@ -56,14 +56,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="ITranslator.cs" />
     <Compile Include="Logic\Configuration.cs" />
     <Compile Include="IPlugin.cs" />
-    <Compile Include="Logic\Formatting.cs" />
     <Compile Include="Logic\HtmlUtil.cs" />
-    <Compile Include="Logic\Json.cs" />
     <Compile Include="Logic\LanguageAutoDetect.cs" />
     <Compile Include="Logic\StringExtensions.cs" />
-    <Compile Include="Logic\TinyJsonParser.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -79,11 +77,8 @@
     <Compile Include="Logic\SubtitleFormat.cs" />
     <Compile Include="Logic\TimeCode.cs" />
     <Compile Include="Logic\Utilities.cs" />
-    <Compile Include="Translator\Formatting.cs" />
-    <Compile Include="Translator\ITranslator.cs" />
-    <Compile Include="Translator\ReversoTranslator.cs" />
-    <Compile Include="Translator\TranslationHelper.cs" />
-    <Compile Include="Translator\TranslationPair.cs" />
+    <Compile Include="ReversoTranslator.cs" />
+    <Compile Include="TranslationPair.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Form1.resx">

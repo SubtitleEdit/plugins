@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Nikse.SubtitleEdit.PluginLogic;
+using SubtitleEdit.Logic;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace SubtitleEdit.Logic
+namespace Nikse.SubtitleEdit.PluginLogic
 {
     public static class Utilities
     {
@@ -15,16 +17,16 @@ namespace SubtitleEdit.Logic
         public static readonly string AllLetters = UppercaseLetters + LowercaseLetters;
         public static readonly string AllLettersAndNumbers = UppercaseLetters + LowercaseLettersWithNumbers;
 
-        //#region StringExtension
+        #region StringExtension
         public static bool Contains(this string s, char c)
         {
             return s.Length > 0 && s.IndexOf(c) > 0;
         }
-        //public static string[] SplitToLines(this string s)
-        //{
-        //    return s.Replace(Environment.NewLine, "\n").Replace('\r', '\n').Split('\n');
-        //}
-        //#endregion
+        public static string[] SplitToLines(this string s)
+        {
+            return s.Replace(Environment.NewLine, "\n").Replace('\r', '\n').Split('\n');
+        }
+        #endregion
         internal static string AssemblyVersion
         {
             get
@@ -47,7 +49,7 @@ namespace SubtitleEdit.Logic
             if (alsoSSA)
                 s = RemoveSsaTags(s);
 
-            if (!Contains(s, '<'))
+            if (!s.Contains('<'))
                 return s;
             s = Regex.Replace(s, "(?i)</?[ibu]>", string.Empty);
             while (s.Contains("  ")) s = s.Replace("  ", " ");
@@ -81,6 +83,22 @@ namespace SubtitleEdit.Logic
                 idx = s.IndexOf("<font", idx, StringComparison.OrdinalIgnoreCase);
             }
             return s;
+        }
+
+        internal unsafe static int NumberOfLines(string text)
+        {
+            var ln = 1;
+            fixed (char* tPtr = text)
+            {
+                char* ptr = tPtr;
+                while (*ptr != '\0')
+                {
+                    if (*ptr == '\n')
+                        ln++;
+                    ptr++;
+                }
+            }
+            return ln;
         }
 
         public static int CountTagInText(string text, string tag)
@@ -284,7 +302,7 @@ namespace SubtitleEdit.Logic
                 nextChar = s[index];
             else
                 return false;
-            if (!Contains("\r\n\t ", nextChar))
+            if (!"\r\n\t ".Contains(nextChar))
                 return false;
 
             // Some words we don't like breaking after
@@ -407,13 +425,13 @@ namespace SubtitleEdit.Logic
                 return text;
 
             // do not autobreak dialogs
-            if (Contains(text, '-') && text.Contains(Environment.NewLine))
+            if (text.Contains('-') && text.Contains(Environment.NewLine))
             {
                 var noTagLines = HtmlUtil.RemoveHtmlTags(text, true).SplitToLines();
                 if (noTagLines.Length == 2)
                 {
                     var arr0 = noTagLines[0].Trim().TrimEnd('"', '\'').TrimEnd();
-                    if (arr0.StartsWith('-') && noTagLines[1].TrimStart().StartsWith('-') && arr0.Length > 1 && (Contains(".?!)]", arr0[arr0.Length - 1]) || arr0.EndsWith("--", StringComparison.Ordinal) || arr0.EndsWith('–')))
+                    if (arr0.StartsWith('-') && noTagLines[1].TrimStart().StartsWith('-') && arr0.Length > 1 && (".?!)]".Contains(arr0[arr0.Length - 1]) || arr0.EndsWith("--", StringComparison.Ordinal) || arr0.EndsWith('–')))
                         return text;
                 }
             }
@@ -494,7 +512,7 @@ namespace SubtitleEdit.Logic
                             {
                                 if (mid - j > 5 && s[mid - j - 1] == ' ')
                                 {
-                                    if (Contains("!?.", s[mid - j - 2]))
+                                    if ("!?.".Contains(s[mid - j - 2]))
                                     {
                                         splitPos = mid - j;
                                         break;
@@ -523,18 +541,18 @@ namespace SubtitleEdit.Logic
                 {
                     if (mid + j + 1 < s.Length && mid + j > 0)
                     {
-                        if (Contains(expectedChars2, s[mid + j]) && !IsPartOfNumber(s, mid + j) && CanBreak(s, mid + j + 1, language))
+                        if (expectedChars2.Contains(s[mid + j]) && !IsPartOfNumber(s, mid + j) && CanBreak(s, mid + j + 1, language))
                         {
                             splitPos = mid + j + 1;
-                            if (Contains(expectedChars1, s[splitPos]))
+                            if (expectedChars1.Contains(s[splitPos]))
                             { // do not break double/tripple end lines like "!!!" or "..."
                                 splitPos++;
-                                if (Contains(expectedChars1, s[mid + j + 1]))
+                                if (expectedChars1.Contains(s[mid + j + 1]))
                                     splitPos++;
                             }
                             break;
                         }
-                        if (Contains(expectedChars2, s[mid - j]) && !IsPartOfNumber(s, mid - j) && CanBreak(s, mid - j, language))
+                        if (expectedChars2.Contains(s[mid - j]) && !IsPartOfNumber(s, mid - j) && CanBreak(s, mid - j, language))
                         {
                             splitPos = mid - j;
                             splitPos++;
@@ -563,25 +581,25 @@ namespace SubtitleEdit.Logic
                 {
                     if (mid + j + 1 < s.Length && mid + j > 0)
                     {
-                        if (Contains(expectedChars1, s[mid + j]) && !IsPartOfNumber(s, mid + j) && s.Length > mid + j + 2 && CanBreak(s, mid + j, language))
+                        if (expectedChars1.Contains(s[mid + j]) && !IsPartOfNumber(s, mid + j) && s.Length > mid + j + 2 && CanBreak(s, mid + j, language))
                         {
                             splitPos = mid + j;
-                            if (Contains(expectedChars2, s[mid + j + 1]))
+                            if (expectedChars2.Contains(s[mid + j + 1]))
                             {
                                 splitPos++;
-                                if (Contains(expectedChars2, s[mid + j + 2]))
+                                if (expectedChars2.Contains(s[mid + j + 2]))
                                     splitPos++;
                             }
                             break;
                         }
-                        if (Contains(expectedChars1, s[mid - j]) && !IsPartOfNumber(s, mid - j) && s.Length > mid + j + 2 && CanBreak(s, mid - j, language))
+                        if (expectedChars1.Contains(s[mid - j]) && !IsPartOfNumber(s, mid - j) && s.Length > mid + j + 2 && CanBreak(s, mid - j, language))
                         {
                             splitPos = mid - j;
-                            if (Contains(expectedChars3, s[splitPos]))
+                            if (expectedChars3.Contains(s[splitPos]))
                                 splitPos--;
-                            if (Contains(expectedChars3, s[splitPos]))
+                            if (expectedChars3.Contains(s[splitPos]))
                                 splitPos--;
-                            if (Contains(expectedChars3, s[splitPos]))
+                            if (expectedChars3.Contains(s[splitPos]))
                                 splitPos--;
                             break;
                         }
@@ -632,7 +650,7 @@ namespace SubtitleEdit.Logic
             s = s.Replace(" </b>", "</b> ");
             s = s.Replace(" </u>", "</u> ");
             s = s.Replace(" </font>", "</font> ");
-            s = FixExtraSpaces(s);
+            s = s.FixExtraSpaces();
             return s.Trim();
         }
 
@@ -644,7 +662,7 @@ namespace SubtitleEdit.Logic
                 int six = 0;
                 foreach (var letter in s)
                 {
-                    if (Contains(Environment.NewLine, letter))
+                    if (Environment.NewLine.Contains(letter))
                     {
                         sb.Append(letter);
                     }
@@ -672,7 +690,7 @@ namespace SubtitleEdit.Logic
             if (string.IsNullOrWhiteSpace(s) || position + 1 >= s.Length)
                 return false;
 
-            if (position > 0 && Contains(@",.", s[position]))
+            if (position > 0 && @",.".Contains(s[position]))
             {
                 return char.IsDigit(s[position - 1]) && char.IsDigit(s[position + 1]);
             }

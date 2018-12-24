@@ -1,4 +1,4 @@
-﻿namespace SubtitleEdit.Logic
+﻿namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal static class Configuration
     {

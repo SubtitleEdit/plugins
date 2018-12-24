@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace SubtitleEdit.Logic
+namespace Nikse.SubtitleEdit.PluginLogic
 {
-    public class Paragraph
+    internal class Paragraph
     {
         public int Number { get; set; }
         public string Text { get; set; }
@@ -58,6 +58,13 @@ namespace SubtitleEdit.Logic
             return string.Format(format, Number, StartTime, EndTime, Text);
             //return StartTime + " --> " + EndTime + " " + Text;
         }
-        
+
+        public int NumberOfLines
+        {
+            get
+            {
+                return Utilities.NumberOfLines(Text);
+            }
+        }
     }
 }

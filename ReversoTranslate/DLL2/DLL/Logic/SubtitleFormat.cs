@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SubtitleEdit.Logic
+namespace Nikse.SubtitleEdit.PluginLogic
 {
     public abstract class SubtitleFormat
     {

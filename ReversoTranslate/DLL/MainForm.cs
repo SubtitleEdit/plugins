@@ -1,41 +1,29 @@
-﻿using System.Globalization;
-using Nikse.SubtitleEdit.PluginLogic;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Text;
-using System.Windows.Forms;
-using System.Collections.Generic;
-using System.Linq;
+using System.Globalization;
 using System.IO;
+using System.Net;
 using System.Reflection;
+using System.Text;
+using System.Threading;
+using System.Windows.Forms;
 using System.Xml;
+using SubtitleEdit.Logic;
+using SubtitleEdit.Translator;
 
-namespace SubtitleEdit
+namespace WebViewTranslate
 {
     /// <summary>
-    /// http://reverso.net/ translate
+    /// 
     /// </summary>
     public partial class MainForm : Form
     {
-        private ITranslator _translator;
-
-        private enum FormattingType
-        {
-            None,
-            Italic,
-            ItalicTwoLines,
-            Parentheses,
-            SquareBrackets
-        }
-
-        private FormattingType[] _formattingTypes;
-        private bool[] _autoSplit;
-
         private readonly Subtitle _subtitle;
-        private static string _from = "EN";
-        private static string _to = "FR";
-        private const string ParagraphSplitter = "\r\n";
+        private readonly Subtitle _subtitleOriginal;
+        private static string _from = "en";
+        private static string _to;
         private bool _abort;
 
         public string FixedSubtitle { get; private set; }
@@ -43,31 +31,21 @@ namespace SubtitleEdit
         public MainForm()
         {
             InitializeComponent();
-            KeyDown += (s, e) =>
-            {
-                if (e.KeyCode == Keys.Escape)
-                    DialogResult = DialogResult.Cancel;
-                else if (e.KeyCode == Keys.F1)
-                    textBox1.Visible = !textBox1.Visible;
-            };
-            textBox1.Visible = false;
-            listView1.Columns[2].Width = -2;
+            textBoxLog.Visible = false;
             buttonCancelTranslate.Enabled = false;
-            RestoreSettings();
         }
 
         private void SetLanguages(ComboBox comboBox, string language)
         {
             comboBox.Items.Clear();
-            foreach (var pair in _translator.GetTranslationPairs())
+            foreach (var pair in ReversoTranslator.GetTranslationPairs())
             {
                 comboBox.Items.Add(pair);
             }
             int i = 0;
             foreach (var l in comboBox.Items)
             {
-                var tl = l as TranslationPair;
-                if (tl.Code.Equals(language, StringComparison.OrdinalIgnoreCase))
+                if (l is TranslationPair tl && tl.Code.Equals(language, StringComparison.OrdinalIgnoreCase))
                 {
                     comboBox.SelectedIndex = i;
                     return;
@@ -80,16 +58,37 @@ namespace SubtitleEdit
         public MainForm(Subtitle sub, string title, string description, Form parentForm)
             : this()
         {
-            _translator = new PapagoTranslator();
-            linkLabelPoweredBy.Text = "Powered by " + _translator.GetName();
             Text = title;
             _subtitle = sub;
-            var languageCode = LanguageAutoDetect.AutoDetectGoogleLanguage(_subtitle);
-            _formattingTypes = new FormattingType[_subtitle.Paragraphs.Count];
-            _autoSplit = new bool[_subtitle.Paragraphs.Count];
-            SetLanguages(comboBoxLanguageFrom, languageCode);
+            _subtitleOriginal = new Subtitle(sub);
+            foreach (var p in sub.Paragraphs)
+                p.Text = string.Empty;
+            _from = LanguageAutoDetect.AutoDetectGoogleLanguage(_subtitleOriginal);
+            SetLanguages(comboBoxLanguageFrom, _from);
+            GeneratePreview();
+            RestoreSettings();
+            if (string.IsNullOrEmpty(_to) || _to == _from)
+            {
+                _to = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
+                if (_to == _from)
+                {
+                    foreach (InputLanguage language in InputLanguage.InstalledInputLanguages)
+                    {
+                        _to = language.Culture.TwoLetterISOLanguageName;
+                        if (_to != _from)
+                            break;
+                    }
+                }
+            }
+            if (_to == _from && _from == "en")
+            {
+                _to = "es";
+            }
+            if(_to == _from && _from == "es")
+            {
+                _to = "en";
+            }
             SetLanguages(comboBoxLanguageTo, _to);
-            GeneratePreview(false);
         }
 
         public sealed override string Text
@@ -98,17 +97,101 @@ namespace SubtitleEdit
             set { base.Text = value; }
         }
 
-        internal class BackgroundWorkerParameter
+        private void Translate(string source, string target, ReversoTranslator translator, int maxTextSize, int maximumRequestArrayLength = 100)
         {
-            internal StringBuilder Log { get; set; }
-            internal string Text { get; set; }
-            internal List<int> Indexes { get; set; }
-            internal string Result { get; set; }
+            buttonOk.Enabled = false;
+            buttonCancel.Enabled = false;
+            _abort = false;
+            Cursor.Current = Cursors.WaitCursor;
+            progressBar1.Maximum = _subtitleOriginal.Paragraphs.Count;
+            progressBar1.Value = 0;
+            progressBar1.Visible = true;
+            var sourceParagraphs = new List<Paragraph>();
+            try
+            {
+                var log = new StringBuilder();
+                var sourceLength = 0;
+                var selectedItems = listView1.SelectedItems;
+                var startIndex = selectedItems.Count <= 0 ? 0 : selectedItems[0].Index;
+                var start = startIndex;
+                int index = startIndex;
+                for (int i = startIndex; i < _subtitleOriginal.Paragraphs.Count; i++)
+                {
+                    Paragraph p = _subtitleOriginal.Paragraphs[i];
+                    sourceLength += Uri.EscapeDataString(p.Text).Length;
+                    if ((sourceLength >= maxTextSize || sourceParagraphs.Count >= maximumRequestArrayLength) && sourceParagraphs.Count > 0)
+                    {
+                        List<string> result = translator.Translate(source, target, sourceParagraphs, log);
+                        textBoxLog.Text = log.ToString().Trim();
+                        if (log.Length > 1000000)
+                            log.Clear();
+                        FillTranslatedText(result, start, index - 1);
+                        sourceLength = 0;
+                        sourceParagraphs.Clear();
+                        progressBar1.Refresh();
+                        Application.DoEvents();
+                        start = index;
+                    }
+                    sourceParagraphs.Add(p);
+                    index++;
+                    progressBar1.Value = index;
+                    if (_abort)
+                        break;
+                }
+
+                if (sourceParagraphs.Count > 0)
+                {
+                    
+                    List<string> result = translator.Translate(source, target, sourceParagraphs, log);
+                    textBoxLog.Text = log.ToString().Trim();
+                    FillTranslatedText(result, start, index - 1);
+                }
+            }
+            catch (WebException webException)
+            {
+                MessageBox.Show(webException.Source + ": " + webException.Message);
+            }
+            finally
+            {
+                progressBar1.Visible = false;
+                Cursor.Current = Cursors.Default;
+                buttonTranslate.Enabled = true;
+                buttonOk.Enabled = true;
+                buttonCancel.Enabled = true;
+            }
         }
 
-        private readonly object _myLock = new object();
+        private void FillTranslatedText(List<string> translatedLines, int start, int end)
+        {
+            int index = start;
+            listView1.BeginUpdate();
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                item.Selected = false;
+            }
+            foreach (string s in translatedLines)
+            {
+                if (index < listView1.Items.Count)
+                {
+                    var item = listView1.Items[index];
+                    _subtitle.Paragraphs[index].Text = s;
+                    item.SubItems[2].Text = s.Replace(Environment.NewLine, "<br />");
+                    if (listView1.CanFocus)
+                        listView1.EnsureVisible(index);
+                }
+                index++;
+            }
 
-        private void GeneratePreview(bool setText)
+            if (index > 0 && index < listView1.Items.Count + 1)
+            {
+                listView1.EnsureVisible(index - 1);
+                listView1.Items[index - 1].Selected = true;
+            }
+
+            listView1.EndUpdate();
+        }
+
+        private void GeneratePreview()
         {
             if (_subtitle == null)
                 return;
@@ -116,76 +199,32 @@ namespace SubtitleEdit
             try
             {
                 _abort = false;
-                int numberOfThreads = 4;
-                var threadPool = new List<BackgroundWorker>();
-                for (int i = 0; i < numberOfThreads; i++)
+                int start = 0;
+                if (listView1.SelectedItems.Count > 0)
                 {
-                    var bw = new BackgroundWorker();
-                    bw.DoWork += OnBwOnDoWork;
-                    bw.RunWorkerCompleted += OnBwRunWorkerCompleted;
-                    threadPool.Add(bw);
+                    start = listView1.SelectedItems[0].Index;
                 }
-                var textToTranslate = new StringBuilder();
-                var indexesToTranslate = new List<int>();
-                for (int index = 0; index < _subtitle.Paragraphs.Count; index++)
+                for (int index = start; index < _subtitle.Paragraphs.Count; index++)
                 {
-                    Paragraph p = _subtitle.Paragraphs[index];
-                    string text = SetFormattingTypeAndSplitting(index, p.Text, (comboBoxLanguageFrom.SelectedItem as TranslationPair).Code.StartsWith("ZH", StringComparison.OrdinalIgnoreCase));
+                    if (index < listView1.Items.Count)
+                    {
+                        var listViewItem = listView1.Items[index];
+                        if (!string.IsNullOrWhiteSpace(listViewItem.SubItems[2].Text))
+                        {
+                            if (progressBar1.Value < progressBar1.Maximum)
+                                progressBar1.Value++;
+                            continue;
+                        }
+                    }
+
+                    Paragraph p = _subtitleOriginal.Paragraphs[index];
+                    string text = p.Text;
                     var before = text;
                     var after = string.Empty;
-                    if (setText)
-                    {
-                        //if (text.Length + textToTranslate.Length > max) - max is too low for merging texts to really have any effect
-                        {
-                            var arg = new BackgroundWorkerParameter { Text = textToTranslate.ToString().TrimEnd().TrimEnd(ParagraphSplitter.ToArray()).TrimEnd(), Indexes = indexesToTranslate, Log = new StringBuilder() };
-                            textToTranslate = new StringBuilder();
-                            indexesToTranslate = new List<int>();
-                            threadPool.First(bw => !bw.IsBusy).RunWorkerAsync(arg);
-                            while (threadPool.All(bw => bw.IsBusy))
-                            {
-                                Application.DoEvents();
-                                System.Threading.Thread.Sleep(100);
-                            }
-                        }
-                        textToTranslate.AppendLine(text);
-                        textToTranslate.AppendLine(ParagraphSplitter.ToString());
-                        indexesToTranslate.Add(index);
-                    }
-                    else
-                    {
-                        AddToListView(p, before, after);
-                    }
-                    if (_abort)
-                    {
-                        _abort = false;
-                        return;
-                    }
+                    AddToListView(p, before, after);
                 }
-                if (textToTranslate.Length > 0)
-                {
-                    while (threadPool.All(bw => bw.IsBusy))
-                    {
-                        Application.DoEvents();
-                        System.Threading.Thread.Sleep(100);
-                    }
-                    var arg = new BackgroundWorkerParameter { Text = textToTranslate.ToString().TrimEnd().TrimEnd(ParagraphSplitter.ToArray()).TrimEnd(), Indexes = indexesToTranslate, Log = new StringBuilder() };
-                    threadPool.First(bw => !bw.IsBusy).RunWorkerAsync(arg);
-                }
-                while (threadPool.Any(bw => bw.IsBusy))
-                {
-                    Application.DoEvents();
-                    System.Threading.Thread.Sleep(100);
-                }
-                try
-                {
-                    foreach (var backgroundWorker in threadPool)
-                    {
-                        backgroundWorker.Dispose();
-                    }
-                }
-                catch
-                {
-                }
+                if (listView1.Items.Count > 0)
+                    listView1.Items[0].Selected = true;
             }
             catch (Exception exception)
             {
@@ -193,108 +232,11 @@ namespace SubtitleEdit
             }
         }
 
-        private void OnBwRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs runWorkerCompletedEventArgs)
-        {
-            if (progressBar1.Value < progressBar1.Maximum)
-                progressBar1.Value++;
-
-            var parameter = (BackgroundWorkerParameter)runWorkerCompletedEventArgs.Result;
-            var results = GetTextResults(parameter.Result, parameter.Indexes.Count);
-
-            textBox1.AppendText(parameter.Log.ToString());
-            lock (_myLock)
-            {
-                int i = 0;
-                foreach (var index in parameter.Indexes)
-                {
-                    var cleanText = results[i];
-                    if (_autoSplit[index])
-                    {
-                        cleanText = Utilities.AutoBreakLine(cleanText);
-                    }
-                    if (Utilities.GetNumberOfLines(cleanText) == 1 && Utilities.GetNumberOfLines(_subtitle.Paragraphs[index].Text) == 2)
-                    {
-                        if (!_autoSplit[index])
-                        {
-                            cleanText = Utilities.AutoBreakLine(cleanText);
-                        }
-                    }
-
-                    if (_formattingTypes[index] == FormattingType.ItalicTwoLines || _formattingTypes[index] == FormattingType.Italic)
-                    {
-                        _subtitle.Paragraphs[index].Text = "<i>" + cleanText + "</i>";
-                    }
-                    else if (_formattingTypes[index] == FormattingType.Parentheses)
-                    {
-                        _subtitle.Paragraphs[index].Text = "(" + cleanText + ")";
-                    }
-                    else if (_formattingTypes[index] == FormattingType.SquareBrackets)
-                    {
-                        _subtitle.Paragraphs[index].Text = "[" + cleanText + "]";
-                    }
-                    else
-                    {
-                        _subtitle.Paragraphs[index].Text = cleanText;
-                    }
-
-                    _subtitle.Paragraphs[index].Text = cleanText;
-                    var item = listView1.Items[index];
-                    item.SubItems[2].Text = _subtitle.Paragraphs[index].Text;
-                    i++;
-                }
-            }
-        }
-
-        private List<string> GetTextResults(string text, int count)
-        {
-            if (text == null)
-                text = string.Empty;
-
-            var result = new string[count];
-            var sb = new StringBuilder();
-            int index = 0;
-            text = text.Replace("<br />", Environment.NewLine);
-            text = text.Replace("<br/>", Environment.NewLine);
-            foreach (var line in text.SplitToLines())
-            {
-                if (line == ParagraphSplitter.ToString())
-                {
-                    if (index < count)
-                        result[index] = sb.ToString().Trim();
-                    index++;
-                    sb.Clear();
-                }
-                else
-                {
-                    sb.AppendLine(line.Trim());
-                }
-            }
-            if (sb.Length > 0 && index < count)
-            {
-                result[index] = sb.ToString().Trim();
-            }
-            return result.ToList();
-        }
-
-        private void OnBwOnDoWork(object sender, DoWorkEventArgs args)
-        {
-            var parameter = (BackgroundWorkerParameter)args.Argument;
-            parameter.Result = Translate(parameter.Text, parameter.Log);
-            args.Result = parameter;
-        }
-
-        private string Translate(string text, StringBuilder log)
-        {
-            var result = _translator.Translate(_from, _to, text, log);
-            log.AppendLine();
-            return result;
-        }
-
         private void AddToListView(Paragraph p, string before, string after)
         {
             var item = new ListViewItem(p.Number.ToString(CultureInfo.InvariantCulture)) { Tag = p };
-            item.SubItems.Add(before);
-            item.SubItems.Add(after);
+            item.SubItems.Add(p.Text.Replace(Environment.NewLine, "<br />"));
+            item.SubItems.Add(after.Replace(Environment.NewLine, "<br />"));
             listView1.Items.Add(item);
         }
 
@@ -314,11 +256,12 @@ namespace SubtitleEdit
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start(_translator.GetUrl());
+            Process.Start(new ReversoTranslator().GetUrl());
         }
 
         private void buttonTranslate_Click(object sender, EventArgs e)
         {
+            _abort = false;
             buttonTranslate.Enabled = false;
             buttonCancelTranslate.Enabled = true;
             progressBar1.Maximum = _subtitle.Paragraphs.Count;
@@ -328,7 +271,7 @@ namespace SubtitleEdit
             {
                 _from = ((TranslationPair)comboBoxLanguageFrom.Items[comboBoxLanguageFrom.SelectedIndex]).Code;
                 _to = ((TranslationPair)comboBoxLanguageTo.Items[comboBoxLanguageTo.SelectedIndex]).Code;
-                GeneratePreview(true);
+                Translate(_from, _to, new ReversoTranslator(), (int)numericUpDownMaxBytes.Value);
             }
             finally
             {
@@ -343,47 +286,24 @@ namespace SubtitleEdit
             _abort = true;
         }
 
-        private string SetFormattingTypeAndSplitting(int i, string text, bool skipSplit)
+        private void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
-            text = text.Trim();
-            if (text.StartsWith("<i>", StringComparison.Ordinal) && text.EndsWith("</i>", StringComparison.Ordinal) && text.Contains("</i>" + Environment.NewLine + "<i>") && Utilities.GetNumberOfLines(text) == 2 && Utilities.CountTagInText(text, "<i>") == 1)
+            if (e.KeyCode == Keys.Escape)
             {
-                _formattingTypes[i] = FormattingType.ItalicTwoLines;
-                text = HtmlUtil.RemoveOpenCloseTags(text, HtmlUtil.TagItalic);
+                DialogResult = DialogResult.Cancel;
             }
-            else if (text.StartsWith("<i>", StringComparison.Ordinal) && text.EndsWith("</i>", StringComparison.Ordinal) && Utilities.CountTagInText(text, "<i>") == 1)
+            else if (e.KeyCode == Keys.F1)
             {
-                _formattingTypes[i] = FormattingType.Italic;
-                text = text.Substring(3, text.Length - 7);
+                if (textBoxLog.Visible)
+                {
+                    textBoxLog.Visible = false;
+                }
+                else
+                {
+                    textBoxLog.Visible = true;
+                    textBoxLog.BringToFront();
+                }
             }
-            else if (text.StartsWith("(", StringComparison.Ordinal) && text.EndsWith(")", StringComparison.Ordinal))
-            {
-                _formattingTypes[i] = FormattingType.Parentheses;
-                text = text.Substring(1, text.Length - 2);
-            }
-            else if (text.StartsWith("[", StringComparison.Ordinal) && text.EndsWith("]", StringComparison.Ordinal))
-            {
-                _formattingTypes[i] = FormattingType.SquareBrackets;
-                text = text.Substring(1, text.Length - 2);
-            }
-            else
-            {
-                _formattingTypes[i] = FormattingType.None;
-            }
-
-            if (skipSplit)
-            {
-                return text;
-            }
-
-            var lines = text.SplitToLines();
-            if (lines.Length == 2 && !string.IsNullOrEmpty(lines[0]) && (Utilities.AllLettersAndNumbers + ",").Contains(lines[0].Substring(lines[0].Length - 1)))
-            {
-                _autoSplit[i] = true;
-                text = Utilities.RemoveLineBreaks(text);
-            }
-
-            return text;
         }
 
         private string GetSettingsFileName()
@@ -394,7 +314,7 @@ namespace SubtitleEdit
             path = Path.Combine(path, "Plugins");
             if (!Directory.Exists(path))
                 path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Plugins");
-            return Path.Combine(path, "ReversoTranslator.xml");
+            return Path.Combine(path, "ReversoTranslate.xml");
         }
 
         private void RestoreSettings()
@@ -404,11 +324,12 @@ namespace SubtitleEdit
             {
                 var doc = new XmlDocument();
                 doc.Load(fileName);
-                _from = doc.DocumentElement.SelectSingleNode("Source").InnerText;
                 _to = doc.DocumentElement.SelectSingleNode("Target").InnerText;
+                numericUpDownMaxBytes.Value = decimal.Parse(doc.DocumentElement.SelectSingleNode("BulkSize").InnerText);
             }
-            catch
+            catch (Exception e)
             {
+                Debug.WriteLine(e.Message);
             }
         }
 
@@ -418,14 +339,41 @@ namespace SubtitleEdit
             try
             {
                 var doc = new XmlDocument();
-                doc.LoadXml("<ReversoTranslator></ReversoTranslator>");
-                doc.DocumentElement.SelectSingleNode("Source").InnerText = _from;
+                doc.LoadXml("<Translator><Target/><BulkSize/></Translator>");
                 doc.DocumentElement.SelectSingleNode("Target").InnerText = _to;
+                doc.DocumentElement.SelectSingleNode("BulkSize").InnerText = ((int)numericUpDownMaxBytes.Value).ToString();
                 doc.Save(fileName);
             }
-            catch
+            catch (Exception e)
             {
+                Debug.WriteLine(e.Message);
             }
+        }
+
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            var subtract = listView1.Columns[0].Width + 20;
+            var width = listView1.Width / 2 - subtract;
+            listView1.Columns[1].Width = width;
+            listView1.Columns[1].Width = width;
+            listView1.Columns[2].Width = width;
+            listView1.Columns[1].Width = width;
+            listView1.Columns[1].Width = width;
+        }
+
+        private void MainForm_ResizeEnd(object sender, EventArgs e)
+        {
+            MainForm_Resize(sender, e);
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            MainForm_Resize(sender, e);
+        }
+
+        private void MainForm_Shown(object sender, EventArgs e)
+        {
+            MainForm_Resize(sender, e);
         }
     }
 }

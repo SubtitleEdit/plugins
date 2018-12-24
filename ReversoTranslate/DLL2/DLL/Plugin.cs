@@ -1,8 +1,7 @@
-﻿using System;
+﻿using SubtitleEdit;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using SubtitleEdit.Logic;
-using WebViewTranslate;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {

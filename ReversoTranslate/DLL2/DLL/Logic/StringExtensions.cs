@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Nikse.SubtitleEdit.PluginLogic;
+using System;
 using System.Globalization;
 using System.Text;
 
