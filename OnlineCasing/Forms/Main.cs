@@ -34,7 +34,7 @@ namespace OnlineCasing.Forms
             labelCount.Text = "Total: 0";
             _subtitle = subtitle;
             _uILineBreak = UILineBreak;
-
+            
             UIInit();
         }
 

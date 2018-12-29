@@ -1,14 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
+using Nikse.SubtitleEdit.PluginLogic.Models;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form, IConfigurable
     {
+        private int level = 0;
+        private static Color color = Color.FromArgb(41, 57, 85);
+        private LinearGradientBrush gradientBrush;
         public string Subtitle { get; private set; }
         private readonly Subtitle _subtitle;
 
@@ -21,11 +27,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public PluginForm(Subtitle subtitle, string name, string description)
         {
             InitializeComponent();
+
+            //SetControlColor(this);
+            gradientBrush = new LinearGradientBrush(ClientRectangle, color, Color.White, 0f);
+
+            Text = $@"{name} - v{System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(2)}";
+
             _subtitle = subtitle;
             labelDesc.Text = "Description: " + description;
 
             LoadConfigurations();
-
             FormClosed += (s, e) =>
             {
                 // update config
@@ -39,16 +50,23 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 SaveConfigurations();
             };
 
+
             Resize += delegate
             {
                 listViewFixes.Columns[listViewFixes.Columns.Count - 1].Width = -2;
             };
 
-            InitComboBoxHITyle();
+            linkLabel1.DoubleClick += LinkLabel1_DoubleClick;
+
+            // force layout
+            OnResize(EventArgs.Empty);
+
+            InitComboBoxHIStyle();
             UpdateUIFromConfigs(_hiConfigs);
 
             _isLoading = false;
             GeneratePreview();
+
             /*
             this.KeyDown += (s, e) =>
             {
@@ -56,6 +74,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             };
              */
+
+            // bind 
+
+        }
+
+        private void LinkLabel1_DoubleClick(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/SubtitleEdit/plugins/issues/new");
         }
 
         private void UpdateUIFromConfigs(HIConfigs configs)
@@ -77,7 +103,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        private void InitComboBoxHITyle()
+        private void InitComboBoxHIStyle()
         {
             comboBoxStyle.Items.Add(new ComboBoxItem("Upper case", "(HELLO)", HIStyle.UpperCase));
             comboBoxStyle.Items.Add(new ComboBoxItem("Lower case", "(hello)", HIStyle.LowerCase));
@@ -85,17 +111,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
             comboBoxStyle.Items.Add(new ComboBoxItem("Upper/Lower case", "(HeLlo WoRlD)", HIStyle.UpperLowerCase));
         }
 
-        private void btn_Cancel_Click(object sender, EventArgs e)
+        private void Btn_Cancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
         }
 
-        private void btn_Run_Click(object sender, EventArgs e)
+        private void Btn_Run_Click(object sender, EventArgs e)
         {
             if (listViewFixes.Items.Count > 0)
             {
                 Cursor = Cursors.WaitCursor;
-                listViewFixes.Resize -= listViewFixes_Resize;
+                listViewFixes.Resize -= ListViewFixes_Resize;
                 ApplyChanges();
                 Cursor = Cursors.Default;
             }
@@ -105,7 +131,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void ApplyChanges()
         {
-            if (_subtitle == null || _subtitle.Paragraphs == null || _subtitle.Paragraphs.Count == 0)
+            if (_subtitle?.Paragraphs == null || _subtitle.Paragraphs.Count == 0)
             {
                 return;
             }
@@ -119,7 +145,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     continue;
                 }
-                var p = GetParagraph(item);
+                var p = item.Tag as Paragraph;
                 if (_fixedTexts.ContainsKey(p.ID))
                 {
                     p.Text = _fixedTexts[p.ID];
@@ -130,50 +156,68 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.EndUpdate();
         }
 
-        private void checkBoxNarrator_CheckedChanged(object sender, EventArgs e) => GeneratePreview();
+        private void CheckBoxNarrator_CheckedChanged(object sender, EventArgs e) => GeneratePreview();
 
         private void CheckTypeStyle(object sender, EventArgs e)
         {
-            var menuItem = sender as ToolStripMenuItem;
-            if (listViewFixes.Items.Count <= 0 || menuItem == null)
+            if (listViewFixes.Items.Count <= 0 || !(sender is ToolStripMenuItem menuItem))
+            {
                 return;
-            if (menuItem.Text == "Check all")
-            {
-                for (int i = 0; i < listViewFixes.Items.Count; i++)
-                    listViewFixes.Items[i].Checked = true;
             }
-            else if (menuItem.Text == "Uncheck all")
+
+            switch (menuItem.Text)
             {
-                for (int i = 0; i < listViewFixes.Items.Count; i++)
-                    listViewFixes.Items[i].Checked = false;
-            }
-            else if (menuItem.Text == "Invert check")
-            {
-                for (int i = 0; i < listViewFixes.Items.Count; i++)
-                    listViewFixes.Items[i].Checked = !listViewFixes.Items[i].Checked;
-            }
-            else if (menuItem.Text == "Copy")
-            {
-                var text = (listViewFixes.FocusedItem.Tag as Paragraph).ToString();
-                Clipboard.SetText(text);
-            }
-            else
-            {
-                for (int idx = listViewFixes.SelectedIndices.Count - 1; idx >= 0; idx--)
-                {
-                    var index = listViewFixes.SelectedIndices[idx];
-                    var p = listViewFixes.Items[idx].Tag as Paragraph;
-                    if (p != null)
+                case "Check all":
                     {
-                        _subtitle.RemoveLine(p.Number);
+                        for (int i = 0; i < listViewFixes.Items.Count; i++)
+                        {
+                            listViewFixes.Items[i].Checked = true;
+                        }
+
+                        break;
                     }
-                    listViewFixes.Items.RemoveAt(index);
-                }
-                _subtitle.Renumber();
+                case "Uncheck all":
+                    {
+                        for (int i = 0; i < listViewFixes.Items.Count; i++)
+                        {
+                            listViewFixes.Items[i].Checked = false;
+                        }
+
+                        break;
+                    }
+                case "Invert check":
+                    {
+                        for (int i = 0; i < listViewFixes.Items.Count; i++)
+                        {
+                            listViewFixes.Items[i].Checked = !listViewFixes.Items[i].Checked;
+                        }
+
+                        break;
+                    }
+                case "Copy":
+                    {
+                        string text = ((Paragraph)listViewFixes.FocusedItem.Tag).ToString();
+                        Clipboard.SetText(text, TextDataFormat.UnicodeText);
+                        break;
+                    }
+                default:
+                    {
+                        for (int idx = listViewFixes.SelectedIndices.Count - 1; idx >= 0; idx--)
+                        {
+                            var index = listViewFixes.SelectedIndices[idx];
+                            if (listViewFixes.Items[idx].Tag is Paragraph p)
+                            {
+                                _subtitle.RemoveLine(p.Number);
+                            }
+                            listViewFixes.Items.RemoveAt(index);
+                        }
+                        _subtitle.Renumber();
+                        break;
+                    }
             }
         }
 
-        private void comboBoxStyle_SelectedIndexChanged(object sender, EventArgs e) => GeneratePreview();
+        private void ComboBoxStyle_SelectedIndexChanged(object sender, EventArgs e) => GeneratePreview();
 
         private void GeneratePreview()
         {
@@ -182,7 +226,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return;
             }
 
-            // update configuration
+            // update options
             _hiConfigs.NarratorToUppercase = checkBoxNames.Checked;
             _hiConfigs.MoodsToUppercase = checkBoxMoods.Checked;
             _hiConfigs.RemoveExtraSpaces = checkBoxRemoveSpaces.Checked;
@@ -196,49 +240,53 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             foreach (Paragraph p in _subtitle.Paragraphs)
             {
-                var text = p.Text;
+                string procText = p.Text;
                 bool containsMood = false;
                 bool containsNarrator = false;
 
                 // Remove Extra Spaces inside brackets ( foobar ) to (foobar)
-                string beforeChanges = text;
                 if (checkBoxRemoveSpaces.Checked)
                 {
-                    _hearingImpaired.RemoveExtraSpacesInsideTag(text);
+                    procText = _hearingImpaired.RemoveExtraSpacesInsideTag(procText);
                 }
                 // (Moods and feelings)
                 if (checkBoxMoods.Checked)
                 {
-                    beforeChanges = text;
-                    text = _hearingImpaired.MoodsToUppercase(text);
-                    if (beforeChanges != text)
+                    string tempText = procText;
+                    //Debug.WriteLine($"{tempText} => {procText}");
+                    procText = _hearingImpaired.MoodsToUppercase(procText);
+                    //Debug.WriteLine($"{tempText} => {procText}");
+                    // only fix extra spaces if moods been changed
+                    if (!procText.Equals(tempText, StringComparison.Ordinal))
                     {
-                        text = text.FixExtraSpaces();
+                        procText = procText.FixExtraSpaces();
                         containsMood = true;
                     }
                 }
                 // Narrator:
                 if (checkBoxNames.Checked)
                 {
-                    beforeChanges = text;
-                    text = _hearingImpaired.NarratorToUppercase(text);
-                    containsNarrator = !beforeChanges.Equals(text, StringComparison.Ordinal);
+                    string tempText = procText;
+                    procText = _hearingImpaired.NarratorToUppercase(procText);
+                    if (!tempText.Equals(procText, StringComparison.Ordinal))
+                    {
+                        containsNarrator = true;
+                    }
                 }
-
-                if (containsMood || containsNarrator)
+                // changes have been made
+                if (p.Text.Equals(procText, StringComparison.Ordinal) == false)
                 {
-                    _fixedTexts.Add(p.ID, text);
+                    _fixedTexts.Add(p.ID, procText);
                     string oldText = HtmlUtils.RemoveTags(p.Text, true);
-                    text = HtmlUtils.RemoveTags(text, true);
-                    AddFixToListView(p, oldText, text, containsMood, containsNarrator);
+                    string newText = HtmlUtils.RemoveTags(procText, true);
+                    AddFixToListView(p, oldText, newText, containsMood, containsNarrator);
                 }
-
             }
 
             int totalConvertParagraphs = _fixedTexts.Count;
 
             groupBox1.ForeColor = totalConvertParagraphs <= 0 ? Color.Red : Color.Green;
-            groupBox1.Text = string.Format("Total Found: {0}", totalConvertParagraphs);
+            groupBox1.Text = $@"Total Found: {totalConvertParagraphs}";
             /*this.listViewFixes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             this.listViewFixes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);*/
             //Application.DoEvents();
@@ -262,6 +310,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 item.SubItems.Add("Narrator");
             }
+            else
+            {
+                item.SubItems.Add("N/A");
+            }
+
             item.SubItems.Add(before.Replace(Environment.NewLine, Options.UILineBreak));
             item.SubItems.Add(after.Replace(Environment.NewLine, Options.UILineBreak));
 
@@ -280,7 +333,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             else
             {
                 if (after.IndexOf(':') > 0xE)
+                {
                     item.BackColor = Color.Pink;
+                }
             }
 
             listViewFixes.Items.Add(item);
@@ -294,26 +349,24 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
 
             Cursor = Cursors.WaitCursor;
-            listViewFixes.Resize -= listViewFixes_Resize;
+            listViewFixes.Resize -= ListViewFixes_Resize;
             ApplyChanges();
-            listViewFixes.Resize += listViewFixes_Resize;
+            listViewFixes.Resize += ListViewFixes_Resize;
             Cursor = Cursors.Default;
         }
 
-        private void checkBoxRemoveSpaces_CheckedChanged(object sender, EventArgs e) => GeneratePreview();
+        private void CheckBoxRemoveSpaces_CheckedChanged(object sender, EventArgs e) => GeneratePreview();
 
-        private void listViewFixes_Resize(object sender, EventArgs e)
+        private void ListViewFixes_Resize(object sender, EventArgs e)
         {
             var newWidth = (listViewFixes.Width - (listViewFixes.Columns[0].Width + listViewFixes.Columns[1].Width + listViewFixes.Columns[2].Width)) / 2;
             listViewFixes.Columns[3].Width = newWidth;
             listViewFixes.Columns[4].Width = newWidth;
         }
 
-        private void checkBoxMoods_CheckedChanged(object sender, EventArgs e) => GeneratePreview();
+        private void CheckBoxMoods_CheckedChanged(object sender, EventArgs e) => GeneratePreview();
 
-        private void checkBoxSingleLineNarrator_CheckedChanged(object sender, EventArgs e) => GeneratePreview();
-
-        private static Paragraph GetParagraph(ListViewItem lvi) => lvi.Tag as Paragraph;
+        private void CheckBoxSingleLineNarrator_CheckedChanged(object sender, EventArgs e) => GeneratePreview();
 
         public void LoadConfigurations()
         {
@@ -333,5 +386,30 @@ namespace Nikse.SubtitleEdit.PluginLogic
         }
 
         public void SaveConfigurations() => _hiConfigs.SaveConfigurations();
+
+        private void PluginForm_Paint(object sender, PaintEventArgs e)
+        {
+            // ignore form painting operation
+            return;
+            //e.Graphics.FillRectangle(gradientBrush, ClientRectangle);
+        }
+
+        private void ListViewFixes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listViewFixes.SelectedItems.Count == 0)
+            {
+                return;
+            }
+
+            ListViewItem selItem = listViewFixes.SelectedItems[0];
+            textBoxParagraphText.DataBindings.Clear();
+            Paragraph selParagraph = selItem.Tag as Paragraph;
+
+            // bind Textbox's text property to selected paragraph in listview
+            textBoxParagraphText.DataBindings.Add("Text", selParagraph, "Text");
+            // at this point paragraph's text property will be update, then use the updated text to update update _fixtedtext dictionary
+            _fixedTexts[selParagraph.ID] = selParagraph.Text;
+            //textBoxParagraphText.DataBindings.Add("Text", selItem.SubItems[3], "Text", false, DataSourceUpdateMode.OnPropertyChanged);
+        }
     }
 }

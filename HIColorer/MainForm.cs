@@ -64,9 +64,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     continue;
                 }
-                var oldText = text;
+                string oldText = text;
                 text = HtmlUtils.RemoveOpenCloseTags(text, HtmlUtils.TagFont);
-                if (text != oldText)
+                if (text.ContainsColor() == false)
                 {
                     p.Text = text;
                 }

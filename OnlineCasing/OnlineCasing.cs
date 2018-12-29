@@ -27,12 +27,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
             AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += CurrentDomain_ReflectionOnlyAssemblyResolve;
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
-            //BuildFixCasing(parentForm, new List<string>());
+            // BuildFixCasing(parentForm, new List<string>());
             var subRip = new SubRip();
             var subtitle = new Subtitle(subRip);
             subRip.LoadSubtitle(subtitle, rawText.SplitToLines(), file);
 
-            //Application.UserAppDataRegistry
+            // Application.UserAppDataRegistry
             using (var mainForm = new Main(subtitle, UILineBreak))
             {
                 if (mainForm.ShowDialog(parentForm) == DialogResult.OK)
@@ -43,30 +43,29 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             // hack SE through parentForm
             // Nikse.SubtitleEdit.Core.FixCasing.cs is the file to hack
-            //var formType = parentForm.GetType();
-            //var fixCasingType = formType.Assembly.GetType("Nikse.SubtitleEdit.Core.FixCasing");
+            // var formType = parentForm.GetType();
+            // var fixCasingType = formType.Assembly.GetType("Nikse.SubtitleEdit.Core.FixCasing");
             // 
-            //Activator.CreateInstance(fixCasingType, BindingFlags.Instance | BindingFlags.Public, parentForm);
+            // Activator.CreateInstance(fixCasingType, BindingFlags.Instance | BindingFlags.Public, parentForm);
 
             return string.Empty;
         }
 
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
-            var path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            path = Path.Combine(path, "Plugins");
-            path = Path.Combine(path, $"{args.Name.Split(',').First()}.dll");
-            return Assembly.Load(File.ReadAllBytes(path));
+            // TODO: HANDLE FOR INSTALLED VERSION
+            var pluginFile = Path.Combine(FileUtils.Plugins, $"{args.Name.Split(',').First()}.dll");
+            return Assembly.Load(File.ReadAllBytes(pluginFile));
         }
 
         private Assembly CurrentDomain_ReflectionOnlyAssemblyResolve(object sender, ResolveEventArgs args)
         {
-            throw new NotImplementedException();
+            System.Diagnostics.Trace.WriteLine("CurrentDomain_ReflectionOnlyAssemblyResolve invoked!");
+            return null;
         }
 
         private void BuildFixCasing(Form mainForm, List<string> names)
         {
-
             // return only AssemblyName
             //var libse = Assembly.GetEntryAssembly().GetReferencedAssemblies().FirstOrDefault(s => s.Name.Equals("libse"));
 

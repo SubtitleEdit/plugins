@@ -2,6 +2,7 @@
 using OnlineCasing.Forms;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -10,26 +11,35 @@ namespace OnlineCasing
     internal class SECasingApi
     {
         private readonly object _fixCasing;
-        private readonly Assembly _libse;
+
+        /// <summary>
+        /// The default assembly is the assembly that contains the "libse" types.
+        /// </summary>
+        private readonly Assembly _coreAssembly;
 
         private const string DefaultNameSpace = "Nikse.SubtitleEdit.Core";
 
         public SECasingApi()
         {
+            Debug.WriteLine("constructing secasingapi obj");
             // return only AssemblyName
             //var libse = Assembly.GetEntryAssembly().GetReferencedAssemblies().FirstOrDefault(s => s.Name.Equals("libse"));
 
-            _libse = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(s => s.FullName.Contains("libse"));
+            _coreAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(s => s.FullName.Contains("libse"));
 
-            var fixCasingT = _libse.GetType($"{DefaultNameSpace}.FixCasing");
-            _fixCasing = Activator.CreateInstance(fixCasingT, "en");
+            // _defaultAssembly will only be null if currently running subtilte-edit is not portable
+            _coreAssembly = _coreAssembly ?? Assembly.GetEntryAssembly();
+
+            _fixCasing = Activator.CreateInstance(_coreAssembly.GetType($"{DefaultNameSpace}.FixCasing"), "en");
+
             // TODO: Build strongly typed function with Expression
+            Debug.WriteLine("leaving static SECasingApi ctor");
         }
 
         public void DoCasing(List<Paragraph> paragraphs, List<string> names)
         {
             //List<object> prgObjs = new List<object>();
-            Type paragraphT = _libse.GetType($"{DefaultNameSpace}.Paragraph");
+            Type paragraphT = _coreAssembly.GetType($"{DefaultNameSpace}.Paragraph");
 
             // constructed generic list of paragraphs
             Type genericListOfParagraph = typeof(List<>).MakeGenericType(paragraphT);
@@ -49,7 +59,7 @@ namespace OnlineCasing
             }
 
             // get subtitle type of/from libse.dll
-            Type subtitleT = _libse.GetType($"{DefaultNameSpace}.Subtitle");
+            Type subtitleT = _coreAssembly.GetType($"{DefaultNameSpace}.Subtitle");
 
             // create instance of SubtileEdit.exe's Subtitle type passing the object marshalled to libse.dll type.
             ConstructorInfo constructInfo = subtitleT.GetConstructor(new[] { genericListOfParagraph });
@@ -107,7 +117,7 @@ namespace OnlineCasing
 
         public void DoCasing(CasingContext context)
         {
-            Type stripTextT = _libse.GetType(DefaultNameSpace + ".StrippableText");
+            Type stripTextT = _coreAssembly.GetType(DefaultNameSpace + ".StrippableText");
             MethodInfo fixCasing = stripTextT.GetMethod("FixCasing", BindingFlags.Public | BindingFlags.Instance);
 
             // public void FixCasing(List<string> nameList, bool changeNameCases,
@@ -126,6 +136,7 @@ namespace OnlineCasing
 
                 fixCasing.Invoke(stripTextObj, new object[] { context.Names, true, context.UppercaseAfterLineBreak, context.CheckLastLine, p?.Text, gaps });
                 p.Text = (string)stripTextT.GetProperty("MergedString", BindingFlags.Public | BindingFlags.Instance).GetValue(stripTextObj);
+                preParagraph = p;
             }
 
         }

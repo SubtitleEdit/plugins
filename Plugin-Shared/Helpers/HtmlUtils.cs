@@ -40,13 +40,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public static string RemoveTags(string s, bool alsoSsaTags = false)
         {
             if (s == null || s.Length < 3)
+            {
                 return s;
+            }
 
             if (alsoSsaTags)
+            {
                 s = StringUtils.RemoveSsaTags(s);
+            }
 
             if (!s.Contains('<'))
+            {
                 return s;
+            }
 
             return RemoveOpenCloseTags(s, TagItalic, TagBold, TagUnderline, TagParagraph, TagFont, TagCyrillicI);
         }
@@ -54,16 +60,22 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public static bool IsUrl(string text)
         {
             if (string.IsNullOrWhiteSpace(text) || text.Length < 6 || !text.Contains('.') || text.Contains(' '))
+            {
                 return false;
+            }
 
             var allLower = text.ToLower();
             if (allLower.StartsWith("http://", StringComparison.Ordinal) || allLower.StartsWith("https://", StringComparison.Ordinal) ||
                 allLower.StartsWith("www.", StringComparison.Ordinal) || allLower.EndsWith(".org", StringComparison.Ordinal) ||
                 allLower.EndsWith(".com", StringComparison.Ordinal) || allLower.EndsWith(".net", StringComparison.Ordinal))
+            {
                 return true;
+            }
 
             if (allLower.Contains(".org/") || allLower.Contains(".com/") || allLower.Contains(".net/"))
+            {
                 return true;
+            }
 
             return false;
         }
@@ -71,11 +83,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public static bool StartsWithUrl(string text)
         {
             if (string.IsNullOrWhiteSpace(text))
+            {
                 return false;
+            }
 
             var arr = text.Trim().TrimEnd('.').TrimEnd().Split();
             if (arr.Length == 0)
+            {
                 return false;
+            }
 
             return IsUrl(arr[0]);
         }
@@ -85,13 +101,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public static string FixUpperTags(string text)
         {
             if (string.IsNullOrEmpty(text) || !text.Contains('<'))
+            {
                 return text;
+            }
+
             var idx = text.IndexOfAny(UppercaseTags, StringComparison.Ordinal);
             while (idx >= 0)
             {
                 var endIdx = text.IndexOf('>', idx + 2);
                 if (endIdx < idx)
+                {
                     break;
+                }
+
                 var tag = text.Substring(idx, endIdx - idx).ToLowerInvariant();
                 text = text.Remove(idx, endIdx - idx).Insert(idx, tag);
                 idx = text.IndexOfAny(UppercaseTags, StringComparison.Ordinal);
@@ -135,10 +157,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     {
                         s = s.Remove(startIndex, endIndex - startIndex + 1);
                         s = s.Insert(startIndex, fontTag);
-                        startIndex = s.IndexOf("<font", startIndex + 6);
+                        startIndex = s.IndexOf("<font", startIndex + 6, StringComparison.Ordinal);
                     }
                     // s.IndexOf("<font", StringComparison.OrdinalIgnoreCase);
-                    startIndex = s.IndexOf("<font", startIndex + 8);
+                    startIndex = s.IndexOf("<font", startIndex + 8, StringComparison.Ordinal);
                 }
             }
             else

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -9,7 +8,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             var lines = text.SplitToLines();
             if (lines.Length == 1)
+            {
                 return text;
+            }
 
             var singleLine = string.Join(" ", lines);
             singleLine = singleLine.FixExtraSpaces();
@@ -30,7 +31,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public static int GetNumberOfLines(string text)
         {
             if (string.IsNullOrEmpty(text))
+            {
                 return 0;
+            }
 
             int lines = 1;
             int idx = text.IndexOf('\n');
@@ -80,7 +83,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                 // do not keep looking... just exit
                 if (nextIdx + 3 == i)
+                {
                     break;
+                }
             }
 
             if (doFix)
@@ -98,7 +103,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 count++;
                 index = index + tag.Length;
                 if (index >= text.Length)
+                {
                     return count;
+                }
+
                 index = text.IndexOf(tag, index, StringComparison.Ordinal);
             }
             return count;
@@ -112,7 +120,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 count++;
                 if ((index + 1) == text.Length)
+                {
                     return count;
+                }
+
                 index = text.IndexOf(tag, index + 1);
             }
             return count;
@@ -121,7 +132,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public static bool IsBetweenNumbers(string text, int pos)
         {
             if (text.Length <= 2 || pos + 1 >= text.Length || pos - 1 < 0)
+            {
                 return false;
+            }
+
             return (text[pos + 1] >= 0x30 && text[pos + 1] <= 0x39) && (text[pos - 1] >= 0x30 && text[pos - 1] <= 0x39);
         }
 
@@ -134,7 +148,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 var endIdx = s.IndexOf('}', idx + 1);
                 if (endIdx < 0)
+                {
                     break;
+                }
+
                 s = s.Remove(idx, endIdx - idx + 1);
                 idx = s.IndexOf('{', idx);
             }

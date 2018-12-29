@@ -9,7 +9,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         /// <summary>
         /// Returns data directory.
         /// </summary>
-        public static string DataDirectory { get; set; }
+        public static string BaseDirectory { get; set; }
 
         /// <summary>
         /// Return plugins installation directory.
@@ -28,7 +28,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         static FileUtils()
         {
-            Assembly assembly = Assembly.GetExecutingAssembly();
+            // TODO: HANDLE FOR INSTALLED VERSION
+            Assembly assemblyEntry = Assembly.GetEntryAssembly();
 
             // Assembly.CodeBase: If the assembly was loaded as a byte array, using an overload of the Load method that takes an array of bytes,
             // this property returns the location of the caller of the method, not the location of the loaded assembly.
@@ -40,23 +41,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
             //path = Path.GetDirectoryName(path);
 
             // subtitile-edit executable file path
-            string path = new Uri(assembly.CodeBase).LocalPath; // path\SubtitleEdit.exe
+            string path = new Uri(assemblyEntry.CodeBase).LocalPath; // path\SubtitleEdit.exe
 
             // the directory where the datas are located
-            DataDirectory = Path.GetDirectoryName(path);
-            Dictionary = Path.Combine(DataDirectory, "Dictionaries");
-            Plugins = Path.Combine(DataDirectory, "Plugins");
-            if (!Directory.Exists(Plugins))
-            {
-                DataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit");
-                Dictionary = Path.Combine(DataDirectory, "Dictionaries");
-                Plugins = Path.Combine(DataDirectory, "Plugins");
-                IsPortableMode = false;
-            }
-            else
-            {
-                IsPortableMode = true;
-            }
+            BaseDirectory = Path.GetDirectoryName(path);
+
+            string appDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit");
+
+            IsPortableMode = Directory.GetFiles(BaseDirectory, "unins*.*").Length == 0;
+
+            Plugins = Path.Combine(IsPortableMode ? BaseDirectory : appDataDir, "Plugins");
+            Dictionary = Path.Combine(IsPortableMode ? BaseDirectory : appDataDir, "Dictionaries");
+
+            // Note: getting path using Assembly.CodeBase is suitable when SE is ran/executed from a remote pc
         }
 
         public static string GetConfigFile(string fileName) => Path.Combine(Plugins, fileName);

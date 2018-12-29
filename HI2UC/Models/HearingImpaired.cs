@@ -65,9 +65,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public string MoodsToUppercase(string text)
         {
+            // <font color="#ff00ff">(SIGHS)</font>
             // Remove invalid tags.
             text = text.Replace("()", string.Empty);
-            text = text.Replace("[]", string.Empty);
+            text = text.Replace("()", string.Empty);
+            text = text.Replace("( )", string.Empty);
+            text = text.Replace("[ ]", string.Empty);
 
             if (!IsQualifedMoods(text))
             {
@@ -75,22 +78,23 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
 
             int idx = text.IndexOfAny(HIChars);
-            char moodStartChar = text[idx];
-            char moodEndChar = (moodStartChar == '(') ? ')' : ']';
+            char openChar = text[idx];
+            char closeChar = openChar == '(' ? ')' : ']';
             do
             {
-                int endIdx = text.IndexOf(moodEndChar, idx + 1); // ] or )
+                int endIdx = text.IndexOf(closeChar, idx + 1); // ] or )
                 // There most be at lease one chars inside brackets.
                 if (endIdx < idx + 2)
                 {
                     break;
                 }
-                string moodText = text.Substring(idx, endIdx - idx + 1);
-                moodText = Customize(moodText);
-                text = text.Remove(idx, endIdx - idx + 1).Insert(idx, moodText);
-                idx = text.IndexOf(moodStartChar, endIdx + 1); // ( or [
+                string textInside = text.Substring(idx, endIdx - idx + 1);
+                text = text.Remove(idx, endIdx - idx + 1);
+                text = text.Insert(idx, Customize(textInside));
+                idx = text.IndexOf(openChar, endIdx + 1); // ( or [
             }
             while (idx >= 0);
+
             return text;
         }
 
@@ -112,7 +116,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         _sb.Clear();
                     }
                     bool isUpperTime = true;
-                    // TODO: Use StringInfo to fix issue with unicode chars?!
+                    // TODO: Use StringInfo to fix issue with unicode chars?
                     foreach (char myChar in strippedText)
                     {
                         if (!char.IsLetter(myChar))
@@ -149,33 +153,25 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return false;
             }
             // e.g: 12:30am...
-            if ((colonIdx + 1 < line.Length) && char.IsDigit(line[colonIdx + 1]))
+            if (colonIdx + 1 < line.Length && char.IsDigit(line[colonIdx + 1]))
             {
                 return false;
             }
 
             // Foobar[?!] Narrator: Hello (Note: not really sure if "." (dot) should be include since there are names
             // that are prefixed with Mr. Ivandro Ismael)
-            if (noTagCapturedText.ContainsAny(new[] { '!', '?' }))
-            {
-                return false;
-            }
-
-            if (noTagCapturedText.StartsWith("http", StringComparison.OrdinalIgnoreCase) ||
-                noTagCapturedText.EndsWith("improved by", StringComparison.OrdinalIgnoreCase) ||
-                noTagCapturedText.EndsWith("corrected by", StringComparison.OrdinalIgnoreCase) ||
-                noTagCapturedText.EndsWith("https", StringComparison.OrdinalIgnoreCase) ||
-                noTagCapturedText.EndsWith("http", StringComparison.OrdinalIgnoreCase))
-            {
-                return false;
-            }
-            return true;
+            return !noTagCapturedText.ContainsAny(new[] {'!', '?'}) &&
+                   (!noTagCapturedText.StartsWith("http", StringComparison.OrdinalIgnoreCase) &&
+                    !noTagCapturedText.EndsWith("improved by", StringComparison.OrdinalIgnoreCase) &&
+                    !noTagCapturedText.EndsWith("corrected by", StringComparison.OrdinalIgnoreCase) &&
+                    !noTagCapturedText.EndsWith("https", StringComparison.OrdinalIgnoreCase) &&
+                    !noTagCapturedText.EndsWith("http", StringComparison.OrdinalIgnoreCase));
         }
 
         private static bool IsQualifedMoods(string text)
         {
             int idx = text.IndexOfAny(HIChars);
-            return (idx >= 0 && idx < text.Length);
+            return (idx >= 0 && idx + 1 < text.Length);
         }
 
     }

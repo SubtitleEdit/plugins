@@ -54,17 +54,28 @@
             this.checkBoxRemoveSpaces = new System.Windows.Forms.CheckBox();
             this.checkBoxMoods = new System.Windows.Forms.CheckBox();
             this.checkBoxSingleLineNarrator = new System.Windows.Forms.CheckBox();
+            this.groupBoxOptions = new System.Windows.Forms.GroupBox();
+            this.textBoxParagraphText = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.buttonPrev = new System.Windows.Forms.Button();
+            this.buttonNext = new System.Windows.Forms.Button();
+            this.buttonItalic = new System.Windows.Forms.Button();
+            this.buttonBold = new System.Windows.Forms.Button();
+            this.buttonUnderline = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.groupBoxOptions.SuspendLayout();
             this.SuspendLayout();
             // 
             // labelDesc
             // 
             this.labelDesc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelDesc.AutoSize = true;
-            this.labelDesc.Location = new System.Drawing.Point(12, 524);
+            this.labelDesc.BackColor = System.Drawing.Color.Transparent;
+            this.labelDesc.Location = new System.Drawing.Point(16, 645);
+            this.labelDesc.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelDesc.Name = "labelDesc";
-            this.labelDesc.Size = new System.Drawing.Size(83, 13);
+            this.labelDesc.Size = new System.Drawing.Size(107, 16);
             this.labelDesc.TabIndex = 6;
             this.labelDesc.Text = "description label";
             // 
@@ -72,25 +83,27 @@
             // 
             this.btn_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btn_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btn_Cancel.Location = new System.Drawing.Point(806, 527);
+            this.btn_Cancel.Location = new System.Drawing.Point(1075, 649);
+            this.btn_Cancel.Margin = new System.Windows.Forms.Padding(4);
             this.btn_Cancel.Name = "btn_Cancel";
-            this.btn_Cancel.Size = new System.Drawing.Size(100, 23);
+            this.btn_Cancel.Size = new System.Drawing.Size(133, 28);
             this.btn_Cancel.TabIndex = 1;
             this.btn_Cancel.Text = "&Cancel";
             this.btn_Cancel.UseVisualStyleBackColor = true;
-            this.btn_Cancel.Click += new System.EventHandler(this.btn_Cancel_Click);
+            this.btn_Cancel.Click += new System.EventHandler(this.Btn_Cancel_Click);
             // 
             // buttonConvert
             // 
             this.buttonConvert.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonConvert.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonConvert.Location = new System.Drawing.Point(700, 527);
+            this.buttonConvert.Location = new System.Drawing.Point(933, 649);
+            this.buttonConvert.Margin = new System.Windows.Forms.Padding(4);
             this.buttonConvert.Name = "buttonConvert";
-            this.buttonConvert.Size = new System.Drawing.Size(100, 23);
+            this.buttonConvert.Size = new System.Drawing.Size(133, 28);
             this.buttonConvert.TabIndex = 0;
             this.buttonConvert.Text = "&OK";
             this.buttonConvert.UseVisualStyleBackColor = true;
-            this.buttonConvert.Click += new System.EventHandler(this.btn_Run_Click);
+            this.buttonConvert.Click += new System.EventHandler(this.Btn_Run_Click);
             // 
             // listViewFixes
             // 
@@ -109,14 +122,16 @@
             this.listViewFixes.GridLines = true;
             this.listViewFixes.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listViewFixes.HideSelection = false;
-            this.listViewFixes.Location = new System.Drawing.Point(3, 16);
+            this.listViewFixes.Location = new System.Drawing.Point(4, 19);
+            this.listViewFixes.Margin = new System.Windows.Forms.Padding(4);
             this.listViewFixes.Name = "listViewFixes";
             this.listViewFixes.ShowGroups = false;
-            this.listViewFixes.Size = new System.Drawing.Size(891, 446);
+            this.listViewFixes.Size = new System.Drawing.Size(1188, 372);
             this.listViewFixes.TabIndex = 0;
             this.listViewFixes.UseCompatibleStateImageBehavior = false;
             this.listViewFixes.View = System.Windows.Forms.View.Details;
-            this.listViewFixes.Resize += new System.EventHandler(this.listViewFixes_Resize);
+            this.listViewFixes.SelectedIndexChanged += new System.EventHandler(this.ListViewFixes_SelectedIndexChanged);
+            this.listViewFixes.Resize += new System.EventHandler(this.ListViewFixes_Resize);
             // 
             // columnHeader4
             // 
@@ -194,14 +209,15 @@
             this.checkBoxNames.AutoSize = true;
             this.checkBoxNames.Checked = true;
             this.checkBoxNames.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxNames.Location = new System.Drawing.Point(15, 10);
+            this.checkBoxNames.Location = new System.Drawing.Point(56, 47);
+            this.checkBoxNames.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxNames.Name = "checkBoxNames";
-            this.checkBoxNames.Size = new System.Drawing.Size(206, 17);
+            this.checkBoxNames.Size = new System.Drawing.Size(250, 20);
             this.checkBoxNames.TabIndex = 3;
             this.checkBoxNames.Text = "Narrator. John: Hello! => JOHN: Hello!";
             this.toolTip1.SetToolTip(this.checkBoxNames, "This will change the Narrator Text\r\nEx: Harry: Hello! -> HARRY: Hello!");
             this.checkBoxNames.UseVisualStyleBackColor = true;
-            this.checkBoxNames.CheckedChanged += new System.EventHandler(this.checkBoxNarrator_CheckedChanged);
+            this.checkBoxNames.CheckedChanged += new System.EventHandler(this.CheckBoxNarrator_CheckedChanged);
             // 
             // toolTip1
             // 
@@ -214,31 +230,35 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxStyle.FormattingEnabled = true;
-            this.comboBoxStyle.Location = new System.Drawing.Point(756, 38);
+            this.comboBoxStyle.Location = new System.Drawing.Point(1000, 137);
+            this.comboBoxStyle.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxStyle.MaxDropDownItems = 5;
             this.comboBoxStyle.Name = "comboBoxStyle";
-            this.comboBoxStyle.Size = new System.Drawing.Size(153, 21);
+            this.comboBoxStyle.Size = new System.Drawing.Size(203, 24);
             this.comboBoxStyle.TabIndex = 2;
-            this.comboBoxStyle.SelectedIndexChanged += new System.EventHandler(this.comboBoxStyle_SelectedIndexChanged);
+            this.comboBoxStyle.SelectedIndexChanged += new System.EventHandler(this.ComboBoxStyle_SelectedIndexChanged);
             // 
             // label2
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(752, 21);
+            this.label2.Location = new System.Drawing.Point(996, 117);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(131, 13);
+            this.label2.Size = new System.Drawing.Size(41, 16);
             this.label2.TabIndex = 4;
-            this.label2.Text = "Feelings and Moods Style:";
+            this.label2.Text = "Style:";
             // 
             // linkLabel1
             // 
             this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(12, 540);
+            this.linkLabel1.BackColor = System.Drawing.Color.Transparent;
+            this.linkLabel1.Location = new System.Drawing.Point(16, 665);
+            this.linkLabel1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(236, 13);
+            this.linkLabel1.Size = new System.Drawing.Size(300, 16);
             this.linkLabel1.TabIndex = 7;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "Report Bugs | Suggestion: ivandrofly@gmail.com";
@@ -248,10 +268,13 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.BackColor = System.Drawing.Color.Transparent;
             this.groupBox1.Controls.Add(this.listViewFixes);
-            this.groupBox1.Location = new System.Drawing.Point(12, 56);
+            this.groupBox1.Location = new System.Drawing.Point(16, 166);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(897, 465);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBox1.Size = new System.Drawing.Size(1196, 395);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "groupBox1";
@@ -259,9 +282,10 @@
             // buttonApply
             // 
             this.buttonApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonApply.Location = new System.Drawing.Point(594, 527);
+            this.buttonApply.Location = new System.Drawing.Point(792, 649);
+            this.buttonApply.Margin = new System.Windows.Forms.Padding(4);
             this.buttonApply.Name = "buttonApply";
-            this.buttonApply.Size = new System.Drawing.Size(100, 23);
+            this.buttonApply.Size = new System.Drawing.Size(133, 28);
             this.buttonApply.TabIndex = 8;
             this.buttonApply.Text = "&Apply";
             this.buttonApply.UseVisualStyleBackColor = true;
@@ -270,67 +294,161 @@
             // checkBoxRemoveSpaces
             // 
             this.checkBoxRemoveSpaces.AutoSize = true;
-            this.checkBoxRemoveSpaces.Location = new System.Drawing.Point(15, 33);
+            this.checkBoxRemoveSpaces.Location = new System.Drawing.Point(56, 75);
+            this.checkBoxRemoveSpaces.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxRemoveSpaces.Name = "checkBoxRemoveSpaces";
-            this.checkBoxRemoveSpaces.Size = new System.Drawing.Size(229, 17);
+            this.checkBoxRemoveSpaces.Size = new System.Drawing.Size(283, 20);
             this.checkBoxRemoveSpaces.TabIndex = 9;
             this.checkBoxRemoveSpaces.Text = "Remove Extra Spaces \'( music )\' => (music)";
             this.checkBoxRemoveSpaces.UseVisualStyleBackColor = true;
-            this.checkBoxRemoveSpaces.CheckedChanged += new System.EventHandler(this.checkBoxRemoveSpaces_CheckedChanged);
+            this.checkBoxRemoveSpaces.CheckedChanged += new System.EventHandler(this.CheckBoxRemoveSpaces_CheckedChanged);
             // 
             // checkBoxMoods
             // 
             this.checkBoxMoods.AutoSize = true;
             this.checkBoxMoods.Checked = true;
             this.checkBoxMoods.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxMoods.Location = new System.Drawing.Point(260, 10);
+            this.checkBoxMoods.Location = new System.Drawing.Point(383, 47);
+            this.checkBoxMoods.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxMoods.Name = "checkBoxMoods";
-            this.checkBoxMoods.Size = new System.Drawing.Size(189, 17);
+            this.checkBoxMoods.Size = new System.Drawing.Size(231, 20);
             this.checkBoxMoods.TabIndex = 10;
             this.checkBoxMoods.Text = "Moods. e.g: (foobar) => (FOOBAR)";
             this.checkBoxMoods.UseVisualStyleBackColor = true;
-            this.checkBoxMoods.CheckedChanged += new System.EventHandler(this.checkBoxMoods_CheckedChanged);
+            this.checkBoxMoods.CheckedChanged += new System.EventHandler(this.CheckBoxMoods_CheckedChanged);
             // 
             // checkBoxSingleLineNarrator
             // 
             this.checkBoxSingleLineNarrator.AutoSize = true;
             this.checkBoxSingleLineNarrator.Checked = true;
             this.checkBoxSingleLineNarrator.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxSingleLineNarrator.Location = new System.Drawing.Point(260, 33);
+            this.checkBoxSingleLineNarrator.Location = new System.Drawing.Point(383, 75);
+            this.checkBoxSingleLineNarrator.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxSingleLineNarrator.Name = "checkBoxSingleLineNarrator";
-            this.checkBoxSingleLineNarrator.Size = new System.Drawing.Size(226, 17);
+            this.checkBoxSingleLineNarrator.Size = new System.Drawing.Size(266, 20);
             this.checkBoxSingleLineNarrator.TabIndex = 11;
             this.checkBoxSingleLineNarrator.Text = "Lena:<br/>A ring?! => LENA:<br/>A ring?!";
             this.checkBoxSingleLineNarrator.UseVisualStyleBackColor = true;
-            this.checkBoxSingleLineNarrator.CheckedChanged += new System.EventHandler(this.checkBoxSingleLineNarrator_CheckedChanged);
+            this.checkBoxSingleLineNarrator.CheckedChanged += new System.EventHandler(this.CheckBoxSingleLineNarrator_CheckedChanged);
+            // 
+            // groupBoxOptions
+            // 
+            this.groupBoxOptions.BackColor = System.Drawing.Color.Transparent;
+            this.groupBoxOptions.Controls.Add(this.checkBoxNames);
+            this.groupBoxOptions.Controls.Add(this.checkBoxRemoveSpaces);
+            this.groupBoxOptions.Controls.Add(this.checkBoxSingleLineNarrator);
+            this.groupBoxOptions.Controls.Add(this.checkBoxMoods);
+            this.groupBoxOptions.Location = new System.Drawing.Point(16, 15);
+            this.groupBoxOptions.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBoxOptions.Name = "groupBoxOptions";
+            this.groupBoxOptions.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBoxOptions.Size = new System.Drawing.Size(739, 144);
+            this.groupBoxOptions.TabIndex = 12;
+            this.groupBoxOptions.TabStop = false;
+            this.groupBoxOptions.Text = "Options:";
+            // 
+            // textBoxParagraphText
+            // 
+            this.textBoxParagraphText.Location = new System.Drawing.Point(16, 598);
+            this.textBoxParagraphText.Multiline = true;
+            this.textBoxParagraphText.Name = "textBoxParagraphText";
+            this.textBoxParagraphText.Size = new System.Drawing.Size(339, 44);
+            this.textBoxParagraphText.TabIndex = 13;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(13, 574);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(82, 16);
+            this.label1.TabIndex = 14;
+            this.label1.Text = "Paragraph #";
+            // 
+            // buttonPrev
+            // 
+            this.buttonPrev.Location = new System.Drawing.Point(361, 620);
+            this.buttonPrev.Name = "buttonPrev";
+            this.buttonPrev.Size = new System.Drawing.Size(75, 23);
+            this.buttonPrev.TabIndex = 15;
+            this.buttonPrev.Text = "Prev";
+            this.buttonPrev.UseVisualStyleBackColor = true;
+            // 
+            // buttonNext
+            // 
+            this.buttonNext.Location = new System.Drawing.Point(361, 598);
+            this.buttonNext.Name = "buttonNext";
+            this.buttonNext.Size = new System.Drawing.Size(75, 23);
+            this.buttonNext.TabIndex = 15;
+            this.buttonNext.Text = "Next";
+            this.buttonNext.UseVisualStyleBackColor = true;
+            // 
+            // buttonItalic
+            // 
+            this.buttonItalic.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonItalic.Location = new System.Drawing.Point(190, 574);
+            this.buttonItalic.Name = "buttonItalic";
+            this.buttonItalic.Size = new System.Drawing.Size(51, 23);
+            this.buttonItalic.TabIndex = 16;
+            this.buttonItalic.Text = "I";
+            this.buttonItalic.UseVisualStyleBackColor = true;
+            // 
+            // buttonBold
+            // 
+            this.buttonBold.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonBold.Location = new System.Drawing.Point(247, 574);
+            this.buttonBold.Name = "buttonBold";
+            this.buttonBold.Size = new System.Drawing.Size(51, 23);
+            this.buttonBold.TabIndex = 16;
+            this.buttonBold.Text = "B";
+            this.buttonBold.UseVisualStyleBackColor = true;
+            // 
+            // buttonUnderline
+            // 
+            this.buttonUnderline.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonUnderline.Location = new System.Drawing.Point(304, 574);
+            this.buttonUnderline.Name = "buttonUnderline";
+            this.buttonUnderline.Size = new System.Drawing.Size(51, 23);
+            this.buttonUnderline.TabIndex = 16;
+            this.buttonUnderline.Text = "U";
+            this.buttonUnderline.UseVisualStyleBackColor = true;
             // 
             // PluginForm
             // 
             this.AcceptButton = this.buttonConvert;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btn_Cancel;
-            this.ClientSize = new System.Drawing.Size(918, 562);
-            this.Controls.Add(this.checkBoxSingleLineNarrator);
-            this.Controls.Add(this.checkBoxMoods);
-            this.Controls.Add(this.checkBoxRemoveSpaces);
+            this.ClientSize = new System.Drawing.Size(1224, 692);
+            this.Controls.Add(this.buttonUnderline);
+            this.Controls.Add(this.buttonBold);
+            this.Controls.Add(this.buttonItalic);
+            this.Controls.Add(this.buttonNext);
+            this.Controls.Add(this.buttonPrev);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.textBoxParagraphText);
+            this.Controls.Add(this.groupBoxOptions);
             this.Controls.Add(this.buttonApply);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.linkLabel1);
-            this.Controls.Add(this.checkBoxNames);
             this.Controls.Add(this.comboBoxStyle);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.btn_Cancel);
             this.Controls.Add(this.buttonConvert);
             this.Controls.Add(this.labelDesc);
+            this.DoubleBuffered = true;
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.KeyPreview = true;
-            this.MinimumSize = new System.Drawing.Size(711, 425);
+            this.Margin = new System.Windows.Forms.Padding(4);
+            this.MinimumSize = new System.Drawing.Size(1000, 726);
             this.Name = "PluginForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Hearing Impaired to Uppercase";
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.PluginForm_Paint);
             this.contextMenuStrip1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
+            this.groupBoxOptions.ResumeLayout(false);
+            this.groupBoxOptions.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -363,5 +481,13 @@
         private System.Windows.Forms.CheckBox checkBoxRemoveSpaces;
         private System.Windows.Forms.CheckBox checkBoxMoods;
         private System.Windows.Forms.CheckBox checkBoxSingleLineNarrator;
+        private System.Windows.Forms.GroupBox groupBoxOptions;
+        private System.Windows.Forms.TextBox textBoxParagraphText;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button buttonPrev;
+        private System.Windows.Forms.Button buttonNext;
+        private System.Windows.Forms.Button buttonItalic;
+        private System.Windows.Forms.Button buttonBold;
+        private System.Windows.Forms.Button buttonUnderline;
     }
 }

@@ -45,15 +45,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private Func<object, bool> ShouldInvokeMergeExp;
         private Action<object, EventArgs> InsertLineInvoker;
 
+        #region Metadata
+
         public string Name => "JackSE";
         public string Text => "JackSE";
         public decimal Version => 1;
-        public string Description => "jack subtitle edit";
+        public string Description => "Inject features into Subtilte Edit.";
         public string ActionType => "tool";
         public string Shortcut => string.Empty;
 
-        public string DoAction(Form parentForm, string srtText, double frameRate, string UILineBreak, string file,
-            string videoFile, string rawText)
+        #endregion
+
+        public string DoAction(Form parentForm, string srtText, double frameRate, string uiLineBreak, string file, string videoFile, string rawText)
         {
             _parentForm = parentForm;
 

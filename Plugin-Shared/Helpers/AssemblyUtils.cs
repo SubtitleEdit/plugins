@@ -8,9 +8,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         public static TAttrib GetCustomAttribute<TAttrib>(Assembly assembly) where TAttrib : Attribute
         {
+            return assembly.GetCustomAttributes(typeof(TAttrib), false).Cast<TAttrib>().FirstOrDefault();
             // get metadata from assembly
-            TAttrib attribute = assembly.GetCustomAttributes(typeof(TAttrib), false).OfType<TAttrib>().FirstOrDefault();
-            return attribute;
+            //return assembly.GetCustomAttributes(typeof(TAttrib), false).OfType<TAttrib>().FirstOrDefault();
         }
     }
 }

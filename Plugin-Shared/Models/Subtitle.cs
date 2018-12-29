@@ -37,7 +37,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public void RemoveLine(int lineNumber)
         {
             if (_paragraphs == null || lineNumber < 0)
+            {
                 return;
+            }
+
             _paragraphs.Remove(_paragraphs.Single(p => p.Number == lineNumber));
             Renumber();
         }

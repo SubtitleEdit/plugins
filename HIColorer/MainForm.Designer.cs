@@ -118,7 +118,7 @@
             this.labelNarratorsColor.Size = new System.Drawing.Size(234, 23);
             this.labelNarratorsColor.TabIndex = 4;
             this.labelNarratorsColor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.labelNarratorsColor.DoubleClick += new System.EventHandler(ChangeColorHandler);
+            this.labelNarratorsColor.DoubleClick += new System.EventHandler(this.ChangeColorHandler);
             // 
             // buttonNarratorColor
             // 
@@ -128,7 +128,7 @@
             this.buttonNarratorColor.TabIndex = 1;
             this.buttonNarratorColor.Text = "Pick color";
             this.buttonNarratorColor.UseVisualStyleBackColor = true;
-            this.buttonNarratorColor.Click += new System.EventHandler(ChangeColorHandler);
+            this.buttonNarratorColor.Click += new System.EventHandler(this.ChangeColorHandler);
             // 
             // buttonMoodsColor
             // 
@@ -138,7 +138,7 @@
             this.buttonMoodsColor.TabIndex = 3;
             this.buttonMoodsColor.Text = "Pick color";
             this.buttonMoodsColor.UseVisualStyleBackColor = true;
-            this.buttonMoodsColor.Click += new System.EventHandler(ChangeColorHandler);
+            this.buttonMoodsColor.Click += new System.EventHandler(this.ChangeColorHandler);
             // 
             // labelMoodsColor
             // 
@@ -150,7 +150,7 @@
             this.labelMoodsColor.Size = new System.Drawing.Size(234, 23);
             this.labelMoodsColor.TabIndex = 5;
             this.labelMoodsColor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.labelMoodsColor.DoubleClick += new System.EventHandler(ChangeColorHandler);
+            this.labelMoodsColor.DoubleClick += new System.EventHandler(this.ChangeColorHandler);
             // 
             // label2
             // 
@@ -224,7 +224,7 @@
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.groupBox1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.KeyPreview = true;
             this.MaximizeBox = false;
             this.Name = "MainForm";

@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Globalization;
+using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -21,10 +22,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             subtitle = subtitle.Trim();
             if (string.IsNullOrEmpty(subtitle))
             {
-                MessageBox.Show("No subtitle loaded", parentForm.Text,
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("No subtitle loaded", parentForm.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return string.Empty;
             }
+
             var subRip = new SubRip();
             var sub = new Subtitle(subRip);
             subRip.LoadSubtitle(sub, subtitle.SplitToLines(), subtitleFileName);
@@ -33,11 +34,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return string.Empty;
             }
 
-            using (var mainForm = new MainForm(sub, subtitleFileName, (this as IPlugin).Version.ToString()))
+            using (var mainForm = new MainForm(sub, subtitleFileName, (this as IPlugin).Version.ToString(CultureInfo.InvariantCulture)))
             {
-                if (mainForm.ShowDialog() == DialogResult.OK)
-                    return mainForm.Subtitle;
+                if (mainForm.ShowDialog() == DialogResult.OK) return mainForm.Subtitle;
             }
+
             return string.Empty;
         }
     }
