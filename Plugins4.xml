@@ -42,14 +42,6 @@
     <Author>Nikse</Author>
   </Plugin>
   <Plugin>
-    <Name>DeepL Translate</Name>
-    <Description>Translate with DeepL.com</Description>
-    <Version>0.93</Version>
-    <Date>2018-12-12</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/DeeplTranslate.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
     <Name>Yandex Translate</Name>
     <Description>Translate with Yandex</Description>
     <Version>0.3</Version>

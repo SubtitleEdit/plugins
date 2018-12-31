@@ -104,6 +104,7 @@ namespace SubtitleEdit
                 new TranslationLanguage("NL", "Dutch"),
                 new TranslationLanguage("PL", "Polish"),
                 new TranslationLanguage("PT", "Portuguese"),
+                new TranslationLanguage("RU", "Russian"),
             });
             int i = 0;
             foreach (var l in comboBox.Items)
