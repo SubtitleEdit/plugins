@@ -17,7 +17,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         decimal IPlugin.Version
         {
-            get { return 0.3M; }
+            get { return 0.4M; }
         }
 
         string IPlugin.Description
@@ -56,7 +56,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             using (var form = new MainForm(subtitle, (this as IPlugin).Name, (this as IPlugin).Description))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
+                {
                     return form.Subtitle;
+                }
             }
             return string.Empty;
         }

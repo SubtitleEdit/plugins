@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
@@ -13,7 +12,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public MainForm(Subtitle sub, string fileName, string description)
         {
-            // TODO: Complete member initialization
             InitializeComponent();
             Resize += delegate
             {
@@ -79,14 +77,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     }
                 }
 
-                text = AddHyphenOnBothLine(text);
+                // insert hyphen in both lines
+                text = AddHyphenInBothLine(text);
+
                 if (text.Equals(before, StringComparison.Ordinal) == false)
                 {
-                    if (AllowFix(p) == false)
+                    if (_allowFixes == false)
                     {
-                        // add hyphen is both contains narrator
                         AddFixToListView(p, before, text);
-
                     }
                     else
                     {
@@ -98,9 +96,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         }
 
         private const string EndLineChars = ".?)]!";
-        private string AddHyphenOnBothLine(string text)
+
+        private string AddHyphenInBothLine(string text)
         {
-            if (!text.Contains(Environment.NewLine) || StringUtils.CountTagInText(text, ':') < 1)
+            if (!text.Contains(Environment.NewLine) || StringUtils.CountTagInText(text, ':') == 0)
             {
                 return text;
             }
@@ -115,7 +114,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 int idx = line.IndexOf(':');
                 // (John): Day's getting on.
                 // We got work to do.
-                addHyphen = ((idx >= 0 && !StringUtils.IsBetweenNumbers(line, idx)) && (preLine == null || EndLineChars.IndexOf(preLine[preLine.Length - 1]) >= 0)) ? true : false;
+                addHyphen = ((idx > 0 && !StringUtils.IsBetweenNumbers(line, idx)) && (preLine == null || EndLineChars.IndexOf(preLine[preLine.Length - 1]) >= 0)) ? true : false;
             }
             /*
             foreach (var noTagLine in noTagText.Replace("\r\n", "\n").Split('\n'))
@@ -134,28 +133,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                 if (noTagLines[1][0] != '-')
                 {
-                    text = text.Insert(text.IndexOf(Environment.NewLine) + 2, "- ");
+                    text = text.Insert(text.IndexOf(Environment.NewLine) + Environment.NewLine.Length, "- ");
                 }
             }
             return text;
-        }
-
-        private bool AllowFix(Paragraph p)
-        {
-            if (!_allowFixes)
-            {
-                return false;
-            }
-
-            string ln = p.Number.ToString();
-            foreach (ListViewItem item in listViewFixes.Items)
-            {
-                if (item.SubItems[1].Text == ln)
-                {
-                    return item.Checked;
-                }
-            }
-            return false;
         }
 
         private void buttonToNarrator_Click(object sender, EventArgs e)
@@ -186,8 +167,22 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void buttonOK_Click(object sender, EventArgs e)
         {
             _allowFixes = true;
-            GeneratePreview();
+            Applyfixes();
             Subtitle = _subtitle.ToText();
+        }
+
+        private void Applyfixes()
+        {
+            const int ColumnFixedText = 3;
+            foreach (ListViewItem lvi in listViewFixes.Items)
+            {
+                if (!lvi.Checked)
+                {
+                    continue;
+                }
+                var p = (Paragraph)lvi.Tag;
+                p.Text = lvi.SubItems[ColumnFixedText].Text.Replace(Options.UILineBreak, Environment.NewLine);
+            }
         }
 
         private void buttonGetNames_Click(object sender, EventArgs e)
@@ -204,11 +199,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonApply_Click(object sender, EventArgs e)
         {
-            _allowFixes = true;
-            GeneratePreview();
+            Applyfixes();
             Subtitle = _subtitle.ToText();
-            _allowFixes = !_allowFixes;
-            listViewFixes.Items.Clear();
+            _allowFixes = false;
             // reload subtitle
             new SubRip().LoadSubtitle(_subtitle, Subtitle.SplitToLines(), string.Empty);
             GeneratePreview();
