@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
@@ -7,8 +8,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         public string Subtitle { get; private set; }
 
-        private Subtitle _subtitle;
-        private string _fileName;
+        private readonly Subtitle _subtitle;
         private bool _allowFixes;
 
         public MainForm(Subtitle sub, string fileName, string description)
@@ -21,12 +21,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             };
             listViewFixes.SizeChanged += delegate
             {
-                var width = listViewFixes.Width / 2 - 100;
+                int width = listViewFixes.Width / 2 - 100;
                 columnHeaderActual.Width = width;
                 columnHeaderAfter.Width = width;
             };
             _subtitle = sub;
-            _fileName = fileName;
             GeneratePreview();
         }
 
@@ -35,47 +34,64 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public void GeneratePreview()
         {
             listViewFixes.BeginUpdate();
+            listViewFixes.Items.Clear();
             for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
             {
-                var p = _subtitle.Paragraphs[i];
-                var text = p.Text;
-                var before = text;
+                Paragraph p = _subtitle.Paragraphs[i];
+                string text = p.Text;
+                string before = text;
 
-                var idx = text.IndexOfAny(ExpectedChars);
+                int idx = text.IndexOfAny(ExpectedChars);
                 if (idx < 0)
+                {
                     continue;
+                }
+
                 char tagClose = text[idx] == '(' ? ')' : ']';
                 while (idx >= 0)
                 {
-                    var endIdx = text.IndexOf(tagClose, idx + 1);
+                    int endIdx = text.IndexOf(tagClose, idx + 1);
                     if (endIdx < idx)
+                    {
                         break;
+                    }
+
                     char tagOpen = text[idx];
-                    var mood = text.Substring(idx, endIdx - idx + 1).Trim(tagOpen, ' ', tagClose);
-                    if (NameList.Contains(mood))
+                    string nameFromSubtitile = text.Substring(idx, endIdx - idx + 1).Trim(tagOpen, ' ', tagClose);
+                    if (NameList.Contains(nameFromSubtitile))
                     {
                         // Todo: if name contains <i>: note that there may be italic tag at begining
                         text = text.Remove(idx, endIdx - idx + 1).TrimStart(':', ' ');
-                        if (text.Length > idx && text[idx] != ':')
-                            text = text.Insert(idx, mood + ": ");
-                        else
-                            text = text.Insert(idx, mood);
-                        idx = text.IndexOf(tagOpen, idx);
+
+                        // add colon ad the end of name if there is none, to indicate the narrator
+                        nameFromSubtitile += ": ";
+
+                        // TODO: Title case the name before insering it in paragraph
+                        //nameFromSubtitile = [call somethinig to capitalize the text]
+                        text = text.Insert(idx, nameFromSubtitile);
+
+                        // look for next
+                        idx = text.IndexOf(tagOpen, idx + nameFromSubtitile.Length);
                     }
                     else
                     {
                         idx = text.IndexOf(tagOpen, endIdx + 1);
                     }
                 }
+
                 text = AddHyphenOnBothLine(text);
-                if (text != before && !AllowFix(p))
+                if (text.Equals(before, StringComparison.Ordinal) == false)
                 {
-                    // add hyphen is both contains narrator
-                    AddFixToListView(p, before, text);
-                }
-                else
-                {
-                    p.Text = text;
+                    if (AllowFix(p) == false)
+                    {
+                        // add hyphen is both contains narrator
+                        AddFixToListView(p, before, text);
+
+                    }
+                    else
+                    {
+                        p.Text = text;
+                    }
                 }
             }
             listViewFixes.EndUpdate();
@@ -85,16 +101,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private string AddHyphenOnBothLine(string text)
         {
             if (!text.Contains(Environment.NewLine) || StringUtils.CountTagInText(text, ':') < 1)
+            {
                 return text;
+            }
 
-            var noTagText = HtmlUtils.RemoveTags(text);
+            string noTagText = HtmlUtils.RemoveTags(text);
             bool addHyphen = false;
-            var noTagLines = noTagText.SplitToLines();
+            string[] noTagLines = noTagText.SplitToLines();
             for (int i = 0; i < noTagLines.Length; i++)
             {
-                var line = noTagLines[i];
-                var preLine = i - 1 < 0 ? null : noTagLines[i - 1];
-                var idx = line.IndexOf(':');
+                string line = noTagLines[i];
+                string preLine = i - 1 < 0 ? null : noTagLines[i - 1];
+                int idx = line.IndexOf(':');
                 // (John): Day's getting on.
                 // We got work to do.
                 addHyphen = ((idx >= 0 && !StringUtils.IsBetweenNumbers(line, idx)) && (preLine == null || EndLineChars.IndexOf(preLine[preLine.Length - 1]) >= 0)) ? true : false;
@@ -110,10 +128,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (addHyphen && (noTagLines[0].Length > 2 && noTagLines[1].Length > 2))
             {
                 if (noTagLines[0][0] != '-')
+                {
                     text = "- " + text;
+                }
 
                 if (noTagLines[1][0] != '-')
+                {
                     text = text.Insert(text.IndexOf(Environment.NewLine) + 2, "- ");
+                }
             }
             return text;
         }
@@ -121,36 +143,40 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private bool AllowFix(Paragraph p)
         {
             if (!_allowFixes)
+            {
                 return false;
-            var ln = p.Number.ToString();
+            }
+
+            string ln = p.Number.ToString();
             foreach (ListViewItem item in listViewFixes.Items)
             {
                 if (item.SubItems[1].Text == ln)
+                {
                     return item.Checked;
+                }
             }
             return false;
         }
 
         private void buttonToNarrator_Click(object sender, EventArgs e)
         {
-            var len = NameList.ListNames.Count;
-            var name = textBoxName.Text.Trim();
-            if (name.Length == 0)
-                return;
-            NameList.AddNameToList(name);
-            if (len != NameList.ListNames.Count)
+            string name = textBoxName.Text.Trim();
+            // invalid name
+            if (!name.ContainsLetter())
             {
-                listViewFixes.BeginUpdate();
-                listViewFixes.Items.Clear();
-                listViewFixes.EndUpdate();
+                return;
+            }
+            int preLen = NameList.ListNames.Count;
+            NameList.AddNameToList(name);
+            if (preLen != NameList.ListNames.Count)
+            {
                 GeneratePreview();
             }
-            //TODO: Update list view after adding new naem
         }
 
         private void AddFixToListView(Paragraph p, string before, string after)
         {
-            var item = new ListViewItem() { Checked = true, UseItemStyleForSubItems = true, Tag = p };
+            ListViewItem item = new ListViewItem() { Checked = true, UseItemStyleForSubItems = true, Tag = p };
             item.SubItems.Add(p.Number.ToString());
             item.SubItems.Add(before.Replace(Environment.NewLine, Options.UILineBreak));
             item.SubItems.Add(after.Replace(Environment.NewLine, Options.UILineBreak));
@@ -167,7 +193,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void buttonGetNames_Click(object sender, EventArgs e)
         {
             // store the names in list on constructor runtime instead of loading it each time
-            using (var formGetName = new GetNames(this, _subtitle)) // send the loaded list 
+            using (GetNamesForm formGetName = new GetNamesForm(this, _subtitle)) // send the loaded list 
             {
                 if (formGetName.ShowDialog(this) == DialogResult.OK)
                 {
@@ -183,25 +209,36 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Subtitle = _subtitle.ToText();
             _allowFixes = !_allowFixes;
             listViewFixes.Items.Clear();
+            // reload subtitle
+            new SubRip().LoadSubtitle(_subtitle, Subtitle.SplitToLines(), string.Empty);
             GeneratePreview();
         }
 
         private void checkAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var clickedItem = (ToolStripMenuItem)sender;
+            ToolStripMenuItem clickedItem = (ToolStripMenuItem)sender;
             switch (clickedItem.Text)
             {
                 case "Check all": // Check all
                     foreach (ListViewItem item in listViewFixes.Items)
+                    {
                         item.Checked = true;
+                    }
+
                     break;
                 case "Uncheck all": // Uncheck all
                     foreach (ListViewItem item in listViewFixes.Items)
+                    {
                         item.Checked = false;
+                    }
+
                     break;
                 case "Invert check": // Invert check
                     foreach (ListViewItem item in listViewFixes.Items)
+                    {
                         item.Checked = !item.Checked;
+                    }
+
                     break;
                 case "Copy": // Copy
                     Clipboard.SetText(listViewFixes.SelectedItems[0].Tag.ToString());
@@ -212,7 +249,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (listViewFixes.Items.Count == 0)
+            {
                 e.Cancel = true;
+            }
         }
     }
 }

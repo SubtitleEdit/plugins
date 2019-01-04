@@ -20,7 +20,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             _paragraph = new Paragraph();
             _expecting = ExpectingLine.Number;
-
+            if (subtitle?.Paragraphs?.Count > 0)
+            {
+                subtitle.Paragraphs.Clear();
+            }
             for (int i = 0; i < lines.Count; i++)
             {
                 var line = lines[i].TrimEnd();
