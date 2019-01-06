@@ -1,6 +1,6 @@
 ﻿namespace Nikse.SubtitleEdit.PluginLogic
 {
-    partial class GetNames
+    partial class GetNamesForm
     {
         /// <summary>
         /// Required designer variable.

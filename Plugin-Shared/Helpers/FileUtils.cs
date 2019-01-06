@@ -48,6 +48,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             string appDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit");
 
+            // if there is no uninstaller then it's portable version
             IsPortableMode = Directory.GetFiles(BaseDirectory, "unins*.*").Length == 0;
 
             Plugins = Path.Combine(IsPortableMode ? BaseDirectory : appDataDir, "Plugins");

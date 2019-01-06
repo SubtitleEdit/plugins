@@ -28,8 +28,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private static void SaveToXmlFile()
         {
             if (_listNewName == null || _listNewName.Count == 0)
+            {
                 return;
-            var filePath = Path.Combine(DictionaryFolder, "narratorNames.xml");
+            }
+
+            var filePath = Path.Combine(FileUtils.Dictionary, "narratorNames.xml");
             try
             {
                 var xelem = XDocument.Load(filePath);

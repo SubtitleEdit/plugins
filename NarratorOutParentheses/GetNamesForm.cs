@@ -6,10 +6,10 @@ using System.Collections.Generic;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    internal partial class GetNames : Form
+    internal partial class GetNamesForm : Form
     {
         private List<string> _list;
-        public GetNames(Form mainForm, Subtitle sub)
+        public GetNamesForm(Form mainForm, Subtitle sub)
         {
             InitializeComponent();
             this.FormClosed += delegate { mainForm.Show(); };
@@ -18,22 +18,23 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void GeneratePreview(Subtitle sub)
         {
-            if (_list == null)
-                _list = new List<string>();
-            else
-                _list.Clear();
+            _list = new List<string>();
 
             listBox1.Items.Clear();
-            for (int i = 0; i < sub.Paragraphs.Count; i++)
+            int count = sub.Paragraphs.Count;
+            for (int i = 0; i < count; i++)
             {
                 var p = sub.Paragraphs[i];
                 var text = p.Text;
+                // normalize parentheses
                 text = text.Replace('[', '(').Replace(']', ')');
                 var idx = text.IndexOf('(');
                 if (idx < 0)
+                {
                     continue;
+                }
 
-                var noTagLines = HtmlUtils.RemoveTags(text).Replace(Environment.NewLine, "\n").Split('\n');
+                var noTagLines = HtmlUtils.RemoveTags(text).SplitToLines();
 
                 // single line (Sighs)
                 if (noTagLines.Length == 1)
@@ -82,8 +83,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
+        char[] _trimChars = { '♯', '♯', '♯', '♯', '♯' , ' ', '.', '!', '?', '-', '"' };
+
         private bool IsStartEndBraces(string noTagLine, int startIdx)
         {
+            string trimUnicodeChar1 = "🎵";
+            string trimUnicodeChar2 = "𝄞";
+
             noTagLine = noTagLine.TrimEnd(' ', '.', '!', '?', '-', '"');
             var endIdx = noTagLine.IndexOf(')', startIdx + 1);
             if (endIdx + 1 == noTagLine.Length)
@@ -170,11 +176,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return;
 
             // if file doesn't exist create a new one, check iisn't already in list
-            var path = System.IO.Path.Combine(NameList.GetDictionaryFolder(), "moodsIgnore.xml");
+            var settingFile = Path.Combine(FileUtils.Dictionary, "moodsIgnore.xml");
             XDocument xdoc = null;
-            if (System.IO.File.Exists(path))
+            if (File.Exists(settingFile))
             {
-                xdoc = XDocument.Load(path);
+                xdoc = XDocument.Load(settingFile);
             }
             else
             {
@@ -182,7 +188,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 foreach (var item in listBox1.Items)
                 {
                     if (!NameList.ListNames.Contains(item.ToString().ToUpperInvariant()))
+                    {
                         listIgnore.Add(item.ToString());
+                    }
                 }
 
                 if (listIgnore.Count > 0)
@@ -196,7 +204,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                     try
                     {
-                        xdoc.Save(path, SaveOptions.None);
+                        xdoc.Save(settingFile, SaveOptions.None);
                     }
                     catch
                     {

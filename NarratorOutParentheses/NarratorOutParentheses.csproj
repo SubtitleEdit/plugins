@@ -40,11 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GetNames.cs">
+    <Compile Include="GetNamesForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GetNames.Designer.cs">
-      <DependentUpon>GetNames.cs</DependentUpon>
+    <Compile Include="GetNamesForm.Designer.cs">
+      <DependentUpon>GetNamesForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -57,8 +57,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="GetNames.resx">
-      <DependentUpon>GetNames.cs</DependentUpon>
+    <EmbeddedResource Include="GetNamesForm.resx">
+      <DependentUpon>GetNamesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
