@@ -84,6 +84,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTScreenScraper", "GTScreen
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BTScreenScraper", "BTScreenScraper\DLL\BTScreenScraper.csproj", "{D4A06801-371C-4474-94EF-97824D61294E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CopyPasteTranslate", "CopyPasteTranslate\DLL\CopyPasteTranslate.csproj", "{8B75158E-A6DD-46BB-9030-BF84C80BF7CC}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Plugin-Shared\Plugin-Shared.projitems*{16b4be52-050a-4161-b0e3-9b07aa5f650b}*SharedItemsImports = 4
@@ -236,6 +238,10 @@ Global
 		{D4A06801-371C-4474-94EF-97824D61294E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4A06801-371C-4474-94EF-97824D61294E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4A06801-371C-4474-94EF-97824D61294E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B75158E-A6DD-46BB-9030-BF84C80BF7CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B75158E-A6DD-46BB-9030-BF84C80BF7CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B75158E-A6DD-46BB-9030-BF84C80BF7CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B75158E-A6DD-46BB-9030-BF84C80BF7CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -275,6 +281,7 @@ Global
 		{FEF62028-9A0A-42EE-B13B-E19F9B73A5BD} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 		{BC28A13A-5CCD-4B4C-886D-0CD632BAA6A6} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 		{D4A06801-371C-4474-94EF-97824D61294E} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
+		{8B75158E-A6DD-46BB-9030-BF84C80BF7CC} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8BBF401C-6D00-4F22-BFC0-DE2673213D5B}

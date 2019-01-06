@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
-using SubtitleEdit.Logic;
+using WebViewTranslate.Logic;
 
 namespace WebViewTranslate
 {
-    /// <summary>
-    /// https://blogs.windows.com/msedgedev/2018/05/09/modern-webview-winforms-wpf-apps/
-    /// </summary>
     public partial class Form1 : Form
     {
         public Form1()

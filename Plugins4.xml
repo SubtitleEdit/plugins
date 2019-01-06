@@ -66,6 +66,14 @@
     <Author></Author>
   </Plugin>
   <Plugin>
+    <Name>Copy-Paste Translate</Name>
+    <Description>Translate with 3rd party tool using copy/paste</Description>
+    <Version>0.1</Version>
+    <Date>2019-01-06</Date>
+    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/BTScreenScraper.zip</Url>
+    <Author></Author>
+  </Plugin>
+  <Plugin>
     <Name>Haxor</Name>
     <Description>Translates subtitle to Haxor</Description>
     <Version>1.5</Version>
