@@ -37,7 +37,8 @@ namespace CopyPasteTranslate
         {
             if (Clipboard.ContainsText(TextDataFormat.Text))
             {
-                var text = Clipboard.GetText(TextDataFormat.Text);
+                var x = Clipboard.GetData(DataFormats.UnicodeText);
+                var text = x.ToString();
                 if (text.Trim() == _sourceBlock.TargetText.Trim())
                 {
                     MessageBox.Show("Clipboard contains source text!" + Environment.NewLine + 

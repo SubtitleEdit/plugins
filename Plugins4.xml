@@ -68,7 +68,7 @@
   <Plugin>
     <Name>Copy-Paste Translate</Name>
     <Description>Translate with 3rd party tool using copy/paste</Description>
-    <Version>0.1</Version>
+    <Version>0.2</Version>
     <Date>2019-01-06</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/CopyPasteTranslate.zip</Url>
     <Author></Author>
