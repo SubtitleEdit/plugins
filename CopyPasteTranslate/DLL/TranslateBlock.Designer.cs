@@ -52,7 +52,7 @@
             this.buttonGetTargetGet.Name = "buttonGetTargetGet";
             this.buttonGetTargetGet.Size = new System.Drawing.Size(294, 67);
             this.buttonGetTargetGet.TabIndex = 2;
-            this.buttonGetTargetGet.Text = "Get translated text from clipboard";
+            this.buttonGetTargetGet.Text = "Get translated text from clipboard\r\n(Ctrl+V)";
             this.buttonGetTargetGet.UseVisualStyleBackColor = true;
             this.buttonGetTargetGet.Click += new System.EventHandler(this.buttonGetTargetGet_Click);
             // 
@@ -95,6 +95,7 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "TranslateBlock";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TranslateBlock_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

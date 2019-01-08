@@ -308,9 +308,11 @@ namespace WebViewTranslate
                 _to = doc.DocumentElement.SelectSingleNode("Target").InnerText;
                 textBoxLineSeparator.Text = doc.DocumentElement.SelectSingleNode("Separator").InnerText;
                 numericUpDownMaxBytes.Value = decimal.Parse(doc.DocumentElement.SelectSingleNode("MaxSize").InnerText);
+                checkBoxAutoCopyToClipboard.Checked = Convert.ToBoolean(doc.DocumentElement.SelectSingleNode("AutoCopyToClipboard").InnerText);
             }
-            catch
+            catch (Exception e)
             {
+                Debug.WriteLine(e.Message);
             }
         }
 
@@ -320,10 +322,11 @@ namespace WebViewTranslate
             try
             {
                 var doc = new XmlDocument();
-                doc.LoadXml("<Translator><Target/><UrlIndex/><BulkSize/></Translator>");
+                doc.LoadXml("<Translator><Target/><Separator/><MaxSize/><AutoCopyToClipboard/></Translator>");
                 doc.DocumentElement.SelectSingleNode("Target").InnerText = _to;
                 doc.DocumentElement.SelectSingleNode("Separator").InnerText = textBoxLineSeparator.Text;
                 doc.DocumentElement.SelectSingleNode("MaxSize").InnerText = ((int)numericUpDownMaxBytes.Value).ToString();
+                doc.DocumentElement.SelectSingleNode("AutoCopyToClipboard").InnerText = checkBoxAutoCopyToClipboard.Checked.ToString();
                 doc.Save(fileName);
             }
             catch (Exception e)

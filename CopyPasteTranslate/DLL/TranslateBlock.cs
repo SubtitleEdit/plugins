@@ -56,5 +56,17 @@ namespace CopyPasteTranslate
             Clipboard.SetText(_sourceBlock.TargetText);
             buttonCopySourceTextToClipboard.Font = new System.Drawing.Font(Font.FontFamily.Name, buttonCopySourceTextToClipboard.Font.Size, System.Drawing.FontStyle.Regular);
         }
+
+        private void TranslateBlock_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                DialogResult = DialogResult.Cancel;
+            }
+            else if (e.Control && e.KeyCode == Keys.V)
+            {
+                buttonGetTargetGet_Click(sender, e);
+            }
+        }
     }
 }
