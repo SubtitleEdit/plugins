@@ -236,7 +236,7 @@ namespace Plugin_Updater
                 // update listview
                 lvi.Text = pluginInfo.Name;
                 lvi.SubItems[1].Text = pluginInfo.Description;
-                lvi.SubItems[2].Text = pluginInfo.Version.ToString();
+                lvi.SubItems[2].Text = pluginInfo.Version.ToString("#0.00");
                 lvi.SubItems[3].Text = pluginInfo.Date.ToString("yyyy-MM-dd");
                 lvi.SubItems[4].Text = pluginInfo.Author;
                 lvi.SubItems[5].Text = pluginInfo.Url.ToString();
