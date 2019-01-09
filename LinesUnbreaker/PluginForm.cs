@@ -34,11 +34,28 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 _configs.SaveConfigurations();
             };
 
+            // disable triggerer controls
+            ChangeControlsState(false);
+
             LoadConfigurations();
             _lineUnbreakerController = new LinesUnbreakerController(subtitle.Paragraphs, _configs);
             _lineUnbreakerController.TextUnbreaked += LineUnbreakerControllerTextUnbreaked;
-            _isLoading = false;
+
+            // restore trigger states
+            ChangeControlsState(true);
             GeneratePreview();
+        }
+
+        /// <summary>
+        /// Disable all the control in order to prevent triggering changes event.
+        /// </summary>
+        /// <param name="state"></param>
+        private void ChangeControlsState(bool state)
+        {
+            checkBoxMoods.Enabled = state;
+            checkBoxSkipDialog.Enabled = state;
+            checkBoxSkipNarrator.Enabled = state;
+            numericUpDown1.Enabled = state;
         }
 
         private void LineUnbreakerControllerTextUnbreaked(object sender, ParagraphEventArgs e)
@@ -122,12 +139,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void ConfigurationChanged(object sender, EventArgs e)
         {
-            // TODO: fix this!
-            if (_isLoading)
-            {
-                return;
-            }
-
             GeneratePreview();
         }
 
