@@ -89,6 +89,11 @@ namespace WebViewTranslate
                 _to = "en";
             }
             SetLanguages(comboBoxLanguageTo, _to);
+            if (listView1.Items.Count > 0)
+            {
+                listView1.Items[0].Selected = true;
+                listView1.Items[0].Focused = true;
+            }
         }
 
         public sealed override string Text

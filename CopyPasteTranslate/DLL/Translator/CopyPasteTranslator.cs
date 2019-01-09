@@ -26,11 +26,11 @@ namespace WebViewTranslate.Translator
             var result = new List<CopyBlock>();
             var input = new StringBuilder();
             var paragraphs = new List<Paragraph>();
-            for (var index = 0; index < _paragraphs.Count; index++)
+            for (var index = startIndex; index < _paragraphs.Count; index++)
             {
                 var p = _paragraphs[index];
                 var f = new Formatting();
-                _formattings[index] = f;
+                _formattings[index - startIndex] = f;
                 var text = f.SetTagsAndReturnTrimmed(TranslationHelper.PreTranslate(p.Text, sourceLanguage), sourceLanguage);
                 while (text.Contains(Environment.NewLine + Environment.NewLine))
                     text = text.Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
