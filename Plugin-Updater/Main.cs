@@ -42,6 +42,22 @@ namespace Plugin_Updater
             }
 
             LoadInfoFromMetadata(SortContext.DefaultContext);
+            string url = "https://github.com/SubtitleEdit/plugins";
+            linkLabel2.Links.Add(new LinkLabel.Link(0, linkLabel2.Text.Length, url)
+            {
+                Name = "Subtitle Edit (Plugins)"
+            });
+            linkLabel1.Click += (sender, e) =>
+            {
+                System.Diagnostics.Process.Start("https://www.github.com/ivandrofly");
+            };
+            linkLabel2.LinkClicked += LinkLabel2_LinkClicked;
+        }
+
+        private void LinkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            //e.Link.Visited = true;
+            System.Diagnostics.Process.Start(e.Link.LinkData.ToString());
         }
 
         private void ListViewPluginInfo_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
@@ -473,6 +489,34 @@ namespace Plugin_Updater
 
             sc.SortOrder = sc.SortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
             LoadInfoFromMetadata(sc);
+        }
+
+        private void ButtonCopy_Click(object sender, EventArgs e)
+        {
+            if (!ValidateUrl())
+            {
+                return;
+            }
+            Clipboard.SetText(textBoxUrl.Text);
+        }
+
+        private void ButtonDownload_Click(object sender, EventArgs e)
+        {
+            if (!ValidateUrl())
+            {
+                return;
+            }
+            System.Diagnostics.Process.Start(textBoxUrl.Text);
+        }
+
+        private bool ValidateUrl()
+        {
+            string url = textBoxUrl.Text;
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                return false;
+            }
+            return Uri.TryCreate(url, UriKind.Absolute, out Uri result);
         }
     }
 

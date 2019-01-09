@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.listViewPluginInfo = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -36,6 +37,8 @@
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.buttonDownload = new System.Windows.Forms.Button();
+            this.buttonCopy = new System.Windows.Forms.Button();
             this.buttonRemove = new System.Windows.Forms.Button();
             this.buttonAdd = new System.Windows.Forms.Button();
             this.textBoxAuthor = new System.Windows.Forms.TextBox();
@@ -57,8 +60,11 @@
             this.label6 = new System.Windows.Forms.Label();
             this.textBoxMetaFilePath = new System.Windows.Forms.TextBox();
             this.buttonBrowse = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownVersion)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // listViewPluginInfo
@@ -118,6 +124,10 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.linkLabel2);
+            this.groupBox1.Controls.Add(this.pictureBox1);
+            this.groupBox1.Controls.Add(this.buttonDownload);
+            this.groupBox1.Controls.Add(this.buttonCopy);
             this.groupBox1.Controls.Add(this.buttonRemove);
             this.groupBox1.Controls.Add(this.buttonAdd);
             this.groupBox1.Controls.Add(this.textBoxAuthor);
@@ -140,6 +150,26 @@
             this.groupBox1.Size = new System.Drawing.Size(1060, 251);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
+            // 
+            // buttonDownload
+            // 
+            this.buttonDownload.Location = new System.Drawing.Point(773, 160);
+            this.buttonDownload.Name = "buttonDownload";
+            this.buttonDownload.Size = new System.Drawing.Size(90, 23);
+            this.buttonDownload.TabIndex = 18;
+            this.buttonDownload.Text = "Download";
+            this.buttonDownload.UseVisualStyleBackColor = true;
+            this.buttonDownload.Click += new System.EventHandler(this.ButtonDownload_Click);
+            // 
+            // buttonCopy
+            // 
+            this.buttonCopy.Location = new System.Drawing.Point(692, 160);
+            this.buttonCopy.Name = "buttonCopy";
+            this.buttonCopy.Size = new System.Drawing.Size(75, 23);
+            this.buttonCopy.TabIndex = 17;
+            this.buttonCopy.Text = "Copy";
+            this.buttonCopy.UseVisualStyleBackColor = true;
+            this.buttonCopy.Click += new System.EventHandler(this.ButtonCopy_Click);
             // 
             // buttonRemove
             // 
@@ -349,6 +379,26 @@
             this.buttonBrowse.UseVisualStyleBackColor = true;
             this.buttonBrowse.Click += new System.EventHandler(this.ButtonBrowse_Click);
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(929, 22);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(124, 121);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 19;
+            this.pictureBox1.TabStop = false;
+            // 
+            // linkLabel2
+            // 
+            this.linkLabel2.AutoSize = true;
+            this.linkLabel2.Location = new System.Drawing.Point(944, 146);
+            this.linkLabel2.Name = "linkLabel2";
+            this.linkLabel2.Size = new System.Drawing.Size(95, 16);
+            this.linkLabel2.TabIndex = 20;
+            this.linkLabel2.TabStop = true;
+            this.linkLabel2.Text = "Open in Github";
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -370,6 +420,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownVersion)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -406,6 +457,10 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button buttonAdd;
         private System.Windows.Forms.Button buttonRemove;
+        private System.Windows.Forms.Button buttonDownload;
+        private System.Windows.Forms.Button buttonCopy;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.LinkLabel linkLabel2;
     }
 }
 

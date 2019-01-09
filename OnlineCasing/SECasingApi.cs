@@ -27,7 +27,8 @@ namespace OnlineCasing
 
             _coreAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(s => s.FullName.Contains("libse"));
 
-            // _defaultAssembly will only be null if currently running subtilte-edit is not portable
+            // _coreAssembly is expected to be null if currently running subtilte-edit is not portable
+            // because the libse.dll is merged for installer version of subtilte edit
             _coreAssembly = _coreAssembly ?? Assembly.GetEntryAssembly();
 
             _fixCasing = Activator.CreateInstance(_coreAssembly.GetType($"{DefaultNameSpace}.FixCasing"), "en");
