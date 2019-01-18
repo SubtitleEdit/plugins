@@ -71,7 +71,7 @@
     <Compile Include="OnlineCasing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SECasingApi.cs" />
-    <Compile Include="SettingUtils.cs" />
+    <Compile Include="Helpers\SettingUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\ApiForm.resx">

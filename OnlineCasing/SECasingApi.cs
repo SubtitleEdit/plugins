@@ -115,7 +115,6 @@ namespace OnlineCasing
             // NEEDS TO BE CHANGED WHERE casing = false to true,
         }
 
-
         public void DoCasing(CasingContext context)
         {
             Type stripTextT = _coreAssembly.GetType(DefaultNameSpace + ".StrippableText");
