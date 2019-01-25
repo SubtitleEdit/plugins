@@ -107,8 +107,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                             if (xmlReader.NodeType == XmlNodeType.Text)
                             {
-                                Debug.WriteLine(xmlReader.ValueType);
-                                Debug.WriteLine(xmlReader.Value);
+                                //Debug.WriteLine(xmlReader.ValueType);
+                                //Debug.WriteLine(xmlReader.Value);
 
                                 object value = null;
                                 if (!propInfo.PropertyType.IsEnum)

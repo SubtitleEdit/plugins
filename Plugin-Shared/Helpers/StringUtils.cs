@@ -158,5 +158,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return s;
         }
 
+        public static string GetListViewString(string text, bool noTag)
+        {
+            if (text.Length < 2)
+            {
+                return text;
+            }
+            if (noTag)
+            {
+                text = HtmlUtils.RemoveTags(text, true);
+            }
+            return text?.Replace(Environment.NewLine, Options.UILineBreak);
+        }
     }
 }

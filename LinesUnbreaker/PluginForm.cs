@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 
@@ -81,7 +82,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _updateListview = true;
             _lineUnbreakerController.Action();
 
-            labelTotal.Text = string.Format("Total: {0}", _totalFixed);
+            labelTotal.Text = $"Total: {_totalFixed}";
             labelTotal.ForeColor = _totalFixed < 1 ? Color.Red : Color.Green;
             listView1.EndUpdate();
             //listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
@@ -98,11 +99,21 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void AddToListView(Paragraph paragraph, string newText)
         {
-            string noTagText = HtmlUtils.RemoveTags(paragraph.Text, false);
-            var item = new ListViewItem(paragraph.Number.ToString()) { UseItemStyleForSubItems = true };
-            item.SubItems.Add(noTagText.Length.ToString());
-            item.SubItems.Add(noTagText.Replace(Environment.NewLine, Options.UILineBreak));
-            item.SubItems.Add(HtmlUtils.RemoveTags(newText, true).Replace(Environment.NewLine, Options.UILineBreak));
+            string noTagOldText = HtmlUtils.RemoveTags(paragraph.Text);
+
+            // length of only visilbe characters
+            int lineLength = noTagOldText.Length - (StringUtils.CountTagInText(noTagOldText, Environment.NewLine) * Environment.NewLine.Length);
+
+            var item = new ListViewItem(paragraph.Number.ToString())
+            {
+                UseItemStyleForSubItems = true,
+                SubItems =
+                {
+                   lineLength.ToString(CultureInfo.InvariantCulture), // line length
+                    StringUtils.GetListViewString(paragraph.Text, true), // old text
+                    StringUtils.GetListViewString(newText, true) // new text
+                }
+            };
             listView1.Items.Add(item);
         }
 
@@ -139,7 +150,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void ConfigurationChanged(object sender, EventArgs e)
         {
-            GeneratePreview();
+            if (_updateListview)
+            {
+                GeneratePreview();
+            }
         }
 
         public void LoadConfigurations()

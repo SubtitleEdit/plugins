@@ -60,6 +60,7 @@
             this.columnHeader4});
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
+            this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(7, 148);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(891, 360);
@@ -132,7 +133,7 @@
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox2.Location = new System.Drawing.Point(6, 19);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(418, 100);
+            this.groupBox2.Size = new System.Drawing.Size(647, 100);
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Unbreak Rules:";
@@ -179,15 +180,15 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(184, 70);
+            this.label1.Location = new System.Drawing.Point(173, 46);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(131, 17);
+            this.label1.Size = new System.Drawing.Size(292, 17);
             this.label1.TabIndex = 4;
-            this.label1.Text = "Shorter or equal to:";
+            this.label1.Text = "Unbreak lines break shorter than or equal to:";
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(321, 69);
+            this.numericUpDown1.Location = new System.Drawing.Point(176, 68);
             this.numericUpDown1.Minimum = new decimal(new int[] {
             10,
             0,
