@@ -7,7 +7,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         // Metadata
         string IPlugin.Name => "Lines Unbreaker";
         string IPlugin.Text => "Lines Unbreaker";
-        decimal IPlugin.Version => 1.8M;
+        decimal IPlugin.Version => 1.9M;
         string IPlugin.Description => "Helps unbreaking unnecessary shorten lines.";
         string IPlugin.ActionType => "tool";
         string IPlugin.Shortcut => string.Empty;
