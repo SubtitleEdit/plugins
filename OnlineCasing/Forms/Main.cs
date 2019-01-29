@@ -75,13 +75,11 @@ namespace OnlineCasing.Forms
                 {
                     if (apiForm.ShowDialog(this) == DialogResult.OK)
                     {
-                        comboBoxMovieID.BeginUpdate();
-                        if (comboBoxMovieID.Items.Count > 0)
-                        {
-                            comboBoxMovieID.Items.Clear();
-                        }
-                        comboBoxMovieID.Items.AddRange(Configs.Settings.Movies.Select(m => m.Id.ToString()).ToArray());
-                        comboBoxMovieID.EndUpdate();
+                        UpdateComboboxMovieId(false);
+                    }
+                    else
+                    {
+                        return;
                     }
                 }
             }
@@ -98,8 +96,7 @@ namespace OnlineCasing.Forms
 
             _client = _client ?? new TMDbClient(Configs.Settings.ApiKey, true);
 
-            buttonGetMovieID.Enabled = false;
-            buttonGetNewID.Enabled = false;
+            ChangeControlsState(false);
 
             if (string.IsNullOrWhiteSpace(movieId))
             {
@@ -107,12 +104,12 @@ namespace OnlineCasing.Forms
                 {
                     if (getMovieID.ShowDialog(this) == DialogResult.OK)
                     {
-                        comboBoxMovieID.BeginUpdate();
-                        comboBoxMovieID.Items.Clear();
-                        comboBoxMovieID.Items.AddRange(Configs.Settings.Movies.ToArray<Movie>());
-                        // this will re-fire this method to return after this lien to avoid deadlock
-                        comboBoxMovieID.SelectedIndex = comboBoxMovieID.Items.Count - 1;
-                        comboBoxMovieID.EndUpdate();
+                        UpdateComboboxMovieId(true);
+                        return;
+                    }
+                    else
+                    {
+                        ChangeControlsState(true);
                         return;
                     }
                 }
@@ -121,8 +118,7 @@ namespace OnlineCasing.Forms
             string movieIdString = comboBoxMovieID.Text;
             if (string.IsNullOrEmpty(movieIdString))
             {
-                buttonGetMovieID.Enabled = true;
-                buttonGetNewID.Enabled = false;
+                ChangeControlsState(true);
                 return;
             }
 
@@ -156,11 +152,6 @@ namespace OnlineCasing.Forms
                 names.Add(tempName);
             }
 
-            //foreach (var cast in result.Credits.Cast)
-            //{
-            //    listView1.Items.Add(cast.Name);
-            //}
-
             // TODO: Hack MAIN and find way to send these names to casing form
 
             if (names.Count == 0)
@@ -172,10 +163,31 @@ namespace OnlineCasing.Forms
 
             // invoke SubtitleEdit method for casing
             DoCasingViaAPI(names.ToList());
+            ChangeControlsState(true);
 
-            buttonGetMovieID.Enabled = true;
-            buttonGetNewID.Enabled = true;
+        }
 
+        private void ChangeControlsState(bool state)
+        {
+            buttonGetMovieID.Enabled = state;
+            buttonGetNewID.Enabled = state;
+        }
+
+        // WARNING: Careful calling this method.
+        private void UpdateComboboxMovieId(bool selectLastIndex)
+        {
+            comboBoxMovieID.BeginUpdate();
+            if (comboBoxMovieID.Items.Count > 0)
+            {
+                comboBoxMovieID.Items.Clear();
+            }
+            comboBoxMovieID.Items.AddRange(Configs.Settings.Movies.Select(m => m.Id.ToString()).ToArray());
+            if (selectLastIndex)
+            {
+                // this will re-fire this method to return after this lien to avoid deadlock
+                comboBoxMovieID.SelectedIndex = comboBoxMovieID.Items.Count - 1;
+            }
+            comboBoxMovieID.EndUpdate();
         }
 
         private async void ButtonGetMovieID_Click(object sender, EventArgs e)

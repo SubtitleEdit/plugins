@@ -16,6 +16,8 @@ namespace OnlineCasing.Forms
         {
             InitializeComponent();
             Client = client;
+
+            progressBar1.Visible = false;
         }
 
         public int ID { get; private set; }
@@ -94,6 +96,11 @@ namespace OnlineCasing.Forms
             {
                 ButtonSearch_Click(null, EventArgs.Empty);
             }
+        }
+
+        private void ButtonCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
         }
     }
 }

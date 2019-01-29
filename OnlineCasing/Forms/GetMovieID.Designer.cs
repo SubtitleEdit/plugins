@@ -109,6 +109,7 @@
             this.listViewMovies.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewMovies.FullRowSelect = true;
             this.listViewMovies.GridLines = true;
+            this.listViewMovies.HideSelection = false;
             this.listViewMovies.Location = new System.Drawing.Point(4, 19);
             this.listViewMovies.Margin = new System.Windows.Forms.Padding(4);
             this.listViewMovies.Name = "listViewMovies";
@@ -147,6 +148,7 @@
             this.buttonCancel.TabIndex = 3;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
+            this.buttonCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
             // 
             // errorProvider1
             // 
