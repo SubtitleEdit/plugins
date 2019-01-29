@@ -25,10 +25,10 @@ namespace OnlineCasing
             // return only AssemblyName
             //var libse = Assembly.GetEntryAssembly().GetReferencedAssemblies().FirstOrDefault(s => s.Name.Equals("libse"));
 
+            // note: when SubtitlEdit is running in installed mode we won't be 
+            // able to retrive "libse.dll" using this approche because the assembly is merged into SubtitleEdit.exe
             _coreAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(s => s.FullName.Contains("libse"));
 
-            // _coreAssembly is expected to be null if currently running subtilte-edit is not portable
-            // because the libse.dll is merged for installer version of subtilte edit
             _coreAssembly = _coreAssembly ?? Assembly.GetEntryAssembly();
 
             _fixCasing = Activator.CreateInstance(_coreAssembly.GetType($"{DefaultNameSpace}.FixCasing"), "en");

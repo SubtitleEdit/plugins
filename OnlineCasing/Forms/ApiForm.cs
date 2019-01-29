@@ -20,7 +20,10 @@ namespace OnlineCasing.Forms
             var apiKeyBuffer = Encoding.Default.GetBytes(apiKey);
             string base64ApiKey = Convert.ToBase64String(apiKeyBuffer);
 
-            SettingUtils.UpdateApiKey(base64ApiKey);
+            //SettingUtils.UpdateApiKey(base64ApiKey);
+
+            // TODO: Hash
+            Configs.Settings.ApiKey = apiKey;
 
             MessageBox.Show("API key stored successfully!", "Api stored!", MessageBoxButtons.OK, MessageBoxIcon.Information);
 

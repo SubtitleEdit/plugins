@@ -9,7 +9,9 @@ namespace OnlineCasing
 {
     public static class SettingUtils
     {
-        public static readonly string SettingFile = Path.Combine(FileUtils.Plugins, "online-casing.xml");
+        //public static readonly string SettingFile = Path.Combine(FileUtils.Plugins, "online-casing.xml");
+
+        public static readonly string SettingFile = Path.Combine(FileUtils.Plugins, "onlie-casing-setting.json");
 
         public static string GetApiKey()
         {

@@ -73,6 +73,18 @@ namespace OnlineCasing.Forms
 
             var movieSearch = listViewMovies.SelectedItems[0].Tag as SearchMovie;
             ID = movieSearch.Id;
+
+            if (Configs.Settings.Movies.Any(m => m.Id == movieSearch.Id) == false)
+            {
+                var movie = new Movie
+                {
+                    Id = movieSearch.Id,
+                    OriginalTitle = movieSearch.OriginalTitle,
+                    ReleaseDate = movieSearch.ReleaseDate.Value,
+                    Title = movieSearch.Title,
+                };
+                Configs.Settings.Movies.Add(movie);
+            }
             DialogResult = DialogResult.OK;
         }
 

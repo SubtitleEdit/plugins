@@ -49,6 +49,7 @@
             this.aPIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.labelCount = new System.Windows.Forms.Label();
             this.helpProvider1 = new System.Windows.Forms.HelpProvider();
+            this.buttonGetNewID = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -64,6 +65,7 @@
             this.columnHeader3});
             this.listViewFixes.FullRowSelect = true;
             this.listViewFixes.GridLines = true;
+            this.listViewFixes.HideSelection = false;
             this.listViewFixes.Location = new System.Drawing.Point(205, 153);
             this.listViewFixes.Margin = new System.Windows.Forms.Padding(4);
             this.listViewFixes.Name = "listViewFixes";
@@ -91,6 +93,7 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.buttonGetNewID);
             this.groupBox1.Controls.Add(this.checkBoxCheckLastLine);
             this.groupBox1.Controls.Add(this.checkBoxUppercaseAfterBreak);
             this.groupBox1.Controls.Add(this.comboBoxMovieID);
@@ -251,6 +254,16 @@
             this.labelCount.TabIndex = 16;
             this.labelCount.Text = "Count:";
             // 
+            // buttonGetNewID
+            // 
+            this.buttonGetNewID.Location = new System.Drawing.Point(419, 45);
+            this.buttonGetNewID.Name = "buttonGetNewID";
+            this.buttonGetNewID.Size = new System.Drawing.Size(131, 24);
+            this.buttonGetNewID.TabIndex = 7;
+            this.buttonGetNewID.Text = "Get new ID";
+            this.buttonGetNewID.UseVisualStyleBackColor = true;
+            this.buttonGetNewID.Click += new System.EventHandler(this.ButtonGetNewID_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -304,5 +317,6 @@
         private System.Windows.Forms.CheckBox checkBoxUppercaseAfterBreak;
         private System.Windows.Forms.Label labelCount;
         private System.Windows.Forms.HelpProvider helpProvider1;
+        private System.Windows.Forms.Button buttonGetNewID;
     }
 }

@@ -69,8 +69,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // return only AssemblyName
             //var libse = Assembly.GetEntryAssembly().GetReferencedAssemblies().FirstOrDefault(s => s.Name.Equals("libse"));
 
-            // assembly
+            // note: when SubtitlEdit is running in installer mode we won't be 
+            // able to retrive "libse.dll" using this approche because the assembly is merged into SubtitleEdit.exe
             var ass = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(s => s.FullName.Contains("libse"));
+
+            // running in installed mode
+            if (ass == null)
+            {
+                
+            }
+
             var fixCasingT = ass.GetType("Nikse.SubtitleEdit.Core.FixCasing");
             var obj = Activator.CreateInstance(fixCasingT, "en");
             var field = fixCasingT.GetField("_names", BindingFlags.Instance | BindingFlags.NonPublic);

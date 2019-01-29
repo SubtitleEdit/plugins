@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using TMDbLib.Client;
@@ -14,7 +15,6 @@ namespace OnlineCasing.Forms
         private TMDbClient _client;
         private readonly Subtitle _subtitle;
         private readonly string _uILineBreak;
-        private string APIKey = "";
 
         public Main(Subtitle subtitle, string UILineBreak)
         {
@@ -24,17 +24,16 @@ namespace OnlineCasing.Forms
 #if DEBUG
             //APIKey = Environment.GetEnvironmentVariable("themoviedbapikey");
 #endif
-            // load apiKey
-            APIKey = SettingUtils.GetApiKey();
-            if (!string.IsNullOrEmpty(APIKey))
+
+            // load apikey
+            if (!string.IsNullOrEmpty(Configs.Settings.ApiKey))
             {
-                _client = new TMDbClient(APIKey, true);
+                _client = new TMDbClient(Configs.Settings.ApiKey, true);
             }
 
             labelCount.Text = "Total: 0";
             _subtitle = subtitle;
             _uILineBreak = UILineBreak;
-            
             UIInit();
         }
 
@@ -47,42 +46,54 @@ namespace OnlineCasing.Forms
                 listViewFixes.Columns[i].Width = optimalWidth;
             }
             listViewFixes.EndUpdate();
+
+            if (Configs.Settings.Movies.Count > 0)
+            {
+                comboBoxMovieID.BeginUpdate();
+                comboBoxMovieID.Items.AddRange(Configs.Settings.Movies.Select(m => m.Id.ToString()).ToArray());
+                comboBoxMovieID.BeginUpdate();
+            }
         }
 
         public string Subtitle { get; private set; }
 
-        private async void ButtonGetMovieID_Click(object sender, EventArgs e)
-        {
-            APIKey = SettingUtils.GetApiKey();
 
-            if (string.IsNullOrEmpty(APIKey))
+        private async Task GetNewID(bool newId = false)
+        {
+            if (string.IsNullOrEmpty(Configs.Settings.ApiKey))
             {
                 using (var apiForm = new ApiForm())
                 {
                     if (apiForm.ShowDialog(this) == DialogResult.OK)
                     {
-                        APIKey = SettingUtils.GetApiKey();
+                        comboBoxMovieID.BeginUpdate();
+                        if (comboBoxMovieID.Items.Count > 0)
+                        {
+                            comboBoxMovieID.Items.Clear();
+                        }
+                        comboBoxMovieID.Items.AddRange(Configs.Settings.Movies.Select(m => m.Id.ToString()).ToArray());
+                        comboBoxMovieID.EndUpdate();
                     }
                 }
+            }
 
-                // check if still null then return...
-                if (string.IsNullOrEmpty(APIKey))
-                {
-                    MessageBox.Show("Api key not found!\r\nPlease sign up https://www.themoviedb.org/account/signup",
-                              "Api key", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
+            // check if still null then return...
+            if (string.IsNullOrEmpty(Configs.Settings.ApiKey))
+            {
+                MessageBox.Show("Api key not found!\r\nPlease sign up https://www.themoviedb.org/account/signup",
+                          "Api key", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
 
             //var guest = await _client.AuthenticationCreateGuestSessionAsync();
 
-            _client = _client ?? new TMDbClient(APIKey, true);
+            _client = _client ?? new TMDbClient(Configs.Settings.ApiKey, true);
 
             buttonGetMovieID.Enabled = false;
+            buttonGetNewID.Enabled = false;
             int movieId = 0;
 
-            if (comboBoxMovieID.Text.Trim().Length == 0)
+            if (string.IsNullOrWhiteSpace(comboBoxMovieID.Text) || newId)
             {
                 using (var getMovieID = new GetMovieID(_client))
                 {
@@ -98,11 +109,12 @@ namespace OnlineCasing.Forms
             if (string.IsNullOrEmpty(movieIdString))
             {
                 buttonGetMovieID.Enabled = true;
+                buttonGetNewID.Enabled = false;
                 return;
             }
 
             movieId = int.Parse(movieIdString);
-            Movie movie = await _client.GetMovieAsync(movieId, MovieMethods.Credits).ConfigureAwait(true);
+            var movie = await _client.GetMovieAsync(movieId, MovieMethods.Credits).ConfigureAwait(true);
 
             HashSet<string> names = null;
             foreach (string name in movie.Credits.Cast.SelectMany(cast => cast.Character.Split(' ')))
@@ -150,6 +162,13 @@ namespace OnlineCasing.Forms
             DoCasingViaAPI(names.ToList());
 
             buttonGetMovieID.Enabled = true;
+            buttonGetNewID.Enabled = true;
+
+        }
+
+        private async void ButtonGetMovieID_Click(object sender, EventArgs e)
+        {
+            await GetNewID();
         }
 
         private void UpdateListView(IEnumerable<string> names)
@@ -241,6 +260,7 @@ namespace OnlineCasing.Forms
             }
 
             Subtitle = _subtitle.ToText();
+            Configs.Save();
             DialogResult = DialogResult.OK;
         }
 
@@ -259,6 +279,7 @@ namespace OnlineCasing.Forms
                 checkedNames.Add(checkedListBoxNames.Items[i].ToString());
             }
 
+            Configs.Save();
             // do/redo casing with filtered names
             DoCasingViaAPI(checkedNames);
         }
@@ -281,6 +302,10 @@ namespace OnlineCasing.Forms
             DoCasingViaAPI(names);
         }
 
+        private async void ButtonGetNewID_Click(object sender, EventArgs e)
+        {
+            await GetNewID(true);
+        }
     }
 }
 
