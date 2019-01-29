@@ -50,15 +50,24 @@ namespace OnlineCasing.Forms
             if (Configs.Settings.Movies.Count > 0)
             {
                 comboBoxMovieID.BeginUpdate();
-                comboBoxMovieID.Items.AddRange(Configs.Settings.Movies.Select(m => m.Id.ToString()).ToArray());
+                comboBoxMovieID.Items.AddRange(Configs.Settings.Movies.ToArray<Movie>());
                 comboBoxMovieID.BeginUpdate();
             }
+
+            comboBoxMovieID.SelectedIndexChanged += async (sende, e) =>
+            {
+                var movie = (Movie)comboBoxMovieID.SelectedItem;
+                await GetNewID(movie.Id.ToString());
+            };
+
+            checkBoxCheckLastLine.Checked = Configs.Settings.CheckLastLine;
+            checkBoxUppercaseAfterBreak.Checked = Configs.Settings.MakeUperCase;
         }
 
         public string Subtitle { get; private set; }
 
 
-        private async Task GetNewID(bool newId = false)
+        private async Task GetNewID(string movieId)
         {
             if (string.IsNullOrEmpty(Configs.Settings.ApiKey))
             {
@@ -91,21 +100,25 @@ namespace OnlineCasing.Forms
 
             buttonGetMovieID.Enabled = false;
             buttonGetNewID.Enabled = false;
-            int movieId = 0;
 
-            if (string.IsNullOrWhiteSpace(comboBoxMovieID.Text) || newId)
+            if (string.IsNullOrWhiteSpace(movieId))
             {
                 using (var getMovieID = new GetMovieID(_client))
                 {
                     if (getMovieID.ShowDialog(this) == DialogResult.OK)
                     {
-                        comboBoxMovieID.Items.Add(getMovieID.ID.ToString().Trim());
+                        comboBoxMovieID.BeginUpdate();
+                        comboBoxMovieID.Items.Clear();
+                        comboBoxMovieID.Items.AddRange(Configs.Settings.Movies.ToArray<Movie>());
+                        // this will re-fire this method to return after this lien to avoid deadlock
                         comboBoxMovieID.SelectedIndex = comboBoxMovieID.Items.Count - 1;
+                        comboBoxMovieID.EndUpdate();
+                        return;
                     }
                 }
             }
 
-            string movieIdString = comboBoxMovieID.SelectedItem.ToString();
+            string movieIdString = comboBoxMovieID.Text;
             if (string.IsNullOrEmpty(movieIdString))
             {
                 buttonGetMovieID.Enabled = true;
@@ -113,8 +126,7 @@ namespace OnlineCasing.Forms
                 return;
             }
 
-            movieId = int.Parse(movieIdString);
-            var movie = await _client.GetMovieAsync(movieId, MovieMethods.Credits).ConfigureAwait(true);
+            var movie = await _client.GetMovieAsync(int.Parse(movieId), MovieMethods.Credits).ConfigureAwait(true);
 
             HashSet<string> names = null;
             foreach (string name in movie.Credits.Cast.SelectMany(cast => cast.Character.Split(' ')))
@@ -168,7 +180,14 @@ namespace OnlineCasing.Forms
 
         private async void ButtonGetMovieID_Click(object sender, EventArgs e)
         {
-            await GetNewID();
+            if (comboBoxMovieID.SelectedItem == null)
+            {
+                MessageBox.Show("Select a movie from combobox");
+                return;
+            }
+            await GetNewID(((Movie)comboBoxMovieID.SelectedItem).Id.ToString());
+
+            // todo: should clear controls?
         }
 
         private void UpdateListView(IEnumerable<string> names)
@@ -260,6 +279,8 @@ namespace OnlineCasing.Forms
             }
 
             Subtitle = _subtitle.ToText();
+            Configs.Settings.CheckLastLine = checkBoxCheckLastLine.Checked;
+            Configs.Settings.MakeUperCase = checkBoxUppercaseAfterBreak.Checked;
             Configs.Save();
             DialogResult = DialogResult.OK;
         }
@@ -304,7 +325,7 @@ namespace OnlineCasing.Forms
 
         private async void ButtonGetNewID_Click(object sender, EventArgs e)
         {
-            await GetNewID(true);
+            await GetNewID(string.Empty);
         }
     }
 }

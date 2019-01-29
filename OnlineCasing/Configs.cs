@@ -98,7 +98,7 @@ namespace OnlineCasing
             //jsonSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
             //jsonSettings.Converters.Add(new Newtonsoft.Json.Converters.BinaryConverter());
             //jsonSettings.Converters.Add(new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter());
-            
+
             // NOTE: NEWTOWNSOFT 9.0.1 IS HAVING TROUBLE SERIALIZING/DESERIALIZING Nullable Types.
             if (File.Exists(SettingFile))
             {
@@ -114,7 +114,8 @@ namespace OnlineCasing
                     ApiKey = key,
                     CheckLastLine = false,
                     MakeUperCase = true,
-                    Movies = new List<Movie>()
+                    Movies = new List<Movie>(),
+                    IgnoreWords = { "The" }
                 };
             }
         }

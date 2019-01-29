@@ -33,6 +33,7 @@
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.buttonGetNewID = new System.Windows.Forms.Button();
             this.checkBoxCheckLastLine = new System.Windows.Forms.CheckBox();
             this.checkBoxUppercaseAfterBreak = new System.Windows.Forms.CheckBox();
             this.comboBoxMovieID = new System.Windows.Forms.ComboBox();
@@ -49,7 +50,6 @@
             this.aPIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.labelCount = new System.Windows.Forms.Label();
             this.helpProvider1 = new System.Windows.Forms.HelpProvider();
-            this.buttonGetNewID = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -106,6 +106,16 @@
             this.groupBox1.Size = new System.Drawing.Size(1022, 99);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
+            // 
+            // buttonGetNewID
+            // 
+            this.buttonGetNewID.Location = new System.Drawing.Point(419, 45);
+            this.buttonGetNewID.Name = "buttonGetNewID";
+            this.buttonGetNewID.Size = new System.Drawing.Size(131, 24);
+            this.buttonGetNewID.TabIndex = 7;
+            this.buttonGetNewID.Text = "Get new ID";
+            this.buttonGetNewID.UseVisualStyleBackColor = true;
+            this.buttonGetNewID.Click += new System.EventHandler(this.ButtonGetNewID_Click);
             // 
             // checkBoxCheckLastLine
             // 
@@ -253,16 +263,6 @@
             this.labelCount.Size = new System.Drawing.Size(45, 16);
             this.labelCount.TabIndex = 16;
             this.labelCount.Text = "Count:";
-            // 
-            // buttonGetNewID
-            // 
-            this.buttonGetNewID.Location = new System.Drawing.Point(419, 45);
-            this.buttonGetNewID.Name = "buttonGetNewID";
-            this.buttonGetNewID.Size = new System.Drawing.Size(131, 24);
-            this.buttonGetNewID.TabIndex = 7;
-            this.buttonGetNewID.Text = "Get new ID";
-            this.buttonGetNewID.UseVisualStyleBackColor = true;
-            this.buttonGetNewID.Click += new System.EventHandler(this.ButtonGetNewID_Click);
             // 
             // Main
             // 

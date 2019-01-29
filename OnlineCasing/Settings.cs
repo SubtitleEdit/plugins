@@ -15,6 +15,9 @@ namespace OnlineCasing
         public string Title { get; set; }
         public string OriginalTitle { get; set; }
         public DateTime ReleaseDate { get; set; }
+
+        public override string ToString() => $"{ Title ?? OriginalTitle} - {ReleaseDate.Year}";
+
     }
 
 
@@ -25,5 +28,8 @@ namespace OnlineCasing
         public bool CheckLastLine { get; set; }
 
         public List<Movie> Movies { get; set; }
+
+        public List<string> IgnoreWords { get; set; }
+
     }
 }
