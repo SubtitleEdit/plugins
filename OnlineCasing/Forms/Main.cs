@@ -57,7 +57,7 @@ namespace OnlineCasing.Forms
             comboBoxMovieID.SelectedIndexChanged += async (sende, e) =>
             {
                 var movie = (Movie)comboBoxMovieID.SelectedItem;
-                await GetNewID(movie.Id.ToString());
+                await GetNewIDAsync(movie.Id.ToString());
             };
 
             checkBoxCheckLastLine.Checked = Configs.Settings.CheckLastLine;
@@ -67,7 +67,7 @@ namespace OnlineCasing.Forms
         public string Subtitle { get; private set; }
 
 
-        private async Task GetNewID(string movieId)
+        private async Task GetNewIDAsync(string movieId)
         {
             if (string.IsNullOrEmpty(Configs.Settings.ApiKey))
             {
@@ -149,6 +149,11 @@ namespace OnlineCasing.Forms
                 {
                     continue;
                 }
+                // ignore nouns
+                if (Configs.Settings.IgnoreWords?.Contains(tempName.ToLower()) == true)
+                {
+                    continue;
+                }
                 names.Add(tempName);
             }
 
@@ -197,7 +202,7 @@ namespace OnlineCasing.Forms
                 MessageBox.Show("Select a movie from combobox");
                 return;
             }
-            await GetNewID(((Movie)comboBoxMovieID.SelectedItem).Id.ToString());
+            await GetNewIDAsync(((Movie)comboBoxMovieID.SelectedItem).Id.ToString());
 
             // todo: should clear controls?
         }
@@ -337,7 +342,7 @@ namespace OnlineCasing.Forms
 
         private async void ButtonGetNewID_Click(object sender, EventArgs e)
         {
-            await GetNewID(string.Empty);
+            await GetNewIDAsync(string.Empty);
         }
     }
 }

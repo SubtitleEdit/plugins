@@ -29,7 +29,7 @@ namespace OnlineCasing
 
         public List<Movie> Movies { get; set; }
 
-        public List<string> IgnoreWords { get; set; }
+        public HashSet<string> IgnoreWords { get; set; }
 
     }
 }
