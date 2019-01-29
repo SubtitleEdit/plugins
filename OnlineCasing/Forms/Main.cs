@@ -181,7 +181,7 @@ namespace OnlineCasing.Forms
             {
                 comboBoxMovieID.Items.Clear();
             }
-            comboBoxMovieID.Items.AddRange(Configs.Settings.Movies.Select(m => m.Id.ToString()).ToArray());
+            comboBoxMovieID.Items.AddRange(Configs.Settings.Movies.ToArray());
             if (selectLastIndex)
             {
                 // this will re-fire this method to return after this lien to avoid deadlock
