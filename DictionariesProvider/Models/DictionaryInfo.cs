@@ -11,6 +11,6 @@ namespace Nikse.SubtitleEdit.PluginLogic.Models
         public string EnglishName { get; set; }
         public string NativeName { get; set; }
         public string Description { get; set; }
-        public IList<DownloadLink> DownloadLinks { get; set; }
+        public List<DownloadLink> DownloadLinks { get; set; }
     }
 }
