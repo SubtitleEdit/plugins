@@ -53,7 +53,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
-            // TODO: HANDLE FOR INSTALLED VERSION
             var pluginFile = Path.Combine(FileUtils.Plugins, $"{args.Name.Split(',').First()}.dll");
             return Assembly.Load(File.ReadAllBytes(pluginFile));
         }

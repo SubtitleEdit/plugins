@@ -19,6 +19,16 @@ namespace OnlineCasing.Forms
         public Main(Subtitle subtitle, string UILineBreak)
         {
             InitializeComponent();
+
+            KeyPreview = true;
+            this.KeyDown += (sender, e) =>
+            {
+                if (e.KeyCode == Keys.Escape)
+                {
+                    Close();
+                }
+            };
+
             StartPosition = FormStartPosition.CenterParent;
 
 #if DEBUG
@@ -31,14 +41,82 @@ namespace OnlineCasing.Forms
                 _client = new TMDbClient(Configs.Settings.ApiKey, true);
             }
 
+
+            contextMenuStrip1.Opening += (sender, e) =>
+            {
+                if (checkedListBoxNames.Items.Count == 0 || checkedListBoxNames.SelectedItems.Count == 0)
+                {
+                    e.Cancel = true;
+                }
+            };
+
+            // bind commands
+            const int RemoveItem = 0;
+            const int RemoveItemAndIgnore = 1;
+            contextMenuStrip1.Items[RemoveItem].Click += (sender, e) =>
+            {
+                RemoveNameUpdate();
+            };
+
+            contextMenuStrip1.Items[RemoveItemAndIgnore].Click += (sender, e) =>
+            {
+                if (checkedListBoxNames.SelectedIndex < 0)
+                {
+                    return;
+                }
+
+                string selName = checkedListBoxNames.SelectedItem.ToString();
+                // returns item index
+                //string selName2 = checkedListBoxNames.GetItemText(checkedListBoxNames.SelectedIndex);
+
+                Configs.Settings.IgnoreWords.Add(selName);
+                RemoveNameUpdate();
+            };
+
+            checkedListBoxNames.SelectedIndexChanged += (sende, e) =>
+            {
+
+                if (checkedListBoxNames.SelectedIndex < 0)
+                {
+                    return;
+                }
+
+                const int TextBeforeFix = 1;
+                string selName = checkedListBoxNames.SelectedItem.ToString();
+                var itemsWithSelName = listViewFixes.Items.Cast<ListViewItem>()
+                .Where(li => li.SubItems[TextBeforeFix].Text.IndexOf(selName, StringComparison.OrdinalIgnoreCase) >= 0);
+                foreach (var item in itemsWithSelName)
+                {
+                    // TODO: the color is kinda greyish which, make it blue by overriding listview item drawing...
+                    item.Selected = true; //  System.Drawing.Color.Green;
+                }
+            };
+
             labelCount.Text = "Total: 0";
             _subtitle = subtitle;
             _uILineBreak = UILineBreak;
             UIInit();
         }
 
+        private void RemoveNameUpdate()
+        {
+            checkedListBoxNames.Items.RemoveAt(checkedListBoxNames.SelectedIndex);
+            // hate doing this
+            var tempList = new List<string>();
+            for (int i = 0; i < checkedListBoxNames.Items.Count; i++)
+            {
+                if (checkedListBoxNames.GetItemCheckState(i) == CheckState.Checked)
+                {
+                    tempList.Add(checkedListBoxNames.Items[i].ToString());
+                }
+            }
+            DoCasingViaAPI(tempList);
+        }
+
         private void UIInit()
         {
+            checkedListBoxNames.ContextMenuStrip = contextMenuStrip1;
+
             listViewFixes.BeginUpdate();
             int optimalWidth = (listViewFixes.Width - listViewFixes.Columns[0].Width) / (listViewFixes.Columns.Count - 1);
             for (int i = listViewFixes.Columns.Count - 1; i > 0; i--)
@@ -57,7 +135,7 @@ namespace OnlineCasing.Forms
             comboBoxMovieID.SelectedIndexChanged += async (sende, e) =>
             {
                 var movie = (Movie)comboBoxMovieID.SelectedItem;
-                await GetNewIDAsync(movie.Id.ToString());
+                await GetNewIDAsync(movie.Id);
             };
 
             checkBoxCheckLastLine.Checked = Configs.Settings.CheckLastLine;
@@ -67,7 +145,7 @@ namespace OnlineCasing.Forms
         public string Subtitle { get; private set; }
 
 
-        private async Task GetNewIDAsync(string movieId)
+        private async Task GetNewIDAsync(int movieId)
         {
             if (string.IsNullOrEmpty(Configs.Settings.ApiKey))
             {
@@ -98,20 +176,20 @@ namespace OnlineCasing.Forms
 
             ChangeControlsState(false);
 
-            if (string.IsNullOrWhiteSpace(movieId))
+            // invalid movie id
+            if (movieId <= 0)
             {
                 using (var getMovieID = new GetMovieID(_client))
                 {
                     if (getMovieID.ShowDialog(this) == DialogResult.OK)
                     {
                         UpdateComboboxMovieId(true);
-                        return;
                     }
                     else
                     {
                         ChangeControlsState(true);
-                        return;
                     }
+                    return;
                 }
             }
 
@@ -122,7 +200,7 @@ namespace OnlineCasing.Forms
                 return;
             }
 
-            var movie = await _client.GetMovieAsync(int.Parse(movieId), MovieMethods.Credits).ConfigureAwait(true);
+            var movie = await _client.GetMovieAsync(movieId, MovieMethods.Credits).ConfigureAwait(true);
 
             HashSet<string> names = null;
             foreach (string name in movie.Credits.Cast.SelectMany(cast => cast.Character.Split(' ')))
@@ -197,13 +275,23 @@ namespace OnlineCasing.Forms
 
         private async void ButtonGetMovieID_Click(object sender, EventArgs e)
         {
-            if (comboBoxMovieID.SelectedItem == null)
+            if (string.IsNullOrWhiteSpace(comboBoxMovieID.Text) && comboBoxMovieID.SelectedItem == null)
             {
                 MessageBox.Show("Select a movie from combobox");
                 return;
             }
-            await GetNewIDAsync(((Movie)comboBoxMovieID.SelectedItem).Id.ToString());
-
+            if (int.TryParse(comboBoxMovieID.Text, out int movieId))
+            {
+                await GetNewIDAsync(movieId);
+            }
+            if (comboBoxMovieID.SelectedItem != null)
+            {
+                await GetNewIDAsync(((Movie)comboBoxMovieID.SelectedItem).Id);
+            }
+            if (comboBoxMovieID.Text.Length > 0)
+            {
+                MessageBox.Show("Invalid movie id");
+            }
             // todo: should clear controls?
         }
 
@@ -221,7 +309,8 @@ namespace OnlineCasing.Forms
 
         private void DoCasingViaAPI(List<string> names)
         {
-            IEnumerable<Paragraph> copyParagraphs = _subtitle.Paragraphs.Select(p => new Paragraph(p.StartTime, p.EndTime, p.Text)
+            Cursor.Current = Cursors.WaitCursor;
+            var copyParagraphs = _subtitle.Paragraphs.Select(p => new Paragraph(p.StartTime, p.EndTime, p.Text)
             {
                 Number = p.Number
             });
@@ -242,6 +331,7 @@ namespace OnlineCasing.Forms
             // seCasingApi.DoCasing(paragraphs, names.ToList());
 
             UpdateListView(_subtitle.Paragraphs, paragraphs);
+            Cursor.Current = Cursors.Default;
         }
 
         private void UpdateListView(List<Paragraph> paragaphs, List<Paragraph> newParagraphs)
@@ -342,7 +432,7 @@ namespace OnlineCasing.Forms
 
         private async void ButtonGetNewID_Click(object sender, EventArgs e)
         {
-            await GetNewIDAsync(string.Empty);
+            await GetNewIDAsync(0);
         }
     }
 }

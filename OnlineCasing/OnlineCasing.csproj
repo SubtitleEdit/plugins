@@ -49,7 +49,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configs.cs" />
+    <Compile Include="Helpers\Configs.cs" />
     <Compile Include="Forms\ApiForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -69,11 +69,12 @@
     <Compile Include="Forms\GetMovieID.Designer.cs">
       <DependentUpon>GetMovieID.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\Movie.cs" />
     <Compile Include="OnlineCasing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SECasingApi.cs" />
     <Compile Include="Helpers\SettingUtils.cs" />
-    <Compile Include="Settings.cs" />
+    <Compile Include="Helpers\Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\ApiForm.resx">
@@ -94,7 +95,10 @@
   <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent Condition="$(SE_Plugin) != ''">xcopy /s /y $(TargetDir)*.* "$(SE_Plugin)"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>

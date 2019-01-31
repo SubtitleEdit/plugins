@@ -72,6 +72,7 @@ namespace OnlineCasing
         public static Settings Settings { get; set; }
         public static readonly string SettingFile = Path.Combine(FileUtils.Plugins, "onlie-casing-setting.json");
         private static JsonSerializerSettings jsonSettings;
+
         static Configs()
         {
             //TMDbLib.Utilities.Converters.CustomDatetimeFormatConverter
@@ -115,7 +116,7 @@ namespace OnlineCasing
                     CheckLastLine = false,
                     MakeUperCase = true,
                     Movies = new List<Movie>(),
-                    IgnoreWords = { "The" }
+                    IgnoreWords = new HashSet<string>()
                 };
             }
         }

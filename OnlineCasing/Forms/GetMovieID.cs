@@ -16,8 +16,28 @@ namespace OnlineCasing.Forms
         {
             InitializeComponent();
             Client = client;
-
             progressBar1.Visible = false;
+            //listViewMovies.Activation = ItemActivation.TwoClick;
+            listViewMovies.MouseDoubleClick += (sender, e) =>
+            {
+                ListViewItem li = listViewMovies.GetItemAt(e.X, e.Y);
+                System.Diagnostics.Debug.WriteLine($"clicks: {e.Clicks}");
+
+                if (e.Clicks == 2 && li != null)
+                {
+                    AddItem(li.Tag as SearchMovie);
+                    DialogResult = DialogResult.OK;
+                }
+            };
+            KeyPreview = true;
+            KeyUp += (sender, e) =>
+            {
+                if (e.KeyCode == Keys.Escape)
+                {
+                    DialogResult = DialogResult.Cancel;
+                }
+            };
+
         }
 
         public int ID { get; private set; }
@@ -72,22 +92,24 @@ namespace OnlineCasing.Forms
             {
                 return;
             }
+            AddItem(listViewMovies.SelectedItems[0].Tag as SearchMovie);
+            DialogResult = DialogResult.OK;
+        }
 
-            var movieSearch = listViewMovies.SelectedItems[0].Tag as SearchMovie;
-            ID = movieSearch.Id;
-
-            if (Configs.Settings.Movies.Any(m => m.Id == movieSearch.Id) == false)
+        private void AddItem(SearchMovie searchMovie)
+        {
+            ID = searchMovie.Id;
+            if (Configs.Settings.Movies.Any(m => m.Id == searchMovie.Id) == false)
             {
                 var movie = new Movie
                 {
-                    Id = movieSearch.Id,
-                    OriginalTitle = movieSearch.OriginalTitle,
-                    ReleaseDate = movieSearch.ReleaseDate.Value,
-                    Title = movieSearch.Title,
+                    Id = searchMovie.Id,
+                    OriginalTitle = searchMovie.OriginalTitle,
+                    ReleaseDate = searchMovie.ReleaseDate.Value,
+                    Title = searchMovie.Title,
                 };
                 Configs.Settings.Movies.Add(movie);
             }
-            DialogResult = DialogResult.OK;
         }
 
         private void TextBoxSearchQuery_KeyDown(object sender, KeyEventArgs e)
