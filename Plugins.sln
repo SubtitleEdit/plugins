@@ -86,6 +86,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BTScreenScraper", "BTScreen
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CopyPasteTranslate", "CopyPasteTranslate\DLL\CopyPasteTranslate.csproj", "{8B75158E-A6DD-46BB-9030-BF84C80BF7CC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DictionariesProvider", "DictionariesProvider\DictionariesProvider.csproj", "{E9D300DD-F041-47A8-B395-CF6E35D7A4C2}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Plugin-Shared\Plugin-Shared.projitems*{16b4be52-050a-4161-b0e3-9b07aa5f650b}*SharedItemsImports = 4
@@ -97,6 +99,7 @@ Global
 		Plugin-Shared\Plugin-Shared.projitems*{9e25ee45-e764-444f-9756-fe5479f4914d}*SharedItemsImports = 4
 		Plugin-Shared\Plugin-Shared.projitems*{a075780c-6bab-4e78-9fb2-b477219ddd72}*SharedItemsImports = 4
 		Plugin-Shared\Plugin-Shared.projitems*{d678802e-5d3a-4db0-94e9-104790d3044b}*SharedItemsImports = 4
+		Plugin-Shared\Plugin-Shared.projitems*{e9d300dd-f041-47a8-b395-cf6e35d7a4c2}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -242,6 +245,10 @@ Global
 		{8B75158E-A6DD-46BB-9030-BF84C80BF7CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B75158E-A6DD-46BB-9030-BF84C80BF7CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B75158E-A6DD-46BB-9030-BF84C80BF7CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9D300DD-F041-47A8-B395-CF6E35D7A4C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9D300DD-F041-47A8-B395-CF6E35D7A4C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9D300DD-F041-47A8-B395-CF6E35D7A4C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9D300DD-F041-47A8-B395-CF6E35D7A4C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -282,6 +289,7 @@ Global
 		{BC28A13A-5CCD-4B4C-886D-0CD632BAA6A6} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 		{D4A06801-371C-4474-94EF-97824D61294E} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 		{8B75158E-A6DD-46BB-9030-BF84C80BF7CC} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
+		{E9D300DD-F041-47A8-B395-CF6E35D7A4C2} = {21BBD88D-F935-419F-A68B-E8DA9F08E9C1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8BBF401C-6D00-4F22-BFC0-DE2673213D5B}
