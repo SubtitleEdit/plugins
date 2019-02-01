@@ -1,10 +1,7 @@
-﻿using Nikse.SubtitleEdit.PluginLogic;
-using Nikse.SubtitleEdit.PluginLogic.Forms;
+﻿using Nikse.SubtitleEdit.PluginLogic.Forms;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
@@ -25,13 +22,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public string DoAction(Form parentForm, string srtText, double frameRate, string uiLineBreak, string file, string videoFile, string rawText)
         {
+            AppDomain.CurrentDomain.AssemblyResolve += AssemblyUtils.CurrentDomainAssemblyResolve;
+
             using (var mainForm = new Main())
             {
+                mainForm.Text = $"{Name} - v{Version:0.0}";
                 mainForm.StartPosition = FormStartPosition.CenterParent;
                 mainForm.ShowDialog(parentForm);
             }
 
             return string.Empty;
         }
+
     }
 }

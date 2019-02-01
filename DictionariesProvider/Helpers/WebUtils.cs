@@ -1,9 +1,7 @@
 ﻿using Nikse.SubtitleEdit.PluginLogic.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Nikse.SubtitleEdit.PluginLogic.Helpers
@@ -22,7 +20,6 @@ namespace Nikse.SubtitleEdit.PluginLogic.Helpers
             //var httpClientHandler = new HttpClientHandler
             //{
             //};
-
             foreach (DownloadLink dl in downloadLinks)
             {
                 var response = await _httpClient.GetAsync(dl.Url, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
@@ -30,6 +27,26 @@ namespace Nikse.SubtitleEdit.PluginLogic.Helpers
             }
         }
 
+        public async Task Download(string url)
+        {
+            var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+#if DEBUG
+            foreach (var item in response.Headers)
+            {
+                System.Diagnostics.Debug.WriteLine($"Key: {item.Key}");
+                foreach (var @value in item.Value)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Value: {value}");
+                }
+            }
+#endif
+        }
+
+
+        private void ExtraFile()
+        {
+        }
 
         public void Dispose()
         {

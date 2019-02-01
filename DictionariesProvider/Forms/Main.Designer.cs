@@ -28,15 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("ivandro ismael");
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("ismael");
+            this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.linkLabelOpenDicFolder = new System.Windows.Forms.LinkLabel();
             this.buttonOk = new System.Windows.Forms.Button();
             this.buttonDownload = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.buttonAddLink = new System.Windows.Forms.Button();
             this.textBoxDescription = new System.Windows.Forms.TextBox();
             this.textBoxNativeName = new System.Windows.Forms.TextBox();
@@ -48,7 +48,13 @@
             this.label3 = new System.Windows.Forms.Label();
             this.buttonRemove = new System.Windows.Forms.Button();
             this.buttonAddDictionary = new System.Windows.Forms.Button();
+            this.buttonUpdateStatus = new System.Windows.Forms.Button();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importFormXMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // listView1
@@ -60,17 +66,13 @@
             this.columnHeader1});
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
-            listViewGroup1.Header = "ListViewGroup";
-            listViewGroup1.Name = "listViewGroup1";
+            listViewGroup3.Header = "ListViewGroup";
+            listViewGroup3.Name = "listViewGroup1";
             this.listView1.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1});
+            listViewGroup3});
             this.listView1.HideSelection = false;
-            listViewItem1.Group = listViewGroup1;
-            this.listView1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2});
-            this.listView1.Location = new System.Drawing.Point(36, 176);
-            this.listView1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.listView1.Location = new System.Drawing.Point(37, 183);
+            this.listView1.Margin = new System.Windows.Forms.Padding(4);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(823, 303);
             this.listView1.TabIndex = 3;
@@ -97,8 +99,8 @@
             // buttonOk
             // 
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOk.Location = new System.Drawing.Point(760, 487);
-            this.buttonOk.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonOk.Location = new System.Drawing.Point(760, 494);
+            this.buttonOk.Margin = new System.Windows.Forms.Padding(4);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(100, 28);
             this.buttonOk.TabIndex = 6;
@@ -109,8 +111,8 @@
             // buttonDownload
             // 
             this.buttonDownload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonDownload.Location = new System.Drawing.Point(652, 487);
-            this.buttonDownload.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonDownload.Location = new System.Drawing.Point(652, 494);
+            this.buttonDownload.Margin = new System.Windows.Forms.Padding(4);
             this.buttonDownload.Name = "buttonDownload";
             this.buttonDownload.Size = new System.Drawing.Size(100, 28);
             this.buttonDownload.TabIndex = 5;
@@ -122,6 +124,7 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.linkLabel1);
             this.groupBox1.Controls.Add(this.buttonAddLink);
             this.groupBox1.Controls.Add(this.textBoxDescription);
             this.groupBox1.Controls.Add(this.textBoxNativeName);
@@ -131,19 +134,30 @@
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Location = new System.Drawing.Point(36, 15);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Location = new System.Drawing.Point(36, 23);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox1.Size = new System.Drawing.Size(824, 118);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Add/Update dictionary";
+            this.groupBox1.Text = "Add / Update dictionary";
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.linkLabel1.Location = new System.Drawing.Point(444, 83);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(252, 26);
+            this.linkLabel1.TabIndex = 9;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "Several url can be added by clicking the \"Add Link\"\r\nbutton.";
             // 
             // buttonAddLink
             // 
-            this.buttonAddLink.Location = new System.Drawing.Point(716, 55);
-            this.buttonAddLink.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonAddLink.Location = new System.Drawing.Point(716, 52);
+            this.buttonAddLink.Margin = new System.Windows.Forms.Padding(4);
             this.buttonAddLink.Name = "buttonAddLink";
             this.buttonAddLink.Size = new System.Drawing.Size(100, 28);
             this.buttonAddLink.TabIndex = 8;
@@ -154,7 +168,7 @@
             // textBoxDescription
             // 
             this.textBoxDescription.Location = new System.Drawing.Point(303, 57);
-            this.textBoxDescription.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBoxDescription.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxDescription.Name = "textBoxDescription";
             this.textBoxDescription.Size = new System.Drawing.Size(132, 22);
             this.textBoxDescription.TabIndex = 5;
@@ -162,7 +176,7 @@
             // textBoxNativeName
             // 
             this.textBoxNativeName.Location = new System.Drawing.Point(157, 57);
-            this.textBoxNativeName.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBoxNativeName.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxNativeName.Name = "textBoxNativeName";
             this.textBoxNativeName.Size = new System.Drawing.Size(132, 22);
             this.textBoxNativeName.TabIndex = 3;
@@ -170,8 +184,8 @@
             // comboBoxDownloadLinks
             // 
             this.comboBoxDownloadLinks.FormattingEnabled = true;
-            this.comboBoxDownloadLinks.Location = new System.Drawing.Point(448, 57);
-            this.comboBoxDownloadLinks.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.comboBoxDownloadLinks.Location = new System.Drawing.Point(447, 55);
+            this.comboBoxDownloadLinks.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxDownloadLinks.Name = "comboBoxDownloadLinks";
             this.comboBoxDownloadLinks.Size = new System.Drawing.Size(259, 24);
             this.comboBoxDownloadLinks.TabIndex = 7;
@@ -179,7 +193,7 @@
             // textBoxEnglishName
             // 
             this.textBoxEnglishName.Location = new System.Drawing.Point(12, 57);
-            this.textBoxEnglishName.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBoxEnglishName.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxEnglishName.Name = "textBoxEnglishName";
             this.textBoxEnglishName.Size = new System.Drawing.Size(132, 22);
             this.textBoxEnglishName.TabIndex = 1;
@@ -227,8 +241,8 @@
             // buttonRemove
             // 
             this.buttonRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonRemove.Location = new System.Drawing.Point(760, 140);
-            this.buttonRemove.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonRemove.Location = new System.Drawing.Point(760, 147);
+            this.buttonRemove.Margin = new System.Windows.Forms.Padding(4);
             this.buttonRemove.Name = "buttonRemove";
             this.buttonRemove.Size = new System.Drawing.Size(100, 28);
             this.buttonRemove.TabIndex = 2;
@@ -238,8 +252,8 @@
             // buttonAddDictionary
             // 
             this.buttonAddDictionary.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonAddDictionary.Location = new System.Drawing.Point(652, 140);
-            this.buttonAddDictionary.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonAddDictionary.Location = new System.Drawing.Point(652, 147);
+            this.buttonAddDictionary.Margin = new System.Windows.Forms.Padding(4);
             this.buttonAddDictionary.Name = "buttonAddDictionary";
             this.buttonAddDictionary.Size = new System.Drawing.Size(100, 28);
             this.buttonAddDictionary.TabIndex = 1;
@@ -247,11 +261,52 @@
             this.buttonAddDictionary.UseVisualStyleBackColor = true;
             this.buttonAddDictionary.Click += new System.EventHandler(this.ButtonAddDictionary_Click);
             // 
+            // buttonUpdateStatus
+            // 
+            this.buttonUpdateStatus.Location = new System.Drawing.Point(35, 148);
+            this.buttonUpdateStatus.Name = "buttonUpdateStatus";
+            this.buttonUpdateStatus.Size = new System.Drawing.Size(100, 28);
+            this.buttonUpdateStatus.TabIndex = 7;
+            this.buttonUpdateStatus.Text = "Update status";
+            this.buttonUpdateStatus.UseVisualStyleBackColor = true;
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(896, 24);
+            this.menuStrip1.TabIndex = 8;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.importFormXMLToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
+            // importFormXMLToolStripMenuItem
+            // 
+            this.importFormXMLToolStripMenuItem.Name = "importFormXMLToolStripMenuItem";
+            this.importFormXMLToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.importFormXMLToolStripMenuItem.Text = "Import form XML";
+            this.importFormXMLToolStripMenuItem.Click += new System.EventHandler(this.ImportFormXMLToolStripMenuItem_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(896, 530);
+            this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.buttonUpdateStatus);
             this.Controls.Add(this.buttonAddDictionary);
             this.Controls.Add(this.buttonRemove);
             this.Controls.Add(this.groupBox1);
@@ -260,11 +315,14 @@
             this.Controls.Add(this.linkLabelOpenDicFolder);
             this.Controls.Add(this.listView1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.MainMenuStrip = this.menuStrip1;
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Main";
             this.Text = "Main";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -289,5 +347,11 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox comboBoxDownloadLinks;
         private System.Windows.Forms.Button buttonAddLink;
+        private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.Button buttonUpdateStatus;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importFormXMLToolStripMenuItem;
     }
 }

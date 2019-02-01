@@ -25,7 +25,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public string DoAction(Form parentForm, string srtText, double frameRate, string UILineBreak, string file, string videoFile, string rawText)
         {
             AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += CurrentDomain_ReflectionOnlyAssemblyResolve;
-            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+            AppDomain.CurrentDomain.AssemblyResolve += AssemblyUtils.CurrentDomainAssemblyResolve;
 
             // BuildFixCasing(parentForm, new List<string>());
             var subRip = new SubRip();
@@ -51,12 +51,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return string.Empty;
         }
 
-        private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
-        {
-            var pluginFile = Path.Combine(FileUtils.Plugins, $"{args.Name.Split(',').First()}.dll");
-            return Assembly.Load(File.ReadAllBytes(pluginFile));
-        }
-
         private Assembly CurrentDomain_ReflectionOnlyAssemblyResolve(object sender, ResolveEventArgs args)
         {
             System.Diagnostics.Trace.WriteLine("CurrentDomain_ReflectionOnlyAssemblyResolve invoked!");
@@ -75,7 +69,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // running in installed mode
             if (ass == null)
             {
-                
+
             }
 
             var fixCasingT = ass.GetType("Nikse.SubtitleEdit.Core.FixCasing");

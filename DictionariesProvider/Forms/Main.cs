@@ -1,22 +1,20 @@
-﻿using Nikse.SubtitleEdit.PluginLogic.Models;
+﻿using Newtonsoft.Json;
+using Nikse.SubtitleEdit.PluginLogic.Helpers;
+using Nikse.SubtitleEdit.PluginLogic.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Newtonsoft.Json;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace Nikse.SubtitleEdit.PluginLogic.Forms
 {
     public partial class Main : Form
     {
         private const string SettingFile = "DictionariesProvider.json";
+        private WebUtils _webUtils;
 
         private List<DictionaryInfo> DictionariesInfo { get; set; }
 
@@ -32,12 +30,10 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
             {
                 Process.Start(FileUtils.Dictionary);
             };
-
         }
 
         private void LoadConfigs()
         {
-
             string file = Path.Combine(FileUtils.Plugins, SettingFile);
             if (File.Exists(file))
             {
@@ -98,16 +94,17 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
             listView1.BeginUpdate();
             listView1.Items.Clear();
 
-            foreach (var item in DictionariesInfo)
+            foreach (DictionaryInfo di in DictionariesInfo)
             {
-                var group = new ListViewGroup(item.EnglishName);
+                var group = new ListViewGroup(di.EnglishName);
                 listView1.Groups.Add(group);
-                var lItems = item.DownloadLinks.Select(di => new ListViewItem(di.Url.ToString())
+                var downloadLinks = di.DownloadLinks.Select(dl => new ListViewItem(dl.Url.ToString())
                 {
-                    Group = group
+                    Group = group,
+                    Tag = dl
                 }).ToArray();
                 //group.Items.AddRange(lItems);
-                listView1.Items.AddRange(lItems);
+                listView1.Items.AddRange(downloadLinks);
             }
 
             listView1.EndUpdate();
@@ -121,9 +118,59 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
             DialogResult = DialogResult.OK;
         }
 
-        private void ButtonDownload_Click(object sender, EventArgs e)
+        private async void ButtonDownload_Click(object sender, EventArgs e)
         {
+            _webUtils = _webUtils ?? new WebUtils(new System.Net.Http.HttpClient());
 
+            if (listView1.SelectedItems.Count == 0)
+            {
+                return;
+            }
+
+            var dl = (DownloadLink)listView1.SelectedItems[0].Tag;
+            await _webUtils.Download(dl.Url.ToString()).ConfigureAwait(true);
+
+        }
+
+
+        private void ImportFormXMLToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var openfile = new OpenFileDialog())
+            {
+                openfile.Filter = "(Dictionary files) (*.xml)|*.xml";
+
+                if (openfile.ShowDialog() == DialogResult.OK)
+                {
+                    //                  < OpenOfficeDictionaries >
+                    //< Dictionary >
+                    //  < EnglishName > Afrikaans </ EnglishName >
+                    //  < NativeName > Afrikaans </ NativeName >
+                    //  < DownloadLink > http://downloads.sourceforge.net/project/aoo-extensions/1109/0/dict-af.oxt?r=http%3A%2F%2Fextensions.services.openoffice.org%2Fen%2Fproject%2Fafrikaans-spell-checker&amp;ts=1373917891&amp;use_mirror=kent</DownloadLink>
+                    //  < Description > Afrikaans spell checker</ Description >
+                    string xmlfile = openfile.FileName;
+
+                    var xdoc = XDocument.Load(xmlfile);
+                    var elDics = xdoc.Descendants("Dictionary");
+
+                    DictionariesInfo = elDics.Select(el =>
+                     new DictionaryInfo
+                     {
+                         NativeName = el.Element("NativeName")?.Value,
+                         EnglishName = el.Element("EnglishName")?.Value,
+                         Description = el.Element("Description")?.Value,
+                         DownloadLinks = new List<DownloadLink>{
+                              new DownloadLink
+                              {
+                                  Url = new Uri(el.Element("DownloadLink").Value),
+                                  Status = string.Empty
+                              }
+                         }
+                     }).ToList();
+
+                    UpdateListView();
+                }
+
+            }
         }
     }
 }
