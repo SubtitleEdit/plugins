@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.linkLabelOpenDicFolder = new System.Windows.Forms.LinkLabel();
@@ -66,15 +66,15 @@
             this.columnHeader1});
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
-            listViewGroup3.Header = "ListViewGroup";
-            listViewGroup3.Name = "listViewGroup1";
+            listViewGroup1.Header = "ListViewGroup";
+            listViewGroup1.Name = "listViewGroup1";
             this.listView1.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup3});
+            listViewGroup1});
             this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(37, 183);
+            this.listView1.Location = new System.Drawing.Point(13, 183);
             this.listView1.Margin = new System.Windows.Forms.Padding(4);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(823, 303);
+            this.listView1.Size = new System.Drawing.Size(870, 303);
             this.listView1.TabIndex = 3;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -88,7 +88,7 @@
             // 
             this.linkLabelOpenDicFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.linkLabelOpenDicFolder.AutoSize = true;
-            this.linkLabelOpenDicFolder.Location = new System.Drawing.Point(32, 500);
+            this.linkLabelOpenDicFolder.Location = new System.Drawing.Point(10, 500);
             this.linkLabelOpenDicFolder.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.linkLabelOpenDicFolder.Name = "linkLabelOpenDicFolder";
             this.linkLabelOpenDicFolder.Size = new System.Drawing.Size(139, 16);
@@ -99,7 +99,7 @@
             // buttonOk
             // 
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOk.Location = new System.Drawing.Point(760, 494);
+            this.buttonOk.Location = new System.Drawing.Point(783, 494);
             this.buttonOk.Margin = new System.Windows.Forms.Padding(4);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(100, 28);
@@ -111,7 +111,7 @@
             // buttonDownload
             // 
             this.buttonDownload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonDownload.Location = new System.Drawing.Point(652, 494);
+            this.buttonDownload.Location = new System.Drawing.Point(675, 494);
             this.buttonDownload.Margin = new System.Windows.Forms.Padding(4);
             this.buttonDownload.Name = "buttonDownload";
             this.buttonDownload.Size = new System.Drawing.Size(100, 28);
@@ -134,11 +134,11 @@
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Location = new System.Drawing.Point(36, 23);
+            this.groupBox1.Location = new System.Drawing.Point(13, 23);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(824, 118);
+            this.groupBox1.Size = new System.Drawing.Size(870, 118);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Add / Update dictionary";
@@ -241,7 +241,7 @@
             // buttonRemove
             // 
             this.buttonRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonRemove.Location = new System.Drawing.Point(760, 147);
+            this.buttonRemove.Location = new System.Drawing.Point(783, 147);
             this.buttonRemove.Margin = new System.Windows.Forms.Padding(4);
             this.buttonRemove.Name = "buttonRemove";
             this.buttonRemove.Size = new System.Drawing.Size(100, 28);
@@ -252,7 +252,7 @@
             // buttonAddDictionary
             // 
             this.buttonAddDictionary.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonAddDictionary.Location = new System.Drawing.Point(652, 147);
+            this.buttonAddDictionary.Location = new System.Drawing.Point(675, 147);
             this.buttonAddDictionary.Margin = new System.Windows.Forms.Padding(4);
             this.buttonAddDictionary.Name = "buttonAddDictionary";
             this.buttonAddDictionary.Size = new System.Drawing.Size(100, 28);
@@ -263,7 +263,7 @@
             // 
             // buttonUpdateStatus
             // 
-            this.buttonUpdateStatus.Location = new System.Drawing.Point(35, 148);
+            this.buttonUpdateStatus.Location = new System.Drawing.Point(13, 148);
             this.buttonUpdateStatus.Name = "buttonUpdateStatus";
             this.buttonUpdateStatus.Size = new System.Drawing.Size(100, 28);
             this.buttonUpdateStatus.TabIndex = 7;
@@ -296,7 +296,7 @@
             // importFormXMLToolStripMenuItem
             // 
             this.importFormXMLToolStripMenuItem.Name = "importFormXMLToolStripMenuItem";
-            this.importFormXMLToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.importFormXMLToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.importFormXMLToolStripMenuItem.Text = "Import form XML";
             this.importFormXMLToolStripMenuItem.Click += new System.EventHandler(this.ImportFormXMLToolStripMenuItem_Click);
             // 

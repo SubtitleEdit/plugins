@@ -62,7 +62,7 @@
       <DependentUpon>GetMovieID.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Movie.cs" />
-    <Compile Include="OnlineCasing.cs" />
+    <Compile Include="EntryPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SECasingApi.cs" />
     <Compile Include="Helpers\SettingUtils.cs" />
