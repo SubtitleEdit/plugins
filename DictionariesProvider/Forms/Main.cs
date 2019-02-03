@@ -30,6 +30,34 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
             {
                 Process.Start(FileUtils.Dictionary);
             };
+
+            listViewDownloadUrls.SelectedIndexChanged += (sender, e) =>
+            {
+                if (listViewDownloadUrls.SelectedIndices.Count == 0)
+                {
+                    return;
+                }
+
+                var lvi = listViewDownloadUrls.SelectedItems[0];
+                var di = (DictionaryInfo)lvi.Group.Tag;
+
+                textBoxEnglishName.Text = di.EnglishName;
+                textBoxNativeName.Text = di.NativeName;
+                textBoxDescription.Text = di.Description;
+
+                comboBoxDownloadLinks.BeginUpdate();
+                comboBoxDownloadLinks.Items.Clear();
+                comboBoxDownloadLinks.Items.AddRange(di.DownloadLinks.Select(dl => dl.Url.OriginalString).ToArray());
+                comboBoxDownloadLinks.EndUpdate();
+
+                checkBoxStatus.Checked = ((DownloadLink)lvi.Tag).Status.Equals("true");
+            };
+
+            comboBoxDownloadLinks.SelectedIndexChanged += (sender, e) =>
+            {
+                comboBoxDownloadLinks.Text = comboBoxDownloadLinks.SelectedText;
+            };
+
         }
 
         private void LoadConfigs()
@@ -91,23 +119,24 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
             }
             // get or create new group
 
-            listView1.BeginUpdate();
-            listView1.Items.Clear();
+            listViewDownloadUrls.BeginUpdate();
+            listViewDownloadUrls.Items.Clear();
 
             foreach (DictionaryInfo di in DictionariesInfo)
             {
                 var group = new ListViewGroup(di.EnglishName);
-                listView1.Groups.Add(group);
-                var downloadLinks = di.DownloadLinks.Select(dl => new ListViewItem(dl.Url.ToString())
+                group.Tag = di;
+                listViewDownloadUrls.Groups.Add(group);
+                var downloadLinks = di.DownloadLinks.Select(dl => new ListViewItem(dl.Url.OriginalString)
                 {
                     Group = group,
                     Tag = dl
                 }).ToArray();
                 //group.Items.AddRange(lItems);
-                listView1.Items.AddRange(downloadLinks);
+                listViewDownloadUrls.Items.AddRange(downloadLinks);
             }
 
-            listView1.EndUpdate();
+            listViewDownloadUrls.EndUpdate();
         }
 
         private void ButtonOk_Click(object sender, EventArgs e)
@@ -122,16 +151,15 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
         {
             _webUtils = _webUtils ?? new WebUtils(new System.Net.Http.HttpClient());
 
-            if (listView1.SelectedItems.Count == 0)
+            if (listViewDownloadUrls.SelectedItems.Count == 0)
             {
                 return;
             }
 
-            var dl = (DownloadLink)listView1.SelectedItems[0].Tag;
-            await _webUtils.Download(dl.Url.ToString()).ConfigureAwait(true);
+            var dl = (DownloadLink)listViewDownloadUrls.SelectedItems[0].Tag;
+            await _webUtils.Download(dl.Url.OriginalString).ConfigureAwait(true);
 
         }
-
 
         private void ImportFormXMLToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -141,12 +169,6 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
 
                 if (openfile.ShowDialog() == DialogResult.OK)
                 {
-                    //                  < OpenOfficeDictionaries >
-                    //< Dictionary >
-                    //  < EnglishName > Afrikaans </ EnglishName >
-                    //  < NativeName > Afrikaans </ NativeName >
-                    //  < DownloadLink > http://downloads.sourceforge.net/project/aoo-extensions/1109/0/dict-af.oxt?r=http%3A%2F%2Fextensions.services.openoffice.org%2Fen%2Fproject%2Fafrikaans-spell-checker&amp;ts=1373917891&amp;use_mirror=kent</DownloadLink>
-                    //  < Description > Afrikaans spell checker</ Description >
                     string xmlfile = openfile.FileName;
 
                     var xdoc = XDocument.Load(xmlfile);

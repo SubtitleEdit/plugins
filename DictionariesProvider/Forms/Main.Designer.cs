@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.listViewDownloadUrls = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.linkLabelOpenDicFolder = new System.Windows.Forms.LinkLabel();
             this.buttonOk = new System.Windows.Forms.Button();
@@ -53,31 +53,32 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importFormXMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkBoxStatus = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // listView1
+            // listViewDownloadUrls
             // 
-            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.listViewDownloadUrls.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.listViewDownloadUrls.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
-            this.listView1.FullRowSelect = true;
-            this.listView1.GridLines = true;
+            this.listViewDownloadUrls.FullRowSelect = true;
+            this.listViewDownloadUrls.GridLines = true;
             listViewGroup1.Header = "ListViewGroup";
             listViewGroup1.Name = "listViewGroup1";
-            this.listView1.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
+            this.listViewDownloadUrls.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
             listViewGroup1});
-            this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(13, 183);
-            this.listView1.Margin = new System.Windows.Forms.Padding(4);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(870, 303);
-            this.listView1.TabIndex = 3;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
+            this.listViewDownloadUrls.HideSelection = false;
+            this.listViewDownloadUrls.Location = new System.Drawing.Point(13, 183);
+            this.listViewDownloadUrls.Margin = new System.Windows.Forms.Padding(4);
+            this.listViewDownloadUrls.Name = "listViewDownloadUrls";
+            this.listViewDownloadUrls.Size = new System.Drawing.Size(870, 303);
+            this.listViewDownloadUrls.TabIndex = 3;
+            this.listViewDownloadUrls.UseCompatibleStateImageBehavior = false;
+            this.listViewDownloadUrls.View = System.Windows.Forms.View.Details;
             // 
             // columnHeader1
             // 
@@ -156,7 +157,7 @@
             // 
             // buttonAddLink
             // 
-            this.buttonAddLink.Location = new System.Drawing.Point(716, 52);
+            this.buttonAddLink.Location = new System.Drawing.Point(762, 52);
             this.buttonAddLink.Margin = new System.Windows.Forms.Padding(4);
             this.buttonAddLink.Name = "buttonAddLink";
             this.buttonAddLink.Size = new System.Drawing.Size(100, 28);
@@ -187,7 +188,7 @@
             this.comboBoxDownloadLinks.Location = new System.Drawing.Point(447, 55);
             this.comboBoxDownloadLinks.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxDownloadLinks.Name = "comboBoxDownloadLinks";
-            this.comboBoxDownloadLinks.Size = new System.Drawing.Size(259, 24);
+            this.comboBoxDownloadLinks.Size = new System.Drawing.Size(307, 24);
             this.comboBoxDownloadLinks.TabIndex = 7;
             // 
             // textBoxEnglishName
@@ -300,11 +301,22 @@
             this.importFormXMLToolStripMenuItem.Text = "Import form XML";
             this.importFormXMLToolStripMenuItem.Click += new System.EventHandler(this.ImportFormXMLToolStripMenuItem_Click);
             // 
+            // checkBoxStatus
+            // 
+            this.checkBoxStatus.AutoSize = true;
+            this.checkBoxStatus.Location = new System.Drawing.Point(133, 156);
+            this.checkBoxStatus.Name = "checkBoxStatus";
+            this.checkBoxStatus.Size = new System.Drawing.Size(64, 20);
+            this.checkBoxStatus.TabIndex = 9;
+            this.checkBoxStatus.Text = "Status";
+            this.checkBoxStatus.UseVisualStyleBackColor = true;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(896, 530);
+            this.Controls.Add(this.checkBoxStatus);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.buttonUpdateStatus);
             this.Controls.Add(this.buttonAddDictionary);
@@ -313,7 +325,7 @@
             this.Controls.Add(this.buttonDownload);
             this.Controls.Add(this.buttonOk);
             this.Controls.Add(this.linkLabelOpenDicFolder);
-            this.Controls.Add(this.listView1);
+            this.Controls.Add(this.listViewDownloadUrls);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(4);
@@ -330,7 +342,7 @@
 
         #endregion
 
-        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ListView listViewDownloadUrls;
         private System.Windows.Forms.LinkLabel linkLabelOpenDicFolder;
         private System.Windows.Forms.Button buttonOk;
         private System.Windows.Forms.Button buttonDownload;
@@ -353,5 +365,6 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importFormXMLToolStripMenuItem;
+        private System.Windows.Forms.CheckBox checkBoxStatus;
     }
 }
