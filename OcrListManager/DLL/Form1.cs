@@ -4,8 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml;
 using System.Xml.Linq;
+using System.Xml.XPath;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -98,7 +98,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             FillListView();
             textBoxNewWord.Text = string.Empty;
             textBoxNewWord.Focus();
-//TODO:            listBoxNames.SelectedIndex = _namesList. .(name);
+            //TODO:            listBoxNames.SelectedIndex = _namesList. .(name);
             _changed = true;
         }
 
@@ -159,8 +159,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void DeleteOcrPair(string name)
         {
-            if (MessageBox.Show(this, "Delete '" + name + "' ?", string.Empty, MessageBoxButtons.YesNo) ==
-                DialogResult.Yes)
+            if (MessageBox.Show(this, "Delete '" + name + "' ?", string.Empty, MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 var arr = name.Replace(SplitString, "\n").Split('\n');
                 if (arr.Length == 2)
@@ -218,11 +217,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     var xdoc = XDocument.Load(openFileDialog1.FileName);
                     if (xdoc.Document != null)
                     {
-                        var xElement = xdoc.Document.Element("ReplaceList");
+                        var xElement = xdoc.Document.XPathSelectElement("ReplaceList");
+                        if (xElement == null)
+                        {
+                            xElement = xdoc.Document.XPathSelectElement("OCRFixReplaceList");                            
+                        }
                         if (xElement != null)
                         {
                             var element = xElement.Element("WholeWords");
-                            if (element != null) { 
+                            if (element != null)
+                            {
                                 foreach (var wordNode in element.Elements("Word"))
                                 {
                                     var xAttribute = wordNode.Attribute("from");
@@ -262,8 +266,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 listBoxImport.EndUpdate();
 
                 labelImportCount.Text = $"{listBoxImport.Items.Count:###,##0}";
-                MessageBox.Show("Words found: " + listBoxImport.Items.Count + Environment.NewLine + 
-                                "Existing words skipped: " + countSkippedExisting + Environment.NewLine + 
+                MessageBox.Show("Words found: " + listBoxImport.Items.Count + Environment.NewLine +
+                                "Existing words skipped: " + countSkippedExisting + Environment.NewLine +
                                 "One letter word skipped: " + countSkippedOneLetter);
             }
         }
@@ -336,5 +340,58 @@ namespace Nikse.SubtitleEdit.PluginLogic
             DeleteOcrPair(name);
         }
 
+        private void contextMenuStripImport_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            toolStripMenuItemRemoveImport.Enabled = listBoxImport.SelectedIndex >= 0;
+            var name = listBoxImport.Items[listBoxImport.SelectedIndex].ToString().Replace(SplitString, "\n").Split('\n').First();
+            googleItToolStripMenuItem.Text = "Google '" + name + "'";
+        }
+
+        private void toolStripMenuItemRemoveImport_Click(object sender, EventArgs e)
+        {
+            int index = listBoxImport.SelectedIndex;
+            if (index < 0)
+            {
+                return;
+            }
+
+            var indices = new List<int>();
+            foreach (int ix in listBoxImport.SelectedIndices)
+            {
+                indices.Add(ix);
+            }
+            foreach (var ix in indices.OrderByDescending(p=>p))
+            {
+                listBoxImport.Items.RemoveAt(ix);
+            }
+
+            if (index < listBoxImport.Items.Count)
+            {
+                listBoxImport.SelectedIndex = index;
+            }
+            else if (index > 0)
+            {
+                listBoxImport.SelectedIndex = index - 1;
+            }
+        }
+
+        private void listBoxImport_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                toolStripMenuItemRemoveImport_Click(sender, e);
+            }
+        }
+
+        private void googleItToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int index = listBoxImport.SelectedIndex;
+            if (index < 0)
+            {
+                return;
+            }
+            var name = listBoxImport.Items[listBoxImport.SelectedIndex].ToString().Replace(SplitString, "\n").Split('\n').First();
+            Process.Start("https://www.google.com/search?q=" + Uri.EscapeUriString(name));
+        }
     }
 }

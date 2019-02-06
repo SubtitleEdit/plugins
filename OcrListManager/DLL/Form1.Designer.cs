@@ -45,7 +45,11 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteCurrentNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStripImport = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItemRemoveImport = new System.Windows.Forms.ToolStripMenuItem();
+            this.googleItToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
+            this.contextMenuStripImport.SuspendLayout();
             this.SuspendLayout();
             // 
             // listBoxNames
@@ -53,6 +57,7 @@
             this.listBoxNames.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.listBoxNames.ContextMenuStrip = this.contextMenuStrip1;
             this.listBoxNames.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listBoxNames.FormattingEnabled = true;
             this.listBoxNames.Location = new System.Drawing.Point(12, 91);
@@ -140,6 +145,7 @@
             // 
             this.listBoxImport.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.listBoxImport.ContextMenuStrip = this.contextMenuStripImport;
             this.listBoxImport.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listBoxImport.FormattingEnabled = true;
             this.listBoxImport.Location = new System.Drawing.Point(503, 91);
@@ -148,6 +154,7 @@
             this.listBoxImport.Size = new System.Drawing.Size(205, 472);
             this.listBoxImport.TabIndex = 8;
             this.listBoxImport.DoubleClick += new System.EventHandler(this.listBoxNames_DoubleClick);
+            this.listBoxImport.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listBoxImport_KeyDown);
             // 
             // labelImportCount
             // 
@@ -190,15 +197,38 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.deleteCurrentNameToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(118, 26);
             this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
             // deleteCurrentNameToolStripMenuItem
             // 
             this.deleteCurrentNameToolStripMenuItem.Name = "deleteCurrentNameToolStripMenuItem";
-            this.deleteCurrentNameToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.deleteCurrentNameToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.deleteCurrentNameToolStripMenuItem.Text = "Remove";
             this.deleteCurrentNameToolStripMenuItem.Click += new System.EventHandler(this.deleteCurrentNameToolStripMenuItem_Click);
+            // 
+            // contextMenuStripImport
+            // 
+            this.contextMenuStripImport.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemRemoveImport,
+            this.googleItToolStripMenuItem});
+            this.contextMenuStripImport.Name = "contextMenuStrip1";
+            this.contextMenuStripImport.Size = new System.Drawing.Size(181, 70);
+            this.contextMenuStripImport.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripImport_Opening);
+            // 
+            // toolStripMenuItemRemoveImport
+            // 
+            this.toolStripMenuItemRemoveImport.Name = "toolStripMenuItemRemoveImport";
+            this.toolStripMenuItemRemoveImport.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemRemoveImport.Text = "Remove";
+            this.toolStripMenuItemRemoveImport.Click += new System.EventHandler(this.toolStripMenuItemRemoveImport_Click);
+            // 
+            // googleItToolStripMenuItem
+            // 
+            this.googleItToolStripMenuItem.Name = "googleItToolStripMenuItem";
+            this.googleItToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.googleItToolStripMenuItem.Text = "Google it";
+            this.googleItToolStripMenuItem.Click += new System.EventHandler(this.googleItToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -223,6 +253,7 @@
             this.Text = "SE OCR fix list manager";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.contextMenuStrip1.ResumeLayout(false);
+            this.contextMenuStripImport.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -246,6 +277,9 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem deleteCurrentNameToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripImport;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemRemoveImport;
+        private System.Windows.Forms.ToolStripMenuItem googleItToolStripMenuItem;
     }
 }
 
