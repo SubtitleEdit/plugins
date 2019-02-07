@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -50,14 +51,14 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
                 comboBoxDownloadLinks.Items.AddRange(di.DownloadLinks.Select(dl => dl.Url.OriginalString).ToArray());
                 comboBoxDownloadLinks.EndUpdate();
 
-                checkBoxStatus.Checked = ((DownloadLink)lvi.Tag).Status.Equals("true");
+                checkBoxStatus.Checked = ((DownloadLink)lvi.Tag).Status;
             };
 
             comboBoxDownloadLinks.SelectedIndexChanged += (sender, e) =>
             {
                 comboBoxDownloadLinks.Text = comboBoxDownloadLinks.SelectedText;
             };
-
+            _webUtils = new WebUtils(new System.Net.Http.HttpClient());
         }
 
         private void LoadConfigs()
@@ -66,7 +67,17 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
             if (File.Exists(file))
             {
                 string content = File.ReadAllText(file);
-                DictionariesInfo = JsonConvert.DeserializeObject<List<DictionaryInfo>>(content);
+                try
+                {
+                    DictionariesInfo = JsonConvert.DeserializeObject<List<DictionaryInfo>>(content);
+                }
+                catch
+                {
+                    // maybe the saving configuration changes
+                    File.Move(file, Path.GetDirectoryName(file) +
+                        Path.GetFileNameWithoutExtension(file) + ".old" + Path.GetExtension(file));
+                    DictionariesInfo = new List<DictionaryInfo>();
+                }
                 UpdateListView();
             }
             else
@@ -80,6 +91,11 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
             //GC.KeepAlive
             string newUrl = comboBoxDownloadLinks.Text;
 
+            ((DictionaryInfo)listViewDownloadUrls.SelectedItems[0].Group.Tag).DownloadLinks.Add(new DownloadLink
+            {
+                Status = true,
+                Url = new Uri(newUrl)
+            });
             comboBoxDownloadLinks.Items.Add(newUrl);
             //if (comboBoxDownloadLinks.Items.Cast<string>().Any(url => newUrl.Equals(newUrl, StringComparison.OrdinalIgnoreCase)) == false)
             //{
@@ -90,12 +106,12 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
             //}
 
             comboBoxDownloadLinks.Text = string.Empty;
+            UpdateListView();
         }
 
         private void ButtonAddDictionary_Click(object sender, EventArgs e)
         {
             // todo: validation
-
             // make sure group with same name doesn't already exits
 
             DictionariesInfo.Add(new DictionaryInfo
@@ -149,16 +165,18 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
 
         private async void ButtonDownload_Click(object sender, EventArgs e)
         {
-            _webUtils = _webUtils ?? new WebUtils(new System.Net.Http.HttpClient());
-
+            Cursor = Cursors.WaitCursor;
             if (listViewDownloadUrls.SelectedItems.Count == 0)
             {
                 return;
             }
 
-            var dl = (DownloadLink)listViewDownloadUrls.SelectedItems[0].Tag;
-            await _webUtils.Download(dl.Url.OriginalString).ConfigureAwait(true);
+            var downloadUrls = listViewDownloadUrls.SelectedItems.Cast<ListViewItem>().Select(lvi => lvi.Text);
+            // parallel asnc download
+            await Task.WhenAll(downloadUrls.Select(url => _webUtils.Download(url)));
 
+            Cursor = Cursors.Default;
+            MessageBox.Show("Download completed");
         }
 
         private void ImportFormXMLToolStripMenuItem_Click(object sender, EventArgs e)
@@ -184,7 +202,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
                               new DownloadLink
                               {
                                   Url = new Uri(el.Element("DownloadLink").Value),
-                                  Status = string.Empty
+                                  Status = true
                               }
                          }
                      }).ToList();
@@ -193,6 +211,14 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
                 }
 
             }
+        }
+
+        private async void ButtonUpdateStatus_Click(object sender, EventArgs e)
+        {
+            buttonUpdateStatus.Enabled = false;
+            //await System.Threading.Tasks.Task.Yield();
+            await _webUtils.UpdateStateAsync(DictionariesInfo.SelectMany(di => di.DownloadLinks));//.ConfigureAwait(true);
+            buttonUpdateStatus.Enabled = true;
         }
     }
 }

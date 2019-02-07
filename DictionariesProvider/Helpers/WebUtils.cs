@@ -1,9 +1,13 @@
 ﻿using Nikse.SubtitleEdit.PluginLogic.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Nikse.SubtitleEdit.PluginLogic.Helpers
@@ -15,35 +19,80 @@ namespace Nikse.SubtitleEdit.PluginLogic.Helpers
         public WebUtils(HttpClient httpClient)
         {
             _httpClient = httpClient;
+
+            // don't hang there for long
+            _httpClient.Timeout = TimeSpan.FromSeconds(5);
         }
 
-        public async Task UpdateState(IEnumerable<DownloadLink> downloadLinks)
+        public Task UpdateStateAsync(IEnumerable<DownloadLink> downloadLinks)
         {
-            //var httpClientHandler = new HttpClientHandler
-            //{
-            //};
-            foreach (DownloadLink dl in downloadLinks)
+            //await Task.Yield();
+
+            /*
+             Task<IEnumerable<string>> DownLoadAllUrls(string[] urls)
             {
-                var response = await _httpClient.GetAsync(dl.Url, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
-                dl.Status = response.StatusCode.ToString();
+                return Task.WhenAll(from url in urls select DownloadHtmlAsync(url));
             }
+            */
+
+            // also talks about the new c# 8.0 featuers "async in foreach"
+            // https://stackoverflow.com/questions/5061761/is-it-possible-to-await-yield-return-dosomethingasync
+
+            // pararell async run task (https://www.youtube.com/watch?v=2moh18sh5p4)
+            return Task.WhenAll(downloadLinks.Select(dl =>
+            {
+                return Task.Run(async () =>
+               {
+                   try
+                   {
+                       HttpResponseMessage response = await _httpClient.GetAsync(dl.Url).ConfigureAwait(false);
+                       dl.Status = response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Accepted;
+                   }
+                   catch (Exception ex)
+                   {
+                       Debug.Write(ex.Message);
+                   }
+               });
+            }));
+
+            //foreach (DownloadLink dl in downloadLinks)
+            //{
+            //    try
+            //    {
+            //        var response = await _httpClient.GetAsync(dl.Url, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+            //        Debug.WriteLine($"ThreadID: {Thread.CurrentThread.ManagedThreadId} - Response: {response.StatusCode} - {dl.Url.OriginalString}");
+            //        dl.Status = response.StatusCode == System.Net.HttpStatusCode.OK || response.StatusCode == System.Net.HttpStatusCode.Accepted;
+            //    }
+            //    catch
+            //    {
+            //        Debug.WriteLine("Exception...");
+            //        dl.Status = false;
+            //    }
+            //}
         }
 
         public async Task Download(string url)
         {
-            var response = await _httpClient.GetAsync(url/*, HttpCompletionOption.ResponseHeadersRead*/).ConfigureAwait(false);
-
-#if DEBUG
-            foreach (var item in response.Headers)
+            try
             {
-                System.Diagnostics.Debug.WriteLine($"Key: {item.Key}");
-                foreach (var @value in item.Value)
+                var response = await _httpClient.GetAsync(url/*, HttpCompletionOption.ResponseHeadersRead*/).ConfigureAwait(false);
+#if DEBUG
+                foreach (var item in response.Headers)
                 {
-                    System.Diagnostics.Debug.WriteLine($"Value: {value}");
+                    Debug.WriteLine($"Key: {item.Key}");
+                    foreach (var @value in item.Value)
+                    {
+                        Debug.WriteLine($"Value: {value}");
+                    }
                 }
-            }
 #endif
-            await ExtraFile(await response.Content.ReadAsStreamAsync()).ConfigureAwait(false);
+                await ExtraFile(await response.Content.ReadAsStreamAsync()).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                // report to debug and ignore 
+                Debug.WriteLine($"Message: {ex.Message}");
+            }
         }
 
 

@@ -112,12 +112,12 @@
             // buttonDownload
             // 
             this.buttonDownload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonDownload.Location = new System.Drawing.Point(675, 494);
+            this.buttonDownload.Location = new System.Drawing.Point(629, 494);
             this.buttonDownload.Margin = new System.Windows.Forms.Padding(4);
             this.buttonDownload.Name = "buttonDownload";
-            this.buttonDownload.Size = new System.Drawing.Size(100, 28);
+            this.buttonDownload.Size = new System.Drawing.Size(146, 28);
             this.buttonDownload.TabIndex = 5;
-            this.buttonDownload.Text = "Download";
+            this.buttonDownload.Text = "Download selected";
             this.buttonDownload.UseVisualStyleBackColor = true;
             this.buttonDownload.Click += new System.EventHandler(this.ButtonDownload_Click);
             // 
@@ -270,6 +270,7 @@
             this.buttonUpdateStatus.TabIndex = 7;
             this.buttonUpdateStatus.Text = "Update status";
             this.buttonUpdateStatus.UseVisualStyleBackColor = true;
+            this.buttonUpdateStatus.Click += new System.EventHandler(this.ButtonUpdateStatus_Click);
             // 
             // contextMenuStrip1
             // 

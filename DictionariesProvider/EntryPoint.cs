@@ -1,7 +1,5 @@
 ﻿using Nikse.SubtitleEdit.PluginLogic.Forms;
 using System;
-using System.IO;
-using System.Reflection;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic

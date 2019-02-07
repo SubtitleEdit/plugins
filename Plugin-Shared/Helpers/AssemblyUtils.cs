@@ -21,13 +21,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // the issue was because SubtitleEdit.exe force loading assembly without
             // (unloading pre - loaded assembly) or checking if the assembly
             // was already loaded into domain
+#if DEBUG
             var domainAssembly = AppDomain.CurrentDomain.GetAssemblies()
-                .FirstOrDefault(asm => asm.FullName.Equals(args.Name, StringComparison.OrdinalIgnoreCase));
+                    .FirstOrDefault(asm => asm.FullName.Equals(args.Name, StringComparison.OrdinalIgnoreCase));
 
             if (domainAssembly != null)
             {
                 return domainAssembly;
-            }
+            } 
+#endif
             //new AppDomainManager()
             //AppDomain.CreateDomain()
             var pluginFile = Path.Combine(FileUtils.Plugins, $"{args.Name.Split(',')[0]}.dll");

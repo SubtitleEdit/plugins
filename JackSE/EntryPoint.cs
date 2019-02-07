@@ -69,8 +69,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 // Xml template
                 /*
                  * <urls>
-                 *  <url titlie="Ivandrofly (github)">https://wwww.github.com/ivnadrofly</url>
-                 *  <url titlie="<url-title>">https://wwww.github.com/ivnadrofly</url>
+                 *  <url title="Ivandrofly (github)">https://wwww.github.com/ivandrofly</url>
+                 *  <url title="<url-title>">https://wwww.github.com/ivandrofly</url>
                  * </urls>
                  */
                 var xdoc = XDocument.Load(configFile);
