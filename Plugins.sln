@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28516.95
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSpellCheck", "WordSpellCheck\DLL\WordSpellCheck.csproj", "{40D9F0DB-1C62-4CFC-A412-796E753AA057}"
 EndProject
@@ -89,6 +89,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DictionariesProvider", "DictionariesProvider\DictionariesProvider.csproj", "{E9D300DD-F041-47A8-B395-CF6E35D7A4C2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TriggerOnLoad", "TriggerOnLoad\TriggerOnLoad.csproj", "{9443A623-77C2-499E-85D2-F7AA77DAAA00}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeepLScreenScraper", "DeepLScreenScraper\DLL\DeepLScreenScraper.csproj", "{D9C0B511-25EB-4009-A784-D52FB980CCF3}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -255,6 +257,10 @@ Global
 		{9443A623-77C2-499E-85D2-F7AA77DAAA00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9443A623-77C2-499E-85D2-F7AA77DAAA00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9443A623-77C2-499E-85D2-F7AA77DAAA00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9C0B511-25EB-4009-A784-D52FB980CCF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9C0B511-25EB-4009-A784-D52FB980CCF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9C0B511-25EB-4009-A784-D52FB980CCF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9C0B511-25EB-4009-A784-D52FB980CCF3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -297,6 +303,7 @@ Global
 		{8B75158E-A6DD-46BB-9030-BF84C80BF7CC} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 		{E9D300DD-F041-47A8-B395-CF6E35D7A4C2} = {21BBD88D-F935-419F-A68B-E8DA9F08E9C1}
 		{9443A623-77C2-499E-85D2-F7AA77DAAA00} = {21BBD88D-F935-419F-A68B-E8DA9F08E9C1}
+		{D9C0B511-25EB-4009-A784-D52FB980CCF3} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8BBF401C-6D00-4F22-BFC0-DE2673213D5B}
