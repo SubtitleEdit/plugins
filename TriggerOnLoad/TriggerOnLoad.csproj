@@ -42,11 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Plugin-Shared\IPlugin.cs">
-      <Link>IPlugin.cs</Link>
-    </Compile>
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent Condition="$(SE_Plugin) != ''">xcopy /s /y $(TargetDir)*.* "$(SE_Plugin)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

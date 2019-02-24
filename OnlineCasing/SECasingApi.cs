@@ -96,12 +96,13 @@ namespace OnlineCasing
 
             // marshall back the result and store them in local paragraphs
             int count = paragraphs.Count;
+            const BindingFlags binding = BindingFlags.Instance | BindingFlags.Public;
             for (int i = 0; i < count; i++)
             {
                 // marshall back to online-casing's paragraph type
                 object pSE = indexProp.GetValue(genericList, new object[] { i });
                 string text = (string)pSE.GetType()
-                    .GetProperty("Text", BindingFlags.Instance | BindingFlags.Public)
+                    .GetProperty("Text", binding)
                     .GetValue(pSE);
 
                 if (text.Equals(paragraphs[i].Text, StringComparison.Ordinal) == false)

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.421
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28606.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSpellCheck", "WordSpellCheck\DLL\WordSpellCheck.csproj", "{40D9F0DB-1C62-4CFC-A412-796E753AA057}"
 EndProject
@@ -102,6 +102,7 @@ Global
 		Plugin-Shared\Plugin-Shared.projitems*{705be92d-37ff-4320-85fd-90133c009c8c}*SharedItemsImports = 4
 		Plugin-Shared\Plugin-Shared.projitems*{7b7c681e-960e-414f-b5ea-1b9beba71b09}*SharedItemsImports = 4
 		Plugin-Shared\Plugin-Shared.projitems*{8500e79b-a64b-4fdf-924c-b959a93a5717}*SharedItemsImports = 4
+		Plugin-Shared\Plugin-Shared.projitems*{9443a623-77c2-499e-85d2-f7aa77daaa00}*SharedItemsImports = 4
 		Plugin-Shared\Plugin-Shared.projitems*{9e25ee45-e764-444f-9756-fe5479f4914d}*SharedItemsImports = 4
 		Plugin-Shared\Plugin-Shared.projitems*{a075780c-6bab-4e78-9fb2-b477219ddd72}*SharedItemsImports = 4
 		Plugin-Shared\Plugin-Shared.projitems*{d678802e-5d3a-4db0-94e9-104790d3044b}*SharedItemsImports = 4
