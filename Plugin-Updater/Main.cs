@@ -24,6 +24,15 @@ namespace Plugin_Updater
                 listViewPluginInfo.Columns[listViewPluginInfo.Columns.Count - 1].Width = -2;
             };
 
+
+            buttonUpload.Click += (sender, e) =>
+            {
+                using (var uploadToGithub = new UploadToGithub())
+                {
+                    uploadToGithub.ShowDialog();
+                }
+            };
+
             this.OnResize(EventArgs.Empty);
             listViewPluginInfo.SelectedIndexChanged += ListViewPluginInfo_SelectedIndexChanged;
             //TryLocatingMetadataFile();
@@ -518,6 +527,7 @@ namespace Plugin_Updater
             }
             return Uri.TryCreate(url, UriKind.Absolute, out Uri result);
         }
+
     }
 
     internal class SortContext

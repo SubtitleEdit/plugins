@@ -37,6 +37,7 @@
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.buttonUpload = new System.Windows.Forms.Button();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.buttonDownload = new System.Windows.Forms.Button();
@@ -125,6 +126,7 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.buttonUpload);
             this.groupBox1.Controls.Add(this.linkLabel2);
             this.groupBox1.Controls.Add(this.pictureBox1);
             this.groupBox1.Controls.Add(this.buttonDownload);
@@ -151,6 +153,15 @@
             this.groupBox1.Size = new System.Drawing.Size(1060, 251);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
+            // 
+            // buttonUpload
+            // 
+            this.buttonUpload.Location = new System.Drawing.Point(938, 183);
+            this.buttonUpload.Name = "buttonUpload";
+            this.buttonUpload.Size = new System.Drawing.Size(110, 24);
+            this.buttonUpload.TabIndex = 21;
+            this.buttonUpload.Text = "Upload plugin";
+            this.buttonUpload.UseVisualStyleBackColor = true;
             // 
             // linkLabel2
             // 
@@ -467,6 +478,7 @@
         private System.Windows.Forms.Button buttonCopy;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.LinkLabel linkLabel2;
+        private System.Windows.Forms.Button buttonUpload;
     }
 }
 
