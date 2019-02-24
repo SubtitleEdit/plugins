@@ -69,7 +69,7 @@
     <Name>DeepL Screen-Scraper translate</Name>
     <Description>DL screen-scraper translate: Requires .net 4.6.2+</Description>
     <Version>0.1</Version>
-    <Date>2019-02-160</Date>
+    <Date>2019-02-16</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/DeepLScreenScraper.zip</Url>
     <Author></Author>
   </Plugin>
