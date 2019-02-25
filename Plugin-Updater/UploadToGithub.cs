@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace Plugin_Updater
@@ -130,6 +131,13 @@ namespace Plugin_Updater
         {
             using (var fileDialog = new OpenFileDialog())
             {
+                string location = Assembly.GetExecutingAssembly().Location;
+
+                //Directory.SetCurrentDirectory(path + @"\..\..\..\");
+                string startupLocation = Directory.GetParent(location).Parent.Parent.Parent.FullName;
+                fileDialog.InitialDirectory = startupLocation;
+                fileDialog.Filter = "Dll files|*.dll|Zip files|*.zip|All files|*.*";
+
                 if (fileDialog.ShowDialog() == DialogResult.OK)
                 {
                     textBoxPath.Text = fileDialog.FileName;
