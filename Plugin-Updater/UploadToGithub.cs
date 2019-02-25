@@ -54,32 +54,39 @@ namespace Plugin_Updater
 
         private async void ButtonUpload_Click(object sender, EventArgs e)
         {
-            // validate zip file
-            string pluginFile = textBoxPath.Text;
-
-            if (!File.Exists(pluginFile))
+            if (comboBoxPath.Items.Count == 0)
             {
                 return;
             }
-
             Stream zipFileStream = null;
 
             //string tempFile = Path.GetTempFileName();
             string tempFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 
             // should zip?
-            if (!Path.GetExtension(pluginFile).Equals(".zip", StringComparison.OrdinalIgnoreCase))
+            if (comboBoxPath.Items.Count > 1)
             {
                 CleanTemp(tempFile);
 
-                using (var fs = new FileStream(pluginFile, System.IO.FileMode.Open))
                 using (var zipArchive = ZipFile.Open(tempFile, ZipArchiveMode.Create))
                 {
-                    //zipFileStream = new MemoryStream();
-                    //var zipArchive = new ZipArchive(zipFileStream, ZipArchiveMode.Create, true);
-                    var entry = zipArchive.CreateEntry(Path.GetFileName(pluginFile));
-                    Stream entryStream = entry.Open();
-                    await fs.CopyToAsync(entryStream);
+                    foreach (string file in comboBoxPath.Items)
+                    {
+                        // only allow zipping .dll files
+                        if (!file.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+                        {
+                            continue;
+                        }
+                        using (var fs = new FileStream(file, System.IO.FileMode.Open))
+                        {
+                            //zipFileStream = new MemoryStream();
+                            //var zipArchive = new ZipArchive(zipFileStream, ZipArchiveMode.Create, true);
+                            var entry = zipArchive.CreateEntry(Path.GetFileName(file));
+                            Stream entryStream = entry.Open();
+                            await fs.CopyToAsync(entryStream);
+                            entryStream.Close();
+                        }
+                    }
                 }
 
                 zipFileStream = new FileStream(tempFile, System.IO.FileMode.Open);
@@ -87,30 +94,31 @@ namespace Plugin_Updater
             else
             {
                 // it's already zipped
-                zipFileStream = new FileStream(pluginFile, System.IO.FileMode.Open);
+                zipFileStream = new FileStream(comboBoxPath.Items[0].ToString(), System.IO.FileMode.Open);
             }
 
             //zipFileStream.Position = 0;
-            IReadOnlyList<Release> releases = await _client.Repository.Release.GetAll(owner, name).ConfigureAwait(false);
+            IReadOnlyList<Release> releases = await _client.Repository.Release.GetAll(owner, name); // .ConfigureAwait(false);
             Release dotnetFour = releases.FirstOrDefault(r => r.Name.Equals(".NET 4+", StringComparison.OrdinalIgnoreCase));
             if (dotnetFour == null)
             {
                 return;
             }
 
-            string archiveFileName = Path.GetFileNameWithoutExtension(pluginFile) + ".zip";
+            // the main file name will be the selected file in combobox
+            string archiveFileName = Path.GetFileNameWithoutExtension(comboBoxPath.Text) + ".zip";
             ReleaseAssetUpload releaseAssetUpload = new ReleaseAssetUpload(archiveFileName, "application/zip", zipFileStream, null);
 
             // note: if file already exists it will throw apiexception
             // delete asset if already exits online
-            IReadOnlyList<ReleaseAsset> result = await _client.Repository.Release.GetAllAssets(owner, name, dotnetFour.Id).ConfigureAwait(false);
+            IReadOnlyList<ReleaseAsset> result = await _client.Repository.Release.GetAllAssets(owner, name, dotnetFour.Id); //.ConfigureAwait(false);
             ReleaseAsset oldAsset = result.FirstOrDefault(a => a.Name.Equals(releaseAssetUpload.FileName, StringComparison.Ordinal));
             if (oldAsset != null)
             {
                 await _client.Repository.Release.DeleteAsset(owner, name, oldAsset.Id).ConfigureAwait(false);
             }
 
-            ReleaseAsset releaseAsset = await _client.Repository.Release.UploadAsset(dotnetFour, releaseAssetUpload).ConfigureAwait(false);
+            ReleaseAsset releaseAsset = await _client.Repository.Release.UploadAsset(dotnetFour, releaseAssetUpload);//.ConfigureAwait(false);
             zipFileStream.Dispose();
 
             MessageBox.Show("Plugin uploaded with sucess!");
@@ -137,10 +145,16 @@ namespace Plugin_Updater
                 string startupLocation = Directory.GetParent(location).Parent.Parent.Parent.FullName;
                 fileDialog.InitialDirectory = startupLocation;
                 fileDialog.Filter = "Dll files|*.dll|Zip files|*.zip|All files|*.*";
+                fileDialog.Multiselect = true;
 
                 if (fileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    textBoxPath.Text = fileDialog.FileName;
+                    comboBoxPath.Items.AddRange(fileDialog.FileNames);
+
+                    if (comboBoxPath.Items.Count > 0)
+                    {
+                        comboBoxPath.SelectedIndex = 0;
+                    }
                 }
             }
         }

@@ -32,8 +32,8 @@
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonUpload = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.comboBoxPath = new System.Windows.Forms.ComboBox();
             this.buttonBrowse = new System.Windows.Forms.Button();
-            this.textBoxPath = new System.Windows.Forms.TextBox();
             this.textBoxToken = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.buttonSaveToken = new System.Windows.Forms.Button();
@@ -61,7 +61,7 @@
             // buttonUpload
             // 
             this.buttonUpload.Enabled = false;
-            this.buttonUpload.Location = new System.Drawing.Point(19, 164);
+            this.buttonUpload.Location = new System.Drawing.Point(19, 193);
             this.buttonUpload.Name = "buttonUpload";
             this.buttonUpload.Size = new System.Drawing.Size(75, 23);
             this.buttonUpload.TabIndex = 3;
@@ -71,14 +71,22 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.comboBoxPath);
             this.groupBox1.Controls.Add(this.buttonBrowse);
-            this.groupBox1.Controls.Add(this.textBoxPath);
             this.groupBox1.Location = new System.Drawing.Point(19, 61);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(409, 97);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Plugin upload:";
+            // 
+            // comboBoxPath
+            // 
+            this.comboBoxPath.FormattingEnabled = true;
+            this.comboBoxPath.Location = new System.Drawing.Point(13, 33);
+            this.comboBoxPath.Name = "comboBoxPath";
+            this.comboBoxPath.Size = new System.Drawing.Size(382, 21);
+            this.comboBoxPath.TabIndex = 2;
             // 
             // buttonBrowse
             // 
@@ -89,14 +97,6 @@
             this.buttonBrowse.Text = "Browse";
             this.buttonBrowse.UseVisualStyleBackColor = true;
             this.buttonBrowse.Click += new System.EventHandler(this.ButtonBrowse_Click);
-            // 
-            // textBoxPath
-            // 
-            this.textBoxPath.Location = new System.Drawing.Point(13, 34);
-            this.textBoxPath.Name = "textBoxPath";
-            this.textBoxPath.Size = new System.Drawing.Size(382, 20);
-            this.textBoxPath.TabIndex = 0;
-            this.textBoxPath.Text = "D:\\file.txt";
             // 
             // textBoxToken
             // 
@@ -141,7 +141,6 @@
             this.Name = "UploadToGithub";
             this.Text = "UploadToGithub";
             this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -153,9 +152,9 @@
         private System.Windows.Forms.Button buttonUpload;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button buttonBrowse;
-        private System.Windows.Forms.TextBox textBoxPath;
         private System.Windows.Forms.TextBox textBoxToken;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button buttonSaveToken;
+        private System.Windows.Forms.ComboBox comboBoxPath;
     }
 }
