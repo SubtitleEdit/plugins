@@ -13,9 +13,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public string Text => "Online casing";
 
-        public decimal Version => 1m;
+        public decimal Version => 1.3m;
 
-        public string Description => "Change casing using online names from IMBD";
+        public string Description => "Do casing using online TMDB api";
 
         public string ActionType => "spellcheck";
 
