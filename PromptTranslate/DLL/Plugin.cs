@@ -6,7 +6,7 @@ using WebViewTranslate;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    public class DeepLScreenScraper : IPlugin // dll file name must "<classname>.dll" - e.g. "Haxor.dll"
+    public class PromptTranslate : IPlugin // dll file name must "<classname>.dll" - e.g. "Haxor.dll"
     {
         string IPlugin.Name
         {
@@ -20,7 +20,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         decimal IPlugin.Version
         {
-            get { return 0.1M; }
+            get { return 0.2M; }
         }
 
         string IPlugin.Description

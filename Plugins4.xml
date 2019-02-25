@@ -84,8 +84,8 @@
   <Plugin>
     <Name>PROMPT translate</Name>
     <Description>Translate with PROMPT</Description>
-    <Version>0.1</Version>
-    <Date>2019-02-17</Date>
+    <Version>0.2</Version>
+    <Date>2019-02-24</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/PromptTranslate.zip</Url>
     <Author></Author>
   </Plugin>
