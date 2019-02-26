@@ -30,7 +30,7 @@ namespace SubtitleEdit.Translator
             }
 
             // Italic tags
-            if (text.StartsWith("<i>", StringComparison.Ordinal) && text.EndsWith("</i>", StringComparison.Ordinal) && text.Contains("</i>" + Environment.NewLine + "<i>") && Utilities.GetNumberOfLines(text) == 2 && Utilities.CountTagInText(text, "<i>") == 1)
+            if (text.StartsWith("<i>", StringComparison.Ordinal) && text.EndsWith("</i>", StringComparison.Ordinal) && text.Contains("</i>" + Environment.NewLine + "<i>") && Utilities.GetNumberOfLines(text) == 2 && Utilities.CountTagInText(text, "<i>") == 2)
             {
                 ItalicTwoLines = true;
                 text = HtmlUtil.RemoveOpenCloseTags(text, HtmlUtil.TagItalic);
