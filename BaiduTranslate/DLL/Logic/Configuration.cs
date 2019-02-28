@@ -1,4 +1,4 @@
-﻿namespace Nikse.SubtitleEdit.PluginLogic
+﻿namespace BaiduTranslate.Logic
 {
     internal static class Configuration
     {

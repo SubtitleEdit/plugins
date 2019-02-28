@@ -204,8 +204,8 @@
   <Plugin>
     <Name>Baidu Translate</Name>
     <Description>Translate with Baidu</Description>
-    <Version>0.4</Version>
-    <Date>2017-06-04</Date>
+    <Version>0.5</Version>
+    <Date>2019-02-28</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/BaiduTranslate.zip</Url>
     <Author>Nikse</Author>
   </Plugin>

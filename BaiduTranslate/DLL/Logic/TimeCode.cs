@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Nikse.SubtitleEdit.PluginLogic
+namespace BaiduTranslate.Logic
 {
     public class TimeCode
     {
