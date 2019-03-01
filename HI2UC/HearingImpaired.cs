@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -7,7 +8,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
     public class HearingImpaired
     {
         public HIConfigs Config { get; private set; }
-
+        private static readonly char[] _lineCloseChars = new[] { '!', '?' };
         private static readonly char[] HIChars = { '(', '[' };
         private static readonly Regex RegexExtraSpaces = new Regex(@"(?<=[\(\[]) +| +(?=[\)\]])", RegexOptions.Compiled);
         private static readonly Regex RegexFirstChar = new Regex(@"\b\w", RegexOptions.Compiled);
@@ -23,10 +24,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public string NarratorToUppercase(string text)
         {
             string noTagText = HtmlUtils.RemoveTags(text, true).TrimEnd().TrimEnd('"');
-            int index = noTagText.IndexOf(':');
+
+            if (noTagText.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+            {
+                return text;
+            }
 
             // Skip single line that ends with ':'.
-            if (index < 0 || noTagText.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+            int index = noTagText.IndexOf(':');
+            if (index < 0)
             {
                 return text;
             }
@@ -44,13 +50,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 string line = lines[i];
                 string noTagLine = HtmlUtils.RemoveTags(line, true);
-                int colonIdx = noTagLine.IndexOf(':');
 
-                // Only allow colon at last position if it's 1st line.
-                if (i > 0 && colonIdx + 1 == noTagLine.Length)
+                int colonIdx = noTagLine.IndexOf(':');
+                if (colonIdx < 0)
                 {
                     continue;
                 }
+                // Only allow colon at last position if it's 1st line.
+                if (colonIdx + 1 == noTagLine.Length)
+                {
+                    continue;
+                }
+
                 if (IsQualifiedNarrator(line, colonIdx))
                 {
                     // Find index from original text.
@@ -88,10 +99,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     break;
                 }
-                string textInside = text.Substring(idx, endIdx - idx + 1);
-                text = text.Remove(idx, endIdx - idx + 1);
-                text = text.Insert(idx, Customize(textInside));
-                idx = text.IndexOf(openChar, endIdx + 1); // ( or [
+                string parensText = text.Substring(idx, endIdx - idx + 1);
+                // remove parents with empty text
+                string noTagTextInsideParens = HtmlUtils.RemoveTags(parensText, true);
+                text = text.Remove(idx, parensText.Length);
+                if (string.IsNullOrWhiteSpace(noTagTextInsideParens))
+                {
+                    idx = text.IndexOf(openChar, idx);
+                }
+                else
+                {
+                    text = text.Insert(idx, Customize(parensText));
+                    idx = text.IndexOf(openChar, endIdx + 1); // ( or [
+                }
             }
             while (idx >= 0);
 
@@ -133,13 +153,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     break;
                 case HIStyle.TitleCase:
                     // "foobar foobar" to (Foobar Foobar)
-                    strippedText = RegexFirstChar.Replace(strippedText.ToLower(), x => x.Value.ToUpper());
+                    strippedText = RegexFirstChar.Replace(strippedText.ToLower(), x => x.Value.ToUpper(CultureInfo.CurrentCulture));
                     break;
                 case HIStyle.UpperCase:
-                    strippedText = strippedText.ToUpper();
+                    strippedText = strippedText.ToUpper(CultureInfo.CurrentCulture);
                     break;
                 case HIStyle.LowerCase:
-                    strippedText = strippedText.ToLower();
+                    strippedText = strippedText.ToLower(CultureInfo.CurrentCulture);
                     break;
             }
             return st.CombineWithPrePost(strippedText);
@@ -153,19 +173,28 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return false;
             }
             // e.g: 12:30am...
-            if (colonIdx + 1 < line.Length && char.IsDigit(line[colonIdx + 1]))
+            if (colonIdx + 1 < line.Length)
             {
-                return false;
+                char lastChar = line[colonIdx + 1];
+                if (char.IsDigit(lastChar))
+                {
+                    return false;
+                }
+                // slash after https://
+                if (lastChar == '/')
+                {
+                    return false;
+                }
             }
 
             // Foobar[?!] Narrator: Hello (Note: not really sure if "." (dot) should be include since there are names
             // that are prefixed with Mr. Ivandro Ismael)
-            return !noTagCapturedText.ContainsAny(new[] {'!', '?'}) &&
-                   (!noTagCapturedText.StartsWith("http", StringComparison.OrdinalIgnoreCase) &&
-                    !noTagCapturedText.EndsWith("improved by", StringComparison.OrdinalIgnoreCase) &&
-                    !noTagCapturedText.EndsWith("corrected by", StringComparison.OrdinalIgnoreCase) &&
-                    !noTagCapturedText.EndsWith("https", StringComparison.OrdinalIgnoreCase) &&
-                    !noTagCapturedText.EndsWith("http", StringComparison.OrdinalIgnoreCase));
+            return !noTagCapturedText.ContainsAny(_lineCloseChars) &&
+               (!noTagCapturedText.StartsWith("http", StringComparison.OrdinalIgnoreCase) &&
+                !noTagCapturedText.EndsWith("improved by", StringComparison.OrdinalIgnoreCase) &&
+                !noTagCapturedText.EndsWith("corrected by", StringComparison.OrdinalIgnoreCase) &&
+                !noTagCapturedText.EndsWith("https", StringComparison.OrdinalIgnoreCase) &&
+                !noTagCapturedText.EndsWith("http", StringComparison.OrdinalIgnoreCase));
         }
 
         private static bool IsQualifedMoods(string text)

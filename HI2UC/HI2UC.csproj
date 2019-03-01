@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\ComboBoxItem.cs" />
-    <Compile Include="Models\HearingImpaired.cs" />
+    <Compile Include="HearingImpaired.cs" />
     <Compile Include="Enums\HIStyle.cs" />
     <Compile Include="Models\HIConfigs.cs" />
     <Compile Include="PluginForm.cs">
