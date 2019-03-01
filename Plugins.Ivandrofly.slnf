@@ -1,0 +1,20 @@
+{
+  "solution": {
+    "path": "Plugins.sln",
+    "projects": [
+      "DialogueAutoMarker\\DialogueAutoMarker.csproj",
+      "DictionariesProvider\\DictionariesProvider.csproj",
+      "GenericPluginTester\\GenericPluginTester.csproj",
+      "HI2UC\\HI2UC.csproj",
+      "HIColorer\\HIColorer.csproj",
+      "JackSE\\JackSE.csproj",
+      "LinesUnbreaker\\LinesUnbreaker.csproj",
+      "NarratorOutParentheses\\NarratorOutParentheses.csproj",
+      "OnlineCasing\\OnlineCasing.csproj",
+      "Plugin-Shared\\Plugin-Shared.shproj",
+      "Plugin-Updater\\Plugin-Updater.csproj",
+      "TriggerOnLoad\\TriggerOnLoad.csproj",
+      "WordCensor\\WordCensor.csproj"
+    ]
+  }
+}

@@ -49,7 +49,6 @@
             this.comboBoxStyle = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.buttonApply = new System.Windows.Forms.Button();
             this.checkBoxRemoveSpaces = new System.Windows.Forms.CheckBox();
             this.checkBoxMoods = new System.Windows.Forms.CheckBox();
@@ -63,7 +62,6 @@
             this.buttonBold = new System.Windows.Forms.Button();
             this.buttonUnderline = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.groupBoxOptions.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -72,10 +70,10 @@
             this.labelDesc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelDesc.AutoSize = true;
             this.labelDesc.BackColor = System.Drawing.Color.Transparent;
-            this.labelDesc.Location = new System.Drawing.Point(16, 645);
+            this.labelDesc.Location = new System.Drawing.Point(16, 556);
             this.labelDesc.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelDesc.Name = "labelDesc";
-            this.labelDesc.Size = new System.Drawing.Size(107, 16);
+            this.labelDesc.Size = new System.Drawing.Size(97, 15);
             this.labelDesc.TabIndex = 6;
             this.labelDesc.Text = "description label";
             // 
@@ -83,10 +81,10 @@
             // 
             this.btn_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btn_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btn_Cancel.Location = new System.Drawing.Point(1075, 649);
+            this.btn_Cancel.Location = new System.Drawing.Point(745, 560);
             this.btn_Cancel.Margin = new System.Windows.Forms.Padding(4);
             this.btn_Cancel.Name = "btn_Cancel";
-            this.btn_Cancel.Size = new System.Drawing.Size(133, 28);
+            this.btn_Cancel.Size = new System.Drawing.Size(101, 26);
             this.btn_Cancel.TabIndex = 1;
             this.btn_Cancel.Text = "&Cancel";
             this.btn_Cancel.UseVisualStyleBackColor = true;
@@ -95,19 +93,21 @@
             // buttonConvert
             // 
             this.buttonConvert.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonConvert.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonConvert.Location = new System.Drawing.Point(933, 649);
+            this.buttonConvert.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.buttonConvert.Location = new System.Drawing.Point(636, 560);
             this.buttonConvert.Margin = new System.Windows.Forms.Padding(4);
             this.buttonConvert.Name = "buttonConvert";
-            this.buttonConvert.Size = new System.Drawing.Size(133, 28);
+            this.buttonConvert.Size = new System.Drawing.Size(101, 26);
             this.buttonConvert.TabIndex = 0;
             this.buttonConvert.Text = "&OK";
-            this.buttonConvert.UseVisualStyleBackColor = true;
             this.buttonConvert.Click += new System.EventHandler(this.Btn_Run_Click);
             // 
             // listViewFixes
             // 
             this.listViewFixes.AllowColumnReorder = true;
+            this.listViewFixes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listViewFixes.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.listViewFixes.CheckBoxes = true;
             this.listViewFixes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -117,16 +117,15 @@
             this.columnHeader2,
             this.columnHeader3});
             this.listViewFixes.ContextMenuStrip = this.contextMenuStrip1;
-            this.listViewFixes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewFixes.FullRowSelect = true;
             this.listViewFixes.GridLines = true;
             this.listViewFixes.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listViewFixes.HideSelection = false;
-            this.listViewFixes.Location = new System.Drawing.Point(4, 19);
+            this.listViewFixes.Location = new System.Drawing.Point(14, 133);
             this.listViewFixes.Margin = new System.Windows.Forms.Padding(4);
             this.listViewFixes.Name = "listViewFixes";
             this.listViewFixes.ShowGroups = false;
-            this.listViewFixes.Size = new System.Drawing.Size(1188, 372);
+            this.listViewFixes.Size = new System.Drawing.Size(832, 349);
             this.listViewFixes.TabIndex = 0;
             this.listViewFixes.UseCompatibleStateImageBehavior = false;
             this.listViewFixes.View = System.Windows.Forms.View.Details;
@@ -209,10 +208,10 @@
             this.checkBoxNames.AutoSize = true;
             this.checkBoxNames.Checked = true;
             this.checkBoxNames.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxNames.Location = new System.Drawing.Point(56, 47);
+            this.checkBoxNames.Location = new System.Drawing.Point(16, 33);
             this.checkBoxNames.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxNames.Name = "checkBoxNames";
-            this.checkBoxNames.Size = new System.Drawing.Size(250, 20);
+            this.checkBoxNames.Size = new System.Drawing.Size(233, 19);
             this.checkBoxNames.TabIndex = 3;
             this.checkBoxNames.Text = "Narrator. John: Hello! => JOHN: Hello!";
             this.toolTip1.SetToolTip(this.checkBoxNames, "This will change the Narrator Text\r\nEx: Harry: Hello! -> HARRY: Hello!");
@@ -230,11 +229,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxStyle.FormattingEnabled = true;
-            this.comboBoxStyle.Location = new System.Drawing.Point(1000, 137);
+            this.comboBoxStyle.Location = new System.Drawing.Point(668, 102);
             this.comboBoxStyle.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxStyle.MaxDropDownItems = 5;
             this.comboBoxStyle.Name = "comboBoxStyle";
-            this.comboBoxStyle.Size = new System.Drawing.Size(203, 24);
+            this.comboBoxStyle.Size = new System.Drawing.Size(178, 23);
             this.comboBoxStyle.TabIndex = 2;
             this.comboBoxStyle.SelectedIndexChanged += new System.EventHandler(this.ComboBoxStyle_SelectedIndexChanged);
             // 
@@ -243,10 +242,10 @@
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(996, 117);
+            this.label2.Location = new System.Drawing.Point(665, 84);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(41, 16);
+            this.label2.Size = new System.Drawing.Size(36, 15);
             this.label2.TabIndex = 4;
             this.label2.Text = "Style:";
             // 
@@ -255,37 +254,21 @@
             this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.linkLabel1.AutoSize = true;
             this.linkLabel1.BackColor = System.Drawing.Color.Transparent;
-            this.linkLabel1.Location = new System.Drawing.Point(16, 665);
+            this.linkLabel1.Location = new System.Drawing.Point(16, 574);
             this.linkLabel1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(300, 16);
+            this.linkLabel1.Size = new System.Drawing.Size(273, 15);
             this.linkLabel1.TabIndex = 7;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "Report Bugs | Suggestion: ivandrofly@gmail.com";
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.BackColor = System.Drawing.Color.Transparent;
-            this.groupBox1.Controls.Add(this.listViewFixes);
-            this.groupBox1.Location = new System.Drawing.Point(16, 166);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(1196, 395);
-            this.groupBox1.TabIndex = 5;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "groupBox1";
-            // 
             // buttonApply
             // 
             this.buttonApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonApply.Location = new System.Drawing.Point(792, 649);
+            this.buttonApply.Location = new System.Drawing.Point(747, 486);
             this.buttonApply.Margin = new System.Windows.Forms.Padding(4);
             this.buttonApply.Name = "buttonApply";
-            this.buttonApply.Size = new System.Drawing.Size(133, 28);
+            this.buttonApply.Size = new System.Drawing.Size(101, 26);
             this.buttonApply.TabIndex = 8;
             this.buttonApply.Text = "&Apply";
             this.buttonApply.UseVisualStyleBackColor = true;
@@ -294,10 +277,10 @@
             // checkBoxRemoveSpaces
             // 
             this.checkBoxRemoveSpaces.AutoSize = true;
-            this.checkBoxRemoveSpaces.Location = new System.Drawing.Point(56, 75);
+            this.checkBoxRemoveSpaces.Location = new System.Drawing.Point(16, 59);
             this.checkBoxRemoveSpaces.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxRemoveSpaces.Name = "checkBoxRemoveSpaces";
-            this.checkBoxRemoveSpaces.Size = new System.Drawing.Size(283, 20);
+            this.checkBoxRemoveSpaces.Size = new System.Drawing.Size(264, 19);
             this.checkBoxRemoveSpaces.TabIndex = 9;
             this.checkBoxRemoveSpaces.Text = "Remove Extra Spaces \'( music )\' => (music)";
             this.checkBoxRemoveSpaces.UseVisualStyleBackColor = true;
@@ -308,10 +291,10 @@
             this.checkBoxMoods.AutoSize = true;
             this.checkBoxMoods.Checked = true;
             this.checkBoxMoods.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxMoods.Location = new System.Drawing.Point(383, 47);
+            this.checkBoxMoods.Location = new System.Drawing.Point(302, 33);
             this.checkBoxMoods.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxMoods.Name = "checkBoxMoods";
-            this.checkBoxMoods.Size = new System.Drawing.Size(231, 20);
+            this.checkBoxMoods.Size = new System.Drawing.Size(213, 19);
             this.checkBoxMoods.TabIndex = 10;
             this.checkBoxMoods.Text = "Moods. e.g: (foobar) => (FOOBAR)";
             this.checkBoxMoods.UseVisualStyleBackColor = true;
@@ -322,10 +305,10 @@
             this.checkBoxSingleLineNarrator.AutoSize = true;
             this.checkBoxSingleLineNarrator.Checked = true;
             this.checkBoxSingleLineNarrator.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxSingleLineNarrator.Location = new System.Drawing.Point(383, 75);
+            this.checkBoxSingleLineNarrator.Location = new System.Drawing.Point(302, 59);
             this.checkBoxSingleLineNarrator.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxSingleLineNarrator.Name = "checkBoxSingleLineNarrator";
-            this.checkBoxSingleLineNarrator.Size = new System.Drawing.Size(266, 20);
+            this.checkBoxSingleLineNarrator.Size = new System.Drawing.Size(249, 19);
             this.checkBoxSingleLineNarrator.TabIndex = 11;
             this.checkBoxSingleLineNarrator.Text = "Lena:<br/>A ring?! => LENA:<br/>A ring?!";
             this.checkBoxSingleLineNarrator.UseVisualStyleBackColor = true;
@@ -338,76 +321,83 @@
             this.groupBoxOptions.Controls.Add(this.checkBoxRemoveSpaces);
             this.groupBoxOptions.Controls.Add(this.checkBoxSingleLineNarrator);
             this.groupBoxOptions.Controls.Add(this.checkBoxMoods);
-            this.groupBoxOptions.Location = new System.Drawing.Point(16, 15);
+            this.groupBoxOptions.Location = new System.Drawing.Point(14, 14);
             this.groupBoxOptions.Margin = new System.Windows.Forms.Padding(4);
             this.groupBoxOptions.Name = "groupBoxOptions";
             this.groupBoxOptions.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBoxOptions.Size = new System.Drawing.Size(739, 144);
+            this.groupBoxOptions.Size = new System.Drawing.Size(559, 111);
             this.groupBoxOptions.TabIndex = 12;
             this.groupBoxOptions.TabStop = false;
             this.groupBoxOptions.Text = "Options:";
             // 
             // textBoxParagraphText
             // 
-            this.textBoxParagraphText.Location = new System.Drawing.Point(16, 598);
+            this.textBoxParagraphText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.textBoxParagraphText.Location = new System.Drawing.Point(16, 512);
             this.textBoxParagraphText.Multiline = true;
             this.textBoxParagraphText.Name = "textBoxParagraphText";
-            this.textBoxParagraphText.Size = new System.Drawing.Size(339, 44);
+            this.textBoxParagraphText.Size = new System.Drawing.Size(297, 42);
             this.textBoxParagraphText.TabIndex = 13;
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 574);
+            this.label1.Location = new System.Drawing.Point(13, 489);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(82, 16);
+            this.label1.Size = new System.Drawing.Size(75, 15);
             this.label1.TabIndex = 14;
             this.label1.Text = "Paragraph #";
             // 
             // buttonPrev
             // 
-            this.buttonPrev.Location = new System.Drawing.Point(361, 620);
+            this.buttonPrev.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonPrev.Location = new System.Drawing.Point(318, 532);
             this.buttonPrev.Name = "buttonPrev";
-            this.buttonPrev.Size = new System.Drawing.Size(75, 23);
+            this.buttonPrev.Size = new System.Drawing.Size(66, 22);
             this.buttonPrev.TabIndex = 15;
             this.buttonPrev.Text = "Prev";
             this.buttonPrev.UseVisualStyleBackColor = true;
             // 
             // buttonNext
             // 
-            this.buttonNext.Location = new System.Drawing.Point(361, 598);
+            this.buttonNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonNext.Location = new System.Drawing.Point(318, 512);
             this.buttonNext.Name = "buttonNext";
-            this.buttonNext.Size = new System.Drawing.Size(75, 23);
+            this.buttonNext.Size = new System.Drawing.Size(66, 22);
             this.buttonNext.TabIndex = 15;
             this.buttonNext.Text = "Next";
             this.buttonNext.UseVisualStyleBackColor = true;
             // 
             // buttonItalic
             // 
+            this.buttonItalic.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonItalic.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonItalic.Location = new System.Drawing.Point(190, 574);
+            this.buttonItalic.Location = new System.Drawing.Point(168, 489);
             this.buttonItalic.Name = "buttonItalic";
-            this.buttonItalic.Size = new System.Drawing.Size(51, 23);
+            this.buttonItalic.Size = new System.Drawing.Size(45, 22);
             this.buttonItalic.TabIndex = 16;
             this.buttonItalic.Text = "I";
             this.buttonItalic.UseVisualStyleBackColor = true;
             // 
             // buttonBold
             // 
+            this.buttonBold.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonBold.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonBold.Location = new System.Drawing.Point(247, 574);
+            this.buttonBold.Location = new System.Drawing.Point(218, 489);
             this.buttonBold.Name = "buttonBold";
-            this.buttonBold.Size = new System.Drawing.Size(51, 23);
+            this.buttonBold.Size = new System.Drawing.Size(45, 22);
             this.buttonBold.TabIndex = 16;
             this.buttonBold.Text = "B";
             this.buttonBold.UseVisualStyleBackColor = true;
             // 
             // buttonUnderline
             // 
+            this.buttonUnderline.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonUnderline.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonUnderline.Location = new System.Drawing.Point(304, 574);
+            this.buttonUnderline.Location = new System.Drawing.Point(268, 489);
             this.buttonUnderline.Name = "buttonUnderline";
-            this.buttonUnderline.Size = new System.Drawing.Size(51, 23);
+            this.buttonUnderline.Size = new System.Drawing.Size(45, 22);
             this.buttonUnderline.TabIndex = 16;
             this.buttonUnderline.Text = "U";
             this.buttonUnderline.UseVisualStyleBackColor = true;
@@ -415,10 +405,11 @@
             // PluginForm
             // 
             this.AcceptButton = this.buttonConvert;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btn_Cancel;
-            this.ClientSize = new System.Drawing.Size(1224, 692);
+            this.ClientSize = new System.Drawing.Size(861, 599);
+            this.Controls.Add(this.listViewFixes);
             this.Controls.Add(this.buttonUnderline);
             this.Controls.Add(this.buttonBold);
             this.Controls.Add(this.buttonItalic);
@@ -428,7 +419,6 @@
             this.Controls.Add(this.textBoxParagraphText);
             this.Controls.Add(this.groupBoxOptions);
             this.Controls.Add(this.buttonApply);
-            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.comboBoxStyle);
             this.Controls.Add(this.label2);
@@ -436,17 +426,16 @@
             this.Controls.Add(this.buttonConvert);
             this.Controls.Add(this.labelDesc);
             this.DoubleBuffered = true;
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(4);
-            this.MinimumSize = new System.Drawing.Size(1000, 726);
+            this.MinimumSize = new System.Drawing.Size(877, 319);
             this.Name = "PluginForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Hearing Impaired to Uppercase";
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.PluginForm_Paint);
             this.contextMenuStrip1.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
             this.groupBoxOptions.ResumeLayout(false);
             this.groupBoxOptions.PerformLayout();
             this.ResumeLayout(false);
@@ -473,7 +462,6 @@
         private System.Windows.Forms.ComboBox comboBoxStyle;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.LinkLabel linkLabel1;
-        private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteLineToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader columnHeader5;

@@ -6,15 +6,13 @@ using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
-using Nikse.SubtitleEdit.PluginLogic.Models;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form, IConfigurable
     {
-        private int level = 0;
-        private static Color color = Color.FromArgb(41, 57, 85);
-        private LinearGradientBrush gradientBrush;
+        private static readonly Color color = Color.FromArgb(41, 57, 85);
+        private readonly LinearGradientBrush gradientBrush;
         public string Subtitle { get; private set; }
         private readonly Subtitle _subtitle;
 
@@ -75,8 +73,48 @@ namespace Nikse.SubtitleEdit.PluginLogic
             };
              */
 
-            // bind 
+            buttonNext.Click += (sender, e) =>
+            {
+                if (listViewFixes.Items.Count == 0 || listViewFixes.SelectedItems.Count == 0)
+                {
+                    return;
+                }
 
+                ListViewItem lvi = listViewFixes.SelectedItems[0];
+                int nextIdx = lvi.Index + 1;
+                // handle boundary
+                if (nextIdx == listViewFixes.Items.Count)
+                {
+                    nextIdx = 0;
+                }
+
+                lvi.Selected = false;
+                listViewFixes.Select();
+                listViewFixes.Items[nextIdx].EnsureVisible();
+                listViewFixes.Items[nextIdx].Selected = true;
+            };
+
+            buttonPrev.Click += (sender, e) =>
+            {
+                if (listViewFixes.Items.Count == 0 || listViewFixes.SelectedItems.Count == 0)
+                {
+                    return;
+                }
+
+                ListViewItem lvi = listViewFixes.SelectedItems[0];
+                int preIdx = lvi.Index - 1;
+                // handle boundary
+                if (preIdx < 0)
+                {
+                    preIdx = listViewFixes.Items.Count - 1;
+                }
+
+                lvi.Selected = false;
+                listViewFixes.Select();
+                listViewFixes.Items[preIdx].EnsureVisible();
+                listViewFixes.Items[preIdx].Selected = true;
+
+            };
         }
 
         private void LinkLabel1_DoubleClick(object sender, EventArgs e)
@@ -93,7 +131,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             for (int i = 0; i < comboBoxStyle.Items.Count; i++)
             {
-                var cbi = (ComboBoxItem)comboBoxStyle.Items[i];
+                ComboBoxItem cbi = (ComboBoxItem)comboBoxStyle.Items[i];
                 if (cbi.Style == configs.Style)
                 {
                     //MessageBox.Show($"Test {i}");
@@ -145,7 +183,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     continue;
                 }
-                var p = item.Tag as Paragraph;
+                Paragraph p = item.Tag as Paragraph;
                 if (_fixedTexts.ContainsKey(p.ID))
                 {
                     p.Text = _fixedTexts[p.ID];
@@ -156,7 +194,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.EndUpdate();
         }
 
-        private void CheckBoxNarrator_CheckedChanged(object sender, EventArgs e) => GeneratePreview();
+        private void CheckBoxNarrator_CheckedChanged(object sender, EventArgs e)
+        {
+            GeneratePreview();
+        }
 
         private void CheckTypeStyle(object sender, EventArgs e)
         {
@@ -204,7 +245,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     {
                         for (int idx = listViewFixes.SelectedIndices.Count - 1; idx >= 0; idx--)
                         {
-                            var index = listViewFixes.SelectedIndices[idx];
+                            int index = listViewFixes.SelectedIndices[idx];
                             if (listViewFixes.Items[idx].Tag is Paragraph p)
                             {
                                 _subtitle.RemoveLine(p.Number);
@@ -217,7 +258,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        private void ComboBoxStyle_SelectedIndexChanged(object sender, EventArgs e) => GeneratePreview();
+        private void ComboBoxStyle_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            GeneratePreview();
+        }
 
         private void GeneratePreview()
         {
@@ -285,8 +329,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             int totalConvertParagraphs = _fixedTexts.Count;
 
-            groupBox1.ForeColor = totalConvertParagraphs <= 0 ? Color.Red : Color.Green;
-            groupBox1.Text = $@"Total Found: {totalConvertParagraphs}";
+            //groupBox1.ForeColor = totalConvertParagraphs <= 0 ? Color.Red : Color.Green;
+            //groupBox1.Text = $@"Total Found: {totalConvertParagraphs}";
             /*this.listViewFixes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             this.listViewFixes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);*/
             //Application.DoEvents();
@@ -296,7 +340,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void AddFixToListView(Paragraph p, string before, string after, bool containsMood, bool containsNarrator)
         {
-            var item = new ListViewItem() { Checked = true, UseItemStyleForSubItems = true, Tag = p };
+            ListViewItem item = new ListViewItem() { Checked = true, UseItemStyleForSubItems = true, Tag = p };
             item.SubItems.Add(p.Number.ToString(CultureInfo.InvariantCulture));
             if (containsMood && containsNarrator)
             {
@@ -355,18 +399,27 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Cursor = Cursors.Default;
         }
 
-        private void CheckBoxRemoveSpaces_CheckedChanged(object sender, EventArgs e) => GeneratePreview();
+        private void CheckBoxRemoveSpaces_CheckedChanged(object sender, EventArgs e)
+        {
+            GeneratePreview();
+        }
 
         private void ListViewFixes_Resize(object sender, EventArgs e)
         {
-            var newWidth = (listViewFixes.Width - (listViewFixes.Columns[0].Width + listViewFixes.Columns[1].Width + listViewFixes.Columns[2].Width)) / 2;
+            int newWidth = (listViewFixes.Width - (listViewFixes.Columns[0].Width + listViewFixes.Columns[1].Width + listViewFixes.Columns[2].Width)) / 2;
             listViewFixes.Columns[3].Width = newWidth;
             listViewFixes.Columns[4].Width = newWidth;
         }
 
-        private void CheckBoxMoods_CheckedChanged(object sender, EventArgs e) => GeneratePreview();
+        private void CheckBoxMoods_CheckedChanged(object sender, EventArgs e)
+        {
+            GeneratePreview();
+        }
 
-        private void CheckBoxSingleLineNarrator_CheckedChanged(object sender, EventArgs e) => GeneratePreview();
+        private void CheckBoxSingleLineNarrator_CheckedChanged(object sender, EventArgs e)
+        {
+            GeneratePreview();
+        }
 
         public void LoadConfigurations()
         {
@@ -385,7 +438,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _hearingImpaired = new HearingImpaired(_hiConfigs);
         }
 
-        public void SaveConfigurations() => _hiConfigs.SaveConfigurations();
+        public void SaveConfigurations()
+        {
+            _hiConfigs.SaveConfigurations();
+        }
 
         private void PluginForm_Paint(object sender, PaintEventArgs e)
         {
