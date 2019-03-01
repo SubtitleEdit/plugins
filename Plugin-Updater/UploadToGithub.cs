@@ -2,6 +2,7 @@
 using Octokit.Internal;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -64,7 +65,7 @@ namespace Plugin_Updater
             string tempFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 
             // should zip?
-            if (comboBoxPath.Items.Count > 1)
+            if (comboBoxPath.Items.Count > 0)
             {
                 CleanTemp(tempFile);
 
@@ -72,6 +73,12 @@ namespace Plugin_Updater
                 {
                     foreach (string file in comboBoxPath.Items)
                     {
+                        // unrooted path
+                        if (!Path.IsPathRooted(file))
+                        {
+                            MessageBox.Show("Invalid path");
+                            return;
+                        }
                         // only allow zipping .dll files
                         if (!file.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
                         {
@@ -85,6 +92,7 @@ namespace Plugin_Updater
                             Stream entryStream = entry.Open();
                             await fs.CopyToAsync(entryStream);
                             entryStream.Close();
+                            Debug.WriteLine($"File added to zip-archive: {Path.GetFileName(file)}");
                         }
                     }
                 }
@@ -115,10 +123,12 @@ namespace Plugin_Updater
             ReleaseAsset oldAsset = result.FirstOrDefault(a => a.Name.Equals(releaseAssetUpload.FileName, StringComparison.Ordinal));
             if (oldAsset != null)
             {
-                await _client.Repository.Release.DeleteAsset(owner, name, oldAsset.Id).ConfigureAwait(false);
+                await _client.Repository.Release.DeleteAsset(owner, name, oldAsset.Id);//.ConfigureAwait(false);
             }
 
             ReleaseAsset releaseAsset = await _client.Repository.Release.UploadAsset(dotnetFour, releaseAssetUpload);//.ConfigureAwait(false);
+
+            // close the temp zip stream
             zipFileStream.Dispose();
 
             MessageBox.Show("Plugin uploaded with sucess!");
@@ -129,9 +139,17 @@ namespace Plugin_Updater
         private static void CleanTemp(string tempFile)
         {
             // cleanup temp file
-            if (File.Exists(tempFile))
+            if (!File.Exists(tempFile))
+            {
+                return;
+            }
+            try
             {
                 File.Delete(tempFile);
+            }
+            catch
+            {
+                // ignore error
             }
         }
 
