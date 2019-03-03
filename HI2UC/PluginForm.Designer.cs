@@ -379,6 +379,7 @@
             this.buttonItalic.TabIndex = 16;
             this.buttonItalic.Text = "I";
             this.buttonItalic.UseVisualStyleBackColor = true;
+            this.buttonItalic.Click += new System.EventHandler(this.ButtonItalic_Click);
             // 
             // buttonBold
             // 
@@ -390,6 +391,7 @@
             this.buttonBold.TabIndex = 16;
             this.buttonBold.Text = "B";
             this.buttonBold.UseVisualStyleBackColor = true;
+            this.buttonBold.Click += new System.EventHandler(this.ButtonBold_Click);
             // 
             // buttonUnderline
             // 
@@ -401,6 +403,7 @@
             this.buttonUnderline.TabIndex = 16;
             this.buttonUnderline.Text = "U";
             this.buttonUnderline.UseVisualStyleBackColor = true;
+            this.buttonUnderline.Click += new System.EventHandler(this.ButtonUnderline_Click);
             // 
             // PluginForm
             // 

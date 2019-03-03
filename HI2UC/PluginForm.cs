@@ -467,5 +467,35 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _fixedTexts[selParagraph.ID] = selParagraph.Text;
             //textBoxParagraphText.DataBindings.Add("Text", selItem.SubItems[3], "Text", false, DataSourceUpdateMode.OnPropertyChanged);
         }
+
+        private void ButtonItalic_Click(object sender, EventArgs e)
+        {
+            SetTag(listViewFixes.SelectedItems, "<i>");
+        }
+
+        private void ButtonBold_Click(object sender, EventArgs e)
+        {
+            SetTag(listViewFixes.SelectedItems, "<b>");
+        }
+
+        private void ButtonUnderline_Click(object sender, EventArgs e)
+        {
+            SetTag(listViewFixes.SelectedItems, "<u>");
+        }
+
+        private void SetTag(ListView.SelectedListViewItemCollection selIndeces, string tag)
+        {
+            string closeTag = $"</{tag[1]}>";
+            foreach (ListViewItem lvi in selIndeces)
+            {
+                var p = (Paragraph)lvi.Tag;
+                p.Text = HtmlUtils.RemoveOpenCloseTags(p.Text, tag[1].ToString());
+                p.Text = $"{tag}{p.Text}{closeTag}";
+            }
+            if (selIndeces?.Count > 0)
+            {
+                GeneratePreview();
+            }
+        }
     }
 }

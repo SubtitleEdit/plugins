@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    [InvokeOnLoad]
+    [InvokeOnLoad(false)]
     public class JackSE : IPlugin
     {
         public JackSE()
