@@ -7,6 +7,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class ExposeSEApi : IPlugin
     {
+        /// <summary>
+        /// The function pointer to Subtitle Edit's RemoveHtmlTags function.
+        /// </summary>
         private Func<string, bool, string> RemoveHtmlTags;
 
         public string Name => nameof(ExposeSEApi);

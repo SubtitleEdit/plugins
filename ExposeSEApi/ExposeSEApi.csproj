@@ -12,7 +12,7 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy / y &quot;$(TargetPath)&quot; &quot;C:\Users\kernel-panic\AppData\Roaming\Subtitle Edit\Plugins&quot;" />
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(username)'=='kernel-panic' or '$(username)'=='ivandrofly'">
+    <Exec Command="xcopy /y $(TargetPath) &quot;C:\Users\kernel-panic\AppData\Roaming\Subtitle Edit\Plugins&quot;" />
   </Target>
 </Project>
