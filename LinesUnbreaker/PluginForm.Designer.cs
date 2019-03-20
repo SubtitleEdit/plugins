@@ -36,6 +36,7 @@
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOK = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.linkLabelGithub = new System.Windows.Forms.LinkLabel();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.checkBoxSkipDialog = new System.Windows.Forms.CheckBox();
             this.checkBoxSkipNarrator = new System.Windows.Forms.CheckBox();
@@ -43,9 +44,13 @@
             this.label1 = new System.Windows.Forms.Label();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.labelTotal = new System.Windows.Forms.Label();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reportProblemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // listView1
@@ -61,9 +66,9 @@
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
             this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(7, 148);
+            this.listView1.Location = new System.Drawing.Point(7, 168);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(891, 360);
+            this.listView1.Size = new System.Drawing.Size(891, 340);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -115,12 +120,24 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.linkLabelGithub);
             this.groupBox1.Controls.Add(this.groupBox2);
-            this.groupBox1.Location = new System.Drawing.Point(7, 12);
+            this.groupBox1.Location = new System.Drawing.Point(7, 32);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(891, 130);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
+            // 
+            // linkLabelGithub
+            // 
+            this.linkLabelGithub.AutoSize = true;
+            this.linkLabelGithub.Location = new System.Drawing.Point(822, 106);
+            this.linkLabelGithub.Name = "linkLabelGithub";
+            this.linkLabelGithub.Size = new System.Drawing.Size(63, 13);
+            this.linkLabelGithub.TabIndex = 12;
+            this.linkLabelGithub.TabStop = true;
+            this.linkLabelGithub.Tag = "https://github.com/ivandrofly";
+            this.linkLabelGithub.Text = "@ivandrofly";
             // 
             // groupBox2
             // 
@@ -215,6 +232,31 @@
             this.labelTotal.TabIndex = 4;
             this.labelTotal.Text = "Total: {0}";
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.helpToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(910, 24);
+            this.menuStrip1.TabIndex = 5;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.reportProblemToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "Help";
+            // 
+            // reportProblemToolStripMenuItem
+            // 
+            this.reportProblemToolStripMenuItem.Name = "reportProblemToolStripMenuItem";
+            this.reportProblemToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
+            this.reportProblemToolStripMenuItem.Text = "Report problem / request feature";
+            this.reportProblemToolStripMenuItem.Click += new System.EventHandler(this.ReportProblemToolStripMenuItem_Click);
+            // 
             // PluginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -225,16 +267,21 @@
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
+            this.Controls.Add(this.menuStrip1);
             this.KeyPreview = true;
+            this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(820, 583);
             this.Name = "PluginForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Lines Unbreaker";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PluginForm_KeyDown);
             this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -257,5 +304,9 @@
         private System.Windows.Forms.CheckBox checkBoxSkipNarrator;
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.LinkLabel linkLabelGithub;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem reportProblemToolStripMenuItem;
     }
 }

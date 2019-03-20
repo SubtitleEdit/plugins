@@ -21,8 +21,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private UnBreakConfigs _configs;
 
-        private bool _isLoading = true;
-
         public PluginForm(Subtitle subtitle)
         {
             InitializeComponent();
@@ -34,6 +32,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 _configs.SaveConfigurations();
             };
+
+            linkLabelGithub.Click += (sender, e) => System.Diagnostics.Process.Start(linkLabelGithub.Tag.ToString());
 
             // disable triggerer controls
             ChangeControlsState(false);
@@ -104,7 +104,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // length of only visilbe characters
             int lineLength = noTagOldText.Length - (StringUtils.CountTagInText(noTagOldText, Environment.NewLine) * Environment.NewLine.Length);
 
-            var item = new ListViewItem(paragraph.Number.ToString())
+            ListViewItem item = new ListViewItem(paragraph.Number.ToString())
             {
                 UseItemStyleForSubItems = true,
                 SubItems =
@@ -133,17 +133,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void PluginForm_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
+            {
                 DialogResult = DialogResult.Cancel;
+            }
         }
 
         private void ListView1_Resize(object sender, EventArgs e)
         {
-            var l = 0;
+            int l = 0;
             for (int i = 0; i < 2; i++)
             {
                 l += listView1.Columns[i].Width;
             }
-            var newWidth = (listView1.Width - l) >> 1;
+            int newWidth = (listView1.Width - l) >> 1;
             listView1.Columns[2].Width = newWidth;
             listView1.Columns[3].Width = newWidth;
         }
@@ -165,12 +167,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 _configs = UnBreakConfigs.LoadConfiguration(configFile);
             }
-            else
+
+            // unable to load configuration file
+            if (_configs == null)
             {
+                // generate and save new configuration file
                 _configs = new UnBreakConfigs(configFile);
                 _configs.SaveConfigurations();
             }
 
+            // load configurations
             checkBoxMoods.Checked = _configs.SkipMoods;
             checkBoxSkipDialog.Checked = _configs.SkipDialogs;
             checkBoxSkipNarrator.Checked = _configs.SkipNarrator;
@@ -180,12 +186,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 _configs.MaxLineLength = Convert.ToInt32(numericUpDown1.Minimum);
                 numericUpDown1.Minimum = 0;
             }
-            else
-            {
-                numericUpDown1.Value = _configs.MaxLineLength;
-            }
+            numericUpDown1.Value = _configs.MaxLineLength;
         }
 
-        public void SaveConfigurations() => _configs.SaveConfigurations();
+        public void SaveConfigurations()
+        {
+            _configs.SaveConfigurations();
+        }
+
+        private void ReportProblemToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/SubtitleEdit/plugins/issues/new");
+        }
     }
 }
