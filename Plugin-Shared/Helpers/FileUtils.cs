@@ -17,9 +17,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public static string Plugins { get; }
 
         /// <summary>
-        /// Returns Subtitle Edit's dictionary directory.
+        /// Returns Subtitle Edit's dictionaries directory.
         /// </summary>
-        public static string Dictionary { get; }
+        public static string Dictionaries { get; }
 
         /// <summary>
         /// Returns true if plugin is running on a portable version of subtitle edit.
@@ -28,35 +28,31 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         static FileUtils()
         {
-            // TODO: HANDLE FOR INSTALLED VERSION
-            Assembly assemblyEntry = Assembly.GetEntryAssembly();
+            var assembly = Assembly.GetExecutingAssembly();
+
+            // exe file location (portable/installed)
+            string path = new Uri(assembly.CodeBase).LocalPath;
+
+            // the directory containing the SubtitleEdit.exe
+            BaseDirectory = Path.GetDirectoryName(path);
+
+            // for installed version there must be a file named "unins000.exe" at the same directory as SubtitleEdit.exe
+            IsPortableMode = !File.Exists(Path.Combine(BaseDirectory, "unins000.exe"));
+
+            // not portable, then look for Subtitle appdata directory in AppData
+            if (!IsPortableMode)
+            {
+                BaseDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit");
+            }
+
+            Plugins = Path.Combine(BaseDirectory, nameof(Plugins));
+            Dictionaries = Path.Combine(BaseDirectory, nameof(Dictionaries));
 
             // Assembly.CodeBase: If the assembly was loaded as a byte array, using an overload of the Load method that takes an array of bytes,
             // this property returns the location of the caller of the method, not the location of the loaded assembly.
-            // NOTE: in portable mode, this returns SubtitleEdit.exe path
+            // Note: in portable mode, this returns SubtitleEdit.exe path
             // UriBuilder uriBuilder = new UriBuilder(assembly.CodeBase);
-
-            // removed file://
-            //string path = Uri.UnescapeDataString(uriBuilder.Path);
-            //path = Path.GetDirectoryName(path);
-
-            // subtitile-edit executable file path
-            string path = new Uri(assemblyEntry.CodeBase).LocalPath; // path\SubtitleEdit.exe
-
-            // the directory where the datas are located
-            BaseDirectory = Path.GetDirectoryName(path);
-
-            string appDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit");
-
-            // if there is no uninstaller then it's portable version
-            IsPortableMode = Directory.GetFiles(BaseDirectory, "unins*.*").Length == 0;
-
-            Plugins = Path.Combine(IsPortableMode ? BaseDirectory : appDataDir, "Plugins");
-            Dictionary = Path.Combine(IsPortableMode ? BaseDirectory : appDataDir, "Dictionaries");
-
             // Note: getting path using Assembly.CodeBase is suitable when SE is ran/executed from a remote pc
         }
-
-        public static string GetConfigFile(string fileName) => Path.Combine(Plugins, fileName);
     }
 }

@@ -60,8 +60,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                 //xmlWriter.WriteEndDocument();
             }
-            File.WriteAllText(_configFile, sb.ToString(), Encoding.UTF8);
 
+            try
+            {
+                File.WriteAllText(_configFile, sb.ToString(), Encoding.UTF8);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
 
         // UNDONE!
