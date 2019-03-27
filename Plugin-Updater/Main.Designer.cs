@@ -63,6 +63,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.textBoxMetaFilePath = new System.Windows.Forms.TextBox();
             this.buttonBrowse = new System.Windows.Forms.Button();
+            this.buttonOK = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownVersion)).BeginInit();
@@ -354,7 +355,7 @@
             // buttonSave
             // 
             this.buttonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSave.Location = new System.Drawing.Point(868, 570);
+            this.buttonSave.Location = new System.Drawing.Point(762, 570);
             this.buttonSave.Margin = new System.Windows.Forms.Padding(4);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(100, 28);
@@ -416,11 +417,22 @@
             this.buttonBrowse.UseVisualStyleBackColor = true;
             this.buttonBrowse.Click += new System.EventHandler(this.ButtonBrowse_Click);
             // 
+            // buttonOK
+            // 
+            this.buttonOK.Location = new System.Drawing.Point(869, 570);
+            this.buttonOK.Name = "buttonOK";
+            this.buttonOK.Size = new System.Drawing.Size(100, 28);
+            this.buttonOK.TabIndex = 8;
+            this.buttonOK.Text = "OK";
+            this.buttonOK.UseVisualStyleBackColor = true;
+            this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1092, 613);
+            this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.buttonBrowse);
             this.Controls.Add(this.textBoxMetaFilePath);
             this.Controls.Add(this.label6);
@@ -479,6 +491,7 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.LinkLabel linkLabel2;
         private System.Windows.Forms.Button buttonUpload;
+        private System.Windows.Forms.Button buttonOK;
     }
 }
 

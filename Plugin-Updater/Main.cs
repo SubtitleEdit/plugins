@@ -266,7 +266,7 @@ namespace Plugin_Updater
                 lvi.SubItems[4].Text = pluginInfo.Author;
                 lvi.SubItems[5].Text = pluginInfo.Url.ToString();
 
-                MessageBox.Show("Plugin updated :)");
+                MessageBox.Show("Plugin model updated, to save the change to Plugin4.xml, click button Save", "Model updated", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -277,6 +277,11 @@ namespace Plugin_Updater
 
         private void ButtonSave_Click(object sender, EventArgs e)
         {
+            SaveChanges();
+        }
+
+        private void SaveChanges()
+        {
             try
             {
                 foreach (ListViewItem item in listViewPluginInfo.Items)
@@ -285,7 +290,7 @@ namespace Plugin_Updater
                     pluginInfo.UpdateXElement();
                 }
                 _xDoc.Save(_metaFile);
-                MessageBox.Show("Saved with success!", "Changes saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Changes saved to Plugins4.xml", "Changes saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -528,6 +533,17 @@ namespace Plugin_Updater
             return Uri.TryCreate(url, UriKind.Absolute, out Uri result);
         }
 
+        private void ButtonOK_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.OK;
+
+            if (MessageBox.Show("Save model from view", "Update model", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+            {
+                SaveChanges();
+            }
+
+            Close();
+        }
     }
 
     internal class SortContext
