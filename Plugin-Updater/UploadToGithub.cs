@@ -16,7 +16,7 @@ namespace Plugin_Updater
         private GitHubClient _client;
         private const string owner = "subtitleedit";
         private const string name = "plugins";
-        private const string _tokenFile = "token.txt";
+        private string _tokenFile = "token.txt";
         public UploadToGithub()
         {
             InitializeComponent();
@@ -33,15 +33,26 @@ namespace Plugin_Updater
                 DialogResult = DialogResult.Cancel;
             };
 
+            string token = string.Empty;
+            _tokenFile = Path.Combine(Assembly.GetExecutingAssembly().Location, "token.txt");
 
-            if (!File.Exists(_tokenFile))
+            // look for token in same location as the app 1st
+            if (File.Exists(_tokenFile))
             {
-                return;
+                token = File.ReadAllText(_tokenFile).Trim();
             }
-            var token = File.ReadAllText(_tokenFile).Trim();
-            textBoxToken.Text = token;
+            else if (File.Exists("token.txt")) // look at the root directory
+            {
+                _tokenFile = "token.txt";
+                token = File.ReadAllText(_tokenFile).Trim();
+            }
 
-            InitClient();
+            // token found
+            if (!string.IsNullOrEmpty(token))
+            {
+                textBoxToken.Text = token;
+                InitClient();
+            }
 
         }
 
@@ -188,6 +199,11 @@ namespace Plugin_Updater
 
             File.WriteAllText(_tokenFile, token);
             InitClient();
+        }
+
+        private void ButtonOK_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.OK;
         }
     }
 }
