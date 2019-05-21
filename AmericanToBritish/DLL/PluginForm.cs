@@ -137,6 +137,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             Cursor.Current = Cursors.WaitCursor;
             Enabled = false;
+            // force Form display before conversion, which might take considerable time
             Refresh();
             try
             {
