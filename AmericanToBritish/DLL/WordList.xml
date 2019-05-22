@@ -84,6 +84,12 @@
   <Word us="belabors" br="belabours" />
   <Word us="beveled" br="bevelled" />
   <Word us="beveling" br="bevelling" />
+  <Word us="breathalyze" br="breathalyse" />
+  <Word us="breathalyzed" br="breathalysed" />
+  <Word us="breathalyzer" br="breathalyser" />
+  <Word us="breathalyzers" br="breathalysers" />
+  <Word us="breathalyzes" br="breathalyses" />
+  <Word us="breathalyzing" br="breathalysing" />
   <Word us="caliber" br="calibre" />
   <Word us="calibers" br="calibres" />
   <Word us="cancelation" br="cancellation" />
@@ -91,6 +97,8 @@
   <Word us="canceled" br="cancelled" />
   <Word us="canceling" br="cancelling" />
   <Word us="candor" br="candour" />
+  <Word us="carburetor" br="carburettor" />
+  <Word us="carburetors" br="carburettors" />
   <Word us="caroled" br="carolled" />
   <Word us="caroler" br="caroller" />
   <Word us="carolers" br="carollers" />
@@ -211,6 +219,8 @@
   <Word us="diarrheal" br="diarrhoeal" />
   <Word us="diarrheic" br="diarrhoeic" />
   <Word us="discolor" br="discolour" />
+  <Word us="discoloration" br="discolouration" />
+  <Word us="discolorations" br="discolourations" />
   <Word us="discolored" br="discoloured" />
   <Word us="discoloring" br="discolouring" />
   <Word us="discolors" br="discolours" />
@@ -239,6 +249,8 @@
   <Word us="disorganizing" br="disorganising" />
   <Word us="distill" br="distil" />
   <Word us="distills" br="distils" />
+  <Word us="donut" br="doughnut" />
+  <Word us="donuts" br="doughnuts" />
   <Word us="draft beer" br="draught beer" />
   <Word us="draft" br="draught" />
   <Word us="draftboard" br="draughtboard" />
@@ -424,6 +436,9 @@
   <Word us="hematologist" br="haematologist" />
   <Word us="hematologists" br="haematologists" />
   <Word us="hematology" br="haematology" />
+  <Word us="hematoma" br="haematoma" />
+  <Word us="hematomas" br="haematomas" />
+  <Word us="hematomata" br="haematomata" />
   <Word us="hemoglobin" br="haemoglobin" />
   <Word us="hemoglobinopathy" br="haemoglobinopathy" />
   <Word us="hemoglobinuria" br="haemoglobinuria" />
@@ -464,6 +479,10 @@
   <Word us="humorlessly" br="humourlessly" />
   <Word us="humorlessness" br="humourlessness" />
   <Word us="humors" br="humours" />
+  <Word us="hydrolyze" br="hydrolyse" />
+  <Word us="hydrolyzed" br="hydrolysed" />
+  <Word us="hydrolyzes" br="hydrolyses" />
+  <Word us="hydrolyzing" br="hydrolysing" />
   <Word us="impanel" br="empanel" />
   <Word us="impaneled" br="empanelled" />
   <Word us="impaneling" br="empanelling" />
@@ -590,6 +609,7 @@
   <Word us="molts" br="moults" />
   <Word us="mom" br="mum" />
   <Word us="mommy" br="mummy" />
+  <Word us="moms" br="mums" />
   <Word us="monolog" br="monologue" />
   <Word us="monologs" br="monologues" />
   <Word us="multicolored" br="multicoloured" />
@@ -660,6 +680,11 @@
   <Word us="parlor" br="parlour" />
   <Word us="parlormaid" br="parlourmaid" />
   <Word us="parlors" br="parlours" />
+  <Word us="paycheck" br="pay cheque" />
+  <Word us="paychecks" br="pay cheques" />
+  <Word us="paycheque" br="pay cheque" />
+  <Word us="payroll check" br="pay cheque" />
+  <Word us="payroll checks" br="pay cheques" />
   <Word us="pedaled" br="pedalled" />
   <Word us="pedaling" br="pedalling" />
   <Word us="pediatric" br="paediatric" />
@@ -879,6 +904,7 @@
   <Word us="sulfite" br="sulphite" />
   <Word us="sulfites" br="sulphites" />
   <Word us="sulfur" br="sulphur" />
+  <Word us="sulfuric" br="sulphuric" />
   <Word us="sulfurous" br="sulphurous" />
   <Word us="swiveled" br="swivelled" />
   <Word us="swiveling" br="swivelling" />
