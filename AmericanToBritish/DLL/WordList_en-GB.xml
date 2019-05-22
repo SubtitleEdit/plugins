@@ -59,6 +59,12 @@
   <Word us="accouterments" br="accoutrements" />
   <Word us="aerogram" br="aerogramme" />
   <Word us="aerograms" br="aerogrammes" />
+  <Word us="aerosolization" br="aerosolisation" />
+  <Word us="aerosolizations" br="aerosolisations" />
+  <Word us="aerosolize" br="aerosolise" />
+  <Word us="aerosolized" br="aerosolised" />
+  <Word us="aerosolizes" br="aerosolises" />
+  <Word us="aerosolizing" br="aerosolising" />
   <Word us="aggrandizable" br="aggrandisable" />
   <Word us="aggrandization" br="aggrandisation" />
   <Word us="aggrandize" br="aggrandise" />
@@ -243,6 +249,8 @@
   <Word us="carbonized" br="carbonised" />
   <Word us="carbonizes" br="carbonises" />
   <Word us="carbonizing" br="carbonising" />
+  <Word us="carburetor" br="carburettor" />
+  <Word us="carburetors" br="carburettors" />
   <Word us="caroled" br="carolled" />
   <Word us="caroler" br="caroller" />
   <Word us="carolers" br="carollers" />
@@ -480,11 +488,17 @@
   <Word us="desensitized" br="desensitised" />
   <Word us="desensitizes" br="desensitises" />
   <Word us="desensitizing" br="desensitising" />
+  <Word us="desexualize" br="desexualise" />
+  <Word us="desexualized" br="desexualised" />
+  <Word us="desexualizes" br="desexualises" />
+  <Word us="desexualizing" br="desexualising" />
   <Word us="destabilization" br="destabilisation" />
   <Word us="destabilize" br="destabilise" />
   <Word us="destabilized" br="destabilised" />
   <Word us="destabilizes" br="destabilises" />
   <Word us="destabilizing" br="destabilising" />
+  <Word us="deviled" br="devilled" />
+  <Word us="deviling" br="devilling" />
   <Word us="dialed" br="dialled" />
   <Word us="dialer" br="dialler" />
   <Word us="dialers" br="diallers" />
@@ -499,6 +513,8 @@
   <Word us="digitizes" br="digitises" />
   <Word us="digitizing" br="digitising" />
   <Word us="discolor" br="discolour" />
+  <Word us="discoloration" br="discolouration" />
+  <Word us="discolorations" br="discolourations" />
   <Word us="discolored" br="discoloured" />
   <Word us="discoloring" br="discolouring" />
   <Word us="discolors" br="discolours" />
@@ -527,6 +543,8 @@
   <Word us="disorganizing" br="disorganising" />
   <Word us="distill" br="distil" />
   <Word us="distills" br="distils" />
+  <Word us="donut" br="doughnut" />
+  <Word us="donuts" br="doughnuts" />
   <Word us="draft beer" br="draught beer" />
   <Word us="draft" br="draught" />
   <Word us="draftboard" br="draughtboard" />
@@ -858,6 +876,9 @@
   <Word us="hematologist" br="haematologist" />
   <Word us="hematologists" br="haematologists" />
   <Word us="hematology" br="haematology" />
+  <Word us="hematoma" br="haematoma" />
+  <Word us="hematomas" br="haematomas" />
+  <Word us="hematomata" br="haematomata" />
   <Word us="hemoglobin" br="haemoglobin" />
   <Word us="hemoglobinopathy" br="haemoglobinopathy" />
   <Word us="hemoglobinuria" br="haemoglobinuria" />
@@ -915,6 +936,10 @@
   <Word us="hybridized" br="hybridised" />
   <Word us="hybridizes" br="hybridises" />
   <Word us="hybridizing" br="hybridising" />
+  <Word us="hydrolyze" br="hydrolyse" />
+  <Word us="hydrolyzed" br="hydrolysed" />
+  <Word us="hydrolyzes" br="hydrolyses" />
+  <Word us="hydrolyzing" br="hydrolysing" />
   <Word us="hypnotize" br="hypnotise" />
   <Word us="hypnotized" br="hypnotised" />
   <Word us="hypnotizes" br="hypnotises" />
@@ -1126,6 +1151,9 @@
   <Word us="materialized" br="materialised" />
   <Word us="materializes" br="materialises" />
   <Word us="materializing" br="materialising" />
+  <Word us="math" br="maths" />
+  <Word us="maths coprocessor" br="math coprocessor" />
+  <Word us="maths coprocessors" br="math coprocessors" />
   <Word us="maximization" br="maximisation" />
   <Word us="maximize" br="maximise" />
   <Word us="maximized" br="maximised" />
@@ -1234,6 +1262,7 @@
   <Word us="molts" br="moults" />
   <Word us="mom" br="mum" />
   <Word us="mommy" br="mummy" />
+  <Word us="moms" br="mums" />
   <Word us="monolog" br="monologue" />
   <Word us="monologs" br="monologues" />
   <Word us="monopolization" br="monopolisation" />
@@ -1367,6 +1396,11 @@
   <Word us="patronizes" br="patronises" />
   <Word us="patronizing" br="patronising" />
   <Word us="patronizingly" br="patronisingly" />
+  <Word us="paycheck" br="pay cheque" />
+  <Word us="paychecks" br="pay cheques" />
+  <Word us="paycheque" br="pay cheque" />
+  <Word us="payroll check" br="pay cheque" />
+  <Word us="payroll checks" br="pay cheques" />
   <Word us="pedaled" br="pedalled" />
   <Word us="pedaling" br="pedalling" />
   <Word us="pederast" br="paederast" />
@@ -1437,6 +1471,11 @@
   <Word us="politicized" br="politicised" />
   <Word us="politicizes" br="politicises" />
   <Word us="politicizing" br="politicising" />
+  <Word us="polymerization" br="polymerisation" />
+  <Word us="polymerizations" br="polymerisations" />
+  <Word us="polymerize" br="polymerise" />
+  <Word us="polymerized" br="polymerised" />
+  <Word us="polymerizes" br="polymerises" />
   <Word us="pommeled" br="pommelled" />
   <Word us="pommeling" br="pommelling" />
   <Word us="popularization" br="popularisation" />
@@ -1610,6 +1649,10 @@
   <Word us="romanticized" br="romanticised" />
   <Word us="romanticizes" br="romanticises" />
   <Word us="romanticizing" br="romanticising" />
+  <Word us="rubberize" br="rubberise" />
+  <Word us="rubberized" br="rubberised" />
+  <Word us="rubberizes" br="rubberises" />
+  <Word us="rubberizing" br="rubberising" />
   <Word us="rumor" br="rumour" />
   <Word us="rumored" br="rumoured" />
   <Word us="rumors" br="rumours" />
@@ -1681,6 +1724,10 @@
   <Word us="sermonized" br="sermonised" />
   <Word us="sermonizes" br="sermonises" />
   <Word us="sermonizing" br="sermonising" />
+  <Word us="sexualize" br="sexualise" />
+  <Word us="sexualized" br="sexualised" />
+  <Word us="sexualizes" br="sexualises" />
+  <Word us="sexualizing" br="sexualising" />
   <Word us="sheik" br="sheikh" />
   <Word us="sheikdom" br="sheikhdom" />
   <Word us="shoveled" br="shovelled" />
@@ -1787,6 +1834,11 @@
   <Word us="stigmatized" br="stigmatised" />
   <Word us="stigmatizes" br="stigmatises" />
   <Word us="stigmatizing" br="stigmatising" />
+  <Word us="suberization" br="suberisation" />
+  <Word us="suberizations" br="suberisations" />
+  <Word us="suberize" br="suberise" />
+  <Word us="suberized" br="suberised" />
+  <Word us="suberizes" br="suberises" />
   <Word us="subsidization" br="subsidisation" />
   <Word us="subsidize" br="subsidise" />
   <Word us="subsidized" br="subsidised" />
@@ -1806,6 +1858,7 @@
   <Word us="sulfite" br="sulphite" />
   <Word us="sulfites" br="sulphites" />
   <Word us="sulfur" br="sulphur" />
+  <Word us="sulfuric" br="sulphuric" />
   <Word us="sulfurous" br="sulphurous" />
   <Word us="summarize" br="summarise" />
   <Word us="summarized" br="summarised" />
@@ -1914,6 +1967,11 @@
   <Word us="tyrannized" br="tyrannised" />
   <Word us="tyrannizes" br="tyrannises" />
   <Word us="tyrannizing" br="tyrannising" />
+  <Word us="uberization" br="uberisation" />
+  <Word us="uberizations" br="uberisations" />
+  <Word us="uberize" br="uberise" />
+  <Word us="uberized" br="uberised" />
+  <Word us="uberizes" br="uberises" />
   <Word us="unauthorized" br="unauthorised" />
   <Word us="uncivilized" br="uncivilised" />
   <Word us="underutilized" br="underutilised" />
@@ -2012,12 +2070,12 @@
   <Word us="watercolors" br="watercolours" />
   <Word us="weaseled" br="weaselled" />
   <Word us="weaseling" br="weaselling" />
-  <Word us="windshield" br="windscreen" />
   <Word us="westernization" br="westernisation" />
   <Word us="westernize" br="westernise" />
   <Word us="westernized" br="westernised" />
   <Word us="westernizes" br="westernises" />
   <Word us="westernizing" br="westernising" />
+  <Word us="windshield" br="windscreen" />
   <Word us="womanize" br="womanise" />
   <Word us="womanized" br="womanised" />
   <Word us="womanizer" br="womaniser" />
