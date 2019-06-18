@@ -27,6 +27,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // get the assembly where type of Main is defined
             Assembly assembly = parentType.Assembly;
 
+            // TODO: handle portable mode!
+            // note: in portable mode there is no HtmlUtil in SubtitleEdit, the type is located in libse assembly
+            // which can be retrived from appdomain at this point since the plugins are loaded in same appdomain as main exe.
             // get the HtmlUtil type
             Type htmlUtilType = assembly.GetType("Nikse.SubtitleEdit.Core.HtmlUtil");
 

@@ -169,7 +169,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
             }
 
-            string configFile = FileUtils.GetConfigFile("hicolor-config.xml");
+            string configFile = Path.Combine(FileUtils.Plugins, "hicolor-config.xml");
             if (File.Exists(configFile))
             {
                 _configs = Configuration<ColorConfig>.LoadConfiguration(configFile);

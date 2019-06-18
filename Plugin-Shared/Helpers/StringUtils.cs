@@ -16,14 +16,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
             singleLine = singleLine.FixExtraSpaces();
             if (singleLine.Contains("</")) // Fix tag
             {
-                singleLine = singleLine.Replace("</i> <i>", " ");
-                singleLine = singleLine.Replace("</i><i>", " ");
-
-                singleLine = singleLine.Replace("</b> <b>", " ");
-                singleLine = singleLine.Replace("</b><b>", " ");
-
-                singleLine = singleLine.Replace("</u> <u>", " ");
-                singleLine = singleLine.Replace("</u><u>", " ");
+                // remove invalid tag
+                foreach (string item in new[] { "</i> <i>", "</i><i>", "</b> <b>", "</b> <b>", "</b> <b>", "</b> <b>" })
+                {
+                    if (item.Length > singleLine.Length)
+                    {
+                        continue;
+                    }
+                    singleLine = singleLine.Replace(item, " ");
+                }
             }
             return singleLine;
         }

@@ -131,7 +131,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             for (int i = 0; i < comboBoxStyle.Items.Count; i++)
             {
-                ComboBoxItem cbi = (ComboBoxItem)comboBoxStyle.Items[i];
+                var cbi = (ComboBoxItem)comboBoxStyle.Items[i];
                 if (cbi.Style == configs.Style)
                 {
                     //MessageBox.Show($"Test {i}");
@@ -183,7 +183,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     continue;
                 }
-                Paragraph p = item.Tag as Paragraph;
+                var p = item.Tag as Paragraph;
                 if (_fixedTexts.ContainsKey(p.ID))
                 {
                     p.Text = _fixedTexts[p.ID];
@@ -340,7 +340,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void AddFixToListView(Paragraph p, string before, string after, bool containsMood, bool containsNarrator)
         {
-            ListViewItem item = new ListViewItem() { Checked = true, UseItemStyleForSubItems = true, Tag = p };
+            var item = new ListViewItem() { Checked = true, UseItemStyleForSubItems = true, Tag = p };
             item.SubItems.Add(p.Number.ToString(CultureInfo.InvariantCulture));
             if (containsMood && containsNarrator)
             {
@@ -459,7 +459,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             ListViewItem selItem = listViewFixes.SelectedItems[0];
             textBoxParagraphText.DataBindings.Clear();
-            Paragraph selParagraph = selItem.Tag as Paragraph;
+            var selParagraph = selItem.Tag as Paragraph;
 
             // bind Textbox's text property to selected paragraph in listview
             textBoxParagraphText.DataBindings.Add("Text", selParagraph, "Text");

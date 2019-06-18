@@ -44,10 +44,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        private void OnTextUnbreaked(Paragraph p, string newText)
-        {
-            TextUnbreaked?.Invoke(this, new ParagraphEventArgs(p, newText));
-        }
+        private void OnTextUnbreaked(Paragraph p, string newText) => TextUnbreaked?.Invoke(this, new ParagraphEventArgs(p, newText));
 
         private string UnbreakLines(string s)
         {
