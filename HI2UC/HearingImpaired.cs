@@ -8,7 +8,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
     public class HearingImpaired
     {
         public HIConfigs Config { get; private set; }
-        private static readonly char[] _lineCloseChars = new[] { '!', '?' };
+        private readonly static char[] Symbols = { '.', '!', '?', ')', ']' };
+        private static readonly char[] _lineCloseChars = new[] { '!', '?', '¿', '¡' };
         private static readonly char[] HIChars = { '(', '[' };
         private static readonly Regex RegexExtraSpaces = new Regex(@"(?<=[\(\[]) +| +(?=[\)\]])", RegexOptions.Compiled);
         private static readonly Regex RegexFirstChar = new Regex(@"\b\w", RegexOptions.Compiled);
@@ -182,6 +183,22 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
                 // slash after https://
                 if (lastChar == '/')
+                {
+                    return false;
+                }
+            }
+
+            // ignore: - where it's safest. BRAN: No.
+            int symbolIdx = noTagCapturedText.LastIndexOfAny(Symbols, colonIdx);
+            if (symbolIdx > 0)
+            {
+                // text before symbol
+                string preText = noTagCapturedText.Substring(0, symbolIdx).Trim();
+                // text after symbols exclude colon
+                string textAfterSymbols = noTagCapturedText.Substring(symbolIdx + 1, colonIdx - symbolIdx - 1).Trim();
+
+                // post symbol is uppercase - pre unnecessary
+                if (textAfterSymbols.Equals(textAfterSymbols.ToUpper()) && preText.Equals(preText.ToUpper()) == false)
                 {
                     return false;
                 }

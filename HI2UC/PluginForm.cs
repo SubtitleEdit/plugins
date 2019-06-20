@@ -423,7 +423,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public void LoadConfigurations()
         {
-            string configFile = FileUtils.GetConfigFile("hi2uc-config.xml");
+            string configFile = Path.Combine(FileUtils.Plugins, "hi2uc-config.xml");
 
             // load from existing file
             if (File.Exists(configFile))
