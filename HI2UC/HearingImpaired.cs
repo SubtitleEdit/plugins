@@ -8,8 +8,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
     public class HearingImpaired
     {
         public HIConfigs Config { get; private set; }
-        private readonly static char[] Symbols = { '.', '!', '?', ')', ']' };
-        private static readonly char[] _lineCloseChars = new[] { '!', '?', '¿', '¡' };
+        private static readonly char[] Symbols = { '.', '!', '?', ')', ']' };
+        private static readonly char[] _lineCloseChars = { '!', '?', '¿', '¡' };
         private static readonly char[] HIChars = { '(', '[' };
         private static readonly Regex RegexExtraSpaces = new Regex(@"(?<=[\(\[]) +| +(?=[\)\]])", RegexOptions.Compiled);
         private static readonly Regex RegexFirstChar = new Regex(@"\b\w", RegexOptions.Compiled);

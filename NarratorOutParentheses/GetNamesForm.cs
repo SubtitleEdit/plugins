@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using System.Collections.Generic;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -12,7 +12,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public GetNamesForm(Form mainForm, Subtitle sub)
         {
             InitializeComponent();
-            this.FormClosed += delegate { mainForm.Show(); };
+            FormClosed += delegate { mainForm.Show(); };
             GeneratePreview(sub);
         }
 
@@ -79,7 +79,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             if (listBox1.Items.Count > 0)
             {
-                this.label1.Text = "Total found names: " + listBox1.Items.Count; ;
+                label1.Text = "Total found names: " + listBox1.Items.Count; ;
             }
         }
 
@@ -123,7 +123,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var noTagName = name.Trim('(', ')');
             if (!listBox1.Items.Contains(name) && !NameList.ListNames.Contains(noTagName.ToUpperInvariant()))
             {
-                this.listBox1.Items.Add(name);
+                listBox1.Items.Add(name);
                 _list.Add(text);
             }
         }
@@ -133,7 +133,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (listBox1.SelectedIndex >= 0)
             {
                 var idx = listBox1.SelectedIndex;
-                this.textBox1.Text = _list[idx];
+                textBox1.Text = _list[idx];
                 label2.Text = "Index: " + idx;
             }
             // Todo: use regex for names like: (WELLS OVER RADIO)
@@ -163,7 +163,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (idx < listBox1.Items.Count)
                 {
                     listBox1.SelectedIndex = idx;
-                    this.textBox1.Text = listBox1.Items[idx].ToString();
+                    textBox1.Text = listBox1.Items[idx].ToString();
                 }
                 else
                     textBox1.Text = "";

@@ -9,12 +9,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class NarratorArtist : Artist
     {
-        private readonly static Regex _regexColonNonWord = new Regex(":\\B", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+        private static readonly Regex _regexColonNonWord = new Regex(":\\B", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
         /// <summary>
         /// This regex pattern is written to not capture characters inside html tags
         /// </summary>
-        private readonly static Regex _regexFirtCharNotTag = new Regex("(?<!<)\\w", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+        private static readonly Regex _regexFirtCharNotTag = new Regex("(?<!<)\\w", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
         /// <summary>
         /// Narrator ignore words

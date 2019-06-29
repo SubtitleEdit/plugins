@@ -340,7 +340,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void AddFixToListView(Paragraph p, string before, string after, bool containsMood, bool containsNarrator)
         {
-            var item = new ListViewItem() { Checked = true, UseItemStyleForSubItems = true, Tag = p };
+            var item = new ListViewItem
+            {
+                UseItemStyleForSubItems = true,
+                Checked = true,
+                Tag = p
+            };
             item.SubItems.Add(p.Number.ToString(CultureInfo.InvariantCulture));
             if (containsMood && containsNarrator)
             {

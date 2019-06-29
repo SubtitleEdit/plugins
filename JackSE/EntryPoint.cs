@@ -255,7 +255,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             // get cordinates/location
 
-            // merge handler 
+            // merge handler
             MethodInfo methodInfo = formType.GetMethod("MergeWithLineAfter", _privateMembersFlags);
             buttonMergeLines.Click += delegate
             {
@@ -291,7 +291,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             for (int i = toolStripMenu.DropDown.Items.Count - 1; i >= 0; i--)
             {
                 ToolStripItem tsi = toolStripMenu.DropDown.Items[i];
-                if (tsi.Text.Equals(this.Text, StringComparison.OrdinalIgnoreCase) || tsi.Text.Equals(this.Name, StringComparison.OrdinalIgnoreCase))
+                if (tsi.Text.Equals(Text, StringComparison.OrdinalIgnoreCase) || tsi.Text.Equals(Name, StringComparison.OrdinalIgnoreCase))
                 {
                     toolStripMenu.DropDownItems.RemoveAt(i);
                     break;

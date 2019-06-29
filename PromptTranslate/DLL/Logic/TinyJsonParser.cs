@@ -105,10 +105,7 @@ namespace PromptTranslate.Logic
         /// </param>
         public object Parse(string text)
         {
-            if (text == null)
-                throw BuildParserException("input is null");
-
-            Input = text;
+            Input = text ?? throw BuildParserException("input is null");
             InputLength = text.Length;
             Pos = 0;
             Line = 1;

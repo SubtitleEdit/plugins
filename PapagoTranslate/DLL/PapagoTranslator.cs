@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 
 namespace SubtitleEdit
 {
@@ -45,10 +45,12 @@ namespace SubtitleEdit
                 return string.Empty;
 
             string url = "https://openapi.naver.com/v1/papago/n2mt";
-            var nvc = new List<KeyValuePair<string, string>>();
-            nvc.Add(new KeyValuePair<string, string>("source", sourceLanguage));
-            nvc.Add(new KeyValuePair<string, string>("target", targetLanguage));
-            nvc.Add(new KeyValuePair<string, string>("text", text));
+            var nvc = new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("source", sourceLanguage),
+                new KeyValuePair<string, string>("target", targetLanguage),
+                new KeyValuePair<string, string>("text", text)
+            };
             var client = new HttpClient();
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

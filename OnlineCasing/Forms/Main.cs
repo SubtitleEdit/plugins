@@ -21,7 +21,7 @@ namespace OnlineCasing.Forms
             InitializeComponent();
 
             KeyPreview = true;
-            this.KeyDown += (sender, e) =>
+            KeyDown += (sender, e) =>
             {
                 if (e.KeyCode == Keys.Escape)
                 {
@@ -437,6 +437,6 @@ namespace OnlineCasing.Forms
     }
 }
 
-// TODO: 
-// - save names 
+// TODO:
+// - save names
 // - load saved names

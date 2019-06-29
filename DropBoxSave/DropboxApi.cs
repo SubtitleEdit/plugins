@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
-using System.Globalization;
 using System.Web.Script.Serialization;
 
 namespace Dropbox.Api
@@ -181,10 +181,12 @@ namespace Dropbox.Api
             var reader = new StreamReader(response.GetResponseStream());
             var json = reader.ReadToEnd();
             Hashtable o = (Hashtable)Nikse.Json.JSON.JsonDecode(json);
-            DropboxFile fsi = new DropboxFile();
-            fsi.Bytes = Convert.ToInt64(o["size"]);
-            fsi.Path = o["path_display"].ToString().TrimStart('/');
-            fsi.IsDirectory = false;
+            DropboxFile fsi = new DropboxFile
+            {
+                Bytes = Convert.ToInt64(o["size"]),
+                Path = o["path_display"].ToString().TrimStart('/'),
+                IsDirectory = false
+            };
             fsi.Description = FormatBytesToDisplayFileSize(fsi.Bytes);
             return fsi;
         }

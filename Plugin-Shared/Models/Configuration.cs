@@ -13,7 +13,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private static readonly BindingFlags _bindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
 
         // NOTE: XmlSerializer sucks :(!
-        //private readonly static XmlSerializer _serializer;
+        //private static readonly XmlSerializer _serializer;
         private readonly string _configFile;
 
         //[XmlIgnore]

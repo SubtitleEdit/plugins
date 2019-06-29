@@ -1,14 +1,14 @@
-﻿using System;
+﻿using Dropbox.Api;
+using SeDropBoxLoad;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using Dropbox.Api;
-using SeDropBoxLoad;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -93,7 +93,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         internal PluginForm(string name, string description)
         {
             InitializeComponent();
-            this.Text = name;
+            Text = name;
             labelDescription.Text = "Connecting to Dropbox...";
         }
 
@@ -104,7 +104,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             string fileName = listViewFiles.SelectedItems[0].Text;
 
-            this.Refresh();
+            Refresh();
             try
             {
                 Cursor = Cursors.WaitCursor;
@@ -116,7 +116,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     {
                         labelInfo.Text = "Getting file list...";
                         labelDescription.Text = f.Path;
-                        this.Refresh();
+                        Refresh();
                         _fileList = api.GetFiles(f.Path);
                         if (f.Description == "..")
                         {
@@ -145,7 +145,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     else
                     {
                         labelInfo.Text = "Downloading...";
-                        this.Refresh();
+                        Refresh();
                         var fileDown = api.DownloadFile(listViewFiles.SelectedItems[0].Tag as DropboxFile);
                         LoadedSubtitle = Encoding.UTF8.GetString(fileDown.Data);
                         DialogResult = DialogResult.OK;
@@ -153,7 +153,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     Cursor = Cursors.Default;
                 }
                 labelInfo.Text = string.Empty;
-                this.Refresh();
+                Refresh();
             }
             catch (Exception exception)
             {
@@ -169,7 +169,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void PluginForm_Shown(object sender, EventArgs e)
         {
-            this.Refresh();
+            Refresh();
             _oAuth2token = GetSavedToken();
             var api = new DropboxApi(SeAppKey, SeAppsecret, _oAuth2token);
             if (_oAuth2token == null)
@@ -211,7 +211,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             labelDescription.Text = string.Empty;
             labelInfo.Text = "Getting file list...";
             Cursor = Cursors.WaitCursor;
-            this.Refresh();
+            Refresh();
             try
             {
                 _fileList = api.GetFiles("");
@@ -265,8 +265,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     name = "..";
                 }
-                ListViewItem item = new ListViewItem(GetLastPart(name));
-                item.Tag = f;
+                ListViewItem item = new ListViewItem(GetLastPart(name))
+                {
+                    Tag = f
+                };
                 if (f.IsDirectory)
                     item.ImageIndex = 1;
                 else

@@ -26,7 +26,7 @@ namespace SeSkydriveSave
         public PluginForm(string name, string description, string fileName, string content)
         {
             InitializeComponent();
-            this.Text = name;
+            Text = name;
             labelDescription.Text = description;
             labelInfo.Text = "Connecting to OneDrive...";
             _api = new OneDriveApi("files.readwrite", ClientId, ClientWebsite);
@@ -152,9 +152,11 @@ namespace SeSkydriveSave
             if (_roots.Count > 0)
             {
                 var item = new ListViewItem("..");
-                var sc = new OneDriveContent();
-                sc.Type = "folder";
-                sc.ParentId = _roots.Peek();
+                var sc = new OneDriveContent
+                {
+                    Type = "folder",
+                    ParentId = _roots.Peek()
+                };
                 sc.Id = sc.ParentId;
                 item.Tag = sc;
                 item.ImageIndex = 1;
@@ -249,7 +251,7 @@ namespace SeSkydriveSave
                 }
                 Cursor = Cursors.Default;
                 labelInfo.Text = string.Empty;
-                this.Refresh();
+                Refresh();
             }
             catch (Exception exception)
             {

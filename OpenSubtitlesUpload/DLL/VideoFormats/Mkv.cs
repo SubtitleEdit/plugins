@@ -394,12 +394,13 @@ namespace OpenSubtitlesUpload.VideoFormats
 
         private UInt32 GetUInt32(byte firstByte)
         {
-            var floatLayout = new FloatLayout32();
-
-            floatLayout.B4 = firstByte;
-            floatLayout.B3 = (byte)_f.ReadByte();
-            floatLayout.B2 = (byte)_f.ReadByte();
-            floatLayout.B1 = (byte)_f.ReadByte();
+            var floatLayout = new FloatLayout32
+            {
+                B4 = firstByte,
+                B3 = (byte)_f.ReadByte(),
+                B2 = (byte)_f.ReadByte(),
+                B1 = (byte)_f.ReadByte()
+            };
 
             return floatLayout.UintData32;
         }
@@ -1026,30 +1027,32 @@ namespace OpenSubtitlesUpload.VideoFormats
 
         private double GetFloat32()
         {
-            FloatLayout32 floatLayout = new FloatLayout32();
-
-            // reverse byte ordering
-            floatLayout.B4 = (byte)_f.ReadByte();
-            floatLayout.B3 = (byte)_f.ReadByte();
-            floatLayout.B2 = (byte)_f.ReadByte();
-            floatLayout.B1 = (byte)_f.ReadByte();
+            FloatLayout32 floatLayout = new FloatLayout32
+            {
+                // reverse byte ordering
+                B4 = (byte)_f.ReadByte(),
+                B3 = (byte)_f.ReadByte(),
+                B2 = (byte)_f.ReadByte(),
+                B1 = (byte)_f.ReadByte()
+            };
 
             return floatLayout.FloatData32;
         }
 
         private double GetFloat64()
         {
-            FloatLayout64 floatLayout = new FloatLayout64();
-
-            // reverse byte ordering
-            floatLayout.B8 = (byte)_f.ReadByte();
-            floatLayout.B7 = (byte)_f.ReadByte();
-            floatLayout.B6 = (byte)_f.ReadByte();
-            floatLayout.B5 = (byte)_f.ReadByte();
-            floatLayout.B4 = (byte)_f.ReadByte();
-            floatLayout.B3 = (byte)_f.ReadByte();
-            floatLayout.B2 = (byte)_f.ReadByte();
-            floatLayout.B1 = (byte)_f.ReadByte();
+            FloatLayout64 floatLayout = new FloatLayout64
+            {
+                // reverse byte ordering
+                B8 = (byte)_f.ReadByte(),
+                B7 = (byte)_f.ReadByte(),
+                B6 = (byte)_f.ReadByte(),
+                B5 = (byte)_f.ReadByte(),
+                B4 = (byte)_f.ReadByte(),
+                B3 = (byte)_f.ReadByte(),
+                B2 = (byte)_f.ReadByte(),
+                B1 = (byte)_f.ReadByte()
+            };
 
             return floatLayout.FloatData64;
         }
@@ -1377,9 +1380,11 @@ namespace OpenSubtitlesUpload.VideoFormats
 
         private Int16 GetInt16()
         {
-            ByteLayout16 l16 = new ByteLayout16();
-            l16.B2 = (byte)_f.ReadByte();
-            l16.B1 = (byte)_f.ReadByte();
+            ByteLayout16 l16 = new ByteLayout16
+            {
+                B2 = (byte)_f.ReadByte(),
+                B1 = (byte)_f.ReadByte()
+            };
             return l16.IntData16;
         }
 

@@ -33,7 +33,7 @@ namespace Plugin_Updater
                 }
             };
 
-            this.OnResize(EventArgs.Empty);
+            OnResize(EventArgs.Empty);
             listViewPluginInfo.SelectedIndexChanged += ListViewPluginInfo_SelectedIndexChanged;
             //TryLocatingMetadataFile();
             _metaFile = Utils.GetMetaFile();
@@ -488,7 +488,7 @@ namespace Plugin_Updater
 
             elToRemove?.Remove();
 
-            // remove from listview 
+            // remove from listview
             listViewPluginInfo.BeginUpdate();
             listViewPluginInfo.Items.Remove(lvi);
             listViewPluginInfo.EndUpdate();

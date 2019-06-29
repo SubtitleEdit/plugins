@@ -157,7 +157,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void AddFixToListView(Paragraph p, string before, string after)
         {
-            ListViewItem item = new ListViewItem() { Checked = true, UseItemStyleForSubItems = true, Tag = p };
+            ListViewItem item = new ListViewItem { Checked = true, UseItemStyleForSubItems = true, Tag = p };
             item.SubItems.Add(p.Number.ToString());
             item.SubItems.Add(before.Replace(Environment.NewLine, Options.UILineBreak));
             item.SubItems.Add(after.Replace(Environment.NewLine, Options.UILineBreak));
@@ -188,7 +188,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void buttonGetNames_Click(object sender, EventArgs e)
         {
             // store the names in list on constructor runtime instead of loading it each time
-            using (GetNamesForm formGetName = new GetNamesForm(this, _subtitle)) // send the loaded list 
+            using (GetNamesForm formGetName = new GetNamesForm(this, _subtitle)) // send the loaded list
             {
                 if (formGetName.ShowDialog(this) == DialogResult.OK)
                 {

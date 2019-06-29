@@ -140,8 +140,10 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
 
             foreach (DictionaryInfo di in DictionariesInfo)
             {
-                var group = new ListViewGroup(di.EnglishName);
-                group.Tag = di;
+                var group = new ListViewGroup(di.EnglishName)
+                {
+                    Tag = di
+                };
                 listViewDownloadUrls.Groups.Add(group);
                 var downloadLinks = di.DownloadLinks.Select(dl => new ListViewItem(dl.Url.OriginalString)
                 {
