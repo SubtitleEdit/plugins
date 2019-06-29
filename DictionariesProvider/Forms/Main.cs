@@ -29,7 +29,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
 
             linkLabelOpenDicFolder.Click += delegate
             {
-                Process.Start(FileUtils.Dictionary);
+                Process.Start(FileUtils.Dictionaries);
             };
 
             listViewDownloadUrls.SelectedIndexChanged += (sender, e) =>

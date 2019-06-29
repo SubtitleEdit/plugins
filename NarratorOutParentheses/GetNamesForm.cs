@@ -176,7 +176,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return;
 
             // if file doesn't exist create a new one, check iisn't already in list
-            var settingFile = Path.Combine(FileUtils.Dictionary, "moodsIgnore.xml");
+            var settingFile = Path.Combine(FileUtils.Dictionaries, "moodsIgnore.xml");
             XDocument xdoc = null;
             if (File.Exists(settingFile))
             {

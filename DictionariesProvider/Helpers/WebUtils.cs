@@ -90,7 +90,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Helpers
             }
             catch (Exception ex)
             {
-                // report to debug and ignore 
+                // report to debug and ignore
                 Debug.WriteLine($"Message: {ex.Message}");
             }
         }
@@ -108,7 +108,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Helpers
                         continue;
                     }
 
-                    string output = Path.Combine(FileUtils.Dictionary, entry.FullName);
+                    string output = Path.Combine(FileUtils.Dictionaries, entry.FullName);
 
                     try
                     {
