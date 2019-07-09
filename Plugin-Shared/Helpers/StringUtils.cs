@@ -4,6 +4,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public static class StringUtils
     {
+        /// <summary>
+        /// PayPal donate url.
+        /// </summary>
+        public static string DonateUrl => "http://bit.ly/2LawVSm";
+
         public static string UnbreakLine(string text)
         {
             var lines = text.SplitToLines();

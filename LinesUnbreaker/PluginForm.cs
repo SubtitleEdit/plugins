@@ -35,6 +35,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             linkLabelGithub.Click += (sender, e) => System.Diagnostics.Process.Start(linkLabelGithub.Tag.ToString());
 
+            // donate handler
+            pictureBoxDonate.Click += (s, e) =>
+            {
+                System.Diagnostics.Process.Start(StringUtils.DonateUrl);
+            };
+
             // disable triggerer controls
             ChangeControlsState(false);
 

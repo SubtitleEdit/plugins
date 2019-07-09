@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -44,7 +45,9 @@
             this.buttonRemove = new System.Windows.Forms.Button();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.linkLabelIvandrofly = new System.Windows.Forms.LinkLabel();
+            this.pictureBoxDonate = new System.Windows.Forms.PictureBox();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDonate)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -173,7 +176,7 @@
             // buttonCancel
             // 
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(342, 184);
+            this.buttonCancel.Location = new System.Drawing.Point(457, 194);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 3;
@@ -182,7 +185,7 @@
             // 
             // buttonOK
             // 
-            this.buttonOK.Location = new System.Drawing.Point(261, 184);
+            this.buttonOK.Location = new System.Drawing.Point(376, 194);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 2;
@@ -192,7 +195,7 @@
             // 
             // buttonRemove
             // 
-            this.buttonRemove.Location = new System.Drawing.Point(160, 184);
+            this.buttonRemove.Location = new System.Drawing.Point(275, 194);
             this.buttonRemove.Name = "buttonRemove";
             this.buttonRemove.Size = new System.Drawing.Size(95, 23);
             this.buttonRemove.TabIndex = 1;
@@ -203,7 +206,7 @@
             // linkLabelIvandrofly
             // 
             this.linkLabelIvandrofly.AutoSize = true;
-            this.linkLabelIvandrofly.Location = new System.Drawing.Point(12, 199);
+            this.linkLabelIvandrofly.Location = new System.Drawing.Point(12, 194);
             this.linkLabelIvandrofly.Name = "linkLabelIvandrofly";
             this.linkLabelIvandrofly.Size = new System.Drawing.Size(81, 13);
             this.linkLabelIvandrofly.TabIndex = 8;
@@ -212,13 +215,26 @@
             this.linkLabelIvandrofly.Text = "By: @ivandrofly";
             this.linkLabelIvandrofly.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelIvandrofly_LinkClicked);
             // 
+            // pictureBoxDonate
+            // 
+            this.pictureBoxDonate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBoxDonate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureBoxDonate.Image = ((System.Drawing.Image)(resources.GetObject("pictureBoxDonate.Image")));
+            this.pictureBoxDonate.Location = new System.Drawing.Point(432, 16);
+            this.pictureBoxDonate.Name = "pictureBoxDonate";
+            this.pictureBoxDonate.Size = new System.Drawing.Size(100, 67);
+            this.pictureBoxDonate.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBoxDonate.TabIndex = 19;
+            this.pictureBoxDonate.TabStop = false;
+            // 
             // MainForm
             // 
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(429, 221);
+            this.ClientSize = new System.Drawing.Size(544, 229);
+            this.Controls.Add(this.pictureBoxDonate);
             this.Controls.Add(this.linkLabelIvandrofly);
             this.Controls.Add(this.buttonRemove);
             this.Controls.Add(this.buttonOK);
@@ -234,6 +250,7 @@
             this.Text = "Hearing Impaired Colorer";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDonate)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -257,5 +274,6 @@
         private System.Windows.Forms.LinkLabel linkLabelIvandrofly;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.PictureBox pictureBoxDonate;
     }
 }

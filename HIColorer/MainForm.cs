@@ -23,6 +23,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 SaveConfigurations();
             };
 
+            // donate handler
+            pictureBoxDonate.Click += (s, e) =>
+            {
+                System.Diagnostics.Process.Start(StringUtils.DonateUrl);
+            };
+
             _subtitle = sub;
             LoadConfigurations();
             UpdateUIOnColorChange();

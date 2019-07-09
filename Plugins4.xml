@@ -12,16 +12,16 @@
   <Plugin>
     <Name>Hearing Impaired to Uppercase</Name>
     <Description>Converts text inside "[]" / "()" to Uppercase</Description>
-    <Version>3.9</Version>
-    <Date>2019-03-01</Date>
+    <Version>4.0</Version>
+    <Date>2019-07-09</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/HI2UC.zip</Url>
     <Author>ivandrofly</Author>
   </Plugin>
   <Plugin>
     <Name>Lines Unbreaker</Name>
     <Description>Helps unbreaking unnecessary short lines break</Description>
-    <Version>2.2</Version>
-    <Date>2019-03-27</Date>
+    <Version>2.3</Version>
+    <Date>2019-07-09</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/LinesUnbreaker.zip</Url>
     <Author>ivandrofly</Author>
   </Plugin>
@@ -141,7 +141,7 @@
     <Name>Hearing Impaired Colorer</Name>
     <Description>Set color for Hearing Impaired annotations</Description>
     <Version>0.5</Version>
-    <Date>2017-10-21</Date>
+    <Date>2019-07-09</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/HIColorer.zip</Url>
     <Author>ivandrofly</Author>
   </Plugin>

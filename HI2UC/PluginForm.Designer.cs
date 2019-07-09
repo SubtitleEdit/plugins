@@ -61,8 +61,10 @@
             this.buttonItalic = new System.Windows.Forms.Button();
             this.buttonBold = new System.Windows.Forms.Button();
             this.buttonUnderline = new System.Windows.Forms.Button();
+            this.pictureBoxDonate = new System.Windows.Forms.PictureBox();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBoxOptions.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDonate)).BeginInit();
             this.SuspendLayout();
             // 
             // labelDesc
@@ -405,6 +407,18 @@
             this.buttonUnderline.UseVisualStyleBackColor = true;
             this.buttonUnderline.Click += new System.EventHandler(this.ButtonUnderline_Click);
             // 
+            // pictureBoxDonate
+            // 
+            this.pictureBoxDonate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBoxDonate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureBoxDonate.Image = global::Nikse.SubtitleEdit.PluginLogic.Properties.Resources.paypal_donate;
+            this.pictureBoxDonate.Location = new System.Drawing.Point(745, 14);
+            this.pictureBoxDonate.Name = "pictureBoxDonate";
+            this.pictureBoxDonate.Size = new System.Drawing.Size(100, 67);
+            this.pictureBoxDonate.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBoxDonate.TabIndex = 17;
+            this.pictureBoxDonate.TabStop = false;
+            // 
             // PluginForm
             // 
             this.AcceptButton = this.buttonConvert;
@@ -412,6 +426,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btn_Cancel;
             this.ClientSize = new System.Drawing.Size(861, 599);
+            this.Controls.Add(this.pictureBoxDonate);
             this.Controls.Add(this.listViewFixes);
             this.Controls.Add(this.buttonUnderline);
             this.Controls.Add(this.buttonBold);
@@ -441,6 +456,7 @@
             this.contextMenuStrip1.ResumeLayout(false);
             this.groupBoxOptions.ResumeLayout(false);
             this.groupBoxOptions.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDonate)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -480,5 +496,6 @@
         private System.Windows.Forms.Button buttonItalic;
         private System.Windows.Forms.Button buttonBold;
         private System.Windows.Forms.Button buttonUnderline;
+        private System.Windows.Forms.PictureBox pictureBoxDonate;
     }
 }

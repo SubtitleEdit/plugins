@@ -9,7 +9,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "HI Colorer";
 
-        decimal IPlugin.Version => 0.4M;
+        decimal IPlugin.Version => 0.5M;
 
         string IPlugin.Description => "Set color for Hearing Impaired annotations (by Ivandrofly)";
 

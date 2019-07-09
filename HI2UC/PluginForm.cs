@@ -115,6 +115,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 listViewFixes.Items[preIdx].Selected = true;
 
             };
+
+            // donate handler
+            pictureBoxDonate.Click += (s, e) =>
+            {
+                Process.Start(StringUtils.DonateUrl);
+            };
         }
 
         private void LinkLabel1_DoubleClick(object sender, EventArgs e)

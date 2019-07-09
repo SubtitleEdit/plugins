@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PluginForm));
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -53,11 +54,13 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportProblemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pictureBoxDonate = new System.Windows.Forms.PictureBox();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDonate)).BeginInit();
             this.SuspendLayout();
             // 
             // listView1
@@ -165,6 +168,7 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.pictureBoxDonate);
             this.groupBox1.Controls.Add(this.linkLabelGithub);
             this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Location = new System.Drawing.Point(7, 32);
@@ -303,6 +307,18 @@
             this.reportProblemToolStripMenuItem.Text = "Report problem / request feature";
             this.reportProblemToolStripMenuItem.Click += new System.EventHandler(this.ReportProblemToolStripMenuItem_Click);
             // 
+            // pictureBoxDonate
+            // 
+            this.pictureBoxDonate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBoxDonate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureBoxDonate.Image = ((System.Drawing.Image)(resources.GetObject("pictureBoxDonate.Image")));
+            this.pictureBoxDonate.Location = new System.Drawing.Point(785, 19);
+            this.pictureBoxDonate.Name = "pictureBoxDonate";
+            this.pictureBoxDonate.Size = new System.Drawing.Size(100, 67);
+            this.pictureBoxDonate.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBoxDonate.TabIndex = 18;
+            this.pictureBoxDonate.TabStop = false;
+            // 
             // PluginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -329,6 +345,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDonate)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -360,5 +377,6 @@
         private System.Windows.Forms.ToolStripMenuItem checkAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem uncheckAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem invertCheckedToolStripMenuItem;
+        private System.Windows.Forms.PictureBox pictureBoxDonate;
     }
 }

@@ -84,6 +84,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     return form.Subtitle;
                 }
             }
+
             return string.Empty;
         }
 
