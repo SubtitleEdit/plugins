@@ -37,6 +37,7 @@
             this.textBoxToken = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.buttonSaveToken = new System.Windows.Forms.Button();
+            this.checkBoxMultiple = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -72,6 +73,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.checkBoxMultiple);
             this.groupBox1.Controls.Add(this.comboBoxPath);
             this.groupBox1.Controls.Add(this.buttonBrowse);
             this.groupBox1.Location = new System.Drawing.Point(19, 61);
@@ -127,6 +129,16 @@
             this.buttonSaveToken.UseVisualStyleBackColor = true;
             this.buttonSaveToken.Click += new System.EventHandler(this.buttonSaveToken_Click);
             // 
+            // checkBoxMultiple
+            // 
+            this.checkBoxMultiple.AutoSize = true;
+            this.checkBoxMultiple.Location = new System.Drawing.Point(13, 60);
+            this.checkBoxMultiple.Name = "checkBoxMultiple";
+            this.checkBoxMultiple.Size = new System.Drawing.Size(62, 17);
+            this.checkBoxMultiple.TabIndex = 3;
+            this.checkBoxMultiple.Text = "Multiple";
+            this.checkBoxMultiple.UseVisualStyleBackColor = true;
+            // 
             // UploadToGithub
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -142,6 +154,7 @@
             this.Name = "UploadToGithub";
             this.Text = "UploadToGithub";
             this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -157,5 +170,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button buttonSaveToken;
         private System.Windows.Forms.ComboBox comboBoxPath;
+        private System.Windows.Forms.CheckBox checkBoxMultiple;
     }
 }

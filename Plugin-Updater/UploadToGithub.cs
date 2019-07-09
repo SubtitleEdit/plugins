@@ -76,7 +76,7 @@ namespace Plugin_Updater
             string tempFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 
             // should zip?
-            if (comboBoxPath.Items.Count > 0)
+            if (comboBoxPath.Items.Count > 0 && checkBoxMultiple.Checked)
             {
                 CleanTemp(tempFile);
 
@@ -178,12 +178,37 @@ namespace Plugin_Updater
 
                 if (fileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    comboBoxPath.Items.AddRange(fileDialog.FileNames);
+                    comboBoxPath.BeginUpdate();
+
+                    for (int i = fileDialog.FileNames.Length - 1; i >= 0; i--)
+                    {
+                        string name = fileDialog.FileNames[i];
+                        // todo: optimize
+                        if (!comboBoxPath.Items.Contains(name))
+                        {
+                            comboBoxPath.Items.Insert(0, name);
+                        }
+                    }
+                    ControlItemsLimit();
 
                     if (comboBoxPath.Items.Count > 0)
                     {
                         comboBoxPath.SelectedIndex = 0;
                     }
+
+                    comboBoxPath.EndUpdate();
+                }
+            }
+        }
+
+        private void ControlItemsLimit()
+        {
+            if (comboBoxPath.Items.Count >= 10)
+            {
+                int dif = comboBoxPath.Items.Count - Math.Abs(comboBoxPath.Items.Count - 10);
+                for (int i = comboBoxPath.Items.Count - 1; i >= dif; i--)
+                {
+                    comboBoxPath.Items.RemoveAt(i);
                 }
             }
         }
