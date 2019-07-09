@@ -7,7 +7,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         /// <summary>
         /// PayPal donate url.
         /// </summary>
-        public static string DonateUrl => "http://bit.ly/2LawVSm";
+        public static string DonateUrl => "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9EFVREKVKC2VJ&source=url";
 
         public static string UnbreakLine(string text)
         {
