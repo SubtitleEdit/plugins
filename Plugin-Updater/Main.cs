@@ -11,6 +11,9 @@ namespace Plugin_Updater
     {
         private string _metaFile = string.Empty;
         private XDocument _xDoc;
+
+        private DateTime _trackDate;
+
         public Main()
         {
             InitializeComponent();
@@ -19,12 +22,12 @@ namespace Plugin_Updater
             listViewPluginInfo.DrawItem += ListViewPluginInfo_DrawItem;
             listViewPluginInfo.DrawSubItem += ListViewPluginInfo_DrawSubItem;
             listViewPluginInfo.DrawColumnHeader += ListViewPluginInfo_DrawColumnHeader;
+
+            // hook handlers
             Resize += delegate
             {
                 listViewPluginInfo.Columns[listViewPluginInfo.Columns.Count - 1].Width = -2;
             };
-
-
             buttonUpload.Click += (sender, e) =>
             {
                 using (var uploadToGithub = new UploadToGithub())
@@ -237,6 +240,8 @@ namespace Plugin_Updater
             dateTimePicker1.Value = pluginInfo.Date;
             textBoxAuthor.Text = pluginInfo.Author;
             textBoxUrl.Text = pluginInfo.Url.ToString();
+
+            _trackDate = pluginInfo.Date;
         }
 
         private void ButtonUpdate_Click(object sender, EventArgs e)
@@ -249,30 +254,49 @@ namespace Plugin_Updater
 
             try
             {
+                if (_trackDate.Equals(dateTimePicker1.Value))
+                {
+                    if (MessageBox.Show("Update release date with the current date?", "Update release date",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                    {
+                        dateTimePicker1.Value = DateTime.Now;
+                    }
+                }
+
                 ListViewItem lvi = listViewPluginInfo.SelectedItems[0];
                 PluginInfo pluginInfo = (PluginInfo)lvi.Tag;
-                pluginInfo.Name = textBoxName.Text;
-                pluginInfo.Description = textBoxDescription.Text;
-                pluginInfo.Version = numericUpDownVersion.Value;
-                pluginInfo.Date = dateTimePicker1.Value;
-                pluginInfo.Url = new Uri(textBoxUrl.Text);
-                pluginInfo.Author = textBoxAuthor.Text.Trim();
 
-                // update listview
-                lvi.Text = pluginInfo.Name;
-                lvi.SubItems[1].Text = pluginInfo.Description;
-                lvi.SubItems[2].Text = pluginInfo.Version.ToString("#0.00");
-                lvi.SubItems[3].Text = pluginInfo.Date.ToString("yyyy-MM-dd");
-                lvi.SubItems[4].Text = pluginInfo.Author;
-                lvi.SubItems[5].Text = pluginInfo.Url.ToString();
+                UpdateModel(pluginInfo);
+                UpdateView(lvi, pluginInfo);
 
-                MessageBox.Show("Plugin model updated, to save the change to Plugin4.xml, click button Save", "Model updated", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Plugin model updated, to save the change to Plugin4.xml, click button \"Save\"", "Model updated", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
                 // ignore update on error
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void UpdateModel(PluginInfo pluginInfo)
+        {
+            pluginInfo.Name = textBoxName.Text;
+            pluginInfo.Description = textBoxDescription.Text;
+            pluginInfo.Version = numericUpDownVersion.Value;
+            pluginInfo.Date = dateTimePicker1.Value;
+            pluginInfo.Url = new Uri(textBoxUrl.Text);
+            pluginInfo.Author = textBoxAuthor.Text.Trim();
+        }
+
+        private static void UpdateView(ListViewItem lvi, PluginInfo pluginInfo)
+        {
+            // update listview
+            lvi.Text = pluginInfo.Name;
+            lvi.SubItems[1].Text = pluginInfo.Description;
+            lvi.SubItems[2].Text = pluginInfo.Version.ToString("#0.00");
+            lvi.SubItems[3].Text = pluginInfo.Date.ToString("yyyy-MM-dd");
+            lvi.SubItems[4].Text = pluginInfo.Author;
+            lvi.SubItems[5].Text = pluginInfo.Url.ToString();
         }
 
         private void ButtonSave_Click(object sender, EventArgs e)
