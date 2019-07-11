@@ -9,6 +9,7 @@
     <Import_RootNamespace>Nikse.SubtitleEdit.PluginLogic</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)EntryPointBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enums\ExpectingLine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enums\Tags.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\AssemblyUtils.cs" />
@@ -16,6 +17,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\FileUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\HtmlUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Attributes\InvokeOnLoad.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\UIUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Configuration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IConfigurable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IPlugin.cs" />

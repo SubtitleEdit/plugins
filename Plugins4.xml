@@ -217,4 +217,13 @@
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/OnlineCasing.zip</Url>
     <Author>ivandrofly</Author>
   </Plugin>
+  <Plugin>
+    <Name>TightHyphen</Name>
+    <Description>Remove space after hyphen in a dialog</Description>
+    <Version>1.0</Version>
+    <Date>2019-07-12</Date>
+    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/TightHyphen.zip</Url>
+    <Author>ivandrofly</Author>
+    <Element />
+  </Plugin>
 </Plugins>

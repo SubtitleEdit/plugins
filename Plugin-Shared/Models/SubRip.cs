@@ -57,11 +57,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public string ToText(Subtitle subtitle, string title)
         {
-            const string writeFormat = "{0}\r\n{1} --> {2}\r\n{3}\r\n\r\n";
+            const string writeFormat = "{0}{4}{1} --> {2}{4}{3}{4}{4}";
             var sb = new StringBuilder();
             foreach (Paragraph p in subtitle.Paragraphs)
             {
-                sb.AppendFormat(writeFormat, p.Number, p.StartTime, p.EndTime, p.Text);
+                sb.AppendFormat(writeFormat, p.Number, p.StartTime, p.EndTime, p.Text, Environment.NewLine);
             }
             return sb.ToString().Trim();
         }
