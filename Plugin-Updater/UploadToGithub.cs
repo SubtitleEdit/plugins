@@ -76,7 +76,7 @@ namespace Plugin_Updater
             string tempFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 
             // should zip?
-            if (comboBoxPath.Items.Count > 0 && checkBoxMultiple.Checked)
+            if (comboBoxPath.Items.Count > 0)
             {
                 CleanTemp(tempFile);
 
@@ -84,6 +84,10 @@ namespace Plugin_Updater
                 {
                     foreach (string file in comboBoxPath.Items)
                     {
+                        if (!File.Exists(file))
+                        {
+                            continue;
+                        }
                         // unrooted path
                         if (!Path.IsPathRooted(file))
                         {
