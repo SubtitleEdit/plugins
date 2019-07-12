@@ -6,7 +6,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
     public class TightHyphen : EntryPointBase
     {
         public TightHyphen() :
-            base("TightHyphen", "Tight Hyphen", 1, "Remove space after hyphen ina dialog", "tool", string.Empty)
+            base("TightHyphen", "Tight Hyphen", 1, "Remove space after hyphen in a dialog", "tool", string.Empty)
         {
         }
 
