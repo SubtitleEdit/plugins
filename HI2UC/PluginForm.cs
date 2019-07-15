@@ -11,6 +11,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form, IConfigurable
     {
+        private const int AfterTextIndex = 4;
         private static readonly Color color = Color.FromArgb(41, 57, 85);
         private readonly LinearGradientBrush gradientBrush;
         public string Subtitle { get; private set; }
@@ -327,14 +328,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (p.Text.Equals(procText, StringComparison.Ordinal) == false)
                 {
                     _fixedTexts.Add(p.ID, procText);
-                    string oldText = HtmlUtils.RemoveTags(p.Text, true);
-                    string newText = HtmlUtils.RemoveTags(procText, true);
-                    AddFixToListView(p, oldText, newText, containsMood, containsNarrator);
+                    AddFixToListView(p, p.Text, procText, containsMood, containsNarrator);
                 }
             }
-
-            int totalConvertParagraphs = _fixedTexts.Count;
-
             //groupBox1.ForeColor = totalConvertParagraphs <= 0 ? Color.Red : Color.Green;
             //groupBox1.Text = $@"Total Found: {totalConvertParagraphs}";
             /*this.listViewFixes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
@@ -370,8 +366,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 item.SubItems.Add("N/A");
             }
 
-            item.SubItems.Add(before.Replace(Environment.NewLine, Options.UILineBreak));
-            item.SubItems.Add(after.Replace(Environment.NewLine, Options.UILineBreak));
+            item.SubItems.Add(StringUtils.GetListViewString(before, false));
+            item.SubItems.Add(StringUtils.GetListViewString(after, false));
 
             int idx = after.IndexOf(Environment.NewLine, StringComparison.Ordinal);
             if (idx > 2)
@@ -468,7 +464,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return;
             }
 
+            // todo: get updated text from text-box
+
             ListViewItem selItem = listViewFixes.SelectedItems[0];
+            textBoxParagraphText.Text = _fixedTexts[((Paragraph)selItem.Tag).ID];
+            selItem.SubItems[4].Text = _fixedTexts[((Paragraph)selItem.Tag).ID];
+
+            return;
+
             textBoxParagraphText.DataBindings.Clear();
             var selParagraph = selItem.Tag as Paragraph;
 
@@ -477,36 +480,52 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // at this point paragraph's text property will be update, then use the updated text to update update _fixtedtext dictionary
             _fixedTexts[selParagraph.ID] = selParagraph.Text;
             //textBoxParagraphText.DataBindings.Add("Text", selItem.SubItems[3], "Text", false, DataSourceUpdateMode.OnPropertyChanged);
+
+            // todo: issues
+            // when set italic/bold/underline is clicked it will use listview.subitems text 
+            // to update _fixedTexts...
+            // the binding is becoming complicated at this point, because we bound Paragraph.Text => textBoxParagraphText.Text
         }
 
         private void ButtonItalic_Click(object sender, EventArgs e)
         {
-            SetTag(listViewFixes.SelectedItems, "<i>");
+            SetTag("<i>");
         }
 
         private void ButtonBold_Click(object sender, EventArgs e)
         {
-            SetTag(listViewFixes.SelectedItems, "<b>");
+            SetTag("<b>");
         }
 
         private void ButtonUnderline_Click(object sender, EventArgs e)
         {
-            SetTag(listViewFixes.SelectedItems, "<u>");
+            SetTag("<u>");
         }
 
-        private void SetTag(ListView.SelectedListViewItemCollection selIndeces, string tag)
+        private void SetTag(string tag)
         {
+            if (listViewFixes.SelectedItems.Count == 0)
+            {
+                return;
+            }
+            listViewFixes.BeginUpdate();
             string closeTag = $"</{tag[1]}>";
-            foreach (ListViewItem lvi in selIndeces)
+            foreach (ListViewItem lvi in listViewFixes.SelectedItems)
             {
                 var p = (Paragraph)lvi.Tag;
-                p.Text = HtmlUtils.RemoveOpenCloseTags(p.Text, tag[1].ToString());
-                p.Text = $"{tag}{p.Text}{closeTag}";
+                string value = _fixedTexts[p.ID];
+                value = HtmlUtils.RemoveOpenCloseTags(value, tag[1].ToString());
+                value = $"{tag}{value}{closeTag}";
+
+                // refresh fixed values
+                lvi.SubItems[AfterTextIndex].Text = StringUtils.GetListViewString(value, noTag: false);
+                _fixedTexts[p.ID] = value;
             }
-            if (selIndeces?.Count > 0)
+            if (listViewFixes.SelectedItems.Count > 0)
             {
-                GeneratePreview();
+                textBoxParagraphText.Text = _fixedTexts[((Paragraph)listViewFixes.SelectedItems[0].Tag).ID];
             }
+            listViewFixes.EndUpdate();
         }
     }
 }

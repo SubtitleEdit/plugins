@@ -53,7 +53,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 string noTagLine = HtmlUtils.RemoveTags(line, true);
 
                 int colonIdx = noTagLine.IndexOf(':');
-                if (colonIdx < 0)
+                if (colonIdx < 1)
                 {
                     continue;
                 }
@@ -63,7 +63,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     continue;
                 }
 
-                if (IsQualifiedNarrator(line, colonIdx))
+                if (IsQualifiedNarrator(noTagLine, colonIdx))
                 {
                     // Find index from original text.
                     colonIdx = line.IndexOf(':') + 1;
@@ -166,23 +166,23 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return st.CombineWithPrePost(strippedText);
         }
 
-        private static bool IsQualifiedNarrator(string line, int colonIdx)
+        private static bool IsQualifiedNarrator(string noTagsLine, int colonIdx)
         {
-            string noTagCapturedText = HtmlUtils.RemoveTags(line.Substring(0, colonIdx + 1), true);
+            string noTagCapturedText = noTagsLine.Substring(0, colonIdx + 1);
             if (string.IsNullOrWhiteSpace(noTagCapturedText))
             {
                 return false;
             }
             // e.g: 12:30am...
-            if (colonIdx + 1 < line.Length)
+            if (colonIdx + 1 < noTagsLine.Length)
             {
-                char lastChar = line[colonIdx + 1];
-                if (char.IsDigit(lastChar))
+                char charAfterColon = noTagsLine[colonIdx + 1];
+                if (char.IsDigit(charAfterColon))
                 {
                     return false;
                 }
                 // slash after https://
-                if (lastChar == '/')
+                if (charAfterColon == '/')
                 {
                     return false;
                 }
