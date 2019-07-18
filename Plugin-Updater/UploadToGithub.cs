@@ -66,10 +66,13 @@ namespace Plugin_Updater
 
         private async void ButtonUpload_Click(object sender, EventArgs e)
         {
-            if (comboBoxPath.Items.Count == 0)
-            {
-                return;
-            }
+            //if (comboBoxPath.Items.Count == 0)
+            //{
+            //    return;
+            //}
+            progressBar1.Visible = true;
+            progressBar1.Style = ProgressBarStyle.Marquee;
+
             Stream zipFileStream = null;
 
             //string tempFile = Path.GetTempFileName();
@@ -149,6 +152,9 @@ namespace Plugin_Updater
             MessageBox.Show("Plugin uploaded with sucess!");
 
             CleanTemp(tempFile);
+
+            progressBar1.Style = ProgressBarStyle.Blocks;
+            progressBar1.Visible = false;
         }
 
         private static void CleanTemp(string tempFile)

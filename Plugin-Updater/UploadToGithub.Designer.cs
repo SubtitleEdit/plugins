@@ -37,6 +37,7 @@
             this.textBoxToken = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.buttonSaveToken = new System.Windows.Forms.Button();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -127,11 +128,21 @@
             this.buttonSaveToken.UseVisualStyleBackColor = true;
             this.buttonSaveToken.Click += new System.EventHandler(this.buttonSaveToken_Click);
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(101, 206);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(165, 10);
+            this.progressBar1.Step = 45;
+            this.progressBar1.TabIndex = 10;
+            this.progressBar1.Visible = false;
+            // 
             // UploadToGithub
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(446, 228);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.buttonSaveToken);
             this.Controls.Add(this.textBoxToken);
             this.Controls.Add(this.label1);
@@ -157,5 +168,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button buttonSaveToken;
         private System.Windows.Forms.ComboBox comboBoxPath;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
