@@ -44,11 +44,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public static bool ContainsAny(this string s, char[] chars)
         {
             if (s.Length == 0)
+            {
                 return false;
+            }
+
             for (int i = 0; i < chars.Length; i++)
             {
                 if (s.Contains(chars[i]))
+                {
                     return true;
+                }
             }
             return false;
         }
@@ -56,12 +61,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public static int IndexOfAny(this string s, string[] words, StringComparison comparisonType)
         {
             if (words == null || string.IsNullOrEmpty(s))
+            {
                 return -1;
+            }
+
             for (int i = 0; i < words.Length; i++)
             {
                 var idx = s.IndexOf(words[i], comparisonType);
                 if (idx >= 0)
+                {
                     return idx;
+                }
             }
             return -1;
         }
@@ -74,7 +84,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public static string FixExtraSpaces(this string s)
         {
             if (string.IsNullOrEmpty(s))
+            {
                 return s;
+            }
+
             int len = s.Length;
             int k = -1;
             for (int i = len - 1; i >= 0; i--)
@@ -120,7 +133,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     var uc = CharUnicodeInfo.GetUnicodeCategory(s, index);
                     if (uc == UnicodeCategory.LowercaseLetter || uc == UnicodeCategory.UppercaseLetter || uc == UnicodeCategory.TitlecaseLetter || uc == UnicodeCategory.ModifierLetter || uc == UnicodeCategory.OtherLetter)
+                    {
                         return true;
+                    }
                 }
             }
             return false;
@@ -146,11 +161,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             var si = new StringInfo(s);
             if (ci == null)
+            {
                 ci = CultureInfo.CurrentCulture;
+            }
+
             if (si.LengthInTextElements > 0)
+            {
                 s = si.SubstringByTextElements(0, 1).ToUpper(ci);
+            }
+
             if (si.LengthInTextElements > 1)
+            {
                 s += si.SubstringByTextElements(1);
+            }
+
             return s;
         }
 

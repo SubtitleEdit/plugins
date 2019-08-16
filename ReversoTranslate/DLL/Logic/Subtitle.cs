@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Nikse.SubtitleEdit.PluginLogic
+namespace SubtitleEdit.Logic
 {
     public class Subtitle
     {

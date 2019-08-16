@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 
@@ -20,8 +21,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private UnBreakConfigs _configs;
 
-        private bool _isLoading = true;
-
         public PluginForm(Subtitle subtitle)
         {
             InitializeComponent();
@@ -34,11 +33,36 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 _configs.SaveConfigurations();
             };
 
+            linkLabelGithub.Click += (sender, e) => System.Diagnostics.Process.Start(linkLabelGithub.Tag.ToString());
+
+            // donate handler
+            pictureBoxDonate.Click += (s, e) =>
+            {
+                System.Diagnostics.Process.Start(StringUtils.DonateUrl);
+            };
+
+            // disable triggerer controls
+            ChangeControlsState(false);
+
             LoadConfigurations();
             _lineUnbreakerController = new LinesUnbreakerController(subtitle.Paragraphs, _configs);
             _lineUnbreakerController.TextUnbreaked += LineUnbreakerControllerTextUnbreaked;
-            _isLoading = false;
+
+            // restore trigger states
+            ChangeControlsState(true);
             GeneratePreview();
+        }
+
+        /// <summary>
+        /// Disable all the control in order to prevent triggering changes event.
+        /// </summary>
+        /// <param name="state"></param>
+        private void ChangeControlsState(bool state)
+        {
+            checkBoxMoods.Enabled = state;
+            checkBoxSkipDialog.Enabled = state;
+            checkBoxSkipNarrator.Enabled = state;
+            numericUpDown1.Enabled = state;
         }
 
         private void LineUnbreakerControllerTextUnbreaked(object sender, ParagraphEventArgs e)
@@ -47,7 +71,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (_updateListview)
             {
                 _totalFixed++;
-                AddToListView(e.Paragraph, e.NewText);
+                AddToListView(e);
             }
             else // Invoked by button OK.
             {
@@ -64,7 +88,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _updateListview = true;
             _lineUnbreakerController.Action();
 
-            labelTotal.Text = string.Format("Total: {0}", _totalFixed);
+            labelTotal.Text = $"Total: {_totalFixed}";
             labelTotal.ForeColor = _totalFixed < 1 ? Color.Red : Color.Green;
             listView1.EndUpdate();
             //listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
@@ -79,13 +103,26 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _configs.SkipNarrator = checkBoxSkipNarrator.Checked;
         }
 
-        private void AddToListView(Paragraph paragraph, string newText)
+        private void AddToListView(ParagraphEventArgs prgEventArgs)
         {
-            string noTagText = HtmlUtils.RemoveTags(paragraph.Text, false);
-            var item = new ListViewItem(paragraph.Number.ToString()) { UseItemStyleForSubItems = true };
-            item.SubItems.Add(noTagText.Length.ToString());
-            item.SubItems.Add(noTagText.Replace(Environment.NewLine, Options.UILineBreak));
-            item.SubItems.Add(HtmlUtils.RemoveTags(newText, true).Replace(Environment.NewLine, Options.UILineBreak));
+            string noTagOldText = HtmlUtils.RemoveTags(prgEventArgs.Paragraph.Text);
+
+            // length of only visilbe characters
+            int lineLength = noTagOldText.Length - (StringUtils.CountTagInText(noTagOldText, Environment.NewLine) * Environment.NewLine.Length);
+
+            ListViewItem item = new ListViewItem(string.Empty)
+            {
+                Checked = true,
+                UseItemStyleForSubItems = true,
+                SubItems =
+                {
+                    prgEventArgs.Paragraph.Number.ToString(),
+                   lineLength.ToString(CultureInfo.InvariantCulture), // line length
+                    StringUtils.GetListViewString(prgEventArgs.Paragraph.Text, true), // old text
+                    StringUtils.GetListViewString(prgEventArgs.NewText, true) // new text
+                },
+                Tag = prgEventArgs
+            };
             listView1.Items.Add(item);
         }
 
@@ -97,7 +134,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void buttonOK_Click(object sender, EventArgs e)
         {
             _updateListview = false;
-            _lineUnbreakerController.Action();
+            //_lineUnbreakerController.Action();
+            foreach (ListViewItem lvi in listView1.Items)
+            {
+                // changes not accepted
+                if (!lvi.Checked)
+                {
+                    continue;
+                }
+
+                // update paragraph with new text
+                var prgEventArgs = (ParagraphEventArgs)lvi.Tag;
+                prgEventArgs.Paragraph.Text = prgEventArgs.NewText;
+            }
             Subtiitle = _subtitle.ToText();
             DialogResult = DialogResult.OK;
         }
@@ -105,30 +154,43 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void PluginForm_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
+            {
                 DialogResult = DialogResult.Cancel;
+            }
         }
 
         private void ListView1_Resize(object sender, EventArgs e)
         {
-            var l = 0;
-            for (int i = 0; i < 2; i++)
+            int exclusiveWidth = 0;
+
+            // text columns indeces
+            int IndexBeforeChanges = listView1.Columns.Count - 2;
+            int IndexAfterChanges = listView1.Columns.Count - 1;
+
+            // columns from check-box to line length
+            int count = listView1.Columns.Count - 2;
+
+            // all columns width excluding last two
+            for (int i = 0; i < count; i++)
             {
-                l += listView1.Columns[i].Width;
+                exclusiveWidth += listView1.Columns[i].Width;
             }
-            var newWidth = (listView1.Width - l) >> 1;
-            listView1.Columns[2].Width = newWidth;
-            listView1.Columns[3].Width = newWidth;
+
+            // cut in half
+            int remainingWidth = (listView1.Width - exclusiveWidth) >> 1;
+
+            // before changes 
+            listView1.Columns[IndexBeforeChanges].Width = remainingWidth;
+            // after changes
+            listView1.Columns[IndexAfterChanges].Width = remainingWidth;
         }
 
         private void ConfigurationChanged(object sender, EventArgs e)
         {
-            // TODO: fix this!
-            if (_isLoading)
+            if (_updateListview)
             {
-                return;
+                GeneratePreview();
             }
-
-            GeneratePreview();
         }
 
         public void LoadConfigurations()
@@ -140,12 +202,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 _configs = UnBreakConfigs.LoadConfiguration(configFile);
             }
-            else
+
+            // unable to load configuration file
+            if (_configs == null)
             {
+                // generate and save new configuration file
                 _configs = new UnBreakConfigs(configFile);
                 _configs.SaveConfigurations();
             }
 
+            // load configurations
             checkBoxMoods.Checked = _configs.SkipMoods;
             checkBoxSkipDialog.Checked = _configs.SkipDialogs;
             checkBoxSkipNarrator.Checked = _configs.SkipNarrator;
@@ -155,12 +221,41 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 _configs.MaxLineLength = Convert.ToInt32(numericUpDown1.Minimum);
                 numericUpDown1.Minimum = 0;
             }
-            else
+            numericUpDown1.Value = _configs.MaxLineLength;
+        }
+
+        public void SaveConfigurations()
+        {
+            _configs.SaveConfigurations();
+        }
+
+        private void ReportProblemToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/SubtitleEdit/plugins/issues/new");
+        }
+
+        private void CheckAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem lvi in listView1.Items)
             {
-                numericUpDown1.Value = _configs.MaxLineLength;
+                lvi.Checked = true;
             }
         }
 
-        public void SaveConfigurations() => _configs.SaveConfigurations();
+        private void UncheckAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem lvi in listView1.Items)
+            {
+                lvi.Checked = false;
+            }
+        }
+
+        private void InvertCheckedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem lvi in listView1.Items)
+            {
+                lvi.Checked = !lvi.Checked;
+            }
+        }
     }
 }

@@ -137,6 +137,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             Cursor.Current = Cursors.WaitCursor;
             Enabled = false;
+            // force Form display before conversion, which might take considerable time
             Refresh();
             try
             {
@@ -187,7 +188,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void linkLabelIssues_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("https://github.com/SubtitleEdit/plugins/issues/new");
+            Process.Start("https://github.com/SubtitleEdit/plugins/issues/162");
             listViewFixes.Select();
         }
 

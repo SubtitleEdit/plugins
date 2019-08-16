@@ -31,11 +31,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             : this()
         {
             // TODO: Complete member initialization
-            this._parentForm = parentForm;
-            this._subtitle = sub;
-            this._name = name;
-            this._description = description;
-            this.FindDialogue();
+            _parentForm = parentForm;
+            _subtitle = sub;
+            _name = name;
+            _description = description;
+            FindDialogue();
         }
 
         private void FindDialogue()
@@ -48,7 +48,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
             }
             if (_subtitle.Paragraphs.Count > 0)
-                this.textBox1.Text = _subtitle.Paragraphs[0].Text;
+                textBox1.Text = _subtitle.Paragraphs[0].Text;
         }
 
         private bool AnalyzeText(string text)
@@ -87,7 +87,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             item.SubItems.Add(subItem);
 
             // Add to listView
-            this.listViewDialogue.Items.Add(item);
+            listViewDialogue.Items.Add(item);
         }
 
         private void listViewDialogue_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
@@ -98,15 +98,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 var paragraph = e.Item.Tag as Paragraph;
                 if (paragraph != null)
                 {
-                    this.textBox1.Text = paragraph.Text;
-                    this.textBox1.Tag = e.Item.Tag;
+                    textBox1.Text = paragraph.Text;
+                    textBox1.Tag = e.Item.Tag;
                     SetLinesLength(textBox1.Text);
                 }
             }
             else
             {
                 var p = e.Item.Tag as Paragraph;
-                if (p.Text != this.textBox1.Text)
+                if (p.Text != textBox1.Text)
                 {
                     p.Text = textBox1.Text;
                     e.Item.SubItems[2].Text = p.Text.Replace(Environment.NewLine, "<br />");
@@ -146,16 +146,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (IsThereText())
             {
-                string selected = this.textBox1.SelectedText;
+                string selected = textBox1.SelectedText;
                 if (!string.IsNullOrEmpty(selected))
                 {
                     textBox1.Text = textBox1.Text.Replace(selected, selected.ToLower());
                 }
                 else
                 {
-                    string text = this.textBox1.Text.Trim();
+                    string text = textBox1.Text.Trim();
                     if (HtmlUtils.RemoveTags(text).Length > 0)
-                        this.textBox1.Text = text.ToLower();
+                        textBox1.Text = text.ToLower();
                 }
             }
             // TODO: fix tag chasing before proceed
@@ -165,18 +165,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (IsThereText())
             {
-                string selected = this.textBox1.SelectedText;
+                string selected = textBox1.SelectedText;
                 if (!string.IsNullOrEmpty(selected))
                 {
                     textBox1.Text = textBox1.Text.Replace(selected, selected.ToUpper());
                 }
                 else
                 {
-                    string text = this.textBox1.Text.Trim();
+                    string text = textBox1.Text.Trim();
                     text = text.ToUpper();
                     if (text.Contains("<"))
                         text = FixTag(text);
-                    this.textBox1.Text = text;
+                    textBox1.Text = text;
                 }
             }
         }
@@ -259,7 +259,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         if (!temp.Contains(Environment.NewLine + "-"))
                         {
                             text = text.Replace(Environment.NewLine, Environment.NewLine + "- ");
-                            this.textBox1.Text = text;
+                            textBox1.Text = text;
                         }
                         break;
 
@@ -274,7 +274,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         {
                             text = text.Replace(Environment.NewLine, Environment.NewLine + "- ");
                         }
-                        this.textBox1.Text = text;
+                        textBox1.Text = text;
                         break;
                 }
             }
@@ -284,20 +284,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (IsThereText())
             {
-                string selected = this.textBox1.SelectedText;
+                string selected = textBox1.SelectedText;
                 if (!string.IsNullOrEmpty(selected))
                 {
                     textBox1.Text = textBox1.Text.Replace(selected, "<i>" + selected + "</i>");
                 }
                 else
                 {
-                    string text = this.textBox1.Text.Trim();
+                    string text = textBox1.Text.Trim();
                     // TODO: Use regex to remove italic tags
                     text = text.Replace("<i>", string.Empty);
                     text = text.Replace("</i>", string.Empty);
 
                     text = "<i>" + text + "</i>";
-                    this.textBox1.Text = text;
+                    textBox1.Text = text;
                 }
             }
         }
@@ -321,12 +321,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (IsThereText())
             {
-                string text = this.textBox1.Text.Trim();
+                string text = textBox1.Text.Trim();
                 // TODO: Use regex to remove italic tags
                 text = Regex.Replace(text, "(?i)</?b>", string.Empty);
 
                 text = "<b>" + text + "</b>";
-                this.textBox1.Text = text;
+                textBox1.Text = text;
             }
         }
 
@@ -359,7 +359,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public void SelectIndexAndEnsureVisible(int index)
         {
-            this.listViewDialogue.Focus();
+            listViewDialogue.Focus();
             SelectIndexAndEnsureVisible(index, false);
         }
 
@@ -412,7 +412,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private bool IsThereText()
         {
-            string text = this.textBox1.Text.Trim();
+            string text = textBox1.Text.Trim();
             if (!string.IsNullOrEmpty(text))
             {
                 text = HtmlUtils.RemoveTags(text);
@@ -427,8 +427,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void buttonOk_Click(object sender, EventArgs e)
         {
             buttonNext_Click(null, null);
-            this.FixedSubtitle = _subtitle.ToText();
-            if (!string.IsNullOrEmpty(this.FixedSubtitle.Trim()))
+            FixedSubtitle = _subtitle.ToText();
+            if (!string.IsNullOrEmpty(FixedSubtitle.Trim()))
             {
                 DialogResult = System.Windows.Forms.DialogResult.OK;
             }
@@ -443,7 +443,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonClear_Click(object sender, EventArgs e)
         {
-            string text = this.textBox1.Text;
+            string text = textBox1.Text;
             if (!string.IsNullOrEmpty(text))
             {
                 text = HtmlUtils.RemoveTags(text).Trim();
@@ -456,7 +456,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     {
                         text = text.Replace(Environment.NewLine + " ", Environment.NewLine);
                     }
-                    this.textBox1.Text = text.Trim();
+                    textBox1.Text = text.Trim();
                 }
             }
         }
@@ -468,7 +468,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 int newLineIdx = textBox1.Text.IndexOf(Environment.NewLine);
                 int index = textBox1.SelectionStart;
                 int len = 0;
-                string str = this.textBox1.Text; ;
+                string str = textBox1.Text; ;
 
                 if (index > 1 && index < newLineIdx && index + 1 < textBox1.Text.Length - 1)
                 {
@@ -536,7 +536,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (e.KeyCode != (Keys.Down | Keys.Up))
                 return;
-            this.listViewDialogue.Focus();
+            listViewDialogue.Focus();
             if (e.KeyCode == Keys.Up)
             {
                 buttonPrev_Click(null, EventArgs.Empty);

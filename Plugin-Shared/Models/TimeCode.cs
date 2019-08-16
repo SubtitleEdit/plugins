@@ -9,8 +9,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public const double BaseUnit = 1000.0; // Base unit of time
         private double _totalMilliseconds;
 
-        public bool IsMaxTime => Math.Abs(_totalMilliseconds - MaxTime.TotalMilliseconds) < 0.01;
-
         public TimeCode(double totalMilliseconds = 0.0D) => _totalMilliseconds = totalMilliseconds;
 
         public TimeCode(int hour, int minute, int seconds, int milliseconds)
@@ -34,10 +32,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public int Minutes
         {
-            get
-            {
-                return TimeSpan.Minutes;
-            }
+            get => TimeSpan.Minutes;
             set
             {
                 var ts = TimeSpan;
@@ -47,10 +42,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public int Seconds
         {
-            get
-            {
-                return TimeSpan.Seconds;
-            }
+            get => TimeSpan.Seconds;
             set
             {
                 var ts = TimeSpan;
@@ -60,10 +52,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public int Milliseconds
         {
-            get
-            {
-                return TimeSpan.Milliseconds;
-            }
+            get => TimeSpan.Milliseconds;
             set
             {
                 var ts = TimeSpan;
@@ -73,36 +62,28 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public double TotalMilliseconds
         {
-            get { return _totalMilliseconds; }
-            set { _totalMilliseconds = value; }
+            get => _totalMilliseconds;
+            set => _totalMilliseconds = value;
         }
 
         public double TotalSeconds
         {
-            get { return _totalMilliseconds / BaseUnit; }
-            set { _totalMilliseconds = value * BaseUnit; }
+            get => _totalMilliseconds / BaseUnit;
+            set => _totalMilliseconds = value * BaseUnit;
         }
 
         public TimeSpan TimeSpan
         {
-            get
-            {
-                return TimeSpan.FromMilliseconds(_totalMilliseconds);
-            }
-            set
-            {
-                _totalMilliseconds = value.TotalMilliseconds;
-            }
+            get => TimeSpan.FromMilliseconds(_totalMilliseconds);
+            set => _totalMilliseconds = value.TotalMilliseconds;
         }
 
         public override string ToString()
         {
             var ts = TimeSpan;
-            var s = $"{(ts.Hours + ts.Days * 24):00}:{ts.Minutes:00}:{ts.Seconds:00},{ts.Milliseconds:000}";
+            var s = $"{ts.Hours + ts.Days * 24:00}:{ts.Minutes:00}:{ts.Seconds:00},{ts.Milliseconds:000}";
 
-            if (TotalMilliseconds >= 0)
-                return s;
-            return "-" + s.Replace("-", string.Empty);
+            return TotalMilliseconds >= 0 ? s : "-" + s.Replace("-", string.Empty);
         }
 
     }

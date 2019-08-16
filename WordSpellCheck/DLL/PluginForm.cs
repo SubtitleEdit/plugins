@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
 using Word = Microsoft.Office.Interop.Word;
+
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form
@@ -35,7 +36,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             InitializeComponent();
 
-            this.Text = name;
+            Text = name;
             _subtitle = subtitle;
             FillSubtitleListView();
             labelActionInfo.Text = string.Empty;

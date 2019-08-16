@@ -47,7 +47,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return string.Empty;
             }
-            if (!this.IsOfficeInstalled())
+            if (!IsOfficeInstalled())
             {
                 MessageBox.Show(@"Microsoft Office (Word) is not installed in this system.", "Office is not installed!!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return string.Empty;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Xml;
@@ -9,16 +10,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public abstract class Configuration<TConfig>
     {
-        private static BindingFlags _bindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
+        private static readonly BindingFlags _bindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
 
         // NOTE: XmlSerializer sucks :(!
-        //private readonly static XmlSerializer _serializer;
+        //private static readonly XmlSerializer _serializer;
         private readonly string _configFile;
 
         //[XmlIgnore]
         public string ConfigFile => _configFile;
 
-        public Configuration(string configFile) => _configFile = configFile;
+        protected Configuration(string configFile) => _configFile = configFile;
 
         public void SaveConfigurations()
         {
@@ -59,8 +60,27 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                 //xmlWriter.WriteEndDocument();
             }
-            File.WriteAllText(_configFile, sb.ToString(), Encoding.UTF8);
 
+            try
+            {
+                File.WriteAllText(_configFile, sb.ToString(), Encoding.UTF8);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
+
+        // UNDONE!
+        private void SaveConfigs()
+        {
+            //var type = this.GetType();
+            //var propertyInfos = type.GetProperties(_bindingFlags);
+            //var xDocument = new XDocument();
+            //var xElements = propertyInfos.Select(p => new XElement(p.Name, p.GetValue(this, new object[] { }))).ToList();
+            //xDocument.Add(new XElement("root", string.Empty));
+            //xDocument.Root.Add(xElements);
+            //xDocument.Save(_configFile);
         }
 
         public static TConfig LoadConfiguration(string configFile)
@@ -94,8 +114,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                             if (xmlReader.NodeType == XmlNodeType.Text)
                             {
-                                Debug.WriteLine(xmlReader.ValueType);
-                                Debug.WriteLine(xmlReader.Value);
+                                //Debug.WriteLine(xmlReader.ValueType);
+                                //Debug.WriteLine(xmlReader.Value);
 
                                 object value = null;
                                 if (!propInfo.PropertyType.IsEnum)

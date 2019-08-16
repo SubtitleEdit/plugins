@@ -9,10 +9,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public string StrippedText { get; set; }
         public string OriginalText { get; private set; }
 
-        public string MergedString
-        {
-            get { return Pre + StrippedText + Post; }
-        }
+        public string MergedString => Pre + StrippedText + Post;
 
         public StripableText(string text)
             : this(text, " >-\"”“['‘`´¶(♪¿¡.…—", " -\"”“]'`´¶)♪.!?:…—")
@@ -101,9 +98,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             StrippedText = text;
         }
 
-        public string CombineWithPrePost(string text)
-        {
-            return Pre + text + Post;
-        }
+        public string CombineWithPrePost(string text) => Pre + text + Post;
     }
 }

@@ -28,8 +28,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private static void SaveToXmlFile()
         {
             if (_listNewName == null || _listNewName.Count == 0)
+            {
                 return;
-            var filePath = Path.Combine(DictionaryFolder, "narratorNames.xml");
+            }
+
+            var filePath = Path.Combine(FileUtils.Dictionaries, "narratorNames.xml");
             try
             {
                 var xelem = XDocument.Load(filePath);
@@ -37,7 +40,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                                        select new XElement("name", name)).ToList());
                 /*
                     foreach (var name in _listNewName)
-                        xelem.Root.Add(new XElement("name", name));*/
+                        xelem.Root.Add(new XElement("name", name));
+                */
 
                 xelem.Save(filePath);
             }
@@ -56,8 +60,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return ListNames.Contains(name.ToUpperInvariant());
         }
 
-        private static List<string> _listNames = LoadNames(Path.Combine(FileUtils.Dictionary, "names.xml")); // Uppercase names
-        private static List<string> _listNewName = LoadNames(Path.Combine(FileUtils.Dictionary, "narratorNames.xml"));
+        private static List<string> _listNames = LoadNames(Path.Combine(FileUtils.Dictionaries, "names.xml")); // Uppercase names
+        private static List<string> _listNewName = LoadNames(Path.Combine(FileUtils.Dictionaries, "narratorNames.xml"));
 
         public static ICollection<string> ListNames => _listNames.Concat(_listNewName).ToList();
 
@@ -86,12 +90,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
                             new XElement("name", "CAITLIN")
                             ));
 
-                    if (!Directory.Exists(FileUtils.Dictionary))
+                    if (!Directory.Exists(FileUtils.Dictionaries))
                     {
-                        Directory.CreateDirectory(FileUtils.Dictionary);
+                        Directory.CreateDirectory(FileUtils.Dictionaries);
                     }
 
-                    xdoc.Save(Path.Combine(FileUtils.Dictionary, "narratorNames.xml"), SaveOptions.None);
+                    xdoc.Save(Path.Combine(FileUtils.Dictionaries, "narratorNames.xml"), SaveOptions.None);
                     return (from elem in xdoc.Root.Elements()
                             select elem.Value.ToUpperInvariant()).ToList();
                 }

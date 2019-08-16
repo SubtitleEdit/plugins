@@ -104,6 +104,7 @@ namespace SubtitleEdit
                 new TranslationLanguage("NL", "Dutch"),
                 new TranslationLanguage("PL", "Polish"),
                 new TranslationLanguage("PT", "Portuguese"),
+                new TranslationLanguage("RU", "Russian"),
             });
             int i = 0;
             foreach (var l in comboBox.Items)
@@ -581,7 +582,7 @@ namespace SubtitleEdit
         private string SetFormattingTypeAndSplitting(int i, string text, bool skipSplit)
         {
             text = text.Trim();
-            if (text.StartsWith("<i>", StringComparison.Ordinal) && text.EndsWith("</i>", StringComparison.Ordinal) && text.Contains("</i>" + Environment.NewLine + "<i>") && Utilities.GetNumberOfLines(text) == 2 && Utilities.CountTagInText(text, "<i>") == 1)
+            if (text.StartsWith("<i>", StringComparison.Ordinal) && text.EndsWith("</i>", StringComparison.Ordinal) && text.Contains("</i>" + Environment.NewLine + "<i>") && Utilities.GetNumberOfLines(text) == 2 && Utilities.CountTagInText(text, "<i>") == 2)
             {
                 _formattingTypes[i] = FormattingType.ItalicTwoLines;
                 text = HtmlUtil.RemoveOpenCloseTags(text, HtmlUtil.TagItalic);

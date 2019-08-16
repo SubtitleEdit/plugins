@@ -12,16 +12,16 @@
   <Plugin>
     <Name>Hearing Impaired to Uppercase</Name>
     <Description>Converts text inside "[]" / "()" to Uppercase</Description>
-    <Version>3.7</Version>
-    <Date>2017-11-06</Date>
+    <Version>4.1</Version>
+    <Date>2019-07-18</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/HI2UC.zip</Url>
     <Author>ivandrofly</Author>
   </Plugin>
   <Plugin>
     <Name>Lines Unbreaker</Name>
-    <Description>Helps unbreaking unnecessary shorten lines</Description>
-    <Version>1.8</Version>
-    <Date>2017-10-21</Date>
+    <Description>Helps unbreaking unnecessary short lines break</Description>
+    <Version>2.3</Version>
+    <Date>2019-07-09</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/LinesUnbreaker.zip</Url>
     <Author>ivandrofly</Author>
   </Plugin>
@@ -42,14 +42,6 @@
     <Author>Nikse</Author>
   </Plugin>
   <Plugin>
-    <Name>DeepL Translate</Name>
-    <Description>Translate with DeepL.com</Description>
-    <Version>0.93</Version>
-    <Date>2018-12-12</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/DeeplTranslate.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
     <Name>Yandex Translate</Name>
     <Description>Translate with Yandex</Description>
     <Version>0.3</Version>
@@ -60,18 +52,42 @@
   <Plugin>
     <Name>GT Screen-Scraper</Name>
     <Description>GT screen-scraper: Requires Edge and .net 4.6.2+</Description>
-    <Version>0.3</Version>
-    <Date>2018-12-12</Date>
+    <Version>0.5</Version>
+    <Date>2018-03-03</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/GTScreenScraper.zip</Url>
-    <Author></Author>
+    <Author>Nikse</Author>
   </Plugin>
   <Plugin>
     <Name>BT Screen-Scraper</Name>
     <Description>BT screen-scraper: Requires .net 4.6.2+</Description>
-    <Version>0.1</Version>
-    <Date>2018-12-20</Date>
+    <Version>0.3</Version>
+    <Date>2019-03-03</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/BTScreenScraper.zip</Url>
-    <Author></Author>
+    <Author>Nikse</Author>
+  </Plugin>
+  <Plugin>
+    <Name>DeepL Screen-Scraper translate</Name>
+    <Description>DL screen-scraper translate: Requires .net 4.6.2+</Description>
+    <Version>0.4</Version>
+    <Date>2019-03-03</Date>
+    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/DeepLScreenScraper.zip</Url>
+    <Author>Nikse</Author>
+  </Plugin>
+  <Plugin>
+    <Name>Copy-Paste Translate</Name>
+    <Description>Translate with 3rd party tool using copy/paste</Description>
+    <Version>0.5</Version>
+    <Date>2019-03-03</Date>
+    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/CopyPasteTranslate.zip</Url>
+    <Author>Nikse</Author>
+  </Plugin>
+  <Plugin>
+    <Name>PROMPT translate</Name>
+    <Description>Translate with PROMPT</Description>
+    <Version>0.3</Version>
+    <Date>2019-03-03</Date>
+    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/PromptTranslate.zip</Url>
+    <Author>Nikse</Author>
   </Plugin>
   <Plugin>
     <Name>Haxor</Name>
@@ -125,7 +141,7 @@
     <Name>Hearing Impaired Colorer</Name>
     <Description>Set color for Hearing Impaired annotations</Description>
     <Version>0.5</Version>
-    <Date>2017-10-21</Date>
+    <Date>2019-07-09</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/HIColorer.zip</Url>
     <Author>ivandrofly</Author>
   </Plugin>
@@ -156,8 +172,8 @@
   <Plugin>
     <Name>Narrator Out Parentheses</Name>
     <Description>Find and Convert narrator inside ()/[] to: Narrator:</Description>
-    <Version>0.3</Version>
-    <Date>2017-05-22</Date>
+    <Version>0.4</Version>
+    <Date>2019-01-09</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/NarratorOutParentheses.zip</Url>
     <Author>ivandrofly</Author>
   </Plugin>
@@ -188,17 +204,26 @@
   <Plugin>
     <Name>Baidu Translate</Name>
     <Description>Translate with Baidu</Description>
-    <Version>0.4</Version>
-    <Date>2017-06-04</Date>
+    <Version>0.5</Version>
+    <Date>2019-02-28</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/BaiduTranslate.zip</Url>
     <Author>Nikse</Author>
   </Plugin>
   <Plugin>
     <Name>Online casing</Name>
-    <Description>Do casing via themoviedb</Description>
-    <Version>1</Version>
-    <Date>2018-09-23</Date>
+    <Description>Do casing using TMDB api</Description>
+    <Version>1.3</Version>
+    <Date>2019-02-25</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/OnlineCasing.zip</Url>
     <Author>ivandrofly</Author>
+  </Plugin>
+  <Plugin>
+    <Name>TightHyphen</Name>
+    <Description>Remove space after hyphen in a dialog</Description>
+    <Version>1.0</Version>
+    <Date>2019-07-12</Date>
+    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/TightHyphen.zip</Url>
+    <Author>ivandrofly</Author>
+    <Element />
   </Plugin>
 </Plugins>

@@ -1,12 +1,10 @@
-﻿using Nikse.SubtitleEdit.PluginLogic;
-using SubtitleEdit.Logic;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Nikse.SubtitleEdit.PluginLogic
+namespace SubtitleEdit.Logic
 {
     public static class Utilities
     {
@@ -17,16 +15,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public static readonly string AllLetters = UppercaseLetters + LowercaseLetters;
         public static readonly string AllLettersAndNumbers = UppercaseLetters + LowercaseLettersWithNumbers;
 
-        #region StringExtension
+        //#region StringExtension
         public static bool Contains(this string s, char c)
         {
             return s.Length > 0 && s.IndexOf(c) > 0;
         }
-        public static string[] SplitToLines(this string s)
-        {
-            return s.Replace(Environment.NewLine, "\n").Replace('\r', '\n').Split('\n');
-        }
-        #endregion
+        //public static string[] SplitToLines(this string s)
+        //{
+        //    return s.Replace(Environment.NewLine, "\n").Replace('\r', '\n').Split('\n');
+        //}
+        //#endregion
         internal static string AssemblyVersion
         {
             get
@@ -49,7 +47,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (alsoSSA)
                 s = RemoveSsaTags(s);
 
-            if (!s.Contains('<'))
+            if (!Contains(s, '<'))
                 return s;
             s = Regex.Replace(s, "(?i)</?[ibu]>", string.Empty);
             while (s.Contains("  ")) s = s.Replace("  ", " ");
@@ -83,22 +81,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 idx = s.IndexOf("<font", idx, StringComparison.OrdinalIgnoreCase);
             }
             return s;
-        }
-
-        internal unsafe static int NumberOfLines(string text)
-        {
-            var ln = 1;
-            fixed (char* tPtr = text)
-            {
-                char* ptr = tPtr;
-                while (*ptr != '\0')
-                {
-                    if (*ptr == '\n')
-                        ln++;
-                    ptr++;
-                }
-            }
-            return ln;
         }
 
         public static int CountTagInText(string text, string tag)
@@ -302,7 +284,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 nextChar = s[index];
             else
                 return false;
-            if (!"\r\n\t ".Contains(nextChar))
+            if (!Contains("\r\n\t ", nextChar))
                 return false;
 
             // Some words we don't like breaking after
@@ -425,13 +407,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return text;
 
             // do not autobreak dialogs
-            if (text.Contains('-') && text.Contains(Environment.NewLine))
+            if (Contains(text, '-') && text.Contains(Environment.NewLine))
             {
                 var noTagLines = HtmlUtil.RemoveHtmlTags(text, true).SplitToLines();
                 if (noTagLines.Length == 2)
                 {
                     var arr0 = noTagLines[0].Trim().TrimEnd('"', '\'').TrimEnd();
-                    if (arr0.StartsWith('-') && noTagLines[1].TrimStart().StartsWith('-') && arr0.Length > 1 && (".?!)]".Contains(arr0[arr0.Length - 1]) || arr0.EndsWith("--", StringComparison.Ordinal) || arr0.EndsWith('–')))
+                    if (arr0.StartsWith('-') && noTagLines[1].TrimStart().StartsWith('-') && arr0.Length > 1 && (Contains(".?!)]", arr0[arr0.Length - 1]) || arr0.EndsWith("--", StringComparison.Ordinal) || arr0.EndsWith('–')))
                         return text;
                 }
             }
@@ -512,7 +494,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                             {
                                 if (mid - j > 5 && s[mid - j - 1] == ' ')
                                 {
-                                    if ("!?.".Contains(s[mid - j - 2]))
+                                    if (Contains("!?.", s[mid - j - 2]))
                                     {
                                         splitPos = mid - j;
                                         break;
@@ -541,18 +523,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     if (mid + j + 1 < s.Length && mid + j > 0)
                     {
-                        if (expectedChars2.Contains(s[mid + j]) && !IsPartOfNumber(s, mid + j) && CanBreak(s, mid + j + 1, language))
+                        if (Contains(expectedChars2, s[mid + j]) && !IsPartOfNumber(s, mid + j) && CanBreak(s, mid + j + 1, language))
                         {
                             splitPos = mid + j + 1;
-                            if (expectedChars1.Contains(s[splitPos]))
+                            if (Contains(expectedChars1, s[splitPos]))
                             { // do not break double/tripple end lines like "!!!" or "..."
                                 splitPos++;
-                                if (expectedChars1.Contains(s[mid + j + 1]))
+                                if (Contains(expectedChars1, s[mid + j + 1]))
                                     splitPos++;
                             }
                             break;
                         }
-                        if (expectedChars2.Contains(s[mid - j]) && !IsPartOfNumber(s, mid - j) && CanBreak(s, mid - j, language))
+                        if (Contains(expectedChars2, s[mid - j]) && !IsPartOfNumber(s, mid - j) && CanBreak(s, mid - j, language))
                         {
                             splitPos = mid - j;
                             splitPos++;
@@ -581,25 +563,25 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     if (mid + j + 1 < s.Length && mid + j > 0)
                     {
-                        if (expectedChars1.Contains(s[mid + j]) && !IsPartOfNumber(s, mid + j) && s.Length > mid + j + 2 && CanBreak(s, mid + j, language))
+                        if (Contains(expectedChars1, s[mid + j]) && !IsPartOfNumber(s, mid + j) && s.Length > mid + j + 2 && CanBreak(s, mid + j, language))
                         {
                             splitPos = mid + j;
-                            if (expectedChars2.Contains(s[mid + j + 1]))
+                            if (Contains(expectedChars2, s[mid + j + 1]))
                             {
                                 splitPos++;
-                                if (expectedChars2.Contains(s[mid + j + 2]))
+                                if (Contains(expectedChars2, s[mid + j + 2]))
                                     splitPos++;
                             }
                             break;
                         }
-                        if (expectedChars1.Contains(s[mid - j]) && !IsPartOfNumber(s, mid - j) && s.Length > mid + j + 2 && CanBreak(s, mid - j, language))
+                        if (Contains(expectedChars1, s[mid - j]) && !IsPartOfNumber(s, mid - j) && s.Length > mid + j + 2 && CanBreak(s, mid - j, language))
                         {
                             splitPos = mid - j;
-                            if (expectedChars3.Contains(s[splitPos]))
+                            if (Contains(expectedChars3, s[splitPos]))
                                 splitPos--;
-                            if (expectedChars3.Contains(s[splitPos]))
+                            if (Contains(expectedChars3, s[splitPos]))
                                 splitPos--;
-                            if (expectedChars3.Contains(s[splitPos]))
+                            if (Contains(expectedChars3, s[splitPos]))
                                 splitPos--;
                             break;
                         }
@@ -650,7 +632,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             s = s.Replace(" </b>", "</b> ");
             s = s.Replace(" </u>", "</u> ");
             s = s.Replace(" </font>", "</font> ");
-            s = s.FixExtraSpaces();
+            s = FixExtraSpaces(s);
             return s.Trim();
         }
 
@@ -662,7 +644,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 int six = 0;
                 foreach (var letter in s)
                 {
-                    if (Environment.NewLine.Contains(letter))
+                    if (Contains(Environment.NewLine, letter))
                     {
                         sb.Append(letter);
                     }
@@ -690,7 +672,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (string.IsNullOrWhiteSpace(s) || position + 1 >= s.Length)
                 return false;
 
-            if (position > 0 && @",.".Contains(s[position]))
+            if (position > 0 && Contains(@",.", s[position]))
             {
                 return char.IsDigit(s[position - 1]) && char.IsDigit(s[position + 1]);
             }

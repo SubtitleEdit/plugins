@@ -23,6 +23,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 SaveConfigurations();
             };
 
+            // donate handler
+            pictureBoxDonate.Click += (s, e) =>
+            {
+                System.Diagnostics.Process.Start(StringUtils.DonateUrl);
+            };
+
             _subtitle = sub;
             LoadConfigurations();
             UpdateUIOnColorChange();
@@ -64,9 +70,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     continue;
                 }
-                var oldText = text;
+                string oldText = text;
                 text = HtmlUtils.RemoveOpenCloseTags(text, HtmlUtils.TagFont);
-                if (text != oldText)
+                if (text.ContainsColor() == false)
                 {
                     p.Text = text;
                 }
@@ -169,7 +175,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
             }
 
-            string configFile = FileUtils.GetConfigFile("hicolor-config.xml");
+            string configFile = Path.Combine(FileUtils.Plugins, "hicolor-config.xml");
             if (File.Exists(configFile))
             {
                 _configs = Configuration<ColorConfig>.LoadConfiguration(configFile);

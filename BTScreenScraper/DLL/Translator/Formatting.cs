@@ -11,10 +11,17 @@ namespace WebViewTranslate.Translator
         public bool ThreeDots { get; set; }
         public string StartTags { get; set; }
         public bool AutoBreak { get; set; }
+        public bool IsEmpty { get; set; }
 
         public string SetTagsAndReturnTrimmed(string text, string source)
         {
             text = text.Trim();
+
+            if (text.Length == 0)
+            {
+                IsEmpty = true;
+                return "-";
+            }
 
             // SSA/ASS tags
             if (text.StartsWith("{\\"))
@@ -28,7 +35,7 @@ namespace WebViewTranslate.Translator
             }
 
             // Italic tags
-            if (text.StartsWith("<i>", StringComparison.Ordinal) && text.EndsWith("</i>", StringComparison.Ordinal) && text.Contains("</i>" + Environment.NewLine + "<i>") && Utilities.GetNumberOfLines(text) == 2 && Utilities.CountTagInText(text, "<i>") == 1)
+            if (text.StartsWith("<i>", StringComparison.Ordinal) && text.EndsWith("</i>", StringComparison.Ordinal) && text.Contains("</i>" + Environment.NewLine + "<i>") && Utilities.GetNumberOfLines(text) == 2 && Utilities.CountTagInText(text, "<i>") == 2)
             {
                 ItalicTwoLines = true;
                 text = HtmlUtil.RemoveOpenCloseTags(text, HtmlUtil.TagItalic);
@@ -60,6 +67,11 @@ namespace WebViewTranslate.Translator
 
         public string ReAddFormatting(string text)
         {
+            if (IsEmpty)
+            {
+                return string.Empty;
+            }
+
             // Auto-break line
             if (AutoBreak)
             {

@@ -353,7 +353,7 @@ namespace WebViewTranslate
                 var doc = new XmlDocument();
                 doc.Load(fileName);
                 _to = doc.DocumentElement.SelectSingleNode("Target").InnerText;
-                numericUpDownMaxBytes.Value = decimal.Parse(doc.DocumentElement.SelectSingleNode("UrlMaxSize").InnerText);
+                numericUpDownMaxBytes.Value = decimal.Parse(doc.DocumentElement.SelectSingleNode("BulkSize").InnerText);
             }
             catch
             {
@@ -366,9 +366,9 @@ namespace WebViewTranslate
             try
             {
                 var doc = new XmlDocument();
-                doc.LoadXml("<Translator><ApiKey/><Target/><UrlIndex/><BulkSize/></Translator>");
+                doc.LoadXml("<Translator><Target/><BulkSize/></Translator>");
                 doc.DocumentElement.SelectSingleNode("Target").InnerText = _to;
-                doc.DocumentElement.SelectSingleNode("UrlMaxSize").InnerText = ((int)numericUpDownMaxBytes.Value).ToString();
+                doc.DocumentElement.SelectSingleNode("BulkSize").InnerText = ((int)numericUpDownMaxBytes.Value).ToString();
                 doc.Save(fileName);
             }
             catch (Exception e)

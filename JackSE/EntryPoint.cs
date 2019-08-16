@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    [InvokeOnLoading]
+    [InvokeOnLoad(false)]
     public class JackSE : IPlugin
     {
         public JackSE()
@@ -45,15 +45,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private Func<object, bool> ShouldInvokeMergeExp;
         private Action<object, EventArgs> InsertLineInvoker;
 
+        #region Metadata
+
         public string Name => "JackSE";
         public string Text => "JackSE";
         public decimal Version => 1;
-        public string Description => "jack subtitle edit";
+        public string Description => "Inject features into Subtilte Edit.";
         public string ActionType => "tool";
         public string Shortcut => string.Empty;
 
-        public string DoAction(Form parentForm, string srtText, double frameRate, string UILineBreak, string file,
-            string videoFile, string rawText)
+        #endregion
+
+        public string DoAction(Form parentForm, string srtText, double frameRate, string uiLineBreak, string file, string videoFile, string rawText)
         {
             _parentForm = parentForm;
 
@@ -66,8 +69,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 // Xml template
                 /*
                  * <urls>
-                 *  <url titlie="Ivandrofly (github)">https://wwww.github.com/ivnadrofly</url>
-                 *  <url titlie="<url-title>">https://wwww.github.com/ivnadrofly</url>
+                 *  <url title="Ivandrofly (github)">https://wwww.github.com/ivandrofly</url>
+                 *  <url title="<url-title>">https://wwww.github.com/ivandrofly</url>
                  * </urls>
                  */
                 var xdoc = XDocument.Load(configFile);
@@ -252,7 +255,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             // get cordinates/location
 
-            // merge handler 
+            // merge handler
             MethodInfo methodInfo = formType.GetMethod("MergeWithLineAfter", _privateMembersFlags);
             buttonMergeLines.Click += delegate
             {
@@ -288,7 +291,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             for (int i = toolStripMenu.DropDown.Items.Count - 1; i >= 0; i--)
             {
                 ToolStripItem tsi = toolStripMenu.DropDown.Items[i];
-                if (tsi.Text.Equals(this.Text, StringComparison.OrdinalIgnoreCase) || tsi.Text.Equals(this.Name, StringComparison.OrdinalIgnoreCase))
+                if (tsi.Text.Equals(Text, StringComparison.OrdinalIgnoreCase) || tsi.Text.Equals(Name, StringComparison.OrdinalIgnoreCase))
                 {
                     toolStripMenu.DropDownItems.RemoveAt(i);
                     break;

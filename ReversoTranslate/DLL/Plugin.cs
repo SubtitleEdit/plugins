@@ -1,20 +1,21 @@
-﻿using SubtitleEdit;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using SubtitleEdit.Logic;
+using WebViewTranslate;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    public class PapagoTranslate : IPlugin // dll file name must "<classname>.dll" - e.g. "Haxor.dll"
+    public class ReversoTranslate : IPlugin // dll file name must "<classname>.dll" - e.g. "Haxor.dll"
     {
         string IPlugin.Name
         {
-            get { return "Papago Translate"; }
+            get { return "Reverso Translate"; }
         }
 
         string IPlugin.Text
         {
-            get { return "Translate with papago.naver.com"; }
+            get { return "Translate with Reverso"; }
         }
 
         decimal IPlugin.Version
@@ -24,7 +25,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Description
         {
-            get { return "Translate subtitle withpapago.naver.com"; }
+            get { return "Translate subtitle with reverso.net"; }
         }
 
         string IPlugin.ActionType // Can be one of these: file, tool, sync, translate, spellcheck

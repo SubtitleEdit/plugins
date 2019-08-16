@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Dropbox.Api;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using Dropbox.Api;
-using System.Collections.Generic;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -90,7 +90,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         internal PluginForm(string fileName, string rawText, string name, string description)
         {
             InitializeComponent();
-            this.Text = name;
+            Text = name;
             buttonOK.Enabled = false;
             labelDescription.Text = "Connecting to Dropbox...";
             _rawText = rawText;
@@ -115,7 +115,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 var fileUp = api.UploadFile(s, Encoding.UTF8.GetBytes(_rawText));
                 DialogResult = DialogResult.OK;
                 labelInfo.Text = string.Empty;
-                this.Refresh();
+                Refresh();
             }
             catch (Exception exception)
             {
@@ -167,7 +167,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
             }
             labelInfo.Text = "Getting file list...";
-            this.Refresh();
+            Refresh();
             try
             {
                 Cursor = Cursors.WaitCursor;

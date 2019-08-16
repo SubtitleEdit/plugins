@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Nikse.SubtitleEdit.PluginLogic
+namespace BaiduTranslate.Logic
 {
     public abstract class SubtitleFormat
     {

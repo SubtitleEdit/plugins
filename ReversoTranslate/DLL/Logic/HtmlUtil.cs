@@ -2,9 +2,8 @@
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using SubtitleEdit.Logic;
 
-namespace Nikse.SubtitleEdit.PluginLogic
+namespace SubtitleEdit.Logic
 {
     /// <summary>
     /// HTML specific string manipulations.
@@ -362,7 +361,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (alsoSsaTags)
                 s = Utilities.RemoveSsaTags(s);
 
-            if (!s.Contains('<'))
+            if (!Utilities.Contains(s, '<'))
                 return s;
 
             if (s.Contains("< "))
@@ -373,7 +372,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static bool IsUrl(string text)
         {
-            if (string.IsNullOrWhiteSpace(text) || text.Length < 6 || !text.Contains('.') || text.Contains(' '))
+            if (string.IsNullOrWhiteSpace(text) || text.Length < 6 || !Utilities.Contains(text, '.') || Utilities.Contains(text, ' '))
                 return false;
 
             var allLower = text.ToLower();
@@ -404,7 +403,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static string FixUpperTags(string text)
         {
-            if (string.IsNullOrEmpty(text) || !text.Contains('<'))
+            if (string.IsNullOrEmpty(text) || !Utilities.Contains(text, '<'))
                 return text;
             var idx = text.IndexOfAny(UppercaseTags, StringComparison.Ordinal);
             while (idx >= 0)
@@ -671,7 +670,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (noOfLines == 3)
                 {
                     var lines = text.SplitToLines();
-                    if ((italicBeginTagCount == 3 && italicEndTagCount == 2) || (italicBeginTagCount == 2 && italicEndTagCount == 3))
+                    if (italicBeginTagCount == 3 && italicEndTagCount == 2 || italicBeginTagCount == 2 && italicEndTagCount == 3)
                     {
                         int numberOfItalics = 0;
                         foreach (var line in lines)

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using System.Globalization;
 
 namespace OneDriveLoad
 {
@@ -145,8 +145,10 @@ namespace OneDriveLoad
             if (_roots.Count > 0)
             {
                 ListViewItem item = new ListViewItem("..");
-                OneDriveContent sc = new OneDriveContent();
-                sc.ParentId = _roots.Peek();
+                OneDriveContent sc = new OneDriveContent
+                {
+                    ParentId = _roots.Peek()
+                };
                 item.Tag = sc;
                 item.ImageIndex = 1;
                 listViewFiles.Items.Add(item);
@@ -202,7 +204,7 @@ namespace OneDriveLoad
                 else if (sc.IsFile)
                 {
                     labelInfo.Text = "Downloading...";
-                    this.Refresh();
+                    Refresh();
                     Cursor = Cursors.WaitCursor;
                     var fileDown = _api.DownloadFile(sc);
                     LoadedSubtitle = Encoding.UTF8.GetString(fileDown).Trim();
@@ -210,7 +212,7 @@ namespace OneDriveLoad
                 }
                 Cursor = Cursors.Default;
                 labelInfo.Text = string.Empty;
-                this.Refresh();
+                Refresh();
             }
             catch (Exception exception)
             {

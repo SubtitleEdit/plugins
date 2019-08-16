@@ -21,14 +21,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public void Action()
         {
-            foreach (var p in _paragraphs)
+            foreach (Paragraph p in _paragraphs)
             {
                 if (p.NumberOfLines == 1)
                 {
                     continue;
                 }
 
-                var unbreakText = UnbreakLines(p.Text);
+                string unbreakText = UnbreakLines(p.Text);
 
                 // only unbreak if text length <= MaxLineLenth
                 if (HtmlUtils.RemoveTags(unbreakText, true).Length > _configs.MaxLineLength)
@@ -48,17 +48,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private string UnbreakLines(string s)
         {
-            var noTagText = HtmlUtils.RemoveTags(s, true);
+            string noTagText = HtmlUtils.RemoveTags(s, true);
             s = s.FixExtraSpaces().Trim();
 
+            // dialog
             if (_configs.SkipDialogs && (noTagText.StartsWith('-') || noTagText.Contains(Environment.NewLine + "-")))
             {
                 return s;
             }
+            // mood
             if (_configs.SkipMoods && noTagText.IndexOfAny(_moodChars) >= 0)
             {
                 return s;
             }
+            // narrator
             if (_configs.SkipNarrator && _regexNarrator.IsMatch(noTagText))
             {
                 return s;

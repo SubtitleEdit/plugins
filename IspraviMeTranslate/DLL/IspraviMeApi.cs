@@ -33,10 +33,12 @@ namespace SubtitleEdit
                 return null;
 
             string url = "https://ispravi.me/api/ispravi.pl";
-            var nvc = new List<KeyValuePair<string, string>>();
-            nvc.Add(new KeyValuePair<string, string>("textarea", text));
-            nvc.Add(new KeyValuePair<string, string>("context", "on"));
-            nvc.Add(new KeyValuePair<string, string>("app", _key));
+            var nvc = new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("textarea", text),
+                new KeyValuePair<string, string>("context", "on"),
+                new KeyValuePair<string, string>("app", _key)
+            };
             var client = new HttpClient();
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

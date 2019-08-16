@@ -1,90 +1,59 @@
-﻿using System.Globalization;
-using Nikse.SubtitleEdit.PluginLogic;
-using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Net;
-using System.Text;
-using System.Windows.Forms;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Net;
+using System.Reflection;
+using System.Text;
+using System.Threading;
+using System.Windows.Forms;
+using System.Xml;
+using BaiduTranslate.Logic;
+using BaiduTranslate.Translator;
 
-namespace SubtitleEdit
+namespace BaiduTranslate
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class MainForm : Form
     {
         private readonly Subtitle _subtitle;
+        private readonly Subtitle _subtitleOriginal;
         private static string _from = "en";
-        private static string _to = "zh";
+        private static string _to;
         private bool _abort;
-        private const string HostFanyiBaidu = "api.fanyi.baidu.com";
-        private const string HostBaiduV2 = "translate.baidu.com/v2transapi";
-        private string _host = HostFanyiBaidu;
-
-        public class BaiduTranslationPair
-        {
-            public string From { get; set; }
-            public string To { get; set; }
-            public string ToCode { get; set; }
-            public string FromCode { get; set; }
-
-            public BaiduTranslationPair(string from, string fromCode, string to, string toCode)
-            {
-                From = from;
-                FromCode = fromCode;
-                To = to;
-                ToCode = toCode;
-            }
-
-            public override string ToString()
-            {
-                return From + " -> " + To; // will be displayed in combobox
-            }
-        }
 
         public string FixedSubtitle { get; private set; }
 
         public MainForm()
         {
             InitializeComponent();
-            comboBoxHost.Items.Clear();
-            comboBoxHost.Items.Add(HostFanyiBaidu);
-            comboBoxHost.Items.Add(HostBaiduV2);
-            comboBoxHost.SelectedIndex = 0;
-            KeyDown += (s, e) =>
-            {
-                if (e.KeyCode == Keys.Escape)
-                    DialogResult = DialogResult.Cancel;
-                else if (e.KeyCode == Keys.F1)
-                    textBox1.Visible = !textBox1.Visible;
-            };
-            textBox1.Visible = false;
-            listView1.Columns[2].Width = -2;
+            textBoxLog.Visible = false;
             buttonCancelTranslate.Enabled = false;
-            comboBoxLanguagePair.Items.Clear();
-            comboBoxLanguagePair.Items.AddRange(new object[]
+            linkLabel1.Text = new BaiduTranslator(null, null, null, null).GetName();
+        }
+
+        private void SetLanguages(ComboBox comboBox, string language)
+        {
+            comboBox.Items.Clear();
+            foreach (var pair in BaiduTranslator.GetTranslationPairs())
+            {
+                comboBox.Items.Add(pair);
+            }
+            int i = 0;
+            foreach (var l in comboBox.Items)
+            {
+                if (l is TranslationPair tl && tl.Code.Equals(language, StringComparison.OrdinalIgnoreCase))
                 {
-                    new BaiduTranslationPair("English", "en", "Chinese", "zh"),
-                    new BaiduTranslationPair("Chinese", "zh", "English", "en"),
-
-                    new BaiduTranslationPair("English", "en", "Thai", "th"),
-                    new BaiduTranslationPair("Thai", "th", "English", "en"),
-
-                    new BaiduTranslationPair("English", "en", "Japanese", "jp"),
-                    new BaiduTranslationPair("Japanese", "jp", "English", "en"),
-
-                    new BaiduTranslationPair("English", "en", "Portuguese", "pt"),
-                    new BaiduTranslationPair("Portuguese", "pt", "English", "en"),
-
-                    new BaiduTranslationPair("English", "en", "Spanish", "spa"),
-                    new BaiduTranslationPair("Spanish", "spa", "English", "en"),
-
-                    new BaiduTranslationPair("Chinese", "zh", "Japanese", "jp"),
-                    new BaiduTranslationPair("Japanese", "jp", "Chinese", "zh"),
-                });
-            comboBoxLanguagePair.SelectedIndex = 0;
+                    comboBox.SelectedIndex = i;
+                    return;
+                }
+                i++;
+            }
+            comboBox.SelectedIndex = 0;
         }
 
         public MainForm(Subtitle sub, string title, string description, Form parentForm)
@@ -92,267 +61,269 @@ namespace SubtitleEdit
         {
             Text = title;
             _subtitle = sub;
-            GeneratePreview(false);
+            _subtitleOriginal = new Subtitle(sub);
+            foreach (var p in sub.Paragraphs)
+            {
+                p.Text = string.Empty;
+            }
+
+            _from = LanguageAutoDetect.AutoDetectGoogleLanguage(_subtitleOriginal);
+            SetLanguages(comboBoxLanguageFrom, _from);
+            GeneratePreview();
+            RestoreSettings();
+            var languages = BaiduTranslator.GetTranslationPairs().Select(p => p.Code).ToList();
+            if (string.IsNullOrEmpty(_to) || _to == _from)
+            {
+                _to = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
+                if (_to == _from)
+                {
+                    foreach (InputLanguage language in InputLanguage.InstalledInputLanguages)
+                    {
+                        if (languages.Contains(language.Culture.TwoLetterISOLanguageName))
+                        {
+                            _to = language.Culture.TwoLetterISOLanguageName;
+                            if (_to != _from)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (_to == _from && _from == "en")
+            {
+                _to = "de";
+            }
+            if (_to == _from && _from == "es")
+            {
+                _to = "de";
+            }
+            SetLanguages(comboBoxLanguageTo, _to);
         }
 
         public sealed override string Text
         {
-            get { return base.Text; }
-            set { base.Text = value; }
+            get => base.Text;
+            set => base.Text = value;
         }
 
-        internal class BackgroundWorkerParameter
+        private void Translate(string source, string target, BaiduTranslator translator, int maxTextSize, int maximumRequestArrayLength = 100)
         {
-            internal StringBuilder Log { get; set; }
-            internal Paragraph P { get; set; }
-            internal int Index { get; set; }
-            internal string Result { get; set; }
-        }
-
-        readonly object _myLock = new object();
-
-        private void GeneratePreview(bool setText)
-        {
-            if (_subtitle == null)
-                return;
+            buttonOk.Enabled = false;
+            buttonCancel.Enabled = false;
             _abort = false;
-            int numberOfThreads = 3;
-            var threadPool = new List<BackgroundWorker>();
-            for (int i = 0; i < numberOfThreads; i++)
+            Cursor.Current = Cursors.WaitCursor;
+
+            var end = DateTime.UtcNow.AddSeconds(30);
+            while (DateTime.UtcNow < end && !translator.PageLoaded)
             {
-                var bw = new BackgroundWorker();
-                bw.DoWork += OnBwOnDoWork;
-                bw.RunWorkerCompleted += OnBwRunWorkerCompleted;
-                threadPool.Add(bw);
+                Thread.Sleep(100);
+                Application.DoEvents();
             }
-            for (int index = 0; index < _subtitle.Paragraphs.Count; index++)
+
+            if (!translator.PageLoaded)
             {
-                Paragraph p = _subtitle.Paragraphs[index];
-                var before = p.Text;
-                var after = string.Empty;
-                if (setText)
+                Cursor.Current = Cursors.Default;
+                MessageBox.Show("Unable to load page from " + translator.GetUrl());
+                return;
+            }
+
+            progressBar1.Maximum = _subtitleOriginal.Paragraphs.Count;
+            progressBar1.Value = 0;
+            progressBar1.Visible = true;
+            var sourceParagraphs = new List<Paragraph>();
+            try
+            {
+                var log = new StringBuilder();
+                var sourceLength = 0;
+                var selectedItems = listView1.SelectedItems;
+                var startIndex = selectedItems.Count <= 0 ? 0 : selectedItems[0].Index;
+                var start = startIndex;
+                int index = startIndex;
+                for (int i = startIndex; i < _subtitleOriginal.Paragraphs.Count; i++)
                 {
-                    var arg = new BackgroundWorkerParameter { P = p, Index = index, Log = new StringBuilder() };
-                    threadPool.First(bw => !bw.IsBusy).RunWorkerAsync(arg);
-                    while (threadPool.All(bw => bw.IsBusy))
+                    Paragraph p = _subtitleOriginal.Paragraphs[i];
+                    sourceLength += Uri.EscapeDataString(p.Text).Length;
+                    if ((sourceLength >= maxTextSize || sourceParagraphs.Count >= maximumRequestArrayLength) && sourceParagraphs.Count > 0)
                     {
+                        translator.Translate(source, target, sourceParagraphs, log);
+                        List<string> result = null;
+                        var T = DateTime.UtcNow;
+                        while (result == null)
+                        {
+                            result = translator.GetTranslationResult(target, sourceParagraphs);
+                            Thread.Sleep(10);
+                            Application.DoEvents();
+                            var seconds = (DateTime.UtcNow - T).TotalSeconds;
+                            if (seconds > 15 && result == null || _abort)
+                            {
+                                log.AppendLine("No response from webview!" + Environment.NewLine);
+                                result = new List<string>();
+                            }
+                        }
+
+                        textBoxLog.Text = log.ToString().Trim();
+                        if (log.Length > 1000000)
+                        {
+                            log.Clear();
+                        }
+
+                        FillTranslatedText(result, start, index - 1);
+                        sourceLength = 0;
+                        sourceParagraphs.Clear();
+                        progressBar1.Refresh();
                         Application.DoEvents();
-                        System.Threading.Thread.Sleep(100);
+                        start = index;
+                    }
+                    sourceParagraphs.Add(p);
+                    index++;
+                    progressBar1.Value = index;
+                    if (_abort)
+                    {
+                        break;
                     }
                 }
-                else
+
+                if (sourceParagraphs.Count > 0)
                 {
-                    AddToListView(p, before, after);
+                    translator.Translate(source, target, sourceParagraphs, log);
+                    List<string> result = null;
+                    var T = DateTime.UtcNow;
+                    while (result == null)
+                    {
+                        result = translator.GetTranslationResult(target, sourceParagraphs);
+                        Application.DoEvents();
+                        var seconds = (DateTime.UtcNow - T).TotalSeconds;
+                        if ((result == null || result.Count == 0) && (seconds > 15 || _abort))
+                        {
+                            log.AppendLine("No response from webview!" + Environment.NewLine);
+                            result = new List<string>();
+                        }
+                    }
+                    textBoxLog.Text = log.ToString().Trim();
+                    FillTranslatedText(result, start, index - 1);
                 }
-                if (_abort)
+            }
+            catch (WebException webException)
+            {
+                MessageBox.Show(webException.Source + ": " + webException.Message);
+            }
+            finally
+            {
+                progressBar1.Visible = false;
+                Cursor.Current = Cursors.Default;
+                buttonTranslate.Enabled = true;
+                buttonOk.Enabled = true;
+                buttonCancel.Enabled = true;
+            }
+        }
+
+        private void FillTranslatedText(List<string> translatedLines, int start, int end)
+        {
+            int index = start;
+            listView1.BeginUpdate();
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                item.Selected = false;
+            }
+            foreach (string s in translatedLines)
+            {
+                if (index < listView1.Items.Count)
                 {
-                    _abort = false;
-                    return;
+                    var item = listView1.Items[index];
+                    _subtitle.Paragraphs[index].Text = s;
+                    item.SubItems[2].Text = s.Replace(Environment.NewLine, "<br />");
+                    if (listView1.CanFocus)
+                    {
+                        listView1.EnsureVisible(index);
+                    }
                 }
+                index++;
             }
-            while (threadPool.Any(bw => bw.IsBusy))
+
+            if (index > 0 && index < listView1.Items.Count + 1)
             {
-                Application.DoEvents();
-                System.Threading.Thread.Sleep(100);
+                listView1.EnsureVisible(index - 1);
+                listView1.Items[index - 1].Selected = true;
             }
-            foreach (var backgroundWorker in threadPool)
-            {
-                backgroundWorker.Dispose();
-            }
+
+            listView1.EndUpdate();
         }
 
-        private void OnBwRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs runWorkerCompletedEventArgs)
+        private void GeneratePreview()
         {
-            progressBar1.Value++;
-            var parameter = (BackgroundWorkerParameter)runWorkerCompletedEventArgs.Result;
-            parameter.P.Text = parameter.Result;
-            textBox1.AppendText(parameter.Log.ToString());
-            lock (_myLock)
+            if (_subtitle == null)
             {
-                var item = listView1.Items[parameter.Index];
-                item.SubItems[2].Text = parameter.Result;
+                return;
             }
-        }
-
-        private void OnBwOnDoWork(object sender, DoWorkEventArgs args)
-        {
-            var parameter = (BackgroundWorkerParameter)args.Argument;
-            parameter.Result = Translate(parameter.P, parameter.Log);
-            args.Result = parameter;
-        }
-
-        private string Translate(Paragraph p, StringBuilder log)
-        {
-            var startAndEndsWithItalic = p.Text.StartsWith("<i>", StringComparison.Ordinal) && p.Text.EndsWith("</i>", StringComparison.Ordinal);
-            string s = p.Text.Replace("<i>", string.Empty).Replace("</i>", string.Empty);
-            string result;
-            if (_host == HostFanyiBaidu)
-            {
-                var fanyiBaiduTranslator = new BaiduTranslator("20151113000005349", "osubCEzlGjzvw8qdQc41");
-                result = fanyiBaiduTranslator.Translate(s, _from, _to, log);
-            }
-            else
-            {
-                result = BaiduTranslate(UrlEncode(Utilities.RemoveHtmlTags(s, true)), _from, _to, log);
-            }
-            if (startAndEndsWithItalic)
-                result = "<i>" + result + "</i>";
-            log.AppendLine();
-            return result;
-        }
-
-        private string UrlEncode(string s)
-        {
-            return s
-                .Replace("%", "%25")
-                .Replace("?", "%3F")
-                .Replace("/", "%2F")
-                .Replace("&", "%26")
-                .Replace(":", "%3A")
-                .Replace("=", "%3D")
-                .Replace("@", "%40")
-                .Replace("#", "%23")
-                .Replace(",", "%2C")
-                .Replace(Environment.NewLine, "%0A");
-        }
-
-        private string BaiduTranslate(string text, string from, string to, StringBuilder log, int retryLevel = 0)
-        {
-            const int maxNumberOfRetries = 2;
-            string url = "http://translate.baidu.com/v2transapi";
-            var req = WebRequest.Create(url);
-            req.Method = "POST";
-            req.Headers.Add("cache-control", "no-cache");
-            req.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-            (req as HttpWebRequest).Accept = "*/*";
-            (req as HttpWebRequest).KeepAlive = false;
-            (req as HttpWebRequest).ServicePoint.Expect100Continue = false;
-            var data = "from=" + from + "&to=" + to + "&query=" + text + "&simple_means_flag=3";
-            log.AppendLine("Input to Baidu: " + data);
-            byte[] bytes = Encoding.UTF8.GetBytes(data);
-            req.ContentLength = bytes.Length;
-            var os = req.GetRequestStream();
-            os.Write(bytes, 0, bytes.Length);
-            os.Close();
 
             try
             {
-                using (var response = req.GetResponse() as HttpWebResponse)
+                _abort = false;
+                int start = 0;
+                if (listView1.SelectedItems.Count > 0)
                 {
-                    if (response == null)
+                    start = listView1.SelectedItems[0].Index;
+                }
+                for (int index = start; index < _subtitle.Paragraphs.Count; index++)
+                {
+                    if (index < listView1.Items.Count)
                     {
-                        return null;
-                    }
-                    var responseStream = response.GetResponseStream();
-                    if (responseStream == null)
-                    {
-                        if (retryLevel < maxNumberOfRetries)
+                        var listViewItem = listView1.Items[index];
+                        if (!string.IsNullOrWhiteSpace(listViewItem.SubItems[2].Text))
                         {
-                            retryLevel++;
-                            log.AppendLine("Retry: " + retryLevel);
-                            return BaiduTranslate(text, from, to, log, retryLevel);
+                            if (progressBar1.Value < progressBar1.Maximum)
+                            {
+                                progressBar1.Value++;
+                            }
+
+                            continue;
                         }
-                        return null;
                     }
 
-                    using (var reader = new StreamReader(responseStream, Encoding.UTF8))
-                    {
-                        string s = reader.ReadToEnd();
-                        log.AppendLine("Result from Baidu: " + s);
-                        var idx = s.IndexOf("dst\":", StringComparison.Ordinal);
-                        if (idx > 0)
-                        {
-                            var sb = new StringBuilder();
-                            while (idx > 0)
-                            {
-                                s = s.Substring(idx + 6).TrimStart().TrimStart('"');
-                                idx = s.IndexOf('"');
-                                if (idx > 0)
-                                {
-                                    sb.AppendLine(s.Substring(0, idx) + Environment.NewLine);
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                                idx = s.IndexOf("dst\":", StringComparison.Ordinal);
-                            }
-                            s = sb.ToString().TrimEnd();
-                        }
-                        else
-                        {
-                            idx = s.IndexOf("cont\\\":", StringComparison.Ordinal);
-                            if (idx > 0)
-                            {
-                                s = s.Substring(idx + 7).TrimStart().TrimStart('{').TrimStart().TrimStart('\\').TrimStart().TrimStart('"');
-                                idx = s.IndexOfAny(new[] { '"', '，' });
-                                if (idx > 0)
-                                {
-                                    s = s.Substring(0, idx).TrimEnd('\\');
-                                }
-                            }
-                        }
-                        log.AppendLine();
-                        s = DecodeEncodedNonAsciiCharacters(s);
-                        return s;
-                    }
+                    Paragraph p = _subtitleOriginal.Paragraphs[index];
+                    string text = p.Text;
+                    var before = text;
+                    var after = string.Empty;
+                    AddToListView(p, before, after);
                 }
             }
             catch (Exception exception)
             {
-                log.AppendLine(exception.Message + ": " + exception.StackTrace);
-                if (retryLevel < maxNumberOfRetries)
-                {
-                    retryLevel++;
-                    log.AppendLine("Retry: " + retryLevel);
-                    return BaiduTranslate(text, from, to, log, retryLevel);
-                }
+                MessageBox.Show(exception.Message + Environment.NewLine + exception.StackTrace);
             }
-            log.AppendLine();
-            return null;
-        }
-
-        static string DecodeEncodedNonAsciiCharacters(string value)
-        {
-            return Regex.Replace(value,@"\\u(?<Value>[a-zA-Z0-9]{4})", m => 
-            {
-                return ((char)int.Parse(m.Groups["Value"].Value, NumberStyles.HexNumber)).ToString();
-            });
         }
 
         private void AddToListView(Paragraph p, string before, string after)
         {
             var item = new ListViewItem(p.Number.ToString(CultureInfo.InvariantCulture)) { Tag = p };
-            item.SubItems.Add(before);
-            item.SubItems.Add(after);
+            item.SubItems.Add(p.Text.Replace(Environment.NewLine, "<br />"));
+            item.SubItems.Add(after.Replace(Environment.NewLine, "<br />"));
             listView1.Items.Add(item);
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
+            SaveSettings();
             FixedSubtitle = _subtitle.ToText(new SubRip());
             DialogResult = DialogResult.OK;
         }
 
         private void listView1_Resize(object sender, EventArgs e)
         {
-            var size = (listView1.Width - (listView1.Columns[0].Width)) >> 2;
+            var size = (listView1.Width - listView1.Columns[0].Width) >> 2;
             listView1.Columns[1].Width = size;
             listView1.Columns[2].Width = -2;
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("http://translate.baidu.com/");
+            Process.Start(new BaiduTranslator(null, null, null, null).GetUrl());
         }
 
         private void buttonTranslate_Click(object sender, EventArgs e)
         {
-            _host = comboBoxHost.Items[comboBoxHost.SelectedIndex].ToString();
-            var index = comboBoxLanguagePair.SelectedIndex;
-            if (index < 0)
-                return;
-
+            _abort = false;
             buttonTranslate.Enabled = false;
             buttonCancelTranslate.Enabled = true;
             progressBar1.Maximum = _subtitle.Paragraphs.Count;
@@ -360,10 +331,9 @@ namespace SubtitleEdit
             progressBar1.Visible = true;
             try
             {
-                var tp = (BaiduTranslationPair)comboBoxLanguagePair.Items[index];
-                _from = tp.FromCode;
-                _to = tp.ToCode;
-                GeneratePreview(true);
+                _from = ((TranslationPair)comboBoxLanguageFrom.Items[comboBoxLanguageFrom.SelectedIndex]).Code;
+                _to = ((TranslationPair)comboBoxLanguageTo.Items[comboBoxLanguageTo.SelectedIndex]).Code;
+                Translate(_from, _to, new BaiduTranslator(_from, _to, webBrowser1, textBoxLineSeparator.Text), (int)numericUpDownMaxBytes.Value);
             }
             finally
             {
@@ -378,5 +348,104 @@ namespace SubtitleEdit
             _abort = true;
         }
 
+        private void MainForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                DialogResult = DialogResult.Cancel;
+            }
+            else if (e.KeyCode == Keys.F1)
+            {
+                if (textBoxLog.Visible)
+                {
+                    textBoxLog.Visible = false;
+                }
+                else
+                {
+                    textBoxLog.Visible = true;
+                    textBoxLog.BringToFront();
+                }
+            }
+        }
+
+        private string GetSettingsFileName()
+        {
+            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+            if (path != null && path.StartsWith("file:\\", StringComparison.Ordinal))
+            {
+                path = path.Remove(0, 6);
+            }
+
+            path = Path.Combine(path, "Plugins");
+            if (!Directory.Exists(path))
+            {
+                path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Plugins");
+            }
+
+            return Path.Combine(path, "BaiduTranslate.xml");
+        }
+
+        private void RestoreSettings()
+        {
+            string fileName = GetSettingsFileName();
+            try
+            {
+                var doc = new XmlDocument();
+                doc.Load(fileName);
+                _to = doc.DocumentElement.SelectSingleNode("Target").InnerText;
+                numericUpDownMaxBytes.Value = decimal.Parse(doc.DocumentElement.SelectSingleNode("BulkSize").InnerText);
+            }
+            catch
+            {
+            }
+        }
+
+        private void SaveSettings()
+        {
+            string fileName = GetSettingsFileName();
+            try
+            {
+                var doc = new XmlDocument();
+                doc.LoadXml("<Translator><Target/><BulkSize/></Translator>");
+                doc.DocumentElement.SelectSingleNode("Target").InnerText = _to;
+                doc.DocumentElement.SelectSingleNode("BulkSize").InnerText = ((int)numericUpDownMaxBytes.Value).ToString();
+                doc.Save(fileName);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+        }
+
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            var subtract = listView1.Columns[0].Width + 20;
+            var width = listView1.Width / 2 - subtract;
+            listView1.Columns[1].Width = width;
+            listView1.Columns[1].Width = width;
+            listView1.Columns[2].Width = width;
+            listView1.Columns[1].Width = width;
+            listView1.Columns[1].Width = width;
+        }
+
+        private void MainForm_ResizeEnd(object sender, EventArgs e)
+        {
+            MainForm_Resize(sender, e);
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            MainForm_Resize(sender, e);
+        }
+
+        private void MainForm_Shown(object sender, EventArgs e)
+        {
+            MainForm_Resize(sender, e);
+        }
+
+        private void comboBoxLanguageTo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

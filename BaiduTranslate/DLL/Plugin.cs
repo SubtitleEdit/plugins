@@ -1,7 +1,8 @@
-﻿using SubtitleEdit;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using BaiduTranslate;
+using BaiduTranslate.Logic;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -14,12 +15,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text
         {
-            get { return "Translate with Baidu"; }
+            get { return "Translate with Baidu..."; } // text in translate menu
         }
 
         decimal IPlugin.Version
         {
-            get { return 0.4M; }
+            get { return 0.5M; }
         }
 
         string IPlugin.Description

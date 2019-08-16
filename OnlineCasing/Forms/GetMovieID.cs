@@ -16,6 +16,28 @@ namespace OnlineCasing.Forms
         {
             InitializeComponent();
             Client = client;
+            progressBar1.Visible = false;
+            //listViewMovies.Activation = ItemActivation.TwoClick;
+            listViewMovies.MouseDoubleClick += (sender, e) =>
+            {
+                ListViewItem li = listViewMovies.GetItemAt(e.X, e.Y);
+                System.Diagnostics.Debug.WriteLine($"clicks: {e.Clicks}");
+
+                if (e.Clicks == 2 && li != null)
+                {
+                    AddItem(li.Tag as SearchMovie);
+                    DialogResult = DialogResult.OK;
+                }
+            };
+            KeyPreview = true;
+            KeyUp += (sender, e) =>
+            {
+                if (e.KeyCode == Keys.Escape)
+                {
+                    DialogResult = DialogResult.Cancel;
+                }
+            };
+
         }
 
         public int ID { get; private set; }
@@ -61,10 +83,7 @@ namespace OnlineCasing.Forms
             listViewMovies.EndUpdate();
         }
 
-        private bool ShouldDisplayInfo(SearchMovie movie)
-        {
-            return movie == null || string.IsNullOrEmpty(movie.Title) || movie.ReleaseDate == null ? false : true;
-        }
+        private bool ShouldDisplayInfo(SearchMovie movie) => movie == null || string.IsNullOrEmpty(movie.Title) || movie.ReleaseDate == null ? false : true;
 
         private void ButtonOK_Click(object sender, EventArgs e)
         {
@@ -73,10 +92,24 @@ namespace OnlineCasing.Forms
             {
                 return;
             }
-
-            var movieSearch = listViewMovies.SelectedItems[0].Tag as SearchMovie;
-            ID = movieSearch.Id;
+            AddItem(listViewMovies.SelectedItems[0].Tag as SearchMovie);
             DialogResult = DialogResult.OK;
+        }
+
+        private void AddItem(SearchMovie searchMovie)
+        {
+            ID = searchMovie.Id;
+            if (Configs.Settings.Movies.Any(m => m.Id == searchMovie.Id) == false)
+            {
+                var movie = new Movie
+                {
+                    Id = searchMovie.Id,
+                    OriginalTitle = searchMovie.OriginalTitle,
+                    ReleaseDate = searchMovie.ReleaseDate.Value,
+                    Title = searchMovie.Title,
+                };
+                Configs.Settings.Movies.Add(movie);
+            }
         }
 
         private void TextBoxSearchQuery_KeyDown(object sender, KeyEventArgs e)
@@ -85,6 +118,11 @@ namespace OnlineCasing.Forms
             {
                 ButtonSearch_Click(null, EventArgs.Empty);
             }
+        }
+
+        private void ButtonCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
         }
     }
 }

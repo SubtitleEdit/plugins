@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-namespace Nikse.SubtitleEdit.PluginLogic
+using System.Text;
+
+namespace BaiduTranslate.Logic
 {
     public class Subtitle
     {
@@ -67,6 +68,34 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 p.Number = startNumber++;
             }
+        }
+
+        public string GetAllTexts()
+        {
+            var sb = new StringBuilder();
+            foreach (Paragraph p in Paragraphs)
+            {
+                sb.AppendLine(p.Text);
+            }
+            return sb.ToString();
+        }
+
+        public int RemoveEmptyLines()
+        {
+            int count = _paragraphs.Count;
+            if (count > 0)
+            {
+                int firstNumber = _paragraphs[0].Number;
+                for (int i = _paragraphs.Count - 1; i >= 0; i--)
+                {
+                    Paragraph p = _paragraphs[i];
+                    if (string.IsNullOrWhiteSpace(p.Text))
+                        _paragraphs.RemoveAt(i);
+                }
+                if (count != _paragraphs.Count)
+                    Renumber(firstNumber);
+            }
+            return count - _paragraphs.Count;
         }
     }
 }

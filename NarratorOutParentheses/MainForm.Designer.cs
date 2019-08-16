@@ -105,34 +105,34 @@
             this.invertCheckToolStripMenuItem,
             this.copyToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 114);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(139, 92);
             this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
             // checkAllToolStripMenuItem
             // 
             this.checkAllToolStripMenuItem.Name = "checkAllToolStripMenuItem";
-            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.checkAllToolStripMenuItem.Text = "Check all";
             this.checkAllToolStripMenuItem.Click += new System.EventHandler(this.checkAllToolStripMenuItem_Click);
             // 
             // uncheckAllToolStripMenuItem
             // 
             this.uncheckAllToolStripMenuItem.Name = "uncheckAllToolStripMenuItem";
-            this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.uncheckAllToolStripMenuItem.Text = "Uncheck all";
             this.uncheckAllToolStripMenuItem.Click += new System.EventHandler(this.checkAllToolStripMenuItem_Click);
             // 
             // invertCheckToolStripMenuItem
             // 
             this.invertCheckToolStripMenuItem.Name = "invertCheckToolStripMenuItem";
-            this.invertCheckToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.invertCheckToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.invertCheckToolStripMenuItem.Text = "Invert check";
             this.invertCheckToolStripMenuItem.Click += new System.EventHandler(this.checkAllToolStripMenuItem_Click);
             // 
             // copyToolStripMenuItem
             // 
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.copyToolStripMenuItem.Text = "Copy";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.checkAllToolStripMenuItem_Click);
             // 
@@ -154,11 +154,11 @@
             // buttonGetNames
             // 
             this.buttonGetNames.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.buttonGetNames.Location = new System.Drawing.Point(847, 52);
+            this.buttonGetNames.Location = new System.Drawing.Point(778, 52);
             this.buttonGetNames.Name = "buttonGetNames";
-            this.buttonGetNames.Size = new System.Drawing.Size(97, 23);
+            this.buttonGetNames.Size = new System.Drawing.Size(166, 23);
             this.buttonGetNames.TabIndex = 3;
-            this.buttonGetNames.Text = "Names from Sub";
+            this.buttonGetNames.Text = "Extract names from subtitile";
             this.buttonGetNames.UseVisualStyleBackColor = true;
             this.buttonGetNames.Click += new System.EventHandler(this.buttonGetNames_Click);
             // 
@@ -177,9 +177,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 31);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(56, 13);
+            this.label1.Size = new System.Drawing.Size(94, 13);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Add to list:";
+            this.label1.Text = "Add a name to list:";
             // 
             // textBoxName
             // 
