@@ -137,8 +137,12 @@ namespace WebViewTranslate.Translator
 
             try
             {
-                var tmp = _webView.Document.GetElementById("t_tv").InnerText;
-                if (tmp == "Oversættelse" || tmp == "Translation" || tmp == " ..." || paragraphs.Count > 1 && tmp.SplitToLines().Length == 1)
+                var tmpElement = _webView.Document.GetElementById("tta_output");
+                if (tmpElement == null)
+                    throw new ArgumentException("Html element 'tta_output' not found!", "tta_output");
+
+                var tmp = tmpElement.InnerText;
+                if (tmp == "Oversættelse" || tmp == "Translation" || tmp.EndsWith(" ...", StringComparison.Ordinal) || paragraphs.Count > 1 && tmp.SplitToLines().Length == 1)
                     return null;
 
                 _translateResult = tmp;
