@@ -113,7 +113,7 @@ namespace WebViewTranslate.Translator
                 input.Append(text);
             }
             _loaded = false;
-            var url = "https://www.bing.com/translator?&from=" + sourceLanguage + "&to=" + targetLanguage + "&text=" + WebUtility.UrlEncode(input.ToString());
+            var url = "https://www.bing.com/translator?&from=" + sourceLanguage + "&to=" + targetLanguage + "&text=" + Uri.EscapeDataString(input.ToString());
             _webView.Navigate(new Uri(url));
             for (int i = 0; i < 100; i++)
             {

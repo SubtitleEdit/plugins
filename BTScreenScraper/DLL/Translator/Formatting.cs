@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using WebViewTranslate.Logic;
 
@@ -6,25 +8,20 @@ namespace WebViewTranslate.Translator
 {
     public class Formatting
     {
-        public bool Italic { get; set; }
-        public bool ItalicTwoLines { get; set; }
-        public bool ThreeDots { get; set; }
-        public string StartTags { get; set; }
-        public bool AutoBreak { get; set; }
-        public bool IsEmpty { get; set; }
+        private bool Italic { get; set; }
+        private string Font { get; set; }
+        private bool ItalicTwoLines { get; set; }
+        private string StartTags { get; set; }
+        private bool AutoBreak { get; set; }
+        private bool SquareBrackets { get; set; }
+        private bool SquareBracketsUppercase { get; set; }
 
-        public string SetTagsAndReturnTrimmed(string text, string source)
+        public string SetTagsAndReturnTrimmed(string input, string source)
         {
-            text = text.Trim();
-
-            if (text.Length == 0)
-            {
-                IsEmpty = true;
-                return "-";
-            }
+            var text = input.Trim();
 
             // SSA/ASS tags
-            if (text.StartsWith("{\\"))
+            if (text.StartsWith("{\\", StringComparison.Ordinal))
             {
                 var endIndex = text.IndexOf('}');
                 if (endIndex > 0)
@@ -46,36 +43,68 @@ namespace WebViewTranslate.Translator
                 text = text.Substring(3, text.Length - 7);
             }
 
-            if (text.Trim() == "...")
+            // font tags
+            var idxOfGt = text.IndexOf('>');
+            if (text.StartsWith("<font ", StringComparison.Ordinal) && text.EndsWith("</font>", StringComparison.Ordinal) &&
+                Utilities.CountTagInText(text, "</font>") == 1 && idxOfGt < text.IndexOf("</font>", StringComparison.Ordinal))
             {
-                text = "-";
-                ThreeDots = true;
+                Font = text.Substring(0, idxOfGt + 1);
+                text = text.Remove(0, idxOfGt + 1);
+                text = text.Remove(text.Length - "</font>".Length);
             }
 
             // Un-break line
-            var lines = HtmlUtil.RemoveHtmlTags(text).SplitToLines();
-            if (lines.Length == 2 && !string.IsNullOrEmpty(lines[0]) && !string.IsNullOrEmpty(lines[1]) &&
-                char.IsLetterOrDigit(lines[0][lines[0].Length - 1]) &&
-                char.IsLower(lines[1][0]))
+            var allowedLanguages = new List<string> { "en", "da", "nl", "de", "sv", "nb", "fr", "it" };
+            if (allowedLanguages.Contains(source))
             {
-                text = text.Replace(Environment.NewLine, " ").Replace("  ", " ");
-                AutoBreak = true;
+                var lines = HtmlUtil.RemoveHtmlTags(text).SplitToLines().ToList();
+                if (lines.Count == 2 && !string.IsNullOrEmpty(lines[0]) && !string.IsNullOrEmpty(lines[1]) &&
+                    char.IsLetterOrDigit(lines[0][lines[0].Length - 1]) &&
+                    char.IsLower(lines[1][0]))
+                {
+                    text = text.Replace(Environment.NewLine, " ").Replace("  ", " ");
+                    AutoBreak = true;
+                }
+            }
+
+            // Square brackets
+            if (text.StartsWith("[", StringComparison.Ordinal) && text.EndsWith("]", StringComparison.Ordinal) &&
+                Utilities.GetNumberOfLines(text) == 1 && Utilities.CountTagInText(text, "[") == 1 &&
+                Utilities.GetNumberOfLines(text) == 1 && Utilities.CountTagInText(text, "]") == 1)
+            {
+                if (text == text.ToUpperInvariant())
+                {
+                    SquareBracketsUppercase = true;
+                }
+                else
+                {
+                    SquareBrackets = true;
+                }
+
+                text = text.Replace("[", string.Empty).Replace("]", string.Empty);
             }
 
             return text.Trim();
         }
 
-        public string ReAddFormatting(string text)
+        public string ReAddFormatting(string input)
         {
-            if (IsEmpty)
-            {
-                return string.Empty;
-            }
+            var text = input.Trim();
 
             // Auto-break line
             if (AutoBreak)
             {
                 text = Utilities.AutoBreakLine(text);
+            }
+
+            // Square brackets
+            if (SquareBracketsUppercase)
+            {
+                text = "[" + text.ToUpperInvariant().Trim() + "]";
+            }
+            else if (SquareBrackets)
+            {
+                text = "[" + text.Trim() + "]";
             }
 
             // Italic tags
@@ -93,15 +122,35 @@ namespace WebViewTranslate.Translator
                 text = "<i>" + text + "</i>";
             }
 
+            // Font tag
+            if (!string.IsNullOrEmpty(Font))
+            {
+                text = Font + text + "</font>";
+            }
+
             // SSA/ASS tags
             text = StartTags + text;
 
-            if (ThreeDots)
+            return text;
+        }
+
+
+        private int NumberOfLines { get; set; }
+
+        public string Unbreak(string text, string source)
+        {
+            NumberOfLines = source.SplitToLines().ToList().Count;
+            return text.Replace(Environment.NewLine, " ").Replace("  ", " ");
+        }
+
+        public string Rebreak(string text)
+        {
+            if (NumberOfLines == 1)
             {
-                text = "...";
+                return text;
             }
 
-            return text;
+            return Utilities.AutoBreakLine(text);
         }
 
     }

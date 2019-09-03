@@ -52,16 +52,16 @@
   <Plugin>
     <Name>GT Screen-Scraper</Name>
     <Description>GT screen-scraper: Requires Edge and .net 4.6.2+</Description>
-    <Version>0.5</Version>
-    <Date>2018-03-03</Date>
+    <Version>0.6</Version>
+    <Date>2018-09-03</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/GTScreenScraper.zip</Url>
     <Author>Nikse</Author>
   </Plugin>
   <Plugin>
     <Name>BT Screen-Scraper</Name>
     <Description>BT screen-scraper: Requires .net 4.6.2+</Description>
-    <Version>0.4</Version>
-    <Date>2019-08-16</Date>
+    <Version>0.5</Version>
+    <Date>2019-09-03</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/BTScreenScraper.zip</Url>
     <Author>Nikse</Author>
   </Plugin>
