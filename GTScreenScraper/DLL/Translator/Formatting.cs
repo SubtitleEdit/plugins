@@ -15,6 +15,7 @@ namespace WebViewTranslate.Translator
         private bool AutoBreak { get; set; }
         private bool SquareBrackets { get; set; }
         private bool SquareBracketsUppercase { get; set; }
+        private bool PercentageFix { get; set; }
 
         public string SetTagsAndReturnTrimmed(string input, string source)
         {
@@ -84,6 +85,19 @@ namespace WebViewTranslate.Translator
                 text = text.Replace("[", string.Empty).Replace("]", string.Empty);
             }
 
+            if (text.Contains("%", StringComparison.Ordinal))
+            {
+                if (!text.Contains("#", StringComparison.Ordinal))
+                {
+                    PercentageFix = true;
+                    text = text.Replace('%', '#');
+                }
+                else
+                {
+                    text = text.Replace('%', '¤');
+                }
+            }
+
             return text.Trim();
         }
 
@@ -120,6 +134,11 @@ namespace WebViewTranslate.Translator
             else if (Italic)
             {
                 text = "<i>" + text + "</i>";
+            }
+
+            if (PercentageFix)
+            {
+                text = text.Replace('#', '%');
             }
 
             // Font tag

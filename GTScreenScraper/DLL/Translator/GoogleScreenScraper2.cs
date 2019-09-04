@@ -208,8 +208,10 @@ namespace WebViewTranslate.Translator
             //_webView.Navigate(new Uri(uri));
 
             _loaded = false;
-            _webView.Navigate(new Uri(_googleUrl + "/#view=home&op=translate&sl=" + sourceLanguage + "&tl=" + targetLanguage + "&text=" + Uri.EscapeDataString(input.ToString())));
-
+            var uri = new Uri(_googleUrl + "/#view=home&op=translate&sl=" + sourceLanguage + "&tl=" + targetLanguage + "&text=" + Uri.EscapeDataString(input.ToString()));
+            _webView.Navigate(uri);
+            _log.AppendLine("Navigate to: " + uri.ToString());
+            
             //var encodedText = HttpUtility.JavaScriptStringEncode(input.ToString().Trim());
             //string functionString = $"document.getElementById('source').innerText = '{encodedText}';";
             //_webView.InvokeScript("eval", functionString);
