@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29509.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BTScreenScraperChromium", "DLL\BTScreenScraperChromium.csproj", "{F3AFDE14-699A-4912-A790-EA40C97BCA82}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F3AFDE14-699A-4912-A790-EA40C97BCA82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3AFDE14-699A-4912-A790-EA40C97BCA82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3AFDE14-699A-4912-A790-EA40C97BCA82}.Debug|x64.ActiveCfg = Debug|x64
+		{F3AFDE14-699A-4912-A790-EA40C97BCA82}.Debug|x64.Build.0 = Debug|x64
+		{F3AFDE14-699A-4912-A790-EA40C97BCA82}.Debug|x86.ActiveCfg = Debug|x86
+		{F3AFDE14-699A-4912-A790-EA40C97BCA82}.Debug|x86.Build.0 = Debug|x86
+		{F3AFDE14-699A-4912-A790-EA40C97BCA82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3AFDE14-699A-4912-A790-EA40C97BCA82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3AFDE14-699A-4912-A790-EA40C97BCA82}.Release|x64.ActiveCfg = Release|x64
+		{F3AFDE14-699A-4912-A790-EA40C97BCA82}.Release|x64.Build.0 = Release|x64
+		{F3AFDE14-699A-4912-A790-EA40C97BCA82}.Release|x86.ActiveCfg = Release|x86
+		{F3AFDE14-699A-4912-A790-EA40C97BCA82}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BD95E1D7-3A84-4A78-BCD2-A3DB8A1DFA4B}
+	EndGlobalSection
+EndGlobal
