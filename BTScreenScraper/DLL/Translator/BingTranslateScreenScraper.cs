@@ -28,6 +28,7 @@ namespace WebViewTranslate.Translator
                 return;
 
             _webView = webView;
+            _webView.ScriptErrorsSuppressed = true;
             _webView.Navigate(new Uri("https://www.bing.com/translator"));
             _webView.DocumentCompleted += _webView_DocumentCompleted;
         }
@@ -137,11 +138,12 @@ namespace WebViewTranslate.Translator
 
             try
             {
-                var tmpElement = _webView.Document.GetElementById("tta_output");
+                var tmpElement = _webView.Document.GetElementById("tta_output_ta");
                 if (tmpElement == null)
-                    throw new ArgumentException("Html element 'tta_output' not found!", "tta_output");
+                    throw new ArgumentException("Html element 'tta_output_ta' not found!", "tta_output");
 
-                var tmp = tmpElement.InnerText;
+                var tmp = tmpElement.InnerHtml;
+
                 if (tmp == "Oversættelse" || tmp == "Translation" || tmp.EndsWith(" ...", StringComparison.Ordinal) || paragraphs.Count > 1 && tmp.SplitToLines().Length == 1)
                     return null;
 

@@ -8,35 +8,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class BTScreenScraper : IPlugin // dll file name must "<classname>.dll" - e.g. "Haxor.dll"
     {
-        string IPlugin.Name
-        {
-            get { return "BT Screen-Scraper"; }
-        }
+        string IPlugin.Name => "BT Screen-Scraper";
 
-        string IPlugin.Text
-        {
-            get { return "Translate with Bing screen-scraping..."; } // text in menu
-        }
+        string IPlugin.Text => "Translate with Bing screen-scraping...";
 
-        decimal IPlugin.Version
-        {
-            get { return 0.5M; }
-        }
+        decimal IPlugin.Version => 0.6M;
 
-        string IPlugin.Description
-        {
-            get { return "BT screen-scraper: .net 4.6.2+"; }
-        }
+        string IPlugin.Description => "BT screen-scraper: .net 4.6.2+";
 
-        string IPlugin.ActionType // Can be one of these: file, tool, sync, translate, spellcheck
-        {
-            get { return "translate"; }
-        }
+        string IPlugin.ActionType => "translate";  // Can be one of these: file, tool, sync, translate, spellcheck
 
-        string IPlugin.Shortcut
-        {
-            get { return string.Empty; }
-        }
+        string IPlugin.Shortcut => string.Empty;
 
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
