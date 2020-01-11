@@ -158,6 +158,8 @@
   <Word us="authorized" br="authorised" />
   <Word us="authorizes" br="authorises" />
   <Word us="authorizing" br="authorising" />
+  <Word us="automobile" br="car" />
+  <Word us="automobiles" br="cars" />
   <Word us="ax" br="axe" />
   <Word us="backpedaled" br="backpedalled" />
   <Word us="backpedaling" br="backpedalling" />
@@ -199,6 +201,8 @@
   <Word us="beveled" br="bevelled" />
   <Word us="beveling" br="bevelling" />
   <Word us="binging" br="bingeing" />
+  <Word us="bookstore" br="bookshop" />
+  <Word us="bookstores" br="bookshops" />
   <Word us="bougainvillea" br="bougainvillaea" />
   <Word us="bougainvilleas" br="bougainvillaeas" />
   <Word us="bowdlerize" br="bowdlerise" />
@@ -866,6 +870,9 @@
   <Word us="harbors" br="harbours" />
   <Word us="harborside" br="harbourside" />
   <Word us="harborsides" br="harboursides" />
+  <Word us="hardcover" br="hardback" />
+  <Word us="hard-covered" br="hard-backed" />
+  <Word us="hardcovers" br="hardbacks" />
   <Word us="harmonization" br="harmonisation" />
   <Word us="harmonize" br="harmonise" />
   <Word us="harmonized" br="harmonised" />
@@ -1275,6 +1282,8 @@
   <Word us="moralizes" br="moralises" />
   <Word us="moralizing" br="moralising" />
   <Word us="motorized" br="motorised" />
+  <Word us="movie" br="film" />
+  <Word us="movies" br="films" />
   <Word us="multicolored" br="multicoloured" />
   <Word us="mustache" br="moustache" />
   <Word us="mustached" br="moustached" />
@@ -1912,6 +1921,7 @@
   <Word us="terrorized" br="terrorised" />
   <Word us="terrorizes" br="terrorises" />
   <Word us="terrorizing" br="terrorising" />
+  <Word us="the movies" br="the cinema" />
   <Word us="theater" br="theatre" />
   <Word us="theatergoer" br="theatregoer" />
   <Word us="theatergoers" br="theatregoers" />

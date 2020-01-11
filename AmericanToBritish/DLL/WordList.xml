@@ -61,6 +61,8 @@
   <Word us="armory" br="armoury" />
   <Word us="artifact" br="artefact" />
   <Word us="artifacts" br="artefacts" />
+  <Word us="automobile" br="car" />
+  <Word us="automobiles" br="cars" />
   <Word us="ax" br="axe" />
   <Word us="backpedaled" br="backpedalled" />
   <Word us="backpedaling" br="backpedalling" />
@@ -84,6 +86,8 @@
   <Word us="belabors" br="belabours" />
   <Word us="beveled" br="bevelled" />
   <Word us="beveling" br="bevelling" />
+  <Word us="bookstore" br="bookshop" />
+  <Word us="bookstores" br="bookshops" />
   <Word us="breathalyze" br="breathalyse" />
   <Word us="breathalyzed" br="breathalysed" />
   <Word us="breathalyzer" br="breathalyser" />
@@ -431,6 +435,9 @@
   <Word us="harbors" br="harbours" />
   <Word us="harborside" br="harbourside" />
   <Word us="harborsides" br="harboursides" />
+  <Word us="hardcover" br="hardback" />
+  <Word us="hard-covered" br="hard-backed" />
+  <Word us="hardcovers" br="hardbacks" />
   <Word us="hematologic" br="haematologic" />
   <Word us="hematological" br="haematological" />
   <Word us="hematologist" br="haematologist" />
@@ -612,6 +619,8 @@
   <Word us="moms" br="mums" />
   <Word us="monolog" br="monologue" />
   <Word us="monologs" br="monologues" />
+  <Word us="movie" br="film" />
+  <Word us="movies" br="films" />
   <Word us="multicolored" br="multicoloured" />
   <Word us="mustache" br="moustache" />
   <Word us="mustached" br="moustached" />
@@ -911,6 +920,7 @@
   <Word us="tasseled" br="tasselled" />
   <Word us="tasseling" br="tasselling" />
   <Word us="technicolor" br="technicolour" />
+  <Word us="the movies" br="the cinema" />
   <Word us="theater" br="theatre" />
   <Word us="theatergoer" br="theatregoer" />
   <Word us="theatergoers" br="theatregoers" />
