@@ -98,6 +98,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExposeSEApi", "ExposeSEApi\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TightHyphen", "TightHyphen\TightHyphen.csproj", "{FED0E724-A2AA-4B46-B20E-F1376A191E89}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Xylographe", "Xylographe", "{E7926C2E-EAD5-4CDC-944B-84C38DE3BF8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VobSubTimestamps", "VobSubTimestamps\DLL\VobSubTimestamps.csproj", "{FEC6B212-95C0-42F5-8F69-7E73CB3A0CA6}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Plugin-Shared\Plugin-Shared.projitems*{16b4be52-050a-4161-b0e3-9b07aa5f650b}*SharedItemsImports = 4
@@ -281,6 +285,10 @@ Global
 		{FED0E724-A2AA-4B46-B20E-F1376A191E89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FED0E724-A2AA-4B46-B20E-F1376A191E89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FED0E724-A2AA-4B46-B20E-F1376A191E89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEC6B212-95C0-42F5-8F69-7E73CB3A0CA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEC6B212-95C0-42F5-8F69-7E73CB3A0CA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEC6B212-95C0-42F5-8F69-7E73CB3A0CA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEC6B212-95C0-42F5-8F69-7E73CB3A0CA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -327,6 +335,7 @@ Global
 		{181D2E8A-2B44-438F-BCBE-058A62751113} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 		{3937B2A4-5FDC-4071-BF63-4598488CD4DB} = {21BBD88D-F935-419F-A68B-E8DA9F08E9C1}
 		{FED0E724-A2AA-4B46-B20E-F1376A191E89} = {21BBD88D-F935-419F-A68B-E8DA9F08E9C1}
+		{FEC6B212-95C0-42F5-8F69-7E73CB3A0CA6} = {E7926C2E-EAD5-4CDC-944B-84C38DE3BF8C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8BBF401C-6D00-4F22-BFC0-DE2673213D5B}
