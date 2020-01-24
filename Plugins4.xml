@@ -226,4 +226,12 @@
     <Author>ivandrofly</Author>
     <Element />
   </Plugin>
+  <Plugin>
+    <Name>Replace VobSub IDX timestamps</Name>
+    <Description>Replace the timestamps in the previously imported VobSub IDX file with the time codes from the current subtitle</Description>
+    <Version>0.1</Version>
+    <Date>2020-01-24</Date>
+    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/VobSubTimestamps.zip</Url>
+    <Author>xylographe</Author>
+  </Plugin>
 </Plugins>
