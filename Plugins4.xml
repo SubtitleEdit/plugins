@@ -124,8 +124,8 @@
   <Plugin>
     <Name>Word spell check</Name>
     <Description>Word spell check (requires Microsoft Word)</Description>
-    <Version>1.4</Version>
-    <Date>2017-05-22</Date>
+    <Version>1.5</Version>
+    <Date>2020-04-08</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/WordSpellCheck.zip</Url>
     <Author>Nikse</Author>
   </Plugin>

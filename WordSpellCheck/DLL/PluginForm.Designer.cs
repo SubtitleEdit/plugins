@@ -98,7 +98,7 @@
             this.labelDescription.Name = "labelDescription";
             this.labelDescription.Size = new System.Drawing.Size(197, 13);
             this.labelDescription.TabIndex = 2;
-            this.labelDescription.Text = "Microsoft Word spell && grammer checker";
+            this.labelDescription.Text = "Microsoft Word spell && grammar checker";
             // 
             // listViewSubtitle
             // 
