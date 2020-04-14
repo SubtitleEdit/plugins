@@ -170,6 +170,7 @@
             this.subtitleListView2.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.subtitleListView2.FullRowSelect = true;
             this.subtitleListView2.GridLines = true;
+            this.subtitleListView2.HideSelection = false;
             this.subtitleListView2.Location = new System.Drawing.Point(6, 50);
             this.subtitleListView2.Name = "subtitleListView2";
             this.subtitleListView2.OwnerDraw = true;
@@ -231,6 +232,7 @@
             this.subtitleListView1.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.subtitleListView1.FullRowSelect = true;
             this.subtitleListView1.GridLines = true;
+            this.subtitleListView1.HideSelection = false;
             this.subtitleListView1.Location = new System.Drawing.Point(6, 50);
             this.subtitleListView1.Name = "subtitleListView1";
             this.subtitleListView1.OwnerDraw = true;
@@ -587,7 +589,7 @@
             this.panelPrimaryColor1.Name = "panelPrimaryColor1";
             this.panelPrimaryColor1.Size = new System.Drawing.Size(21, 20);
             this.panelPrimaryColor1.TabIndex = 14;
-            this.panelPrimaryColor1.Click += new System.EventHandler(this.buttonOutlineColor1_Click);
+            this.panelPrimaryColor1.Click += new System.EventHandler(this.buttonPrimaryColor1_Click);
             // 
             // buttonPrimaryColor1
             // 
