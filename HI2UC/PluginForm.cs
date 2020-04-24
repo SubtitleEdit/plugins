@@ -516,7 +516,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 string value = _fixedTexts[p.ID];
                 value = HtmlUtils.RemoveOpenCloseTags(value, tag[1].ToString());
                 value = $"{tag}{value}{closeTag}";
-
                 // refresh fixed values
                 lvi.SubItems[AfterTextIndex].Text = StringUtils.GetListViewString(value, noTag: false);
                 _fixedTexts[p.ID] = value;

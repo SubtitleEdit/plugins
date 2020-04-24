@@ -120,7 +120,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             catch
             {
-
             }
 
 #if DEBUG

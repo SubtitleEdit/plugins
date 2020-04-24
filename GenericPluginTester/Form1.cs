@@ -70,7 +70,16 @@ namespace GenericPluginTester
                 Type pluginType = assembly.GetType("Nikse.SubtitleEdit.PluginLogic." + objectName);
                 if (pluginType == null)
                     return null;
-                object pluginObject = Activator.CreateInstance(pluginType);
+                object pluginObject = null;
+                try
+                {
+                    pluginObject = Activator.CreateInstance(pluginType);
+                }
+                catch
+                {
+                    // ignore plugin that failed to load
+                    return pluginObject;
+                }
 
                 // IPlugin
                 var t = pluginType.GetInterface("IPlugin");

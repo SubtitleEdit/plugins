@@ -16,8 +16,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static Assembly CurrentDomainAssemblyResolve(object sender, ResolveEventArgs args)
         {
-            // NOTE: this was written because to avoid loading a assembly that is already loading into
-            // appdomain, but that wast not the case because When Probing AppDomain get checked
+            // NOTE: this was written to avoid loading a assembly that is already loading into
+            // appdomain, but that wasn't the case because When Probing AppDomain get checked
             // the issue was because SubtitleEdit.exe force loading assembly without
             // (unloading pre - loaded assembly) or checking if the assembly
             // was already loaded into domain

@@ -87,9 +87,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private bool IsStartEndBraces(string noTagLine, int startIdx)
         {
-            string trimUnicodeChar1 = "🎵";
-            string trimUnicodeChar2 = "𝄞";
-
             noTagLine = noTagLine.TrimEnd(' ', '.', '!', '?', '-', '"');
             var endIdx = noTagLine.IndexOf(')', startIdx + 1);
             if (endIdx + 1 == noTagLine.Length)

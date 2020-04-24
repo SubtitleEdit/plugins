@@ -25,7 +25,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += CurrentDomain_ReflectionOnlyAssemblyResolve;
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyUtils.CurrentDomainAssemblyResolve;
-
             // BuildFixCasing(parentForm, new List<string>());
             var subRip = new SubRip();
             var subtitle = new Subtitle(subRip);
@@ -65,10 +64,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // able to retrive "libse.dll" using this approche because the assembly is merged into SubtitleEdit.exe
             var ass = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(s => s.FullName.Contains("libse"));
 
+            // if libse is not present the class will be available in SubtilteEdit
+            ass = ass ?? AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName.Contains("subtitleedit", StringComparison.OrdinalIgnoreCase));
+
             // running in installed mode
             if (ass == null)
             {
-
+                throw new InvalidOperationException();
             }
 
             var fixCasingT = ass.GetType("Nikse.SubtitleEdit.Core.FixCasing");
@@ -82,7 +84,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // INFO: ALL WORKING!
             //var namesField = fixCasingType.GetField("_names", BindingFlags.Instance | BindingFlags.NonPublic);
 #if false
-
             // # FIRST TRY TO GET LIBSE TYPES
 
             using (var file = new FileStream($"d:\\se-assembly-{Path.GetRandomFileName()}.txt", FileMode.OpenOrCreate, FileAccess.Write))

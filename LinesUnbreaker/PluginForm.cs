@@ -110,14 +110,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // length of only visilbe characters
             int lineLength = noTagOldText.Length - (StringUtils.CountTagInText(noTagOldText, Environment.NewLine) * Environment.NewLine.Length);
 
-            ListViewItem item = new ListViewItem(string.Empty)
+            var item = new ListViewItem(string.Empty)
             {
                 Checked = true,
                 UseItemStyleForSubItems = true,
                 SubItems =
                 {
                     prgEventArgs.Paragraph.Number.ToString(),
-                   lineLength.ToString(CultureInfo.InvariantCulture), // line length
+                    lineLength.ToString(CultureInfo.InvariantCulture), // line length
                     StringUtils.GetListViewString(prgEventArgs.Paragraph.Text, true), // old text
                     StringUtils.GetListViewString(prgEventArgs.NewText, true) // new text
                 },

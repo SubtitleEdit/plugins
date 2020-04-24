@@ -40,7 +40,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var subrip = new SubRip();
             _subtitle = new Subtitle(subrip);
             subrip.LoadSubtitle(_subtitle, _lines, file);
-
         }
     }
 }

@@ -206,7 +206,7 @@
             // linkLabelIvandrofly
             // 
             this.linkLabelIvandrofly.AutoSize = true;
-            this.linkLabelIvandrofly.Location = new System.Drawing.Point(12, 194);
+            this.linkLabelIvandrofly.Location = new System.Drawing.Point(10, 204);
             this.linkLabelIvandrofly.Name = "linkLabelIvandrofly";
             this.linkLabelIvandrofly.Size = new System.Drawing.Size(81, 13);
             this.linkLabelIvandrofly.TabIndex = 8;

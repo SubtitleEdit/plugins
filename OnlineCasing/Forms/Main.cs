@@ -75,7 +75,6 @@ namespace OnlineCasing.Forms
 
             checkedListBoxNames.SelectedIndexChanged += (sende, e) =>
             {
-
                 if (checkedListBoxNames.SelectedIndex < 0)
                 {
                     return;
