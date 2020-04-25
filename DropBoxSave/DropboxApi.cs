@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Web.Script.Serialization;
 
 namespace Dropbox.Api
@@ -16,6 +17,7 @@ namespace Dropbox.Api
         public const string AuthorizeBaseUri = "https://www.dropbox.com/" + ApiVersion + "/";
         public const string ApiContentServer = "https://content.dropboxapi.com/" + ApiVersion + "/";
         public const string OAuthUrl = "https://www.dropbox.com/oauth2/";
+        public static ManualResetEvent allDone = new ManualResetEvent(false);
 
         public OAuth2Token Accesstoken { get; private set; }
         private readonly string _appKey;
@@ -42,19 +44,30 @@ namespace Dropbox.Api
             var uri = OAuthUrl + "token";
             var requestUri = new StringBuilder(uri);
             requestUri.AppendFormat("?code={0}&", code);
-            requestUri.Append("grant_type=authorization_code");
+            requestUri.Append("grant_type=authorization_code&");
+            requestUri.Append("redirect_uri=http://localhost:31415/");
             var webRequest = WebRequest.Create(requestUri.ToString());
             webRequest.ContentType = "application/json";
             webRequest.Headers.Add("Authorization", "Basic " + GenerateBasicAuth());
             var request = (HttpWebRequest)webRequest;
             request.Method = WebRequestMethods.Http.Post;
-            var response = request.GetResponse();
-            var reader = new StreamReader(response.GetResponseStream());
-            var json = reader.ReadToEnd();
-            JavaScriptSerializer jss = new JavaScriptSerializer();
-            OAuth2Token oAuth2token = jss.Deserialize<OAuth2Token>(json);
-            Accesstoken = oAuth2token;
-            return oAuth2token;
+
+            var asyncOperation = request.BeginGetResponse((asyncResult) =>
+            {
+                var req = (HttpWebRequest)asyncResult.AsyncState;
+                var response = req.EndGetResponse(asyncResult);
+                var reader = new StreamReader(response.GetResponseStream());
+                var json = reader.ReadToEnd();
+                JavaScriptSerializer jss = new JavaScriptSerializer();
+                OAuth2Token oAuth2token = jss.Deserialize<OAuth2Token>(json);
+                Accesstoken = oAuth2token;
+                // send signal main thread can continue
+                allDone.Set();
+            }, request);
+
+            // block main thread
+            allDone.WaitOne();
+            return Accesstoken;
         }
 
         private string GenerateBasicAuth()
@@ -191,5 +204,16 @@ namespace Dropbox.Api
             return fsi;
         }
 
+        public string StartServerAndGetTheAAuthCode(string url)
+        {
+            using (var httpServer = new HttpListener())
+            {
+                httpServer.Prefixes.Add(url);
+                httpServer.Start();
+                var context = httpServer.GetContext();
+                httpServer.Stop();
+                return context.Request.QueryString["code"];
+            }
+        }
     }
 }

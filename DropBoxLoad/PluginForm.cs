@@ -1,5 +1,4 @@
 ﻿using Dropbox.Api;
-using SeDropBoxLoad;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -177,19 +176,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 try
                 {
                     Process.Start(api.GetPromptForCodeUrl());
-                    using (var form = new GetDropBoxCode())
-                    {
-                        var result = form.ShowDialog(this);
-                        if (result == DialogResult.OK && form.Code.Length > 10)
-                        {
-                            _oAuth2token = api.GetAccessToken(form.Code);
-                        }
-                        else
-                        {
-                            MessageBox.Show("Code skipped - no Dropbox :(");
-                            return;
-                        }
-                    }
+                    string code = api.StartServerAndGetTheAAuthCode($"http://localhost:31415/");
+                    _oAuth2token = api.GetAccessToken(code);
                     labelInfo.Text = string.Empty;
                     SaveToken(_oAuth2token);
                 }
