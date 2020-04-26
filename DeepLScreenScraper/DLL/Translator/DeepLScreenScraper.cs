@@ -59,6 +59,8 @@ namespace DeepLScreenScraper.Translator
                 new TranslationPair("Polish", "pl"),
                 new TranslationPair("Portuguese", "pt"),
                 new TranslationPair("Russian", "ru"),
+                new TranslationPair("Japanese", "ja"),
+                new TranslationPair("Chinese", "zh"),
             };
         }
 

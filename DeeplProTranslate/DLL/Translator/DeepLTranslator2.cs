@@ -24,14 +24,17 @@ namespace SubtitleEdit.Translator
         {
             return new List<TranslationPair>
             {
-                new TranslationPair("German", "DE"),
-                new TranslationPair("French", "FR"),
-                new TranslationPair("ES", "Spanish"),
-                new TranslationPair("PT", "Portuguese"),
-                new TranslationPair("IT", "Italian"),
-                new TranslationPair("NL", "Dutch"),
-                new TranslationPair("PL", "Polish"),
-                new TranslationPair("RU", "Russian"),
+                new TranslationPair("English", "en"),
+                new TranslationPair("German", "de"),
+                new TranslationPair("French", "fr"),
+                new TranslationPair("Spanish", "es"),
+                new TranslationPair("Italian", "it"),
+                new TranslationPair("Dutch", "nl"),
+                new TranslationPair("Polish", "pl"),
+                new TranslationPair("Portuguese", "pt"),
+                new TranslationPair("Russian", "ru"),
+                new TranslationPair("Japanese", "ja"),
+                new TranslationPair("Chinese", "zh"),
             };
         }
 
