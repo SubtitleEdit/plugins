@@ -12,7 +12,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "Translate with Bing screen-scraping...";
 
-        decimal IPlugin.Version => 0.6M;
+        decimal IPlugin.Version => 0.7M;
 
         string IPlugin.Description => "BT screen-scraper: .net 4.6.2+";
 

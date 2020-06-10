@@ -13,7 +13,7 @@ namespace WebViewTranslate.Logic
             get
             {
                 var timeCode = new TimeCode(EndTime.TimeSpan);
-                timeCode.AddTime(-StartTime.TotalMilliseconds);
+                timeCode.TotalMilliseconds -= StartTime.TotalMilliseconds;
                 return timeCode;
             }
         }

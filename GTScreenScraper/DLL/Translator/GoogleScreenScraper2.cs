@@ -269,7 +269,7 @@ namespace WebViewTranslate.Translator
 
                 return list;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }

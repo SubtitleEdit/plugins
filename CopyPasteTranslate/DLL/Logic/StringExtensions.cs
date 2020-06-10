@@ -270,5 +270,20 @@ namespace WebViewTranslate.Logic
             return sb.ToString();
         }
 
+        public static string RemoveChar(this string value, char charToRemove)
+        {
+            char[] array = new char[value.Length];
+            int arrayIndex = 0;
+            for (int i = 0; i < value.Length; i++)
+            {
+                char ch = value[i];
+                if (ch != charToRemove)
+                {
+                    array[arrayIndex++] = ch;
+                }
+            }
+
+            return new string(array, 0, arrayIndex);
+        }
     }
 }
