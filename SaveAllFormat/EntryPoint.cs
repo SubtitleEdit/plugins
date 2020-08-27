@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
@@ -50,10 +51,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var prop = type.GetProperty("AllSubtitleFormats", BindingFlags.Public | BindingFlags.Static);
             var allSubtitleFormats = (IEnumerable<object>)prop.GetValue(default, default);
 
-            // get subtilte instance
             var subtitle = parentForm.GetType().GetField("_subtitle", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(parentForm);
 
-            foreach (var format in allSubtitleFormats)
+            //var parallelOptions = new ParallelOptions();
+            //TaskScheduler.FromCurrentSynchronizationContext();
+
+            // run export parallel
+            Parallel.ForEach(allSubtitleFormats, format =>
             {
                 try
                 {
@@ -67,7 +71,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     Trace.WriteLine(ex.Message);
                 }
-            }
+            });
 
             MessageBox.Show(parentForm, "Export completed!", "Subtitle exported", MessageBoxButtons.OK, MessageBoxIcon.Information);
             return string.Empty;
