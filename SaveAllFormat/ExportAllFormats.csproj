@@ -7,8 +7,8 @@
     <ProjectGuid>{143A1481-B4EE-4AA3-8E5E-AF1712477F57}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SaveAllFormat</RootNamespace>
-    <AssemblyName>SaveAllFormat</AssemblyName>
+    <RootNamespace>Nikse.SubtitleEdit.PluginLogic</RootNamespace>
+    <AssemblyName>ExportAllFormats</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -52,7 +52,7 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetDir)\SaveAllFormat.dll "C:\Users\ivandro.jao\AppData\Roaming\Subtitle Edit\Plugins\"
-copy $(TargetDir)\SaveAllFormat.pdb "C:\Users\ivandro.jao\AppData\Roaming\Subtitle Edit\Plugins\"</PostBuildEvent>
+    <PostBuildEvent>copy $(TargetDir)\exportallformats.dll "C:\Users\ivandro.jao\AppData\Roaming\Subtitle Edit\Plugins\"
+copy $(TargetDir)\exportallformats.pdb "C:\Users\ivandro.jao\AppData\Roaming\Subtitle Edit\Plugins\"</PostBuildEvent>
   </PropertyGroup>
 </Project>

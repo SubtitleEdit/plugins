@@ -102,7 +102,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Xylographe", "Xylographe", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VobSubTimestamps", "VobSubTimestamps\DLL\VobSubTimestamps.csproj", "{FEC6B212-95C0-42F5-8F69-7E73CB3A0CA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaveAllFormat", "SaveAllFormat\SaveAllFormat.csproj", "{143A1481-B4EE-4AA3-8E5E-AF1712477F57}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExportAllFormats", "SaveAllFormat\ExportAllFormats.csproj", "{143A1481-B4EE-4AA3-8E5E-AF1712477F57}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

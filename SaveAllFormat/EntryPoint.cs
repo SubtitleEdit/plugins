@@ -9,17 +9,43 @@ using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    public class SaveAllFormat : EntryPointBase
+    public class ExportAllFormats : EntryPointBase
     {
 
-        public SaveAllFormat()
-            : base("Save all format", "Save all format", 1.0m, "Save current subtitle to all available text format.", "tool", string.Empty)
+        public ExportAllFormats()
+            : base("Export to all formats", "Export to all formats (non binary)", 1.0m, "Export current subtitle to all available text format.", "file", string.Empty)
         {
         }
 
         public override string DoAction(Form parentForm, string srtText, double frameRate, string uiLineBreak, string file, string videoFile, string rawText)
         {
+            // subtitle not loaded
+            if (string.IsNullOrWhiteSpace(srtText))
+            {
+                MessageBox.Show(parentForm, "Empty subtitle... make sure you have load a subtitle file before trying to export!", "Empty subtitle", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return string.Empty;
+            }
+
+
+            string exportLocation = string.Empty;
+            using (var folderBrowse = new FolderBrowserDialog()
+            {
+                Description = "Choose where to export files to"
+            })
+            {
+                if (folderBrowse.ShowDialog() != DialogResult.OK)
+                {
+                    return string.Empty;
+                }
+                exportLocation = folderBrowse.SelectedPath;
+            }
+
+            // todo: add support to portable version
+            // todo: add support to export specific format e.g: xml, txt...
+            // todo: add ui which options
+
             Init(srtText, uiLineBreak, file);
+
             var type = parentForm.GetType().Assembly.GetType("Nikse.SubtitleEdit.Core.SubtitleFormats.SubtitleFormat");
             var prop = type.GetProperty("AllSubtitleFormats", BindingFlags.Public | BindingFlags.Static);
             var allSubtitleFormats = (IEnumerable<object>)prop.GetValue(default, default);
@@ -35,7 +61,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     string extension = (string)format.GetType().GetProperty("Extension", BindingFlags.Public | BindingFlags.Instance).GetValue(format, default);
                     var mi = format.GetType().GetMethod("ToText", BindingFlags.Public | BindingFlags.Instance /*| BindingFlags.DeclaredOnly*/, default, new Type[] { subtitle.GetType(), typeof(string) }, default);
                     var result = (string)mi.Invoke(format, new[] { subtitle, name });
-                    File.WriteAllText(GetFileName(file, (string)name, extension), result, Encoding.UTF8);
+                    File.WriteAllText(Path.Combine(exportLocation, GetFileName(file, (string)name, extension)), result, Encoding.UTF8);
                 }
                 catch (Exception ex)
                 {
@@ -43,7 +69,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
             }
 
-            MessageBox.Show("Done!");
+            MessageBox.Show(parentForm, "Export completed!", "Subtitle exported", MessageBoxButtons.OK, MessageBoxIcon.Information);
             return string.Empty;
         }
 
