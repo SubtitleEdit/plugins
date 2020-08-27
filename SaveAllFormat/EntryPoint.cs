@@ -56,7 +56,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             //var parallelOptions = new ParallelOptions();
             //TaskScheduler.FromCurrentSynchronizationContext();
 
-            // run export parallel
+            // run export parallel (faster)
             Parallel.ForEach(allSubtitleFormats, format =>
             {
                 try
