@@ -21,6 +21,8 @@ namespace Plugin_Updater
         {
             InitializeComponent();
 
+            this.StartPosition = FormStartPosition.CenterParent;
+
             // hook event handlers
 
             buttonOK.Click += (sender, e) =>

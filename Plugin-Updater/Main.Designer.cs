@@ -37,9 +37,10 @@
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.buttonUpload = new System.Windows.Forms.Button();
-            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.buttonGithubUpload = new System.Windows.Forms.Button();
+            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.buttonDownload = new System.Windows.Forms.Button();
             this.buttonCopy = new System.Windows.Forms.Button();
             this.buttonRemove = new System.Windows.Forms.Button();
@@ -65,6 +66,7 @@
             this.buttonBrowse = new System.Windows.Forms.Button();
             this.buttonOK = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownVersion)).BeginInit();
             this.SuspendLayout();
@@ -87,7 +89,7 @@
             this.listViewPluginInfo.Location = new System.Drawing.Point(16, 47);
             this.listViewPluginInfo.Margin = new System.Windows.Forms.Padding(4);
             this.listViewPluginInfo.Name = "listViewPluginInfo";
-            this.listViewPluginInfo.Size = new System.Drawing.Size(1059, 256);
+            this.listViewPluginInfo.Size = new System.Drawing.Size(1177, 342);
             this.listViewPluginInfo.TabIndex = 0;
             this.listViewPluginInfo.UseCompatibleStateImageBehavior = false;
             this.listViewPluginInfo.View = System.Windows.Forms.View.Details;
@@ -127,9 +129,7 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.buttonUpload);
-            this.groupBox1.Controls.Add(this.linkLabel2);
-            this.groupBox1.Controls.Add(this.pictureBox1);
+            this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Controls.Add(this.buttonDownload);
             this.groupBox1.Controls.Add(this.buttonCopy);
             this.groupBox1.Controls.Add(this.buttonRemove);
@@ -147,45 +147,58 @@
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Location = new System.Drawing.Point(16, 311);
+            this.groupBox1.Location = new System.Drawing.Point(16, 397);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(1060, 251);
+            this.groupBox1.Size = new System.Drawing.Size(1178, 251);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             // 
-            // buttonUpload
+            // groupBox2
             // 
-            this.buttonUpload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonUpload.Location = new System.Drawing.Point(938, 183);
-            this.buttonUpload.Name = "buttonUpload";
-            this.buttonUpload.Size = new System.Drawing.Size(110, 24);
-            this.buttonUpload.TabIndex = 21;
-            this.buttonUpload.Text = "Upload plugin";
-            this.buttonUpload.UseVisualStyleBackColor = true;
-            // 
-            // linkLabel2
-            // 
-            this.linkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Location = new System.Drawing.Point(944, 146);
-            this.linkLabel2.Name = "linkLabel2";
-            this.linkLabel2.Size = new System.Drawing.Size(95, 16);
-            this.linkLabel2.TabIndex = 20;
-            this.linkLabel2.TabStop = true;
-            this.linkLabel2.Text = "Open in Github";
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.pictureBox1);
+            this.groupBox2.Controls.Add(this.buttonGithubUpload);
+            this.groupBox2.Controls.Add(this.linkLabel2);
+            this.groupBox2.Location = new System.Drawing.Point(1005, 11);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(172, 233);
+            this.groupBox2.TabIndex = 22;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Github";
             // 
             // pictureBox1
             // 
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(929, 22);
+            this.pictureBox1.Location = new System.Drawing.Point(40, 21);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(124, 121);
+            this.pictureBox1.Size = new System.Drawing.Size(92, 90);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 19;
             this.pictureBox1.TabStop = false;
+            // 
+            // buttonGithubUpload
+            // 
+            this.buttonGithubUpload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonGithubUpload.Location = new System.Drawing.Point(40, 155);
+            this.buttonGithubUpload.Name = "buttonGithubUpload";
+            this.buttonGithubUpload.Size = new System.Drawing.Size(110, 24);
+            this.buttonGithubUpload.TabIndex = 21;
+            this.buttonGithubUpload.Text = "Upload plugin";
+            this.buttonGithubUpload.UseVisualStyleBackColor = true;
+            // 
+            // linkLabel2
+            // 
+            this.linkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.linkLabel2.AutoSize = true;
+            this.linkLabel2.Location = new System.Drawing.Point(37, 122);
+            this.linkLabel2.Name = "linkLabel2";
+            this.linkLabel2.Size = new System.Drawing.Size(95, 16);
+            this.linkLabel2.TabIndex = 20;
+            this.linkLabel2.TabStop = true;
+            this.linkLabel2.Text = "Open in Github";
             // 
             // buttonDownload
             // 
@@ -358,7 +371,7 @@
             // buttonSave
             // 
             this.buttonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSave.Location = new System.Drawing.Point(762, 570);
+            this.buttonSave.Location = new System.Drawing.Point(880, 656);
             this.buttonSave.Margin = new System.Windows.Forms.Padding(4);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(100, 28);
@@ -370,7 +383,7 @@
             // buttonCancel
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCancel.Location = new System.Drawing.Point(976, 570);
+            this.buttonCancel.Location = new System.Drawing.Point(1094, 656);
             this.buttonCancel.Margin = new System.Windows.Forms.Padding(4);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(100, 28);
@@ -383,35 +396,35 @@
             // 
             this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(12, 586);
+            this.linkLabel1.Location = new System.Drawing.Point(12, 672);
             this.linkLabel1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(118, 16);
+            this.linkLabel1.Size = new System.Drawing.Size(170, 16);
             this.linkLabel1.TabIndex = 4;
             this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "By: Ivandro Ismael";
+            this.linkLabel1.Text = "By: Ivandro Jao (ivandrofly)";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 20);
+            this.label6.Location = new System.Drawing.Point(12, 14);
             this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(38, 16);
+            this.label6.Size = new System.Drawing.Size(115, 16);
             this.label6.TabIndex = 5;
-            this.label6.Text = "Path:";
+            this.label6.Text = "XML look file path:";
             // 
             // textBoxMetaFilePath
             // 
-            this.textBoxMetaFilePath.Location = new System.Drawing.Point(63, 16);
+            this.textBoxMetaFilePath.Location = new System.Drawing.Point(135, 14);
             this.textBoxMetaFilePath.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxMetaFilePath.Name = "textBoxMetaFilePath";
-            this.textBoxMetaFilePath.Size = new System.Drawing.Size(904, 22);
+            this.textBoxMetaFilePath.Size = new System.Drawing.Size(950, 22);
             this.textBoxMetaFilePath.TabIndex = 6;
             // 
             // buttonBrowse
             // 
-            this.buttonBrowse.Location = new System.Drawing.Point(976, 14);
+            this.buttonBrowse.Location = new System.Drawing.Point(1093, 11);
             this.buttonBrowse.Margin = new System.Windows.Forms.Padding(4);
             this.buttonBrowse.Name = "buttonBrowse";
             this.buttonBrowse.Size = new System.Drawing.Size(100, 28);
@@ -423,7 +436,7 @@
             // buttonOK
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOK.Location = new System.Drawing.Point(869, 570);
+            this.buttonOK.Location = new System.Drawing.Point(987, 656);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(100, 28);
             this.buttonOK.TabIndex = 8;
@@ -435,7 +448,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1092, 613);
+            this.ClientSize = new System.Drawing.Size(1210, 699);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.buttonBrowse);
             this.Controls.Add(this.textBoxMetaFilePath);
@@ -452,6 +465,8 @@
             this.Text = "Plugin Updater";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownVersion)).EndInit();
             this.ResumeLayout(false);
@@ -494,8 +509,9 @@
         private System.Windows.Forms.Button buttonCopy;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.LinkLabel linkLabel2;
-        private System.Windows.Forms.Button buttonUpload;
+        private System.Windows.Forms.Button buttonGithubUpload;
         private System.Windows.Forms.Button buttonOK;
+        private System.Windows.Forms.GroupBox groupBox2;
     }
 }
 

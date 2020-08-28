@@ -28,11 +28,11 @@ namespace Plugin_Updater
             {
                 listViewPluginInfo.Columns[listViewPluginInfo.Columns.Count - 1].Width = -2;
             };
-            buttonUpload.Click += (sender, e) =>
+            buttonGithubUpload.Click += (sender, e) =>
             {
                 using (var uploadToGithub = new UploadToGithub())
                 {
-                    uploadToGithub.ShowDialog();
+                    uploadToGithub.ShowDialog(this);
                 }
             };
 
