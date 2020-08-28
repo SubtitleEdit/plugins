@@ -39,6 +39,9 @@ namespace Nikse.SubtitleEdit.PluginLogic.Helpers
             // https://stackoverflow.com/questions/5061761/is-it-possible-to-await-yield-return-dosomethingasync
 
             // pararell async run task (https://www.youtube.com/watch?v=2moh18sh5p4)
+
+            //Parallel.ForEach(downloadLinks, link => { });
+
             return Task.WhenAll(downloadLinks.Select(dl =>
             {
                 return Task.Run(async () =>

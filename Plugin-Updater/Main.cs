@@ -1,7 +1,11 @@
-﻿using Plugin_Updater.Helpers;
+﻿using Octokit;
+using Plugin_Updater.Helpers;
 using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -325,20 +329,30 @@ namespace Plugin_Updater
 
         private void ButtonCancel_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            System.Windows.Forms.Application.Exit();
         }
 
         private void ButtonAdd_Click(object sender, EventArgs e)
         {
-            var pluginInfo = new PluginInfo
+            PluginInfo pluginInfo;
+            try
             {
-                Name = textBoxName.Text,
-                Author = textBoxAuthor.Text,
-                Version = numericUpDownVersion.Value,
-                Date = dateTimePicker1.Value,
-                Description = textBoxDescription.Text,
-                Url = new Uri(textBoxUrl.Text),
-            };
+                pluginInfo = new PluginInfo
+                {
+                    Name = textBoxName.Text,
+                    Author = textBoxAuthor.Text,
+                    Version = numericUpDownVersion.Value,
+                    Date = dateTimePicker1.Value,
+                    Description = textBoxDescription.Text,
+                    Url = new Uri(textBoxUrl.Text),
+                };
+            }
+            catch (Exception ex)
+            {
+                // one or more field is not set
+                MessageBox.Show(ex.Message);
+                return;
+            }
 
             var pluginInfoEls = pluginInfo.GetType()
                 .GetProperties()
@@ -544,7 +558,7 @@ namespace Plugin_Updater
             {
                 return;
             }
-            System.Diagnostics.Process.Start(textBoxUrl.Text);
+            Process.Start(textBoxUrl.Text);
         }
 
         private bool ValidateUrl()
@@ -567,6 +581,55 @@ namespace Plugin_Updater
             }
 
             Close();
+        }
+
+        private void buttonDllInfo_Click(object sender, EventArgs e)
+        {
+            using (var fd = new OpenFileDialog())
+            {
+                if (fd.ShowDialog(this) == DialogResult.OK)
+                {
+                    // todo: read info from ddl file
+                    // select file
+                    // create instance
+                    // get value from properies
+
+                    // invalid file
+                    if (!Path.IsPathRooted(fd.FileName))
+                    {
+                        return;
+                    }
+                    // Nikse.SubtitleEdit.PluginLogic.ExportAllFormats
+
+                    string typeFullName = "Nikse.SubtitleEdit.PluginLogic.ExportAllFormats";
+                    var assembly = Assembly.LoadFile(fd.FileName);
+                    var pluginType = assembly.GetType(typeFullName);
+                    var instance = Activator.CreateInstance(pluginType);
+
+                    // failed to create instance of pluing
+                    if (instance is null)
+                    {
+                        throw new NullReferenceException(nameof(instance));
+                    }
+
+                    var bindingFlag = BindingFlags.Instance | BindingFlags.Public;
+
+                    // load plugin metadata information
+                    string name = (string)instance.GetType().GetProperty("Name", bindingFlag).GetValue(instance);
+                    string desc = (string)instance.GetType().GetProperty("Description", bindingFlag).GetValue(instance);
+                    decimal ver = (decimal)instance.GetType().GetProperty("Version", bindingFlag).GetValue(instance);
+                    // https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/Ispravi.zip
+                    string url = $"https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/{Path.GetFileNameWithoutExtension(fd.FileName)}.zip";
+
+                    textBoxName.Text = name;
+                    textBoxDescription.Text = desc;
+                    numericUpDownVersion.Value = ver;
+                    textBoxAuthor.Text = "ivandrofly";
+                    textBoxUrl.Text = url;
+                    dateTimePicker1.Value = DateTime.Now;
+
+                }
+            }
         }
     }
 

@@ -65,6 +65,7 @@
             this.textBoxMetaFilePath = new System.Windows.Forms.TextBox();
             this.buttonBrowse = new System.Windows.Forms.Button();
             this.buttonOK = new System.Windows.Forms.Button();
+            this.buttonDllInfo = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -129,6 +130,7 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.buttonDllInfo);
             this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Controls.Add(this.buttonDownload);
             this.groupBox1.Controls.Add(this.buttonCopy);
@@ -202,7 +204,7 @@
             // 
             // buttonDownload
             // 
-            this.buttonDownload.Location = new System.Drawing.Point(773, 160);
+            this.buttonDownload.Location = new System.Drawing.Point(595, 133);
             this.buttonDownload.Name = "buttonDownload";
             this.buttonDownload.Size = new System.Drawing.Size(90, 23);
             this.buttonDownload.TabIndex = 18;
@@ -212,7 +214,7 @@
             // 
             // buttonCopy
             // 
-            this.buttonCopy.Location = new System.Drawing.Point(692, 160);
+            this.buttonCopy.Location = new System.Drawing.Point(514, 133);
             this.buttonCopy.Name = "buttonCopy";
             this.buttonCopy.Size = new System.Drawing.Size(75, 23);
             this.buttonCopy.TabIndex = 17;
@@ -444,6 +446,16 @@
             this.buttonOK.UseVisualStyleBackColor = true;
             this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
             // 
+            // buttonDllInfo
+            // 
+            this.buttonDllInfo.Location = new System.Drawing.Point(781, 109);
+            this.buttonDllInfo.Name = "buttonDllInfo";
+            this.buttonDllInfo.Size = new System.Drawing.Size(132, 23);
+            this.buttonDllInfo.TabIndex = 23;
+            this.buttonDllInfo.Text = "Read info from .dll";
+            this.buttonDllInfo.UseVisualStyleBackColor = true;
+            this.buttonDllInfo.Click += new System.EventHandler(this.buttonDllInfo_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -512,6 +524,7 @@
         private System.Windows.Forms.Button buttonGithubUpload;
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Button buttonDllInfo;
     }
 }
 

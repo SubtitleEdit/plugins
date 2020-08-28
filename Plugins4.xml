@@ -234,4 +234,13 @@
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/VobSubTimestamps.zip</Url>
     <Author>xylographe</Author>
   </Plugin>
+  <Plugin>
+    <Name>Export to all formats</Name>
+    <Description>Export current subtitle to all available text format.</Description>
+    <Version>1.0</Version>
+    <Date>2020-08-28</Date>
+    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/ExportAllFormats.zip</Url>
+    <Author>ivandrofly</Author>
+    <Element />
+  </Plugin>
 </Plugins>
