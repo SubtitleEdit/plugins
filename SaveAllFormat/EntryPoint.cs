@@ -12,7 +12,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class ExportAllFormats : EntryPointBase
     {
-
         public ExportAllFormats()
             : base("Export to all formats", "Export to all formats (non binary)", 1.0m, "Export current subtitle to all available text format.", "file", string.Empty)
         {
@@ -27,67 +26,21 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return string.Empty;
             }
 
+            // initialize context
+            Init(srtText, uiLineBreak, file);
 
-            string exportLocation = string.Empty;
-            using (var folderBrowse = new FolderBrowserDialog()
+            // show main form
+            using (var main = new Main(parentForm, file))
             {
-                Description = "Choose where to export files to"
-            })
-            {
-                if (folderBrowse.ShowDialog() != DialogResult.OK)
+                if (main.ShowDialog(parentForm) == DialogResult.Cancel)
                 {
                     return string.Empty;
                 }
-                exportLocation = folderBrowse.SelectedPath;
             }
 
-            // todo: add support to portable version
-            // todo: add support to export specific format e.g: xml, txt...
-            // todo: add ui which options
-
-            Init(srtText, uiLineBreak, file);
-
-            var type = parentForm.GetType().Assembly.GetType("Nikse.SubtitleEdit.Core.SubtitleFormats.SubtitleFormat");
-            var prop = type.GetProperty("AllSubtitleFormats", BindingFlags.Public | BindingFlags.Static);
-            var allSubtitleFormats = (IEnumerable<object>)prop.GetValue(default, default);
-
-            var subtitle = parentForm.GetType().GetField("_subtitle", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(parentForm);
-
-            //var parallelOptions = new ParallelOptions();
-            //TaskScheduler.FromCurrentSynchronizationContext();
-
-            // run export parallel (faster)
-            Parallel.ForEach(allSubtitleFormats, format =>
-            {
-                try
-                {
-                    var name = format.GetType().GetProperty("Name", BindingFlags.Public | BindingFlags.Instance).GetValue(format, default);
-                    string extension = (string)format.GetType().GetProperty("Extension", BindingFlags.Public | BindingFlags.Instance).GetValue(format, default);
-                    var mi = format.GetType().GetMethod("ToText", BindingFlags.Public | BindingFlags.Instance /*| BindingFlags.DeclaredOnly*/, default, new Type[] { subtitle.GetType(), typeof(string) }, default);
-                    var result = (string)mi.Invoke(format, new[] { subtitle, name });
-                    File.WriteAllText(Path.Combine(exportLocation, GetFileName(file, (string)name, extension)), result, Encoding.UTF8);
-                }
-                catch (Exception ex)
-                {
-                    Trace.WriteLine(ex.Message);
-                }
-            });
-
-            MessageBox.Show(parentForm, "Export completed!", "Subtitle exported", MessageBoxButtons.OK, MessageBoxIcon.Information);
             return string.Empty;
+
         }
 
-        private static string GetFileName(string file, string formatName, string extension)
-        {
-            string fileName = Path.GetFileNameWithoutExtension(file);
-            string newName = $"{fileName}_{formatName}{extension}";
-            foreach (var ch in Path.GetInvalidFileNameChars().Concat(Path.GetInvalidPathChars()))
-            {
-                newName = newName.Replace(ch.ToString(), "_");
-            }
-            newName = newName.Replace(" ", "-");
-            newName = newName.Replace(" ", "-");
-            return newName;
-        }
     }
 }
