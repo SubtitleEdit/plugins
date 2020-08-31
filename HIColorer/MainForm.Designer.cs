@@ -52,8 +52,10 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.pictureBoxDonate);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.buttonRemove);
             this.groupBox1.Controls.Add(this.checkBoxEnabledMoods);
             this.groupBox1.Controls.Add(this.checkBoxEnabledNarrator);
             this.groupBox1.Controls.Add(this.labelNarratorsColor);
@@ -64,7 +66,7 @@
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(13, 13);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(404, 165);
+            this.groupBox1.Size = new System.Drawing.Size(519, 165);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Color options:";
@@ -195,9 +197,9 @@
             // 
             // buttonRemove
             // 
-            this.buttonRemove.Location = new System.Drawing.Point(275, 194);
+            this.buttonRemove.Location = new System.Drawing.Point(413, 127);
             this.buttonRemove.Name = "buttonRemove";
-            this.buttonRemove.Size = new System.Drawing.Size(95, 23);
+            this.buttonRemove.Size = new System.Drawing.Size(100, 23);
             this.buttonRemove.TabIndex = 1;
             this.buttonRemove.Text = "Remove color/s";
             this.buttonRemove.UseVisualStyleBackColor = true;
@@ -220,7 +222,7 @@
             this.pictureBoxDonate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBoxDonate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pictureBoxDonate.Image = ((System.Drawing.Image)(resources.GetObject("pictureBoxDonate.Image")));
-            this.pictureBoxDonate.Location = new System.Drawing.Point(432, 16);
+            this.pictureBoxDonate.Location = new System.Drawing.Point(413, 19);
             this.pictureBoxDonate.Name = "pictureBoxDonate";
             this.pictureBoxDonate.Size = new System.Drawing.Size(100, 67);
             this.pictureBoxDonate.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -234,9 +236,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(544, 229);
-            this.Controls.Add(this.pictureBoxDonate);
             this.Controls.Add(this.linkLabelIvandrofly);
-            this.Controls.Add(this.buttonRemove);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.groupBox1);

@@ -64,7 +64,7 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetDir)\exportallformats.dll "C:\Users\ivandro.jao\AppData\Roaming\Subtitle Edit\Plugins\"
-copy $(TargetDir)\exportallformats.pdb "C:\Users\ivandro.jao\AppData\Roaming\Subtitle Edit\Plugins\"</PostBuildEvent>
+    <PostBuildEvent>copy $(TargetDir)\exportallformats.dll "%25appdata%25\Subtitle Edit\Plugins\"
+copy $(TargetDir)\exportallformats.pdb "%25appdata%25\Subtitle Edit\Plugins\"</PostBuildEvent>
   </PropertyGroup>
 </Project>

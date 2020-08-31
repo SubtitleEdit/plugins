@@ -51,7 +51,7 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>copy $(TargetDir)\JackSE.dll "%25appdata%25\Subtitle Edit\Plugins\"
+copy $(TargetDir)\JackSE.pdb "%25appdata%25\Subtitle Edit\Plugins\"</PostBuildEvent>
   </PropertyGroup>
 </Project>

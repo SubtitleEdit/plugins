@@ -16,9 +16,8 @@
             for (int i = paragraphs.Count - 1; i >= 0; i--)
             {
                 Paragraph p = paragraphs[i];
-                string text = p.Text;
 
-                text = ProcessText(p.Text, '(');
+                string text = ProcessText(p.Text, '(');
                 text = ProcessText(text, '[');
 
                 if (text.Length != p.Text.Length)

@@ -71,10 +71,10 @@
             this.listViewFixes.FullRowSelect = true;
             this.listViewFixes.GridLines = true;
             this.listViewFixes.HideSelection = false;
-            this.listViewFixes.Location = new System.Drawing.Point(205, 153);
+            this.listViewFixes.Location = new System.Drawing.Point(205, 165);
             this.listViewFixes.Margin = new System.Windows.Forms.Padding(4);
             this.listViewFixes.Name = "listViewFixes";
-            this.listViewFixes.Size = new System.Drawing.Size(835, 356);
+            this.listViewFixes.Size = new System.Drawing.Size(835, 344);
             this.listViewFixes.TabIndex = 0;
             this.listViewFixes.UseCompatibleStateImageBehavior = false;
             this.listViewFixes.View = System.Windows.Forms.View.Details;
@@ -280,12 +280,12 @@
             this.removeToolStripMenuItem,
             this.addToIgnoreListToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(225, 70);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(225, 48);
             // 
             // removeToolStripMenuItem
             // 
             this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
-            this.removeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.removeToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
             this.removeToolStripMenuItem.Text = "Remove";
             // 
             // addToIgnoreListToolStripMenuItem

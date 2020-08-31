@@ -1,10 +1,14 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -13,21 +17,57 @@ namespace Nikse.SubtitleEdit.PluginLogic
     [InvokeOnLoad(false)]
     public class JackSE : IPlugin
     {
+        // note: probably not a good idea because SE will Load entire assembly for each invoke
+        //private volatile static bool isCapture = false;
+
         public JackSE()
         {
-            //AppDomain.CurrentDomain.GetAssemblies();
-            Type mainForm = Assembly.GetEntryAssembly().GetType("Nikse.SubtitleEdit.Forms.Main");
+            //if (isCapture)
+            //{
+            //    return;
+            //}
 
+            //AppDomain.CurrentDomain.GetAssemblies();
+            //Type mainForm = Assembly.GetEntryAssembly().GetType("Nikse.SubtitleEdit.Forms.Main");
             //AppDomain.CurrentDomain.
 
-            if (mainForm != null)
-            {
-                //AddMergeLinesButton((Form)mainForm);
-            }
+            //if (mainForm != null)
+            //{
+            //    //AddMergeLinesButton((Form)mainForm);
+            //}
+
+
+            // TODO: check if main is already jacked
+            //Type programmType = Assembly.GetEntryAssembly().GetType("Nikse.SubtitleEdit.Program");
+            //MethodInfo mainMi = programmType.GetMethod("Main", BindingFlags.NonPublic | BindingFlags.Static);
+            // this one is started in new thread and 
+            //var thread = new Thread(() =>
+            //{
+            //    Thread.CurrentThread.IsBackground = false;
+            //    isCapture = true;
+            //    Application.EnableVisualStyles();
+            //    Application.SetCompatibleTextRenderingDefault(false);
+            //    var mainInstance = Activator.CreateInstance(mainForm);
+            //    Application.Run((Form)mainInstance);
+            //});
+            //thread.Start();
+
+            // close current instance start a new instance where the main is already captured (this didn't work as expected...)
+            //Application.Exit();
 
             //AppDomain.CurrentDomain
-            // TODO: check if main is already jacked
+
+            // try to force application / appdomain thread exception which will be capture in Program.cs Application exception handler
+            // note: make sure IF #DEBUG instead of IF !#DEBUG becuase the handler will only be added when !#DEBUG by default
+            //var t = new Thread(() => throw new InvalidOperationException());
+            //t.Start();
         }
+
+        public JackSE(Form mainForm)
+        {
+            MessageBox.Show("main captured");
+        }
+
 
         /// <summary>
         /// Private members binding flags.
@@ -58,6 +98,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public string DoAction(Form parentForm, string srtText, double frameRate, string uiLineBreak, string file, string videoFile, string rawText)
         {
+            if (HackTools(parentForm))
+            {
+                return string.Empty;
+            }
+
+            // false: operation shouldn't continue
+            if (DemoHack(parentForm) == false)
+            {
+                return string.Empty;
+            }
+
             _parentForm = parentForm;
 
             // url format in configuration
@@ -73,8 +124,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                  *  <url title="<url-title>">https://wwww.github.com/ivandrofly</url>
                  * </urls>
                  */
-                var xdoc = XDocument.Load(configFile);
-                var dic = xdoc.Root.Elements("url").ToDictionary(x => x.Attribute("title").Value, x => x.Value);
+                XDocument xdoc = XDocument.Load(configFile);
+                Dictionary<string, string> dic = xdoc.Root.Elements("url").ToDictionary(x => x.Attribute("title").Value, x => x.Value);
                 // var urls = File.ReadAllLines(configFile).Select(l => l.Split('=').Aggregate()
                 LoadLinks(dic);
             }
@@ -115,7 +166,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             int insertIdx = Math.Max(menuStrip.Items.Count - 4, 0);
 
             // this is the link menu item that will be diplayed at top bar
-            var linksToolStripItem = new ToolStripMenuItem("Links");
+            ToolStripMenuItem linksToolStripItem = new ToolStripMenuItem("Links");
 
             // key = title
             // value = url
@@ -143,34 +194,34 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void BuildMenuStripProvider()
         {
             // the type that represent Main which inhrets Form
-            var formType = _parentForm.GetType();
+            Type formType = _parentForm.GetType();
             // factory MenuStripProvider
-            var paramExp = Expression.Parameter(typeof(object), "target");
+            ParameterExpression paramExp = Expression.Parameter(typeof(object), "target");
             // convert the param from obj to Menu then access menuStrip1
-            var fieldExp = Expression.Field(Expression.Convert(paramExp, formType), "menuStrip1");
+            MemberExpression fieldExp = Expression.Field(Expression.Convert(paramExp, formType), "menuStrip1");
             // convert type of field to its defined type (MenuStrip)
-            var convertToMenuStripExp = Expression.TypeAs(fieldExp, fieldExp.Type);
+            UnaryExpression convertToMenuStripExp = Expression.TypeAs(fieldExp, fieldExp.Type);
             // now this can be called to provide MenuStrip
             MenuStripProvider = Expression.Lambda<Func<object, MenuStrip>>(convertToMenuStripExp, paramExp).Compile();
         }
 
         private void BuildMergeInvoker()
         {
-            var formType = _parentForm.GetType();
-            var paramExp = Expression.Parameter(typeof(object), "target");
+            Type formType = _parentForm.GetType();
+            ParameterExpression paramExp = Expression.Parameter(typeof(object), "target");
 
             // name of subtile edit's main listview
             const string fieldName = "SubtitleListview1";
 
             // # USING REFLECTION
             FieldInfo lvFielInfo = _parentForm.GetType().GetField(fieldName, _privateMembersFlags);
-            var mainListview = (ListView)lvFielInfo.GetValue(_parentForm);
+            ListView mainListview = (ListView)lvFielInfo.GetValue(_parentForm);
             ShouldInvokeMerge = () => mainListview.SelectedItems.Count > 0;
 
             // # USING EXPRESSION
 
             // convert the param to type of Main (form)
-            var convertExp = Expression.TypeAs(paramExp, formType);
+            UnaryExpression convertExp = Expression.TypeAs(paramExp, formType);
             // access a field named `fielName` and cast it to type of listview (which is the base class of SubtitleListView) in _parentForm
             UnaryExpression lvexp = Expression.TypeAs(Expression.Field(convertExp, fieldName), typeof(ListView));
 
@@ -215,7 +266,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // add anchor
             // images
             // add: handler which will merge text
-            var buttonMergeLines = new Button
+            Button buttonMergeLines = new Button
             {
                 Name = "jackseButtonMergeLines",
                 Text = "ML",
@@ -285,9 +336,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void SelfDestroy()
         {
             // toolsToolStripMenuItem
-            var mainType = _parentForm.GetType();
+            Type mainType = _parentForm.GetType();
             FieldInfo fieldInfo = mainType.GetField("toolsToolStripMenuItem", _privateMembersFlags);
-            var toolStripMenu = (ToolStripMenuItem)fieldInfo.GetValue(_parentForm);
+            ToolStripMenuItem toolStripMenu = (ToolStripMenuItem)fieldInfo.GetValue(_parentForm);
             for (int i = toolStripMenu.DropDown.Items.Count - 1; i >= 0; i--)
             {
                 ToolStripItem tsi = toolStripMenu.DropDown.Items[i];
@@ -298,5 +349,54 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
             }
         }
+
+        private static bool DemoHack(object main)
+        {
+            BindingFlags privateFlag = BindingFlags.NonPublic | BindingFlags.Instance;
+
+            // get type of main
+            Type mainType = main.GetType();
+            Type aboutType = main.GetType().Assembly.GetType("Nikse.SubtitleEdit.Forms.About");
+
+            // AboutToolStripMenuItemClick
+            // main->aboutToolStripMenuItem.click->AboutToolStripMenuItemClick
+            var menuItem = mainType.GetField("aboutToolStripMenuItem", privateFlag).GetValue(main);
+            var clickcEventInMenuItem = menuItem.GetType().GetEvent("Click");
+            var eventType = clickcEventInMenuItem.EventHandlerType;
+            var clickMethodHandler = mainType.GetMethod("AboutToolStripMenuItemClick", privateFlag);
+            var del = Delegate.CreateDelegate(eventType, main, clickMethodHandler);
+            clickcEventInMenuItem.RemoveEventHandler(menuItem, del);
+
+            MessageBox.Show("event unhooked");
+            return false;
+        }
+
+        private bool HackTools(object mainInstance)
+        {
+            var toolsFieldInfo = mainInstance.GetType().GetField("toolsToolStripMenuItem", BindingFlags.Instance | BindingFlags.NonPublic);
+            var toolsInstance = toolsFieldInfo.GetValue(mainInstance);
+
+            var toolsClickEvent = toolsFieldInfo.FieldType.GetEvent("Click", BindingFlags.Public | BindingFlags.Instance);
+            var toolsClickHandler = Delegate.CreateDelegate(toolsClickEvent.EventHandlerType, this, "ToolsClickHandler");
+            toolsClickEvent.AddEventHandler(toolsInstance, toolsClickHandler);
+
+            // note: is "this" disposed? 
+
+            return true;
+        }
+
+        private void ToolsClickHandler(object sender, EventArgs e)
+        {
+            try
+            {
+                string output = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "downloads");
+                File.WriteAllText(Path.Combine(output, "outfile.txt"), "tadaaaa!");
+            }
+            catch
+            {
+                // ignore
+            }
+        }
+
     }
 }

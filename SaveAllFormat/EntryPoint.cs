@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class ExportAllFormats : EntryPointBase
     {
         public ExportAllFormats()
-            : base("Export to all formats", "Export to all formats (non binary)", 1.0m, "Export current subtitle to all available text format.", "file", string.Empty)
+            : base("Export to all formats", "Export to all formats (non binary)", 1.1m, "Export current subtitle to all available text format.", "file", string.Empty)
         {
         }
 

@@ -36,7 +36,7 @@ namespace Plugin_Updater
             };
 
             string token = string.Empty;
-            _tokenFile = Path.Combine(Assembly.GetExecutingAssembly().Location, "token.txt");
+            _tokenFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "token.txt");
 
             // look for token in same location as the app 1st
             if (File.Exists(_tokenFile))

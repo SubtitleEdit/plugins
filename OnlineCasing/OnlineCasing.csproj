@@ -83,6 +83,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Costura.Fody">
+      <Version>5.0.0-alpha0281</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>9.0.1</Version>
     </PackageReference>
@@ -97,5 +102,9 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent Condition="$(SE_Plugin) != ''">xcopy /s /y $(TargetDir)*.* "$(SE_Plugin)"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetDir)\OnlineCasing.dll "%25appdata%25\Subtitle Edit\Plugins\"
+copy $(TargetDir)\OnlineCasing.pdb "%25appdata%25\Subtitle Edit\Plugins\"</PostBuildEvent>
   </PropertyGroup>
 </Project>

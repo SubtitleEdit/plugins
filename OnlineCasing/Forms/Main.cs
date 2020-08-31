@@ -15,6 +15,7 @@ namespace OnlineCasing.Forms
         private TMDbClient _client;
         private readonly Subtitle _subtitle;
         private readonly string _uILineBreak;
+        public string Subtitle { get; private set; }
 
         public Main(Subtitle subtitle, string UILineBreak)
         {
@@ -40,7 +41,6 @@ namespace OnlineCasing.Forms
             {
                 _client = new TMDbClient(Configs.Settings.ApiKey, true);
             }
-
 
             contextMenuStrip1.Opening += (sender, e) =>
             {
@@ -91,6 +91,11 @@ namespace OnlineCasing.Forms
                 }
             };
 
+            buttonCancel.Click += delegate
+            {
+                DialogResult = DialogResult.Cancel;
+            };
+
             labelCount.Text = "Total: 0";
             _subtitle = subtitle;
             _uILineBreak = UILineBreak;
@@ -131,18 +136,25 @@ namespace OnlineCasing.Forms
                 comboBoxMovieID.BeginUpdate();
             }
 
+            // combobox movie id handlers
             comboBoxMovieID.SelectedIndexChanged += async (sende, e) =>
             {
                 var movie = (Movie)comboBoxMovieID.SelectedItem;
                 await GetNewIDAsync(movie.Id);
             };
 
+            // user press enter e.g: after typing move id
+            comboBoxMovieID.KeyUp += (sender, e) =>
+            {
+                if (e.KeyCode == Keys.Enter)
+                {
+                    ButtonGetMovieID_Click(this, default);
+                }
+            };
+
             checkBoxCheckLastLine.Checked = Configs.Settings.CheckLastLine;
             checkBoxUppercaseAfterBreak.Checked = Configs.Settings.MakeUperCase;
         }
-
-        public string Subtitle { get; private set; }
-
 
         private async Task GetNewIDAsync(int movieId)
         {
@@ -276,7 +288,8 @@ namespace OnlineCasing.Forms
         {
             if (string.IsNullOrWhiteSpace(comboBoxMovieID.Text) && comboBoxMovieID.SelectedItem == null)
             {
-                MessageBox.Show("Select a movie from combobox");
+                MessageBox.Show("Select a movie from combobox or get a new one by clicking \"Get new ID\" button!",
+                    "Missing ID", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             if (int.TryParse(comboBoxMovieID.Text, out int movieId))

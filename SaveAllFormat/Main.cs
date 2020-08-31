@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+using System.Data.SqlTypes;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -18,6 +16,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private readonly Form _parentForm;
         private readonly string _file;
         private string _exportLocation;
+        private volatile string _selExtension;
 
         // todo: add support to portable version
         // todo: add support to export specific format e.g: xml, txt...
@@ -41,15 +40,30 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _file = file;
 
             // event handlers
-
-            buttonOk.Click += delegate
-            {
-                DialogResult = DialogResult.OK;
-            };
             buttonCancel.Click += delegate
             {
                 DialogResult = DialogResult.Cancel;
             };
+
+            textBoxLocation.DoubleClick += delegate
+            {
+                if (!Path.IsPathRooted(textBoxLocation.Text))
+                {
+                    MessageBox.Show("Invalid path", "Invalid path", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                Process.Start($"{textBoxLocation.Text}");
+            };
+
+            comboBoxExtension.BeginUpdate();
+            comboBoxExtension.Items.Add("all");
+            foreach (var extension in GetAvailableExtensions())
+            {
+                comboBoxExtension.Items.Add(extension);
+            }
+            comboBoxExtension.SelectedIndex = 0;
+            comboBoxExtension.EndUpdate();
         }
 
         private void buttonBrowse_Click(object sender, EventArgs e)
@@ -64,7 +78,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
 
                 _exportLocation = folderBrowse.SelectedPath;
-                textBox1.Text = _exportLocation;
+                textBoxLocation.Text = _exportLocation;
             }
         }
 
@@ -87,6 +101,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             //var parallelOptions = new ParallelOptions();
             //TaskScheduler.FromCurrentSynchronizationContext();
             // run export parallel (faster)
+
+            _selExtension = comboBoxExtension.SelectedItem.ToString();
             Parallel.ForEach((IEnumerable<object>)prop.GetValue(default, default), format =>
             {
                 try
@@ -94,9 +110,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     var name = format.GetType().GetProperty("Name", BindingFlags.Public | BindingFlags.Instance).GetValue(format, default);
                     string extension = (string)format.GetType().GetProperty("Extension", BindingFlags.Public | BindingFlags.Instance).GetValue(format, default);
 
-                    // todo: accept extension like: *.txt just .txt
                     // filter by extension
-                    if (!comboBoxExtension.SelectedValue.ToString().Equals(extension, StringComparison.OrdinalIgnoreCase))
+                    if (_selExtension.Equals("all") == false && !_selExtension.Equals(extension, StringComparison.OrdinalIgnoreCase))
                     {
                         return;
                     }
@@ -116,6 +131,22 @@ namespace Nikse.SubtitleEdit.PluginLogic
             //progressBar1.Visible = false;
 
             MessageBox.Show(_parentForm, "Export completed!", "Subtitle exported", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private IEnumerable<string> GetAvailableExtensions()
+        {
+            var type = _parentForm.GetType().Assembly.GetType("Nikse.SubtitleEdit.Core.SubtitleFormats.SubtitleFormat");
+            var prop = type.GetProperty("AllSubtitleFormats", BindingFlags.Public | BindingFlags.Static);
+            var formats = (IEnumerable<object>)prop.GetValue(_parentForm, null);
+            var listExtension = new HashSet<string>();
+
+            foreach (var item in formats)
+            {
+                var extension = (string)item.GetType().GetProperty("Extension").GetValue(item, null);
+                listExtension.Add(extension);
+            }
+
+            return listExtension;
         }
 
         private static string GetExportFileName(string file, string formatName, string extension)
