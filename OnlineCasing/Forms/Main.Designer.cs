@@ -35,8 +35,6 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.buttonGetNewID = new System.Windows.Forms.Button();
-            this.checkBoxCheckLastLine = new System.Windows.Forms.CheckBox();
-            this.checkBoxUppercaseAfterBreak = new System.Windows.Forms.CheckBox();
             this.comboBoxMovieID = new System.Windows.Forms.ComboBox();
             this.buttonGetMovieID = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -54,6 +52,8 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addToIgnoreListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.invertSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -99,8 +99,6 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.buttonGetNewID);
-            this.groupBox1.Controls.Add(this.checkBoxCheckLastLine);
-            this.groupBox1.Controls.Add(this.checkBoxUppercaseAfterBreak);
             this.groupBox1.Controls.Add(this.comboBoxMovieID);
             this.groupBox1.Controls.Add(this.buttonGetMovieID);
             this.groupBox1.Controls.Add(this.label1);
@@ -121,28 +119,6 @@
             this.buttonGetNewID.Text = "Get new ID";
             this.buttonGetNewID.UseVisualStyleBackColor = true;
             this.buttonGetNewID.Click += new System.EventHandler(this.ButtonGetNewID_Click);
-            // 
-            // checkBoxCheckLastLine
-            // 
-            this.checkBoxCheckLastLine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBoxCheckLastLine.AutoSize = true;
-            this.checkBoxCheckLastLine.Location = new System.Drawing.Point(750, 52);
-            this.checkBoxCheckLastLine.Name = "checkBoxCheckLastLine";
-            this.checkBoxCheckLastLine.Size = new System.Drawing.Size(113, 20);
-            this.checkBoxCheckLastLine.TabIndex = 6;
-            this.checkBoxCheckLastLine.Text = "Check last line";
-            this.checkBoxCheckLastLine.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxUppercaseAfterBreak
-            // 
-            this.checkBoxUppercaseAfterBreak.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBoxUppercaseAfterBreak.AutoSize = true;
-            this.checkBoxUppercaseAfterBreak.Location = new System.Drawing.Point(750, 26);
-            this.checkBoxUppercaseAfterBreak.Name = "checkBoxUppercaseAfterBreak";
-            this.checkBoxUppercaseAfterBreak.Size = new System.Drawing.Size(196, 20);
-            this.checkBoxUppercaseAfterBreak.TabIndex = 5;
-            this.checkBoxUppercaseAfterBreak.Text = "Make uppercase after break";
-            this.checkBoxUppercaseAfterBreak.UseVisualStyleBackColor = true;
             // 
             // comboBoxMovieID
             // 
@@ -278,9 +254,11 @@
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.removeToolStripMenuItem,
-            this.addToIgnoreListToolStripMenuItem});
+            this.addToIgnoreListToolStripMenuItem,
+            this.selectAllToolStripMenuItem,
+            this.invertSelectionToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(225, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(225, 92);
             // 
             // removeToolStripMenuItem
             // 
@@ -293,6 +271,18 @@
             this.addToIgnoreListToolStripMenuItem.Name = "addToIgnoreListToolStripMenuItem";
             this.addToIgnoreListToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
             this.addToIgnoreListToolStripMenuItem.Text = "Remove && Add to ignore list";
+            // 
+            // selectAllToolStripMenuItem
+            // 
+            this.selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
+            this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
+            this.selectAllToolStripMenuItem.Text = "Select all";
+            // 
+            // invertSelectionToolStripMenuItem
+            // 
+            this.invertSelectionToolStripMenuItem.Name = "invertSelectionToolStripMenuItem";
+            this.invertSelectionToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
+            this.invertSelectionToolStripMenuItem.Text = "Invert selection";
             // 
             // Main
             // 
@@ -343,13 +333,13 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aPIToolStripMenuItem;
-        private System.Windows.Forms.CheckBox checkBoxCheckLastLine;
-        private System.Windows.Forms.CheckBox checkBoxUppercaseAfterBreak;
         private System.Windows.Forms.Label labelCount;
         private System.Windows.Forms.HelpProvider helpProvider1;
         private System.Windows.Forms.Button buttonGetNewID;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addToIgnoreListToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem invertSelectionToolStripMenuItem;
     }
 }

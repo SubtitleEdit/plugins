@@ -17,8 +17,8 @@ namespace OnlineCasing.Forms
             string apiKey = textBoxApiKey.Text.Trim();
 
             // select the setting file
-            var apiKeyBuffer = Encoding.Default.GetBytes(apiKey);
-            string base64ApiKey = Convert.ToBase64String(apiKeyBuffer);
+            //var apiKeyBuffer = Encoding.Default.GetBytes(apiKey);
+            //string base64ApiKey = Convert.ToBase64String(apiKeyBuffer);
 
             //SettingUtils.UpdateApiKey(base64ApiKey);
 

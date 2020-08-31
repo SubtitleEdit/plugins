@@ -55,7 +55,7 @@ namespace OnlineCasing.Forms
             const int RemoveItemAndIgnore = 1;
             contextMenuStrip1.Items[RemoveItem].Click += (sender, e) =>
             {
-                RemoveNameUpdate();
+                RemoveNameAtSelectedIndex();
             };
 
             contextMenuStrip1.Items[RemoveItemAndIgnore].Click += (sender, e) =>
@@ -70,7 +70,7 @@ namespace OnlineCasing.Forms
                 //string selName2 = checkedListBoxNames.GetItemText(checkedListBoxNames.SelectedIndex);
 
                 Configs.Settings.IgnoreWords.Add(selName);
-                RemoveNameUpdate();
+                RemoveNameAtSelectedIndex();
             };
 
             checkedListBoxNames.SelectedIndexChanged += (sende, e) =>
@@ -96,13 +96,34 @@ namespace OnlineCasing.Forms
                 DialogResult = DialogResult.Cancel;
             };
 
+            selectAllToolStripMenuItem.Click += delegate
+            {
+                checkedListBoxNames.BeginUpdate();
+                for (int i = 0; i < checkedListBoxNames.Items.Count; i++)
+                {
+                    checkedListBoxNames.SetItemChecked(i, true);
+                }
+                checkedListBoxNames.EndUpdate();
+            };
+
+            invertSelectionToolStripMenuItem.Click += delegate
+            {
+                checkedListBoxNames.BeginUpdate();
+                for (int i = 0; i < checkedListBoxNames.Items.Count; i++)
+                {
+                    checkedListBoxNames.SetItemChecked(i, !checkedListBoxNames.GetItemChecked(i));
+                }
+                checkedListBoxNames.EndUpdate();
+            };
+
+
             labelCount.Text = "Total: 0";
             _subtitle = subtitle;
             _uILineBreak = UILineBreak;
             UIInit();
         }
 
-        private void RemoveNameUpdate()
+        private void RemoveNameAtSelectedIndex()
         {
             checkedListBoxNames.Items.RemoveAt(checkedListBoxNames.SelectedIndex);
             // hate doing this
@@ -151,9 +172,6 @@ namespace OnlineCasing.Forms
                     ButtonGetMovieID_Click(this, default);
                 }
             };
-
-            checkBoxCheckLastLine.Checked = Configs.Settings.CheckLastLine;
-            checkBoxUppercaseAfterBreak.Checked = Configs.Settings.MakeUperCase;
         }
 
         private async Task GetNewIDAsync(int movieId)
@@ -246,8 +264,6 @@ namespace OnlineCasing.Forms
                 names.Add(tempName);
             }
 
-            // TODO: Hack MAIN and find way to send these names to casing form
-
             if (names.Count == 0)
             {
                 return;
@@ -322,21 +338,13 @@ namespace OnlineCasing.Forms
         private void DoCasingViaAPI(List<string> names)
         {
             Cursor.Current = Cursors.WaitCursor;
-            var copyParagraphs = _subtitle.Paragraphs.Select(p => new Paragraph(p.StartTime, p.EndTime, p.Text)
-            {
-                Number = p.Number
-            });
-
-            var paragraphs = new List<Paragraph>(copyParagraphs);
-
+            var paragraphs = _subtitle.Paragraphs.Select(p => p.GetCopy()).ToList();
             var seCasingApi = new SECasingApi();
 
             var context = new CasingContext
             {
                 Names = names,
-                CheckLastLine = checkBoxCheckLastLine.Checked,
                 Paragraphs = paragraphs,
-                UppercaseAfterLineBreak = checkBoxUppercaseAfterBreak.Checked,
             };
 
             seCasingApi.DoCasing(context);
@@ -346,7 +354,7 @@ namespace OnlineCasing.Forms
             Cursor.Current = Cursors.Default;
         }
 
-        private void UpdateListView(List<Paragraph> paragaphs, List<Paragraph> newParagraphs)
+        private void UpdateListView(List<Paragraph> paragaphs, List<Paragraph> paragraphsNew)
         {
             listViewFixes.BeginUpdate();
             listViewFixes.Items.Clear();
@@ -355,14 +363,14 @@ namespace OnlineCasing.Forms
             for (int i = 0; i < count; i++)
             {
                 // nothng changed
-                if (paragaphs[i].Text.Equals(newParagraphs[i].Text, StringComparison.Ordinal))
+                if (paragaphs[i].Text.Equals(paragraphsNew[i].Text, StringComparison.Ordinal))
                 {
                     continue;
                 }
 
-                ListViewItem lvi = new ListViewItem(newParagraphs[i].Number.ToString())
+                ListViewItem lvi = new ListViewItem(paragraphsNew[i].Number.ToString())
                 {
-                    SubItems = { paragaphs[i].Text.Replace(Environment.NewLine, _uILineBreak), newParagraphs[i].Text.Replace(Environment.NewLine, _uILineBreak) }
+                    SubItems = { paragaphs[i].Text.Replace(Environment.NewLine, _uILineBreak), paragraphsNew[i].Text.Replace(Environment.NewLine, _uILineBreak) }
                 };
 
                 lvi.Tag = paragaphs[i];
@@ -398,8 +406,6 @@ namespace OnlineCasing.Forms
             }
 
             Subtitle = _subtitle.ToText();
-            Configs.Settings.CheckLastLine = checkBoxCheckLastLine.Checked;
-            Configs.Settings.MakeUperCase = checkBoxUppercaseAfterBreak.Checked;
             Configs.Save();
             DialogResult = DialogResult.OK;
         }

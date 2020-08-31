@@ -21,20 +21,16 @@ namespace OnlineCasing
 
         public SECasingApi()
         {
-            Debug.WriteLine("constructing secasingapi obj");
-            // return only AssemblyName
             //var libse = Assembly.GetEntryAssembly().GetReferencedAssemblies().FirstOrDefault(s => s.Name.Equals("libse"));
 
             // note: when SubtitlEdit is running in installed mode we won't be 
-            // able to retrive "libse.dll" using this approche because the assembly is merged into SubtitleEdit.exe
+            // able to retrive "libse.dll" using this approach because the assembly is merged into SubtitleEdit.exe
             _coreAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(s => s.FullName.Contains("libse"));
-
             _coreAssembly = _coreAssembly ?? Assembly.GetEntryAssembly();
-
             _fixCasing = Activator.CreateInstance(_coreAssembly.GetType($"{DefaultNameSpace}.FixCasing"), "en");
 
             // TODO: Build strongly typed function with Expression
-            Debug.WriteLine("leaving static SECasingApi ctor");
+            //Debug.WriteLine("leaving static SECasingApi ctor");
         }
 
         public void DoCasing(List<Paragraph> paragraphs, List<string> names)
@@ -118,13 +114,9 @@ namespace OnlineCasing
 
         public void DoCasing(CasingContext context)
         {
+            var publicMemberFlags = BindingFlags.Public | BindingFlags.Instance;
             Type stripTextT = _coreAssembly.GetType(DefaultNameSpace + ".StrippableText");
-            MethodInfo fixCasing = stripTextT.GetMethod("FixCasing", BindingFlags.Public | BindingFlags.Instance);
-
-            // public void FixCasing(List<string> nameList, bool changeNameCases,
-            // bool makeUppercaseAfterBreak, bool checkLastLine, string lastLine,
-            // double millisecondsFromLast = 0)
-
+            MethodInfo fixCasing = stripTextT.GetMethod("FixCasing", publicMemberFlags);
             Paragraph preParagraph = null;
             double gaps = 10000;
             foreach (Paragraph p in context.Paragraphs)
@@ -135,8 +127,8 @@ namespace OnlineCasing
                     gaps = p.StartTime.TotalMilliseconds - preParagraph.EndTime.TotalMilliseconds;
                 }
 
-                fixCasing.Invoke(stripTextObj, new object[] { context.Names, true, context.UppercaseAfterLineBreak, context.CheckLastLine, p?.Text, gaps });
-                p.Text = (string)stripTextT.GetProperty("MergedString", BindingFlags.Public | BindingFlags.Instance).GetValue(stripTextObj);
+                fixCasing.Invoke(stripTextObj, new object[] { context.Names, true, false, false, p?.Text, gaps });
+                p.Text = (string)stripTextT.GetProperty("MergedString", publicMemberFlags).GetValue(stripTextObj);
                 preParagraph = p;
             }
 

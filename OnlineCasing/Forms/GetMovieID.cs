@@ -83,11 +83,10 @@ namespace OnlineCasing.Forms
             listViewMovies.EndUpdate();
         }
 
-        private bool ShouldDisplayInfo(SearchMovie movie) => movie == null || string.IsNullOrEmpty(movie.Title) || movie.ReleaseDate == null ? false : true;
+        private bool ShouldDisplayInfo(SearchMovie movie) => !(movie == null || string.IsNullOrWhiteSpace(movie.Title) || movie.ReleaseDate == null);
 
         private void ButtonOK_Click(object sender, EventArgs e)
         {
-            //listview
             if (listViewMovies.SelectedItems.Count == 0)
             {
                 return;

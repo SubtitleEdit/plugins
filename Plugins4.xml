@@ -212,8 +212,8 @@
   <Plugin>
     <Name>Online casing</Name>
     <Description>Do casing using TMDB api</Description>
-    <Version>1.3</Version>
-    <Date>2019-02-25</Date>
+    <Version>1.4</Version>
+    <Date>2020-08-31</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/OnlineCasing.zip</Url>
     <Author>ivandrofly</Author>
   </Plugin>

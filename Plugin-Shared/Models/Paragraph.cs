@@ -4,7 +4,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class Paragraph
     {
-        public string ID { get; }
+        public string ID { get; private set; }
         public int Number { get; set; }
         public string Text { get; set; }
         public TimeCode StartTime { get; set; }
@@ -31,6 +31,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public int NumberOfLines => StringUtils.GetNumberOfLines(Text);
 
+        public Paragraph GetCopy() => new Paragraph(StartTime, EndTime, Text)
+        {
+            ID = Guid.NewGuid().ToString(),
+            Number = Number
+        };
 
     }
 }

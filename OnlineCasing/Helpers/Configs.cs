@@ -113,8 +113,6 @@ namespace OnlineCasing
                 Settings = new Settings
                 {
                     ApiKey = key,
-                    CheckLastLine = false,
-                    MakeUperCase = true,
                     Movies = new List<Movie>(),
                     IgnoreWords = new HashSet<string>()
                 };
