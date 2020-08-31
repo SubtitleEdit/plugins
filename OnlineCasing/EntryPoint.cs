@@ -13,7 +13,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public string Text => "Online casing";
 
-        public decimal Version => 1.3m;
+        public decimal Version => 1.4m;
 
         public string Description => "Do casing using online TMDB api";
 
