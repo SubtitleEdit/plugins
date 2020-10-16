@@ -1,171 +1,85 @@
 ﻿using System;
+using System.Globalization;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    internal class TimeCode
+    public class TimeCode
     {
-        private TimeSpan _time;
+        public const double BaseUnit = 1000.0; // Base unit of time
+        private double _totalMilliseconds;
 
-        public static double ParseToMilliseconds(string text)
-        {
-            string[] parts = text.Split(":,.".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length == 4)
-            {
-                int hours;
-                int minutes;
-                int seconds;
-                int milliseconds;
-                if (int.TryParse(parts[0], out hours) && int.TryParse(parts[1], out minutes) && int.TryParse(parts[2], out seconds) && int.TryParse(parts[3], out milliseconds))
-                {
-                    TimeSpan ts = new TimeSpan(0, hours, minutes, seconds, milliseconds);
-                    return ts.TotalMilliseconds;
-                }
-            }
-            return 0;
-        }
+        public bool IsMaxTime => Math.Abs(_totalMilliseconds - MaxTimeTotalMilliseconds) < 0.01;
+        public const double MaxTimeTotalMilliseconds = 359999999; // new TimeCode(99, 59, 59, 999).TotalMilliseconds
 
-        public static double ParseHHMMSSFFToMilliseconds(string text)
+        public static TimeCode FromSeconds(double seconds)
         {
-            string[] parts = text.Split(":,.".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length == 4)
-            {
-                int hours;
-                int minutes;
-                int seconds;
-                int frames;
-                if (int.TryParse(parts[0], out hours) && int.TryParse(parts[1], out minutes) && int.TryParse(parts[2], out seconds) && int.TryParse(parts[3], out frames))
-                {
-                    TimeSpan ts = new TimeSpan(0, hours, minutes, seconds, SubtitleFormat.FramesToMilliseconds(frames));
-                    return ts.TotalMilliseconds;
-                }
-            }
-            return 0;
+            return new TimeCode(seconds * BaseUnit);
         }
 
         public TimeCode(TimeSpan timeSpan)
         {
-            TimeSpan = timeSpan;
+            _totalMilliseconds = timeSpan.TotalMilliseconds;
         }
 
-        public TimeCode(int hour, int minute, int seconds, int milliseconds)
+        public TimeCode(double totalMilliseconds)
         {
-            _time = new TimeSpan(0, hour, minute, seconds, milliseconds);
+            _totalMilliseconds = totalMilliseconds;
         }
 
-        public int Hours
+        public TimeCode(int hours, int minutes, int seconds, int milliseconds)
         {
-            get { return _time.Hours; }
-            set { _time = new TimeSpan(0, value, _time.Minutes, _time.Seconds, _time.Milliseconds); }
-        }
-
-        public int Minutes
-        {
-            get { return _time.Minutes; }
-            set { _time = new TimeSpan(0, _time.Hours, value, _time.Seconds, _time.Milliseconds); }
-        }
-
-        public int Seconds
-        {
-            get { return _time.Seconds; }
-            set { _time = new TimeSpan(0, _time.Hours, _time.Minutes, value, _time.Milliseconds); }
-        }
-
-        public int Milliseconds
-        {
-            get { return _time.Milliseconds; }
-            set { _time = new TimeSpan(0, _time.Hours, _time.Minutes, _time.Seconds, value); }
+            _totalMilliseconds = hours * 60 * 60 * BaseUnit + minutes * 60 * BaseUnit + seconds * BaseUnit + milliseconds;
         }
 
         public double TotalMilliseconds
         {
-            get { return _time.TotalMilliseconds; }
-            set { _time = TimeSpan.FromMilliseconds(value); }
+            get => _totalMilliseconds;
+            set => _totalMilliseconds = value;
         }
 
         public double TotalSeconds
         {
-            get { return _time.TotalSeconds; }
-            set { _time = TimeSpan.FromSeconds(value); }
+            get => _totalMilliseconds / BaseUnit;
+            set => _totalMilliseconds = value * BaseUnit;
         }
 
         public TimeSpan TimeSpan
         {
-            get
-            {
-                return _time;
-            }
-            set
-            {
-                _time = value;
-            }
+            get => TimeSpan.FromMilliseconds(_totalMilliseconds);
+            set => _totalMilliseconds = value.TotalMilliseconds;
         }
 
-        public void AddTime(int hour, int minutes, int seconds, int milliseconds)
+        public override string ToString() => ToString(false);
+
+        public string ToString(bool localize)
         {
-            Hours += hour;
-            Minutes += minutes;
-            Seconds += seconds;
-            Milliseconds += milliseconds;
+            var ts = TimeSpan;
+            string decimalSeparator = localize ? CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator : ",";
+            string s = $"{ts.Hours + ts.Days * 24:00}:{ts.Minutes:00}:{ts.Seconds:00}{decimalSeparator}{ts.Milliseconds:000}";
+
+            return PrefixSign(s);
         }
 
-        public void AddTime(long milliseconds)
+        public string ToShortString(bool localize = false)
         {
-            _time = TimeSpan.FromMilliseconds(_time.TotalMilliseconds + milliseconds);
-        }
-
-        public void AddTime(TimeSpan timeSpan)
-        {
-            _time = TimeSpan.FromMilliseconds(_time.TotalMilliseconds + timeSpan.TotalMilliseconds);
-        }
-
-        public void AddTime(double milliseconds)
-        {
-            _time = TimeSpan.FromMilliseconds(_time.TotalMilliseconds + milliseconds);
-        }
-
-        public override string ToString()
-        {
-            string s = string.Format("{0:00}:{1:00}:{2:00},{3:000}", _time.Hours, _time.Minutes, _time.Seconds, _time.Milliseconds);
-
-            if (TotalMilliseconds >= 0)
-                return s;
-            else
-                return "-" + s.Replace("-", string.Empty);
-        }
-
-        public string ToShortString()
-        {
+            var ts = TimeSpan;
+            string decimalSeparator = localize ? CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator : ",";
             string s;
-            if (_time.Minutes == 0 && _time.Hours == 0)
-                s = string.Format("{0:0},{1:000}", _time.Seconds, _time.Milliseconds);
-            else if (_time.Hours == 0)
-                s = string.Format("{0:0}:{1:00},{2:000}", _time.Minutes, _time.Seconds, _time.Milliseconds);
+            if (ts.Minutes == 0 && ts.Hours == 0 && ts.Days == 0)
+            {
+                s = $"{ts.Seconds:0}{decimalSeparator}{ts.Milliseconds:000}";
+            }
+            else if (ts.Hours == 0 && ts.Days == 0)
+            {
+                s = $"{ts.Minutes:0}:{ts.Seconds:00}{decimalSeparator}{ts.Milliseconds:000}";
+            }
             else
-                s = string.Format("{0:0}:{1:00}:{2:00},{3:000}", _time.Hours, _time.Minutes, _time.Seconds, _time.Milliseconds);
-
-            if (TotalMilliseconds >= 0)
-                return s;
-            else
-                return "-" + s.Replace("-", string.Empty);
+            {
+                s = $"{ts.Hours + ts.Days * 24:0}:{ts.Minutes:00}:{ts.Seconds:00}{decimalSeparator}{ts.Milliseconds:000}";
+            }
+            return PrefixSign(s);
         }
 
-        public string ToShortStringHHMMSSFF()
-        {
-            if (_time.Minutes == 0 && _time.Hours == 0)
-                return string.Format("{0:00}:{1:00}", _time.Seconds, SubtitleFormat.MillisecondsToFrames(_time.Milliseconds));
-            if (_time.Hours == 0)
-                return string.Format("{0:00}:{1:00}:{2:00}", _time.Minutes, _time.Seconds, SubtitleFormat.MillisecondsToFrames(_time.Milliseconds));
-            return string.Format("{0:00}:{1:00}:{2:00}:{3:00}", _time.Hours, _time.Minutes, _time.Seconds, SubtitleFormat.MillisecondsToFrames(_time.Milliseconds));
-        }
-
-        public string ToHHMMSSFF()
-        {
-            return string.Format("{0:00}:{1:00}:{2:00}:{3:00}", _time.Hours, _time.Minutes, _time.Seconds, SubtitleFormat.MillisecondsToFrames(_time.Milliseconds));
-        }
-
-        public string ToHHMMSSPeriodFF()
-        {
-            return string.Format("{0:00}:{1:00}:{2:00}.{3:00}", _time.Hours, _time.Minutes, _time.Seconds, SubtitleFormat.MillisecondsToFrames(_time.Milliseconds));
-        }
+        private string PrefixSign(string time) => TotalMilliseconds >= 0 ? time : $"-{time.Replace("-", string.Empty)}";
     }
 }

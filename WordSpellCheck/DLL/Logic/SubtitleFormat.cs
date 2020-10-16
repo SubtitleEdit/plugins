@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -48,14 +49,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        public static int MillisecondsToFrames(double milliseconds)
+        public static int FramesToMillisecondsMax999(double frames)
         {
-            return (int)System.Math.Round(milliseconds / (1000.0 / Configuration.CurrentFrameRate));
-        }
-
-        public static int FramesToMilliseconds(double frames)
-        {
-            return (int)System.Math.Round(frames * (1000.0 / Configuration.CurrentFrameRate));
+            int ms = (int)Math.Round(frames * (TimeCode.BaseUnit / 25));
+            return Math.Min(ms, 999);
         }
     }
 }

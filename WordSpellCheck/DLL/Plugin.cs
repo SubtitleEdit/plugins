@@ -12,7 +12,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "Spell and grammar check in Microsoft Word...";
 
-        decimal IPlugin.Version => 1.5M;
+        decimal IPlugin.Version => 1.6M;
 
         string IPlugin.Description => "Word spell check (requires Microsoft Word)";
 

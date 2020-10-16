@@ -59,11 +59,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             var item = new ListViewItem(p.Number.ToString(CultureInfo.InvariantCulture)) { Tag = p };
 
-            var subItem = new ListViewItem.ListViewSubItem(item, p.StartTime.ToShortString());
+            var subItem = new ListViewItem.ListViewSubItem(item,  p.StartTime.IsMaxTime ? "-" : p.StartTime.ToShortString());
             item.SubItems.Add(subItem);
-            subItem = new ListViewItem.ListViewSubItem(item, p.EndTime.ToShortString());
+            subItem = new ListViewItem.ListViewSubItem(item, p.EndTime.IsMaxTime ? "-" : p.EndTime.ToShortString());
             item.SubItems.Add(subItem);
-            subItem = new ListViewItem.ListViewSubItem(item, p.Duration.ToShortString());
+            subItem = new ListViewItem.ListViewSubItem(item, p.StartTime.IsMaxTime && p.EndTime.IsMaxTime ? "-" : p.Duration.ToShortString());
             item.SubItems.Add(subItem);
             subItem = new ListViewItem.ListViewSubItem(item, p.Text.Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString));
             item.SubItems.Add(subItem);
