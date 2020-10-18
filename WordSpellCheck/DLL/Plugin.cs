@@ -12,7 +12,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "Spell and grammar check in Microsoft Word...";
 
-        decimal IPlugin.Version => 1.6M;
+        decimal IPlugin.Version => 1.7M;
 
         string IPlugin.Description => "Word spell check (requires Microsoft Word)";
 
@@ -39,7 +39,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             // set newline visualizer for listviews
             if (!string.IsNullOrEmpty(listViewLineSeparatorString))
+            {
                 Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
+            }
 
             // load subtitle text into object
             var list = new List<string>();

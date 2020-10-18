@@ -12,25 +12,26 @@ using Word = Microsoft.Office.Interop.Word;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    internal partial class PluginForm : Form
+    internal sealed partial class PluginForm : Form
     {
         public string FixedSubtitle { get; private set; }
 
-        private Subtitle _subtitle;
-        private Word.Application _wordApp = new Word.Application();
-        private List<Word.Language> _spellCheckLanguages = new List<Word.Language>();
+        private readonly Subtitle _subtitle;
+        private readonly Word.Application _wordApp = new Word.Application();
+        private readonly List<Word.Language> _spellCheckLanguages = new List<Word.Language>();
+        private Word.Language _currentLanguage;
         private Word.ProofreadingErrors _currentSpellCollection;
         private int _currentSpellCollectionIndex = -1;
         private Paragraph _currentParagraph;
         private int _currentStartIndex = -1;
-        private List<string> _skipAllList = new List<string>();
-        private Dictionary<string, string> _useAlwaysList = new Dictionary<string, string>();
+        private readonly List<string> _skipAllList = new List<string>();
+        private readonly Dictionary<string, string> _useAlwaysList = new Dictionary<string, string>();
         private List<string> _namesEtcList = new List<string>();
         private List<string> _namesEtcMultiWordList = new List<string>();
         private string _namesEtcLocalFileName;
-        private bool _abort = false;
+        private bool _abort;
         private string _currentErrorText = string.Empty;
-        private int _currentErrorStart = 0;
+        private int _currentErrorStart;
 
         public PluginForm(Subtitle subtitle, string name, string description)
         {
@@ -59,7 +60,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             var item = new ListViewItem(p.Number.ToString(CultureInfo.InvariantCulture)) { Tag = p };
 
-            var subItem = new ListViewItem.ListViewSubItem(item,  p.StartTime.IsMaxTime ? "-" : p.StartTime.ToShortString());
+            var subItem = new ListViewItem.ListViewSubItem(item, p.StartTime.IsMaxTime ? "-" : p.StartTime.ToShortString());
             item.SubItems.Add(subItem);
             subItem = new ListViewItem.ListViewSubItem(item, p.EndTime.IsMaxTime ? "-" : p.EndTime.ToShortString());
             item.SubItems.Add(subItem);
@@ -75,12 +76,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewSubtitle.BeginUpdate();
             for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
             {
-                Paragraph p = _subtitle.Paragraphs[i];
+                var p = _subtitle.Paragraphs[i];
                 p.Number = i + 1;
                 AddParagraphToSubtitleListView(p);
             }
+
             if (listViewSubtitle.Items.Count > 0)
+            {
                 listViewSubtitle.Items[0].Selected = true;
+            }
+
             listViewSubtitle.EndUpdate();
         }
 
@@ -88,7 +93,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             int index = 0;
             if (listViewSubtitle.SelectedIndices.Count > 0)
+            {
                 index = listViewSubtitle.SelectedIndices[0];
+            }
 
             while (index < listViewSubtitle.Items.Count)
             {
@@ -97,7 +104,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 string text = _currentParagraph.Text;
                 Application.DoEvents();
                 if (_abort || StartSpellCheckParagraph(text))
+                {
                     return;
+                }
+
                 index++;
                 if (index < listViewSubtitle.Items.Count)
                 {
@@ -126,7 +136,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             range = _wordApp.ActiveDocument.Range();
             range.Text = string.Empty;
 
-            //insert textbox data after the content of range of active document
+            //insert text box data after the content of range of active document
 
             var lines = text.Replace(Environment.NewLine, "\n").Split('\n');
             if (lines.Length == 2 && lines[0].Length > 1)
@@ -145,18 +155,28 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 if (comboBoxDictionaries.SelectedIndex > 0)
                 {
-                    _wordApp.ActiveDocument.Content.LanguageID = _spellCheckLanguages[comboBoxDictionaries.SelectedIndex - 1].ID;
+                    _currentLanguage = _spellCheckLanguages[comboBoxDictionaries.SelectedIndex - 1];
+                    _wordApp.ActiveDocument.Content.LanguageID = _currentLanguage.ID;
                 }
                 else
                 {
-                    try { _wordApp.ActiveDocument.Content.DetectLanguage(); }
-                    catch { }
+                    try
+                    {
+                        _wordApp.ActiveDocument.Content.DetectLanguage();
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
                 }
             }
             _currentSpellCollection = range.SpellingErrors;
             _currentSpellCollectionIndex = -1;
             if (_currentSpellCollection.Count == 0)
+            {
                 return false;
+            }
+
             ShowNextSpellingError();
             return true;
         }
@@ -181,7 +201,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                             i--;
                     }
                     if (i > max)
+                    {
                         break;
+                    }
                 }
                 cleanText = Utilities.RemoveHtmlTags(sb.ToString().Trim(), true);
                 Word.Range range;
@@ -198,48 +220,54 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     {
                         comboBoxDictionaries.Items.Add(language.NameLocal);
                         if (language.ID == range.LanguageID)
+                        {
                             comboBoxDictionaries.SelectedIndex = comboBoxDictionaries.Items.Count - 1;
+                            _currentLanguage = _spellCheckLanguages[comboBoxDictionaries.Items.Count - 1];
+                        }
                     }
                     if (comboBoxDictionaries.SelectedIndex < 0)
+                    {
                         comboBoxDictionaries.SelectedIndex = 0;
+                    }
                 }
                 else
                 {
-                    UseGoogleLangDetec(cleanText);
+                    UseGoogleLangDetect(cleanText);
                 }
             }
             catch
             {
-                UseGoogleLangDetec(cleanText);
-                //labelLanguage.Visible = false;
-                //comboBoxDictionaries.Visible = false;
+                UseGoogleLangDetect(cleanText);
             }
         }
 
-        private void UseGoogleLangDetec(string text)
+        private void UseGoogleLangDetect(string text)
         {
             var twoLetterLanguageId = Utilities.AutoDetectGoogleLanguage(text);
             var cultureInfo = CultureInfo.GetCultureInfo(twoLetterLanguageId);
             if (cultureInfo != null)
             {
-                Microsoft.Office.Interop.Word.WdLanguageID langId;
                 labelLanguage.Visible = true;
                 comboBoxDictionaries.Visible = true;
                 comboBoxDictionaries.Items.Add("Auto");
                 foreach (Word.Language language in _spellCheckLanguages)
                 {
                     comboBoxDictionaries.Items.Add(language.NameLocal);
-                    langId = (Word.WdLanguageID)cultureInfo.TextInfo.LCID;
+                    var langId = (Word.WdLanguageID)cultureInfo.TextInfo.LCID;
                     if (language.ID == langId)
                     {
                         comboBoxDictionaries.SelectedIndex = comboBoxDictionaries.Items.Count - 1;
+                        _currentLanguage = _spellCheckLanguages[comboBoxDictionaries.Items.Count - 1];
                         _wordApp.ActiveDocument.Content.LanguageID = langId;
                         _wordApp.ActiveDocument.Content.LanguageDetected = true;
                     }
 
                 }
+
                 if (comboBoxDictionaries.SelectedIndex < 0)
+                {
                     comboBoxDictionaries.SelectedIndex = 0;
+                }
             }
         }
 
@@ -252,7 +280,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var regEx = Utilities.MakeWordSearchRegex(word);
             Match match = regEx.Match(richTextBoxParagraph.Text, start);
             if (!match.Success)
+            {
                 match = regEx.Match(richTextBoxParagraph.Text);
+            }
+
             if (!match.Success)
             {
                 regEx = Utilities.MakeWordSearchEndRegex(word);
@@ -297,16 +328,24 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         _currentStartIndex = spell.Start;
                         labelActionInfo.Text = string.Empty;
                         if (spell.SpellingErrors.Count > 0)
+                        {
                             labelActionInfo.Text = "Found error regarding '" + spell.Text + "'...";
+                        }
                         else if (spell.GrammaticalErrors.Count > 0)
+                        {
                             labelActionInfo.Text = "Found gramitical error regarding '" + spell.Text + "'...";
+                        }
 
-                        foreach (Word.SpellingSuggestion suggestion in _wordApp.GetSpellingSuggestions(spell.Text))
+                        foreach (Word.SpellingSuggestion suggestion in _wordApp.GetSpellingSuggestions(spell.Text, "custom.dic", string.Empty, comboBoxDictionaries.SelectedItem))
                         {
                             listBoxSuggestions.Items.Add(suggestion.Name);
                         }
+
                         if (listBoxSuggestions.Items.Count > 0)
+                        {
                             listBoxSuggestions.SelectedIndex = 0;
+                        }
+
                         textBoxWord.Focus();
                         textBoxWord.SelectAll();
                         ShowActiveWordWithColor(spell.Text, spell.Start);
@@ -317,7 +356,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             int index = 0;
             if (listViewSubtitle.SelectedIndices.Count > 0)
+            {
                 index = listViewSubtitle.SelectedIndices[0];
+            }
+
             listViewSubtitle.Items[index].Selected = false;
             index++;
             if (index >= listViewSubtitle.Items.Count)
@@ -338,6 +380,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 _currentParagraph = listViewSubtitle.SelectedItems[0].Tag as Paragraph;
                 richTextBoxParagraph.Text = _currentParagraph.Text;
             }
+
             if (textBoxWholeText.Visible || !buttonEditWholeText.Enabled)
             {
                 richTextBoxParagraph.BringToFront();
@@ -367,7 +410,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 _skipAllList.Add(s);
                 _skipAllList.Add(s.ToUpper());
                 if (s.Length > 1)
+                {
                     _skipAllList.Add(s.Substring(0, 1).ToUpper() + s.Substring(1));
+                }
             }
             ShowNextSpellingError();
         }
@@ -376,10 +421,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             string newText = textBoxWord.Text;
             if (newText.Trim().Length == 0)
+            {
                 return;
+            }
+
             labelActionInfo.Text = "Change '" + _currentSpellCollection[_currentSpellCollectionIndex + 1].Text + "' to '" + newText + "'...";
             if (_currentSpellCollection[_currentSpellCollectionIndex + 1].Text != newText)
+            {
                 FixWord(_currentSpellCollection[_currentSpellCollectionIndex + 1], newText);
+            }
+
             ShowNextSpellingError();
         }
 
@@ -396,11 +447,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             string newText = textBoxWord.Text;
             if (newText.Trim().Length == 0 || newText == _currentSpellCollection[_currentSpellCollectionIndex + 1].Text)
+            {
                 return;
+            }
+
             labelActionInfo.Text = "Change all '" + _currentSpellCollection[_currentSpellCollectionIndex + 1].Text + "' to '" + newText + "'...";
             _useAlwaysList.Add(_currentSpellCollection[_currentSpellCollectionIndex + 1].Text, newText);
             if (_currentSpellCollection[_currentSpellCollectionIndex + 1].Text != newText)
+            {
                 FixWord(_currentSpellCollection[_currentSpellCollectionIndex + 1], newText);
+            }
+
             ShowNextSpellingError();
         }
 
@@ -414,7 +471,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             foreach (Word.Language language in _wordApp.Languages)
             {
                 if (language.ActiveSpellingDictionary != null && language.ActiveGrammarDictionary != null)
+                {
                     _spellCheckLanguages.Add(language);
+                }
             }
 
             AutoDetectLanguage();
@@ -535,14 +594,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         if (end <= _currentParagraph.Text.Length)
                         {
                             if ((end == _currentParagraph.Text.Length) || ((" ,.!?:;')" + Environment.NewLine).Contains(_currentParagraph.Text[end].ToString())))
+                            {
                                 _currentParagraph.Text = _currentParagraph.Text.Remove(startIndex, oldWord.Length);
+                            }
+
                             if (startIndex > 0 && _currentParagraph.Text[startIndex - 1] == ' ')
+                            {
                                 _currentParagraph.Text = _currentParagraph.Text.Remove(startIndex - 1, 1);
+                            }
                             else if (_currentParagraph.Text.Length > startIndex + 1 && _currentParagraph.Text[startIndex] == ' ')
+                            {
                                 _currentParagraph.Text = _currentParagraph.Text.Remove(startIndex, 1);
+                            }
                         }
                     }
-                    //startIndex = _currentParagraph.Text.IndexOf(oldWord, startIndex + 2);
                 }
                 _currentParagraph.Text = _currentParagraph.Text.Replace("  ", " ");
                 listViewSubtitle.SelectedItems[0].SubItems[4].Text = _currentParagraph.Text.Replace(Environment.NewLine, "<br/>");
@@ -602,10 +667,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
             if (path.StartsWith("file:\\", StringComparison.Ordinal))
+            {
                 path = path.Remove(0, 6);
+            }
+
             path = Path.Combine(path, "Dictionaries");
             if (!Directory.Exists(path))
+            {
                 path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Dictionaries");
+            }
+
             return Path.Combine(path, "names.xml");
         }
 
@@ -643,7 +714,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 var namesEtcDoc = new XmlDocument();
                 if (!File.Exists(namesEtcFileName))
+                {
                     return;
+                }
+
                 namesEtcDoc.Load(namesEtcFileName);
 
                 if (namesEtcDoc.DocumentElement != null)
@@ -653,26 +727,36 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         if (s.Contains(" "))
                         {
                             if (!namesEtcMultiWordList.Contains(s))
+                            {
                                 namesEtcMultiWordList.Add(s);
+                            }
                         }
-                        else
+                        else if (!namesEtcList.Contains(s))
                         {
-                            if (!namesEtcList.Contains(s))
-                                namesEtcList.Add(s);
+                            namesEtcList.Add(s);
                         }
                     }
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
         }
 
         private string GetCustomDicFileName()
         {
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
             if (path.StartsWith("file:\\"))
+            {
                 path = path.Remove(0, 6);
+            }
+
             path = Path.Combine(path, "Plugins");
             if (!Directory.Exists(path))
+            {
                 path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Plugins");
+            }
+
             return Path.Combine(path, "customDic.xml");
         }
 
@@ -680,7 +764,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             string newText = textBoxWord.Text;
             if (newText.Trim().Length == 0)
+            {
                 return;
+            }
 
             if (_wordApp.Application.CustomDictionaries.ActiveCustomDictionary != null)
             {
@@ -691,7 +777,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _skipAllList.Add(newText);
             _skipAllList.Add(newText.ToUpper());
             if (newText.Length > 1)
+            {
                 _skipAllList.Add(newText.Substring(0, 1).ToUpper() + newText.Substring(1));
+            }
 
             ShowNextSpellingError();
         }
@@ -705,7 +793,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             string newText = textBoxWord.Text;
             if (newText.Trim().Length == 0)
+            {
                 return;
+            }
 
             labelActionInfo.Text = "Added '" + newText + "' to names/noise list...";
             if (!string.IsNullOrEmpty(_namesEtcLocalFileName))
@@ -714,15 +804,22 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 LoadNamesEtc(localNamesEtc, localNamesEtc, _namesEtcLocalFileName);
 
                 if (localNamesEtc.Contains(newText))
+                {
                     return;
+                }
+
                 localNamesEtc.Add(newText);
                 localNamesEtc.Sort();
 
                 var namesEtcDoc = new XmlDocument();
                 if (File.Exists(_namesEtcLocalFileName))
+                {
                     namesEtcDoc.Load(_namesEtcLocalFileName);
+                }
                 else
+                {
                     namesEtcDoc.LoadXml("<ignore_words />");
+                }
 
                 XmlNode de = namesEtcDoc.DocumentElement;
                 if (de != null)
