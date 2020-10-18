@@ -1,4 +1,5 @@
 ﻿using Dropbox.Api;
+using SeDropBoxLoad;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,53 +12,59 @@ using System.Xml;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    internal partial class PluginForm : Form
+    internal sealed partial class PluginForm : Form
     {
         private const string SeAppKey = "CLIENT_KEY";
         private const string SeAppsecret = "CLIENT_SECRET";
-        private OAuth2Token _oAuth2token;
-        private Stack<string> _folder = new Stack<string>();
+        private OAuth2Token _oAuth2Token;
+        private readonly Stack<string> _folder = new Stack<string>();
 
         public string LoadedSubtitle { get; private set; }
 
         private DropboxFile _fileList;
         private int _connectTries = 0;
 
-        private string GetSettingsFileName()
+        private static string GetSettingsFileName()
         {
-            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
             if (path != null && path.StartsWith("file:\\", StringComparison.Ordinal))
+            {
                 path = path.Remove(0, 6);
+            }
+
             path = Path.Combine(path, "Plugins");
             if (!Directory.Exists(path))
+            {
                 path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Plugins");
+            }
+
             return Path.Combine(path, "SeDropbox.xml");
         }
 
         private static string EncodeTo64(string toEncode)
         {
-            byte[] toEncodeAsBytes = Encoding.Unicode.GetBytes(toEncode);
+            var toEncodeAsBytes = Encoding.Unicode.GetBytes(toEncode);
             return Convert.ToBase64String(toEncodeAsBytes);
         }
 
         public static string DecodeFrom64(string encodedData)
         {
-            byte[] encodedDataAsBytes = Convert.FromBase64String(encodedData);
+            var encodedDataAsBytes = Convert.FromBase64String(encodedData);
             return Encoding.Unicode.GetString(encodedDataAsBytes);
         }
 
         private OAuth2Token GetSavedToken()
         {
-            string fileName = GetSettingsFileName();
+            var fileName = GetSettingsFileName();
             try
             {
                 var doc = new XmlDocument();
                 doc.Load(fileName);
-                string accessToken = DecodeFrom64(doc.DocumentElement.SelectSingleNode("Accesstoken").InnerText);
-                string uid = DecodeFrom64(doc.DocumentElement.SelectSingleNode("UId").InnerText);
-                string accountId = DecodeFrom64(doc.DocumentElement.SelectSingleNode("AccountId").InnerText);
-                string tokenType = DecodeFrom64(doc.DocumentElement.SelectSingleNode("TokenType").InnerText);
-                return new OAuth2Token()
+                var accessToken = DecodeFrom64(doc.DocumentElement.SelectSingleNode("Accesstoken").InnerText);
+                var uid = DecodeFrom64(doc.DocumentElement.SelectSingleNode("UId").InnerText);
+                var accountId = DecodeFrom64(doc.DocumentElement.SelectSingleNode("AccountId").InnerText);
+                var tokenType = DecodeFrom64(doc.DocumentElement.SelectSingleNode("TokenType").InnerText);
+                return new OAuth2Token
                 {
                     access_token = accessToken,
                     uid = uid,
@@ -71,9 +78,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        private void SaveToken(OAuth2Token token)
+        private static void SaveToken(OAuth2Token token)
         {
-            string fileName = GetSettingsFileName();
+            var fileName = GetSettingsFileName();
             try
             {
                 var doc = new XmlDocument();
@@ -86,6 +93,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             catch
             {
+                // ignored
             }
         }
 
@@ -99,9 +107,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void buttonOK_Click(object sender, EventArgs e)
         {
             if (listViewFiles.SelectedItems.Count < 1)
+            {
                 return;
-
-            string fileName = listViewFiles.SelectedItems[0].Text;
+            }
 
             Refresh();
             try
@@ -110,7 +118,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 var f = listViewFiles.SelectedItems[0].Tag as DropboxFile;
                 if (f != null)
                 {
-                    var api = new DropboxApi(SeAppKey, SeAppsecret, _oAuth2token);
+                    var api = new DropboxApi(SeAppKey, SeAppsecret, _oAuth2Token);
                     if (f.IsDirectory)
                     {
                         labelInfo.Text = "Getting file list...";
@@ -132,7 +140,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         }
                         else
                         {
-                            string s = GetWithoutPart(f.Path);
+                            var s = GetWithoutPart(f.Path);
                             _folder.Push(s);
                             var list = _fileList.Contents.ToList();
                             list.Insert(0, new DropboxFile { Path = s, IsDirectory = true, Description = ".." });
@@ -169,17 +177,28 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void PluginForm_Shown(object sender, EventArgs e)
         {
             Refresh();
-            _oAuth2token = GetSavedToken();
-            var api = new DropboxApi(SeAppKey, SeAppsecret, _oAuth2token);
-            if (_oAuth2token == null)
+            _oAuth2Token = GetSavedToken();
+            var api = new DropboxApi(SeAppKey, SeAppsecret, _oAuth2Token);
+            if (_oAuth2Token == null)
             {
                 try
                 {
                     Process.Start(api.GetPromptForCodeUrl());
-                    string code = api.StartServerAndGetTheAAuthCode($"http://localhost:31415/");
-                    _oAuth2token = api.GetAccessToken(code);
+                    using (var form = new GetDropBoxCode())
+                    {
+                        var result = form.ShowDialog(this);
+                        if (result == DialogResult.OK && form.Code.Length > 10)
+                        {
+                            _oAuth2Token = api.GetAccessToken(form.Code);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Code skipped - no Dropbox :(");
+                            return;
+                        }
+                    }
                     labelInfo.Text = string.Empty;
-                    SaveToken(_oAuth2token);
+                    SaveToken(_oAuth2Token);
                 }
                 catch (Exception exception)
                 {
@@ -236,10 +255,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private string GetWithoutPart(string path)
         {
             var idx = path.LastIndexOf("/");
-            if (idx > 0)
-                return path.Substring(0, idx);
-            else
-                return string.Empty;
+            return idx > 0 ? path.Substring(0, idx) : string.Empty;
         }
 
         private void FillListView()
@@ -257,17 +273,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     Tag = f
                 };
-                if (f.IsDirectory)
-                    item.ImageIndex = 1;
-                else
-                    item.ImageIndex = 0;
+                item.ImageIndex = f.IsDirectory ? 1 : 0;
                 item.SubItems.Add(f.Modified.ToShortDateString() + f.Modified.ToShortTimeString());
                 item.SubItems.Add(f.Description);
                 listViewFiles.Items.Add(item);
             }
             listViewFiles.EndUpdate();
             if (listViewFiles.Items.Count > 0)
+            {
                 listViewFiles.Items[0].Selected = true;
+            }
         }
 
         private void listViewFiles_MouseDoubleClick(object sender, MouseEventArgs e)

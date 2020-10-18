@@ -1,6 +1,5 @@
 ﻿using Dropbox.Api;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -10,37 +9,42 @@ using System.Xml;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    internal partial class PluginForm : Form
+    internal sealed partial class PluginForm : Form
     {
         private const string SeAppKey = "CLIENT_KEY";
         private const string SeAppsecret = "CLIENT_SECRET";
-        private OAuth2Token _oAuth2token;
-        private Stack<string> _folder = new Stack<string>();
+        private OAuth2Token _oAuth2Token;
         private string _fileName;
-        private string _rawText;
+        private readonly string _rawText;
         private DropboxFile _fileList;
-        private int _connectTries = 0;
+        private int _connectTries;
 
-        private string GetSettingsFileName()
+        private static string GetSettingsFileName()
         {
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
             if (path != null && path.StartsWith("file:\\", StringComparison.Ordinal))
+            {
                 path = path.Remove(0, 6);
+            }
+
             path = Path.Combine(path, "Plugins");
             if (!Directory.Exists(path))
+            {
                 path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Plugins");
+            }
+
             return Path.Combine(path, "SeDropbox.xml");
         }
 
         private static string EncodeTo64(string toEncode)
         {
-            byte[] toEncodeAsBytes = Encoding.Unicode.GetBytes(toEncode);
+            var toEncodeAsBytes = Encoding.Unicode.GetBytes(toEncode);
             return Convert.ToBase64String(toEncodeAsBytes);
         }
 
         public static string DecodeFrom64(string encodedData)
         {
-            byte[] encodedDataAsBytes = Convert.FromBase64String(encodedData);
+            var encodedDataAsBytes = Convert.FromBase64String(encodedData);
             return Encoding.Unicode.GetString(encodedDataAsBytes);
         }
 
@@ -95,7 +99,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             labelDescription.Text = "Connecting to Dropbox...";
             _rawText = rawText;
             if (string.IsNullOrEmpty(fileName))
+            {
                 fileName = "Untitled.srt";
+            }
+
             _fileName = fileName;
             textBoxFileName.Text = fileName;
         }
@@ -104,14 +111,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             var s = textBoxFileName.Text;
             if (s.Length == 0)
+            {
                 return;
+            }
 
             labelInfo.Text = "Saving...";
             Refresh();
-            _oAuth2token = GetSavedToken();
+            _oAuth2Token = GetSavedToken();
             try
             {
-                var api = new DropboxApi(SeAppKey, SeAppsecret, _oAuth2token);
+                var api = new DropboxApi(SeAppKey, SeAppsecret, _oAuth2Token);
                 var fileUp = api.UploadFile(s, Encoding.UTF8.GetBytes(_rawText));
                 DialogResult = DialogResult.OK;
                 labelInfo.Text = string.Empty;
@@ -130,16 +139,28 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void PluginForm_Shown(object sender, EventArgs e)
         {
-            _oAuth2token = GetSavedToken();
-            var api = new DropboxApi(SeAppKey, SeAppsecret, _oAuth2token);
-            if (_oAuth2token == null)
+            _oAuth2Token = GetSavedToken();
+            var api = new DropboxApi(SeAppKey, SeAppsecret, _oAuth2Token);
+            if (_oAuth2Token == null)
             {
                 try
                 {
                     Process.Start(api.GetPromptForCodeUrl());
-                    string code = api.StartServerAndGetTheAAuthCode($"http://localhost:31415/");
+                    using (var form = new GetDropBoxCode())
+                    {
+                        var result = form.ShowDialog(this);
+                        if (result == DialogResult.OK && form.Code.Length > 10)
+                        {
+                            _oAuth2Token = api.GetAccessToken(form.Code);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Code skipped - no Dropbox :(");
+                            return;
+                        }
+                    }
                     labelInfo.Text = string.Empty;
-                    SaveToken(_oAuth2token);
+                    SaveToken(_oAuth2Token);
                 }
                 catch (Exception exception)
                 {
@@ -194,10 +215,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     }
                 }
             }
+
             if (overWrite)
+            {
                 labelDescription.Text = string.Format("Save (and overwrite) subtitle '{0}' to your Dropbox SubtitleEdit App folder?", Path.GetFileName(_fileName));
+            }
             else
+            {
                 labelDescription.Text = string.Format("Save subtitle '{0}' to your Dropbox SubtitleEdit App folder?", Path.GetFileName(_fileName));
+            }
+
             buttonOK.Enabled = true;
         }
 
