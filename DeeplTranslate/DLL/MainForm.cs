@@ -53,6 +53,7 @@ namespace SubtitleEdit
             { "NL", "" },
             { "PL", "" },
             { "PT", "" },
+            { "RU", "" },
 
             { "EN...", "..." },
             { "DE...", "..." },
@@ -62,6 +63,7 @@ namespace SubtitleEdit
             { "NL...", "..." },
             { "PL...", "..." },
             { "PT...", "..." },
+            { "RU...", "..." },
         };
 
         public class TranslationLanguage
