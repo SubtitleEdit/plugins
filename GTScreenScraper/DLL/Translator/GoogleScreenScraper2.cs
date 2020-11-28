@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Microsoft.Toolkit.Forms.UI.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
-using Microsoft.Toolkit.Forms.UI.Controls;
+using System.Windows.Forms;
 using WebViewTranslate.Logic;
 
 namespace WebViewTranslate.Translator
@@ -181,7 +181,7 @@ namespace WebViewTranslate.Translator
             {
                 if (!_loaded)
                 {
-                    System.Windows.Forms.Application.DoEvents();
+                    Application.DoEvents();
                     System.Threading.Thread.Sleep(10);
                 }
             }
@@ -196,33 +196,25 @@ namespace WebViewTranslate.Translator
                 var f = new Formatting();
                 _formattings[index] = f;
                 if (input.Length > 0)
-                    input.Append(Environment.NewLine + Environment.NewLine);
+                    input.Append(Environment.NewLine + "_" + Environment.NewLine);
                 var text = f.SetTagsAndReturnTrimmed(TranslationHelper.PreTranslate(p.Text, sourceLanguage), sourceLanguage);
                 while (text.Contains(Environment.NewLine + Environment.NewLine))
                     text = text.Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
                 text = text.Replace(Environment.NewLine, "\n");
                 input.Append(text);
             }
+
             // https://translate.google.com/?hl=en&eotf=1&sl=en&tl=da&q=How%20are%20you
             // or perhaps https://translate.google.com/#view=home&op=translate&sl=da&tl=en&text=Surkål
-            //string uri = $"{baseUrl}/?hl=en&eotf=1&sl={sourceLanguage}&tl={targetLanguage}&q={input.ToString()}";
-            //log.AppendLine("GET Request: " + uri + Environment.NewLine);
-            //_loaded = false;
-            //_webView.Source = null;
-            //_translateResult = null;
-            //_webView.Navigate(new Uri(uri));
 
             _loaded = false;
             var uri = new Uri(_googleUrl + "/#view=home&op=translate&sl=" + sourceLanguage + "&tl=" + targetLanguage + "&text=" + Uri.EscapeDataString(input.ToString()));
             _webView.Navigate(uri);
-            _log.AppendLine("Navigate to: " + uri.ToString());
-            
-            //var encodedText = HttpUtility.JavaScriptStringEncode(input.ToString().Trim());
-            //string functionString = $"document.getElementById('source').innerText = '{encodedText}';";
-            //_webView.InvokeScript("eval", functionString);
+            _log.AppendLine("Navigate to: " + uri);
+
             for (int i = 0; i < 100; i++)
             {
-                System.Windows.Forms.Application.DoEvents();
+                Application.DoEvents();
                 System.Threading.Thread.Sleep(10);
                 if (_loaded)
                     break;
@@ -236,13 +228,69 @@ namespace WebViewTranslate.Translator
                 if (!_loaded)
                 {
                     System.Threading.Thread.Sleep(10);
-                    System.Windows.Forms.Application.DoEvents();
+                    Application.DoEvents();
                 }
             }
 
             try
             {
-                _translateResult = _webView.InvokeScript("eval", "document.getElementsByClassName('tlid-translation translation')[0].innerText");
+                Application.DoEvents();
+                System.Threading.Thread.Sleep(10);
+                Application.DoEvents();
+
+                var doc = _webView.InvokeScript("eval", "document.innerHTML");
+
+                var error = false;
+
+                try
+                {
+                    _translateResult = _webView.InvokeScript("eval", $"document.querySelectorAll(\"[lang='{targetLanguage}']\")[0].innerText");
+                }
+                catch
+                {
+                    // ignore                        
+                    error = true;
+                }
+                
+
+                if (error)
+                {
+                    try
+                    {
+                        _translateResult = _webView.InvokeScript("eval", "document.getElementsByClassName('tlid-copy-target')[0].innerText");
+                        error = false;
+                    }
+                    catch
+                    {
+                        // ignore                        
+                    }
+                }
+
+                if (error)
+                {
+                    try
+                    {
+                        _translateResult = _webView.InvokeScript("eval", "document.getElementsByClassName('result')[0].innerText");
+                        error = false;
+                    }
+                    catch
+                    {
+                        // ignore                        
+                    }
+                }
+
+                if (error)
+                {
+                    try
+                    {
+                        _translateResult = _webView.InvokeScript("eval", $"document.querySelectorAll(\"[data-language='{targetLanguage}']\")[0].innerText");
+                    }
+                    catch
+                    {
+                        // ignore                        
+                    }
+                }
+
                 if (_translateResult == _lastTranslateResult)
                 {
                     _lastTranslateResult = null;
@@ -250,7 +298,9 @@ namespace WebViewTranslate.Translator
                 }
 
                 if (string.IsNullOrEmpty(_translateResult))
+                {
                     return null;
+                }
 
                 _lastTranslateResult = _translateResult;
                 var list = MakeList(_translateResult, targetLanguage, _formattings);
@@ -264,12 +314,14 @@ namespace WebViewTranslate.Translator
                 {
                     var splitList = SplitMergedLines(list, paragraphs);
                     if (splitList.Count == paragraphs.Count)
+                    {
                         return splitList;
+                    }
                 }
 
                 return list;
             }
-            catch (Exception)
+            catch
             {
                 return null;
             }
@@ -283,7 +335,7 @@ namespace WebViewTranslate.Translator
             var sb = new StringBuilder();
             foreach (var l in res.SplitToLines())
             {
-                if (string.IsNullOrEmpty(l))
+                if (l.Trim() == "_")
                 {
                     if (sb.Length > 0)
                         lines.Add(sb.ToString().Trim());
@@ -295,7 +347,9 @@ namespace WebViewTranslate.Translator
                 }
             }
             if (sb.Length > 0)
+            {
                 lines.Add(sb.ToString().Trim());
+            }
 
             var resultList = new List<string>();
             for (var index = 0; index < lines.Count; index++)

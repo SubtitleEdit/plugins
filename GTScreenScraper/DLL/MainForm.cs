@@ -167,7 +167,7 @@ namespace WebViewTranslate
                         result = translator.GetTranslationResult(target, sourceParagraphs);
                         Application.DoEvents();
                         var seconds = (DateTime.UtcNow - T).TotalSeconds;
-                        if (seconds > 15 || _abort)
+                        if (seconds > 15 && (result == null || result.Count < sourceParagraphs.Count) || _abort)
                         {
                             log.AppendLine("No response from webview!" + Environment.NewLine);
                             result = new List<string>();

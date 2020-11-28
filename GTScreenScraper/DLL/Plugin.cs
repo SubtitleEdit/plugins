@@ -8,35 +8,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class GTScreenScraper : IPlugin // dll file name must "<classname>.dll" - e.g. "Haxor.dll"
     {
-        string IPlugin.Name
-        {
-            get { return "GT Screen-Scraper"; }
-        }
+        string IPlugin.Name => "GT Screen-Scraper";
 
-        string IPlugin.Text
-        {
-            get { return "Translate with Google screen-scraping..."; } // text in menu
-        }
+        string IPlugin.Text => "Translate with Google screen-scraping...";
 
-        decimal IPlugin.Version
-        {
-            get { return 0.9M; }
-        }
+        decimal IPlugin.Version => 1.0m;
 
-        string IPlugin.Description
-        {
-            get { return "GT screen-scraper: .net 4.6.2+ and Win10/April-2018"; }
-        }
+        string IPlugin.Description => "GT screen-scraper: .net 4.6.2+ and Win10/April-2018";
 
-        string IPlugin.ActionType // Can be one of these: file, tool, sync, translate, spellcheck
-        {
-            get { return "translate"; }
-        }
+        // Can be one of these: file, tool, sync, translate, spellcheck
+        string IPlugin.ActionType => "translate";
 
-        string IPlugin.Shortcut
-        {
-            get { return string.Empty; }
-        }
+        string IPlugin.Shortcut => string.Empty;
 
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
@@ -53,7 +36,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             var list = new List<string>();
             foreach (string line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
+            {
                 list.Add(line);
+            }
 
             var sub = new Subtitle();
             var srt = new SubRip();
@@ -61,7 +46,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             using (var form = new MainForm(sub, (this as IPlugin).Text, (this as IPlugin).Description, parentForm))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
+                {
                     return form.FixedSubtitle;
+                }
             }
             return string.Empty;
         }
