@@ -238,26 +238,53 @@ namespace WebViewTranslate.Translator
                 System.Threading.Thread.Sleep(10);
                 Application.DoEvents();
 
-                var doc = _webView.InvokeScript("eval", "document.innerHTML");
-
                 var error = false;
 
                 try
                 {
-                    _translateResult = _webView.InvokeScript("eval", $"document.querySelectorAll(\"[lang='{targetLanguage}']\")[0].innerText");
+                    _translateResult = _webView.InvokeScript("eval", $"document.getElementsByClassName('J0lOec')[0].innerText");
+                    _log.AppendLine($"Got text from target via 'J0lOec' class: {_translateResult}");
                 }
                 catch
                 {
                     // ignore                        
                     error = true;
                 }
-                
+
+                if (error)
+                {
+                    try
+                    {
+                        _translateResult = _webView.InvokeScript("eval", $"document.querySelectorAll(\"[data-result-index='0']\")[0].firstChild.innerText");
+                        _log.AppendLine($"Got text from target via querySelectorAll for data-result-index='0': {_translateResult}");
+                    }
+                    catch
+                    {
+                        // ignore                        
+                        error = true;
+                    }
+                }
+
+                if (error)
+                {
+                    try
+                    {
+                        _translateResult = _webView.InvokeScript("eval", $"document.querySelectorAll(\"[data-language='{targetLanguage}']\")[0].innerText");
+                        _log.AppendLine($"Got text from target via querySelectorAll for data-language {targetLanguage}: {_translateResult}");
+                    }
+                    catch
+                    {
+                        // ignore                        
+                    }
+                }
+
 
                 if (error)
                 {
                     try
                     {
                         _translateResult = _webView.InvokeScript("eval", "document.getElementsByClassName('tlid-copy-target')[0].innerText");
+                        _log.AppendLine($"Got text from target via 'tlid-copy-target' class: {_translateResult}");
                         error = false;
                     }
                     catch
@@ -271,19 +298,8 @@ namespace WebViewTranslate.Translator
                     try
                     {
                         _translateResult = _webView.InvokeScript("eval", "document.getElementsByClassName('result')[0].innerText");
+                        _log.AppendLine($"Got text from target via 'result' class: {_translateResult}");
                         error = false;
-                    }
-                    catch
-                    {
-                        // ignore                        
-                    }
-                }
-
-                if (error)
-                {
-                    try
-                    {
-                        _translateResult = _webView.InvokeScript("eval", $"document.querySelectorAll(\"[data-language='{targetLanguage}']\")[0].innerText");
                     }
                     catch
                     {
