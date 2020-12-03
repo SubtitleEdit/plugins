@@ -223,6 +223,10 @@ namespace WebViewTranslate.Translator
 
         public List<string> GetTranslationResult(string targetLanguage, List<Paragraph> paragraphs)
         {
+            Application.DoEvents();
+            System.Threading.Thread.Sleep(10);
+            Application.DoEvents();
+
             for (int i = 0; i < 100; i++)
             {
                 if (!_loaded)
@@ -234,10 +238,6 @@ namespace WebViewTranslate.Translator
 
             try
             {
-                Application.DoEvents();
-                System.Threading.Thread.Sleep(10);
-                Application.DoEvents();
-
                 var error = false;
 
                 try
@@ -257,11 +257,11 @@ namespace WebViewTranslate.Translator
                     {
                         _translateResult = _webView.InvokeScript("eval", $"document.querySelectorAll(\"[data-result-index='0']\")[0].firstChild.innerText");
                         _log.AppendLine($"Got text from target via querySelectorAll for data-result-index='0': {_translateResult}");
+                        error = false;
                     }
                     catch
                     {
                         // ignore                        
-                        error = true;
                     }
                 }
 
@@ -271,6 +271,7 @@ namespace WebViewTranslate.Translator
                     {
                         _translateResult = _webView.InvokeScript("eval", $"document.querySelectorAll(\"[data-language='{targetLanguage}']\")[0].innerText");
                         _log.AppendLine($"Got text from target via querySelectorAll for data-language {targetLanguage}: {_translateResult}");
+                        error = false;
                     }
                     catch
                     {
@@ -307,9 +308,16 @@ namespace WebViewTranslate.Translator
                     }
                 }
 
+                if (error)
+                {
+                    _lastTranslateResult = null;
+                    return null;
+                }
+
                 if (_translateResult == _lastTranslateResult)
                 {
                     _lastTranslateResult = null;
+                    _lastTranslateResult = Guid.NewGuid().ToString();
                     return null;
                 }
 
@@ -371,6 +379,16 @@ namespace WebViewTranslate.Translator
             for (var index = 0; index < lines.Count; index++)
             {
                 var line = lines[index].Trim();
+
+                if (line.Contains("volume_up", StringComparison.Ordinal))
+                {
+                    var idx = line.IndexOf("volume_up", StringComparison.Ordinal);
+                    if (idx >= 0)
+                    {
+                        line = line.Substring(0, idx).TrimEnd();
+                    }
+                }
+
                 var s = WebUtility.HtmlDecode(line);
                 s = s.Replace("<I>", "<i>");
                 s = s.Replace("<I >", "<i>");
