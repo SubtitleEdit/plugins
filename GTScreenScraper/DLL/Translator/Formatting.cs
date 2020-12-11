@@ -16,6 +16,8 @@ namespace WebViewTranslate.Translator
         private bool SquareBrackets { get; set; }
         private bool SquareBracketsUppercase { get; set; }
         private bool PercentageFix { get; set; }
+        private bool SpaceAndPercentageFix { get; set; }
+        private bool SpaceAndElipsisFix { get; set; }
 
         public string SetTagsAndReturnTrimmed(string input, string source)
         {
@@ -98,6 +100,10 @@ namespace WebViewTranslate.Translator
                 }
             }
 
+            SpaceAndPercentageFix = text.Contains("%") && !text.Contains(" %");
+
+            SpaceAndElipsisFix = text.Contains("...") && !text.Contains(" ...");
+
             return text.Trim();
         }
 
@@ -134,6 +140,16 @@ namespace WebViewTranslate.Translator
             else if (Italic)
             {
                 text = "<i>" + text + "</i>";
+            }
+
+            if (SpaceAndElipsisFix)
+            {
+                text = text.Replace(" ...", "...");
+            }
+
+            if (SpaceAndPercentageFix)
+            {
+                text = text.Replace(" %", "%");
             }
 
             if (PercentageFix)

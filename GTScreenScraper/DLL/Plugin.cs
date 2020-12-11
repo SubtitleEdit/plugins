@@ -12,7 +12,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "Translate with Google screen-scraping...";
 
-        decimal IPlugin.Version => 1.02m;
+        decimal IPlugin.Version => 1.03m;
 
         string IPlugin.Description => "GT screen-scraper: .net 4.6.2+ and Win10/April-2018";
 
