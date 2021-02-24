@@ -104,6 +104,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VobSubTimestamps", "VobSubT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExportAllFormats", "SaveAllFormat\ExportAllFormats.csproj", "{143A1481-B4EE-4AA3-8E5E-AF1712477F57}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorToDialog", "ColorToDialog\DLL\ColorToDialog.csproj", "{DA6258BB-E5E6-4175-80F3-AB9815682F86}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Plugin-Shared\Plugin-Shared.projitems*{143a1481-b4ee-4aa3-8e5e-af1712477f57}*SharedItemsImports = 4
@@ -296,6 +298,10 @@ Global
 		{143A1481-B4EE-4AA3-8E5E-AF1712477F57}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{143A1481-B4EE-4AA3-8E5E-AF1712477F57}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{143A1481-B4EE-4AA3-8E5E-AF1712477F57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA6258BB-E5E6-4175-80F3-AB9815682F86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA6258BB-E5E6-4175-80F3-AB9815682F86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA6258BB-E5E6-4175-80F3-AB9815682F86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA6258BB-E5E6-4175-80F3-AB9815682F86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -344,6 +350,7 @@ Global
 		{FED0E724-A2AA-4B46-B20E-F1376A191E89} = {21BBD88D-F935-419F-A68B-E8DA9F08E9C1}
 		{FEC6B212-95C0-42F5-8F69-7E73CB3A0CA6} = {E7926C2E-EAD5-4CDC-944B-84C38DE3BF8C}
 		{143A1481-B4EE-4AA3-8E5E-AF1712477F57} = {21BBD88D-F935-419F-A68B-E8DA9F08E9C1}
+		{DA6258BB-E5E6-4175-80F3-AB9815682F86} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8BBF401C-6D00-4F22-BFC0-DE2673213D5B}
