@@ -52,7 +52,7 @@
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(15, 40);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(876, 479);
+            this.listView1.Size = new System.Drawing.Size(939, 479);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -76,7 +76,7 @@
             // buttonOk
             // 
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOk.Location = new System.Drawing.Point(735, 525);
+            this.buttonOk.Location = new System.Drawing.Point(798, 525);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 7;
@@ -88,7 +88,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(816, 525);
+            this.buttonCancel.Location = new System.Drawing.Point(879, 525);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 8;
@@ -120,7 +120,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(903, 556);
+            this.ClientSize = new System.Drawing.Size(966, 556);
             this.Controls.Add(this.comboBoxDash);
             this.Controls.Add(this.labelDialogDash);
             this.Controls.Add(this.buttonCancel);

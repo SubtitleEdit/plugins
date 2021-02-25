@@ -34,6 +34,7 @@ namespace ColorToDialog
             comboBoxDash.Text = "- ";
             RestoreSettings();
             GeneratePreview();
+            listView1_Resize(null, null);
         }
 
         public sealed override string Text
@@ -62,7 +63,7 @@ namespace ColorToDialog
                         var after = GetFixedText(p.Text);
                         if (after != p.Text)
                         {
-                            AddToListView(p, p.Text, after);
+                            AddToListView(p, after);
                             p.Text = after.Trim();
                         }
                     }
@@ -147,6 +148,11 @@ namespace ColorToDialog
                 resultString = resultString.Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
             }
 
+            while (resultString.Contains("-  "))
+            {
+                resultString = resultString.Replace("-  ", "- ");
+            }
+
             return resultString;
         }
 
@@ -158,7 +164,7 @@ namespace ColorToDialog
                 return _dash + s;
             }
 
-            var idx = s.LastIndexOf(Environment.NewLine);
+            var idx = s.LastIndexOf(Environment.NewLine, StringComparison.Ordinal);
             if (idx >= 0)
             {
                 s = s.Insert(idx + Environment.NewLine.Length, _dash);
@@ -207,7 +213,7 @@ namespace ColorToDialog
             return defaultColor;
         }
 
-        private void AddToListView(Paragraph p, string before, string after)
+        private void AddToListView(Paragraph p, string after)
         {
             var item = new ListViewItem(p.Number.ToString(CultureInfo.InvariantCulture)) { Tag = p };
             item.SubItems.Add(p.Text.Replace(Environment.NewLine, "<br />"));
@@ -224,7 +230,7 @@ namespace ColorToDialog
 
         private void listView1_Resize(object sender, EventArgs e)
         {
-            var size = (listView1.Width - listView1.Columns[0].Width) >> 2;
+            var size = listView1.Width / 2 - 10;
             listView1.Columns[1].Width = size;
             listView1.Columns[2].Width = -2;
         }
@@ -260,13 +266,13 @@ namespace ColorToDialog
             }
             catch
             {
-                comboBoxDash.Text = "-";
+                comboBoxDash.Text = "- ";
             }
         }
 
         private void SaveSettings()
         {
-            string fileName = GetSettingsFileName();
+            var fileName = GetSettingsFileName();
             try
             {
                 var doc = new XmlDocument();
