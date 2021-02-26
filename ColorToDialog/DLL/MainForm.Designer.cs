@@ -106,10 +106,14 @@
             // 
             // comboBoxDash
             // 
+            this.comboBoxDash.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxDash.FormattingEnabled = true;
+            this.comboBoxDash.Items.AddRange(new object[] {
+            "Dash on all lines, with space",
+            "Dash on all lines, without space"});
             this.comboBoxDash.Location = new System.Drawing.Point(84, 12);
             this.comboBoxDash.Name = "comboBoxDash";
-            this.comboBoxDash.Size = new System.Drawing.Size(112, 21);
+            this.comboBoxDash.Size = new System.Drawing.Size(226, 21);
             this.comboBoxDash.TabIndex = 1;
             this.comboBoxDash.SelectedIndexChanged += new System.EventHandler(this.comboBoxDash_SelectedIndexChanged);
             this.comboBoxDash.TextChanged += new System.EventHandler(this.comboBoxDash_TextChanged);

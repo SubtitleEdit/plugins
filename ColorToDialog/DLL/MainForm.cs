@@ -31,7 +31,7 @@ namespace ColorToDialog
             _subtitle = sub;
             _subtitleOriginal = new Subtitle(sub);
             _dash = "- ";
-            comboBoxDash.Text = "- ";
+            comboBoxDash.SelectedIndex = 0;
             RestoreSettings();
             GeneratePreview();
             listView1_Resize(null, null);
@@ -45,7 +45,7 @@ namespace ColorToDialog
 
         private void GeneratePreview()
         {
-            var dash = comboBoxDash.Text;
+            var dash = _dash;
             if (_subtitle == null || string.IsNullOrEmpty(dash))
             {
                 return;
@@ -177,6 +177,12 @@ namespace ColorToDialog
         {
             string s = text.TrimEnd();
             int start = s.IndexOf("<font ", StringComparison.OrdinalIgnoreCase);
+            var endFont = s.IndexOf("</font>", StringComparison.OrdinalIgnoreCase);
+            if (endFont > 0)
+            {
+                s = s.Substring(0, endFont + "</font>".Length);
+            }
+
             if (start >= 0 && s.EndsWith("</font>", StringComparison.OrdinalIgnoreCase))
             {
                 int end = s.IndexOf('>', start);
@@ -262,11 +268,19 @@ namespace ColorToDialog
                 var doc = new XmlDocument();
                 doc.Load(fileName);
                 _dash = doc.DocumentElement.SelectSingleNode("Dash").InnerText;
-                comboBoxDash.Text = _dash;
+                if (_dash == "-")
+                {
+                    comboBoxDash.SelectedIndex = 1;
+                }
+                else
+                {
+                    comboBoxDash.SelectedIndex = 0;
+                }
             }
             catch
             {
-                comboBoxDash.Text = "- ";
+                comboBoxDash.SelectedIndex = 0;
+                _dash = "- ";
             }
         }
 
@@ -307,6 +321,15 @@ namespace ColorToDialog
 
         private void comboBoxDash_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (comboBoxDash.SelectedIndex == 1)
+            {
+                _dash = "-";
+            }
+            else
+            {
+                _dash = "- ";
+            }
+
             GeneratePreview();
         }
 

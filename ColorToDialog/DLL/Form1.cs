@@ -14,7 +14,7 @@ namespace ColorToDialog
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var fileName = @"C:\Users\WinX\Desktop\auto-br\Peta\The Amazing Race Australia 5x08-TENRip-PG-raw-coloured.srt";
+            var fileName = @"J:\Data\Subtitles\ts\Peta\a.srt";
             var text = System.IO.File.ReadAllText(fileName);
             var sub = new Subtitle();
             var srt = new SubRip();
