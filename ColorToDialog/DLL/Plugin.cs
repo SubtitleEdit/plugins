@@ -12,7 +12,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "Change different colors to dialogs";
 
-        decimal IPlugin.Version => 0.3m;
+        decimal IPlugin.Version => 0.4m;
 
         string IPlugin.Description => "Change different colors to dialogs";
 
@@ -26,8 +26,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             subtitle = subtitle.Trim();
             if (string.IsNullOrEmpty(subtitle))
             {
-                MessageBox.Show("No subtitle loaded", parentForm.Text,
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("No subtitle loaded", parentForm.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return string.Empty;
             }
 
@@ -37,7 +36,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
 
             var list = new List<string>();
-            foreach (string line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
+            foreach (var line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
             {
                 list.Add(line);
             }

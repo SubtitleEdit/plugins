@@ -1,5 +1,6 @@
 ﻿using ColorToDialog.Logic;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -16,6 +17,8 @@ namespace ColorToDialog
         private Subtitle _subtitle;
         private string _dash;
         private readonly Subtitle _subtitleOriginal;
+        private bool _trackTextChange;
+        private Dictionary<int, string> _changedTexts;
 
         public string FixedSubtitle { get; private set; }
 
@@ -28,6 +31,7 @@ namespace ColorToDialog
             : this()
         {
             Text = title;
+            _changedTexts = new Dictionary<int, string>();
             _subtitle = sub;
             _subtitleOriginal = new Subtitle(sub);
             _dash = "- ";
@@ -39,8 +43,8 @@ namespace ColorToDialog
 
         public sealed override string Text
         {
-            get { return base.Text; }
-            set { base.Text = value; }
+            get => base.Text;
+            set => base.Text = value;
         }
 
         private void GeneratePreview()
@@ -54,13 +58,18 @@ namespace ColorToDialog
             _dash = dash;
             try
             {
+                listView1.Items.Clear();
                 _subtitle = new Subtitle(_subtitleOriginal);
                 for (var index = 0; index < _subtitleOriginal.Paragraphs.Count; index++)
                 {
-                    var p = _subtitleOriginal.Paragraphs[index];
+                    var p = _subtitle.Paragraphs[index];
                     if (p.Text.Contains("<font ", StringComparison.OrdinalIgnoreCase))
                     {
                         var after = GetFixedText(p.Text);
+                        if (_changedTexts.ContainsKey(index))
+                        {
+                            after = _changedTexts[index]; // use changed text
+                        }
                         if (after != p.Text)
                         {
                             AddToListView(p, after);
@@ -129,12 +138,21 @@ namespace ColorToDialog
                         currentColor = Color.White;
                     }
 
-                    if (result.Length > 0 && (currentColor.R != lastColor.R || currentColor.G != lastColor.G || currentColor.B != lastColor.B))
+                    if (result.Length + sb.Length > 0 && (currentColor.R != lastColor.R || currentColor.G != lastColor.G || currentColor.B != lastColor.B))
                     {
-                        var newText = AddStartDash(result.ToString());
-                        result = new StringBuilder(newText.TrimEnd() + Environment.NewLine);
-                        sb.AppendLine();
-                        sb.Append(_dash);
+                        if (result.Length > 0)
+                        {
+                            var newText = AddStartDash(result.ToString());
+                            result = new StringBuilder(newText.TrimEnd() + Environment.NewLine);
+                            sb.AppendLine();
+                            sb.Append(_dash);
+                        }
+                        else
+                        {
+                            result.AppendLine(AddStartDash(sb.ToString()));
+                            sb.Clear();
+                            sb.Append(_dash);
+                        }
                     }
                     sb.Append(text[i]);
                     i++;
@@ -336,6 +354,45 @@ namespace ColorToDialog
         private void comboBoxDash_TextChanged(object sender, EventArgs e)
         {
             GeneratePreview();
+        }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count <= 0)
+            {
+                _trackTextChange = false;
+                textBox1.Text = string.Empty;
+                textBox1.Enabled = false;
+                return;
+            }
+
+            _trackTextChange = false;
+            textBox1.Enabled = true;
+            var idx = listView1.SelectedItems[0].Index;
+            var p = (Paragraph) listView1.Items[idx].Tag;
+            textBox1.Text = p.Text;
+            _trackTextChange = true;
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            if (!_trackTextChange || listView1.SelectedItems.Count <= 0)
+            {
+                return;
+            }
+
+            var idx = listView1.SelectedItems[0].Index;
+            var p = (Paragraph)listView1.Items[idx].Tag;
+            p.Text = textBox1.Text;
+            var pIdx = _subtitle.Paragraphs.IndexOf(p);
+            if (_changedTexts.ContainsKey(pIdx))
+            {
+                _changedTexts[pIdx] = textBox1.Text;
+            }
+            else
+            {
+                _changedTexts.Add(pIdx, textBox1.Text);
+            }
         }
     }
 }

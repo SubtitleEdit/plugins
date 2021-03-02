@@ -36,6 +36,8 @@
             this.buttonCancel = new System.Windows.Forms.Button();
             this.labelDialogDash = new System.Windows.Forms.Label();
             this.comboBoxDash = new System.Windows.Forms.ComboBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.labelTextAfter = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // listView1
@@ -52,10 +54,11 @@
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(15, 40);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(939, 479);
+            this.listView1.Size = new System.Drawing.Size(939, 393);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
+            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             this.listView1.Resize += new System.EventHandler(this.listView1_Resize);
             // 
             // columnHeaderNumber
@@ -118,6 +121,26 @@
             this.comboBoxDash.SelectedIndexChanged += new System.EventHandler(this.comboBoxDash_SelectedIndexChanged);
             this.comboBoxDash.TextChanged += new System.EventHandler(this.comboBoxDash_TextChanged);
             // 
+            // textBox1
+            // 
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.textBox1.Location = new System.Drawing.Point(15, 472);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(532, 69);
+            this.textBox1.TabIndex = 9;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            // 
+            // labelTextAfter
+            // 
+            this.labelTextAfter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.labelTextAfter.AutoSize = true;
+            this.labelTextAfter.Location = new System.Drawing.Point(15, 453);
+            this.labelTextAfter.Name = "labelTextAfter";
+            this.labelTextAfter.Size = new System.Drawing.Size(52, 13);
+            this.labelTextAfter.TabIndex = 10;
+            this.labelTextAfter.Text = "Text after";
+            // 
             // MainForm
             // 
             this.AcceptButton = this.buttonOk;
@@ -125,6 +148,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(966, 556);
+            this.Controls.Add(this.labelTextAfter);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.comboBoxDash);
             this.Controls.Add(this.labelDialogDash);
             this.Controls.Add(this.buttonCancel);
@@ -157,5 +182,7 @@
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Label labelDialogDash;
         private System.Windows.Forms.ComboBox comboBoxDash;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label labelTextAfter;
     }
 }
