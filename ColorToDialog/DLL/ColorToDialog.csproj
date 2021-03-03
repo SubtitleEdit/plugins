@@ -62,6 +62,7 @@
     </Compile>
     <Compile Include="IPlugin.cs" />
     <Compile Include="Logic\Configuration.cs" />
+    <Compile Include="Logic\DashAdder.cs" />
     <Compile Include="Logic\Formatting.cs" />
     <Compile Include="Logic\HtmlUtil.cs" />
     <Compile Include="Logic\Json.cs" />

@@ -14,7 +14,7 @@ namespace ColorToDialog
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var fileName = @"J:\Data\Subtitles\ts\Peta\a.srt";
+            var fileName = @"C:\Users\WinX\Desktop\auto-br\ts\test for dialogue dashes.srt";
             var text = System.IO.File.ReadAllText(fileName);
             var sub = new Subtitle();
             var srt = new SubRip();
