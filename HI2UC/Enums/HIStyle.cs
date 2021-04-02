@@ -1,6 +1,6 @@
 ﻿namespace Nikse.SubtitleEdit.PluginLogic
 {
-    public enum HIStyle
+    public enum HiStyle
     {
         UpperCase,
         LowerCase,
