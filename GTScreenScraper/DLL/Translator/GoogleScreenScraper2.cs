@@ -240,9 +240,20 @@ namespace WebViewTranslate.Translator
             {
                 var error = false;
 
+                // try to auto accept cookies
                 try
                 {
-                    _translateResult = _webView.InvokeScript("eval", $"document.getElementsByClassName('J0lOec')[0].innerText");
+                    _translateResult = _webView.InvokeScript("eval", "document.getElementsByClassName('VfPpkd-Jh9lGc').click()");
+                }
+                catch
+                {
+                    // ignore                        
+                    error = true;
+                }
+
+                try
+                {
+                    _translateResult = _webView.InvokeScript("eval", "document.getElementsByClassName('J0lOec')[0].innerText");
                     _log.AppendLine($"Got text from target via 'J0lOec' class: {_translateResult}");
                 }
                 catch

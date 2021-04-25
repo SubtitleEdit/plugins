@@ -301,8 +301,15 @@ namespace WebViewTranslate
                 ((ISupportInitialize)_webView).BeginInit();
                 _webView.Dock = DockStyle.None;
                 Controls.Add(_webView);
-                _webView.Visible = false;
+                _webView.IsJavaScriptEnabled = true;
+                _webView.IsScriptNotifyAllowed = true;
+                _webView.IsPrivateNetworkClientServerCapabilityEnabled = true;
+                _webView.IsIndexedDBEnabled = true;
                 ((ISupportInitialize)_webView).EndInit();
+                _webView.Width = listView1.Width;
+                _webView.Height = listView1.Height;
+                _webView.Left = listView1.Left;
+                _webView.Top = listView1.Top;
             }
             try
             {
@@ -329,16 +336,33 @@ namespace WebViewTranslate
             {
                 DialogResult = DialogResult.Cancel;
             }
-            else if (e.KeyCode == Keys.F1)
+            else if (e.KeyCode == Keys.F2)
             {
                 if (textBoxLog.Visible)
                 {
-                    textBoxLog.Visible = false;
+                    if (_webView != null)
+                    {
+                        textBoxLog.Visible = false;
+                        _webView.Visible = true;
+                        listView1.Visible = false;
+                    }
+                    else
+                    {
+                        textBoxLog.Visible = false;
+                        listView1.Visible = true;
+                    }
                 }
-                else
+                else if (listView1.Visible)
                 {
                     textBoxLog.Visible = true;
-                    textBoxLog.BringToFront();
+                    if (_webView != null) _webView.Visible = false;
+                    listView1.Visible = false;
+                }
+                else 
+                {
+                    textBoxLog.Visible = false;
+                    if (_webView != null) _webView.Visible = false;
+                    listView1.Visible = true;
                 }
             }
         }

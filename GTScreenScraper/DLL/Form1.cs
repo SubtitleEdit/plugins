@@ -41,7 +41,7 @@ namespace WebViewTranslate
             };
 
             var sub = new Subtitle();
-            sub.Paragraphs.AddRange(paragraphs);
+            sub.Paragraphs.AddRange(englishParagraphs);
 
             using (var form = new MainForm(sub, "test", "descr", this))
             {
