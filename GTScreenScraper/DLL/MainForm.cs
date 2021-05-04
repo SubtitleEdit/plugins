@@ -96,8 +96,8 @@ namespace WebViewTranslate
 
         public sealed override string Text
         {
-            get { return base.Text; }
-            set { base.Text = value; }
+            get => base.Text;
+            set => base.Text = value;
         }
 
         private void Translate(string source, string target, GoogleScreenScraper2 translator, int maxTextSize, int maximumRequestArrayLength = 100)
@@ -165,6 +165,15 @@ namespace WebViewTranslate
                     while (result == null)
                     {
                         result = translator.GetTranslationResult(target, sourceParagraphs);
+                        if (translator.AcceptCookiePage)
+                        {
+                            translator.AcceptCookiePage = false;
+                            textBoxLog.Visible = false;
+                            _webView.Visible = true;
+                            listView1.Visible = false;
+                            MessageBox.Show("Please accept cookies (you might need to scroll down)");
+                            return;
+                        }
                         Application.DoEvents();
                         var seconds = (DateTime.UtcNow - T).TotalSeconds;
                         if (seconds > 15 && (result == null || result.Count < sourceParagraphs.Count) || _abort)
@@ -289,6 +298,10 @@ namespace WebViewTranslate
 
         private void buttonTranslate_Click(object sender, EventArgs e)
         {
+            textBoxLog.Visible = false;
+            if (_webView != null) _webView.Visible = false;
+            listView1.Visible = true;
+
             _abort = false;
             buttonTranslate.Enabled = false;
             buttonCancelTranslate.Enabled = true;
@@ -310,6 +323,7 @@ namespace WebViewTranslate
                 _webView.Height = listView1.Height;
                 _webView.Left = listView1.Left;
                 _webView.Top = listView1.Top;
+                _webView.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
             }
             try
             {

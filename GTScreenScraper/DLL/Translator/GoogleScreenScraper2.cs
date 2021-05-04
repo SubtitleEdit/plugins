@@ -22,6 +22,8 @@ namespace WebViewTranslate.Translator
         private StringBuilder _log;
         private readonly string _googleUrl;
         private Formatting[] _formattings;
+        
+        public bool AcceptCookiePage { get; set; }
 
         public GoogleScreenScraper2(WebView webView, string googleUrl, string source, string target)
         {
@@ -236,8 +238,17 @@ namespace WebViewTranslate.Translator
                 }
             }
 
+            
+           
             try
             {
+                if (_webView.Source.Host == "consent.google.com")
+                {
+                    AcceptCookiePage = true;
+                    return null;
+                }
+                
+                
                 var error = false;
 
                 // try to auto accept cookies
