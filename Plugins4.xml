@@ -3,7 +3,7 @@
   <SubtitleEditVersion>3.3</SubtitleEditVersion>
   <Plugin>
     <Name>Dialogue one hyphen</Name>
-    <Description>Removes hyphens from second line in dialogues</Description>
+    <Description>Removes hyphens from first line in dialogues</Description>
     <Version>0.7</Version>
     <Date>2018-02-06</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/DiaOneHyphen.zip</Url>
