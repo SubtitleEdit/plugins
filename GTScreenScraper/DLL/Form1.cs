@@ -17,27 +17,17 @@ namespace WebViewTranslate
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var paragraphs = new List<Paragraph>
-            {
-                new Paragraph("Olá.Eu sou Freddie Highmore.", 0, 0),
-                new Paragraph("O episódio a seguir retrata\r\nnossa esperança para o futuro,", 0, 0),
-                new Paragraph("um futuro onde ninguém\r\nterá que usar máscaras", 0, 0),
-                new Paragraph(" ou tome outras medidas\r\npara se proteger do COVID.", 0, 0),
-                new Paragraph("Eu sou Jordan Allen.", 0, 0),
-            };
-
-
             var englishParagraphs = new List<Paragraph>
             {
-                new Paragraph("How are you?\r\nNow now!", 0, 0),
+                new Paragraph("Research & development!", 0, 0),
                 new Paragraph("I'm Fine?", 0, 0),
                 new Paragraph("How nice of you to join us today" + Environment.NewLine +
                               "so we all can work on the project together", 0, 0),
                 new Paragraph("Tuesday", 0, 0),
-                new Paragraph("Wedensday", 0, 0),
+                new Paragraph("Wednesday", 0, 0),
                 new Paragraph("Thursday", 0, 0),
                 new Paragraph("Friday", 0, 0),
-                new Paragraph("Godbye.", 0, 0),
+                new Paragraph("Goodbye.", 0, 0),
             };
 
             var sub = new Subtitle();

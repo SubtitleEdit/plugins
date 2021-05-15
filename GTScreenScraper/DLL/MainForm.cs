@@ -120,23 +120,31 @@ namespace WebViewTranslate
                 int index = startIndex;
                 for (int i = startIndex; i < _subtitleOriginal.Paragraphs.Count; i++)
                 {
-                    Paragraph p = _subtitleOriginal.Paragraphs[i];
+                    var p = _subtitleOriginal.Paragraphs[i];
                     sourceLength += Uri.EscapeDataString(p.Text).Length;
                     if ((sourceLength >= maxTextSize || sourceParagraphs.Count >= maximumRequestArrayLength) && sourceParagraphs.Count > 0)
                     {
                         translator.Translate(source, target, sourceParagraphs, log);
                         List<string> result = null;
-                        var T = DateTime.UtcNow;
+                        var before = DateTime.UtcNow;
+                        int delay = 50;
                         while (result == null)
                         {
                             result = translator.GetTranslationResult(target, sourceParagraphs);
                             Thread.Sleep(10);
                             Application.DoEvents();
-                            var seconds = (DateTime.UtcNow - T).TotalSeconds;
-                            if (seconds > 15 && result == null || _abort)
+                            var seconds = (DateTime.UtcNow - before).TotalSeconds;
+                            if (seconds > 15 || _abort)
                             {
                                 log.AppendLine("No response from webview!" + Environment.NewLine);
                                 result = new List<string>();
+                            }
+                            else if (result == null)
+                            {
+                                Application.DoEvents();
+                                Thread.Sleep(delay);
+                                delay += 50;
+                                Application.DoEvents();
                             }
                         }
 

@@ -22,7 +22,7 @@ namespace WebViewTranslate.Translator
         private StringBuilder _log;
         private readonly string _googleUrl;
         private Formatting[] _formattings;
-        
+
         public bool AcceptCookiePage { get; set; }
 
         public GoogleScreenScraper2(WebView webView, string googleUrl, string source, string target)
@@ -210,7 +210,8 @@ namespace WebViewTranslate.Translator
             // or perhaps https://translate.google.com/#view=home&op=translate&sl=da&tl=en&text=Surkål
 
             _loaded = false;
-            var uri = new Uri(_googleUrl + "/#view=home&op=translate&sl=" + sourceLanguage + "&tl=" + targetLanguage + "&text=" + Uri.EscapeDataString(input.ToString()));
+            var escapedInput = Uri.EscapeDataString(input.ToString());
+            var uri = new Uri(_googleUrl + "/?sl=" + sourceLanguage + "&tl=" + targetLanguage + "&text=" + escapedInput);
             _webView.Navigate(uri);
             _log.AppendLine("Navigate to: " + uri);
 
@@ -238,8 +239,8 @@ namespace WebViewTranslate.Translator
                 }
             }
 
-            
-           
+
+
             try
             {
                 if (_webView.Source.Host == "consent.google.com")
@@ -247,21 +248,8 @@ namespace WebViewTranslate.Translator
                     AcceptCookiePage = true;
                     return null;
                 }
-                
-                
+
                 var error = false;
-
-                // try to auto accept cookies
-                try
-                {
-                    _translateResult = _webView.InvokeScript("eval", "document.getElementsByClassName('VfPpkd-Jh9lGc').click()");
-                }
-                catch
-                {
-                    // ignore                        
-                    error = true;
-                }
-
                 try
                 {
                     _translateResult = _webView.InvokeScript("eval", "document.getElementsByClassName('J0lOec')[0].innerText");
