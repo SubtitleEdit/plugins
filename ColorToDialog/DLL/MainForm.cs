@@ -2,11 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -18,7 +16,7 @@ namespace ColorToDialog
         private string _dash;
         private readonly Subtitle _subtitleOriginal;
         private bool _trackTextChange;
-        private Dictionary<int, string> _changedTexts;
+        private readonly Dictionary<int, string> _changedTexts;
 
         public string FixedSubtitle { get; private set; }
 
@@ -65,7 +63,7 @@ namespace ColorToDialog
                     var p = _subtitle.Paragraphs[index];
                     if (p.Text.Contains("<font ", StringComparison.OrdinalIgnoreCase))
                     {
-                        var after = DashAdder.GetFixedText(p.Text, dash, true);
+                        var after = DashAdder.GetFixedText(p.Text, dash);
                         if (_changedTexts.ContainsKey(index))
                         {
                             after = _changedTexts[index]; // use changed text
@@ -117,9 +115,9 @@ namespace ColorToDialog
             }
         }
 
-        private string GetSettingsFileName()
+        private static string GetSettingsFileName()
         {
-            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
             if (path != null && path.StartsWith("file:\\", StringComparison.Ordinal))
                 path = path.Remove(0, 6);
             path = Path.Combine(path, "Plugins");
@@ -136,14 +134,7 @@ namespace ColorToDialog
                 var doc = new XmlDocument();
                 doc.Load(fileName);
                 _dash = doc.DocumentElement.SelectSingleNode("Dash").InnerText;
-                if (_dash == "-")
-                {
-                    comboBoxDash.SelectedIndex = 1;
-                }
-                else
-                {
-                    comboBoxDash.SelectedIndex = 0;
-                }
+                comboBoxDash.SelectedIndex = _dash == "-" ? 1 : 0;
             }
             catch
             {
@@ -189,15 +180,7 @@ namespace ColorToDialog
 
         private void comboBoxDash_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxDash.SelectedIndex == 1)
-            {
-                _dash = "-";
-            }
-            else
-            {
-                _dash = "- ";
-            }
-
+            _dash = comboBoxDash.SelectedIndex == 1 ? "-" : "- ";
             GeneratePreview();
         }
 
@@ -219,7 +202,7 @@ namespace ColorToDialog
             _trackTextChange = false;
             textBox1.Enabled = true;
             var idx = listView1.SelectedItems[0].Index;
-            var p = (Paragraph) listView1.Items[idx].Tag;
+            var p = (Paragraph)listView1.Items[idx].Tag;
             textBox1.Text = p.Text;
             _trackTextChange = true;
         }

@@ -14,7 +14,7 @@ namespace ColorToDialog
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var fileName = @"C:\Users\WinX\Desktop\auto-br\ts\test for dialogue dashes.srt";
+            var fileName = @"C:\Users\WinX\Desktop\auto-br\plugin\The Unusual Suspects 1x01-coloured raw.srt";
             var text = System.IO.File.ReadAllText(fileName);
             var sub = new Subtitle();
             var srt = new SubRip();

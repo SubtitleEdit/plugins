@@ -12,7 +12,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "Change different colors to dialogs";
 
-        decimal IPlugin.Version => 0.5m;
+        decimal IPlugin.Version => 0.6m;
 
         string IPlugin.Description => "Change different colors to dialogs";
 

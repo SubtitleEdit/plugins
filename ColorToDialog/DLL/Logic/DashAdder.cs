@@ -6,17 +6,17 @@ namespace ColorToDialog.Logic
 {
     public static class DashAdder
     {
-        public static string GetFixedText(string text, string dash, bool removeFontTags)
+        public static string GetFixedText(string text, string dash)
         {
             var result = new StringBuilder();
             var i = 0;
-            var lastColor = Color.White;
             var currentColor = Color.White;
             var noColorOn = false;
-            bool waitingForFirstNoColorNoWhitespaceChar = true;
+            var waitingForFirstNoColorNoWhitespaceChar = true;
             while (i < text.Length)
             {
                 var s = text.Substring(i);
+                Color lastColor;
                 if (s.StartsWith("<font ", StringComparison.OrdinalIgnoreCase))
                 {
                     noColorOn = false;
@@ -32,7 +32,6 @@ namespace ColorToDialog.Logic
                         var newText = AddStartDash(result.ToString(), dash);
                         result = new StringBuilder(newText.TrimEnd() + Environment.NewLine);
                         result.Append(dash);
-                        lastColor = currentColor;
                     }
                     var len = s.IndexOf('>');
                     if (len < 0)
@@ -99,26 +98,26 @@ namespace ColorToDialog.Logic
             }
 
             var idx = s.LastIndexOf(Environment.NewLine, StringComparison.Ordinal);
-            if (idx >= 0)
+            if (idx < 0)
             {
-                var before = s.Substring(0, idx);
-                var after = s.Substring(idx + Environment.NewLine.Length);
-                if (before.TrimEnd('"').EndsWith(".") || before.TrimEnd('"').EndsWith("!") || before.TrimEnd('"').EndsWith("?"))
-                {
-                    if (after.StartsWith("-"))
-                    {
-                        return s;
-                    }
-
-                    return before + Environment.NewLine + dash + after;
-                }
-
-                if (!s.StartsWith("-"))
-                {
-                    return dash + s;
-                }
-
                 return s;
+            }
+
+            var before = s.Substring(0, idx);
+            var after = s.Substring(idx + Environment.NewLine.Length);
+            if (before.TrimEnd('"').EndsWith(".") || before.TrimEnd('"').EndsWith("!") || before.TrimEnd('"').EndsWith("?"))
+            {
+                if (after.StartsWith("-"))
+                {
+                    return s;
+                }
+
+                return before + Environment.NewLine + dash + after;
+            }
+
+            if (!s.StartsWith('-'))
+            {
+                return dash + s;
             }
 
             return s;
@@ -126,44 +125,50 @@ namespace ColorToDialog.Logic
 
         private static Color GetColorFromFontString(string text, Color defaultColor)
         {
-            string s = text.TrimEnd();
-            int start = s.IndexOf("<font ", StringComparison.OrdinalIgnoreCase);
+            var s = text.TrimEnd();
+            var start = s.IndexOf("<font ", StringComparison.OrdinalIgnoreCase);
             var endFont = s.IndexOf("</font>", StringComparison.OrdinalIgnoreCase);
             if (endFont > 0)
             {
                 s = s.Substring(0, endFont + "</font>".Length);
             }
 
-            if (start >= 0 && s.EndsWith("</font>", StringComparison.OrdinalIgnoreCase))
+            if (start < 0 || !s.EndsWith("</font>", StringComparison.OrdinalIgnoreCase))
             {
-                int end = s.IndexOf('>', start);
-                if (end > 0)
+                return defaultColor;
+            }
+
+            s = s.Replace("color  =", "color=");
+            s = s.Replace("color =", "color=");
+            s = s.Replace("color=", "color= ");
+            int end = s.IndexOf('>', start);
+            if (end > 0)
+            {
+                var f = s.Substring(start, end - start);
+                if (f.Contains(" color=", StringComparison.OrdinalIgnoreCase))
                 {
-                    string f = s.Substring(start, end - start);
-                    if (f.Contains(" color=", StringComparison.OrdinalIgnoreCase))
+                    var colorStart = f.IndexOf(" color=", StringComparison.OrdinalIgnoreCase);
+                    if (s.IndexOf('"', colorStart + " color=".Length + 1) > 0)
                     {
-                        int colorStart = f.IndexOf(" color=", StringComparison.OrdinalIgnoreCase);
-                        if (s.IndexOf('"', colorStart + " color=".Length + 1) > 0)
+                        end = s.IndexOf('"', colorStart + " color=".Length + 1);
+                    }
+
+                    s = s.Substring(colorStart, end - colorStart);
+                    s = s.Replace(" color=", string.Empty);
+                    s = s.Trim('\'').Trim('"').Trim('\'');
+                    try
+                    {
+                        if (s.StartsWith("rgb(", StringComparison.OrdinalIgnoreCase))
                         {
-                            end = s.IndexOf('"', colorStart + " color=".Length + 1);
+                            var arr = s.Remove(0, 4).TrimEnd(')').Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                            return Color.FromArgb(int.Parse(arr[0]), int.Parse(arr[1]), int.Parse(arr[2]));
                         }
 
-                        s = s.Substring(colorStart, end - colorStart);
-                        s = s.Replace(" color=", string.Empty);
-                        s = s.Trim('\'').Trim('"').Trim('\'');
-                        try
-                        {
-                            if (s.StartsWith("rgb(", StringComparison.OrdinalIgnoreCase))
-                            {
-                                var arr = s.Remove(0, 4).TrimEnd(')').Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                                return Color.FromArgb(int.Parse(arr[0]), int.Parse(arr[1]), int.Parse(arr[2]));
-                            }
-                            return ColorTranslator.FromHtml(s);
-                        }
-                        catch
-                        {
-                            return defaultColor;
-                        }
+                        return ColorTranslator.FromHtml(s.Trim());
+                    }
+                    catch
+                    {
+                        return defaultColor;
                     }
                 }
             }

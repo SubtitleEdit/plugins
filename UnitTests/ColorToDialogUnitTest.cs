@@ -11,7 +11,7 @@ namespace UnitTests
         public void TestDialog1()
         {
             var result = DashAdder.GetFixedText("<font color=\"#ffff00\">That was really delicious.</font>" + Environment.NewLine +
-                                   "I know.", "- ", true);
+                                   "I know.", "- ");
             Assert.AreEqual("- That was really delicious." + Environment.NewLine + "- I know.", result);
         }
 
@@ -19,7 +19,7 @@ namespace UnitTests
         public void TestDialog2()
         {
             var result = DashAdder.GetFixedText("That's it!" + Environment.NewLine +
-                                                "<font color=\"#ffff00\">..sped to victory.</font>", "- ", true);
+                                                "<font color=\"#ffff00\">..sped to victory.</font>", "- ");
             Assert.AreEqual("- That's it!" + Environment.NewLine + "- ..sped to victory.", result);
         }
 
@@ -27,7 +27,7 @@ namespace UnitTests
         public void TestDialog3()
         {
             var result = DashAdder.GetFixedText("<font color=\"#ff0000\">That's it!</font>" + Environment.NewLine +
-                                                "<font color=\"#ffff00\">..sped to victory.</font>", "- ", true);
+                                                "<font color=\"#ffff00\">..sped to victory.</font>", "- ");
             Assert.AreEqual("- That's it!" + Environment.NewLine + "- ..sped to victory.", result);
         }
 
@@ -36,7 +36,7 @@ namespace UnitTests
         {
             var result = DashAdder.GetFixedText("<font color=\"#00ffff\">Got a sinking feeling.</font>" + Environment.NewLine +
                                                 "<font color=\"#00ff00\">\"Evacuate from</font>" + Environment.NewLine +
-                                                "<font color=\"#00ff00\">an underwater chopper.\"</font> ", "- ", true);
+                                                "<font color=\"#00ff00\">an underwater chopper.\"</font> ", "- ");
             Assert.AreEqual("- Got a sinking feeling." + Environment.NewLine + "- \"Evacuate from" + Environment.NewLine + "an underwater chopper.\"", result);
         }
 
@@ -45,7 +45,7 @@ namespace UnitTests
         {
             var result = DashAdder.GetFixedText("<font color=\"#00ffff\">Got a sinking feeling</font>" + Environment.NewLine +
                                                 "<font color=\"#00ffff\">about all of this.</font>" + Environment.NewLine +
-                                                "<font color=\"#00ff00\">Don't worry.</font> ", "- ", true);
+                                                "<font color=\"#00ff00\">Don't worry.</font> ", "- ");
             Assert.AreEqual("- Got a sinking feeling" + Environment.NewLine + "about all of this." + Environment.NewLine + "- Don't worry.", result);
         }
 
@@ -53,7 +53,7 @@ namespace UnitTests
         public void TestNoChange1()
         {
             var result = DashAdder.GetFixedText("<font color=\"#ffff00\">That's it!</font>" + Environment.NewLine +
-                                                "..sped to victory.", "- ", true);
+                                                "..sped to victory.", "- ");
             Assert.AreEqual("- That's it!" + Environment.NewLine + "- ..sped to victory.", result);
         }
 
@@ -61,7 +61,7 @@ namespace UnitTests
         public void TestNoChange2()
         {
             var result = DashAdder.GetFixedText("<font color=\"#ffff00\">- That was really delicious.</font>" + Environment.NewLine +
-                                                "- I know.", "- ", true);
+                                                "- I know.", "- ");
             Assert.AreEqual("- That was really delicious." + Environment.NewLine + "- I know.", result);
         }
 
@@ -69,9 +69,8 @@ namespace UnitTests
         public void TestNoChange3()
         {
             var result = DashAdder.GetFixedText("<font color=\"#ffff00\">That's it!</font>" + Environment.NewLine +
-                                                "<font color=\"#ffff00\">..sped to victory.</font>", "- ", true);
+                                                "<font color=\"#ffff00\">..sped to victory.</font>", "- ");
             Assert.AreEqual("That's it!" + Environment.NewLine + "..sped to victory.", result);
         }
-
     }
 }
