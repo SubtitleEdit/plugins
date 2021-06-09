@@ -80,8 +80,8 @@
   <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetDir)\LinesUnbreaker.dll "%25appdata%25\Subtitle Edit\Plugins\"
-copy $(TargetDir)\LinesUnbreaker.pdb "%25appdata%25\Subtitle Edit\Plugins\"</PostBuildEvent>
+    <PostBuildEvent>copy $(TargetDir)\LinesUnbreaker.dll "%25appdata%25\Subtitle Edit\Plugins\"  || Exit 0
+copy $(TargetDir)\LinesUnbreaker.pdb "%25appdata%25\Subtitle Edit\Plugins\"  || Exit 0</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
