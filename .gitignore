@@ -14,3 +14,7 @@ token.txt
 /src/packages/
 /packages/Microsoft.Toolkit.Forms.UI.Controls.WebView.5.0.1
 packages/
+
+
+# Rider
+*.idea
