@@ -1,0 +1,50 @@
+﻿using SubtitleEdit;
+using System.Windows.Forms;
+using SubtitleEdit.Logic;
+
+namespace Nikse.SubtitleEdit.PluginLogic
+{
+    public class AssaFade : IPlugin // dll file name must "<classname>.dll" - e.g. "Haxor.dll"
+    {
+        string IPlugin.Name => "ASSA Fade";
+
+        string IPlugin.Text => "ASSA Fade...";
+
+        decimal IPlugin.Version => 0.1M;
+
+        string IPlugin.Description => "Fade effect for Advanced Sub Station Alpha";
+
+        // Can be one of these: File, Tool, Sync, Translate, SpellCheck, AssaOverrideTags
+        string IPlugin.ActionType => "AssaOverrideTags";
+
+        string IPlugin.Shortcut => string.Empty;
+
+        string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
+        {
+            subtitle = subtitle.Trim();
+            if (string.IsNullOrEmpty(subtitle))
+            {
+                MessageBox.Show("No subtitle loaded", parentForm.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return string.Empty;
+            }
+
+            if (!string.IsNullOrEmpty(listViewLineSeparatorString))
+            {
+                Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
+            }
+
+            var sub = new Subtitle();
+            var assa = new AdvancedSubStationAlpha();
+            assa.LoadSubtitle(sub, rawText.SplitToLines(), subtitleFileName);
+            using (var form = new MainForm(sub, (this as IPlugin).Text, (this as IPlugin).Description, parentForm))
+            {
+                if (form.ShowDialog(parentForm) == DialogResult.OK)
+                {
+                    return form.FixedSubtitle;
+                }
+            }
+
+            return string.Empty;
+        }
+    }
+}

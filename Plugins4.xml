@@ -1,253 +1,261 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Plugins>
-  <SubtitleEditVersion>3.3</SubtitleEditVersion>
-  <Plugin>
-    <Name>Dialogue one hyphen</Name>
-    <Description>Removes hyphens from first line in dialogues</Description>
-    <Version>0.7</Version>
-    <Date>2018-02-06</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/DiaOneHyphen.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
-    <Name>Hearing Impaired to Uppercase</Name>
-    <Description>Converts text inside "[]" / "()" to Uppercase</Description>
-    <Version>4.1</Version>
-    <Date>2019-07-18</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/HI2UC.zip</Url>
-    <Author>ivandrofly</Author>
-  </Plugin>
-  <Plugin>
-    <Name>Lines Unbreaker</Name>
-    <Description>Helps unbreaking unnecessary short lines break</Description>
-    <Version>2.3</Version>
-    <Date>2019-07-09</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/LinesUnbreaker.zip</Url>
-    <Author>ivandrofly</Author>
-  </Plugin>
-  <Plugin>
-    <Name>Load from Dropbox</Name>
-    <Description>Load subtitles from Dropbox</Description>
-    <Version>1.6</Version>
-    <Date>2020-10-22</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/SeDropBoxLoad13.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
-    <Name>Save to Dropbox</Name>
-    <Description>Save subtitles to Dropbox</Description>
-    <Version>1.6</Version>
-    <Date>2020-10-22</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/SeDropBoxSave14.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
-    <Name>Yandex Translate</Name>
-    <Description>Translate with Yandex</Description>
-    <Version>0.3</Version>
-    <Date>2018-03-17</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/YandexTranslate.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
-    <Name>GT Screen-Scraper</Name>
-    <Description>GT screen-scraper: Requires Edge and .net 4.6.2+</Description>
-    <Version>1.06</Version>
-    <Date>2021-05-15</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/GTScreenScraper106.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
-    <Name>BT Screen-Scraper</Name>
-    <Description>BT screen-scraper: Requires .net 4.6.2+</Description>
-    <Version>0.7</Version>
-    <Date>2019-11-13</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/BTScreenScraper.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
-    <Name>DeepL Screen-Scraper translate</Name>
-    <Description>DL screen-scraper translate: Requires .net 4.6.2+</Description>
-    <Version>0.5</Version>
-    <Date>2020-04-26</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/DeepLScreenScraper.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
-    <Name>Copy-Paste Translate</Name>
-    <Description>Translate with 3rd party tool using copy/paste</Description>
-    <Version>0.6</Version>
-    <Date>2019-03-03</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/CopyPasteTranslate.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
-    <Name>PROMPT translate</Name>
-    <Description>Translate with PROMPT</Description>
-    <Version>0.3</Version>
-    <Date>2019-03-03</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/PromptTranslate.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
-    <Name>Haxor</Name>
-    <Description>Translates subtitle to Haxor</Description>
-    <Version>1.5</Version>
-    <Date>2015-09-29</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/Haxor.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
-    <Name>Upload subtitle to OpenSubtitles.org</Name>
-    <Description>Upload a subtitle quickly to OpenSubtitles.Org</Description>
-    <Version>2.0</Version>
-    <Date>2016-01-30</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/OpenSubtitlesUpload.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
-    <Name>Save to  OneDrive</Name>
-    <Description>Upload a subtitle quickly to Microsoft OneDrive</Description>
-    <Version>1.2</Version>
-    <Date>2013-06-01</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/OneDriveSave.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
-    <Name>Load from OneDrive</Name>
-    <Description>Load a subtitle quickly to Microsoft OneDrive</Description>
-    <Version>1.2</Version>
-    <Date>2017-06-01</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/OneDriveLoad.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
-    <Name>Word spell check</Name>
-    <Description>Word spell check (requires Microsoft Word)</Description>
-    <Version>1.7</Version>
-    <Date>2020-10-18</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/WordSpellCheck.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
-    <Name>Dialogue AutoMarker</Name>
-    <Description>Helps find and format dialogue</Description>
-    <Version>0.1</Version>
-    <Date>2014-02-04</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/DialogueAutoMarker.zip</Url>
-    <Author>ivandrofly</Author>
-  </Plugin>
-  <Plugin>
-    <Name>Hearing Impaired Colorer</Name>
-    <Description>Set color for Hearing Impaired annotations</Description>
-    <Version>0.5</Version>
-    <Date>2019-07-09</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/HIColorer.zip</Url>
-    <Author>ivandrofly</Author>
-  </Plugin>
-  <Plugin>
-    <Name>Check Line Width</Name>
-    <Description>Checks maximum line width in pixels</Description>
-    <Version>0.7</Version>
-    <Date>2015-12-13</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/CheckLineWidth.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
-    <Name>American English to British English</Name>
-    <Description>Convert American English to British English</Description>
-    <Version>0.5</Version>
-    <Date>2021-05-04</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/AmericanToBritish.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
-    <Name>Merge two SRT files to one ASS/SSA</Name>
-    <Description>Merge two SRT subtitles to one ASS (eg. for different languages)</Description>
-    <Version>1.1</Version>
-    <Date>2020-04-14</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/MergeTwoSrtToAss.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
-    <Name>Narrator Out Parentheses</Name>
-    <Description>Find and Convert narrator inside ()/[] to: Narrator:</Description>
-    <Version>0.4</Version>
-    <Date>2019-01-09</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/NarratorOutParentheses.zip</Url>
-    <Author>ivandrofly</Author>
-  </Plugin>
-  <Plugin>
-    <Name>Remove Unicode characters</Name>
-    <Description>Remove Unicode characters - or replace them</Description>
-    <Version>0.4</Version>
-    <Date>2016-05-23</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/RemoveUnicodeCharacters.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
-    <Name>Names list manager</Name>
-    <Description>Add/delete names from names list</Description>
-    <Version>1.1</Version>
-    <Date>2017-05-22</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/NameListManager.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
-    <Name>Ispravi.me [Hascheck] spell checker</Name>
-    <Description>Croatian spell checker</Description>
-    <Version>0.6</Version>
-    <Date>2018-03-20</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/Ispravi.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
-    <Name>Baidu Translate</Name>
-    <Description>Translate with Baidu</Description>
-    <Version>0.5</Version>
-    <Date>2019-02-28</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/BaiduTranslate.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
-  <Plugin>
-    <Name>Online casing</Name>
-    <Description>Do casing using TMDB api</Description>
-    <Version>1.4</Version>
-    <Date>2020-08-31</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/OnlineCasing.zip</Url>
-    <Author>ivandrofly</Author>
-  </Plugin>
-  <Plugin>
-    <Name>TightHyphen</Name>
-    <Description>Remove space after hyphen in a dialog</Description>
-    <Version>1.0</Version>
-    <Date>2019-07-12</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/TightHyphen.zip</Url>
-    <Author>ivandrofly</Author>
-    <Element />
-  </Plugin>
-  <Plugin>
-    <Name>Replace VobSub IDX timestamps</Name>
-    <Description>Replace the timestamps in the previously imported VobSub IDX file with the time codes from the current subtitle</Description>
-    <Version>0.1</Version>
-    <Date>2020-01-24</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/VobSubTimestamps.zip</Url>
-    <Author>xylographe</Author>
-  </Plugin>
-  <Plugin>
-    <Name>Export to all formats</Name>
-    <Description>Export current subtitle to all available text format.</Description>
-    <Version>1.1</Version>
-    <Date>2020-08-31</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/ExportAllFormats.zip</Url>
-    <Author>ivandrofly</Author>
-  </Plugin>
-  <Plugin>
-    <Name>ColorToDialog</Name>
-    <Description>Change different colors to dialogs.</Description>
-    <Version>0.6</Version>
-    <Date>2021-06-04</Date>
-    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/ColorToDialog.zip</Url>
-    <Author>Nikse</Author>
-  </Plugin>
+	<SubtitleEditVersion>3.3</SubtitleEditVersion>
+	<Plugin>
+		<Name>Dialogue one hyphen</Name>
+		<Description>Removes hyphens from first line in dialogues</Description>
+		<Version>0.7</Version>
+		<Date>2018-02-06</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/DiaOneHyphen.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
+	<Plugin>
+		<Name>Hearing Impaired to Uppercase</Name>
+		<Description>Converts text inside "[]" / "()" to Uppercase</Description>
+		<Version>4.1</Version>
+		<Date>2019-07-18</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/HI2UC.zip</Url>
+		<Author>ivandrofly</Author>
+	</Plugin>
+	<Plugin>
+		<Name>Lines Unbreaker</Name>
+		<Description>Helps unbreaking unnecessary short lines break</Description>
+		<Version>2.3</Version>
+		<Date>2019-07-09</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/LinesUnbreaker.zip</Url>
+		<Author>ivandrofly</Author>
+	</Plugin>
+	<Plugin>
+		<Name>Load from Dropbox</Name>
+		<Description>Load subtitles from Dropbox</Description>
+		<Version>1.6</Version>
+		<Date>2020-10-22</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/SeDropBoxLoad13.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
+	<Plugin>
+		<Name>Save to Dropbox</Name>
+		<Description>Save subtitles to Dropbox</Description>
+		<Version>1.6</Version>
+		<Date>2020-10-22</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/SeDropBoxSave14.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
+	<Plugin>
+		<Name>Yandex Translate</Name>
+		<Description>Translate with Yandex</Description>
+		<Version>0.3</Version>
+		<Date>2018-03-17</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/YandexTranslate.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
+	<Plugin>
+		<Name>GT Screen-Scraper</Name>
+		<Description>GT screen-scraper: Requires Edge and .net 4.6.2+</Description>
+		<Version>1.06</Version>
+		<Date>2021-05-15</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/GTScreenScraper106.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
+	<Plugin>
+		<Name>BT Screen-Scraper</Name>
+		<Description>BT screen-scraper: Requires .net 4.6.2+</Description>
+		<Version>0.7</Version>
+		<Date>2019-11-13</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/BTScreenScraper.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
+	<Plugin>
+		<Name>DeepL Screen-Scraper translate</Name>
+		<Description>DL screen-scraper translate: Requires .net 4.6.2+</Description>
+		<Version>0.5</Version>
+		<Date>2020-04-26</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/DeepLScreenScraper.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
+	<Plugin>
+		<Name>Copy-Paste Translate</Name>
+		<Description>Translate with 3rd party tool using copy/paste</Description>
+		<Version>0.6</Version>
+		<Date>2019-03-03</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/CopyPasteTranslate.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
+	<Plugin>
+		<Name>PROMPT translate</Name>
+		<Description>Translate with PROMPT</Description>
+		<Version>0.3</Version>
+		<Date>2019-03-03</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/PromptTranslate.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
+	<Plugin>
+		<Name>Haxor</Name>
+		<Description>Translates subtitle to Haxor</Description>
+		<Version>1.5</Version>
+		<Date>2015-09-29</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/Haxor.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
+	<Plugin>
+		<Name>Upload subtitle to OpenSubtitles.org</Name>
+		<Description>Upload a subtitle quickly to OpenSubtitles.Org</Description>
+		<Version>2.0</Version>
+		<Date>2016-01-30</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/OpenSubtitlesUpload.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
+	<Plugin>
+		<Name>Save to  OneDrive</Name>
+		<Description>Upload a subtitle quickly to Microsoft OneDrive</Description>
+		<Version>1.2</Version>
+		<Date>2013-06-01</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/OneDriveSave.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
+	<Plugin>
+		<Name>Load from OneDrive</Name>
+		<Description>Load a subtitle quickly to Microsoft OneDrive</Description>
+		<Version>1.2</Version>
+		<Date>2017-06-01</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/OneDriveLoad.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
+	<Plugin>
+		<Name>Word spell check</Name>
+		<Description>Word spell check (requires Microsoft Word)</Description>
+		<Version>1.7</Version>
+		<Date>2020-10-18</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/WordSpellCheck.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
+	<Plugin>
+		<Name>Dialogue AutoMarker</Name>
+		<Description>Helps find and format dialogue</Description>
+		<Version>0.1</Version>
+		<Date>2014-02-04</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/DialogueAutoMarker.zip</Url>
+		<Author>ivandrofly</Author>
+	</Plugin>
+	<Plugin>
+		<Name>Hearing Impaired Colorer</Name>
+		<Description>Set color for Hearing Impaired annotations</Description>
+		<Version>0.5</Version>
+		<Date>2019-07-09</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/HIColorer.zip</Url>
+		<Author>ivandrofly</Author>
+	</Plugin>
+	<Plugin>
+		<Name>Check Line Width</Name>
+		<Description>Checks maximum line width in pixels</Description>
+		<Version>0.7</Version>
+		<Date>2015-12-13</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/CheckLineWidth.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
+	<Plugin>
+		<Name>American English to British English</Name>
+		<Description>Convert American English to British English</Description>
+		<Version>0.5</Version>
+		<Date>2021-05-04</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/AmericanToBritish.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
+	<Plugin>
+		<Name>Merge two SRT files to one ASS/SSA</Name>
+		<Description>Merge two SRT subtitles to one ASS (eg. for different languages)</Description>
+		<Version>1.1</Version>
+		<Date>2020-04-14</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/MergeTwoSrtToAss.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
+	<Plugin>
+		<Name>Narrator Out Parentheses</Name>
+		<Description>Find and Convert narrator inside ()/[] to: Narrator:</Description>
+		<Version>0.4</Version>
+		<Date>2019-01-09</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/NarratorOutParentheses.zip</Url>
+		<Author>ivandrofly</Author>
+	</Plugin>
+	<Plugin>
+		<Name>Remove Unicode characters</Name>
+		<Description>Remove Unicode characters - or replace them</Description>
+		<Version>0.4</Version>
+		<Date>2016-05-23</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/RemoveUnicodeCharacters.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
+	<Plugin>
+		<Name>Names list manager</Name>
+		<Description>Add/delete names from names list</Description>
+		<Version>1.1</Version>
+		<Date>2017-05-22</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/NameListManager.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
+	<Plugin>
+		<Name>Ispravi.me [Hascheck] spell checker</Name>
+		<Description>Croatian spell checker</Description>
+		<Version>0.6</Version>
+		<Date>2018-03-20</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/Ispravi.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
+	<Plugin>
+		<Name>Baidu Translate</Name>
+		<Description>Translate with Baidu</Description>
+		<Version>0.5</Version>
+		<Date>2019-02-28</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/BaiduTranslate.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
+	<Plugin>
+		<Name>Online casing</Name>
+		<Description>Do casing using TMDB api</Description>
+		<Version>1.4</Version>
+		<Date>2020-08-31</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/OnlineCasing.zip</Url>
+		<Author>ivandrofly</Author>
+	</Plugin>
+	<Plugin>
+		<Name>TightHyphen</Name>
+		<Description>Remove space after hyphen in a dialog</Description>
+		<Version>1.0</Version>
+		<Date>2019-07-12</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/TightHyphen.zip</Url>
+		<Author>ivandrofly</Author>
+		<Element />
+	</Plugin>
+	<Plugin>
+		<Name>Replace VobSub IDX timestamps</Name>
+		<Description>Replace the timestamps in the previously imported VobSub IDX file with the time codes from the current subtitle</Description>
+		<Version>0.1</Version>
+		<Date>2020-01-24</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/VobSubTimestamps.zip</Url>
+		<Author>xylographe</Author>
+	</Plugin>
+	<Plugin>
+		<Name>Export to all formats</Name>
+		<Description>Export current subtitle to all available text format.</Description>
+		<Version>1.1</Version>
+		<Date>2020-08-31</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/ExportAllFormats.zip</Url>
+		<Author>ivandrofly</Author>
+	</Plugin>
+	<Plugin>
+		<Name>ColorToDialog</Name>
+		<Description>Change different colors to dialogs.</Description>
+		<Version>0.6</Version>
+		<Date>2021-06-04</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/ColorToDialog.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
+	<Plugin>
+		<Name>ASSA Fade</Name>
+		<Description>Fade effect for Advanced Sub Station Alpha</Description>
+		<Version>0.1</Version>
+		<Date>2021-06-20</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/AssaFade.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
 </Plugins>
