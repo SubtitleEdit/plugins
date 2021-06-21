@@ -10,7 +10,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "ASSA Fade...";
 
-        decimal IPlugin.Version => 0.1M;
+        decimal IPlugin.Version => 0.2M;
 
         string IPlugin.Description => "Fade effect for Advanced Sub Station Alpha";
 

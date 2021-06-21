@@ -87,9 +87,11 @@ namespace SubtitleEdit
             }
 
             Indices = indices.ToArray();
+            listViewFixes.ItemChecked -= listViewFixes_ItemChecked;
             listViewFixes.Items.AddRange(listViewItems.ToArray());
+            listViewFixes.ItemChecked += listViewFixes_ItemChecked;
             listViewFixes.EndUpdate();
-            groupBoxPreview.Text = string.Format("Matching lines: {0:#,##0}", listViewFixes.Items.Count);
+            groupBoxPreview.Text = $"Matching lines: {listViewFixes.Items.Count:#,##0}";
         }
 
         private ListViewItem MakeListViewItem(Paragraph p, int index)
@@ -169,6 +171,19 @@ namespace SubtitleEdit
             if (e.KeyCode == Keys.Escape)
             {
                 DialogResult = DialogResult.Cancel;
+            }
+        }
+
+        private void listViewFixes_ItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            if (e.Item == null)
+            {
+                return;
+            }
+
+            if (int.TryParse(e.Item.Tag.ToString(), out var index))
+            {
+                Indices = Indices.ToList().Where(p => p != index).ToArray();
             }
         }
     }
