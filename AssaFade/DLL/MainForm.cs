@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -13,7 +14,7 @@ namespace SubtitleEdit
     public partial class MainForm : Form
     {
         private readonly Subtitle _subtitle;
-        private int[] _selectedIndices;
+        private readonly int[] _selectedIndices;
         private int[] _advancedIndices;
         public string FixedSubtitle { get; private set; }
 
@@ -45,7 +46,7 @@ namespace SubtitleEdit
             labelAdvancedSelection.Text = string.Empty;
             var selectedLines = AdvancedSubStationAlpha.GetTag("SelectedLines", "[Script Info]", _subtitle.Header);
             var selectedIndices = new List<int>();
-            foreach (var selectedLine in selectedLines.Split( ',', ' ', ':'))
+            foreach (var selectedLine in selectedLines.Split(',', ' ', ':'))
             {
                 if (int.TryParse(selectedLine, out var number))
                 {
@@ -108,6 +109,16 @@ namespace SubtitleEdit
                 }
 
                 var p = s.Paragraphs[i];
+
+                // remove fade tags 
+                if (p.Text.Contains("\\fad"))
+                {
+                    p.Text = Regex.Replace(p.Text, @"{\\fad\([\d\.,]*\)}", string.Empty);
+                    p.Text = Regex.Replace(p.Text, @"\\fad\([\d\.,]*\)", string.Empty);
+                    p.Text = Regex.Replace(p.Text, @"{\\fade\([\d\.,]*\)}", string.Empty);
+                    p.Text = Regex.Replace(p.Text, @"\\fade\([\d\.,]*\)", string.Empty);
+                }
+
                 if (p.Text.StartsWith("{\\", StringComparison.Ordinal) && styleToApply.EndsWith('}'))
                 {
                     p.Text = styleToApply.TrimEnd('}') + p.Text.Remove(0, 1);

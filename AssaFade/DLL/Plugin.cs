@@ -8,9 +8,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         string IPlugin.Name => "ASSA Fade";
 
-        string IPlugin.Text => "ASSA Fade...";
+        string IPlugin.Text => "Fade..."; // will be used in context menu item
 
-        decimal IPlugin.Version => 0.2M;
+        decimal IPlugin.Version => 0.3M;
 
         string IPlugin.Description => "Fade effect for Advanced Sub Station Alpha";
 
@@ -36,7 +36,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var sub = new Subtitle();
             var assa = new AdvancedSubStationAlpha();
             assa.LoadSubtitle(sub, rawText.SplitToLines(), subtitleFileName);
-            using (var form = new MainForm(sub, (this as IPlugin).Text, (this as IPlugin).Description, parentForm))
+            using (var form = new MainForm(sub, (this as IPlugin).Name, (this as IPlugin).Description, parentForm))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
                 {
