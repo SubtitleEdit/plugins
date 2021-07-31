@@ -10,12 +10,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "Fade..."; // will be used in context menu item
 
-        decimal IPlugin.Version => 0.3M;
+        decimal IPlugin.Version => 0.4M;
 
         string IPlugin.Description => "Fade effect for Advanced Sub Station Alpha";
 
-        // Can be one of these: File, Tool, Sync, Translate, SpellCheck, AssaOverrideTags
-        string IPlugin.ActionType => "AssaOverrideTags";
+        // Can be one of these: File, Tool, Sync, Translate, SpellCheck, AssaTool
+        string IPlugin.ActionType => "AssaTool";
 
         string IPlugin.Shortcut => string.Empty;
 
