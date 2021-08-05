@@ -110,6 +110,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\Unit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssaFade", "AssaFade\DLL\AssaFade.csproj", "{B4C9F51E-2C99-4E6E-8D8F-A068280A6814}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssaDraw", "AssaDraw\DLL\AssaDraw.csproj", "{450EA09F-C37C-4AC1-AF5C-EAB3AEE52B62}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Plugin-Shared\Plugin-Shared.projitems*{143a1481-b4ee-4aa3-8e5e-af1712477f57}*SharedItemsImports = 4
@@ -315,6 +317,10 @@ Global
 		{B4C9F51E-2C99-4E6E-8D8F-A068280A6814}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4C9F51E-2C99-4E6E-8D8F-A068280A6814}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4C9F51E-2C99-4E6E-8D8F-A068280A6814}.Release|Any CPU.Build.0 = Release|Any CPU
+		{450EA09F-C37C-4AC1-AF5C-EAB3AEE52B62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{450EA09F-C37C-4AC1-AF5C-EAB3AEE52B62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{450EA09F-C37C-4AC1-AF5C-EAB3AEE52B62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{450EA09F-C37C-4AC1-AF5C-EAB3AEE52B62}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -366,6 +372,7 @@ Global
 		{DA6258BB-E5E6-4175-80F3-AB9815682F86} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 		{525E7978-1CC1-4A8E-BE8D-848F633D978B} = {576CCC62-1D98-49B1-8CAF-8A9AECF81F2F}
 		{B4C9F51E-2C99-4E6E-8D8F-A068280A6814} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
+		{450EA09F-C37C-4AC1-AF5C-EAB3AEE52B62} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8BBF401C-6D00-4F22-BFC0-DE2673213D5B}

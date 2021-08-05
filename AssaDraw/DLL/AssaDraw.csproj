@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{450EA09F-C37C-4AC1-AF5C-EAB3AEE52B62}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>AssaDraw</RootNamespace>
+    <AssemblyName>AssaDraw</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FormAssaDrawHelp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAssaDrawHelp.Designer.cs">
+      <DependentUpon>FormAssaDrawHelp.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormAssaDrawMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAssaDrawMain.Designer.cs">
+      <DependentUpon>FormAssaDrawMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormAssaDrawSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAssaDrawSettings.Designer.cs">
+      <DependentUpon>FormAssaDrawSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IPlugin.cs" />
+    <Compile Include="Logic\DrawCommandType.cs" />
+    <Compile Include="Logic\DrawCommand.cs" />
+    <Compile Include="Logic\DrawCoordinate.cs" />
+    <Compile Include="Logic\DrawHistoryItem.cs" />
+    <Compile Include="Logic\DrawHistory.cs" />
+    <Compile Include="Logic\SE\AdvancedSubStationAlpha.cs" />
+    <Compile Include="Logic\SE\Configuration.cs" />
+    <Compile Include="Logic\SE\FixOverlappingDisplayTimes.cs" />
+    <Compile Include="Logic\SE\HtmlUtil.cs" />
+    <Compile Include="Logic\SE\LanguageAutoDetect.cs" />
+    <Compile Include="Logic\SE\Paragraph.cs" />
+    <Compile Include="Logic\SE\SsaStyle.cs" />
+    <Compile Include="Logic\SE\StringExtensions.cs" />
+    <Compile Include="Logic\SE\Subtitle.cs" />
+    <Compile Include="Logic\SE\SubtitleFormat.cs" />
+    <Compile Include="Logic\SE\TimeCode.cs" />
+    <Compile Include="Logic\SE\UiUtil.cs" />
+    <Compile Include="Logic\SE\Utilities.cs" />
+    <Compile Include="Plugin.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FormAssaDrawHelp.resx">
+      <DependentUpon>FormAssaDrawHelp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAssaDrawMain.resx">
+      <DependentUpon>FormAssaDrawMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAssaDrawSettings.resx">
+      <DependentUpon>FormAssaDrawSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

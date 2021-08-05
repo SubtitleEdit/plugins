@@ -250,12 +250,20 @@
 		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/ColorToDialog.zip</Url>
 		<Author>Nikse</Author>
 	</Plugin>
-	<Plugin>
-		<Name>ASSA Fade</Name>
-		<Description>Fade effect for Advanced Sub Station Alpha</Description>
-		<Version>0.4</Version>
-		<Date>2021-07-31</Date>
-		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/AssaFade.zip</Url>
-		<Author>Nikse</Author>
-	</Plugin>
+  <Plugin>
+    <Name>ASSA Fade</Name>
+    <Description>Fade effect for Advanced Sub Station Alpha</Description>
+    <Version>0.4</Version>
+    <Date>2021-07-31</Date>
+    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/AssaFade.zip</Url>
+    <Author>Nikse</Author>
+  </Plugin>
+  <Plugin>
+    <Name>ASSA Draw</Name>
+    <Description>Draw shapes for Advanced Sub Station Alpha</Description>
+    <Version>0.1</Version>
+    <Date>2021-08-05</Date>
+    <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/AssaDraw.zip</Url>
+    <Author>Nikse</Author>
+  </Plugin>
 </Plugins>
