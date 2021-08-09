@@ -125,7 +125,7 @@ Shortcuts:
 * Esc: Clear current new shape
 * Ctrl+arrow: Move 10 pixels
 * Alt+arrow: Move 1 pixel
-* Ctrl+mouse move: Move active shape
+* Ctrl+mouse-down-move: Move active shape
 * F2: Toggle line/curve
 * F3: Line mode
 * F4: Curve (beizer) mode
@@ -134,7 +134,6 @@ Shortcuts:
 * Ctrl+V: Paste ASSA codes from clipboard to canvas
 * Ctrl+N: New (clear current shapes)
 * Ctrl+Z: Undo
-* Ctrl+Y: Redo
-</value>
+* Ctrl+Y: Redo</value>
   </data>
 </root>
