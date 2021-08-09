@@ -18,6 +18,7 @@ namespace AssaDraw
         private DrawCommand _activeDrawCommand;
         private DrawCommand _oldDrawCommand;
         private DrawCoordinate _activePoint;
+        private Point _moveActiveDrawCommandStart = new Point(int.MinValue, int.MinValue);
         private int _x;
         private int _y;
 
@@ -36,7 +37,7 @@ namespace AssaDraw
 
         private Timer _historyTimer;
 
-        public FormAssaDrawMain(string text)
+        public FormAssaDrawMain(string text, int width, int height)
         {
             InitializeComponent();
             _x = int.MinValue;
@@ -62,6 +63,11 @@ namespace AssaDraw
             else if (!string.IsNullOrEmpty(text))
             {
                 ImportAssaDrawingFromText(text);
+                if (width > 0 && height > 0 && width < numericUpDownWidth.Maximum && height < numericUpDownHeight.Maximum)
+                {
+                    numericUpDownWidth.Value = width;
+                    numericUpDownHeight.Value = height;
+                }
             }
         }
 
@@ -151,7 +157,7 @@ namespace AssaDraw
                 {
                     if (drawCommand.Points[i].DrawCommandType == DrawCommandType.Line)
                     {
-                        if (i > 0 && i < drawCommand.Points.Count - 1 && drawCommand.Points[i].DrawCommandType == DrawCommandType.Line && drawCommand.Points[i - 1].DrawCommandType == DrawCommandType.BezierCurve)
+                        if (i > 0 && i < drawCommand.Points.Count - 1 && drawCommand.Points[i].DrawCommandType == DrawCommandType.Line && drawCommand.Points[i - 1].IsBeizer)
                         {
                             graphics.DrawLine(pen, drawCommand.Points[i - 1].Point, drawCommand.Points[i].Point);
 
@@ -184,7 +190,7 @@ namespace AssaDraw
                         }
 
                     }
-                    else if (drawCommand.Points[i].DrawCommandType == DrawCommandType.BezierCurve)
+                    else if (drawCommand.Points[i].IsBeizer)
                     {
 
                         if (drawCommand.Points.Count - i >= 3 && i > 0)
@@ -227,7 +233,7 @@ namespace AssaDraw
 
         private void pictureBoxCanvas_MouseClick(object sender, MouseEventArgs e)
         {
-            if (_mouseDownPoint != null)
+            if (_mouseDownPoint != null || _moveActiveDrawCommandStart.X != int.MinValue)
             {
                 return;
             }
@@ -252,12 +258,11 @@ namespace AssaDraw
                     var endY = (int)Math.Round(e.Location.Y / _zoomFactor);
                     var oneThirdX = (int)Math.Round((endX - startX) / 3.0);
                     var oneThirdY = (int)Math.Round((endY - startY) / 3.0);
-                    _activeDrawCommand.AddPoint(DrawCommandType.BezierCurve, startX + oneThirdX, startY + oneThirdY, PointHelperColor);
-                    _activeDrawCommand.AddPoint(DrawCommandType.BezierCurve, startX + oneThirdX + oneThirdX, startY + oneThirdY + oneThirdY, PointHelperColor);
+                    _activeDrawCommand.AddPoint(DrawCommandType.BezierCurveSupport1, startX + oneThirdX, startY + oneThirdY, PointHelperColor);
+                    _activeDrawCommand.AddPoint(DrawCommandType.BezierCurveSupport2, startX + oneThirdX + oneThirdX, startY + oneThirdY + oneThirdY, PointHelperColor);
 
                     // add end point
                     _activeDrawCommand.AddPoint(DrawCommandType.BezierCurve, endX, endY, PointColor);
-
                 }
             }
             else if (e.Button == MouseButtons.Left)
@@ -277,12 +282,10 @@ namespace AssaDraw
                     _activeDrawCommand = new DrawCommand();
                     _activeDrawCommand.AddPoint(DrawCommandType.BezierCurve, (int)Math.Round(e.Location.X / _zoomFactor), (int)Math.Round(e.Location.Y / _zoomFactor), PointColor);
                 }
-
             }
 
             pictureBoxCanvas.Invalidate();
             EnableDisableCurrentShapeActions();
-
         }
 
         private DrawCoordinate GetClosePoint(int x, int y)
@@ -328,25 +331,7 @@ namespace AssaDraw
                     {
                         if (subNode.Tag == _mouseDownPoint)
                         {
-                            var command = "Command";
-                            if (_mouseDownPoint.DrawCommand.Points[0] == _mouseDownPoint)
-                            {
-                                command = "Move";
-                            }
-                            else if (_mouseDownPoint.DrawCommandType == DrawCommandType.Line)
-                            {
-                                command = "Line";
-                            }
-                            else if (_mouseDownPoint.DrawCommandType == DrawCommandType.Move)
-                            {
-                                command = "Move";
-                            }
-                            else if (_mouseDownPoint.DrawCommandType == DrawCommandType.BezierCurve)
-                            {
-                                command = "Curve";
-                            }
-
-                            subNode.Text = $"{command} to {_mouseDownPoint.X} {_mouseDownPoint.Y}";
+                            subNode.Text = _mouseDownPoint.GetText(_mouseDownPoint.X, _mouseDownPoint.Y);
                             break;
                         }
                     }
@@ -374,7 +359,6 @@ namespace AssaDraw
             }
 
 
-            Cursor = Cursors.Default;
             if (_activeDrawCommand != null)
             {
                 if (_activeDrawCommand.Points.Count == 0 && _drawCommands.Contains(_activeDrawCommand))
@@ -390,6 +374,27 @@ namespace AssaDraw
                 pictureBoxCanvas.Invalidate();
             }
 
+            if (ModifierKeys == Keys.Control && _activeDrawCommand != null && _drawCommands.Contains(_activeDrawCommand) &&
+                _moveActiveDrawCommandStart.X != int.MinValue && _moveActiveDrawCommandStart.Y != int.MinValue)
+            {
+                Cursor = Cursors.SizeAll;
+                var xAdjust = e.X - _moveActiveDrawCommandStart.X;
+                var yAdjust =  e.Y - _moveActiveDrawCommandStart.Y;
+                _moveActiveDrawCommandStart.X = e.X;
+                _moveActiveDrawCommandStart.Y = e.Y;
+                foreach (var p in _activeDrawCommand.Points)
+                {
+                    p.X += xAdjust;
+                    p.Y += yAdjust;
+                }
+
+                FillTreeView(_drawCommands);
+                pictureBoxCanvas.Invalidate();
+                _activePoint = null;
+                return;
+            }
+
+            Cursor = Cursors.Default;
         }
 
         private static string WrapInPTag(string s)
@@ -413,30 +418,9 @@ namespace AssaDraw
                 for (int i = 0; i < drawCommand.Points.Count; i++)
                 {
                     var p = drawCommand.Points[i];
-                    var command = "Move";
-                    if (drawCommand.Points[0] == p)
-                    {
-                        command = "Move";
-                    }
-                    else if (p.DrawCommandType == DrawCommandType.Line)
-                    {
-                        command = "Line";
-                    }
-                    else if (p.DrawCommandType == DrawCommandType.BezierCurve)
-                    {
-                        command = "Curve";
-                    }
-
-                    if (i == 0)
-                    {
-                        var subNode = new TreeNode($"{command} to {p.X} {p.Y}") { Tag = p };
-                        node.Nodes.Add(subNode);
-                    }
-                    else
-                    {
-                        var subNode = new TreeNode($"{command} to {p.X} {p.Y}") { Tag = p };
-                        node.Nodes.Add(subNode);
-                    }
+                    var text = p.GetText(p.X, p.Y);
+                    var subNode = new TreeNode(text) { Tag = p };
+                    node.Nodes.Add(subNode);
                 }
 
                 treeView1.Nodes.Add(node);
@@ -542,20 +526,13 @@ namespace AssaDraw
             {
                 if (treeView1.SelectedNode.Tag is DrawCoordinate point)
                 {
-                    foreach (var drawCommand in _drawCommands)
-                    {
-                        if (drawCommand.Points.Contains(point))
-                        {
-                            drawCommand.Points.Remove(point);
-                        }
-                    }
-
-                    treeView1.SelectedNode.Remove();
-                    pictureBoxCanvas.Invalidate();
+                    deletePointToolStripMenuItem_Click(null, null);
+                    e.SuppressKeyPress = true;
                 }
                 else if (treeView1.SelectedNode.Tag is DrawCommand)
                 {
                     buttonRemoveShape_Click(null, null);
+                    e.SuppressKeyPress = true;
                 }
             }
             else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.Z)
@@ -701,11 +678,13 @@ namespace AssaDraw
 
         private void pictureBoxCanvas_MouseUp(object sender, MouseEventArgs e)
         {
+            _moveActiveDrawCommandStart = new Point(int.MinValue, int.MinValue);
             _mouseDownPoint = null;
         }
 
         private void pictureBoxCanvas_MouseDown(object sender, MouseEventArgs e)
         {
+            _moveActiveDrawCommandStart = new Point(int.MinValue, int.MinValue);
             var closePoint = GetClosePoint(e.X, e.Y);
             if (closePoint != null)
             {
@@ -728,6 +707,11 @@ namespace AssaDraw
             else if (e.Button == MouseButtons.Right)
             {
                 contextMenuStripCanvasBackground.Show(pictureBoxCanvas, e.X, e.Y);
+            }
+            else if (ModifierKeys == Keys.Control && _activeDrawCommand != null && _drawCommands.Contains(_activeDrawCommand))
+            {
+                _moveActiveDrawCommandStart = new Point(e.X, e.Y);
+                Cursor = Cursors.SizeAll;
             }
         }
 
@@ -763,13 +747,12 @@ namespace AssaDraw
 
         private void toolStripButtonClearCurrent_Click(object sender, EventArgs e)
         {
-            if (_activeDrawCommand != null)
+            if (_activeDrawCommand != null && !_drawCommands.Contains(_activeDrawCommand))
             {
                 _drawCommands.Remove(_activeDrawCommand);
                 EnableDisableCurrentShapeActions();
             }
-
-            if (treeView1.SelectedNode?.Tag is DrawCommand drawCommand)
+            else if (treeView1.SelectedNode?.Tag is DrawCommand drawCommand && !_drawCommands.Contains(_activeDrawCommand))
             {
                 _drawCommands.Remove(drawCommand);
                 treeView1.Nodes.Remove(treeView1.SelectedNode);
@@ -917,7 +900,18 @@ namespace AssaDraw
                         beizerCount = 1;
                     }
 
-                    drawCommand.AddPoint(state, (int)Math.Round(bX), (int)Math.Round(bY), (beizerCount == 2 || beizerCount == 3) ? PointHelperColor : PointColor);
+                    if (beizerCount == 2)
+                    {
+                        drawCommand.AddPoint(DrawCommandType.BezierCurveSupport1, (int)Math.Round(bX), (int)Math.Round(bY), PointHelperColor);
+                    }
+                    else if (beizerCount == 3)
+                    {
+                        drawCommand.AddPoint(DrawCommandType.BezierCurveSupport2, (int)Math.Round(bX), (int)Math.Round(bY), PointHelperColor);
+                    }
+                    else
+                    {
+                        drawCommand.AddPoint(state, (int)Math.Round(bX), (int)Math.Round(bY), PointColor);
+                    }
                     i++;
                 }
 
@@ -1076,6 +1070,12 @@ namespace AssaDraw
                 if (point.DrawCommandType == DrawCommandType.Line)
                 {
                     duplicatePointToolStripMenuItem.Visible = true;
+                    deletePointToolStripMenuItem.Visible = point.DrawCommand.Points.Count > 2;
+                }
+                else if (point.DrawCommandType == DrawCommandType.BezierCurve && point.DrawCommand.Points.Count > 8)
+                {
+                    duplicatePointToolStripMenuItem.Visible = false;
+                    deletePointToolStripMenuItem.Visible = point.DrawCommand.Points.Count > 2;
                 }
                 else
                 {
@@ -1244,6 +1244,62 @@ namespace AssaDraw
         {
             AssaDrawCodes = GetAssaDrawCode();
             DialogResult = DialogResult.OK;
+        }
+
+        private void deletePointToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (treeView1.SelectedNode.Tag is DrawCoordinate point)
+            {
+                if (point.DrawCommandType == DrawCommandType.Line)
+                {
+                    _activePoint = null;
+                    point.DrawCommand.Points.Remove(point);
+                    FillTreeView(_drawCommands);
+                    SelectTreeViewNodePoint(_activePoint);
+                    pictureBoxCanvas.Invalidate();
+                }
+                else if (point.IsBeizer && point.DrawCommand.Points.Count > 8)
+                {
+                    _activePoint = null;
+                    var idx = point.DrawCommand.Points.IndexOf(point);
+                    if (idx < point.DrawCommand.Points.Count - 2 && point.DrawCommand.Points[idx + 1].DrawCommandType == DrawCommandType.BezierCurveSupport1)
+                    {
+                        point.DrawCommand.Points.RemoveAt(idx + 2);
+                        point.DrawCommand.Points.RemoveAt(idx + 1);
+                        point.DrawCommand.Points.RemoveAt(idx);
+                    }
+                    else if (idx > 2 && point.DrawCommand.Points[idx + -2].DrawCommandType == DrawCommandType.BezierCurveSupport1)
+                    {
+                        point.DrawCommand.Points.RemoveAt(idx);
+                        point.DrawCommand.Points.RemoveAt(idx - 1);
+                        point.DrawCommand.Points.RemoveAt(idx - 2);
+                    }
+
+                    FillTreeView(_drawCommands);
+                    SelectTreeViewNodePoint(_activePoint);
+                    pictureBoxCanvas.Invalidate();
+                }
+            }
+        }
+
+        private void numericUpDownWidth_ValueChanged(object sender, EventArgs e)
+        {
+            pictureBoxCanvas.Invalidate();
+        }
+
+        private void numericUpDownHeight_ValueChanged(object sender, EventArgs e)
+        {
+            pictureBoxCanvas.Invalidate();
+        }
+
+        private void toolStripButtonCopyToClipboard_Click(object sender, EventArgs e)
+        {
+            var text = GetAssaDrawCode();
+            if (!string.IsNullOrEmpty(text))
+            {
+                Clipboard.SetText(text);
+            }
+            pictureBoxCanvas.Focus();
         }
     }
 }

@@ -418,6 +418,31 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text"
             return null;
         }
 
+        public static string GetTagValueFromHeader(string tagName, string section, string header)
+        {
+            var sectionOn = false;
+            foreach (var line in header.SplitToLines())
+            {
+                var s = line.Trim();
+                if (s.StartsWith('['))
+                {
+                    if (s.Equals(section, StringComparison.OrdinalIgnoreCase))
+                    {
+                        sectionOn = true;
+                    }
+                }
+                else if (sectionOn &&
+                         s.StartsWith(tagName, StringComparison.OrdinalIgnoreCase) &&
+                         s.RemoveChar(' ').StartsWith(tagName + ":", StringComparison.OrdinalIgnoreCase))
+                {
+
+                    return s.Remove(0, s.IndexOf(':') + 1).Trim();
+                }
+            }
+
+            return null;
+        }
+
         public static string AddTagToHeader(string tagName, string tagAndValue, string section, string header)
         {
             var sectionOn = false;

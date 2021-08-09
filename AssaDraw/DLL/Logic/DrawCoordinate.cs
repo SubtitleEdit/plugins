@@ -15,6 +15,8 @@ namespace AssaDraw.Logic
 
         public DrawCommandType DrawCommandType { get; set; }
 
+        public bool IsBeizer => DrawCommandType == DrawCommandType.BezierCurve || DrawCommandType == DrawCommandType.BezierCurveSupport1 || DrawCommandType == DrawCommandType.BezierCurveSupport2;
+
         public DrawCoordinate(DrawCommand drawCommand, DrawCommandType drawCommandType)
         {
             DrawCommand = drawCommand;
@@ -29,6 +31,41 @@ namespace AssaDraw.Logic
             Y = y;
             PointColor = pointColor;
         }
+
+        public string GetText(int x, int y)
+        {
+            var command = "Command";
+            if (DrawCommand.Points[0] == this)
+            {
+                command = "Move";
+            }
+            else if (DrawCommandType == DrawCommandType.Line)
+            {
+                command = "Line";
+            }
+            else if (DrawCommandType == DrawCommandType.Move)
+            {
+                command = "Move";
+            }
+            else if (IsBeizer)
+            {
+                if (DrawCommandType == DrawCommandType.BezierCurveSupport1)
+                {
+                    command = "Curve support 1";
+                }
+                else if (DrawCommandType == DrawCommandType.BezierCurveSupport2)
+                {
+                    command = "Curve support 2";
+                }
+                else
+                {
+                    command = "Curve";
+                }
+            }
+
+            return $"{command} to {x},{y}";
+        }
+
 
         internal int GetFastHashCode()
         {

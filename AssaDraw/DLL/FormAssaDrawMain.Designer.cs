@@ -58,9 +58,9 @@ namespace AssaDraw
             this.toolStripButtonMirrorHor = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonMirrorVert = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButtonCopyToClipboard = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonSettings = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.buttonCopyAssaToClipboard = new System.Windows.Forms.Button();
             this.contextMenuStripCanvasBackground = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.chooseBackgroundImagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearBackgroundImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -84,7 +84,7 @@ namespace AssaDraw
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBoxCanvas.Location = new System.Drawing.Point(245, 42);
             this.pictureBoxCanvas.Name = "pictureBoxCanvas";
-            this.pictureBoxCanvas.Size = new System.Drawing.Size(803, 543);
+            this.pictureBoxCanvas.Size = new System.Drawing.Size(803, 555);
             this.pictureBoxCanvas.TabIndex = 0;
             this.pictureBoxCanvas.TabStop = false;
             this.pictureBoxCanvas.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBoxCanvas_Paint);
@@ -100,7 +100,7 @@ namespace AssaDraw
             this.treeView1.ContextMenuStrip = this.contextMenuStripTreeView;
             this.treeView1.Location = new System.Drawing.Point(13, 139);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(226, 446);
+            this.treeView1.Size = new System.Drawing.Size(226, 487);
             this.treeView1.TabIndex = 2;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
@@ -126,6 +126,7 @@ namespace AssaDraw
             this.deletePointToolStripMenuItem.Name = "deletePointToolStripMenuItem";
             this.deletePointToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.deletePointToolStripMenuItem.Text = "Delete point";
+            this.deletePointToolStripMenuItem.Click += new System.EventHandler(this.deletePointToolStripMenuItem_Click);
             // 
             // duplicatePointToolStripMenuItem
             // 
@@ -225,6 +226,7 @@ namespace AssaDraw
             0,
             0,
             0});
+            this.numericUpDownHeight.ValueChanged += new System.EventHandler(this.numericUpDownHeight_ValueChanged);
             // 
             // numericUpDownWidth
             // 
@@ -247,6 +249,7 @@ namespace AssaDraw
             0,
             0,
             0});
+            this.numericUpDownWidth.ValueChanged += new System.EventHandler(this.numericUpDownWidth_ValueChanged);
             // 
             // labelResolution
             // 
@@ -261,7 +264,7 @@ namespace AssaDraw
             // 
             this.labelPosition.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelPosition.AutoSize = true;
-            this.labelPosition.Location = new System.Drawing.Point(242, 588);
+            this.labelPosition.Location = new System.Drawing.Point(242, 603);
             this.labelPosition.Name = "labelPosition";
             this.labelPosition.Size = new System.Drawing.Size(63, 13);
             this.labelPosition.TabIndex = 3;
@@ -274,6 +277,7 @@ namespace AssaDraw
             this.toolStripButtonNew,
             this.toolStripButtonOpen,
             this.toolStripButtonSave,
+            this.toolStripButtonCopyToClipboard,
             this.toolStripSeparator1,
             this.toolStripButtonLine,
             this.toolStripButtonBeizer,
@@ -398,6 +402,16 @@ namespace AssaDraw
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(6, 39);
             // 
+            // toolStripButtonCopyToClipboard
+            // 
+            this.toolStripButtonCopyToClipboard.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonCopyToClipboard.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonCopyToClipboard.Image")));
+            this.toolStripButtonCopyToClipboard.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonCopyToClipboard.Name = "toolStripButtonCopyToClipboard";
+            this.toolStripButtonCopyToClipboard.Size = new System.Drawing.Size(36, 36);
+            this.toolStripButtonCopyToClipboard.Text = "Copy to clipboard";
+            this.toolStripButtonCopyToClipboard.Click += new System.EventHandler(this.toolStripButtonCopyToClipboard_Click);
+            // 
             // toolStripButtonSettings
             // 
             this.toolStripButtonSettings.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -417,17 +431,6 @@ namespace AssaDraw
             this.toolStripButton1.Size = new System.Drawing.Size(36, 36);
             this.toolStripButton1.Text = "Help";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
-            // 
-            // buttonCopyAssaToClipboard
-            // 
-            this.buttonCopyAssaToClipboard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonCopyAssaToClipboard.Location = new System.Drawing.Point(13, 592);
-            this.buttonCopyAssaToClipboard.Name = "buttonCopyAssaToClipboard";
-            this.buttonCopyAssaToClipboard.Size = new System.Drawing.Size(226, 23);
-            this.buttonCopyAssaToClipboard.TabIndex = 10;
-            this.buttonCopyAssaToClipboard.Text = "Copy ASSA to clipboard";
-            this.buttonCopyAssaToClipboard.UseVisualStyleBackColor = true;
-            this.buttonCopyAssaToClipboard.Click += new System.EventHandler(this.buttonCopyAssaToClipboard_Click);
             // 
             // contextMenuStripCanvasBackground
             // 
@@ -483,7 +486,6 @@ namespace AssaDraw
             this.ClientSize = new System.Drawing.Size(1060, 638);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOk);
-            this.Controls.Add(this.buttonCopyAssaToClipboard);
             this.Controls.Add(this.toolStripAssaDraw);
             this.Controls.Add(this.labelPosition);
             this.Controls.Add(this.groupBox2);
@@ -535,7 +537,6 @@ namespace AssaDraw
         private System.Windows.Forms.ToolStripButton toolStripButtonClearCurrent;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button buttonCopyAssaToClipboard;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripTreeView;
         private System.Windows.Forms.ToolStripMenuItem deleteShapeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deletePointToolStripMenuItem;
@@ -551,6 +552,7 @@ namespace AssaDraw
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonOk;
+        private System.Windows.Forms.ToolStripButton toolStripButtonCopyToClipboard;
     }
 }
 

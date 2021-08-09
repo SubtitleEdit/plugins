@@ -146,7 +146,7 @@ namespace SubtitleEdit.Logic
             {
                 try
                 {
-                    sr = new StreamReader(fileName, LanguageAutoDetect.GetEncodingFromFile(fileName), true);
+                    sr = new StreamReader(fileName, true);
                 }
                 catch
                 {

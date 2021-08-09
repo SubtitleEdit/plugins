@@ -29,7 +29,6 @@ namespace AssaDraw.Logic
             return coordinate;
         }
 
-
         public string ToAssa()
         {
             if (Points == null || Points.Count == 0)

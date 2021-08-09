@@ -33,7 +33,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject />
+    <StartupObject>
+    </StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -75,9 +76,7 @@
     <Compile Include="Logic\DrawHistory.cs" />
     <Compile Include="Logic\SE\AdvancedSubStationAlpha.cs" />
     <Compile Include="Logic\SE\Configuration.cs" />
-    <Compile Include="Logic\SE\FixOverlappingDisplayTimes.cs" />
     <Compile Include="Logic\SE\HtmlUtil.cs" />
-    <Compile Include="Logic\SE\LanguageAutoDetect.cs" />
     <Compile Include="Logic\SE\Paragraph.cs" />
     <Compile Include="Logic\SE\SsaStyle.cs" />
     <Compile Include="Logic\SE\StringExtensions.cs" />

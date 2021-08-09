@@ -6,5 +6,7 @@
         Line,
         Move,
         BezierCurve,
+        BezierCurveSupport1,
+        BezierCurveSupport2,
     }
 }
