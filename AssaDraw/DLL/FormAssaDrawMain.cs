@@ -137,6 +137,11 @@ namespace AssaDraw
             return (int)Math.Round(v * _zoomFactor);
         }
 
+        private int ToZoomFactor(float v)
+        {
+            return (int)Math.Round(v * _zoomFactor);
+        }
+
         private Point ToZoomFactorPoint(DrawCoordinate drawCoordinate)
         {
             return new Point(ToZoomFactor(drawCoordinate.X), ToZoomFactor(drawCoordinate.Y));
@@ -363,7 +368,7 @@ namespace AssaDraw
 
         private DrawCoordinate GetClosePoint(int x, int y)
         {
-            var maxDiff = int.MaxValue;
+            var maxDiff = float.MaxValue;
             DrawCoordinate pointDiff = null;
 
             foreach (var drawCommand in _drawCommands)
@@ -658,11 +663,13 @@ namespace AssaDraw
             }
             else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.Z)
             {
+                _activeDrawCommand = null;
                 Undo();
                 e.SuppressKeyPress = true;
             }
             else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.Y)
             {
+                _activeDrawCommand = null;
                 Redo();
                 e.SuppressKeyPress = true;
             }
@@ -757,8 +764,8 @@ namespace AssaDraw
             var tag = e.Node.Tag;
             if (e.Node.Nodes.Count == 0 && tag is DrawCoordinate point)
             {
-                numericUpDownX.Value = point.X;
-                numericUpDownY.Value = point.Y;
+                numericUpDownX.Value = (decimal)point.X;
+                numericUpDownY.Value = (decimal)point.Y;
                 _activePoint = point;
                 _activeDrawCommand = null;
                 numericUpDownX.Enabled = true;

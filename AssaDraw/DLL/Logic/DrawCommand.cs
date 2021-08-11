@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 
@@ -28,6 +29,12 @@ namespace AssaDraw.Logic
             Points.Add(coordinate);
             return coordinate;
         }
+        public DrawCoordinate AddPoint(DrawCommandType drawCommandType, float x, float y, Color pointColor)
+        {
+            var coordinate = new DrawCoordinate(this, drawCommandType, x, y, pointColor);
+            Points.Add(coordinate);
+            return coordinate;
+        }
 
         public string ToAssa()
         {
@@ -43,7 +50,7 @@ namespace AssaDraw.Logic
                 var point = Points[i];
                 if (i == 0)
                 {
-                    sb.Append($"m {point.X} {point.Y} ");
+                    sb.Append($"m {(int)Math.Round(point.X)} {(int)Math.Round(point.Y)} ");
                 }
                 else
                 {
@@ -61,7 +68,7 @@ namespace AssaDraw.Logic
                         state = point.DrawCommandType;
                     }
 
-                    sb.Append($"{point.X} {point.Y} ");
+                    sb.Append($"{(int)Math.Round(point.X)} {(int)Math.Round(point.Y)} ");
                 }
             }
 

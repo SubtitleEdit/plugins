@@ -1,13 +1,14 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace AssaDraw.Logic
 {
     public class DrawCoordinate
     {
-        public int X { get; set; }
-        public int Y { get; set; }
+        public float X { get; set; }
+        public float Y { get; set; }
 
-        public Point Point => new Point(X, Y);
+        public PointF Point => new PointF(X, Y);
 
         public Color PointColor { get; set; }
 
@@ -23,6 +24,15 @@ namespace AssaDraw.Logic
             DrawCommandType = drawCommandType;
         }
 
+        public DrawCoordinate(DrawCommand drawCommand, DrawCommandType drawCommandType, float x, float y, Color pointColor)
+        {
+            DrawCommand = drawCommand;
+            DrawCommandType = drawCommandType;
+            X = x;
+            Y = y;
+            PointColor = pointColor;
+        }
+
         public DrawCoordinate(DrawCommand drawCommand, DrawCommandType drawCommandType, int x, int y, Color pointColor)
         {
             DrawCommand = drawCommand;
@@ -31,6 +41,12 @@ namespace AssaDraw.Logic
             Y = y;
             PointColor = pointColor;
         }
+
+        public string GetText(float x, float y)
+        {
+            return GetText((int)Math.Round(x), (int)Math.Round(y));
+        }
+
 
         public string GetText(int x, int y)
         {
@@ -65,7 +81,6 @@ namespace AssaDraw.Logic
 
             return $"{command} to {x},{y}";
         }
-
 
         internal int GetFastHashCode()
         {
