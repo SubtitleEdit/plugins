@@ -136,6 +136,7 @@ Shortcuts:
 * Ctrl+Z: Undo
 * Ctrl+Y: Redo
 * Ctrl+F2: Toggle background image on/off
-* Ctrl+Minus/Plus or ctrl+Mousewheel: Zoom in/out</value>
+* Ctrl+Minus/Plus or ctrl+Mousewheel: Zoom in/out
+* Ctrl+Shift+Minus/Plus: Scale active shape</value>
   </data>
 </root>

@@ -82,6 +82,18 @@ namespace AssaDraw
                 _zoomFactor += e.Delta / 1000.0f;
                 ZoomChangedPostFix();
             }
+            else if (ModifierKeys == (Keys.Control | Keys.Shift))
+            {
+                if (e.Delta > 0)
+                {
+                    ScaleActiveShape(1.1f);
+                }
+                else
+                {
+                    ScaleActiveShape(0.9f);
+                }
+                ZoomChangedPostFix();
+            }
         }
 
         private void ZoomChangedPostFix()
@@ -540,6 +552,16 @@ namespace AssaDraw
                 ZoomChangedPostFix();
                 e.SuppressKeyPress = true;
             }
+            else if (e.Modifiers == (Keys.Control | Keys.Shift) && (e.KeyCode == Keys.Oemplus || e.KeyCode == Keys.Add))
+            {
+                ScaleActiveShape(1.1f);
+                e.SuppressKeyPress = true;
+            }
+            else if (e.Modifiers == (Keys.Control | Keys.Shift) && (e.KeyCode == Keys.OemMinus || e.KeyCode == Keys.Subtract))
+            {
+                ScaleActiveShape(0.9f);
+                e.SuppressKeyPress = true;
+            }
             else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.C)
             {
                 buttonCopyAssaToClipboard_Click(null, null);
@@ -669,6 +691,35 @@ namespace AssaDraw
                     e.SuppressKeyPress = true;
                 }
             }
+        }
+
+        private void ScaleActiveShape(float factor)
+        {
+            if (_activeDrawCommand == null)
+            {
+                return;
+            }
+
+            var minX = _activeDrawCommand.Points.Min(p => p.X);
+            var minY = _activeDrawCommand.Points.Min(p => p.Y);
+            var maxX = _activeDrawCommand.Points.Max(p => p.X);
+            var maxY = _activeDrawCommand.Points.Max(p => p.Y);
+            if (factor < 1 && (maxX - minX  < 50 || maxY - minY < 50))
+            {
+                return;
+            }
+
+            foreach (var point in _activeDrawCommand.Points)
+            {
+                var x = point.X - minX;
+                var y = point.Y - minY;
+                var newX = (int)Math.Round(x * factor + minX);
+                var newY = (int)Math.Round(y * factor + minY);
+                point.X = newX;
+                point.Y = newY;
+            }
+            pictureBoxCanvas.Invalidate();
+            FillTreeView(_drawCommands);
         }
 
         private void AdjustPosition(int xAdjust, int yAdjust)
