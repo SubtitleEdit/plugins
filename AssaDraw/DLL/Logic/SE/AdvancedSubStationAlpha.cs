@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SubtitleEdit.Logic
 {
-    public class AdvancedSubStationAlpha  : SubtitleFormat
+    public class AdvancedSubStationAlpha : SubtitleFormat
     {
 
         public string Errors { get; private set; }
@@ -1252,7 +1252,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text"
                                 StartTime = GetTimeCodeFromString(start),
                                 EndTime = GetTimeCodeFromString(end),
                                 Text = text
-                                    .Replace("\\n",Environment.NewLine)
+                                    .Replace("\\n", Environment.NewLine)
                                     .Replace("\\N", Environment.NewLine),
                             };
 

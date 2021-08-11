@@ -10,7 +10,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "ASSA Draw..."; // will be used in context menu item
 
-        decimal IPlugin.Version => 0.2M;
+        decimal IPlugin.Version => 0.3M;
 
         string IPlugin.Description => "Draw shapes for Advanced Sub Station Alpha";
 
@@ -38,6 +38,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             assa.LoadSubtitle(sub, rawText.SplitToLines(), subtitleFileName);
             var text = string.Empty;
             Paragraph p = null;
+            if (string.IsNullOrEmpty(sub.Header))
+            {
+                sub.Header = AdvancedSubStationAlpha.DefaultHeader;
+            }
+
             var selectedLines = AdvancedSubStationAlpha.GetTag("SelectedLines", "[Script Info]", sub.Header);
             if (!string.IsNullOrEmpty(selectedLines))
             {
@@ -73,6 +78,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     if (p != null && !string.IsNullOrEmpty(form.AssaDrawCodes))
                     {
                         p.Text = form.AssaDrawCodes;
+                        p.Extra = "AssaDraw";
+                        var styles = AdvancedSubStationAlpha.GetStylesFromHeader(sub.Header);
+                        if (!styles.Contains(p.Extra))
+                        {
+                            var assaDrawStyle = new SsaStyle
+                            {
+                                Name = p.Extra,
+                                Alignment = "7",
+                                MarginVertical = 0,
+                                MarginLeft = 0,
+                                MarginRight = 0
+                            };
+                            sub.Header = AdvancedSubStationAlpha.AddSsaStyle(assaDrawStyle, sub.Header);
+                        }
                     }
 
                     return sub.ToText(assa);

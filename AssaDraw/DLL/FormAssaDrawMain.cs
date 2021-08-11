@@ -21,14 +21,16 @@ namespace AssaDraw
         private Point _moveActiveDrawCommandStart = new Point(int.MinValue, int.MinValue);
         private int _x;
         private int _y;
+        private DrawCoordinate _mouseDownPoint;
 
         private DrawHistory _history;
         private object _historyLock = new object();
         private int _historyHash;
 
-        private DrawCoordinate _mouseDownPoint;
         private string _fileName;
+
         private Bitmap _backgroundImage;
+        private bool _backgroundOff = false;
 
         private readonly Color PointHelperColor = Color.FromArgb(100, Color.Green);
         private readonly Color PointColor = Color.FromArgb(100, Color.Red);
@@ -78,19 +80,24 @@ namespace AssaDraw
             if (ModifierKeys == Keys.Control)
             {
                 _zoomFactor += e.Delta / 1000.0f;
-                if (_zoomFactor < 0.1f)
-                {
-                    _zoomFactor = 0.1f;
-                }
-
-                if (Math.Abs(_zoomFactor - 1.0f) < 0.1)
-                {
-                    _zoomFactor = 1.0f;
-                }
-
-                ShowTitle();
-                pictureBoxCanvas.Invalidate();
+                ZoomChangedPostFix();
             }
+        }
+
+        private void ZoomChangedPostFix()
+        {
+            if (_zoomFactor < 0.1f)
+            {
+                _zoomFactor = 0.1f;
+            }
+
+            if (Math.Abs(_zoomFactor - 1.0f) < 0.1)
+            {
+                _zoomFactor = 1.0f;
+            }
+
+            ShowTitle();
+            pictureBoxCanvas.Invalidate();
         }
 
         private void ShowTitle()
@@ -140,7 +147,7 @@ namespace AssaDraw
                 return;
             }
 
-            var bitmap = _backgroundImage != null ? (Bitmap)_backgroundImage.Clone() : new Bitmap(ToZoomFactor(pictureBoxCanvas.Width), ToZoomFactor(pictureBoxCanvas.Height));
+            var bitmap = _backgroundImage != null && !_backgroundOff ? (Bitmap)_backgroundImage.Clone() : new Bitmap(ToZoomFactor(pictureBoxCanvas.Width), ToZoomFactor(pictureBoxCanvas.Height));
             var graphics = e.Graphics;
             if (_backgroundImage == null)
             {
@@ -492,6 +499,7 @@ namespace AssaDraw
                     _backgroundImage = new Bitmap(Clipboard.GetImage());
                     numericUpDownWidth.Value = _backgroundImage.Width;
                     numericUpDownHeight.Value = _backgroundImage.Height;
+                    _backgroundOff = false;
                     pictureBoxCanvas.Invalidate();
                     e.SuppressKeyPress = true;
                 }
@@ -520,6 +528,18 @@ namespace AssaDraw
                 pictureBoxCanvas.Invalidate();
                 e.SuppressKeyPress = true;
             }
+            else if (e.Modifiers == Keys.Control && (e.KeyCode == Keys.Oemplus || e.KeyCode == Keys.Add))
+            {
+                _zoomFactor += 0.1f; // reset zoom
+                ZoomChangedPostFix();
+                e.SuppressKeyPress = true;
+            }
+            else if (e.Modifiers == Keys.Control && (e.KeyCode == Keys.OemMinus || e.KeyCode == Keys.Subtract))
+            {
+                _zoomFactor -= 0.1f; // reset zoom
+                ZoomChangedPostFix();
+                e.SuppressKeyPress = true;
+            }
             else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.C)
             {
                 buttonCopyAssaToClipboard_Click(null, null);
@@ -541,6 +561,24 @@ namespace AssaDraw
                     toolStripButtonLine_Click(null, null);
                 }
 
+                e.SuppressKeyPress = true;
+            }
+            else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.F2)
+            {
+                if (_backgroundImage == null)
+                {
+                    chooseBackgroundImagesToolStripMenuItem_Click(null, null);
+                }
+                else if (_backgroundOff)
+                {
+                    _backgroundOff = false;
+                }
+                else
+                {
+                    _backgroundOff = true;
+                }
+
+                pictureBoxCanvas.Invalidate();
                 e.SuppressKeyPress = true;
             }
             else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F3)
@@ -874,6 +912,7 @@ namespace AssaDraw
                 {
                     _fileName = saveFileDialog.FileName;
                     System.IO.File.WriteAllText(_fileName, code);
+                    ShowTitle();
                 }
             }
         }
@@ -898,6 +937,7 @@ namespace AssaDraw
             _fileName = fileName;
             var text = System.IO.File.ReadAllText(_fileName);
             ImportAssaDrawingFromText(text);
+            ShowTitle();
         }
 
         private void ImportAssaDrawingFromText(string text)
@@ -1024,6 +1064,7 @@ namespace AssaDraw
             _backgroundImage = new Bitmap(fileName);
             numericUpDownWidth.Value = _backgroundImage.Width;
             numericUpDownHeight.Value = _backgroundImage.Height;
+            _backgroundOff = false;
             pictureBoxCanvas.Invalidate();
         }
 
@@ -1209,6 +1250,8 @@ namespace AssaDraw
 
             ClearAll();
             _zoomFactor = 1;
+            _fileName = null;
+            ShowTitle();
         }
 
         private void toolStripButtonMirrorHor_Click(object sender, EventArgs e)
