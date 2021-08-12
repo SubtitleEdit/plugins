@@ -270,12 +270,12 @@ namespace AssaDraw
                     else if (drawCommand.Points[i].IsBeizer)
                     {
 
-                        if (drawCommand.Points.Count - i >= 3 && i > 0)
+                        if (drawCommand.Points.Count - i > 3 && i > 0)
                         {
                             graphics.DrawBezier(pen, ToZoomFactorPoint(drawCommand.Points[i - 1]), ToZoomFactorPoint(drawCommand.Points[i]), ToZoomFactorPoint(drawCommand.Points[i + 1]), ToZoomFactorPoint(drawCommand.Points[i + 2]));
                             i += 2;
                         }
-                        else if (drawCommand.Points.Count - i >= 3 && i == 0)
+                        else if (drawCommand.Points.Count - i > 3 && i == 0)
                         {
                             graphics.DrawBezier(pen, ToZoomFactorPoint(drawCommand.Points[i]), ToZoomFactorPoint(drawCommand.Points[i + 1]), ToZoomFactorPoint(drawCommand.Points[i + 2]), ToZoomFactorPoint(drawCommand.Points[i + 3]));
                             i += 3;
