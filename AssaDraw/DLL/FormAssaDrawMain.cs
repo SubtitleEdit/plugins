@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace AssaDraw
@@ -38,6 +39,11 @@ namespace AssaDraw
         private Color LineColorActive = Color.Red;
 
         private Timer _historyTimer;
+        private readonly Regex _regexStart = new Regex(@"\{[^{]*\\p1[^}]*}");
+        private readonly Regex _regexEnd = new Regex(@"\{[^{]*\\p0[^}]*}");
+        private string _assaStartTag = "{\\p1}";
+        private string _assaEndTag = "{\\p0}";
+        private bool _standAlone;
 
         public FormAssaDrawMain(string text, int width, int height)
         {
@@ -61,9 +67,13 @@ namespace AssaDraw
             {
                 buttonCancel.Visible = false;
                 buttonOk.Visible = false;
+                _standAlone = true;
             }
             else if (!string.IsNullOrEmpty(text))
             {
+                _standAlone = false;
+                SetAssaStartEndTags(text);
+
                 ImportAssaDrawingFromText(text);
                 if (width > 0 && height > 0 && width < numericUpDownWidth.Maximum && height < numericUpDownHeight.Maximum)
                 {
@@ -73,6 +83,23 @@ namespace AssaDraw
             }
 
             MouseWheel += FormAssaDrawMain_MouseWheel;
+        }
+
+        private void SetAssaStartEndTags(string text)
+        {
+            var startMatch = _regexStart.Match(text);
+            var endMatch = _regexEnd.Match(text);
+            if (startMatch.Success && startMatch.Value.Length > 3 &&
+                endMatch.Success && startMatch.Value.Length > 3)
+            {
+                _assaStartTag = startMatch.Value;
+                _assaEndTag = endMatch.Value;
+            }
+            else
+            {
+                _assaStartTag = "{\\p1}";
+                _assaEndTag = "{\\p0}";
+            }
         }
 
         private void FormAssaDrawMain_MouseWheel(object sender, MouseEventArgs e)
@@ -475,14 +502,14 @@ namespace AssaDraw
             Cursor = Cursors.Default;
         }
 
-        private static string WrapInPTag(string s)
+        private string WrapInPTag(string s)
         {
             if (string.IsNullOrEmpty(s))
             {
                 return string.Empty;
             }
 
-            return $"{{\\p1}}{s.Trim()}{{\\p0}}";
+            return $"{_assaStartTag}{s.Trim()}{_assaEndTag}";
         }
 
         private void FillTreeView(List<DrawCommand> drawCommands)
@@ -523,7 +550,7 @@ namespace AssaDraw
                 else if (Clipboard.ContainsText())
                 {
                     var text = Clipboard.GetText();
-                    if (text.StartsWith("{\\p1"))
+                    if (text.Contains("\\p1"))
                     {
                         ImportAssaDrawingFromText(text);
                         e.SuppressKeyPress = true;
@@ -994,14 +1021,15 @@ namespace AssaDraw
             _activeDrawCommand = null;
             _fileName = fileName;
             var text = System.IO.File.ReadAllText(_fileName);
+            SetAssaStartEndTags(text);
             ImportAssaDrawingFromText(text);
             ShowTitle();
         }
 
         private void ImportAssaDrawingFromText(string text)
         {
-            text = text.Replace("{\\p1}", string.Empty);
-            text = text.Replace("{\\p0}", string.Empty);
+            text = _regexStart.Replace(text, string.Empty);
+            text = _regexEnd.Replace(text, string.Empty);
             var arr = text.Split();
             int i = 0;
             int beizerCount = 0;
