@@ -37,6 +37,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var assa = new AdvancedSubStationAlpha();
             assa.LoadSubtitle(sub, rawText.SplitToLines(), subtitleFileName);
             var text = string.Empty;
+            int layer = 0;
             Paragraph p = null;
             if (string.IsNullOrEmpty(sub.Header))
             {
@@ -53,6 +54,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     if (p != null)
                     {
                         text = p.Text;
+                        layer = p.Layer;
                     }
                 }
             }
@@ -71,13 +73,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 height = h;
             }
 
-            using (var form = new FormAssaDrawMain(text, width, height))
+            using (var form = new FormAssaDrawMain(text, layer, width, height))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
                 {
-                    if (p != null && !string.IsNullOrEmpty(form.AssaDrawCodes))
+                    if (p != null && form.AssaDrawCodes.Paragraphs.Count > 0)
                     {
-                        p.Text = form.AssaDrawCodes;
+                        p.Text = form.AssaDrawCodes.Paragraphs[0].Text;
                         p.Extra = "AssaDraw";
                         var styles = AdvancedSubStationAlpha.GetStylesFromHeader(sub.Header);
                         if (!styles.Contains(p.Extra))
@@ -91,6 +93,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
                                 MarginRight = 0
                             };
                             sub.Header = AdvancedSubStationAlpha.AddSsaStyle(assaDrawStyle, sub.Header);
+                        }
+
+                        var idx = sub.Paragraphs.IndexOf(p);
+                        for (int i = 1; i < form.AssaDrawCodes.Paragraphs.Count; i++)
+                        {
+                            var newP = new Paragraph(p);
+                            p.Text = form.AssaDrawCodes.Paragraphs[i].Text;
+                            newP.Layer = form.AssaDrawCodes.Paragraphs[i].Layer;
+                            sub.Paragraphs.Insert(idx + i - 1, newP);
                         }
                     }
 

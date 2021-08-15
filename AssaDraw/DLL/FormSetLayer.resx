@@ -117,31 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="richTextBoxHelpInfo.Text" xml:space="preserve">
-    <value>ASSA Draw [VERSION]
-
-Shortcuts:
-* Enter: Complete/close shape
-* Esc: Clear current new shape
-* Ctrl+arrow: Move 10 pixels
-* Alt+arrow: Move 1 pixel
-* Ctrl+mouse-down-move: Move active shape
-* F2: Toggle line/curve
-* F3: Line mode
-* F4: Curve (beizer) mode
-* F5: Complete/close shape
-* Ctrl+C: Copy current ASSA codes to clipboard
-* Ctrl+V: Paste ASSA codes from clipboard to canvas
-* Ctrl+N: New (clear current shapes)
-* Ctrl+Z: Undo
-* Ctrl+Y: Redo
-* Ctrl+P: Toggle preview (requires mpv + ffmpeg)
-* Ctrl+F2: Toggle background image on/off
-* Ctrl+Minus/Plus or ctrl+Mousewheel: Zoom in/out
-* Ctrl+Shift+Minus/Plus: Scale active shape
-
-Tips: 
-* "iclip" must be used in same subtitle as drawing
-* To use different colors multiple lines and layers must be used.</value>
-  </data>
 </root>

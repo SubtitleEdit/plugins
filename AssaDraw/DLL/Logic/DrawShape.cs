@@ -10,6 +10,7 @@ namespace AssaDraw.Logic
         public List<DrawCoordinate> Points { get; set; }
         public Color ForeColor { get; set; }
         public int Layer { get; set; }
+        public bool IsEraser { get; set; }
 
         public DrawShape()
         {

@@ -16,7 +16,7 @@ namespace AssaDraw
 {
     public partial class FormAssaDrawMain : Form
     {
-        public string AssaDrawCodes { get; set; }
+        public Subtitle AssaDrawCodes { get; set; }
 
         private readonly List<DrawShape> _drawShapes;
         private float _zoomFactor = 1.0f;
@@ -47,12 +47,13 @@ namespace AssaDraw
         private readonly Regex _regexEnd = new Regex(@"\{[^{]*\\p0[^}]*}");
         private string _assaStartTag = "{\\p1}";
         private string _assaEndTag = "{\\p0}";
-        private bool _standAlone;
 
         private LibMpvDynamic _mpv;
         private string _mpvTextFileName;
 
-        public FormAssaDrawMain(string text, int width, int height)
+        private const string StyleName = "AssaDraw";
+
+        public FormAssaDrawMain(string text, int layer, int width, int height)
         {
             InitializeComponent();
             _x = int.MinValue;
@@ -74,14 +75,11 @@ namespace AssaDraw
             {
                 buttonCancel.Visible = false;
                 buttonOk.Visible = false;
-                _standAlone = true;
             }
             else if (!string.IsNullOrEmpty(text))
             {
-                _standAlone = false;
                 SetAssaStartEndTags(text);
-
-                ImportAssaDrawingFromText(text);
+                ImportAssaDrawingFromText(text, 0, Color.Transparent);
                 if (width > 0 && height > 0 && width < numericUpDownWidth.Maximum && height < numericUpDownHeight.Maximum)
                 {
                     numericUpDownWidth.Value = width;
@@ -453,12 +451,15 @@ namespace AssaDraw
 
                 foreach (TreeNode node in treeView1.Nodes)
                 {
-                    foreach (TreeNode subNode in node.Nodes)
+                    foreach (TreeNode subNode in treeView1.Nodes)
                     {
-                        if (subNode.Tag == _mouseDownPoint)
+                        foreach (TreeNode subSubNode in subNode.Nodes)
                         {
-                            subNode.Text = _mouseDownPoint.GetText(x, y);
-                            break;
+                            if (subSubNode.Tag == _mouseDownPoint)
+                            {
+                                subSubNode.Text = _mouseDownPoint.GetText(x, y);
+                                break;
+                            }
                         }
                     }
                 }
@@ -523,33 +524,48 @@ namespace AssaDraw
             Cursor = Cursors.Default;
         }
 
-        private string WrapInPTag(string s)
+        private string WrapInPTag(string s, Color color)
         {
             if (string.IsNullOrEmpty(s))
             {
                 return string.Empty;
             }
 
-            return $"{_assaStartTag}{s.Trim()}{_assaEndTag}";
+            var regex = new Regex(@"\\c&H[0123456789ABCDEFabcdef]{1,8}&");
+            var startTag = regex.Replace(_assaStartTag, string.Empty);
+            var idx = startTag.IndexOf("\\");
+            if (idx > 0 && color != Color.Transparent)
+            {
+                startTag = startTag.Insert(idx, "\\c" + AdvancedSubStationAlpha.GetSsaColorString(color).TrimEnd('&') + "&");
+            }
+            return $"{startTag}{s.Trim()}{_assaEndTag}";
         }
 
         private void FillTreeView(List<DrawShape> drawShapes)
         {
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
-            foreach (var drawShape in drawShapes)
+            foreach (var layer in drawShapes.OrderBy(p => p.Layer).GroupBy(p => p.Layer))
             {
-                var node = new TreeNode("Shape");
-                node.Tag = drawShape;
-                for (int i = 0; i < drawShape.Points.Count; i++)
+                var layerNode = new TreeNode($"Layer {layer.Key}") { Tag = layer.Key };
+                treeView1.Nodes.Add(layerNode);
+                foreach (var drawShape in layer)
                 {
-                    var p = drawShape.Points[i];
-                    var text = p.GetText(p.X, p.Y);
-                    var subNode = new TreeNode(text) { Tag = p };
-                    node.Nodes.Add(subNode);
-                }
+                    if (drawShape.ForeColor != Color.Transparent)
+                    {
+                        layerNode.ForeColor = drawShape.ForeColor;
+                    }
 
-                treeView1.Nodes.Add(node);
+                    var node = new TreeNode("Shape (" + (drawShape.IsEraser ? "erase" : "draw") + ")") { Tag = drawShape };
+                    for (int i = 0; i < drawShape.Points.Count; i++)
+                    {
+                        var p = drawShape.Points[i];
+                        var text = p.GetText(p.X, p.Y);
+                        var subNode = new TreeNode(text) { Tag = p };
+                        node.Nodes.Add(subNode);
+                    }
+                    layerNode.Nodes.Add(node);
+                }
             }
             treeView1.ExpandAll();
             treeView1.EndUpdate();
@@ -564,7 +580,7 @@ namespace AssaDraw
                     e.SuppressKeyPress = true;
                     var timer1 = new Timer();
                     timer1.Interval = 50;
-                    timer1.Tick += (o, s) => 
+                    timer1.Tick += (o, s) =>
                     {
                         timer1.Stop();
                         timer1.Dispose();
@@ -589,7 +605,7 @@ namespace AssaDraw
                     var text = Clipboard.GetText();
                     if (text.Contains("\\p1"))
                     {
-                        ImportAssaDrawingFromText(text);
+                        ImportAssaDrawingFromText(text, 0, Color.Transparent);
                         e.SuppressKeyPress = true;
                     }
                 }
@@ -891,8 +907,7 @@ namespace AssaDraw
                 _drawShapes.Remove(_activeDrawShape);
             }
 
-            _drawShapes.Remove(treeView1.SelectedNode.Tag as DrawShape);
-            treeView1.Nodes.Remove(treeView1.SelectedNode);
+            FillTreeView(_drawShapes);
             _activeDrawShape = null;
             pictureBoxCanvas.Invalidate();
         }
@@ -957,6 +972,13 @@ namespace AssaDraw
 
             if (_activeDrawShape != null && !_drawShapes.Contains(_activeDrawShape))
             {
+                _activeDrawShape.ForeColor = Color.Transparent;
+                var firstLayerZeoShape = _drawShapes.FirstOrDefault(p => p.Layer == 0);
+                if (firstLayerZeoShape != null)
+                {
+                    _activeDrawShape.ForeColor = firstLayerZeoShape.ForeColor;
+                }
+
                 _drawShapes.Add(_activeDrawShape);
             }
 
@@ -978,19 +1000,15 @@ namespace AssaDraw
             else if (treeView1.SelectedNode?.Tag is DrawShape drawShape && !_drawShapes.Contains(_activeDrawShape))
             {
                 _drawShapes.Remove(drawShape);
-                treeView1.Nodes.Remove(treeView1.SelectedNode);
+                FillTreeView(_drawShapes);
             }
 
+            _activePoint = null;
             _activeDrawShape = null;
             pictureBoxCanvas.Invalidate();
             _x = int.MinValue;
             _y = int.MinValue;
             EnableDisableCurrentShapeActions();
-        }
-
-        private void toolStripButtonClearAll_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void ClearAll()
@@ -999,6 +1017,7 @@ namespace AssaDraw
             _y = int.MinValue;
             treeView1.Nodes.Clear();
             _activeDrawShape = null;
+            _activePoint = null;
             _oldDrawShape = null;
             _activePoint = null;
             numericUpDownX.Enabled = false;
@@ -1007,21 +1026,51 @@ namespace AssaDraw
             pictureBoxCanvas.Invalidate();
         }
 
-        private string GetAssaDrawCode()
+        private Subtitle GetAssaDrawCode()
         {
-            var sb = new StringBuilder();
-            foreach (var drawShape in _drawShapes)
+            var subtitle = new Subtitle();
+            subtitle.Header = AdvancedSubStationAlpha.DefaultHeader;
+            var assaDrawStyle = new SsaStyle
             {
-                sb.AppendLine(drawShape.ToAssa());
+                Name = StyleName,
+                Alignment = "7",
+                MarginVertical = 0,
+                MarginLeft = 0,
+                MarginRight = 0,
+            };
+            subtitle.Header = AdvancedSubStationAlpha.AddSsaStyle(assaDrawStyle, subtitle.Header);
+            subtitle.Header = AdvancedSubStationAlpha.AddTagToHeader("PlayResX", "PlayResX: " + ((int)numericUpDownWidth.Value).ToString(CultureInfo.InvariantCulture), "[Script Info]", subtitle.Header);
+            subtitle.Header = AdvancedSubStationAlpha.AddTagToHeader("PlayResY", "PlayResY: " + ((int)numericUpDownHeight.Value).ToString(CultureInfo.InvariantCulture), "[Script Info]", subtitle.Header);
+
+            foreach (var layer in _drawShapes.OrderBy(p => p.Layer).GroupBy(p => p.Layer))
+            {
+                var sb = new StringBuilder();
+                var color = Color.White;
+                foreach (var drawShape in layer)
+                {
+                    color = drawShape.ForeColor;
+                    sb.AppendLine(drawShape.ToAssa());
+                }
+                var text = sb.ToString().Trim();
+                if (!string.IsNullOrEmpty(text))
+                {
+                    text = WrapInPTag(text, color);
+                    var p = new Paragraph(text, 0, 10000)
+                    {
+                        Extra = StyleName,
+                        Layer = layer.Key,
+                    };
+                    subtitle.Paragraphs.Add(p);
+                }
             }
 
-            return WrapInPTag(sb.ToString());
+            return subtitle;
         }
 
         private void toolStripButtonSave_Click(object sender, EventArgs e)
         {
-            var code = GetAssaDrawCode();
-            if (string.IsNullOrEmpty(code))
+            var sub = GetAssaDrawCode();
+            if (sub.Paragraphs.Count == 0)
             {
                 return;
             }
@@ -1033,7 +1082,7 @@ namespace AssaDraw
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     _fileName = saveFileDialog.FileName;
-                    System.IO.File.WriteAllText(_fileName, code);
+                    File.WriteAllText(_fileName, new AdvancedSubStationAlpha().ToText(sub, string.Empty));
                     ShowTitle();
                 }
             }
@@ -1057,13 +1106,51 @@ namespace AssaDraw
         {
             _activeDrawShape = null;
             _fileName = fileName;
-            var text = System.IO.File.ReadAllText(_fileName);
+            var text = File.ReadAllText(_fileName);
+            var sub = new Subtitle();
+            var format = new AdvancedSubStationAlpha();
+            format.LoadSubtitle(sub, text.SplitToLines(), _fileName);
+            var styles = AdvancedSubStationAlpha.GetStylesFromHeader(sub.Header);
+            var regexColor = new Regex(@"\\c&H[0123456789ABCDEFabcdef]{1,8}&");
+            if (sub.Paragraphs.Count > 0)
+            {
+                foreach (var p in sub.Paragraphs)
+                {
+                    var c = Color.Transparent;
+                    var styleName = styles.FirstOrDefault(s => s == p.Extra);
+                    if (!string.IsNullOrEmpty(styleName))
+                    {
+                        var style = AdvancedSubStationAlpha.GetSsaStyle(styleName, sub.Header);
+                        if (style != null)
+                        {
+                            c = style.Primary;
+                        }
+                    }
+
+                    var match = regexColor.Match(p.Text);
+                    if (match.Success)
+                    {
+                        var colorString = match.Value;
+                        if (colorString.Length > 2)
+                        {
+                            colorString = colorString.Remove(0, 2);
+                        }
+                        c = AdvancedSubStationAlpha.GetSsaColor(colorString, c);
+                    }
+
+                    ImportAssaDrawingFromText(p.Text, p.Layer, c);
+                }
+                treeView1.Enabled = true;
+                ShowTitle();
+                return;
+            }
+
             SetAssaStartEndTags(text);
-            ImportAssaDrawingFromText(text);
+            ImportAssaDrawingFromText(text, 0, Color.Transparent);
             ShowTitle();
         }
 
-        private void ImportAssaDrawingFromText(string text)
+        private void ImportAssaDrawingFromText(string text, int layer, Color c)
         {
             text = _regexStart.Replace(text, string.Empty);
             text = _regexEnd.Replace(text, string.Empty);
@@ -1092,6 +1179,8 @@ namespace AssaDraw
                     if (moveCoordinate != null)
                     {
                         drawShape = new DrawShape();
+                        drawShape.Layer = layer;
+                        drawShape.ForeColor = c;
                         drawShape.AddPoint(state, moveCoordinate.X, moveCoordinate.Y, PointColor);
                         moveCoordinate = null;
                         _drawShapes.Add(drawShape);
@@ -1103,6 +1192,8 @@ namespace AssaDraw
                     if (moveCoordinate != null)
                     {
                         drawShape = new DrawShape();
+                        drawShape.Layer = layer;
+                        drawShape.ForeColor = c;
                         drawShape.AddPoint(state, moveCoordinate.X, moveCoordinate.Y, PointColor);
                         moveCoordinate = null;
                         _drawShapes.Add(drawShape);
@@ -1205,11 +1296,16 @@ namespace AssaDraw
 
         private void buttonCopyAssaToClipboard_Click(object sender, EventArgs e)
         {
-            var text = GetAssaDrawCode();
-            if (!string.IsNullOrEmpty(text))
+            var sub = GetAssaDrawCode();
+            if (sub.Paragraphs.Count == 1)
             {
-                Clipboard.SetText(text);
+                Clipboard.SetText(sub.Paragraphs[0].Text);
             }
+            else if (sub.Paragraphs.Count > 1)
+            {
+                Clipboard.SetText(new AdvancedSubStationAlpha().ToText(sub, string.Empty));
+            }
+
             pictureBoxCanvas.Focus();
         }
 
@@ -1292,6 +1388,9 @@ namespace AssaDraw
             deleteShapeToolStripMenuItem.Visible = false;
             deletePointToolStripMenuItem.Visible = false;
             duplicatePointToolStripMenuItem.Visible = false;
+            setColorToolStripMenuItem.Visible = false;
+            setLayerToolStripMenuItem.Visible = false;
+            changeLayerToolStripMenuItem.Visible = false;
             if (treeView1.SelectedNode.Tag is DrawCoordinate point)
             {
                 if (point.DrawType == DrawCoordinateType.Line)
@@ -1312,6 +1411,12 @@ namespace AssaDraw
             else if (treeView1.SelectedNode.Tag is DrawShape)
             {
                 deleteShapeToolStripMenuItem.Visible = true;
+                setLayerToolStripMenuItem.Visible = true;
+            }
+            else if (treeView1.SelectedNode.Tag is int) // layer
+            {
+                setColorToolStripMenuItem.Visible = true;
+                changeLayerToolStripMenuItem.Visible = true;
             }
             else
             {
@@ -1321,7 +1426,23 @@ namespace AssaDraw
 
         private void deleteShapeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            toolStripButtonClearCurrent_Click(null, null);
+            if (_activeDrawShape != null && !_drawShapes.Contains(_activeDrawShape))
+            {
+                _drawShapes.Remove(_activeDrawShape);
+                EnableDisableCurrentShapeActions();
+            }
+            else if (treeView1.SelectedNode?.Tag is DrawShape drawShape)
+            {
+                _drawShapes.Remove(drawShape);
+                FillTreeView(_drawShapes);
+            }
+
+            _activePoint = null;
+            _activeDrawShape = null;
+            pictureBoxCanvas.Invalidate();
+            _x = int.MinValue;
+            _y = int.MinValue;
+            EnableDisableCurrentShapeActions();
         }
 
         private void SelectTreeViewNodePoint(DrawCoordinate point)
@@ -1330,10 +1451,13 @@ namespace AssaDraw
             {
                 foreach (TreeNode subNode in node.Nodes)
                 {
-                    if (subNode.Tag == point)
+                    foreach (TreeNode subSubNode in subNode.Nodes)
                     {
-                        treeView1.SelectedNode = subNode;
-                        return;
+                        if (subSubNode.Tag == point)
+                        {
+                            treeView1.SelectedNode = subSubNode;
+                            return;
+                        }
                     }
                 }
             }
@@ -1376,6 +1500,7 @@ namespace AssaDraw
             _zoomFactor = 1;
             _fileName = null;
             ShowTitle();
+            treeView1.Enabled = true;
         }
 
         private void toolStripButtonMirrorHor_Click(object sender, EventArgs e)
@@ -1386,7 +1511,7 @@ namespace AssaDraw
             }
 
             var maxY = _activeDrawShape.Points.Max(p => p.Y);
-            var newDrawing = new DrawShape();
+            var newDrawing = new DrawShape { ForeColor = _activeDrawShape.ForeColor, Layer = _activeDrawShape.Layer };
             foreach (var p in _activeDrawShape.Points)
             {
                 newDrawing.AddPoint(p.DrawType, p.X, maxY + maxY - p.Y, p.PointColor);
@@ -1406,7 +1531,7 @@ namespace AssaDraw
             }
 
             var maxX = _activeDrawShape.Points.Max(p => p.X);
-            var newDrawing = new DrawShape();
+            var newDrawing = new DrawShape { ForeColor = _activeDrawShape.ForeColor, Layer = _activeDrawShape.Layer };
             foreach (var p in _activeDrawShape.Points)
             {
                 newDrawing.AddPoint(p.DrawType, maxX + maxX - p.X, p.Y, p.PointColor);
@@ -1525,17 +1650,22 @@ namespace AssaDraw
 
         private void toolStripButtonCopyToClipboard_Click(object sender, EventArgs e)
         {
-            var text = GetAssaDrawCode();
-            if (!string.IsNullOrEmpty(text))
+            var sub = GetAssaDrawCode();
+            if (sub.Paragraphs.Count == 1)
             {
-                Clipboard.SetText(text);
+                Clipboard.SetText(sub.Paragraphs[0].Text);
             }
+            else if (sub.Paragraphs.Count > 1)
+            {
+                Clipboard.SetText(new AdvancedSubStationAlpha().ToText(sub, string.Empty));
+            }
+
             pictureBoxCanvas.Focus();
         }
 
         private void toolStripButtonPreview_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(GetAssaDrawCode()))
+            if (GetAssaDrawCode().Paragraphs.Count == 0)
             {
                 MessageBox.Show("Nothing to preview");
                 return;
@@ -1587,33 +1717,75 @@ namespace AssaDraw
 
         private void VideoStartLoaded(object sender, EventArgs e)
         {
-            var format = new AdvancedSubStationAlpha();
-            var subtitle = new Subtitle();
-            var p = new Paragraph(GetAssaDrawCode(), 0, 10000)
-            {
-                Extra = "AssaDraw"
-            };
-            subtitle.Header = AdvancedSubStationAlpha.DefaultHeader;
-            var assaDrawStyle = new SsaStyle
-            {
-                Name = p.Extra,
-                Alignment = "7",
-                MarginVertical = 0,
-                MarginLeft = 0,
-                MarginRight = 0
-            };
-            subtitle.Header = AdvancedSubStationAlpha.AddSsaStyle(assaDrawStyle, subtitle.Header);
-
-            subtitle.Header = AdvancedSubStationAlpha.AddTagToHeader("PlayResX", "PlayResX: " + ((int)numericUpDownWidth.Value).ToString(CultureInfo.InvariantCulture), "[Script Info]", subtitle.Header);
-            subtitle.Header = AdvancedSubStationAlpha.AddTagToHeader("PlayResY", "PlayResY: " + ((int)numericUpDownHeight.Value).ToString(CultureInfo.InvariantCulture), "[Script Info]", subtitle.Header);
-
-            subtitle.Paragraphs.Add(p);
-            var text = subtitle.ToText(format);
+            var subtitle = GetAssaDrawCode();
+            var text = subtitle.ToText(new AdvancedSubStationAlpha());
             _mpvTextFileName = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".ass");
             File.WriteAllText(_mpvTextFileName, text);
             _mpv.LoadSubtitle(_mpvTextFileName);
             _mpv.Pause();
             _mpv.CurrentPosition = 0.5;
+        }
+
+        private void setLayerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (treeView1.SelectedNode.Tag is DrawShape shape)
+            {
+                using (var form = new FormSetLayer(shape.Layer))
+                {
+                    if (form.ShowDialog(this) == DialogResult.OK)
+                    {
+                        var firstNewShape = _drawShapes.FirstOrDefault(p => p.Layer == shape.Layer);
+                        shape.Layer = form.Layer;
+                        if (firstNewShape != null)
+                        {
+                            shape.ForeColor = firstNewShape.ForeColor;
+                        }
+
+                        FillTreeView(_drawShapes);
+                    }
+                }
+            }
+        }
+
+        private void setColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (treeView1.SelectedNode.Tag is int layer)
+            {
+                using (var colorDialog = new ColorDialog())
+                {
+                    if (colorDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        foreach (var shape in _drawShapes.Where(p => p.Layer == layer))
+                        {
+                            shape.ForeColor = colorDialog.Color;
+                        }
+
+                        FillTreeView(_drawShapes);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Change layer number for a layer including all shapes in that layer.
+        /// </summary>
+        private void changeLayerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (treeView1.SelectedNode.Tag is int layer)
+            {
+                using (var form = new FormSetLayer(layer))
+                {
+                    if (form.ShowDialog(this) == DialogResult.OK)
+                    {
+                        foreach (var shape in _drawShapes.Where(p => p.Layer == layer))
+                        {
+                            shape.Layer = form.Layer;
+                        }
+
+                        FillTreeView(_drawShapes);
+                    }
+                }
+            }
         }
     }
 }

@@ -29,7 +29,7 @@ namespace AssaDraw.Logic
             var newCmds = new List<DrawShape>();
             foreach (var shape in drawShapes)
             {
-                var newCmd = new DrawShape();
+                var newCmd = new DrawShape { ForeColor = shape.ForeColor, Layer = shape.Layer };
                 foreach (var p in shape.Points)
                 {
                     newCmd.AddPoint(p.DrawType, p.X, p.Y, p.PointColor);

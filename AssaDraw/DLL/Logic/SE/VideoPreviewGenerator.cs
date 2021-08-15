@@ -10,6 +10,16 @@ namespace Nikse.SubtitleEdit.Logic
     {
         public static string GetVideoPreviewFileName(int width, int height)
         {
+            if (width % 2 != 0)
+            {
+                width++;
+            }
+
+            if (height % 2 != 0)
+            {
+                height++;
+            }
+
             var previewFileName = Path.Combine(Configuration.DataDirectory, $"preview_{width}x{height}.mkv");
             if (File.Exists(previewFileName))
             {
