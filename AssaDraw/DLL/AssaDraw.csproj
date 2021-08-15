@@ -14,7 +14,7 @@
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -68,14 +68,16 @@
       <DependentUpon>FormAssaDrawSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="IPlugin.cs" />
-    <Compile Include="Logic\DrawCommandType.cs" />
-    <Compile Include="Logic\DrawCommand.cs" />
+    <Compile Include="Logic\DrawCoordinateType.cs" />
+    <Compile Include="Logic\DrawShape.cs" />
     <Compile Include="Logic\DrawCoordinate.cs" />
     <Compile Include="Logic\DrawHistoryItem.cs" />
     <Compile Include="Logic\DrawHistory.cs" />
     <Compile Include="Logic\SE\AdvancedSubStationAlpha.cs" />
     <Compile Include="Logic\SE\Configuration.cs" />
     <Compile Include="Logic\SE\HtmlUtil.cs" />
+    <Compile Include="Logic\SE\LibMpvDynamic.cs" />
+    <Compile Include="Logic\SE\NativeMethods.cs" />
     <Compile Include="Logic\SE\Paragraph.cs" />
     <Compile Include="Logic\SE\SsaStyle.cs" />
     <Compile Include="Logic\SE\StringExtensions.cs" />
@@ -84,6 +86,7 @@
     <Compile Include="Logic\SE\TimeCode.cs" />
     <Compile Include="Logic\SE\UiUtil.cs" />
     <Compile Include="Logic\SE\Utilities.cs" />
+    <Compile Include="Logic\SE\VideoPreviewGenerator.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

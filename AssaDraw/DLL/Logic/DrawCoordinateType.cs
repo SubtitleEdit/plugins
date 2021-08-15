@@ -1,6 +1,6 @@
 ﻿namespace AssaDraw.Logic
 {
-    public enum DrawCommandType
+    public enum DrawCoordinateType
     {
         None,
         Line,

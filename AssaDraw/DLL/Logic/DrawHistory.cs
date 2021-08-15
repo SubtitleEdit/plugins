@@ -24,24 +24,24 @@ namespace AssaDraw.Logic
             _historyIndex++;
         }
 
-        public DrawHistoryItem MakeHistoryItem(List<DrawCommand> drawCommands, DrawCommand activeDrawCommand, DrawCommand oldDrawCommand, DrawCoordinate activePoint, float zoomFactor)
+        public DrawHistoryItem MakeHistoryItem(List<DrawShape> drawShapes, DrawShape activeDrawShape, DrawShape oldDrawShaped, DrawCoordinate activePoint, float zoomFactor)
         {
-            var newCmds = new List<DrawCommand>();
-            foreach (var cmd in drawCommands)
+            var newCmds = new List<DrawShape>();
+            foreach (var shape in drawShapes)
             {
-                var newCmd = new DrawCommand();
-                foreach (var p in cmd.Points)
+                var newCmd = new DrawShape();
+                foreach (var p in shape.Points)
                 {
-                    newCmd.AddPoint(p.DrawCommandType, p.X, p.Y, p.PointColor);
+                    newCmd.AddPoint(p.DrawType, p.X, p.Y, p.PointColor);
                 }
                 newCmds.Add(newCmd);
             }
 
             return new DrawHistoryItem()
             {
-                DrawCommands = newCmds,
-                ActiveDrawCommand = activeDrawCommand,
-                OldDrawCommand = oldDrawCommand,
+                DrawShapes = newCmds,
+                ActiveDrawShape = activeDrawShape,
+                OldDrawShape = oldDrawShaped,
                 ActivePoint = activePoint,
                 ZoomFactor = zoomFactor,
             };

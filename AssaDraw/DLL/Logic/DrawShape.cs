@@ -5,33 +5,35 @@ using System.Text;
 
 namespace AssaDraw.Logic
 {
-    public class DrawCommand
+    public class DrawShape
     {
         public List<DrawCoordinate> Points { get; set; }
+        public Color ForeColor { get; set; }
+        public int Layer { get; set; }
 
-        public DrawCommand()
+        public DrawShape()
         {
             Points = new List<DrawCoordinate>();
         }
 
-        public DrawCommand(DrawCommand drawCommand)
+        public DrawShape(DrawShape drawShape)
         {
             Points = new List<DrawCoordinate>();
-            foreach (var point in drawCommand.Points)
+            foreach (var point in drawShape.Points)
             {
-                AddPoint(point.DrawCommandType, point.X, point.Y, point.PointColor);
+                AddPoint(point.DrawType, point.X, point.Y, point.PointColor);
             }
         }
 
-        public DrawCoordinate AddPoint(DrawCommandType drawCommandType, int x, int y, Color pointColor)
+        public DrawCoordinate AddPoint(DrawCoordinateType drawType, int x, int y, Color pointColor)
         {
-            var coordinate = new DrawCoordinate(this, drawCommandType, x, y, pointColor);
+            var coordinate = new DrawCoordinate(this, drawType, x, y, pointColor);
             Points.Add(coordinate);
             return coordinate;
         }
-        public DrawCoordinate AddPoint(DrawCommandType drawCommandType, float x, float y, Color pointColor)
+        public DrawCoordinate AddPoint(DrawCoordinateType drawType, float x, float y, Color pointColor)
         {
-            var coordinate = new DrawCoordinate(this, drawCommandType, x, y, pointColor);
+            var coordinate = new DrawCoordinate(this, drawType, x, y, pointColor);
             Points.Add(coordinate);
             return coordinate;
         }
@@ -44,7 +46,7 @@ namespace AssaDraw.Logic
             }
 
             var sb = new StringBuilder();
-            var state = DrawCommandType.None;
+            var state = DrawCoordinateType.None;
             for (int i = 0; i < Points.Count; i++)
             {
                 var point = Points[i];
@@ -54,18 +56,19 @@ namespace AssaDraw.Logic
                 }
                 else
                 {
-                    if (state != point.DrawCommandType)
+                    var newState = point.IsBeizer ? DrawCoordinateType.BezierCurve : point.DrawType;
+                    if (state != newState)
                     {
-                        if (point.DrawCommandType == DrawCommandType.Line)
+                        if (point.DrawType == DrawCoordinateType.Line)
                         {
                             sb.Append("l ");
                         }
-                        else if (point.DrawCommandType == DrawCommandType.BezierCurve)
+                        else if (point.IsBeizer)
                         {
                             sb.Append("b ");
                         }
 
-                        state = point.DrawCommandType;
+                        state = newState;
                     }
 
                     sb.Append($"{(int)Math.Round(point.X)} {(int)Math.Round(point.Y)} ");

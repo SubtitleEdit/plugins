@@ -1,8 +1,12 @@
 ﻿using AssaDraw.Logic;
+using Nikse.SubtitleEdit.Logic;
+using Nikse.SubtitleEdit.Logic.VideoPlayers;
+using SubtitleEdit.Logic;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -14,12 +18,12 @@ namespace AssaDraw
     {
         public string AssaDrawCodes { get; set; }
 
-        private readonly List<DrawCommand> _drawCommands;
+        private readonly List<DrawShape> _drawShapes;
         private float _zoomFactor = 1.0f;
-        private DrawCommand _activeDrawCommand;
-        private DrawCommand _oldDrawCommand;
+        private DrawShape _activeDrawShape;
+        private DrawShape _oldDrawShape;
         private DrawCoordinate _activePoint;
-        private Point _moveActiveDrawCommandStart = new Point(int.MinValue, int.MinValue);
+        private Point _moveActiveDrawShapeStart = new Point(int.MinValue, int.MinValue);
         private int _x;
         private int _y;
         private DrawCoordinate _mouseDownPoint;
@@ -45,12 +49,15 @@ namespace AssaDraw
         private string _assaEndTag = "{\\p0}";
         private bool _standAlone;
 
+        private LibMpvDynamic _mpv;
+        private string _mpvTextFileName;
+
         public FormAssaDrawMain(string text, int width, int height)
         {
             InitializeComponent();
             _x = int.MinValue;
             _y = int.MinValue;
-            _drawCommands = new List<DrawCommand>();
+            _drawShapes = new List<DrawShape>();
             numericUpDownX.Enabled = false;
             numericUpDownY.Enabled = false;
             EnableDisableCurrentShapeActions();
@@ -82,6 +89,7 @@ namespace AssaDraw
                 }
             }
 
+            toolStripButtonPreview.Enabled = LibMpvDynamic.IsInstalled;
             ShowTitle();
             MouseWheel += FormAssaDrawMain_MouseWheel;
         }
@@ -143,7 +151,12 @@ namespace AssaDraw
         private void ShowTitle()
         {
             var version = (new Nikse.SubtitleEdit.PluginLogic.AssaDraw() as Nikse.SubtitleEdit.PluginLogic.IPlugin).Version.ToString(CultureInfo.InvariantCulture);
-            if (_zoomFactor == 1)
+
+            if (toolStripButtonPreview.Checked)
+            {
+                Text = $"ASSA Draw {version} - Preview mode";
+            }
+            else if (_zoomFactor == 1)
             {
                 Text = $"ASSA Draw {version}";
             }
@@ -155,10 +168,11 @@ namespace AssaDraw
 
         private void EnableDisableCurrentShapeActions()
         {
-            toolStripButtonClearCurrent.Enabled = _activeDrawCommand != null;
-            toolStripButtonCloseShape.Enabled = _activeDrawCommand != null && _activeDrawCommand.Points.Count > 2;
-            toolStripButtonMirrorHor.Enabled = _drawCommands.Count > 0 && _activeDrawCommand != null && _x == int.MinValue && _y == int.MinValue;
-            toolStripButtonMirrorVert.Enabled = _drawCommands.Count > 0 && _activeDrawCommand != null && _x == int.MinValue && _y == int.MinValue;
+            var preview = toolStripButtonPreview.Checked;
+            toolStripButtonClearCurrent.Enabled = _activeDrawShape != null && !preview;
+            toolStripButtonCloseShape.Enabled = _activeDrawShape != null && _activeDrawShape.Points.Count > 2 && !preview;
+            toolStripButtonMirrorHor.Enabled = _drawShapes.Count > 0 && _activeDrawShape != null && _x == int.MinValue && _y == int.MinValue && !preview;
+            toolStripButtonMirrorVert.Enabled = _drawShapes.Count > 0 && _activeDrawShape != null && _x == int.MinValue && _y == int.MinValue && !preview;
         }
 
         private int ToZoomFactor(int v)
@@ -188,7 +202,7 @@ namespace AssaDraw
 
         private void pictureBoxCanvas_Paint(object sender, PaintEventArgs e)
         {
-            if (pictureBoxCanvas.Width < 1 || pictureBoxCanvas.Height < 1)
+            if (pictureBoxCanvas.Width < 1 || pictureBoxCanvas.Height < 1 || toolStripButtonPreview.Checked)
             {
                 return;
             }
@@ -209,15 +223,15 @@ namespace AssaDraw
 
             DrawResolution(graphics);
 
-            foreach (var drawCommand in _drawCommands)
+            foreach (var drawShape in _drawShapes)
             {
-                if (drawCommand != _activeDrawCommand)
+                if (drawShape != _activeDrawShape)
                 {
-                    Draw(drawCommand, graphics, false);
+                    Draw(drawShape, graphics, false);
                 }
-                for (int i = 0; i < drawCommand.Points.Count; i++)
+                for (int i = 0; i < drawShape.Points.Count; i++)
                 {
-                    DrawCoordinate point = drawCommand.Points[i];
+                    DrawCoordinate point = drawShape.Points[i];
                     using (var pen3 = new Pen(new SolidBrush(point.PointColor), 2))
                     {
                         graphics.DrawLine(pen3, new Point(ToZoomFactor(point.X - 5), ToZoomFactor(point.Y)), new Point(ToZoomFactor(point.X + 5), ToZoomFactor(point.Y)));
@@ -226,7 +240,7 @@ namespace AssaDraw
                 }
             }
 
-            Draw(_activeDrawCommand, graphics, true);
+            Draw(_activeDrawShape, graphics, true);
 
             if (_activePoint != null)
             {
@@ -249,9 +263,9 @@ namespace AssaDraw
             }
         }
 
-        private void Draw(DrawCommand drawCommand, Graphics graphics, bool isActive)
+        private void Draw(DrawShape drawShape, Graphics graphics, bool isActive)
         {
-            if (drawCommand == null || drawCommand.Points.Count == 0)
+            if (drawShape == null || drawShape.Points.Count == 0)
             {
                 return;
             }
@@ -260,71 +274,71 @@ namespace AssaDraw
             using (var pen = new Pen(new SolidBrush(color), 2))
             {
                 int i = 0;
-                while (i < drawCommand.Points.Count)
+                while (i < drawShape.Points.Count)
                 {
-                    if (drawCommand.Points[i].DrawCommandType == DrawCommandType.Line)
+                    if (drawShape.Points[i].DrawType == DrawCoordinateType.Line)
                     {
-                        if (i > 0 && i < drawCommand.Points.Count - 1 && drawCommand.Points[i].DrawCommandType == DrawCommandType.Line && drawCommand.Points[i - 1].IsBeizer)
+                        if (i > 0 && i < drawShape.Points.Count - 1 && drawShape.Points[i].DrawType == DrawCoordinateType.Line && drawShape.Points[i - 1].IsBeizer)
                         {
-                            graphics.DrawLine(pen, ToZoomFactorPoint(drawCommand.Points[i - 1]), ToZoomFactorPoint(drawCommand.Points[i]));
+                            graphics.DrawLine(pen, ToZoomFactorPoint(drawShape.Points[i - 1]), ToZoomFactorPoint(drawShape.Points[i]));
 
                         }
-                        else if (i < drawCommand.Points.Count - 1 && drawCommand.Points[i].DrawCommandType == DrawCommandType.Line && drawCommand.Points[i + 1].DrawCommandType == DrawCommandType.Line)
+                        else if (i < drawShape.Points.Count - 1 && drawShape.Points[i].DrawType == DrawCoordinateType.Line && drawShape.Points[i + 1].DrawType == DrawCoordinateType.Line)
                         {
-                            graphics.DrawLine(pen, ToZoomFactorPoint(drawCommand.Points[i]), ToZoomFactorPoint(drawCommand.Points[i + 1]));
+                            graphics.DrawLine(pen, ToZoomFactorPoint(drawShape.Points[i]), ToZoomFactorPoint(drawShape.Points[i + 1]));
                         }
-                        else if (i < drawCommand.Points.Count - 1)
+                        else if (i < drawShape.Points.Count - 1 && i > 0)
                         {
-                            graphics.DrawLine(pen, ToZoomFactorPoint(drawCommand.Points[i - 1]), ToZoomFactorPoint(drawCommand.Points[i]));
+                            graphics.DrawLine(pen, ToZoomFactorPoint(drawShape.Points[i - 1]), ToZoomFactorPoint(drawShape.Points[i]));
                         }
 
-                        if (isActive && drawCommand.Points.Count > 0 && (_x != int.MinValue || _y != int.MinValue) && !_drawCommands.Contains(_activeDrawCommand))
+                        if (isActive && drawShape.Points.Count > 0 && (_x != int.MinValue || _y != int.MinValue) && !_drawShapes.Contains(_activeDrawShape))
                         {
                             using (var penNewLine = new Pen(new SolidBrush(LineColorActive), 2))
                             {
-                                graphics.DrawLine(penNewLine, ToZoomFactorPoint(drawCommand.Points[drawCommand.Points.Count - 1]), new Point(ToZoomFactor(_x), ToZoomFactor(_y)));
+                                graphics.DrawLine(penNewLine, ToZoomFactorPoint(drawShape.Points[drawShape.Points.Count - 1]), new Point(ToZoomFactor(_x), ToZoomFactor(_y)));
                             }
                         }
 
                         i++;
-                        if (i >= drawCommand.Points.Count - 1)
+                        if (i >= drawShape.Points.Count - 1)
                         {
-                            var useActiveColor = drawCommand == _activeDrawCommand && _drawCommands.Contains(drawCommand);
+                            var useActiveColor = drawShape == _activeDrawShape && _drawShapes.Contains(drawShape);
                             using (var penClosing = new Pen(new SolidBrush(useActiveColor ? LineColorActive : LineColor), 2))
                             {
-                                graphics.DrawLine(penClosing, ToZoomFactorPoint(drawCommand.Points[drawCommand.Points.Count - 1]), ToZoomFactorPoint(drawCommand.Points[0]));
+                                graphics.DrawLine(penClosing, ToZoomFactorPoint(drawShape.Points[drawShape.Points.Count - 1]), ToZoomFactorPoint(drawShape.Points[0]));
                             }
                         }
                     }
-                    else if (drawCommand.Points[i].IsBeizer)
+                    else if (drawShape.Points[i].IsBeizer)
                     {
 
-                        if (drawCommand.Points.Count - i > 3 && i > 0)
+                        if (drawShape.Points.Count - i >= 3 && i > 0)
                         {
-                            graphics.DrawBezier(pen, ToZoomFactorPoint(drawCommand.Points[i - 1]), ToZoomFactorPoint(drawCommand.Points[i]), ToZoomFactorPoint(drawCommand.Points[i + 1]), ToZoomFactorPoint(drawCommand.Points[i + 2]));
+                            graphics.DrawBezier(pen, ToZoomFactorPoint(drawShape.Points[i - 1]), ToZoomFactorPoint(drawShape.Points[i]), ToZoomFactorPoint(drawShape.Points[i + 1]), ToZoomFactorPoint(drawShape.Points[i + 2]));
                             i += 2;
                         }
-                        else if (drawCommand.Points.Count - i > 3 && i == 0)
+                        else if (drawShape.Points.Count - i >= 3 && i == 0)
                         {
-                            graphics.DrawBezier(pen, ToZoomFactorPoint(drawCommand.Points[i]), ToZoomFactorPoint(drawCommand.Points[i + 1]), ToZoomFactorPoint(drawCommand.Points[i + 2]), ToZoomFactorPoint(drawCommand.Points[i + 3]));
+                            graphics.DrawBezier(pen, ToZoomFactorPoint(drawShape.Points[i]), ToZoomFactorPoint(drawShape.Points[i + 1]), ToZoomFactorPoint(drawShape.Points[i + 2]), ToZoomFactorPoint(drawShape.Points[i + 3]));
                             i += 3;
                         }
 
-                        if (isActive && drawCommand.Points.Count > 0 && (_x != int.MinValue || _y != int.MinValue) && !_drawCommands.Contains(_activeDrawCommand))
+                        if (isActive && drawShape.Points.Count > 0 && (_x != int.MinValue || _y != int.MinValue) && !_drawShapes.Contains(_activeDrawShape))
                         {
                             using (var penNewLine = new Pen(new SolidBrush(LineColorActive), 2))
                             {
-                                graphics.DrawLine(penNewLine, ToZoomFactorPoint(drawCommand.Points[drawCommand.Points.Count - 1]), new Point(ToZoomFactor(_x), ToZoomFactor(_y)));
+                                graphics.DrawLine(penNewLine, ToZoomFactorPoint(drawShape.Points[drawShape.Points.Count - 1]), new Point(ToZoomFactor(_x), ToZoomFactor(_y)));
                             }
                         }
 
                         i++;
-                        if (i >= drawCommand.Points.Count - 1)
+                        if (i >= drawShape.Points.Count - 1)
                         {
-                            var useActiveColor = drawCommand == _activeDrawCommand && _drawCommands.Contains(drawCommand);
+                            var useActiveColor = drawShape == _activeDrawShape && _drawShapes.Contains(drawShape);
                             using (var penClosing = new Pen(new SolidBrush(useActiveColor ? LineColorActive : LineColor), 2))
                             {
-                                graphics.DrawLine(penClosing, ToZoomFactorPoint(drawCommand.Points[drawCommand.Points.Count - 1]), ToZoomFactorPoint(drawCommand.Points[0]));
+                                graphics.DrawLine(penClosing, ToZoomFactorPoint(drawShape.Points[drawShape.Points.Count - 1]), ToZoomFactorPoint(drawShape.Points[0]));
                             }
                         }
                     }
@@ -338,7 +352,7 @@ namespace AssaDraw
 
         private void pictureBoxCanvas_MouseClick(object sender, MouseEventArgs e)
         {
-            if (_mouseDownPoint != null || _moveActiveDrawCommandStart.X != int.MinValue)
+            if (_mouseDownPoint != null || _moveActiveDrawShapeStart.X != int.MinValue || toolStripButtonPreview.Checked)
             {
                 return;
             }
@@ -349,27 +363,27 @@ namespace AssaDraw
             numericUpDownX.Enabled = false;
             numericUpDownY.Enabled = false;
 
-            if (e.Button == MouseButtons.Left && _activeDrawCommand != null && _activeDrawCommand.Points.Count > 0 && !_drawCommands.Contains(_activeDrawCommand))
+            if (e.Button == MouseButtons.Left && _activeDrawShape != null && _activeDrawShape.Points.Count > 0 && !_drawShapes.Contains(_activeDrawShape))
             {
                 // continue drawing
                 if (toolStripButtonLine.Checked)
                 {
-                    _activeDrawCommand.AddPoint(DrawCommandType.Line, x, y, PointColor);
+                    _activeDrawShape.AddPoint(DrawCoordinateType.Line, x, y, PointColor);
                 }
                 else if (toolStripButtonBeizer.Checked)
                 {
                     // add two support points
-                    var startX = _activeDrawCommand.Points[_activeDrawCommand.Points.Count - 1].X;
-                    var startY = _activeDrawCommand.Points[_activeDrawCommand.Points.Count - 1].Y;
+                    var startX = _activeDrawShape.Points[_activeDrawShape.Points.Count - 1].X;
+                    var startY = _activeDrawShape.Points[_activeDrawShape.Points.Count - 1].Y;
                     var endX = x;
                     var endY = y;
                     var oneThirdX = (int)Math.Round((endX - startX) / 3.0);
                     var oneThirdY = (int)Math.Round((endY - startY) / 3.0);
-                    _activeDrawCommand.AddPoint(DrawCommandType.BezierCurveSupport1, startX + oneThirdX, startY + oneThirdY, PointHelperColor);
-                    _activeDrawCommand.AddPoint(DrawCommandType.BezierCurveSupport2, startX + oneThirdX + oneThirdX, startY + oneThirdY + oneThirdY, PointHelperColor);
+                    _activeDrawShape.AddPoint(DrawCoordinateType.BezierCurveSupport1, startX + oneThirdX, startY + oneThirdY, PointHelperColor);
+                    _activeDrawShape.AddPoint(DrawCoordinateType.BezierCurveSupport2, startX + oneThirdX + oneThirdX, startY + oneThirdY + oneThirdY, PointHelperColor);
 
                     // add end point
-                    _activeDrawCommand.AddPoint(DrawCommandType.BezierCurve, endX, endY, PointColor);
+                    _activeDrawShape.AddPoint(DrawCoordinateType.BezierCurve, endX, endY, PointColor);
                 }
             }
             else if (e.Button == MouseButtons.Left)
@@ -378,16 +392,16 @@ namespace AssaDraw
                 numericUpDownX.Enabled = false;
                 numericUpDownY.Enabled = false;
 
-                _oldDrawCommand = null;
+                _oldDrawShape = null;
                 if (toolStripButtonLine.Checked)
                 {
-                    _activeDrawCommand = new DrawCommand();
-                    _activeDrawCommand.AddPoint(DrawCommandType.Line, x, y, PointColor);
+                    _activeDrawShape = new DrawShape();
+                    _activeDrawShape.AddPoint(DrawCoordinateType.Line, x, y, PointColor);
                 }
                 else if (toolStripButtonBeizer.Checked)
                 {
-                    _activeDrawCommand = new DrawCommand();
-                    _activeDrawCommand.AddPoint(DrawCommandType.BezierCurve, x, y, PointColor);
+                    _activeDrawShape = new DrawShape();
+                    _activeDrawShape.AddPoint(DrawCoordinateType.BezierCurve, x, y, PointColor);
                 }
             }
 
@@ -400,9 +414,9 @@ namespace AssaDraw
             var maxDiff = float.MaxValue;
             DrawCoordinate pointDiff = null;
 
-            foreach (var drawCommand in _drawCommands)
+            foreach (var drawShape in _drawShapes)
             {
-                foreach (var point in drawCommand.Points)
+                foreach (var point in drawShape.Points)
                 {
                     var diff = Math.Abs(x - point.X) + Math.Abs(y - point.Y);
                     if (diff <= maxDiff)
@@ -423,6 +437,11 @@ namespace AssaDraw
 
         private void pictureBoxCanvas_MouseMove(object sender, MouseEventArgs e)
         {
+            if (toolStripButtonPreview.Checked)
+            {
+                return;
+            }
+
             var x = FromZoomFactor(e.Location.X);
             var y = FromZoomFactor(e.Location.Y);
             labelPosition.Text = $"Position {x},{y}";
@@ -449,7 +468,7 @@ namespace AssaDraw
             }
 
 
-            if (_drawCommands.Contains(_activeDrawCommand) || _activeDrawCommand == null)
+            if (_drawShapes.Contains(_activeDrawShape) || _activeDrawShape == null)
             {
                 var closePoint = GetClosePoint(x, y);
                 if (closePoint != null)
@@ -459,18 +478,18 @@ namespace AssaDraw
                 }
             }
 
-            if (_activeDrawCommand == null && _activePoint == null)
+            if (_activeDrawShape == null && _activePoint == null)
             {
                 Cursor = Cursors.Default;
                 return;
             }
 
 
-            if (_activeDrawCommand != null)
+            if (_activeDrawShape != null)
             {
-                if (_activeDrawCommand.Points.Count == 0 && _drawCommands.Contains(_activeDrawCommand))
+                if (_activeDrawShape.Points.Count == 0 && _drawShapes.Contains(_activeDrawShape))
                 {
-                    _activeDrawCommand.AddPoint(DrawCommandType.Line, ToZoomFactor(x), ToZoomFactor(y), PointColor);
+                    _activeDrawShape.AddPoint(DrawCoordinateType.Line, ToZoomFactor(x), ToZoomFactor(y), PointColor);
                 }
                 else
                 {
@@ -481,21 +500,21 @@ namespace AssaDraw
                 pictureBoxCanvas.Invalidate();
             }
 
-            if (ModifierKeys == Keys.Control && _activeDrawCommand != null && _drawCommands.Contains(_activeDrawCommand) &&
-                _moveActiveDrawCommandStart.X != int.MinValue && _moveActiveDrawCommandStart.Y != int.MinValue)
+            if (ModifierKeys == Keys.Control && _activeDrawShape != null && _drawShapes.Contains(_activeDrawShape) &&
+                _moveActiveDrawShapeStart.X != int.MinValue && _moveActiveDrawShapeStart.Y != int.MinValue)
             {
                 Cursor = Cursors.SizeAll;
-                var xAdjust = x - _moveActiveDrawCommandStart.X;
-                var yAdjust = y - _moveActiveDrawCommandStart.Y;
-                _moveActiveDrawCommandStart.X = x;
-                _moveActiveDrawCommandStart.Y = y;
-                foreach (var p in _activeDrawCommand.Points)
+                var xAdjust = x - _moveActiveDrawShapeStart.X;
+                var yAdjust = y - _moveActiveDrawShapeStart.Y;
+                _moveActiveDrawShapeStart.X = x;
+                _moveActiveDrawShapeStart.Y = y;
+                foreach (var p in _activeDrawShape.Points)
                 {
                     p.X += xAdjust;
                     p.Y += yAdjust;
                 }
 
-                FillTreeView(_drawCommands);
+                FillTreeView(_drawShapes);
                 pictureBoxCanvas.Invalidate();
                 _activePoint = null;
                 return;
@@ -514,17 +533,17 @@ namespace AssaDraw
             return $"{_assaStartTag}{s.Trim()}{_assaEndTag}";
         }
 
-        private void FillTreeView(List<DrawCommand> drawCommands)
+        private void FillTreeView(List<DrawShape> drawShapes)
         {
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
-            foreach (var drawCommand in drawCommands)
+            foreach (var drawShape in drawShapes)
             {
                 var node = new TreeNode("Shape");
-                node.Tag = drawCommand;
-                for (int i = 0; i < drawCommand.Points.Count; i++)
+                node.Tag = drawShape;
+                for (int i = 0; i < drawShape.Points.Count; i++)
                 {
-                    var p = drawCommand.Points[i];
+                    var p = drawShape.Points[i];
                     var text = p.GetText(p.X, p.Y);
                     var subNode = new TreeNode(text) { Tag = p };
                     node.Nodes.Add(subNode);
@@ -538,7 +557,23 @@ namespace AssaDraw
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Modifiers == Keys.Control && e.KeyCode == Keys.V)
+            if (e.Modifiers == Keys.Control && e.KeyCode == Keys.P)
+            {
+                if (toolStripButtonPreview.Enabled)
+                {
+                    e.SuppressKeyPress = true;
+                    var timer1 = new Timer();
+                    timer1.Interval = 50;
+                    timer1.Tick += (o, s) => 
+                    {
+                        timer1.Stop();
+                        timer1.Dispose();
+                        toolStripButtonPreview_Click(null, null);
+                    };
+                    timer1.Start();
+                }
+            }
+            else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.V)
             {
                 if (Clipboard.ContainsImage())
                 {
@@ -652,27 +687,27 @@ namespace AssaDraw
                 toolStripButtonCloseShape_Click(null, null);
                 e.SuppressKeyPress = true;
             }
-            else if (_activeDrawCommand != null && e.KeyCode == Keys.Escape)
+            else if (_activeDrawShape != null && e.KeyCode == Keys.Escape)
             {
-                if (!_drawCommands.Contains(_activeDrawCommand))
+                if (!_drawShapes.Contains(_activeDrawShape))
                 {
                     toolStripButtonClearCurrent_Click(null, null);
                 }
-                else if (_oldDrawCommand != null)
+                else if (_oldDrawShape != null)
                 {
-                    _activeDrawCommand.Points = _oldDrawCommand.Points;
-                    _oldDrawCommand = null;
-                    _activeDrawCommand = null;
+                    _activeDrawShape.Points = _oldDrawShape.Points;
+                    _oldDrawShape = null;
+                    _activeDrawShape = null;
                     pictureBoxCanvas.Invalidate();
                 }
                 else
                 {
-                    _activeDrawCommand = null;
+                    _activeDrawShape = null;
                 }
 
                 e.SuppressKeyPress = true;
             }
-            else if (_activeDrawCommand != null && e.KeyCode == Keys.Enter)
+            else if (_activeDrawShape != null && e.KeyCode == Keys.Enter)
             {
                 toolStripButtonCloseShape_Click(null, null);
                 e.SuppressKeyPress = true;
@@ -684,7 +719,7 @@ namespace AssaDraw
                     deletePointToolStripMenuItem_Click(null, null);
                     e.SuppressKeyPress = true;
                 }
-                else if (treeView1.SelectedNode.Tag is DrawCommand)
+                else if (treeView1.SelectedNode.Tag is DrawShape)
                 {
                     buttonRemoveShape_Click(null, null);
                     e.SuppressKeyPress = true;
@@ -692,13 +727,13 @@ namespace AssaDraw
             }
             else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.Z)
             {
-                _activeDrawCommand = null;
+                _activeDrawShape = null;
                 Undo();
                 e.SuppressKeyPress = true;
             }
             else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.Y)
             {
-                _activeDrawCommand = null;
+                _activeDrawShape = null;
                 Redo();
                 e.SuppressKeyPress = true;
             }
@@ -731,21 +766,21 @@ namespace AssaDraw
 
         private void ScaleActiveShape(float factor)
         {
-            if (_activeDrawCommand == null)
+            if (_activeDrawShape == null)
             {
                 return;
             }
 
-            var minX = _activeDrawCommand.Points.Min(p => p.X);
-            var minY = _activeDrawCommand.Points.Min(p => p.Y);
-            var maxX = _activeDrawCommand.Points.Max(p => p.X);
-            var maxY = _activeDrawCommand.Points.Max(p => p.Y);
-            if (factor < 1 && (maxX - minX  < 50 || maxY - minY < 50))
+            var minX = _activeDrawShape.Points.Min(p => p.X);
+            var minY = _activeDrawShape.Points.Min(p => p.Y);
+            var maxX = _activeDrawShape.Points.Max(p => p.X);
+            var maxY = _activeDrawShape.Points.Max(p => p.Y);
+            if (factor < 1 && (maxX - minX < 50 || maxY - minY < 50))
             {
                 return;
             }
 
-            foreach (var point in _activeDrawCommand.Points)
+            foreach (var point in _activeDrawShape.Points)
             {
                 var x = point.X - minX;
                 var y = point.Y - minY;
@@ -755,33 +790,33 @@ namespace AssaDraw
                 point.Y = newY;
             }
             pictureBoxCanvas.Invalidate();
-            FillTreeView(_drawCommands);
+            FillTreeView(_drawShapes);
         }
 
         private void AdjustPosition(int xAdjust, int yAdjust)
         {
-            if (_activeDrawCommand != null)
+            if (_activeDrawShape != null)
             {
-                foreach (var p in _activeDrawCommand.Points)
+                foreach (var p in _activeDrawShape.Points)
                 {
                     p.X += xAdjust;
                     p.Y += yAdjust;
                 }
 
-                FillTreeView(_drawCommands);
+                FillTreeView(_drawShapes);
                 pictureBoxCanvas.Invalidate();
                 return;
             }
 
-            foreach (var drawCommand in _drawCommands)
+            foreach (var drawShape in _drawShapes)
             {
-                foreach (var p in drawCommand.Points)
+                foreach (var p in drawShape.Points)
                 {
                     p.X += xAdjust;
                     p.Y += yAdjust;
                 }
 
-                FillTreeView(_drawCommands);
+                FillTreeView(_drawShapes);
                 pictureBoxCanvas.Invalidate();
             }
         }
@@ -796,17 +831,17 @@ namespace AssaDraw
                 numericUpDownX.Value = (decimal)point.X;
                 numericUpDownY.Value = (decimal)point.Y;
                 _activePoint = point;
-                _activeDrawCommand = null;
+                _activeDrawShape = null;
                 numericUpDownX.Enabled = true;
                 numericUpDownY.Enabled = true;
             }
-            else if (tag is DrawCommand command)
+            else if (tag is DrawShape command)
             {
                 _activePoint = null;
                 numericUpDownX.Enabled = false;
                 numericUpDownY.Enabled = false;
-                _activeDrawCommand = command;
-                _oldDrawCommand = new DrawCommand(command);
+                _activeDrawShape = command;
+                _oldDrawShape = new DrawShape(command);
                 _x = int.MinValue;
                 _y = int.MinValue;
             }
@@ -851,20 +886,20 @@ namespace AssaDraw
 
         private void buttonRemoveShape_Click(object sender, EventArgs e)
         {
-            if (_activeDrawCommand != null)
+            if (_activeDrawShape != null)
             {
-                _drawCommands.Remove(_activeDrawCommand);
+                _drawShapes.Remove(_activeDrawShape);
             }
 
-            _drawCommands.Remove(treeView1.SelectedNode.Tag as DrawCommand);
+            _drawShapes.Remove(treeView1.SelectedNode.Tag as DrawShape);
             treeView1.Nodes.Remove(treeView1.SelectedNode);
-            _activeDrawCommand = null;
+            _activeDrawShape = null;
             pictureBoxCanvas.Invalidate();
         }
 
         private void pictureBoxCanvas_MouseUp(object sender, MouseEventArgs e)
         {
-            _moveActiveDrawCommandStart = new Point(int.MinValue, int.MinValue);
+            _moveActiveDrawShapeStart = new Point(int.MinValue, int.MinValue);
             _mouseDownPoint = null;
         }
 
@@ -872,7 +907,7 @@ namespace AssaDraw
         {
             var x = FromZoomFactor(e.X);
             var y = FromZoomFactor(e.Y);
-            _moveActiveDrawCommandStart = new Point(int.MinValue, int.MinValue);
+            _moveActiveDrawShapeStart = new Point(int.MinValue, int.MinValue);
             var closePoint = GetClosePoint(x, y);
             if (closePoint != null)
             {
@@ -896,37 +931,37 @@ namespace AssaDraw
             {
                 contextMenuStripCanvasBackground.Show(pictureBoxCanvas, x, y);
             }
-            else if (ModifierKeys == Keys.Control && _activeDrawCommand != null && _drawCommands.Contains(_activeDrawCommand))
+            else if (ModifierKeys == Keys.Control && _activeDrawShape != null && _drawShapes.Contains(_activeDrawShape))
             {
-                _moveActiveDrawCommandStart = new Point(x, y);
+                _moveActiveDrawShapeStart = new Point(x, y);
                 Cursor = Cursors.SizeAll;
             }
         }
 
         private void toolStripButtonCloseShape_Click(object sender, EventArgs e)
         {
-            if (_activeDrawCommand == null)
+            if (_activeDrawShape == null)
             {
                 pictureBoxCanvas.Invalidate();
                 return;
             }
 
-            if (_activeDrawCommand.Points.Count < 2)
+            if (_activeDrawShape.Points.Count < 2)
             {
-                _activeDrawCommand = null;
+                _activeDrawShape = null;
             }
 
             _activePoint = null;
             numericUpDownX.Enabled = false;
             numericUpDownY.Enabled = false;
 
-            if (_activeDrawCommand != null && !_drawCommands.Contains(_activeDrawCommand))
+            if (_activeDrawShape != null && !_drawShapes.Contains(_activeDrawShape))
             {
-                _drawCommands.Add(_activeDrawCommand);
+                _drawShapes.Add(_activeDrawShape);
             }
 
-            FillTreeView(_drawCommands);
-            _activeDrawCommand = null;
+            FillTreeView(_drawShapes);
+            _activeDrawShape = null;
             _x = int.MinValue;
             _y = int.MinValue;
             pictureBoxCanvas.Invalidate();
@@ -935,18 +970,18 @@ namespace AssaDraw
 
         private void toolStripButtonClearCurrent_Click(object sender, EventArgs e)
         {
-            if (_activeDrawCommand != null && !_drawCommands.Contains(_activeDrawCommand))
+            if (_activeDrawShape != null && !_drawShapes.Contains(_activeDrawShape))
             {
-                _drawCommands.Remove(_activeDrawCommand);
+                _drawShapes.Remove(_activeDrawShape);
                 EnableDisableCurrentShapeActions();
             }
-            else if (treeView1.SelectedNode?.Tag is DrawCommand drawCommand && !_drawCommands.Contains(_activeDrawCommand))
+            else if (treeView1.SelectedNode?.Tag is DrawShape drawShape && !_drawShapes.Contains(_activeDrawShape))
             {
-                _drawCommands.Remove(drawCommand);
+                _drawShapes.Remove(drawShape);
                 treeView1.Nodes.Remove(treeView1.SelectedNode);
             }
 
-            _activeDrawCommand = null;
+            _activeDrawShape = null;
             pictureBoxCanvas.Invalidate();
             _x = int.MinValue;
             _y = int.MinValue;
@@ -963,21 +998,21 @@ namespace AssaDraw
             _x = int.MinValue;
             _y = int.MinValue;
             treeView1.Nodes.Clear();
-            _activeDrawCommand = null;
-            _oldDrawCommand = null;
+            _activeDrawShape = null;
+            _oldDrawShape = null;
             _activePoint = null;
             numericUpDownX.Enabled = false;
             numericUpDownY.Enabled = false;
-            _drawCommands.Clear();
+            _drawShapes.Clear();
             pictureBoxCanvas.Invalidate();
         }
 
         private string GetAssaDrawCode()
         {
             var sb = new StringBuilder();
-            foreach (var drawCommand in _drawCommands)
+            foreach (var drawShape in _drawShapes)
             {
-                sb.AppendLine(drawCommand.ToAssa());
+                sb.AppendLine(drawShape.ToAssa());
             }
 
             return WrapInPTag(sb.ToString());
@@ -1020,7 +1055,7 @@ namespace AssaDraw
 
         private void ImportAssaDrawing(string fileName)
         {
-            _activeDrawCommand = null;
+            _activeDrawShape = null;
             _fileName = fileName;
             var text = System.IO.File.ReadAllText(_fileName);
             SetAssaStartEndTags(text);
@@ -1035,9 +1070,9 @@ namespace AssaDraw
             var arr = text.Split();
             int i = 0;
             int beizerCount = 0;
-            var state = DrawCommandType.None;
+            var state = DrawCoordinateType.None;
             DrawCoordinate moveCoordinate = null;
-            DrawCommand drawCommand = null;
+            DrawShape drawShape = null;
             while (i < arr.Length)
             {
                 var v = arr[i];
@@ -1046,42 +1081,42 @@ namespace AssaDraw
                     float.TryParse(arr[i + 2], NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var mY))
                 {
                     beizerCount = 0;
-                    moveCoordinate = new DrawCoordinate(null, DrawCommandType.Move, (int)Math.Round(mX), (int)Math.Round(mY), PointColor);
-                    state = DrawCommandType.Move;
+                    moveCoordinate = new DrawCoordinate(null, DrawCoordinateType.Move, (int)Math.Round(mX), (int)Math.Round(mY), PointColor);
+                    state = DrawCoordinateType.Move;
                     i += 2;
                 }
                 else if (v == "l")
                 {
-                    state = DrawCommandType.Line;
+                    state = DrawCoordinateType.Line;
                     beizerCount = 0;
                     if (moveCoordinate != null)
                     {
-                        drawCommand = new DrawCommand();
-                        drawCommand.AddPoint(state, moveCoordinate.X, moveCoordinate.Y, PointColor);
+                        drawShape = new DrawShape();
+                        drawShape.AddPoint(state, moveCoordinate.X, moveCoordinate.Y, PointColor);
                         moveCoordinate = null;
-                        _drawCommands.Add(drawCommand);
+                        _drawShapes.Add(drawShape);
                     }
                 }
                 else if (v == "b")
                 {
-                    state = DrawCommandType.BezierCurve;
+                    state = DrawCoordinateType.BezierCurve;
                     if (moveCoordinate != null)
                     {
-                        drawCommand = new DrawCommand();
-                        drawCommand.AddPoint(state, moveCoordinate.X, moveCoordinate.Y, PointColor);
+                        drawShape = new DrawShape();
+                        drawShape.AddPoint(state, moveCoordinate.X, moveCoordinate.Y, PointColor);
                         moveCoordinate = null;
-                        _drawCommands.Add(drawCommand);
+                        _drawShapes.Add(drawShape);
                     }
                     beizerCount = 1;
                 }
-                else if (state == DrawCommandType.Line && drawCommand != null && i < arr.Length - 1 &&
+                else if (state == DrawCoordinateType.Line && drawShape != null && i < arr.Length - 1 &&
                     float.TryParse(arr[i + 0], NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var lX) &&
                     float.TryParse(arr[i + 1], NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var lY))
                 {
-                    drawCommand.AddPoint(state, (int)Math.Round(lX), (int)Math.Round(lY), PointColor);
+                    drawShape.AddPoint(state, (int)Math.Round(lX), (int)Math.Round(lY), PointColor);
                     i++;
                 }
-                else if (state == DrawCommandType.BezierCurve && drawCommand != null &&
+                else if (state == DrawCoordinateType.BezierCurve && drawShape != null &&
                     float.TryParse(arr[i + 0], NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var bX) &&
                     float.TryParse(arr[i + 1], NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var bY))
                 {
@@ -1093,15 +1128,15 @@ namespace AssaDraw
 
                     if (beizerCount == 2)
                     {
-                        drawCommand.AddPoint(DrawCommandType.BezierCurveSupport1, (int)Math.Round(bX), (int)Math.Round(bY), PointHelperColor);
+                        drawShape.AddPoint(DrawCoordinateType.BezierCurveSupport1, (int)Math.Round(bX), (int)Math.Round(bY), PointHelperColor);
                     }
                     else if (beizerCount == 3)
                     {
-                        drawCommand.AddPoint(DrawCommandType.BezierCurveSupport2, (int)Math.Round(bX), (int)Math.Round(bY), PointHelperColor);
+                        drawShape.AddPoint(DrawCoordinateType.BezierCurveSupport2, (int)Math.Round(bX), (int)Math.Round(bY), PointHelperColor);
                     }
                     else
                     {
-                        drawCommand.AddPoint(state, (int)Math.Round(bX), (int)Math.Round(bY), PointColor);
+                        drawShape.AddPoint(state, (int)Math.Round(bX), (int)Math.Round(bY), PointColor);
                     }
                     i++;
                 }
@@ -1109,7 +1144,7 @@ namespace AssaDraw
                 i++;
             }
 
-            FillTreeView(_drawCommands);
+            FillTreeView(_drawShapes);
             _x = int.MinValue;
             _y = int.MinValue;
             pictureBoxCanvas.Invalidate();
@@ -1182,7 +1217,7 @@ namespace AssaDraw
         {
             lock (_historyLock)
             {
-                var newHistoryItem = _history.MakeHistoryItem(_drawCommands, _activeDrawCommand, _oldDrawCommand, _activePoint, _zoomFactor);
+                var newHistoryItem = _history.MakeHistoryItem(_drawShapes, _activeDrawShape, _oldDrawShape, _activePoint, _zoomFactor);
                 var newHash = newHistoryItem.GetFastHashCode();
                 if (newHash == _historyHash)
                 {
@@ -1202,10 +1237,10 @@ namespace AssaDraw
 
         private void SetPropertiesFromHistory(DrawHistoryItem item)
         {
-            _drawCommands.Clear();
-            _drawCommands.AddRange(item.DrawCommands);
-            _activeDrawCommand = item.ActiveDrawCommand;
-            _oldDrawCommand = item.OldDrawCommand;
+            _drawShapes.Clear();
+            _drawShapes.AddRange(item.DrawShapes);
+            _activeDrawShape = item.ActiveDrawShape;
+            _oldDrawShape = item.OldDrawShape;
             _activePoint = item.ActivePoint;
             _zoomFactor = item.ZoomFactor;
         }
@@ -1225,7 +1260,7 @@ namespace AssaDraw
             }
 
             pictureBoxCanvas.Invalidate();
-            FillTreeView(_drawCommands);
+            FillTreeView(_drawShapes);
         }
 
         private void Redo()
@@ -1243,7 +1278,7 @@ namespace AssaDraw
             }
 
             pictureBoxCanvas.Invalidate();
-            FillTreeView(_drawCommands);
+            FillTreeView(_drawShapes);
         }
 
         private void contextMenuStripTreeView_Opening(object sender, System.ComponentModel.CancelEventArgs e)
@@ -1259,22 +1294,22 @@ namespace AssaDraw
             duplicatePointToolStripMenuItem.Visible = false;
             if (treeView1.SelectedNode.Tag is DrawCoordinate point)
             {
-                if (point.DrawCommandType == DrawCommandType.Line)
+                if (point.DrawType == DrawCoordinateType.Line)
                 {
                     duplicatePointToolStripMenuItem.Visible = true;
-                    deletePointToolStripMenuItem.Visible = point.DrawCommand.Points.Count > 2;
+                    deletePointToolStripMenuItem.Visible = point.DrawShape.Points.Count > 2;
                 }
-                else if (point.DrawCommandType == DrawCommandType.BezierCurve && point.DrawCommand.Points.Count > 8)
+                else if (point.DrawType == DrawCoordinateType.BezierCurve && point.DrawShape.Points.Count > 8)
                 {
                     duplicatePointToolStripMenuItem.Visible = false;
-                    deletePointToolStripMenuItem.Visible = point.DrawCommand.Points.Count > 2;
+                    deletePointToolStripMenuItem.Visible = point.DrawShape.Points.Count > 2;
                 }
                 else
                 {
                     e.Cancel = true;
                 }
             }
-            else if (treeView1.SelectedNode.Tag is DrawCommand)
+            else if (treeView1.SelectedNode.Tag is DrawShape)
             {
                 deleteShapeToolStripMenuItem.Visible = true;
             }
@@ -1308,15 +1343,15 @@ namespace AssaDraw
         {
             if (treeView1.SelectedNode.Tag is DrawCoordinate point)
             {
-                if (point.DrawCommandType == DrawCommandType.Line)
+                if (point.DrawType == DrawCoordinateType.Line)
                 {
-                    var newPoint = new DrawCoordinate(point.DrawCommand, DrawCommandType.Line, point.X, point.Y, point.PointColor);
-                    var idx = point.DrawCommand.Points.IndexOf(point) + 1;
-                    point.DrawCommand.Points.Insert(idx, newPoint);
+                    var newPoint = new DrawCoordinate(point.DrawShape, DrawCoordinateType.Line, point.X, point.Y, point.PointColor);
+                    var idx = point.DrawShape.Points.IndexOf(point) + 1;
+                    point.DrawShape.Points.Insert(idx, newPoint);
                     duplicatePointToolStripMenuItem.Visible = true;
                     _activePoint = newPoint;
 
-                    FillTreeView(_drawCommands);
+                    FillTreeView(_drawShapes);
                     SelectTreeViewNodePoint(_activePoint);
                     pictureBoxCanvas.Invalidate();
                 }
@@ -1325,7 +1360,7 @@ namespace AssaDraw
 
         private void toolStripButtonNew_Click(object sender, EventArgs e)
         {
-            if (_drawCommands.Count == 0)
+            if (_drawShapes.Count == 0)
             {
                 return;
             }
@@ -1336,6 +1371,7 @@ namespace AssaDraw
                 return;
             }
 
+            ClosePreviewMode();
             ClearAll();
             _zoomFactor = 1;
             _fileName = null;
@@ -1344,41 +1380,41 @@ namespace AssaDraw
 
         private void toolStripButtonMirrorHor_Click(object sender, EventArgs e)
         {
-            if (_activeDrawCommand == null)
+            if (_activeDrawShape == null)
             {
                 return;
             }
 
-            var maxY = _activeDrawCommand.Points.Max(p => p.Y);
-            var newDrawing = new DrawCommand();
-            foreach (var p in _activeDrawCommand.Points)
+            var maxY = _activeDrawShape.Points.Max(p => p.Y);
+            var newDrawing = new DrawShape();
+            foreach (var p in _activeDrawShape.Points)
             {
-                newDrawing.AddPoint(p.DrawCommandType, p.X, maxY + maxY - p.Y, p.PointColor);
+                newDrawing.AddPoint(p.DrawType, p.X, maxY + maxY - p.Y, p.PointColor);
             }
 
-            _drawCommands.Add(newDrawing);
-            _activeDrawCommand = newDrawing;
-            FillTreeView(_drawCommands);
+            _drawShapes.Add(newDrawing);
+            _activeDrawShape = newDrawing;
+            FillTreeView(_drawShapes);
             pictureBoxCanvas.Invalidate();
         }
 
         private void toolStripButtonMirrorVert_Click(object sender, EventArgs e)
         {
-            if (_activeDrawCommand == null)
+            if (_activeDrawShape == null)
             {
                 return;
             }
 
-            var maxX = _activeDrawCommand.Points.Max(p => p.X);
-            var newDrawing = new DrawCommand();
-            foreach (var p in _activeDrawCommand.Points)
+            var maxX = _activeDrawShape.Points.Max(p => p.X);
+            var newDrawing = new DrawShape();
+            foreach (var p in _activeDrawShape.Points)
             {
-                newDrawing.AddPoint(p.DrawCommandType, maxX + maxX - p.X, p.Y, p.PointColor);
+                newDrawing.AddPoint(p.DrawType, maxX + maxX - p.X, p.Y, p.PointColor);
             }
 
-            _drawCommands.Add(newDrawing);
-            _activeDrawCommand = newDrawing;
-            FillTreeView(_drawCommands);
+            _drawShapes.Add(newDrawing);
+            _activeDrawShape = newDrawing;
+            FillTreeView(_drawShapes);
             pictureBoxCanvas.Invalidate();
             _x = int.MinValue;
             _y = int.MinValue;
@@ -1445,32 +1481,32 @@ namespace AssaDraw
         {
             if (treeView1.SelectedNode.Tag is DrawCoordinate point)
             {
-                if (point.DrawCommandType == DrawCommandType.Line)
+                if (point.DrawType == DrawCoordinateType.Line)
                 {
                     _activePoint = null;
-                    point.DrawCommand.Points.Remove(point);
-                    FillTreeView(_drawCommands);
+                    point.DrawShape.Points.Remove(point);
+                    FillTreeView(_drawShapes);
                     SelectTreeViewNodePoint(_activePoint);
                     pictureBoxCanvas.Invalidate();
                 }
-                else if (point.IsBeizer && point.DrawCommand.Points.Count > 8)
+                else if (point.IsBeizer && point.DrawShape.Points.Count > 8)
                 {
                     _activePoint = null;
-                    var idx = point.DrawCommand.Points.IndexOf(point);
-                    if (idx < point.DrawCommand.Points.Count - 2 && point.DrawCommand.Points[idx + 1].DrawCommandType == DrawCommandType.BezierCurveSupport1)
+                    var idx = point.DrawShape.Points.IndexOf(point);
+                    if (idx < point.DrawShape.Points.Count - 2 && point.DrawShape.Points[idx + 1].DrawType == DrawCoordinateType.BezierCurveSupport1)
                     {
-                        point.DrawCommand.Points.RemoveAt(idx + 2);
-                        point.DrawCommand.Points.RemoveAt(idx + 1);
-                        point.DrawCommand.Points.RemoveAt(idx);
+                        point.DrawShape.Points.RemoveAt(idx + 2);
+                        point.DrawShape.Points.RemoveAt(idx + 1);
+                        point.DrawShape.Points.RemoveAt(idx);
                     }
-                    else if (idx > 2 && point.DrawCommand.Points[idx + -2].DrawCommandType == DrawCommandType.BezierCurveSupport1)
+                    else if (idx > 2 && point.DrawShape.Points[idx + -2].DrawType == DrawCoordinateType.BezierCurveSupport1)
                     {
-                        point.DrawCommand.Points.RemoveAt(idx);
-                        point.DrawCommand.Points.RemoveAt(idx - 1);
-                        point.DrawCommand.Points.RemoveAt(idx - 2);
+                        point.DrawShape.Points.RemoveAt(idx);
+                        point.DrawShape.Points.RemoveAt(idx - 1);
+                        point.DrawShape.Points.RemoveAt(idx - 2);
                     }
 
-                    FillTreeView(_drawCommands);
+                    FillTreeView(_drawShapes);
                     SelectTreeViewNodePoint(_activePoint);
                     pictureBoxCanvas.Invalidate();
                 }
@@ -1495,6 +1531,89 @@ namespace AssaDraw
                 Clipboard.SetText(text);
             }
             pictureBoxCanvas.Focus();
+        }
+
+        private void toolStripButtonPreview_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(GetAssaDrawCode()))
+            {
+                MessageBox.Show("Nothing to preview");
+                return;
+            }
+
+            try
+            {
+                Cursor = Cursors.WaitCursor;
+                if (!toolStripButtonPreview.Checked)
+                {
+                    var fileName = VideoPreviewGenerator.GetVideoPreviewFileName((int)numericUpDownWidth.Value, (int)numericUpDownHeight.Value);
+                    if (string.IsNullOrEmpty(fileName) || !LibMpvDynamic.IsInstalled)
+                    {
+                        return;
+                    }
+
+                    _mpv = new LibMpvDynamic();
+                    _mpv.Initialize(pictureBoxCanvas, fileName, VideoStartLoaded, null);
+                    toolStripButtonPreview.Checked = true;
+                }
+                else
+                {
+                    ClosePreviewMode();
+                }
+            }
+            finally
+            {
+                Cursor = Cursors.Default;
+            }
+
+            ShowTitle();
+            pictureBoxCanvas.Invalidate();
+            EnableDisableCurrentShapeActions();
+            treeView1.Enabled = !toolStripButtonPreview.Checked;
+            numericUpDownWidth.Enabled = !toolStripButtonPreview.Checked;
+            numericUpDownHeight.Enabled = !toolStripButtonPreview.Checked;
+        }
+
+        private void ClosePreviewMode()
+        {
+            _mpv?.HardDispose();
+            _mpv = null;
+            toolStripButtonPreview.Checked = false;
+            EnableDisableCurrentShapeActions();
+            treeView1.Enabled = false;
+            numericUpDownWidth.Enabled = false;
+            numericUpDownHeight.Enabled = false;
+        }
+
+        private void VideoStartLoaded(object sender, EventArgs e)
+        {
+            var format = new AdvancedSubStationAlpha();
+            var subtitle = new Subtitle();
+            var p = new Paragraph(GetAssaDrawCode(), 0, 10000)
+            {
+                Extra = "AssaDraw"
+            };
+            subtitle.Header = AdvancedSubStationAlpha.DefaultHeader;
+            var assaDrawStyle = new SsaStyle
+            {
+                Name = p.Extra,
+                Alignment = "7",
+                MarginVertical = 0,
+                MarginLeft = 0,
+                MarginRight = 0
+            };
+            subtitle.Header = AdvancedSubStationAlpha.AddSsaStyle(assaDrawStyle, subtitle.Header);
+
+            subtitle.Header = AdvancedSubStationAlpha.AddTagToHeader("PlayResX", "PlayResX: " + ((int)numericUpDownWidth.Value).ToString(CultureInfo.InvariantCulture), "[Script Info]", subtitle.Header);
+            subtitle.Header = AdvancedSubStationAlpha.AddTagToHeader("PlayResY", "PlayResY: " + ((int)numericUpDownHeight.Value).ToString(CultureInfo.InvariantCulture), "[Script Info]", subtitle.Header);
+
+            subtitle.Paragraphs.Add(p);
+            var text = subtitle.ToText(format);
+            _mpvTextFileName = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".ass");
+            File.WriteAllText(_mpvTextFileName, text);
+            _mpv.LoadSubtitle(_mpvTextFileName);
+            _mpv.Pause();
+            _mpv.CurrentPosition = 0.5;
         }
     }
 }

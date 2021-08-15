@@ -12,31 +12,31 @@ namespace AssaDraw.Logic
 
         public Color PointColor { get; set; }
 
-        public DrawCommand DrawCommand { get; set; }
+        public DrawShape DrawShape { get; set; }
 
-        public DrawCommandType DrawCommandType { get; set; }
+        public DrawCoordinateType DrawType { get; set; }
 
-        public bool IsBeizer => DrawCommandType == DrawCommandType.BezierCurve || DrawCommandType == DrawCommandType.BezierCurveSupport1 || DrawCommandType == DrawCommandType.BezierCurveSupport2;
+        public bool IsBeizer => DrawType == DrawCoordinateType.BezierCurve || DrawType == DrawCoordinateType.BezierCurveSupport1 || DrawType == DrawCoordinateType.BezierCurveSupport2;
 
-        public DrawCoordinate(DrawCommand drawCommand, DrawCommandType drawCommandType)
+        public DrawCoordinate(DrawShape drawShape, DrawCoordinateType drawType)
         {
-            DrawCommand = drawCommand;
-            DrawCommandType = drawCommandType;
+            DrawShape = drawShape;
+            DrawType = drawType;
         }
 
-        public DrawCoordinate(DrawCommand drawCommand, DrawCommandType drawCommandType, float x, float y, Color pointColor)
+        public DrawCoordinate(DrawShape drawShape, DrawCoordinateType drawType, float x, float y, Color pointColor)
         {
-            DrawCommand = drawCommand;
-            DrawCommandType = drawCommandType;
+            DrawShape = drawShape;
+            DrawType = drawType;
             X = x;
             Y = y;
             PointColor = pointColor;
         }
 
-        public DrawCoordinate(DrawCommand drawCommand, DrawCommandType drawCommandType, int x, int y, Color pointColor)
+        public DrawCoordinate(DrawShape drawShape, DrawCoordinateType drawType, int x, int y, Color pointColor)
         {
-            DrawCommand = drawCommand;
-            DrawCommandType = drawCommandType;
+            DrawShape = drawShape;
+            DrawType = drawType;
             X = x;
             Y = y;
             PointColor = pointColor;
@@ -51,25 +51,25 @@ namespace AssaDraw.Logic
         public string GetText(int x, int y)
         {
             var command = "Command";
-            if (DrawCommand.Points[0] == this)
+            if (DrawShape.Points[0] == this)
             {
                 command = "Move";
             }
-            else if (DrawCommandType == DrawCommandType.Line)
+            else if (DrawType == DrawCoordinateType.Line)
             {
                 command = "Line";
             }
-            else if (DrawCommandType == DrawCommandType.Move)
+            else if (DrawType == DrawCoordinateType.Move)
             {
                 command = "Move";
             }
             else if (IsBeizer)
             {
-                if (DrawCommandType == DrawCommandType.BezierCurveSupport1)
+                if (DrawType == DrawCoordinateType.BezierCurveSupport1)
                 {
                     command = "Curve support 1";
                 }
-                else if (DrawCommandType == DrawCommandType.BezierCurveSupport2)
+                else if (DrawType == DrawCoordinateType.BezierCurveSupport2)
                 {
                     command = "Curve support 2";
                 }
@@ -89,7 +89,7 @@ namespace AssaDraw.Logic
                 int hash = 17;
                 hash = hash * 23 + X.GetHashCode();
                 hash = hash * 23 + Y.GetHashCode();
-                hash = hash * 23 + DrawCommandType.GetHashCode();
+                hash = hash * 23 + DrawType.GetHashCode();
                 return hash;
             }
         }
