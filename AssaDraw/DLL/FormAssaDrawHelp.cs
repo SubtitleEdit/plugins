@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Globalization;
+using System.Windows.Forms;
 
 namespace AssaDraw
 {
@@ -7,6 +8,9 @@ namespace AssaDraw
         public FormAssaDrawHelp()
         {
             InitializeComponent();
+
+            var version = (new Nikse.SubtitleEdit.PluginLogic.AssaDraw() as Nikse.SubtitleEdit.PluginLogic.IPlugin).Version.ToString(CultureInfo.InvariantCulture);
+            richTextBoxHelpInfo.Text = richTextBoxHelpInfo.Text.Replace("[VERSION]", version);
         }
 
         private void FormAssaDrawHelp_KeyDown(object sender, KeyEventArgs e)

@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="richTextBoxHelpInfo.Text" xml:space="preserve">
-    <value>ASSA Draw 0.3
+    <value>ASSA Draw [VERSION]
 
 Shortcuts:
 * Enter: Complete/close shape
@@ -137,6 +137,10 @@ Shortcuts:
 * Ctrl+Y: Redo
 * Ctrl+F2: Toggle background image on/off
 * Ctrl+Minus/Plus or ctrl+Mousewheel: Zoom in/out
-* Ctrl+Shift+Minus/Plus: Scale active shape</value>
+* Ctrl+Shift+Minus/Plus: Scale active shape
+
+Tips: 
+* "iclip" must be used in same subtitle as drawing
+* To use different colors multiple lines and layers must be used.</value>
   </data>
 </root>

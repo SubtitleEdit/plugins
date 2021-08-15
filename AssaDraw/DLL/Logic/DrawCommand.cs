@@ -80,7 +80,6 @@ namespace AssaDraw.Logic
             unchecked // Overflow is fine, just wrap
             {
                 int hash = 17;
-
                 foreach (var point in Points)
                 {
                     hash = hash * 23 + point.GetFastHashCode();

@@ -22,7 +22,6 @@ namespace AssaDraw.Logic
             unchecked // Overflow is fine, just wrap
             {
                 int hash = 17;
-
                 foreach (var command in DrawCommands)
                 {
                     hash = hash * 23 + command.GetFastHashCode();

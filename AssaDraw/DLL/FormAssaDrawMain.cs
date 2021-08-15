@@ -82,6 +82,7 @@ namespace AssaDraw
                 }
             }
 
+            ShowTitle();
             MouseWheel += FormAssaDrawMain_MouseWheel;
         }
 
@@ -141,13 +142,14 @@ namespace AssaDraw
 
         private void ShowTitle()
         {
+            var version = (new Nikse.SubtitleEdit.PluginLogic.AssaDraw() as Nikse.SubtitleEdit.PluginLogic.IPlugin).Version.ToString(CultureInfo.InvariantCulture);
             if (_zoomFactor == 1)
             {
-                Text = "ASSA Draw";
+                Text = $"ASSA Draw {version}";
             }
             else
             {
-                Text = $"ASSA Draw - Zoom is {(_zoomFactor * 100.0):##0.#}%";
+                Text = $"ASSA Draw {version} - Zoom is {(_zoomFactor * 100.0):##0.#}%";
             }
         }
 
@@ -747,8 +749,8 @@ namespace AssaDraw
             {
                 var x = point.X - minX;
                 var y = point.Y - minY;
-                var newX = (int)Math.Round(x * factor + minX);
-                var newY = (int)Math.Round(y * factor + minY);
+                var newX = x * factor + minX;
+                var newY = y * factor + minY;
                 point.X = newX;
                 point.Y = newY;
             }
