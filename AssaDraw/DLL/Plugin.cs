@@ -64,7 +64,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
             }
 
-            var text = new AdvancedSubStationAlpha().ToText(new Subtitle(selectedParagraphs), string.Empty);
+            var tempSub = new Subtitle(selectedParagraphs);
+            tempSub.Header = sub.Header;
+            var text = new AdvancedSubStationAlpha().ToText(tempSub, string.Empty);
+
             using (var form = new FormAssaDrawMain(text))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)

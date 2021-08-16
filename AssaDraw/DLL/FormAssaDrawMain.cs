@@ -625,7 +625,7 @@ namespace AssaDraw
                     }
                     else if (text.Contains("\\p1"))
                     {
-                        ImportAssaDrawingFromText(text, 0, Color.Transparent);
+                        ImportAssaDrawingFromText(text, 0, Color.Transparent, false);
                         e.SuppressKeyPress = true;
                     }
                 }
@@ -1204,14 +1204,14 @@ namespace AssaDraw
                     if (clipMatch.Success)
                     {
                         var drawText = p.Text.Remove(clipMatch.Index, clipMatch.Value.Length);
-                        ImportAssaDrawingFromText(drawText, p.Layer, c);
+                        ImportAssaDrawingFromText(drawText, p.Layer, c, false);
 
                         var eraseText = clipMatch.Value.Replace("{\\iclip(", string.Empty).TrimEnd('}').TrimEnd(')');
-                        ImportAssaDrawingFromText(eraseText , p.Layer, c);
+                        ImportAssaDrawingFromText(eraseText , p.Layer, c, true);
                     }
                     else
                     {
-                        ImportAssaDrawingFromText(p.Text, p.Layer, c);
+                        ImportAssaDrawingFromText(p.Text, p.Layer, c, false);
                     }
                 }
                 treeView1.Enabled = true;
@@ -1220,11 +1220,11 @@ namespace AssaDraw
             }
 
             SetAssaStartEndTags(text);
-            ImportAssaDrawingFromText(text, 0, Color.Transparent);
+            ImportAssaDrawingFromText(text, 0, Color.Transparent, false);
             ShowTitle();
         }
 
-        private void ImportAssaDrawingFromText(string text, int layer, Color c)
+        private void ImportAssaDrawingFromText(string text, int layer, Color c, bool isEraser)
         {
             text = _regexStart.Replace(text, string.Empty);
             text = _regexEnd.Replace(text, string.Empty);
@@ -1255,6 +1255,7 @@ namespace AssaDraw
                         drawShape = new DrawShape();
                         drawShape.Layer = layer;
                         drawShape.ForeColor = c;
+                        drawShape.IsEraser = isEraser;
                         drawShape.AddPoint(state, moveCoordinate.X, moveCoordinate.Y, PointColor);
                         moveCoordinate = null;
                         _drawShapes.Add(drawShape);
@@ -1268,6 +1269,7 @@ namespace AssaDraw
                         drawShape = new DrawShape();
                         drawShape.Layer = layer;
                         drawShape.ForeColor = c;
+                        drawShape.IsEraser = isEraser;
                         drawShape.AddPoint(state, moveCoordinate.X, moveCoordinate.Y, PointColor);
                         moveCoordinate = null;
                         _drawShapes.Add(drawShape);
