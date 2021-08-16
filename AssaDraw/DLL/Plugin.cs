@@ -74,13 +74,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     if (firstParagraph != null && form.AssaDrawCodes.Paragraphs.Count > 0)
                     {
-
                         for (int i = 1; i < selectedParagraphs.Count; i++)
                         {
                             sub.Paragraphs.Remove(selectedParagraphs[i]);
                         }
 
                         firstParagraph.Text = form.AssaDrawCodes.Paragraphs[0].Text;
+                        firstParagraph.Layer = form.AssaDrawCodes.Paragraphs[0].Layer;
+
                         firstParagraph.Extra = "AssaDraw";
                         var styles = AdvancedSubStationAlpha.GetStylesFromHeader(sub.Header);
                         if (!styles.Contains(firstParagraph.Extra))
@@ -102,7 +103,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         for (int i = 1; i < form.AssaDrawCodes.Paragraphs.Count; i++)
                         {
                             var newP = new Paragraph(firstParagraph);
-                            firstParagraph.Text = form.AssaDrawCodes.Paragraphs[i].Text;
+                            newP.Text = form.AssaDrawCodes.Paragraphs[i].Text;
                             newP.Layer = form.AssaDrawCodes.Paragraphs[i].Layer;
                             sub.Paragraphs.Insert(idx + i - 1, newP);
                         }
