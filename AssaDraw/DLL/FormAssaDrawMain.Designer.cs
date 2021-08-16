@@ -35,8 +35,11 @@ namespace AssaDraw
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.contextMenuStripTreeView = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteShapeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deletePointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.duplicatePointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.changeLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
             this.numericUpDownY = new System.Windows.Forms.NumericUpDown();
@@ -67,9 +70,9 @@ namespace AssaDraw
             this.clearBackgroundImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOk = new System.Windows.Forms.Button();
-            this.setLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.setColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.changeLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.useShapeForEraseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.useShapeForDrawToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCanvas)).BeginInit();
             this.contextMenuStripTreeView.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -113,12 +116,15 @@ namespace AssaDraw
             this.contextMenuStripTreeView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.deleteShapeToolStripMenuItem,
             this.setLayerToolStripMenuItem,
+            this.useShapeForEraseToolStripMenuItem,
+            this.useShapeForDrawToolStripMenuItem,
             this.deletePointToolStripMenuItem,
             this.duplicatePointToolStripMenuItem,
             this.setColorToolStripMenuItem,
-            this.changeLayerToolStripMenuItem});
+            this.changeLayerToolStripMenuItem,
+            this.deleteLayerToolStripMenuItem});
             this.contextMenuStripTreeView.Name = "contextMenuStripTreeView";
-            this.contextMenuStripTreeView.Size = new System.Drawing.Size(181, 158);
+            this.contextMenuStripTreeView.Size = new System.Drawing.Size(181, 224);
             this.contextMenuStripTreeView.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTreeView_Opening);
             // 
             // deleteShapeToolStripMenuItem
@@ -127,6 +133,13 @@ namespace AssaDraw
             this.deleteShapeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.deleteShapeToolStripMenuItem.Text = "Delete shape";
             this.deleteShapeToolStripMenuItem.Click += new System.EventHandler(this.deleteShapeToolStripMenuItem_Click);
+            // 
+            // setLayerToolStripMenuItem
+            // 
+            this.setLayerToolStripMenuItem.Name = "setLayerToolStripMenuItem";
+            this.setLayerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.setLayerToolStripMenuItem.Text = "Set layer...";
+            this.setLayerToolStripMenuItem.Click += new System.EventHandler(this.setLayerToolStripMenuItem_Click);
             // 
             // deletePointToolStripMenuItem
             // 
@@ -141,6 +154,20 @@ namespace AssaDraw
             this.duplicatePointToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.duplicatePointToolStripMenuItem.Text = "Duplicate point";
             this.duplicatePointToolStripMenuItem.Click += new System.EventHandler(this.duplicatePointToolStripMenuItem_Click);
+            // 
+            // setColorToolStripMenuItem
+            // 
+            this.setColorToolStripMenuItem.Name = "setColorToolStripMenuItem";
+            this.setColorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.setColorToolStripMenuItem.Text = "Set color...";
+            this.setColorToolStripMenuItem.Click += new System.EventHandler(this.setColorToolStripMenuItem_Click);
+            // 
+            // changeLayerToolStripMenuItem
+            // 
+            this.changeLayerToolStripMenuItem.Name = "changeLayerToolStripMenuItem";
+            this.changeLayerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.changeLayerToolStripMenuItem.Text = "Set layer...";
+            this.changeLayerToolStripMenuItem.Click += new System.EventHandler(this.changeLayerToolStripMenuItem_Click);
             // 
             // groupBox2
             // 
@@ -496,26 +523,26 @@ namespace AssaDraw
             this.buttonOk.UseVisualStyleBackColor = true;
             this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
             // 
-            // setLayerToolStripMenuItem
+            // deleteLayerToolStripMenuItem
             // 
-            this.setLayerToolStripMenuItem.Name = "setLayerToolStripMenuItem";
-            this.setLayerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.setLayerToolStripMenuItem.Text = "Set layer...";
-            this.setLayerToolStripMenuItem.Click += new System.EventHandler(this.setLayerToolStripMenuItem_Click);
+            this.deleteLayerToolStripMenuItem.Name = "deleteLayerToolStripMenuItem";
+            this.deleteLayerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.deleteLayerToolStripMenuItem.Text = "Delete layer";
+            this.deleteLayerToolStripMenuItem.Click += new System.EventHandler(this.deleteLayerToolStripMenuItem_Click);
             // 
-            // setColorToolStripMenuItem
+            // useShapeForEraseToolStripMenuItem
             // 
-            this.setColorToolStripMenuItem.Name = "setColorToolStripMenuItem";
-            this.setColorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.setColorToolStripMenuItem.Text = "Set color...";
-            this.setColorToolStripMenuItem.Click += new System.EventHandler(this.setColorToolStripMenuItem_Click);
+            this.useShapeForEraseToolStripMenuItem.Name = "useShapeForEraseToolStripMenuItem";
+            this.useShapeForEraseToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.useShapeForEraseToolStripMenuItem.Text = "Use shape for erase";
+            this.useShapeForEraseToolStripMenuItem.Click += new System.EventHandler(this.useShapeForEraseToolStripMenuItem_Click);
             // 
-            // changeLayerToolStripMenuItem
+            // useShapeForDrawToolStripMenuItem
             // 
-            this.changeLayerToolStripMenuItem.Name = "changeLayerToolStripMenuItem";
-            this.changeLayerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.changeLayerToolStripMenuItem.Text = "Change layer...";
-            this.changeLayerToolStripMenuItem.Click += new System.EventHandler(this.changeLayerToolStripMenuItem_Click);
+            this.useShapeForDrawToolStripMenuItem.Name = "useShapeForDrawToolStripMenuItem";
+            this.useShapeForDrawToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.useShapeForDrawToolStripMenuItem.Text = "Use shape for draw";
+            this.useShapeForDrawToolStripMenuItem.Click += new System.EventHandler(this.useShapeForDrawToolStripMenuItem_Click);
             // 
             // FormAssaDrawMain
             // 
@@ -596,6 +623,9 @@ namespace AssaDraw
         private System.Windows.Forms.ToolStripMenuItem setLayerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem setColorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem changeLayerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deleteLayerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem useShapeForEraseToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem useShapeForDrawToolStripMenuItem;
     }
 }
 

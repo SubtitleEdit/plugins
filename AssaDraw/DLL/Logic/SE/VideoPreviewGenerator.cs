@@ -1,6 +1,8 @@
 ﻿using SubtitleEdit.Logic;
+using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 
@@ -8,7 +10,7 @@ namespace Nikse.SubtitleEdit.Logic
 {
     public class VideoPreviewGenerator
     {
-        public static string GetVideoPreviewFileName(int width, int height)
+        public static string GetVideoPreviewFileName(int width, int height, Bitmap backgroundImage)
         {
             if (width % 2 != 0)
             {
@@ -20,7 +22,13 @@ namespace Nikse.SubtitleEdit.Logic
                 height++;
             }
 
-            var previewFileName = Path.Combine(Configuration.DataDirectory, $"preview_{width}x{height}.mkv");
+            var backgroundImageHash = string.Empty;
+            if (backgroundImage != null)
+            {
+                backgroundImageHash = $"_{backgroundImage.GetHashCode()}";
+            }
+
+            var previewFileName = Path.Combine(Configuration.DataDirectory, $"preview_{width}x{height}{backgroundImageHash}.mkv");
             if (File.Exists(previewFileName))
             {
                 return previewFileName;
@@ -29,8 +37,28 @@ namespace Nikse.SubtitleEdit.Logic
             try
             {
                 var process = GetFFmpegProcess(Color.Black, previewFileName, width, height, 3, 25);
+                var tempFileName = string.Empty;
+                if (backgroundImage != null)
+                {
+                    tempFileName = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".png");
+                    backgroundImage.Save(tempFileName, ImageFormat.Jpeg);
+                    process = GetFFmpegProcess(tempFileName, previewFileName, width, height, 3, 25);
+                }
+
                 process.Start();
                 process.WaitForExit();
+
+                if (!string.IsNullOrEmpty(tempFileName))
+                {
+                    try
+                    {
+                        File.Delete(tempFileName);
+                    }
+                    catch
+                    { 
+                        // ignore
+                    }
+                }
 
                 return previewFileName;
             }
