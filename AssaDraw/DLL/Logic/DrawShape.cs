@@ -11,6 +11,7 @@ namespace AssaDraw.Logic
         public Color ForeColor { get; set; }
         public int Layer { get; set; }
         public bool IsEraser { get; set; }
+        public bool Hidden { get; set; }
 
         public DrawShape()
         {

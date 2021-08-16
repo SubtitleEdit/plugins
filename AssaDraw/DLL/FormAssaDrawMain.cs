@@ -226,7 +226,7 @@ namespace AssaDraw
 
             DrawResolution(graphics);
 
-            foreach (var drawShape in _drawShapes)
+            foreach (var drawShape in _drawShapes.Where(p => !p.Hidden))
             {
                 if (drawShape != _activeDrawShape)
                 {
@@ -268,7 +268,7 @@ namespace AssaDraw
 
         private void Draw(DrawShape drawShape, Graphics graphics, bool isActive)
         {
-            if (drawShape == null || drawShape.Points.Count == 0)
+            if (drawShape == null || drawShape.Points.Count == 0 || drawShape.Hidden)
             {
                 return;
             }
@@ -417,7 +417,7 @@ namespace AssaDraw
             var maxDiff = float.MaxValue;
             DrawCoordinate pointDiff = null;
 
-            foreach (var drawShape in _drawShapes)
+            foreach (var drawShape in _drawShapes.Where(p => !p.Hidden))
             {
                 foreach (var point in drawShape.Points)
                 {
@@ -562,7 +562,7 @@ namespace AssaDraw
             treeView1.Nodes.Clear();
             foreach (var layer in drawShapes.OrderBy(p => p.Layer).GroupBy(p => p.Layer))
             {
-                var layerNode = new TreeNode($"Layer {layer.Key}") { Tag = layer.Key };
+                var layerNode = new TreeNode($"Layer {layer.Key}" + (layer.First().Hidden ? " (hidden)" : string.Empty)) { Tag = layer.Key };
                 treeView1.Nodes.Add(layerNode);
                 foreach (var drawShape in layer)
                 {
@@ -1207,7 +1207,7 @@ namespace AssaDraw
                         ImportAssaDrawingFromText(drawText, p.Layer, c, false);
 
                         var eraseText = clipMatch.Value.Replace("{\\iclip(", string.Empty).TrimEnd('}').TrimEnd(')');
-                        ImportAssaDrawingFromText(eraseText , p.Layer, c, true);
+                        ImportAssaDrawingFromText(eraseText, p.Layer, c, true);
                     }
                     else
                     {
@@ -1470,6 +1470,8 @@ namespace AssaDraw
             deleteLayerToolStripMenuItem.Visible = false;
             useShapeForEraseToolStripMenuItem.Visible = false;
             useShapeForDrawToolStripMenuItem.Visible = false;
+            hideLayerToolStripMenuItem.Visible = false;
+            showLayerToolStripMenuItem.Visible = false;
             if (treeView1.SelectedNode.Tag is DrawCoordinate point)
             {
                 if (point.DrawType == DrawCoordinateType.Line)
@@ -1494,11 +1496,13 @@ namespace AssaDraw
                 useShapeForEraseToolStripMenuItem.Visible = !shape.IsEraser;
                 useShapeForDrawToolStripMenuItem.Visible = shape.IsEraser;
             }
-            else if (treeView1.SelectedNode.Tag is int) // layer
+            else if (treeView1.SelectedNode.Tag is int layer) // layer
             {
                 setColorToolStripMenuItem.Visible = true;
                 changeLayerToolStripMenuItem.Visible = true;
                 deleteLayerToolStripMenuItem.Visible = true;
+                hideLayerToolStripMenuItem.Visible = !_drawShapes.First(p => p.Layer == layer).Hidden;
+                showLayerToolStripMenuItem.Visible = _drawShapes.First(p => p.Layer == layer).Hidden;
             }
             else
             {
@@ -1914,6 +1918,44 @@ namespace AssaDraw
             if (treeView1.SelectedNode.Tag is DrawShape shape)
             {
                 shape.IsEraser = false;
+                FillTreeView(_drawShapes);
+            }
+        }
+
+        private void hideLayerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (treeView1.SelectedNode.Tag is int layer)
+            {
+                foreach (var shape in _drawShapes.Where(p => p.Layer == layer))
+                {
+                    shape.Hidden = true;
+                }
+
+                if (_activeDrawShape?.Hidden == true)
+                {
+                    _activeDrawShape = null;
+                }
+
+                pictureBoxCanvas.Invalidate();
+                FillTreeView(_drawShapes);
+            }
+        }
+
+        private void showLayerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (treeView1.SelectedNode.Tag is int layer)
+            {
+                foreach (var shape in _drawShapes.Where(p => p.Layer == layer))
+                {
+                    shape.Hidden = false;
+                }
+
+                if (_activeDrawShape?.Hidden == true)
+                {
+                    _activeDrawShape = null;
+                }
+
+                pictureBoxCanvas.Invalidate();
                 FillTreeView(_drawShapes);
             }
         }
