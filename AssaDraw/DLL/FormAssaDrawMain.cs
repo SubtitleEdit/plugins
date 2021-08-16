@@ -79,7 +79,6 @@ namespace AssaDraw
                 if (args.Length > 1)
                 {
                     var fileName = args[1];
-                    fileName = @"C:\Users\nikse\Desktop\test3.assadraw";
                     if (File.Exists(fileName))
                     {
                         ImportAssaDrawing(fileName);
@@ -1161,13 +1160,13 @@ namespace AssaDraw
             format.LoadSubtitle(sub, text.SplitToLines(), _fileName);
 
             var playResX = AdvancedSubStationAlpha.GetTagValueFromHeader("PlayResX", "[Script Info]", sub.Header);
-            if (int.TryParse(playResX, out var w) && w <= numericUpDownWidth.Minimum && w <= numericUpDownWidth.Maximum)
+            if (int.TryParse(playResX, out var w) && w >= numericUpDownWidth.Minimum && w <= numericUpDownWidth.Maximum)
             {
                 numericUpDownWidth.Value = w;
             }
 
             var playResY = AdvancedSubStationAlpha.GetTagValueFromHeader("PlayResY", "[Script Info]", sub.Header);
-            if (int.TryParse(playResY, out var h) && w <= numericUpDownHeight.Minimum && w <= numericUpDownHeight.Maximum)
+            if (int.TryParse(playResY, out var h) && w >= numericUpDownHeight.Minimum && w <= numericUpDownHeight.Maximum)
             {
                 numericUpDownHeight.Value = h;
             }
