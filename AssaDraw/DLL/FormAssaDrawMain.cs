@@ -314,7 +314,7 @@ namespace AssaDraw
 
             DrawResolution(graphics);
 
-            
+
             // draw shapes
             foreach (var drawShape in _drawShapes.Where(p => !p.Hidden))
             {
@@ -328,7 +328,7 @@ namespace AssaDraw
                     using (var pen3 = new Pen(new SolidBrush(point.PointColor), 2))
                     {
                         graphics.DrawLine(pen3, new Point(ToZoomFactorX(point.X) - 5, ToZoomFactorY(point.Y)), new Point(ToZoomFactorX(point.X) + 5, ToZoomFactorY(point.Y)));
-                        graphics.DrawLine(pen3, new Point(ToZoomFactorX(point.X), ToZoomFactorY(point.Y ) - 5), new Point(ToZoomFactorX(point.X), ToZoomFactorY(point.Y) + 5));
+                        graphics.DrawLine(pen3, new Point(ToZoomFactorX(point.X), ToZoomFactorY(point.Y) - 5), new Point(ToZoomFactorX(point.X), ToZoomFactorY(point.Y) + 5));
                     }
                 }
             }
@@ -339,8 +339,8 @@ namespace AssaDraw
             {
                 using (var pen = new Pen(new SolidBrush(Color.FromArgb(255, _activePoint.PointColor)), 3))
                 {
-                    graphics.DrawLine(pen, new Point(ToZoomFactorX(_activePoint.X) - 7, ToZoomFactorY(_activePoint.Y)), new Point(ToZoomFactorX(_activePoint.X ) + 7, ToZoomFactorY(_activePoint.Y)));
-                    graphics.DrawLine(pen, new Point(ToZoomFactorX(_activePoint.X), ToZoomFactorY(_activePoint.Y ) - 7), new Point(ToZoomFactorX(_activePoint.X), ToZoomFactorY(_activePoint.Y ) + 7));
+                    graphics.DrawLine(pen, new Point(ToZoomFactorX(_activePoint.X) - 7, ToZoomFactorY(_activePoint.Y)), new Point(ToZoomFactorX(_activePoint.X) + 7, ToZoomFactorY(_activePoint.Y)));
+                    graphics.DrawLine(pen, new Point(ToZoomFactorX(_activePoint.X), ToZoomFactorY(_activePoint.Y) - 7), new Point(ToZoomFactorX(_activePoint.X), ToZoomFactorY(_activePoint.Y) + 7));
                 }
             }
 
@@ -633,7 +633,7 @@ namespace AssaDraw
                 return string.Empty;
             }
 
-            var regex = new Regex(@"\\c&H[0123456789ABCDEFabcdef]{1,8}&");
+            var regex = new Regex(@"\\1?c&H[0123456789ABCDEFabcdef]{1,8}&");
             var startTag = regex.Replace(_assaStartTag, string.Empty);
             var idx = startTag.IndexOf("\\");
             if (idx > 0 && color != Color.Transparent)
@@ -1235,7 +1235,7 @@ namespace AssaDraw
             using (var openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.FileName = string.Empty;
-                openFileDialog.Filter = "ASSA drawing|*.assadraw";
+                openFileDialog.Filter = "ASSA drawing|*.assadraw|ASSA files|*.ass";
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     ClearAll();
@@ -1271,7 +1271,7 @@ namespace AssaDraw
             }
 
             var styles = AdvancedSubStationAlpha.GetStylesFromHeader(sub.Header);
-            var regexColor = new Regex(@"\\c&H[0123456789ABCDEFabcdef]{1,8}&");
+            var regexColor = new Regex(@"\\1?c&H[0123456789ABCDEFabcdef]{1,8}&");
             var regexIClip = new Regex(@"{\\iclip\([mblspcn0123456789\s\.-]*\)}");
             if (sub.Paragraphs.Count > 0)
             {
@@ -1294,7 +1294,14 @@ namespace AssaDraw
                         var colorString = match.Value;
                         if (colorString.Length > 2)
                         {
-                            colorString = colorString.Remove(0, 2);
+                            if (colorString.StartsWith("\\1c", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                colorString = colorString.Remove(0, 3);
+                            }
+                            else
+                            {
+                                colorString = colorString.Remove(0, 2);
+                            }
                         }
                         c = AdvancedSubStationAlpha.GetSsaColor(colorString, c);
                     }
