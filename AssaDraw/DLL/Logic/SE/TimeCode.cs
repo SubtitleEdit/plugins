@@ -124,6 +124,14 @@ namespace SubtitleEdit.Logic
             return PrefixSign(s);
         }
 
+        public string ToString(string decimalSeparator)
+        {
+            var ts = TimeSpan;
+            string s = $"{ts.Hours + ts.Days * 24:00}:{ts.Minutes:00}:{ts.Seconds:00}{decimalSeparator}{ts.Milliseconds:000}";
+
+            return PrefixSign(s);
+        }
+
         public string ToShortString(bool localize = false)
         {
             var ts = TimeSpan;

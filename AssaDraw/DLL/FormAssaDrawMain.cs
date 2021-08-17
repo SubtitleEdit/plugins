@@ -4,6 +4,7 @@ using Nikse.SubtitleEdit.Logic.VideoPlayers;
 using SubtitleEdit.Logic;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -51,11 +52,19 @@ namespace AssaDraw
         private LibMpvDynamic _mpv;
         private string _mpvTextFileName;
 
+        private string _videoFileName;
+        private string _videoPosition;
+
+
         private const string StyleName = "AssaDraw";
 
-        public FormAssaDrawMain(string text)
+        public FormAssaDrawMain(string text, string videoFileName, string videoPosition)
         {
             InitializeComponent();
+
+            _videoFileName = videoFileName;
+            _videoPosition = videoPosition;
+
             _x = int.MinValue;
             _y = int.MinValue;
             _drawShapes = new List<DrawShape>();
@@ -95,6 +104,35 @@ namespace AssaDraw
             toolStripButtonPreview.Enabled = LibMpvDynamic.IsInstalled;
             ShowTitle();
             MouseWheel += FormAssaDrawMain_MouseWheel;
+
+            if (!string.IsNullOrEmpty(_videoFileName) || !string.IsNullOrEmpty(_videoPosition) && File.Exists(_videoFileName))
+            {
+                GetVideoBackground(_videoFileName, _videoPosition);
+            }
+        }
+
+        private void GetVideoBackground(string videoFileName, string videoPosition)
+        {
+            var bw = new BackgroundWorker();
+            bw.RunWorkerCompleted += (o, args) =>
+            {
+                if (args.Result is string fileName)
+                {
+                    SetBackgroundImage(fileName);
+                }
+            };
+            bw.DoWork += (o, args) =>
+            {
+                try
+                {
+                    args.Result = VideoPreviewGenerator.GetScreenshot(videoFileName, videoPosition);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.ToString());
+                }
+            };
+            bw.RunWorkerAsync();
         }
 
         private void SetAssaStartEndTags(string text)
@@ -454,9 +492,17 @@ namespace AssaDraw
                 _mouseDownPoint.X = x;
                 _mouseDownPoint.Y = y;
 
+                numericUpDownX.ValueChanged -= numericUpDownX_ValueChanged;
+                numericUpDownX.Value = x;
+                numericUpDownX.ValueChanged += numericUpDownX_ValueChanged;
+
+                numericUpDownY.ValueChanged -= numericUpDownY_ValueChanged;
+                numericUpDownY.Value = y;
+                numericUpDownY.ValueChanged += numericUpDownY_ValueChanged;
+
                 foreach (TreeNode node in treeView1.Nodes)
                 {
-                    foreach (TreeNode subNode in treeView1.Nodes)
+                    foreach (TreeNode subNode in node.Nodes)
                     {
                         foreach (TreeNode subSubNode in subNode.Nodes)
                         {
@@ -1336,7 +1382,7 @@ namespace AssaDraw
 
         private void ImportFile(string fileName)
         {
-            var ext = System.IO.Path.GetExtension(fileName).ToLowerInvariant();
+            var ext = Path.GetExtension(fileName).ToLowerInvariant();
             if (ext == ".assadraw")
             {
                 ImportAssaDrawing(fileName);
@@ -1651,7 +1697,7 @@ namespace AssaDraw
             pictureBoxCanvas.Invalidate();
         }
 
-        private void contextMenuStripCanvasBackground_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        private void contextMenuStripCanvasBackground_Opening(object sender, CancelEventArgs e)
         {
             if (toolStripButtonPreview.Checked)
             {
@@ -1670,6 +1716,7 @@ namespace AssaDraw
                 {
                     LineColor = settingsForm.LineColor;
                     LineColorActive = settingsForm.LineColorActive;
+                    pictureBoxCanvas.Invalidate();
                 }
             }
         }

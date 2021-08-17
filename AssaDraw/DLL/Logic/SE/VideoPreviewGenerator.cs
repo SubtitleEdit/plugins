@@ -55,7 +55,7 @@ namespace Nikse.SubtitleEdit.Logic
                         File.Delete(tempFileName);
                     }
                     catch
-                    { 
+                    {
                         // ignore
                     }
                 }
@@ -82,17 +82,11 @@ namespace Nikse.SubtitleEdit.Logic
         /// <param name="outputVideoFileName">Output video file name with burned-in subtitle</param>
         public static Process GenerateHardcodedVideoFile(string inputVideoFileName, string assaSubtitleFileName, string outputVideoFileName)
         {
-            var ffmpegLocation = Path.Combine(Configuration.DataDirectory, "ffmpeg\\ffmpeg.exe");
-            if (!Configuration.IsRunningOnWindows)
-            {
-                ffmpegLocation = "ffmpeg";
-            }
-
             return new Process
             {
                 StartInfo =
                 {
-                    FileName = ffmpegLocation,
+                    FileName = GetFfmpegLocation(),
                     Arguments = $"-i \"{inputVideoFileName}\" -vf \"ass={Path.GetFileName(assaSubtitleFileName)}\" -strict -2 \"{outputVideoFileName}\"",
                     UseShellExecute = false,
                     CreateNoWindow = true,
@@ -103,17 +97,11 @@ namespace Nikse.SubtitleEdit.Logic
 
         private static Process GetFFmpegProcess(string imageFileName, string outputFileName, int videoWidth, int videoHeight, int seconds, decimal frameRate)
         {
-            var ffmpegLocation = Path.Combine(Configuration.DataDirectory, "ffmpeg\\ffmpeg.exe");
-            if (!Configuration.IsRunningOnWindows)
-            {
-                ffmpegLocation = "ffmpeg";
-            }
-
             return new Process
             {
                 StartInfo =
                 {
-                    FileName = ffmpegLocation,
+                    FileName = GetFfmpegLocation(),
                     Arguments = $"-t {seconds} -loop 1 -r {frameRate.ToString(CultureInfo.InvariantCulture)} -i \"{imageFileName}\" -c:v libx264 -tune stillimage -shortest -s {videoWidth}x{videoHeight} \"{outputFileName}\"",
                     UseShellExecute = false,
                     CreateNoWindow = true
@@ -123,24 +111,53 @@ namespace Nikse.SubtitleEdit.Logic
 
         private static Process GetFFmpegProcess(Color color, string outputFileName, int videoWidth, int videoHeight, int seconds, decimal frameRate)
         {
+            var htmlColor = $"#{(color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2")).ToUpperInvariant()}";
+            return new Process
+            {
+                StartInfo =
+                {
+                    FileName = GetFfmpegLocation(),
+                    Arguments = $"-t {seconds} -f lavfi -i color=c={htmlColor}:r={frameRate.ToString(CultureInfo.InvariantCulture)}:s={videoWidth}x{videoHeight} -c:v libx264 -tune stillimage -shortest -s {videoWidth}x{videoHeight} \"{outputFileName}\"",
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+        }
+
+        private static string GetFfmpegLocation()
+        {
             var ffmpegLocation = Path.Combine(Configuration.DataDirectory, "ffmpeg\\ffmpeg.exe");
             if (!Configuration.IsRunningOnWindows)
             {
                 ffmpegLocation = "ffmpeg";
             }
 
-            var htmlColor = $"#{(color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2")).ToUpperInvariant()}";
+            return ffmpegLocation;
+        }
 
-            return new Process
+        /// <summary>
+        /// Get screenshot from video at a time code.
+        /// </summary>
+        /// <param name="inputFileName">Input video file name</param>
+        /// <param name="timeCode">time code in format hh:mm:ss[.xxx]</param>
+        /// <returns>png file with screenshot</returns>
+        public static string GetScreenshot(string inputFileName, string timeCode)
+        {
+            var outputFileName = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.png");
+            var process = new Process
             {
                 StartInfo =
                 {
-                    FileName = ffmpegLocation,
-                    Arguments = $"-t {seconds} -f lavfi -i color=c={htmlColor}:r={frameRate.ToString(CultureInfo.InvariantCulture)}:s={videoWidth}x{videoHeight} -c:v libx264 -tune stillimage -shortest -s {videoWidth}x{videoHeight} \"{outputFileName}\"",
+                    FileName = GetFfmpegLocation(),
+                    Arguments = $"-ss {timeCode} -i \"{inputFileName}\" -frames:v 1 -q:v 2 \"{outputFileName}\"",
                     UseShellExecute = false,
                     CreateNoWindow = true
                 }
             };
+
+            process.Start();
+            process.WaitForExit();
+            return outputFileName;
         }
     }
 }

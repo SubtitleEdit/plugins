@@ -11,7 +11,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "ASSA Draw..."; // will be used in context menu item
 
-        decimal IPlugin.Version => 0.6M;
+        decimal IPlugin.Version => 0.7M;
 
         string IPlugin.Description => "Draw shapes for Advanced Sub Station Alpha";
 
@@ -64,11 +64,26 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
             }
 
+            var videoPosition = AdvancedSubStationAlpha.GetTag("VideoFilePositionMs", "[Script Info]", sub.Header);
+            if (!string.IsNullOrEmpty(videoPosition))
+            {
+                var arr = videoPosition.Split(new char[] { ':' }, System.StringSplitOptions.RemoveEmptyEntries);
+                if (arr.Length == 2 && long.TryParse(arr[1], out var ms))
+                {
+                    videoPosition = new TimeCode(ms).ToString(".");
+                }
+                else
+                {
+                    videoPosition = string.Empty;
+                }
+            }
+
+
             var tempSub = new Subtitle(selectedParagraphs);
             tempSub.Header = sub.Header;
             var text = new AdvancedSubStationAlpha().ToText(tempSub, string.Empty);
 
-            using (var form = new FormAssaDrawMain(text))
+            using (var form = new FormAssaDrawMain(text, videoFileName, videoPosition))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
                 {
