@@ -27,6 +27,8 @@ namespace AssaDraw
         private Point _moveActiveDrawShapeStart = new Point(int.MinValue, int.MinValue);
         private int _x;
         private int _y;
+        private int _panX;
+        private int _panY;
         private DrawCoordinate _mouseDownPoint;
 
         private DrawHistory _history;
@@ -159,6 +161,34 @@ namespace AssaDraw
                 _zoomFactor += e.Delta / 1000.0f;
                 ZoomChangedPostFix();
             }
+            else if (ModifierKeys == Keys.Alt)
+            {
+                if (e.Delta > 0)
+                {
+                    _panX++;
+                }
+                else
+                {
+                    _panX--;
+                }
+
+                ShowTitle();
+                pictureBoxCanvas.Invalidate();
+            }
+            else if (ModifierKeys == (Keys.Alt | Keys.Shift))
+            {
+                if (e.Delta > 0)
+                {
+                    _panY++;
+                }
+                else
+                {
+                    _panY--;
+                }
+
+                ShowTitle();
+                pictureBoxCanvas.Invalidate();
+            }
             else if (ModifierKeys == (Keys.Control | Keys.Shift))
             {
                 if (e.Delta > 0)
@@ -221,14 +251,19 @@ namespace AssaDraw
             return (int)Math.Round(v * _zoomFactor);
         }
 
-        private int ToZoomFactor(float v)
+        private int ToZoomFactorX(float v)
         {
-            return (int)Math.Round(v * _zoomFactor);
+            return (int)Math.Round(v * _zoomFactor + _panX);
+        }
+
+        private int ToZoomFactorY(float v)
+        {
+            return (int)Math.Round(v * _zoomFactor + _panY);
         }
 
         private Point ToZoomFactorPoint(DrawCoordinate drawCoordinate)
         {
-            return new Point(ToZoomFactor(drawCoordinate.X), ToZoomFactor(drawCoordinate.Y));
+            return new Point(ToZoomFactorX(drawCoordinate.X), ToZoomFactorY(drawCoordinate.Y));
         }
 
         private int ToZoomFactor(decimal v)
@@ -248,22 +283,39 @@ namespace AssaDraw
                 return;
             }
 
-            var bitmap = _backgroundImage != null && !_backgroundOff ? (Bitmap)_backgroundImage.Clone() : new Bitmap(ToZoomFactor(pictureBoxCanvas.Width), ToZoomFactor(pictureBoxCanvas.Height));
+            // draw background
+            var bitmap = _backgroundImage != null && !_backgroundOff ? (Bitmap)_backgroundImage.Clone() : new Bitmap(ToZoomFactor((int)numericUpDownWidth.Value), ToZoomFactor((int)numericUpDownHeight.Value));
             var graphics = e.Graphics;
             if (_backgroundImage == null)
             {
+                using (var brush = new SolidBrush(Color.White))
+                {
+                    graphics.FillRectangle(brush, new Rectangle(0, 0, pictureBoxCanvas.Width, pictureBoxCanvas.Height));
+                }
+
+                if (_panX != 0 || _panY != 0)
+                {
+                    using (var brush = new SolidBrush(Color.White))
+                    {
+                        graphics.FillRectangle(brush, new Rectangle(0, 0, bitmap.Width, bitmap.Height));
+                    }
+                }
+
                 using (var brush = new SolidBrush(Color.LightGray))
                 {
-                    graphics.FillRectangle(brush, new Rectangle(0, 0, bitmap.Width, bitmap.Height));
+                    graphics.FillRectangle(brush, new Rectangle(_panX, _panY, bitmap.Width, bitmap.Height));
                 }
             }
             else
             {
-                graphics.DrawImage(bitmap, 0, 0, ToZoomFactor(bitmap.Width), ToZoomFactor(bitmap.Height));
+                graphics.DrawImage(bitmap, _panX, _panY, ToZoomFactor(bitmap.Width), ToZoomFactor(bitmap.Height));
             }
+
 
             DrawResolution(graphics);
 
+            
+            // draw shapes
             foreach (var drawShape in _drawShapes.Where(p => !p.Hidden))
             {
                 if (drawShape != _activeDrawShape)
@@ -275,8 +327,8 @@ namespace AssaDraw
                     DrawCoordinate point = drawShape.Points[i];
                     using (var pen3 = new Pen(new SolidBrush(point.PointColor), 2))
                     {
-                        graphics.DrawLine(pen3, new Point(ToZoomFactor(point.X - 5), ToZoomFactor(point.Y)), new Point(ToZoomFactor(point.X + 5), ToZoomFactor(point.Y)));
-                        graphics.DrawLine(pen3, new Point(ToZoomFactor(point.X), ToZoomFactor(point.Y - 5)), new Point(ToZoomFactor(point.X), ToZoomFactor(point.Y + 5)));
+                        graphics.DrawLine(pen3, new Point(ToZoomFactorX(point.X) - 5, ToZoomFactorY(point.Y)), new Point(ToZoomFactorX(point.X) + 5, ToZoomFactorY(point.Y)));
+                        graphics.DrawLine(pen3, new Point(ToZoomFactorX(point.X), ToZoomFactorY(point.Y ) - 5), new Point(ToZoomFactorX(point.X), ToZoomFactorY(point.Y) + 5));
                     }
                 }
             }
@@ -287,8 +339,8 @@ namespace AssaDraw
             {
                 using (var pen = new Pen(new SolidBrush(Color.FromArgb(255, _activePoint.PointColor)), 3))
                 {
-                    graphics.DrawLine(pen, new Point(ToZoomFactor(_activePoint.X - 7), ToZoomFactor(_activePoint.Y)), new Point(ToZoomFactor(_activePoint.X + 7), ToZoomFactor(_activePoint.Y)));
-                    graphics.DrawLine(pen, new Point(ToZoomFactor(_activePoint.X), ToZoomFactor(_activePoint.Y - 7)), new Point(ToZoomFactor(_activePoint.X), ToZoomFactor(_activePoint.Y + 7)));
+                    graphics.DrawLine(pen, new Point(ToZoomFactorX(_activePoint.X) - 7, ToZoomFactorY(_activePoint.Y)), new Point(ToZoomFactorX(_activePoint.X ) + 7, ToZoomFactorY(_activePoint.Y)));
+                    graphics.DrawLine(pen, new Point(ToZoomFactorX(_activePoint.X), ToZoomFactorY(_activePoint.Y ) - 7), new Point(ToZoomFactorX(_activePoint.X), ToZoomFactorY(_activePoint.Y ) + 7));
                 }
             }
 
@@ -299,8 +351,7 @@ namespace AssaDraw
         {
             using (var pen = new Pen(new SolidBrush(Color.Green), 2))
             {
-                graphics.DrawLine(pen, new Point(0, ToZoomFactor(numericUpDownHeight.Value)), new Point(ToZoomFactor(numericUpDownWidth.Value), ToZoomFactor(numericUpDownHeight.Value)));
-                graphics.DrawLine(pen, new Point(ToZoomFactor(numericUpDownWidth.Value), 0), new Point(ToZoomFactor(numericUpDownWidth.Value), ToZoomFactor(numericUpDownHeight.Value)));
+                graphics.DrawRectangle(pen, _panX - 1, _panY - 1, ToZoomFactor(numericUpDownWidth.Value + 2), ToZoomFactor(numericUpDownHeight.Value + 2));
             }
         }
 
@@ -337,7 +388,7 @@ namespace AssaDraw
                         {
                             using (var penNewLine = new Pen(new SolidBrush(LineColorActive), 2))
                             {
-                                graphics.DrawLine(penNewLine, ToZoomFactorPoint(drawShape.Points[drawShape.Points.Count - 1]), new Point(ToZoomFactor(_x), ToZoomFactor(_y)));
+                                graphics.DrawLine(penNewLine, ToZoomFactorPoint(drawShape.Points[drawShape.Points.Count - 1]), new Point(ToZoomFactorX(_x), ToZoomFactorY(_y)));
                             }
                         }
 
@@ -369,7 +420,7 @@ namespace AssaDraw
                         {
                             using (var penNewLine = new Pen(new SolidBrush(LineColorActive), 2))
                             {
-                                graphics.DrawLine(penNewLine, ToZoomFactorPoint(drawShape.Points[drawShape.Points.Count - 1]), new Point(ToZoomFactor(_x), ToZoomFactor(_y)));
+                                graphics.DrawLine(penNewLine, ToZoomFactorPoint(drawShape.Points[drawShape.Points.Count - 1]), new Point(ToZoomFactorX(_x), ToZoomFactorY(_y)));
                             }
                         }
 
@@ -397,8 +448,8 @@ namespace AssaDraw
             {
                 return;
             }
-            var x = FromZoomFactor(e.Location.X);
-            var y = FromZoomFactor(e.Location.Y);
+            var x = FromZoomFactor(e.Location.X) - _panX;
+            var y = FromZoomFactor(e.Location.Y) - _panY;
 
             _activePoint = null;
             numericUpDownX.Enabled = false;
@@ -483,8 +534,8 @@ namespace AssaDraw
                 return;
             }
 
-            var x = FromZoomFactor(e.Location.X);
-            var y = FromZoomFactor(e.Location.Y);
+            var x = FromZoomFactor(e.Location.X) - _panX;
+            var y = FromZoomFactor(e.Location.Y) - _panY;
             labelPosition.Text = $"Position {x},{y}";
 
             if (_mouseDownPoint != null)
@@ -687,6 +738,8 @@ namespace AssaDraw
             else if (e.Modifiers == Keys.Control && (e.KeyCode == Keys.D0 || e.KeyCode == Keys.NumPad0))
             {
                 _zoomFactor = 1; // reset zoom
+                _panX = 0;
+                _panY = 0;
                 ShowTitle();
                 pictureBoxCanvas.Invalidate();
                 e.SuppressKeyPress = true;
@@ -857,7 +910,7 @@ namespace AssaDraw
             var minY = _activeDrawShape.Points.Min(p => p.Y);
             var maxX = _activeDrawShape.Points.Max(p => p.X);
             var maxY = _activeDrawShape.Points.Max(p => p.Y);
-            if (factor < 1 && (maxX - minX < 50 || maxY - minY < 50))
+            if (factor < 1 && (maxX - minX < 5 || maxY - minY < 5))
             {
                 return;
             }
@@ -986,8 +1039,8 @@ namespace AssaDraw
 
         private void pictureBoxCanvas_MouseDown(object sender, MouseEventArgs e)
         {
-            var x = FromZoomFactor(e.X);
-            var y = FromZoomFactor(e.Y);
+            var x = FromZoomFactor(e.X) - _panX;
+            var y = FromZoomFactor(e.Y) - _panY;
             _moveActiveDrawShapeStart = new Point(int.MinValue, int.MinValue);
             var closePoint = GetClosePoint(x, y);
             if (closePoint != null)
