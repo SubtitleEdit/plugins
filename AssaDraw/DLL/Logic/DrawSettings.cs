@@ -13,6 +13,9 @@ namespace AssaDraw.Logic
         public static Color BackgroundColor { get; set; }
         public static Color OffScreenColor { get; set; }
 
+        public static Color PointHelperColor = Color.FromArgb(100, Color.Green);
+        public static Color PointColor = Color.FromArgb(100, Color.Red);
+
         private static void Initialize()
         {
             ShapeLineColor = Color.Black;

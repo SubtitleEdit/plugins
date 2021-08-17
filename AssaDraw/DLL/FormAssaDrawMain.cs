@@ -41,9 +41,6 @@ namespace AssaDraw
         private Bitmap _backgroundImage;
         private bool _backgroundOff;
 
-        private readonly Color _pointHelperColor = Color.FromArgb(100, Color.Green);
-        private readonly Color _pointColor = Color.FromArgb(100, Color.Red);
-
         private readonly Regex _regexStart = new Regex(@"\{[^{]*\\p1[^}]*}");
         private readonly Regex _regexEnd = new Regex(@"\{[^{]*\\p0[^}]*}");
         private string _assaStartTag = "{\\p1}";
@@ -452,7 +449,7 @@ namespace AssaDraw
                 // continue drawing
                 if (toolStripButtonLine.Checked)
                 {
-                    _activeDrawShape.AddPoint(DrawCoordinateType.Line, x, y, _pointColor);
+                    _activeDrawShape.AddPoint(DrawCoordinateType.Line, x, y, DrawSettings.PointColor);
                 }
                 else if (toolStripButtonBeizer.Checked)
                 {
@@ -463,11 +460,11 @@ namespace AssaDraw
                     var endY = y;
                     var oneThirdX = (int)Math.Round((endX - startX) / 3.0);
                     var oneThirdY = (int)Math.Round((endY - startY) / 3.0);
-                    _activeDrawShape.AddPoint(DrawCoordinateType.BezierCurveSupport1, startX + oneThirdX, startY + oneThirdY, _pointHelperColor);
-                    _activeDrawShape.AddPoint(DrawCoordinateType.BezierCurveSupport2, startX + oneThirdX + oneThirdX, startY + oneThirdY + oneThirdY, _pointHelperColor);
+                    _activeDrawShape.AddPoint(DrawCoordinateType.BezierCurveSupport1, startX + oneThirdX, startY + oneThirdY, DrawSettings.PointHelperColor);
+                    _activeDrawShape.AddPoint(DrawCoordinateType.BezierCurveSupport2, startX + oneThirdX + oneThirdX, startY + oneThirdY + oneThirdY, DrawSettings.PointHelperColor);
 
                     // add end point
-                    _activeDrawShape.AddPoint(DrawCoordinateType.BezierCurve, endX, endY, _pointColor);
+                    _activeDrawShape.AddPoint(DrawCoordinateType.BezierCurve, endX, endY, DrawSettings.PointColor);
                 }
             }
             else if (e.Button == MouseButtons.Left)
@@ -480,12 +477,12 @@ namespace AssaDraw
                 if (toolStripButtonLine.Checked)
                 {
                     _activeDrawShape = new DrawShape();
-                    _activeDrawShape.AddPoint(DrawCoordinateType.Line, x, y, _pointColor);
+                    _activeDrawShape.AddPoint(DrawCoordinateType.Line, x, y, DrawSettings.PointColor);
                 }
                 else if (toolStripButtonBeizer.Checked)
                 {
                     _activeDrawShape = new DrawShape();
-                    _activeDrawShape.AddPoint(DrawCoordinateType.BezierCurve, x, y, _pointColor);
+                    _activeDrawShape.AddPoint(DrawCoordinateType.BezierCurve, x, y, DrawSettings.PointColor);
                 }
             }
 
@@ -602,7 +599,7 @@ namespace AssaDraw
             {
                 if (_activeDrawShape.Points.Count == 0 && _drawShapes.Contains(_activeDrawShape))
                 {
-                    _activeDrawShape.AddPoint(DrawCoordinateType.Line, ToZoomFactor(x), ToZoomFactor(y), _pointColor);
+                    _activeDrawShape.AddPoint(DrawCoordinateType.Line, ToZoomFactor(x), ToZoomFactor(y), DrawSettings.PointColor);
                 }
                 else
                 {
@@ -1188,6 +1185,9 @@ namespace AssaDraw
         {
             _x = int.MinValue;
             _y = int.MinValue;
+            _zoomFactor = 1.0f;
+            _panX = 0;
+            _panY = 0;
             treeView1.Nodes.Clear();
             _activeDrawShape = null;
             _activePoint = null;
@@ -1289,10 +1289,19 @@ namespace AssaDraw
             using (var openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.FileName = string.Empty;
-                openFileDialog.Filter = "ASSA drawing|*.assadraw|ASSA files|*.ass";
+                openFileDialog.Filter = "ASSA drawing|*.assadraw|ASSA files|*.ass|SVG files|*.svg";
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     ClearAll();
+
+                    if (openFileDialog.FileName.EndsWith(".svg", true, CultureInfo.InvariantCulture))
+                    {
+                        _drawShapes.AddRange( Svg.LoadSvg(openFileDialog.FileName));
+                        pictureBoxCanvas.Invalidate();
+                        FillTreeView(_drawShapes);
+                        return;
+                    }
+
                     ImportAssaDrawing(openFileDialog.FileName);
                 }
             }
@@ -1390,7 +1399,7 @@ namespace AssaDraw
             text = _regexEnd.Replace(text, string.Empty);
             var arr = text.Split();
             int i = 0;
-            int beizerCount = 0;
+            int bezierCount = 0;
             var state = DrawCoordinateType.None;
             DrawCoordinate moveCoordinate = null;
             DrawShape drawShape = null;
@@ -1401,22 +1410,22 @@ namespace AssaDraw
                     float.TryParse(arr[i + 1], NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var mX) &&
                     float.TryParse(arr[i + 2], NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var mY))
                 {
-                    beizerCount = 0;
-                    moveCoordinate = new DrawCoordinate(null, DrawCoordinateType.Move, (int)Math.Round(mX), (int)Math.Round(mY), _pointColor);
+                    bezierCount = 0;
+                    moveCoordinate = new DrawCoordinate(null, DrawCoordinateType.Move, (int)Math.Round(mX), (int)Math.Round(mY), DrawSettings.PointColor);
                     state = DrawCoordinateType.Move;
                     i += 2;
                 }
                 else if (v == "l")
                 {
                     state = DrawCoordinateType.Line;
-                    beizerCount = 0;
+                    bezierCount = 0;
                     if (moveCoordinate != null)
                     {
                         drawShape = new DrawShape();
                         drawShape.Layer = layer;
                         drawShape.ForeColor = c;
                         drawShape.IsEraser = isEraser;
-                        drawShape.AddPoint(state, moveCoordinate.X, moveCoordinate.Y, _pointColor);
+                        drawShape.AddPoint(state, moveCoordinate.X, moveCoordinate.Y, DrawSettings.PointColor);
                         moveCoordinate = null;
                         _drawShapes.Add(drawShape);
                     }
@@ -1430,40 +1439,40 @@ namespace AssaDraw
                         drawShape.Layer = layer;
                         drawShape.ForeColor = c;
                         drawShape.IsEraser = isEraser;
-                        drawShape.AddPoint(state, moveCoordinate.X, moveCoordinate.Y, _pointColor);
+                        drawShape.AddPoint(state, moveCoordinate.X, moveCoordinate.Y, DrawSettings.PointColor);
                         moveCoordinate = null;
                         _drawShapes.Add(drawShape);
                     }
-                    beizerCount = 1;
+                    bezierCount = 1;
                 }
                 else if (state == DrawCoordinateType.Line && drawShape != null && i < arr.Length - 1 &&
                     float.TryParse(arr[i + 0], NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var lX) &&
                     float.TryParse(arr[i + 1], NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var lY))
                 {
-                    drawShape.AddPoint(state, (int)Math.Round(lX), (int)Math.Round(lY), _pointColor);
+                    drawShape.AddPoint(state, (int)Math.Round(lX), (int)Math.Round(lY), DrawSettings.PointColor);
                     i++;
                 }
                 else if (state == DrawCoordinateType.BezierCurve && drawShape != null &&
                     float.TryParse(arr[i + 0], NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var bX) &&
                     float.TryParse(arr[i + 1], NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var bY))
                 {
-                    beizerCount++;
-                    if (beizerCount > 3)
+                    bezierCount++;
+                    if (bezierCount > 3)
                     {
-                        beizerCount = 1;
+                        bezierCount = 1;
                     }
 
-                    if (beizerCount == 2)
+                    if (bezierCount == 2)
                     {
-                        drawShape.AddPoint(DrawCoordinateType.BezierCurveSupport1, (int)Math.Round(bX), (int)Math.Round(bY), _pointHelperColor);
+                        drawShape.AddPoint(DrawCoordinateType.BezierCurveSupport1, (int)Math.Round(bX), (int)Math.Round(bY), DrawSettings.PointHelperColor);
                     }
-                    else if (beizerCount == 3)
+                    else if (bezierCount == 3)
                     {
-                        drawShape.AddPoint(DrawCoordinateType.BezierCurveSupport2, (int)Math.Round(bX), (int)Math.Round(bY), _pointHelperColor);
+                        drawShape.AddPoint(DrawCoordinateType.BezierCurveSupport2, (int)Math.Round(bX), (int)Math.Round(bY), DrawSettings.PointHelperColor);
                     }
                     else
                     {
-                        drawShape.AddPoint(state, (int)Math.Round(bX), (int)Math.Round(bY), _pointColor);
+                        drawShape.AddPoint(state, (int)Math.Round(bX), (int)Math.Round(bY), DrawSettings.PointColor);
                     }
                     i++;
                 }

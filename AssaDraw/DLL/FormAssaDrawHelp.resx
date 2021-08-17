@@ -143,7 +143,7 @@ Shortcuts:
 * Shift+mouse move: Pan screen area
 
 Tips: 
-* "iclip" must be used in same subtitle as drawing
-* To use different colors multiple lines and layers must be used.</value>
+* A color can be applied to each layer.
+* "Erase shape" (iclip) must be used in same layers as the drawing.</value>
   </data>
 </root>
