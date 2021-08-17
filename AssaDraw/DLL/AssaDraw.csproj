@@ -70,6 +70,7 @@
     </Compile>
     <Compile Include="IPlugin.cs" />
     <Compile Include="Logic\DrawCoordinateType.cs" />
+    <Compile Include="Logic\DrawSettings.cs" />
     <Compile Include="Logic\DrawShape.cs" />
     <Compile Include="Logic\DrawCoordinate.cs" />
     <Compile Include="Logic\DrawHistoryItem.cs" />

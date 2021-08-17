@@ -35,12 +35,16 @@ namespace AssaDraw
             this.buttonOK = new System.Windows.Forms.Button();
             this.panelLineActiveColor = new System.Windows.Forms.Panel();
             this.buttonNewLineColor = new System.Windows.Forms.Button();
+            this.panelBackgroundColor = new System.Windows.Forms.Panel();
+            this.buttonBackgroundColor = new System.Windows.Forms.Button();
+            this.panelOffScreenColor = new System.Windows.Forms.Panel();
+            this.buttonOffScreenColor = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // panelLineColor
             // 
             this.panelLineColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelLineColor.Location = new System.Drawing.Point(166, 15);
+            this.panelLineColor.Location = new System.Drawing.Point(190, 15);
             this.panelLineColor.Name = "panelLineColor";
             this.panelLineColor.Size = new System.Drawing.Size(21, 20);
             this.panelLineColor.TabIndex = 3;
@@ -50,9 +54,9 @@ namespace AssaDraw
             // 
             this.buttonLineColor.Location = new System.Drawing.Point(12, 12);
             this.buttonLineColor.Name = "buttonLineColor";
-            this.buttonLineColor.Size = new System.Drawing.Size(148, 23);
+            this.buttonLineColor.Size = new System.Drawing.Size(172, 23);
             this.buttonLineColor.TabIndex = 2;
-            this.buttonLineColor.Text = "Line color";
+            this.buttonLineColor.Text = "Shape color";
             this.buttonLineColor.UseVisualStyleBackColor = true;
             this.buttonLineColor.Click += new System.EventHandler(this.buttonLineColor_Click);
             // 
@@ -84,7 +88,7 @@ namespace AssaDraw
             // panelLineActiveColor
             // 
             this.panelLineActiveColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelLineActiveColor.Location = new System.Drawing.Point(166, 44);
+            this.panelLineActiveColor.Location = new System.Drawing.Point(190, 44);
             this.panelLineActiveColor.Name = "panelLineActiveColor";
             this.panelLineActiveColor.Size = new System.Drawing.Size(21, 20);
             this.panelLineActiveColor.TabIndex = 7;
@@ -94,17 +98,59 @@ namespace AssaDraw
             // 
             this.buttonNewLineColor.Location = new System.Drawing.Point(12, 41);
             this.buttonNewLineColor.Name = "buttonNewLineColor";
-            this.buttonNewLineColor.Size = new System.Drawing.Size(148, 23);
+            this.buttonNewLineColor.Size = new System.Drawing.Size(172, 23);
             this.buttonNewLineColor.TabIndex = 6;
-            this.buttonNewLineColor.Text = "New line color";
+            this.buttonNewLineColor.Text = "New/Active color";
             this.buttonNewLineColor.UseVisualStyleBackColor = true;
             this.buttonNewLineColor.Click += new System.EventHandler(this.buttonNewLineColor_Click);
+            // 
+            // panelBackgroundColor
+            // 
+            this.panelBackgroundColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelBackgroundColor.Location = new System.Drawing.Point(190, 73);
+            this.panelBackgroundColor.Name = "panelBackgroundColor";
+            this.panelBackgroundColor.Size = new System.Drawing.Size(21, 20);
+            this.panelBackgroundColor.TabIndex = 9;
+            this.panelBackgroundColor.Click += new System.EventHandler(this.panelBackgroundColor_Click);
+            // 
+            // buttonBackgroundColor
+            // 
+            this.buttonBackgroundColor.Location = new System.Drawing.Point(12, 70);
+            this.buttonBackgroundColor.Name = "buttonBackgroundColor";
+            this.buttonBackgroundColor.Size = new System.Drawing.Size(172, 23);
+            this.buttonBackgroundColor.TabIndex = 8;
+            this.buttonBackgroundColor.Text = "Background color";
+            this.buttonBackgroundColor.UseVisualStyleBackColor = true;
+            this.buttonBackgroundColor.Click += new System.EventHandler(this.buttonBackgroundColor_Click);
+            // 
+            // panelOffScreenColor
+            // 
+            this.panelOffScreenColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelOffScreenColor.Location = new System.Drawing.Point(190, 102);
+            this.panelOffScreenColor.Name = "panelOffScreenColor";
+            this.panelOffScreenColor.Size = new System.Drawing.Size(21, 20);
+            this.panelOffScreenColor.TabIndex = 11;
+            this.panelOffScreenColor.Click += new System.EventHandler(this.panelOffScreenColor_Click);
+            // 
+            // buttonOffScreenColor
+            // 
+            this.buttonOffScreenColor.Location = new System.Drawing.Point(12, 99);
+            this.buttonOffScreenColor.Name = "buttonOffScreenColor";
+            this.buttonOffScreenColor.Size = new System.Drawing.Size(172, 23);
+            this.buttonOffScreenColor.TabIndex = 10;
+            this.buttonOffScreenColor.Text = "Off screen color";
+            this.buttonOffScreenColor.UseVisualStyleBackColor = true;
+            this.buttonOffScreenColor.Click += new System.EventHandler(this.buttonOffScreenColor_Click);
             // 
             // FormAssaDrawSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(378, 193);
+            this.Controls.Add(this.panelOffScreenColor);
+            this.Controls.Add(this.buttonOffScreenColor);
+            this.Controls.Add(this.panelBackgroundColor);
+            this.Controls.Add(this.buttonBackgroundColor);
             this.Controls.Add(this.panelLineActiveColor);
             this.Controls.Add(this.buttonNewLineColor);
             this.Controls.Add(this.buttonCancel);
@@ -133,5 +179,9 @@ namespace AssaDraw
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Panel panelLineActiveColor;
         private System.Windows.Forms.Button buttonNewLineColor;
+        private System.Windows.Forms.Panel panelBackgroundColor;
+        private System.Windows.Forms.Button buttonBackgroundColor;
+        private System.Windows.Forms.Panel panelOffScreenColor;
+        private System.Windows.Forms.Button buttonOffScreenColor;
     }
 }
