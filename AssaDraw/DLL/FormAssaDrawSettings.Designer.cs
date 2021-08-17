@@ -37,8 +37,6 @@ namespace AssaDraw
             this.buttonNewLineColor = new System.Windows.Forms.Button();
             this.panelBackgroundColor = new System.Windows.Forms.Panel();
             this.buttonBackgroundColor = new System.Windows.Forms.Button();
-            this.panelOffScreenColor = new System.Windows.Forms.Panel();
-            this.buttonOffScreenColor = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // panelLineColor
@@ -123,32 +121,11 @@ namespace AssaDraw
             this.buttonBackgroundColor.UseVisualStyleBackColor = true;
             this.buttonBackgroundColor.Click += new System.EventHandler(this.buttonBackgroundColor_Click);
             // 
-            // panelOffScreenColor
-            // 
-            this.panelOffScreenColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelOffScreenColor.Location = new System.Drawing.Point(190, 102);
-            this.panelOffScreenColor.Name = "panelOffScreenColor";
-            this.panelOffScreenColor.Size = new System.Drawing.Size(21, 20);
-            this.panelOffScreenColor.TabIndex = 11;
-            this.panelOffScreenColor.Click += new System.EventHandler(this.panelOffScreenColor_Click);
-            // 
-            // buttonOffScreenColor
-            // 
-            this.buttonOffScreenColor.Location = new System.Drawing.Point(12, 99);
-            this.buttonOffScreenColor.Name = "buttonOffScreenColor";
-            this.buttonOffScreenColor.Size = new System.Drawing.Size(172, 23);
-            this.buttonOffScreenColor.TabIndex = 10;
-            this.buttonOffScreenColor.Text = "Off screen color";
-            this.buttonOffScreenColor.UseVisualStyleBackColor = true;
-            this.buttonOffScreenColor.Click += new System.EventHandler(this.buttonOffScreenColor_Click);
-            // 
             // FormAssaDrawSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(378, 193);
-            this.Controls.Add(this.panelOffScreenColor);
-            this.Controls.Add(this.buttonOffScreenColor);
             this.Controls.Add(this.panelBackgroundColor);
             this.Controls.Add(this.buttonBackgroundColor);
             this.Controls.Add(this.panelLineActiveColor);
@@ -181,7 +158,5 @@ namespace AssaDraw
         private System.Windows.Forms.Button buttonNewLineColor;
         private System.Windows.Forms.Panel panelBackgroundColor;
         private System.Windows.Forms.Button buttonBackgroundColor;
-        private System.Windows.Forms.Panel panelOffScreenColor;
-        private System.Windows.Forms.Button buttonOffScreenColor;
     }
 }

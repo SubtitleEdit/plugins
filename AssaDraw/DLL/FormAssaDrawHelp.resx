@@ -139,6 +139,8 @@ Shortcuts:
 * Ctrl+F2: Toggle background image on/off
 * Ctrl+Minus/Plus or ctrl+Mousewheel: Zoom in/out
 * Ctrl+Shift+Minus/Plus: Scale active shape
+* Shift+arrow: Pan screen area
+* Shift+mouse move: Pan screen area
 
 Tips: 
 * "iclip" must be used in same subtitle as drawing

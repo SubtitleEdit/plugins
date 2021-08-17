@@ -38,7 +38,7 @@ namespace AssaDraw
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOK.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonOK.Location = new System.Drawing.Point(276, 356);
+            this.buttonOK.Location = new System.Drawing.Point(277, 384);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 5;
@@ -55,7 +55,7 @@ namespace AssaDraw
             this.richTextBoxHelpInfo.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBoxHelpInfo.Location = new System.Drawing.Point(12, 12);
             this.richTextBoxHelpInfo.Name = "richTextBoxHelpInfo";
-            this.richTextBoxHelpInfo.Size = new System.Drawing.Size(339, 338);
+            this.richTextBoxHelpInfo.Size = new System.Drawing.Size(340, 366);
             this.richTextBoxHelpInfo.TabIndex = 6;
             this.richTextBoxHelpInfo.Text = resources.GetString("richTextBoxHelpInfo.Text");
             // 
@@ -63,7 +63,7 @@ namespace AssaDraw
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(363, 391);
+            this.ClientSize = new System.Drawing.Size(364, 419);
             this.Controls.Add(this.richTextBoxHelpInfo);
             this.Controls.Add(this.buttonOK);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

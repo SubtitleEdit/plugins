@@ -30,6 +30,7 @@ namespace AssaDraw
         private int _panX;
         private int _panY;
         private DrawCoordinate _mouseDownPoint;
+        private bool _panOn;
 
         private DrawHistory _history;
         private object _historyLock = new object();
@@ -155,34 +156,6 @@ namespace AssaDraw
                 _zoomFactor += e.Delta / 1000.0f;
                 ZoomChangedPostFix();
             }
-            else if (ModifierKeys == Keys.Alt)
-            {
-                if (e.Delta > 0)
-                {
-                    _panX++;
-                }
-                else
-                {
-                    _panX--;
-                }
-
-                ShowTitle();
-                pictureBoxCanvas.Invalidate();
-            }
-            else if (ModifierKeys == (Keys.Alt | Keys.Shift))
-            {
-                if (e.Delta > 0)
-                {
-                    _panY++;
-                }
-                else
-                {
-                    _panY--;
-                }
-
-                ShowTitle();
-                pictureBoxCanvas.Invalidate();
-            }
             else if (ModifierKeys == (Keys.Control | Keys.Shift))
             {
                 if (e.Delta > 0)
@@ -282,10 +255,11 @@ namespace AssaDraw
             var graphics = e.Graphics;
             if (_backgroundImage == null)
             {
-                using (var brush = new SolidBrush(Color.White))
-                {
-                    graphics.FillRectangle(brush, new Rectangle(0, 0, pictureBoxCanvas.Width, pictureBoxCanvas.Height));
-                }
+                DrawOffScreenBackground(graphics);
+                //using (var brush = new SolidBrush(Color.White))
+                //{
+                //    graphics.FillRectangle(brush, new Rectangle(0, 0, pictureBoxCanvas.Width, pictureBoxCanvas.Height));
+                //}
 
                 using (var brush = new SolidBrush(DrawSettings.BackgroundColor))
                 {
@@ -331,6 +305,38 @@ namespace AssaDraw
             }
 
             bitmap.Dispose();
+        }
+
+        private void DrawOffScreenBackground(Graphics g)
+        {
+            int rectangleSize = 8;
+            var dark = false;
+            for (int y = 0; y < pictureBoxCanvas.Height; y += rectangleSize)
+            {
+                for (int x = 0; x < pictureBoxCanvas.Width; x += rectangleSize)
+                {
+                    var c = dark ? Color.Black : Color.WhiteSmoke;
+                    if (y % (rectangleSize * 2) == 0)
+                    {
+                        if (x % (rectangleSize * 2) == 0)
+                        {
+                            c = dark ? Color.DimGray : Color.LightGray;
+                        }
+                    }
+                    else
+                    {
+                        if (x % (rectangleSize * 2) != 0)
+                        {
+                            c = dark ? Color.DimGray : Color.LightGray;
+                        }
+                    }
+
+                    using (var brush = new SolidBrush(c))
+                    {
+                        g.FillRectangle(brush, x, y, rectangleSize, rectangleSize);
+                    }
+                }
+            }
         }
 
         private void DrawResolution(Graphics graphics)
@@ -524,6 +530,24 @@ namespace AssaDraw
             var y = FromZoomFactor(e.Location.Y) - _panY;
             labelPosition.Text = $"Position {x},{y}";
 
+            // pan
+            if (ModifierKeys == Keys.Shift && _panOn)
+            {
+                Cursor = Cursors.SizeAll;
+                x = FromZoomFactor(e.Location.X);
+                y = FromZoomFactor(e.Location.Y);
+                var xAdjust = x - _mouseDownPoint.X;
+                var yAdjust = y - _mouseDownPoint.Y;
+                _mouseDownPoint.X = x;
+                _mouseDownPoint.Y = y;
+                _panX += (int)Math.Round(xAdjust);
+                _panY += (int)Math.Round(yAdjust);
+
+                pictureBoxCanvas.Invalidate();
+                _activePoint = null;
+                return;
+            }
+
             if (_mouseDownPoint != null)
             {
                 _mouseDownPoint.X = x;
@@ -589,6 +613,7 @@ namespace AssaDraw
                 pictureBoxCanvas.Invalidate();
             }
 
+            // move active shape
             if (ModifierKeys == Keys.Control && _activeDrawShape != null && _drawShapes.Contains(_activeDrawShape) &&
                 _moveActiveDrawShapeStart.X != int.MinValue && _moveActiveDrawShapeStart.Y != int.MinValue)
             {
@@ -884,6 +909,33 @@ namespace AssaDraw
                     e.SuppressKeyPress = true;
                 }
             }
+            else if (e.Modifiers == Keys.Shift)
+            {
+                if (e.KeyCode == Keys.Up)
+                {
+                    _panY--;
+                    pictureBoxCanvas.Invalidate();
+                    e.SuppressKeyPress = true;
+                }
+                else if (e.KeyCode == Keys.Down)
+                {
+                    _panY++;
+                    pictureBoxCanvas.Invalidate();
+                    e.SuppressKeyPress = true;
+                }
+                else if (e.KeyCode == Keys.Left)
+                {
+                    _panX--;
+                    pictureBoxCanvas.Invalidate();
+                    e.SuppressKeyPress = true;
+                }
+                else if (e.KeyCode == Keys.Right)
+                {
+                    _panX++;
+                    pictureBoxCanvas.Invalidate();
+                    e.SuppressKeyPress = true;
+                }
+            }
         }
 
         private void ScaleActiveShape(float factor)
@@ -1022,6 +1074,7 @@ namespace AssaDraw
         {
             _moveActiveDrawShapeStart = new Point(int.MinValue, int.MinValue);
             _mouseDownPoint = null;
+            _panOn = false;
         }
 
         private void pictureBoxCanvas_MouseDown(object sender, MouseEventArgs e)
@@ -1029,6 +1082,20 @@ namespace AssaDraw
             var x = FromZoomFactor(e.X) - _panX;
             var y = FromZoomFactor(e.Y) - _panY;
             _moveActiveDrawShapeStart = new Point(int.MinValue, int.MinValue);
+
+            if (e.Button == MouseButtons.Left && ModifierKeys == Keys.Shift)
+            {
+                // pan
+                _activePoint = null;
+                _activeDrawShape = null;
+                _mouseDownPoint = new DrawCoordinate(new DrawShape(), DrawCoordinateType.None, FromZoomFactor(e.Location.X), FromZoomFactor(e.Location.Y), Color.Transparent);
+                _panOn = true;
+                numericUpDownX.Enabled = false;
+                numericUpDownY.Enabled = false;
+                Cursor = Cursors.SizeAll;
+                return;
+            }
+
             var closePoint = GetClosePoint(x, y);
             if (closePoint != null)
             {
