@@ -45,7 +45,7 @@ namespace AssaDraw
             this.deleteLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hideLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBoxSettings = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
             this.numericUpDownY = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownX = new System.Windows.Forms.NumericUpDown();
@@ -77,7 +77,7 @@ namespace AssaDraw
             this.buttonOk = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCanvas)).BeginInit();
             this.contextMenuStripTreeView.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.groupBoxSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHeight)).BeginInit();
@@ -208,20 +208,20 @@ namespace AssaDraw
             this.showLayerToolStripMenuItem.Text = "Show layer";
             this.showLayerToolStripMenuItem.Click += new System.EventHandler(this.showLayerToolStripMenuItem_Click);
             // 
-            // groupBox2
+            // groupBoxSettings
             // 
-            this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Controls.Add(this.numericUpDownY);
-            this.groupBox2.Controls.Add(this.numericUpDownX);
-            this.groupBox2.Controls.Add(this.numericUpDownHeight);
-            this.groupBox2.Controls.Add(this.numericUpDownWidth);
-            this.groupBox2.Controls.Add(this.labelResolution);
-            this.groupBox2.Location = new System.Drawing.Point(13, 42);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(226, 91);
-            this.groupBox2.TabIndex = 5;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Settings";
+            this.groupBoxSettings.Controls.Add(this.label1);
+            this.groupBoxSettings.Controls.Add(this.numericUpDownY);
+            this.groupBoxSettings.Controls.Add(this.numericUpDownX);
+            this.groupBoxSettings.Controls.Add(this.numericUpDownHeight);
+            this.groupBoxSettings.Controls.Add(this.numericUpDownWidth);
+            this.groupBoxSettings.Controls.Add(this.labelResolution);
+            this.groupBoxSettings.Location = new System.Drawing.Point(13, 42);
+            this.groupBoxSettings.Name = "groupBoxSettings";
+            this.groupBoxSettings.Size = new System.Drawing.Size(226, 91);
+            this.groupBoxSettings.TabIndex = 5;
+            this.groupBoxSettings.TabStop = false;
+            this.groupBoxSettings.Text = "Settings";
             // 
             // label1
             // 
@@ -570,11 +570,11 @@ namespace AssaDraw
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1060, 638);
+            this.Controls.Add(this.labelPosition);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOk);
             this.Controls.Add(this.toolStripAssaDraw);
-            this.Controls.Add(this.labelPosition);
-            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBoxSettings);
             this.Controls.Add(this.treeView1);
             this.Controls.Add(this.pictureBoxCanvas);
             this.KeyPreview = true;
@@ -586,11 +586,11 @@ namespace AssaDraw
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormAssaDrawMain_FormClosing);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.FormAssaDrawMain_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.FormAssaDrawMain_DragEnter);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormAssaDrawMain_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCanvas)).EndInit();
             this.contextMenuStripTreeView.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.groupBoxSettings.ResumeLayout(false);
+            this.groupBoxSettings.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownY)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHeight)).EndInit();
@@ -607,7 +607,7 @@ namespace AssaDraw
 
         private System.Windows.Forms.PictureBox pictureBoxCanvas;
         private System.Windows.Forms.TreeView treeView1;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox groupBoxSettings;
         private System.Windows.Forms.NumericUpDown numericUpDownHeight;
         private System.Windows.Forms.NumericUpDown numericUpDownWidth;
         private System.Windows.Forms.Label labelResolution;

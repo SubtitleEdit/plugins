@@ -40,6 +40,7 @@ namespace AssaDraw
             this.panelScreenRes = new System.Windows.Forms.Panel();
             this.buttonScreenRes = new System.Windows.Forms.Button();
             this.checkBoxAutoLoadBackgroundFromSE = new System.Windows.Forms.CheckBox();
+            this.checkBoxHideSettingsAndTreeView = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // panelLineColor
@@ -145,18 +146,29 @@ namespace AssaDraw
             // checkBoxAutoLoadBackgroundFromSE
             // 
             this.checkBoxAutoLoadBackgroundFromSE.AutoSize = true;
-            this.checkBoxAutoLoadBackgroundFromSE.Location = new System.Drawing.Point(13, 153);
+            this.checkBoxAutoLoadBackgroundFromSE.Location = new System.Drawing.Point(12, 167);
             this.checkBoxAutoLoadBackgroundFromSE.Name = "checkBoxAutoLoadBackgroundFromSE";
             this.checkBoxAutoLoadBackgroundFromSE.Size = new System.Drawing.Size(220, 17);
             this.checkBoxAutoLoadBackgroundFromSE.TabIndex = 12;
             this.checkBoxAutoLoadBackgroundFromSE.Text = "Auto load background from SE video pos";
             this.checkBoxAutoLoadBackgroundFromSE.UseVisualStyleBackColor = true;
             // 
+            // checkBoxHideSettingsAndTreeView
+            // 
+            this.checkBoxHideSettingsAndTreeView.AutoSize = true;
+            this.checkBoxHideSettingsAndTreeView.Location = new System.Drawing.Point(12, 144);
+            this.checkBoxHideSettingsAndTreeView.Name = "checkBoxHideSettingsAndTreeView";
+            this.checkBoxHideSettingsAndTreeView.Size = new System.Drawing.Size(151, 17);
+            this.checkBoxHideSettingsAndTreeView.TabIndex = 13;
+            this.checkBoxHideSettingsAndTreeView.Text = "Hide settings and treeview";
+            this.checkBoxHideSettingsAndTreeView.UseVisualStyleBackColor = true;
+            // 
             // FormAssaDrawSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(417, 239);
+            this.Controls.Add(this.checkBoxHideSettingsAndTreeView);
             this.Controls.Add(this.checkBoxAutoLoadBackgroundFromSE);
             this.Controls.Add(this.panelScreenRes);
             this.Controls.Add(this.buttonScreenRes);
@@ -196,5 +208,6 @@ namespace AssaDraw
         private System.Windows.Forms.Panel panelScreenRes;
         private System.Windows.Forms.Button buttonScreenRes;
         private System.Windows.Forms.CheckBox checkBoxAutoLoadBackgroundFromSE;
+        private System.Windows.Forms.CheckBox checkBoxHideSettingsAndTreeView;
     }
 }

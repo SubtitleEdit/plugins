@@ -11,6 +11,7 @@ namespace AssaDraw.Logic
     {
         public static bool Standalone { get; set; }
         public static bool UseScreenShotFromSe { get; set; } = true;
+        public static bool HideSettingsAndTreeView { get; set; } = true;
         public static Color ShapeLineColor { get; set; }
         public static Color ActiveShapeLineColor { get; set; }
         public static Color BackgroundColor { get; set; }
@@ -62,6 +63,8 @@ namespace AssaDraw.Logic
                 BackgroundColor = ColorTranslator.FromHtml(doc.DocumentElement.SelectSingleNode("BackgroundColor").InnerText);
                 ScreenSizeColor = ColorTranslator.FromHtml(doc.DocumentElement.SelectSingleNode("ScreenSizeColor").InnerText);
                 UseScreenShotFromSe = Convert.ToBoolean(doc.DocumentElement.SelectSingleNode("UseScreenShotFromSe").InnerText, CultureInfo.InvariantCulture);
+                HideSettingsAndTreeView = Convert.ToBoolean(doc.DocumentElement.SelectSingleNode("HideSettingsAndTreeView").InnerText, CultureInfo.InvariantCulture);
+                
             }
             catch
             {
@@ -74,12 +77,13 @@ namespace AssaDraw.Logic
             try
             {
                 var doc = new XmlDocument();
-                doc.LoadXml("<AssaDraw><ShapeLineColor/><ActiveShapeLineColor/><BackgroundColor/><ScreenSizeColor/><UseScreenShotFromSe/></AssaDraw>");
+                doc.LoadXml("<AssaDraw><ShapeLineColor/><ActiveShapeLineColor/><BackgroundColor/><ScreenSizeColor/><UseScreenShotFromSe/><HideSettingsAndTreeView/></AssaDraw>");
                 doc.DocumentElement.SelectSingleNode("ShapeLineColor").InnerText = ColorTranslator.ToHtml(ShapeLineColor);
                 doc.DocumentElement.SelectSingleNode("ActiveShapeLineColor").InnerText = ColorTranslator.ToHtml(ActiveShapeLineColor);
                 doc.DocumentElement.SelectSingleNode("BackgroundColor").InnerText = ColorTranslator.ToHtml(BackgroundColor);
                 doc.DocumentElement.SelectSingleNode("ScreenSizeColor").InnerText = ColorTranslator.ToHtml(ScreenSizeColor);
                 doc.DocumentElement.SelectSingleNode("UseScreenShotFromSe").InnerText = UseScreenShotFromSe.ToString(CultureInfo.InvariantCulture);
+                doc.DocumentElement.SelectSingleNode("HideSettingsAndTreeView").InnerText = HideSettingsAndTreeView.ToString(CultureInfo.InvariantCulture);
                 doc.Save(GetSettingsFileName());
             }
             catch

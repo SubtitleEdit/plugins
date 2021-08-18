@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using AssaDraw.ColorPicker;
 
 namespace AssaDraw
 {
@@ -94,6 +95,11 @@ namespace AssaDraw
                 var sub = new Subtitle();
                 new AdvancedSubStationAlpha().LoadSubtitle(sub, text.SplitToLines(), string.Empty);
                 ImportAssaDrawingFromFileText(text);
+            }
+
+            if (DrawSettings.HideSettingsAndTreeView)
+            {
+                HideSettingsAndTreeView();
             }
 
             toolStripButtonPreview.Enabled = LibMpvDynamic.IsInstalled;
@@ -684,15 +690,14 @@ namespace AssaDraw
             treeView1.EndUpdate();
         }
 
-        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        private void FormAssaDrawMain_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Modifiers == Keys.Control && e.KeyCode == Keys.P)
             {
                 if (toolStripButtonPreview.Enabled)
                 {
                     e.SuppressKeyPress = true;
-                    var timer1 = new Timer();
-                    timer1.Interval = 50;
+                    var timer1 = new Timer { Interval = 50 };
                     timer1.Tick += (o, s) =>
                     {
                         timer1.Stop();
@@ -823,6 +828,24 @@ namespace AssaDraw
                 toolStripButtonCloseShape_Click(null, null);
                 e.SuppressKeyPress = true;
             }
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F12)
+            {
+                if (treeView1.Visible)
+                {
+                    SuspendLayout();
+                    HideSettingsAndTreeView();
+                    ResumeLayout();
+                }
+                else
+                {
+                    SuspendLayout();
+                    ShowSettingsAndTreeView();
+                    ResumeLayout();
+                }
+
+                pictureBoxCanvas.Invalidate();
+                e.SuppressKeyPress = true;
+            }
             else if (_activeDrawShape != null && e.KeyCode == Keys.Escape)
             {
                 if (!_drawShapes.Contains(_activeDrawShape))
@@ -925,6 +948,27 @@ namespace AssaDraw
                     e.SuppressKeyPress = true;
                 }
             }
+        }
+
+        private void ShowSettingsAndTreeView()
+        {
+            DrawSettings.HideSettingsAndTreeView = false;
+            pictureBoxCanvas.Left = treeView1.Left + treeView1.Width + 15;
+            pictureBoxCanvas.Width = Width - pictureBoxCanvas.Left - 27;
+            labelPosition.Left = pictureBoxCanvas.Left;
+            groupBoxSettings.Visible = true;
+            treeView1.Visible = true;
+        }
+
+        private void HideSettingsAndTreeView()
+        {
+            DrawSettings.HideSettingsAndTreeView = true;
+            var w = pictureBoxCanvas.Width + (pictureBoxCanvas.Left - treeView1.Left);
+            pictureBoxCanvas.Left = treeView1.Left;
+            pictureBoxCanvas.Width = w;
+            labelPosition.Left = treeView1.Left;
+            groupBoxSettings.Visible = false;
+            treeView1.Visible = false;
         }
 
         private void ScaleActiveShape(float factor)
@@ -1829,6 +1873,19 @@ namespace AssaDraw
             {
                 if (settingsForm.ShowDialog() == DialogResult.OK)
                 {
+                    if (DrawSettings.HideSettingsAndTreeView && treeView1.Visible)
+                    {
+                        SuspendLayout();
+                        HideSettingsAndTreeView();
+                        ResumeLayout();
+                    }
+                    else if (!DrawSettings.HideSettingsAndTreeView && !treeView1.Visible)
+                    {
+                        SuspendLayout();
+                        ShowSettingsAndTreeView();
+                        ResumeLayout();
+                    }
+
                     pictureBoxCanvas.Invalidate();
                 }
             }
@@ -2009,13 +2066,14 @@ namespace AssaDraw
         {
             if (treeView1.SelectedNode.Tag is int layer)
             {
-                using (var colorDialog = new ColorDialog())
+                var first = _drawShapes.First(p => p.Layer == layer);
+                using (var colorChooser = new ColorChooser { Color = first.ForeColor })
                 {
-                    if (colorDialog.ShowDialog() == DialogResult.OK)
+                    if (colorChooser.ShowDialog() == DialogResult.OK)
                     {
                         foreach (var shape in _drawShapes.Where(p => p.Layer == layer))
                         {
-                            shape.ForeColor = colorDialog.Color;
+                            shape.ForeColor = colorChooser.Color;
                         }
 
                         FillTreeView(_drawShapes);

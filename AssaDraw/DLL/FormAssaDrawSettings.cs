@@ -15,6 +15,7 @@ namespace AssaDraw
             panelBackgroundColor.BackColor = DrawSettings.BackgroundColor;
             panelScreenRes.BackColor = DrawSettings.ScreenSizeColor;
 
+            checkBoxHideSettingsAndTreeView.Checked = DrawSettings.HideSettingsAndTreeView;
             checkBoxAutoLoadBackgroundFromSE.Visible = !DrawSettings.Standalone;
             checkBoxAutoLoadBackgroundFromSE.Checked = DrawSettings.UseScreenShotFromSe;
         }
@@ -49,6 +50,7 @@ namespace AssaDraw
             DrawSettings.ActiveShapeLineColor = panelLineActiveColor.BackColor;
             DrawSettings.BackgroundColor = panelBackgroundColor.BackColor;
             DrawSettings.ScreenSizeColor = panelScreenRes.BackColor;
+            DrawSettings.HideSettingsAndTreeView = checkBoxHideSettingsAndTreeView.Checked;
             DrawSettings.UseScreenShotFromSe = checkBoxAutoLoadBackgroundFromSE.Checked;
             DialogResult = DialogResult.OK;
         }
