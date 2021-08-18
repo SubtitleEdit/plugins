@@ -1,4 +1,5 @@
-﻿using AssaDraw.Logic;
+﻿using AssaDraw.ColorPicker;
+using AssaDraw.Logic;
 using Nikse.SubtitleEdit.Logic;
 using Nikse.SubtitleEdit.Logic.VideoPlayers;
 using SubtitleEdit.Logic;
@@ -12,7 +13,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using AssaDraw.ColorPicker;
 
 namespace AssaDraw
 {
@@ -69,8 +69,7 @@ namespace AssaDraw
 
             _history = new DrawHistory();
 
-            var historyTimer = new Timer();
-            historyTimer.Interval = 250;
+            var historyTimer = new Timer { Interval = 500 };
             historyTimer.Tick += _historyTimer_Tick;
             historyTimer.Start();
 
@@ -162,14 +161,7 @@ namespace AssaDraw
             }
             else if (ModifierKeys == (Keys.Control | Keys.Shift))
             {
-                if (e.Delta > 0)
-                {
-                    ScaleActiveShape(1.1f);
-                }
-                else
-                {
-                    ScaleActiveShape(0.9f);
-                }
+                ScaleActiveShapes(e.Delta > 0 ? 1.1f : 0.9f);
                 ZoomChangedPostFix();
             }
         }
@@ -276,11 +268,12 @@ namespace AssaDraw
             DrawResolution(graphics);
 
             // draw shapes
+            var activeLayer = _activeDrawShape == null && treeView1.Visible && treeView1.SelectedNode?.Tag is int layer ? layer : int.MinValue;
             foreach (var drawShape in _drawShapes.Where(p => !p.Hidden))
             {
                 if (drawShape != _activeDrawShape)
                 {
-                    Draw(drawShape, graphics, false);
+                    Draw(drawShape, graphics, drawShape.Layer == activeLayer);
                 }
 
                 foreach (var point in drawShape.Points)
@@ -387,8 +380,13 @@ namespace AssaDraw
                         i++;
                         if (i >= drawShape.Points.Count - 1)
                         {
-                            var useActiveColor = drawShape == _activeDrawShape && _drawShapes.Contains(drawShape);
-                            using (var penClosing = new Pen(new SolidBrush(useActiveColor ? DrawSettings.ActiveShapeLineColor : DrawSettings.ShapeLineColor), 2))
+                            var c = isActive ? DrawSettings.ActiveShapeLineColor : DrawSettings.ShapeLineColor;
+                            if (drawShape == _activeDrawShape && !_drawShapes.Contains(drawShape))
+                            {
+                                c = DrawSettings.ShapeLineColor;
+                            }
+
+                            using (var penClosing = new Pen(new SolidBrush(c), 2))
                             {
                                 graphics.DrawLine(penClosing, ToZoomFactorPoint(drawShape.Points[drawShape.Points.Count - 1]), ToZoomFactorPoint(drawShape.Points[0]));
                             }
@@ -575,7 +573,6 @@ namespace AssaDraw
                 return;
             }
 
-
             if (_drawShapes.Contains(_activeDrawShape) || _activeDrawShape == null)
             {
                 var closePoint = GetClosePoint(x, y);
@@ -586,12 +583,39 @@ namespace AssaDraw
                 }
             }
 
+            // Move whole active layer
+            var activeLayer = _activeDrawShape == null && treeView1.Visible && treeView1.SelectedNode?.Tag is int layer ? layer : int.MinValue;
+            if (_activeDrawShape == null && activeLayer > int.MinValue && ModifierKeys == Keys.Control &&
+                _moveActiveDrawShapeStart.X != int.MinValue && _moveActiveDrawShapeStart.Y != int.MinValue)
+            {
+                Cursor = Cursors.SizeAll;
+                var xAdjust = x - _moveActiveDrawShapeStart.X;
+                var yAdjust = y - _moveActiveDrawShapeStart.Y;
+                _moveActiveDrawShapeStart.X = x;
+                _moveActiveDrawShapeStart.Y = y;
+                var layerShapes = _drawShapes.Where(p => p.Layer == activeLayer).ToList();
+                treeView1.BeginUpdate();
+                foreach (var drawShape in layerShapes)
+                {
+                    foreach (var p in drawShape.Points)
+                    {
+                        p.X += xAdjust;
+                        p.Y += yAdjust;
+                    }
+
+                    UpdateTreeView(drawShape);
+                }
+                treeView1.EndUpdate();
+                pictureBoxCanvas.Invalidate();
+                _activePoint = null;
+                return;
+            }
+
             if (_activeDrawShape == null && _activePoint == null)
             {
                 Cursor = Cursors.Default;
                 return;
             }
-
 
             if (_activeDrawShape != null)
             {
@@ -651,7 +675,7 @@ namespace AssaDraw
             return $"{startTag}{s.Trim()}{_assaEndTag}";
         }
 
-        private string WrapInIClipTag(string s)
+        private static string WrapInIClipTag(string s)
         {
             if (string.IsNullOrEmpty(s))
             {
@@ -677,9 +701,8 @@ namespace AssaDraw
                     }
 
                     var node = new TreeNode("Shape (" + (drawShape.IsEraser ? "erase" : "draw") + ")") { Tag = drawShape };
-                    for (int i = 0; i < drawShape.Points.Count; i++)
+                    foreach (var p in drawShape.Points)
                     {
-                        var p = drawShape.Points[i];
                         var text = p.GetText(p.X, p.Y);
                         var subNode = new TreeNode(text) { Tag = p };
                         node.Nodes.Add(subNode);
@@ -691,6 +714,27 @@ namespace AssaDraw
             treeView1.ExpandAll();
             treeView1.EndUpdate();
         }
+
+        private void UpdateTreeView(DrawShape drawShape)
+        {
+            foreach (TreeNode node in treeView1.Nodes)
+            {
+                foreach (TreeNode subNode in node.Nodes)
+                {
+                    if (subNode.Tag is DrawShape shape && shape == drawShape)
+                    {
+                        subNode.Nodes.Clear();
+                        foreach (var p in drawShape.Points)
+                        {
+                            var text = p.GetText(p.X, p.Y);
+                            var pointNode = new TreeNode(text) { Tag = p };
+                            subNode.Nodes.Add(pointNode);
+                        }
+                    }
+                }
+            }
+        }
+
 
         private void FormAssaDrawMain_KeyDown(object sender, KeyEventArgs e)
         {
@@ -766,12 +810,12 @@ namespace AssaDraw
             }
             else if (e.Modifiers == (Keys.Control | Keys.Shift) && (e.KeyCode == Keys.Oemplus || e.KeyCode == Keys.Add))
             {
-                ScaleActiveShape(1.1f);
+                ScaleActiveShapes(1.1f);
                 e.SuppressKeyPress = true;
             }
             else if (e.Modifiers == (Keys.Control | Keys.Shift) && (e.KeyCode == Keys.OemMinus || e.KeyCode == Keys.Subtract))
             {
-                ScaleActiveShape(0.9f);
+                ScaleActiveShapes(0.9f);
                 e.SuppressKeyPress = true;
             }
             else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.C)
@@ -973,23 +1017,75 @@ namespace AssaDraw
             treeView1.Visible = false;
         }
 
-        private void ScaleActiveShape(float factor)
+        private void ScaleActiveShapes(float factor)
         {
-            if (_activeDrawShape == null)
+            var activeLayer = _activeDrawShape == null && treeView1.Visible && treeView1.SelectedNode?.Tag is int layer ? layer : int.MinValue;
+            if (_activeDrawShape == null && activeLayer > int.MinValue)
+            {
+
+                var allPoints = new List<DrawCoordinate>();
+                var layerShapes = _drawShapes.Where(p => p.Layer == activeLayer).ToList();
+                foreach (var drawShape in layerShapes)
+                {
+                    allPoints.AddRange(drawShape.Points);
+                }
+
+                var minX = allPoints.Min(p => p.X);
+                var minY = allPoints.Min(p => p.Y);
+                var maxX = allPoints.Max(p => p.X);
+                var maxY = allPoints.Max(p => p.Y);
+                if (factor < 1 && (maxX - minX < 5 || maxY - minY < 5))
+                {
+                    return;
+                }
+
+                foreach (var point in allPoints)
+                {
+                    var x = point.X - minX;
+                    var y = point.Y - minY;
+                    var newX = x * factor + minX;
+                    var newY = y * factor + minY;
+                    point.X = newX;
+                    point.Y = newY;
+                }
+
+                treeView1.BeginUpdate();
+                foreach (var drawShape in layerShapes)
+                {
+                    UpdateTreeView(drawShape);
+                }
+
+                treeView1.EndUpdate();
+            }
+            else if (_activeDrawShape == null)
             {
                 return;
             }
+            else
+            {
+                if (!ScaleShape(_activeDrawShape, factor))
+                {
+                    return;
+                }
 
-            var minX = _activeDrawShape.Points.Min(p => p.X);
-            var minY = _activeDrawShape.Points.Min(p => p.Y);
-            var maxX = _activeDrawShape.Points.Max(p => p.X);
-            var maxY = _activeDrawShape.Points.Max(p => p.Y);
+                UpdateTreeView(_activeDrawShape);
+            }
+
+            pictureBoxCanvas.Invalidate();
+        }
+
+        private bool ScaleShape(DrawShape shape, float factor)
+        {
+            var minX = shape.Points.Min(p => p.X);
+            var minY = shape.Points.Min(p => p.Y);
+            var maxX = shape.Points.Max(p => p.X);
+            var maxY = shape.Points.Max(p => p.Y);
             if (factor < 1 && (maxX - minX < 5 || maxY - minY < 5))
             {
-                return;
+                return false;
             }
 
-            foreach (var point in _activeDrawShape.Points)
+            foreach (var point in shape.Points)
             {
                 var x = point.X - minX;
                 var y = point.Y - minY;
@@ -998,8 +1094,8 @@ namespace AssaDraw
                 point.X = newX;
                 point.Y = newY;
             }
-            pictureBoxCanvas.Invalidate();
-            FillTreeView(_drawShapes);
+
+            return true;
         }
 
         private void AdjustPosition(int xAdjust, int yAdjust)
@@ -1054,6 +1150,16 @@ namespace AssaDraw
                 _x = int.MinValue;
                 _y = int.MinValue;
             }
+            else if (tag is int)
+            {
+                _activePoint = null;
+                numericUpDownX.Enabled = false;
+                numericUpDownY.Enabled = false;
+                _activeDrawShape = null;
+                _x = int.MinValue;
+                _y = int.MinValue;
+            }
+
             pictureBoxCanvas.Invalidate();
             EnableDisableCurrentShapeActions();
         }
@@ -1156,8 +1262,19 @@ namespace AssaDraw
             }
             else if (ModifierKeys == Keys.Control && _activeDrawShape != null && _drawShapes.Contains(_activeDrawShape))
             {
+                // move active shape
                 _moveActiveDrawShapeStart = new Point(x, y);
                 Cursor = Cursors.SizeAll;
+            }
+            else
+            {
+                var activeLayer = _activeDrawShape == null && treeView1.Visible && treeView1.SelectedNode?.Tag is int layer ? layer : int.MinValue;
+                if (_activeDrawShape == null && activeLayer > int.MinValue && ModifierKeys == Keys.Control)
+                {
+                    // move active shape
+                    _moveActiveDrawShapeStart = new Point(x, y);
+                    Cursor = Cursors.SizeAll;
+                }
             }
         }
 

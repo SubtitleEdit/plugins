@@ -125,9 +125,11 @@ Shortcuts:
 * Esc: Clear current new shape
 * Ctrl+arrow: Move 10 pixels
 * Alt+arrow: Move 1 pixel
-* Ctrl+mouse-down-move: Move active shape
+* Ctrl+Minus/Plus or ctrl+Mousewheel: Zoom in/out
 * Shift+arrow: Pan screen area
 * Shift+mouse move: Pan screen area
+* Ctrl+mouse-down-move: Move active shape/layer
+* Ctrl+Shift+Minus/Plus: Scale active shape/layer
 * F2: Toggle line/curve
 * F3: Line mode
 * F4: Curve (beizer) mode
@@ -140,8 +142,6 @@ Shortcuts:
 * Ctrl+Y: Redo
 * Ctrl+P: Toggle preview (requires mpv + ffmpeg)
 * Ctrl+F2: Toggle background image on/off
-* Ctrl+Minus/Plus or ctrl+Mousewheel: Zoom in/out
-* Ctrl+Shift+Minus/Plus: Scale active shape
 
 Tips: 
 * A color can be applied to each layer.
