@@ -32,8 +32,8 @@ namespace AssaDraw
         private DrawCoordinate _mouseDownPoint;
         private bool _panOn;
 
-        private DrawHistory _history;
-        private object _historyLock = new object();
+        private readonly DrawHistory _history;
+        private readonly object _historyLock = new object();
         private int _historyHash;
 
         private string _fileName;
@@ -76,6 +76,7 @@ namespace AssaDraw
 
             if (text == "standalone")
             {
+                DrawSettings.Standalone = true;
                 buttonCancel.Visible = false;
                 buttonOk.Visible = false;
                 var args = Environment.GetCommandLineArgs();
@@ -99,7 +100,7 @@ namespace AssaDraw
             ShowTitle();
             MouseWheel += FormAssaDrawMain_MouseWheel;
 
-            if (!string.IsNullOrEmpty(videoFileName) || !string.IsNullOrEmpty(videoPosition) && File.Exists(videoFileName))
+            if (DrawSettings.UseScreenShotFromSe && !string.IsNullOrEmpty(videoFileName) && !string.IsNullOrEmpty(videoPosition) && File.Exists(videoFileName))
             {
                 GetVideoBackground(videoFileName, videoPosition);
             }
@@ -123,7 +124,7 @@ namespace AssaDraw
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show(e.ToString());
+                    MessageBox.Show($"An error occurred while trying to get screen shot from {videoFileName} at pos {videoPosition}: {e}");
                 }
             };
             bw.RunWorkerAsync();
@@ -250,27 +251,18 @@ namespace AssaDraw
             // draw background
             var bitmap = _backgroundImage != null && !_backgroundOff ? (Bitmap)_backgroundImage.Clone() : new Bitmap(ToZoomFactor((int)numericUpDownWidth.Value), ToZoomFactor((int)numericUpDownHeight.Value));
             var graphics = e.Graphics;
-            if (_backgroundImage == null)
+            DrawOffScreenBackground(graphics);
+            using (var brush = new SolidBrush(DrawSettings.BackgroundColor))
             {
-                DrawOffScreenBackground(graphics);
-                //using (var brush = new SolidBrush(Color.White))
-                //{
-                //    graphics.FillRectangle(brush, new Rectangle(0, 0, pictureBoxCanvas.Width, pictureBoxCanvas.Height));
-                //}
-
-                using (var brush = new SolidBrush(DrawSettings.BackgroundColor))
-                {
-                    graphics.FillRectangle(brush, new Rectangle(_panX, _panY, bitmap.Width, bitmap.Height));
-                }
+                graphics.FillRectangle(brush, new Rectangle(_panX, _panY, bitmap.Width, bitmap.Height));
             }
-            else
+
+            if (_backgroundImage != null)
             {
                 graphics.DrawImage(bitmap, _panX, _panY, ToZoomFactor(bitmap.Width), ToZoomFactor(bitmap.Height));
             }
 
-
             DrawResolution(graphics);
-
 
             // draw shapes
             foreach (var drawShape in _drawShapes.Where(p => !p.Hidden))
@@ -279,9 +271,9 @@ namespace AssaDraw
                 {
                     Draw(drawShape, graphics, false);
                 }
-                for (int i = 0; i < drawShape.Points.Count; i++)
+
+                foreach (var point in drawShape.Points)
                 {
-                    DrawCoordinate point = drawShape.Points[i];
                     using (var pen3 = new Pen(new SolidBrush(point.PointColor), 2))
                     {
                         graphics.DrawLine(pen3, new Point(ToZoomFactorX(point.X) - 5, ToZoomFactorY(point.Y)), new Point(ToZoomFactorX(point.X) + 5, ToZoomFactorY(point.Y)));
@@ -338,7 +330,7 @@ namespace AssaDraw
 
         private void DrawResolution(Graphics graphics)
         {
-            using (var pen = new Pen(new SolidBrush(Color.Green), 2))
+            using (var pen = new Pen(new SolidBrush(DrawSettings.ScreenSizeColor), 2))
             {
                 graphics.DrawRectangle(pen, _panX - 1, _panY - 1, ToZoomFactor(numericUpDownWidth.Value + 2), ToZoomFactor(numericUpDownHeight.Value + 2));
             }
@@ -437,8 +429,8 @@ namespace AssaDraw
             {
                 return;
             }
-            var x = FromZoomFactor(e.Location.X) - _panX;
-            var y = FromZoomFactor(e.Location.Y) - _panY;
+            var x = FromZoomFactor(e.Location.X - _panX);
+            var y = FromZoomFactor(e.Location.Y - _panY);
 
             _activePoint = null;
             numericUpDownX.Enabled = false;
@@ -523,8 +515,8 @@ namespace AssaDraw
                 return;
             }
 
-            var x = FromZoomFactor(e.Location.X) - _panX;
-            var y = FromZoomFactor(e.Location.Y) - _panY;
+            var x = FromZoomFactor(e.Location.X - _panX);
+            var y = FromZoomFactor(e.Location.Y - _panY);
             labelPosition.Text = $"Position {x},{y}";
 
             // pan
@@ -599,7 +591,7 @@ namespace AssaDraw
             {
                 if (_activeDrawShape.Points.Count == 0 && _drawShapes.Contains(_activeDrawShape))
                 {
-                    _activeDrawShape.AddPoint(DrawCoordinateType.Line, ToZoomFactor(x), ToZoomFactor(y), DrawSettings.PointColor);
+                    _activeDrawShape.AddPoint(DrawCoordinateType.Line, x, y, DrawSettings.PointColor);
                 }
                 else
                 {
@@ -1076,8 +1068,8 @@ namespace AssaDraw
 
         private void pictureBoxCanvas_MouseDown(object sender, MouseEventArgs e)
         {
-            var x = FromZoomFactor(e.X) - _panX;
-            var y = FromZoomFactor(e.Y) - _panY;
+            var x = FromZoomFactor(e.X - _panX);
+            var y = FromZoomFactor(e.Y - _panY);
             _moveActiveDrawShapeStart = new Point(int.MinValue, int.MinValue);
 
             if (e.Button == MouseButtons.Left && ModifierKeys == Keys.Shift)
@@ -1109,12 +1101,12 @@ namespace AssaDraw
                     _activePoint = closePoint;
                     pictureBoxCanvas.Invalidate();
                     SelectTreeViewNodePoint(closePoint);
-                    contextMenuStripTreeView.Show(pictureBoxCanvas, x, y);
+                    contextMenuStripTreeView.Show(pictureBoxCanvas, e.X, e.Y);
                 }
             }
             else if (e.Button == MouseButtons.Right)
             {
-                contextMenuStripCanvasBackground.Show(pictureBoxCanvas, x, y);
+                contextMenuStripCanvasBackground.Show(pictureBoxCanvas, e.X, e.Y);
             }
             else if (ModifierKeys == Keys.Control && _activeDrawShape != null && _drawShapes.Contains(_activeDrawShape))
             {
@@ -1296,7 +1288,7 @@ namespace AssaDraw
 
                     if (openFileDialog.FileName.EndsWith(".svg", true, CultureInfo.InvariantCulture))
                     {
-                        _drawShapes.AddRange( Svg.LoadSvg(openFileDialog.FileName));
+                        _drawShapes.AddRange(Svg.LoadSvg(openFileDialog.FileName));
                         pictureBoxCanvas.Invalidate();
                         FillTreeView(_drawShapes);
                         return;

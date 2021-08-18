@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Xml;
@@ -8,10 +9,12 @@ namespace AssaDraw.Logic
 {
     public static class DrawSettings
     {
+        public static bool Standalone { get; set; }
+        public static bool UseScreenShotFromSe { get; set; } = true;
         public static Color ShapeLineColor { get; set; }
         public static Color ActiveShapeLineColor { get; set; }
         public static Color BackgroundColor { get; set; }
-        public static Color OffScreenColor { get; set; }
+        public static Color ScreenSizeColor { get; set; }
 
         public static Color PointHelperColor = Color.FromArgb(100, Color.Green);
         public static Color PointColor = Color.FromArgb(100, Color.Red);
@@ -20,8 +23,8 @@ namespace AssaDraw.Logic
         {
             ShapeLineColor = Color.Black;
             ActiveShapeLineColor = Color.Red;
-            BackgroundColor = Color.LightGray;
-            OffScreenColor = Color.White;
+            BackgroundColor = Color.White;
+            ScreenSizeColor = Color.Green;
         }
 
         private static string GetSettingsFileName()
@@ -57,7 +60,8 @@ namespace AssaDraw.Logic
                 ShapeLineColor = ColorTranslator.FromHtml(doc.DocumentElement.SelectSingleNode("ShapeLineColor").InnerText);
                 ActiveShapeLineColor = ColorTranslator.FromHtml(doc.DocumentElement.SelectSingleNode("ActiveShapeLineColor").InnerText);
                 BackgroundColor = ColorTranslator.FromHtml(doc.DocumentElement.SelectSingleNode("BackgroundColor").InnerText);
-                OffScreenColor = ColorTranslator.FromHtml(doc.DocumentElement.SelectSingleNode("OffScreenColor").InnerText);
+                ScreenSizeColor = ColorTranslator.FromHtml(doc.DocumentElement.SelectSingleNode("ScreenSizeColor").InnerText);
+                UseScreenShotFromSe = Convert.ToBoolean(doc.DocumentElement.SelectSingleNode("UseScreenShotFromSe").InnerText, CultureInfo.InvariantCulture);
             }
             catch
             {
@@ -70,11 +74,12 @@ namespace AssaDraw.Logic
             try
             {
                 var doc = new XmlDocument();
-                doc.LoadXml("<AssaDraw><ShapeLineColor/><ActiveShapeLineColor/><BackgroundColor/><OffScreenColor/></AssaDraw>");
+                doc.LoadXml("<AssaDraw><ShapeLineColor/><ActiveShapeLineColor/><BackgroundColor/><ScreenSizeColor/><UseScreenShotFromSe/></AssaDraw>");
                 doc.DocumentElement.SelectSingleNode("ShapeLineColor").InnerText = ColorTranslator.ToHtml(ShapeLineColor);
                 doc.DocumentElement.SelectSingleNode("ActiveShapeLineColor").InnerText = ColorTranslator.ToHtml(ActiveShapeLineColor);
                 doc.DocumentElement.SelectSingleNode("BackgroundColor").InnerText = ColorTranslator.ToHtml(BackgroundColor);
-                doc.DocumentElement.SelectSingleNode("OffScreenColor").InnerText = ColorTranslator.ToHtml(OffScreenColor);
+                doc.DocumentElement.SelectSingleNode("ScreenSizeColor").InnerText = ColorTranslator.ToHtml(ScreenSizeColor);
+                doc.DocumentElement.SelectSingleNode("UseScreenShotFromSe").InnerText = UseScreenShotFromSe.ToString(CultureInfo.InvariantCulture);
                 doc.Save(GetSettingsFileName());
             }
             catch

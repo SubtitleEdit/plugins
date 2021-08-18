@@ -28,7 +28,7 @@ namespace AssaDraw.Logic
                         var colorCode = pathNode.Attributes["fill"].InnerText;
                         color = ColorTranslator.FromHtml(colorCode);
                     }
-                    catch (Exception e)
+                    catch
                     {
                         // ignore
                     }
