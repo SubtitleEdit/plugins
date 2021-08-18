@@ -639,8 +639,10 @@ namespace AssaDraw
                 return string.Empty;
             }
 
-            var regex = new Regex(@"\\1?c&H[0123456789ABCDEFabcdef]{1,8}&");
-            var startTag = regex.Replace(_assaStartTag, string.Empty);
+            var regexAlpha = new Regex(@"\\1a&H[0123456789ABCDEFabcdef]{1,2}&");
+            var regexColor = new Regex(@"\\1?c&H[0123456789ABCDEFabcdef]{1,8}&");
+            var startTag = regexAlpha.Replace(_assaStartTag, string.Empty);
+            startTag = regexColor.Replace(startTag, string.Empty);
             var idx = startTag.IndexOf("\\", StringComparison.Ordinal);
             if (idx > 0 && color != Color.Transparent)
             {
@@ -1370,6 +1372,7 @@ namespace AssaDraw
             }
 
             var styles = AdvancedSubStationAlpha.GetStylesFromHeader(sub.Header);
+            var regexAlpha = new Regex(@"\\1a&H[0123456789ABCDEFabcdef]{1,2}&");
             var regexColor = new Regex(@"\\1?c&H[0123456789ABCDEFabcdef]{1,8}&");
             var regexIClip = new Regex(@"{\\iclip\([mblspcn0123456789\s\.-]*\)}");
             if (sub.Paragraphs.Count > 0)
@@ -1403,6 +1406,21 @@ namespace AssaDraw
                             }
                         }
                         c = AdvancedSubStationAlpha.GetSsaColor(colorString, c);
+                    }
+
+                    match = regexAlpha.Match(p.Text);
+                    if (match.Success)
+                    {
+                        var alpha = match.Value.Remove(0, 5).TrimEnd('&');
+                        try
+                        {
+                            var a = int.Parse(alpha, NumberStyles.HexNumber);
+                            c = Color.FromArgb(byte.MaxValue - a, c);
+                        }
+                        catch
+                        {
+                            // ignore
+                        }
                     }
 
                     var clipMatch = regexIClip.Match(p.Text);
