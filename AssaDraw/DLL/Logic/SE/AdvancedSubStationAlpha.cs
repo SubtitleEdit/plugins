@@ -1422,11 +1422,11 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text"
         {
             if (c.A >= 255)
             {
-                return $"&H{c.B:X2}{c.G:X2}{c.R:X2}";
+                return $"\\c&H{c.B:X2}{c.G:X2}{c.R:X2}&";
             }
 
             var alpha = 255 - c.A; // ASS stores alpha in reverse (0=full intensity and 255=fully transparent)
-            return $"alpha&H{alpha:X2}&\\&H{c.B:X2}{c.G:X2}{c.R:X2}";
+            return $"\\c&H{c.B:X2}{c.G:X2}{c.R:X2}&\\1a&H{alpha:X2}&";
         }
 
         public static string CheckForErrors(string header)

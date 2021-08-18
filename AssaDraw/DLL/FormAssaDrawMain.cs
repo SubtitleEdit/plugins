@@ -644,7 +644,7 @@ namespace AssaDraw
             var idx = startTag.IndexOf("\\", StringComparison.Ordinal);
             if (idx > 0 && color != Color.Transparent)
             {
-                startTag = startTag.Insert(idx, "\\c" + AdvancedSubStationAlpha.GetSsaColorString(color).TrimEnd('&') + "&");
+                startTag = startTag.Insert(idx, AdvancedSubStationAlpha.GetSsaColorStringForEvent(color).TrimEnd('&') + "&");
             }
             return $"{startTag}{s.Trim()}{_assaEndTag}";
         }

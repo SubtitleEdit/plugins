@@ -11,9 +11,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "ASSA Draw..."; // will be used in context menu item
 
-        decimal IPlugin.Version => 0.10M;
+        decimal IPlugin.Version => 0.11M;
 
-        string IPlugin.Description => "Draw shapes for Advanced Sub Station Alpha";
+        string IPlugin.Description => "Draw for Advanced Sub Station Alpha";
 
         string IPlugin.ActionType => "AssaTool"; // Can be one of these: File, Tool, Sync, Translate, SpellCheck, AssaTool
 
@@ -79,8 +79,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
 
 
-            var tempSub = new Subtitle(selectedParagraphs);
-            tempSub.Header = sub.Header;
+            var tempSub = new Subtitle(selectedParagraphs) { Header = sub.Header };
             var text = new AdvancedSubStationAlpha().ToText(tempSub, string.Empty);
 
             using (var form = new FormAssaDrawMain(text, videoFileName, videoPosition))
@@ -115,11 +114,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         }
 
                         var idx = sub.Paragraphs.IndexOf(firstParagraph);
-                        for (int i = 1; i < form.AssaDrawCodes.Paragraphs.Count; i++)
+                        for (var i = 1; i < form.AssaDrawCodes.Paragraphs.Count; i++)
                         {
-                            var newP = new Paragraph(firstParagraph);
-                            newP.Text = form.AssaDrawCodes.Paragraphs[i].Text;
-                            newP.Layer = form.AssaDrawCodes.Paragraphs[i].Layer;
+                            var newP = new Paragraph(firstParagraph)
+                            {
+                                Text = form.AssaDrawCodes.Paragraphs[i].Text,
+                                Layer = form.AssaDrawCodes.Paragraphs[i].Layer
+                            };
                             sub.Paragraphs.Insert(idx + i - 1, newP);
                         }
                     }
