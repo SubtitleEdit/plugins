@@ -11,7 +11,7 @@ namespace AssaDraw.Logic
     {
         public static bool Standalone { get; set; }
         public static bool UseScreenShotFromSe { get; set; } = true;
-        public static bool HideSettingsAndTreeView { get; set; };
+        public static bool HideSettingsAndTreeView { get; set; }
         public static Color ShapeLineColor { get; set; }
         public static Color ActiveShapeLineColor { get; set; }
         public static Color BackgroundColor { get; set; }
