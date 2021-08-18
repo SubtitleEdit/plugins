@@ -28,8 +28,8 @@ namespace AssaDraw
         private Point _moveActiveDrawShapeStart = new Point(int.MinValue, int.MinValue);
         private int _x;
         private int _y;
-        private int _panX;
-        private int _panY;
+        private float _panX;
+        private float _panY;
         private DrawCoordinate _mouseDownPoint;
         private bool _panOn;
 
@@ -247,6 +247,11 @@ namespace AssaDraw
             return (int)Math.Round(v / _zoomFactor);
         }
 
+        private int FromZoomFactor(float v)
+        {
+            return (int)Math.Round(v / _zoomFactor);
+        }
+
         private void pictureBoxCanvas_Paint(object sender, PaintEventArgs e)
         {
             if (pictureBoxCanvas.Width < 1 || pictureBoxCanvas.Height < 1 || toolStripButtonPreview.Checked)
@@ -260,7 +265,7 @@ namespace AssaDraw
             DrawOffScreenBackground(graphics);
             using (var brush = new SolidBrush(DrawSettings.BackgroundColor))
             {
-                graphics.FillRectangle(brush, new Rectangle(_panX, _panY, ToZoomFactor(bitmap.Width), ToZoomFactor(bitmap.Height)));
+                graphics.FillRectangle(brush, new Rectangle((int)Math.Round(_panX), (int)Math.Round(_panY), bitmap.Width, bitmap.Height));
             }
 
             if (_backgroundImage != null)
@@ -435,8 +440,8 @@ namespace AssaDraw
             {
                 return;
             }
-            var x = FromZoomFactor(e.Location.X - _panX);
-            var y = FromZoomFactor(e.Location.Y - _panY);
+            var x = FromZoomFactor((int)Math.Round(e.Location.X - _panX));
+            var y = FromZoomFactor((int)Math.Round(e.Location.Y - _panY));
 
             _activePoint = null;
             numericUpDownX.Enabled = false;
@@ -521,23 +526,18 @@ namespace AssaDraw
                 return;
             }
 
-            var x = FromZoomFactor(e.Location.X - _panX);
-            var y = FromZoomFactor(e.Location.Y - _panY);
+            var x = FromZoomFactor((int)Math.Round(e.Location.X - _panX));
+            var y = FromZoomFactor((int)Math.Round(e.Location.Y - _panY));
             labelPosition.Text = $"Position {x},{y}";
 
             // pan
-            if (ModifierKeys == Keys.Shift && _panOn)
+            if (_panOn)
             {
                 Cursor = Cursors.SizeAll;
-                x = FromZoomFactor(e.Location.X);
-                y = FromZoomFactor(e.Location.Y);
-                var xAdjust = x - _mouseDownPoint.X;
-                var yAdjust = y - _mouseDownPoint.Y;
-                _mouseDownPoint.X = x;
-                _mouseDownPoint.Y = y;
-                _panX += (int)Math.Round(xAdjust);
-                _panY += (int)Math.Round(yAdjust);
-
+                _panX += e.Location.X - _mouseDownPoint.X;
+                _panY += e.Location.Y - _mouseDownPoint.Y;
+                _mouseDownPoint.X = e.Location.X;
+                _mouseDownPoint.Y = e.Location.Y;
                 pictureBoxCanvas.Invalidate();
                 _activePoint = null;
                 return;
@@ -1123,7 +1123,7 @@ namespace AssaDraw
                 // pan
                 _activePoint = null;
                 _activeDrawShape = null;
-                _mouseDownPoint = new DrawCoordinate(new DrawShape(), DrawCoordinateType.None, FromZoomFactor(e.Location.X), FromZoomFactor(e.Location.Y), Color.Transparent);
+                _mouseDownPoint = new DrawCoordinate(new DrawShape(), DrawCoordinateType.None, e.Location.X, e.Location.Y, Color.Transparent);
                 _panOn = true;
                 numericUpDownX.Enabled = false;
                 numericUpDownY.Enabled = false;
