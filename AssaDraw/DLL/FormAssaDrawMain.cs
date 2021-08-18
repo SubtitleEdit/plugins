@@ -260,7 +260,7 @@ namespace AssaDraw
             DrawOffScreenBackground(graphics);
             using (var brush = new SolidBrush(DrawSettings.BackgroundColor))
             {
-                graphics.FillRectangle(brush, new Rectangle(_panX, _panY, bitmap.Width, bitmap.Height));
+                graphics.FillRectangle(brush, new Rectangle(_panX, _panY, ToZoomFactor(bitmap.Width), ToZoomFactor(bitmap.Height)));
             }
 
             if (_backgroundImage != null)
