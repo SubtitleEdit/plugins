@@ -942,6 +942,10 @@ namespace AssaDraw
                 pictureBoxCanvas.Invalidate();
                 e.SuppressKeyPress = true;
             }
+            else if (toolStripButtonPreview.Checked && e.KeyCode == Keys.Escape)
+            {
+                toolStripButtonPreview_Click(null, null);
+            }
             else if (_activeDrawShape != null && e.KeyCode == Keys.Escape)
             {
                 if (!_drawShapes.Contains(_activeDrawShape))
