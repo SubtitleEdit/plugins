@@ -77,9 +77,15 @@ namespace AssaDraw.Logic
                     try
                     {
                         var drawCodes = pathNode.Attributes["d"].InnerText;
+                        drawCodes = drawCodes.Replace("m", " m ");
                         drawCodes = drawCodes.Replace("M", " m ");
+                        drawCodes = drawCodes.Replace("c", " b ");
                         drawCodes = drawCodes.Replace("C", " b ");
-                        drawCodes = drawCodes.Replace("Z", " "); 
+                        drawCodes = drawCodes.Replace("l", " l ");
+                        drawCodes = drawCodes.Replace("L", " l ");
+                        drawCodes = drawCodes.Replace("z", " ");
+                        drawCodes = drawCodes.Replace("Z", " ");
+                        drawCodes = drawCodes.Replace("-", " -");
                         drawCodes = drawCodes.Replace(",", " ");
                         drawCodes = drawCodes.Replace("  ", " ");
                         drawCodes = drawCodes.Replace("  ", " ");
