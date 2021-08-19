@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -786,6 +787,30 @@ namespace AssaDraw
             }
         }
 
+        public static Bitmap MakeGrayScale(Bitmap original)
+        {
+            var newBitmap = new Bitmap(original.Width, original.Height);
+            using (var g = Graphics.FromImage(newBitmap))
+            {
+                var colorMatrix = new ColorMatrix(
+                    new float[][]
+                    {
+                        new float[] {.3f, .3f, .3f, 0, 0},
+                        new float[] {.59f, .59f, .59f, 0, 0},
+                        new float[] {.11f, .11f, .11f, 0, 0},
+                        new float[] {0, 0, 0, 1, 0},
+                        new float[] {0, 0, 0, 0, 1}
+                    });
+
+                using (var attributes = new ImageAttributes())
+                {
+                    attributes.SetColorMatrix(colorMatrix);
+                    g.DrawImage(original, new Rectangle(0, 0, original.Width, original.Height), 0, 0, original.Width, original.Height, GraphicsUnit.Pixel, attributes);
+                }
+            }
+            return newBitmap;
+        }
+
         private void FormAssaDrawMain_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Modifiers == Keys.Control && e.KeyCode == Keys.P)
@@ -908,6 +933,16 @@ namespace AssaDraw
 
                 pictureBoxCanvas.Invalidate();
                 e.SuppressKeyPress = true;
+            }
+            else if (e.Modifiers == (Keys.Control | Keys.Shift) && e.KeyCode == Keys.F2)
+            {
+                if (_backgroundImage != null)
+                {
+                    _backgroundImage = MakeGrayScale(_backgroundImage);
+                    _backgroundOff = false;
+                    pictureBoxCanvas.Invalidate();
+                    e.SuppressKeyPress = true;
+                }
             }
             else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F3)
             {
@@ -1730,6 +1765,13 @@ namespace AssaDraw
             if (ext == ".assadraw")
             {
                 ImportAssaDrawing(fileName);
+            }
+
+            if (ext == ".svg")
+            {
+                _drawShapes.AddRange(SvgReader.LoadSvg(fileName));
+                pictureBoxCanvas.Invalidate();
+                TreeViewFill(_drawShapes);
             }
 
             if (ext == ".png" || ext == ".jpg" || ext == ".bmp" || ext == ".tiff" || ext == ".jpe" || ext == ".jpeg" || ext == ".gif")

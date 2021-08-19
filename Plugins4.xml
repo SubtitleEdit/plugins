@@ -261,8 +261,8 @@
   <Plugin>
     <Name>ASSA Draw</Name>
     <Description>Draw shapes for Advanced Sub Station Alpha</Description>
-    <Version>0.12</Version>
-    <Date>2021-08-18</Date>
+    <Version>0.14</Version>
+    <Date>2021-08-19</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/AssaDraw.zip</Url>
     <Author>Nikse</Author>
   </Plugin>

@@ -142,6 +142,7 @@ Shortcuts:
 * Ctrl+Y: Redo
 * Ctrl+P: Toggle preview (requires mpv + ffmpeg)
 * Ctrl+F2: Toggle background image on/off
+* Ctrl+Shift+F2: Make background grayscaled
 
 Tips: 
 * A color can be applied to each layer.
