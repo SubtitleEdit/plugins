@@ -417,8 +417,13 @@ namespace AssaDraw
                         i++;
                         if (i >= drawShape.Points.Count - 1)
                         {
-                            var useActiveColor = drawShape == _activeDrawShape && _drawShapes.Contains(drawShape);
-                            using (var penClosing = new Pen(new SolidBrush(useActiveColor ? DrawSettings.ActiveShapeLineColor : DrawSettings.ShapeLineColor), 2))
+                            var c = isActive ? DrawSettings.ActiveShapeLineColor : DrawSettings.ShapeLineColor;
+                            if (drawShape == _activeDrawShape && !_drawShapes.Contains(drawShape))
+                            {
+                                c = DrawSettings.ShapeLineColor;
+                            }
+
+                            using (var penClosing = new Pen(new SolidBrush(c), 2))
                             {
                                 graphics.DrawLine(penClosing, ToZoomFactorPoint(drawShape.Points[drawShape.Points.Count - 1]), ToZoomFactorPoint(drawShape.Points[0]));
                             }
@@ -603,7 +608,7 @@ namespace AssaDraw
                         p.Y += yAdjust;
                     }
 
-                    UpdateTreeView(drawShape);
+                    TreeViewUpdate(drawShape);
                 }
                 treeView1.EndUpdate();
                 pictureBoxCanvas.Invalidate();
@@ -647,7 +652,7 @@ namespace AssaDraw
                     p.Y += yAdjust;
                 }
 
-                FillTreeView(_drawShapes);
+                TreeViewUpdate(_activeDrawShape);
                 pictureBoxCanvas.Invalidate();
                 _activePoint = null;
                 return;
@@ -685,7 +690,7 @@ namespace AssaDraw
             return $"{{\\iclip({s.Trim()})}}";
         }
 
-        private void FillTreeView(List<DrawShape> drawShapes)
+        private void TreeViewFill(List<DrawShape> drawShapes)
         {
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
@@ -700,13 +705,7 @@ namespace AssaDraw
                         layerNode.ForeColor = drawShape.ForeColor;
                     }
 
-                    var node = new TreeNode("Shape (" + (drawShape.IsEraser ? "erase" : "draw") + ")") { Tag = drawShape };
-                    foreach (var p in drawShape.Points)
-                    {
-                        var text = p.GetText(p.X, p.Y);
-                        var subNode = new TreeNode(text) { Tag = p };
-                        node.Nodes.Add(subNode);
-                    }
+                    var node = MakeShapeNode(drawShape);
                     layerNode.Nodes.Add(node);
                 }
             }
@@ -715,7 +714,20 @@ namespace AssaDraw
             treeView1.EndUpdate();
         }
 
-        private void UpdateTreeView(DrawShape drawShape)
+        private static TreeNode MakeShapeNode(DrawShape drawShape)
+        {
+            var node = new TreeNode("Shape (" + (drawShape.IsEraser ? "erase" : "draw") + ")") { Tag = drawShape };
+            foreach (var p in drawShape.Points)
+            {
+                var text = p.GetText(p.X, p.Y);
+                var subNode = new TreeNode(text) { Tag = p };
+                node.Nodes.Add(subNode);
+            }
+
+            return node;
+        }
+
+        private void TreeViewUpdate(DrawShape drawShape)
         {
             foreach (TreeNode node in treeView1.Nodes)
             {
@@ -730,11 +742,34 @@ namespace AssaDraw
                             var pointNode = new TreeNode(text) { Tag = p };
                             subNode.Nodes.Add(pointNode);
                         }
+
+                        break;
                     }
                 }
             }
         }
 
+        private void TreeViewAdd(DrawShape drawShape)
+        {
+            if (treeView1.Nodes.Count == 0)
+            {
+                TreeViewFill(_drawShapes);
+                return;
+            }
+
+            var activeLayer = treeView1.Visible && treeView1.SelectedNode?.Tag is int layer ? layer : int.MinValue;
+            if (activeLayer > int.MinValue)
+            {
+                drawShape.Layer = activeLayer;
+                treeView1.SelectedNode.Nodes.Add(MakeShapeNode(drawShape));
+                return;
+            }
+
+            var nodeLast = treeView1.Nodes[treeView1.Nodes.Count - 1];
+            {
+                nodeLast.Nodes.Add(MakeShapeNode(drawShape));
+            }
+        }
 
         private void FormAssaDrawMain_KeyDown(object sender, KeyEventArgs e)
         {
@@ -1052,7 +1087,7 @@ namespace AssaDraw
                 treeView1.BeginUpdate();
                 foreach (var drawShape in layerShapes)
                 {
-                    UpdateTreeView(drawShape);
+                    TreeViewUpdate(drawShape);
                 }
 
                 treeView1.EndUpdate();
@@ -1068,7 +1103,7 @@ namespace AssaDraw
                     return;
                 }
 
-                UpdateTreeView(_activeDrawShape);
+                TreeViewUpdate(_activeDrawShape);
             }
 
             pictureBoxCanvas.Invalidate();
@@ -1108,7 +1143,7 @@ namespace AssaDraw
                     p.Y += yAdjust;
                 }
 
-                FillTreeView(_drawShapes);
+                TreeViewFill(_drawShapes);
                 pictureBoxCanvas.Invalidate();
                 return;
             }
@@ -1121,7 +1156,7 @@ namespace AssaDraw
                     p.Y += yAdjust;
                 }
 
-                FillTreeView(_drawShapes);
+                TreeViewFill(_drawShapes);
                 pictureBoxCanvas.Invalidate();
             }
         }
@@ -1206,7 +1241,7 @@ namespace AssaDraw
                 _drawShapes.Remove(_activeDrawShape);
             }
 
-            FillTreeView(_drawShapes);
+            TreeViewFill(_drawShapes);
             _activeDrawShape = null;
             pictureBoxCanvas.Invalidate();
         }
@@ -1305,10 +1340,9 @@ namespace AssaDraw
                 }
 
                 _drawShapes.Add(_activeDrawShape);
+                TreeViewAdd(_activeDrawShape);
             }
 
-            FillTreeView(_drawShapes);
-            _activeDrawShape = null;
             _x = int.MinValue;
             _y = int.MinValue;
             pictureBoxCanvas.Invalidate();
@@ -1325,7 +1359,7 @@ namespace AssaDraw
             else if (treeView1.SelectedNode?.Tag is DrawShape drawShape && !_drawShapes.Contains(_activeDrawShape))
             {
                 _drawShapes.Remove(drawShape);
-                FillTreeView(_drawShapes);
+                TreeViewFill(_drawShapes);
             }
 
             _activePoint = null;
@@ -1453,7 +1487,7 @@ namespace AssaDraw
                     {
                         _drawShapes.AddRange(Svg.LoadSvg(openFileDialog.FileName));
                         pictureBoxCanvas.Invalidate();
-                        FillTreeView(_drawShapes);
+                        TreeViewFill(_drawShapes);
                         return;
                     }
 
@@ -1651,7 +1685,7 @@ namespace AssaDraw
                 i++;
             }
 
-            FillTreeView(_drawShapes);
+            TreeViewFill(_drawShapes);
             _x = int.MinValue;
             _y = int.MinValue;
             pictureBoxCanvas.Invalidate();
@@ -1772,7 +1806,7 @@ namespace AssaDraw
             }
 
             pictureBoxCanvas.Invalidate();
-            FillTreeView(_drawShapes);
+            TreeViewFill(_drawShapes);
         }
 
         private void Redo()
@@ -1790,7 +1824,7 @@ namespace AssaDraw
             }
 
             pictureBoxCanvas.Invalidate();
-            FillTreeView(_drawShapes);
+            TreeViewFill(_drawShapes);
         }
 
         private void contextMenuStripTreeView_Opening(object sender, System.ComponentModel.CancelEventArgs e)
@@ -1860,7 +1894,7 @@ namespace AssaDraw
             else if (treeView1.SelectedNode?.Tag is DrawShape drawShape)
             {
                 _drawShapes.Remove(drawShape);
-                FillTreeView(_drawShapes);
+                TreeViewFill(_drawShapes);
             }
 
             _activePoint = null;
@@ -1901,7 +1935,7 @@ namespace AssaDraw
                     duplicatePointToolStripMenuItem.Visible = true;
                     _activePoint = newPoint;
 
-                    FillTreeView(_drawShapes);
+                    TreeViewFill(_drawShapes);
                     SelectTreeViewNodePoint(_activePoint);
                     pictureBoxCanvas.Invalidate();
                 }
@@ -1945,7 +1979,7 @@ namespace AssaDraw
 
             _drawShapes.Add(newDrawing);
             _activeDrawShape = newDrawing;
-            FillTreeView(_drawShapes);
+            TreeViewFill(_drawShapes);
             pictureBoxCanvas.Invalidate();
         }
 
@@ -1965,7 +1999,7 @@ namespace AssaDraw
 
             _drawShapes.Add(newDrawing);
             _activeDrawShape = newDrawing;
-            FillTreeView(_drawShapes);
+            TreeViewFill(_drawShapes);
             pictureBoxCanvas.Invalidate();
             _x = int.MinValue;
             _y = int.MinValue;
@@ -2054,7 +2088,7 @@ namespace AssaDraw
                 {
                     _activePoint = null;
                     point.DrawShape.Points.Remove(point);
-                    FillTreeView(_drawShapes);
+                    TreeViewFill(_drawShapes);
                     SelectTreeViewNodePoint(_activePoint);
                     pictureBoxCanvas.Invalidate();
                 }
@@ -2075,7 +2109,7 @@ namespace AssaDraw
                         point.DrawShape.Points.RemoveAt(idx - 2);
                     }
 
-                    FillTreeView(_drawShapes);
+                    TreeViewFill(_drawShapes);
                     SelectTreeViewNodePoint(_activePoint);
                     pictureBoxCanvas.Invalidate();
                 }
@@ -2191,7 +2225,7 @@ namespace AssaDraw
                             shape.ForeColor = firstNewShape.ForeColor;
                         }
 
-                        FillTreeView(_drawShapes);
+                        TreeViewFill(_drawShapes);
                     }
                 }
             }
@@ -2211,7 +2245,7 @@ namespace AssaDraw
                             shape.ForeColor = colorChooser.Color;
                         }
 
-                        FillTreeView(_drawShapes);
+                        TreeViewFill(_drawShapes);
                     }
                 }
             }
@@ -2233,7 +2267,7 @@ namespace AssaDraw
                             shape.Layer = form.Layer;
                         }
 
-                        FillTreeView(_drawShapes);
+                        TreeViewFill(_drawShapes);
                     }
                 }
             }
@@ -2243,7 +2277,7 @@ namespace AssaDraw
         {
             if (treeView1.SelectedNode.Tag is int layer)
             {
-                int i = _drawShapes.Count - 1;
+                var i = _drawShapes.Count - 1;
                 while (i >= 0)
                 {
                     if (_drawShapes[i].Layer == layer)
@@ -2253,7 +2287,8 @@ namespace AssaDraw
                     i--;
                 }
 
-                FillTreeView(_drawShapes);
+                pictureBoxCanvas.Invalidate();
+                TreeViewFill(_drawShapes);
             }
         }
 
@@ -2262,7 +2297,7 @@ namespace AssaDraw
             if (treeView1.SelectedNode.Tag is DrawShape shape)
             {
                 shape.IsEraser = true;
-                FillTreeView(_drawShapes);
+                TreeViewFill(_drawShapes);
             }
         }
 
@@ -2271,7 +2306,7 @@ namespace AssaDraw
             if (treeView1.SelectedNode.Tag is DrawShape shape)
             {
                 shape.IsEraser = false;
-                FillTreeView(_drawShapes);
+                TreeViewFill(_drawShapes);
             }
         }
 
@@ -2290,7 +2325,7 @@ namespace AssaDraw
                 }
 
                 pictureBoxCanvas.Invalidate();
-                FillTreeView(_drawShapes);
+                TreeViewFill(_drawShapes);
             }
         }
 
@@ -2309,7 +2344,7 @@ namespace AssaDraw
                 }
 
                 pictureBoxCanvas.Invalidate();
-                FillTreeView(_drawShapes);
+                TreeViewFill(_drawShapes);
             }
         }
 
