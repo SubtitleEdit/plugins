@@ -1084,6 +1084,11 @@ namespace AssaDraw
                     allPoints.AddRange(drawShape.Points);
                 }
 
+                if (allPoints.Count == 0)
+                {
+                    return;
+                }
+
                 var minX = allPoints.Min(p => p.X);
                 var minY = allPoints.Min(p => p.Y);
                 var maxX = allPoints.Max(p => p.X);
