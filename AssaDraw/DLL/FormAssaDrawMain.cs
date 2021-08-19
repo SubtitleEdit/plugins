@@ -256,12 +256,15 @@ namespace AssaDraw
             var bitmap = _backgroundImage != null && !_backgroundOff ? (Bitmap)_backgroundImage.Clone() : new Bitmap(ToZoomFactor((int)numericUpDownWidth.Value), ToZoomFactor((int)numericUpDownHeight.Value));
             var graphics = e.Graphics;
             DrawOffScreenBackground(graphics);
-            using (var brush = new SolidBrush(DrawSettings.BackgroundColor))
-            {
-                graphics.FillRectangle(brush, new Rectangle((int)Math.Round(_panX), (int)Math.Round(_panY), bitmap.Width, bitmap.Height));
-            }
 
-            if (_backgroundImage != null)
+            if (_backgroundImage == null)
+            {
+                using (var brush = new SolidBrush(DrawSettings.BackgroundColor))
+                {
+                    graphics.FillRectangle(brush, new Rectangle((int)Math.Round(_panX), (int)Math.Round(_panY), bitmap.Width, bitmap.Height));
+                }
+            }
+            else
             {
                 graphics.DrawImage(bitmap, _panX, _panY, ToZoomFactor(bitmap.Width), ToZoomFactor(bitmap.Height));
             }
