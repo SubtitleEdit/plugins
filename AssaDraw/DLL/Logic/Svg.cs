@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
+using System.Text.RegularExpressions;
 using System.Xml;
 
 namespace AssaDraw.Logic
@@ -21,16 +22,53 @@ namespace AssaDraw.Logic
             foreach (XmlNode pathNode in pathElements)
             {
                 var color = Color.Black;
+                var colorFound = false;
                 if (pathNode.Attributes["fill"] != null)
                 {
                     try
                     {
                         var colorCode = pathNode.Attributes["fill"].InnerText;
                         color = ColorTranslator.FromHtml(colorCode);
+                        colorFound = true;
                     }
                     catch
                     {
                         // ignore
+                    }
+                }
+
+                if (!colorFound)
+                {
+                    if (pathNode.Attributes["style"] != null)
+                    {
+                        // style="fill:white;fill-rule:nonzero;"
+                        // style = "fill:rgb(38,87,135);fill-rule:nonzero;"
+                        var styleText = pathNode.Attributes["style"].InnerText;
+                        var regexFill = new Regex(@"fill\s*:\s*[a-zA-Z()\d,\s]*");
+                        var match = regexFill.Match(styleText);
+                        if (match.Success)
+                        {
+                            try
+                            {
+                                var colorCode = match.Value.Split(':')[1].Trim();
+
+                                if (colorCode.StartsWith("rgb(", StringComparison.Ordinal))
+                                {
+                                    var arr = colorCode.Remove(0, 4).TrimEnd(')').Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                                    color = Color.FromArgb(int.Parse(arr[0]), int.Parse(arr[1]), int.Parse(arr[2]));
+                                }
+                                else
+                                {
+                                    color = ColorTranslator.FromHtml(colorCode);
+                                }
+                                
+                                colorFound = true;
+                            }
+                            catch
+                            {
+                                // ignore
+                            }
+                        }
                     }
                 }
 
@@ -39,9 +77,12 @@ namespace AssaDraw.Logic
                     try
                     {
                         var drawCodes = pathNode.Attributes["d"].InnerText;
-                        drawCodes = drawCodes.Replace("M", "m ");
-                        drawCodes = drawCodes.Replace("C", "b");
+                        drawCodes = drawCodes.Replace("M", " m ");
+                        drawCodes = drawCodes.Replace("C", " b ");
+                        drawCodes = drawCodes.Replace("Z", " "); 
                         drawCodes = drawCodes.Replace(",", " ");
+                        drawCodes = drawCodes.Replace("  ", " ");
+                        drawCodes = drawCodes.Replace("  ", " ");
                         drawCodes = drawCodes.Replace("  ", " ");
                         var newShapes = ImportShape(drawCodes, layer, color, false);
                         shapes.AddRange(newShapes);
