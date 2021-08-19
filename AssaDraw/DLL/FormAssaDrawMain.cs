@@ -771,6 +771,21 @@ namespace AssaDraw
             }
         }
 
+        private void TreeViewRemove(DrawShape drawShape)
+        {
+            foreach (TreeNode node in treeView1.Nodes)
+            {
+                foreach (TreeNode subNode in node.Nodes)
+                {
+                    if (subNode.Tag is DrawShape shape && shape == drawShape)
+                    {
+                        node.Nodes.Remove(subNode);
+                        return;
+                    }
+                }
+            }
+        }
+
         private void FormAssaDrawMain_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Modifiers == Keys.Control && e.KeyCode == Keys.P)
@@ -1351,23 +1366,7 @@ namespace AssaDraw
 
         private void toolStripButtonClearCurrent_Click(object sender, EventArgs e)
         {
-            if (_activeDrawShape != null && !_drawShapes.Contains(_activeDrawShape))
-            {
-                _drawShapes.Remove(_activeDrawShape);
-                EnableDisableCurrentShapeActions();
-            }
-            else if (treeView1.SelectedNode?.Tag is DrawShape drawShape && !_drawShapes.Contains(_activeDrawShape))
-            {
-                _drawShapes.Remove(drawShape);
-                TreeViewFill(_drawShapes);
-            }
-
-            _activePoint = null;
-            _activeDrawShape = null;
-            pictureBoxCanvas.Invalidate();
-            _x = int.MinValue;
-            _y = int.MinValue;
-            EnableDisableCurrentShapeActions();
+            deleteShapeToolStripMenuItem_Click(null, null);
         }
 
         private void ClearAll()
@@ -1886,15 +1885,20 @@ namespace AssaDraw
 
         private void deleteShapeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_activeDrawShape != null && !_drawShapes.Contains(_activeDrawShape))
+            if (_activeDrawShape != null && _drawShapes.Contains(_activeDrawShape))
             {
                 _drawShapes.Remove(_activeDrawShape);
-                EnableDisableCurrentShapeActions();
+                TreeViewRemove(_activeDrawShape);
             }
             else if (treeView1.SelectedNode?.Tag is DrawShape drawShape)
             {
                 _drawShapes.Remove(drawShape);
-                TreeViewFill(_drawShapes);
+                TreeViewRemove(drawShape);
+            }
+
+            if (_drawShapes.Count == 0)
+            {
+                treeView1.Nodes.Clear();
             }
 
             _activePoint = null;
