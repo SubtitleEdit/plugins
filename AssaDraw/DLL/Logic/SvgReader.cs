@@ -7,7 +7,7 @@ using System.Xml;
 
 namespace AssaDraw.Logic
 {
-    public class Svg
+    public class SvgReader
     {
         public static List<DrawShape> LoadSvg(string fileName)
         {
@@ -15,18 +15,28 @@ namespace AssaDraw.Logic
             var xml = new XmlDocument();
             xml.Load(fileName);
             int layer = 100;
-            var nsmgr = new XmlNamespaceManager(xml.NameTable);
-            nsmgr.AddNamespace("ns", "http://www.w3.org/2000/svg");
-            var gElements = xml.DocumentElement.SelectNodes("//ns:g", nsmgr);
+            var namespaceManager = new XmlNamespaceManager(xml.NameTable);
+            namespaceManager.AddNamespace("ns", "http://www.w3.org/2000/svg");
+            var gElements = xml.DocumentElement.SelectNodes("//ns:g", namespaceManager);
             foreach (XmlNode gNode in gElements)
             {
-                var pathNode = gNode.SelectSingleNode("ns:path", nsmgr);
-                ReadPath(pathNode, layer, shapes);
+                foreach (var childNode in gNode.ChildNodes) 
+                {
+                    if (childNode is XmlElement node)
+                    {
+                        if (node.Name == "path")
+                        {
+                            ReadPath(node, layer, shapes);
+                            layer--;
+                        }
+                        else if (node.Name == "rect")
+                        {
+                            ReadRect(node, layer, shapes);
+                            layer--;
+                        }
+                    }
+                }
 
-                var rectNode = gNode.SelectSingleNode("ns:rect", nsmgr);
-                ReadRect(rectNode, layer, shapes);
-
-                layer--;
             }
             return shapes;
         }

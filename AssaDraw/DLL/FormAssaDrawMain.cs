@@ -1471,11 +1471,19 @@ namespace AssaDraw
             using (var saveFileDialog = new SaveFileDialog())
             {
                 saveFileDialog.FileName = Path.GetFileName(_fileName);
-                saveFileDialog.Filter = "ASSA drawing|*.assadraw";
+                saveFileDialog.Filter = "ASSA drawing|*.assadraw|SVG|*.svg";
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     _fileName = saveFileDialog.FileName;
-                    File.WriteAllText(_fileName, new AdvancedSubStationAlpha().ToText(sub, string.Empty));
+                    if (_fileName.EndsWith(".svg", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        SvgWriter.SaveSvg(_fileName, _drawShapes, (int)numericUpDownWidth.Value, (int)numericUpDownHeight.Value);
+                    }
+                    else
+                    {
+                        File.WriteAllText(_fileName, new AdvancedSubStationAlpha().ToText(sub, string.Empty));
+                    }
+
                     ShowTitle();
                 }
             }
@@ -1493,7 +1501,7 @@ namespace AssaDraw
 
                     if (openFileDialog.FileName.EndsWith(".svg", true, CultureInfo.InvariantCulture))
                     {
-                        _drawShapes.AddRange(Svg.LoadSvg(openFileDialog.FileName));
+                        _drawShapes.AddRange(SvgReader.LoadSvg(openFileDialog.FileName));
                         pictureBoxCanvas.Invalidate();
                         TreeViewFill(_drawShapes);
                         return;
