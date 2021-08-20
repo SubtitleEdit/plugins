@@ -2,11 +2,32 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 
 namespace AssaDraw.Logic
 {
+    /*
+    "d" attribute (path) SVG defines 6 types of path commands, for a total of 20 commands:
+
+    MoveTo: M, m
+    LineTo: L, l, H, h, V, v
+    Cubic Bézier Curve: C, c, S, s
+    Quadratic Bézier Curve: Q, q, T, t (3 points - only one control point)
+    Elliptical Arc Curve: A, a (
+    ClosePath: Z, z
+
+    Note: Commands are case-sensitive. 
+    An upper-case command specifies absolute coordinates, while a lower-case command specifies coordinates relative to the current position.
+
+    MoveTo instructions can be thought of as picking up the drawing instrument, and setting it down somewhere else—in other words, moving the current point
+
+    "H/h": horizontal line - only x
+
+    "V/v": vertical line: only y
+
+     */
     public class SvgReader
     {
         public static List<DrawShape> LoadSvg(string fileName)
@@ -17,28 +38,107 @@ namespace AssaDraw.Logic
             int layer = 100;
             var namespaceManager = new XmlNamespaceManager(xml.NameTable);
             namespaceManager.AddNamespace("ns", "http://www.w3.org/2000/svg");
-            var gElements = xml.DocumentElement.SelectNodes("//ns:g", namespaceManager);
-            foreach (XmlNode gNode in gElements)
+            var elements = xml.DocumentElement.SelectNodes("//*", namespaceManager);
+            foreach (var node in elements)
             {
-                foreach (var childNode in gNode.ChildNodes) 
+                if (node is XmlElement element)
                 {
-                    if (childNode is XmlElement node)
+                    if (element.Name == "path")
                     {
-                        if (node.Name == "path")
-                        {
-                            ReadPath(node, layer, shapes);
-                            layer--;
-                        }
-                        else if (node.Name == "rect")
-                        {
-                            ReadRect(node, layer, shapes);
-                            layer--;
-                        }
+                        ReadPath(element, layer, shapes);
+                        layer--;
+                    }
+                    else if (element.Name == "rect")
+                    {
+                        ReadRect(element, layer, shapes);
+                        layer--;
+                    }
+                    else if (element.Name == "circle")
+                    {
+                        ReadCircle(element, layer, shapes);
+                        layer--;
                     }
                 }
-
             }
+
             return shapes;
+        }
+
+        private static void ReadCircle(XmlElement circleNode, int layer, List<DrawShape> shapes)
+        {
+            // <circle r="3.625" cy="472.13062" cx="335.03351"
+
+            if (circleNode?.Attributes?["cx"] == null || circleNode.Attributes["cy"] == null ||
+                circleNode.Attributes["r"] == null)
+            {
+                return;
+            }
+
+            const float bezier4Point = 0.552284749831f;
+            var color = GetColor(circleNode);
+
+            var xAsString = circleNode.Attributes["cx"].InnerText;
+            var yAsString = circleNode.Attributes["cy"].InnerText;
+            var radiusString = circleNode.Attributes["r"].InnerText;
+
+            if (float.TryParse(xAsString, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var x) &&
+                float.TryParse(yAsString, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var y) &&
+                float.TryParse(radiusString, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var radius))
+            {
+                // draw circle using 4 points + 8 support points - see https://stackoverflow.com/questions/1734745/how-to-create-circle-with-b%C3%A9zier-curves
+                var pointTopX = x;
+                var pointTopY = y - radius;
+
+                var pointTopXs1 = x + radius * bezier4Point;
+                var pointTopYs1 = y - radius;
+
+                var pointTopXs2 = x + radius;
+                var pointTopYs2 = y - radius * bezier4Point;
+
+                var pointRightX = x + radius;
+                var pointRightY = y;
+
+                var pointRightXs1 = x + radius;
+                var pointRightYs1 = y + radius * bezier4Point;
+
+                var pointRightXs2 = x + radius * bezier4Point;
+                var pointRightYs2 = y + radius;
+
+                var pointBottomX = x;
+                var pointBottomY = y + radius;
+
+                var pointBottomXs1 = x - radius * bezier4Point;
+                var pointBottomYs1 = y + radius;
+
+                var pointBottomXs2 = x - radius;
+                var pointBottomYs2 = y + radius * bezier4Point;
+
+                var pointLeftX = x - radius;
+                var pointLeftY = y;
+
+                var pointLeftXs1 = x - radius;
+                var pointLeftYs1 = y - radius * bezier4Point;
+
+                var pointLeftXs2 = x - radius * bezier4Point;
+                var pointLeftYs2 = y - radius;
+
+                var drawCodes =
+                    $"m {pointTopX.ToString(CultureInfo.InvariantCulture)} {pointTopY.ToString(CultureInfo.InvariantCulture)} b" +
+                    $" {pointTopXs1.ToString(CultureInfo.InvariantCulture)} {pointTopYs1.ToString(CultureInfo.InvariantCulture)}" +
+                    $" {pointTopXs2.ToString(CultureInfo.InvariantCulture)} {pointTopYs2.ToString(CultureInfo.InvariantCulture)}" +
+                    $" {pointRightX.ToString(CultureInfo.InvariantCulture)} {pointRightY.ToString(CultureInfo.InvariantCulture)}" +
+                    $" {pointRightXs1.ToString(CultureInfo.InvariantCulture)} {pointRightYs1.ToString(CultureInfo.InvariantCulture)}" +
+                    $" {pointRightXs2.ToString(CultureInfo.InvariantCulture)} {pointRightYs2.ToString(CultureInfo.InvariantCulture)}" +
+                    $" {pointBottomX.ToString(CultureInfo.InvariantCulture)} {pointBottomY.ToString(CultureInfo.InvariantCulture)}" +
+                    $" {pointBottomXs1.ToString(CultureInfo.InvariantCulture)} {pointBottomYs1.ToString(CultureInfo.InvariantCulture)}" +
+                    $" {pointBottomXs2.ToString(CultureInfo.InvariantCulture)} {pointBottomYs2.ToString(CultureInfo.InvariantCulture)}" +
+                    $" {pointLeftX.ToString(CultureInfo.InvariantCulture)} {pointLeftY.ToString(CultureInfo.InvariantCulture)}" +
+                    $" {pointLeftXs1.ToString(CultureInfo.InvariantCulture)} {pointLeftYs1.ToString(CultureInfo.InvariantCulture)}" +
+                    $" {pointLeftXs2.ToString(CultureInfo.InvariantCulture)} {pointLeftYs2.ToString(CultureInfo.InvariantCulture)}" +
+                    $" {pointTopX.ToString(CultureInfo.InvariantCulture)} {pointTopY.ToString(CultureInfo.InvariantCulture)}";
+                var newShapes = ImportShape(drawCodes, layer, color, false);
+                shapes.AddRange(newShapes);
+            }
         }
 
         private static void ReadPath(XmlNode pathNode, int layer, List<DrawShape> shapes)
@@ -65,10 +165,17 @@ namespace AssaDraw.Logic
                     drawCodes = drawCodes.Replace("Z", " ");
                     drawCodes = drawCodes.Replace("-", " -");
                     drawCodes = drawCodes.Replace(",", " ");
-                    drawCodes = drawCodes.Replace("  ", " ");
-                    drawCodes = drawCodes.Replace("  ", " ");
-                    drawCodes = drawCodes.Replace("  ", " ");
+                    var drawCodeList = drawCodes.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    if (drawCodeList.Count > 3 && drawCodeList[0] == "m" &&
+                        float.TryParse(drawCodeList[3], NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var _))
+                    {
+                        drawCodeList.Insert(3, "l");
+                        drawCodes = string.Join(" ", drawCodeList);
+                    }
+
                     var newShapes = ImportShape(drawCodes, layer, color, false);
+
+
                     shapes.AddRange(newShapes);
                 }
                 catch
@@ -145,10 +252,10 @@ namespace AssaDraw.Logic
 
             var color = GetColor(rectNode);
 
-            var xAsString = rectNode?.Attributes?["x"].InnerText;
-            var yAsString = rectNode?.Attributes?["y"].InnerText;
-            var widthAsString = rectNode?.Attributes?["width"].InnerText;
-            var heightAsString = rectNode?.Attributes?["height"].InnerText;
+            var xAsString = rectNode.Attributes["x"].InnerText;
+            var yAsString = rectNode.Attributes["y"].InnerText;
+            var widthAsString = rectNode.Attributes["width"].InnerText;
+            var heightAsString = rectNode.Attributes["height"].InnerText;
 
             if (float.TryParse(xAsString, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var x) &&
                 float.TryParse(yAsString, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var y) &&

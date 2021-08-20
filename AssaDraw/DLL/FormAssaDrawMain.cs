@@ -1293,7 +1293,6 @@ namespace AssaDraw
             {
                 treeView1.SelectedNode.Text = $"Line to {p.X} {p.Y}";
             }
-
         }
 
         private void buttonRemoveShape_Click(object sender, EventArgs e)
