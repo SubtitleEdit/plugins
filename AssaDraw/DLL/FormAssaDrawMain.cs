@@ -753,7 +753,7 @@ namespace AssaDraw
             }
         }
 
-        private void TreeViewAdd(DrawShape drawShape)
+        private void TreeViewAdd(DrawShape drawShape, bool focus)
         {
             if (treeView1.Nodes.Count == 0)
             {
@@ -765,13 +765,22 @@ namespace AssaDraw
             if (activeLayer > int.MinValue)
             {
                 drawShape.Layer = activeLayer;
-                treeView1.SelectedNode.Nodes.Add(MakeShapeNode(drawShape));
+                var idx = treeView1.SelectedNode.Nodes.Add(MakeShapeNode(drawShape));
+                if (focus)
+                {
+                    treeView1.SelectedNode = treeView1.SelectedNode.Nodes[idx];
+                }
+
                 return;
             }
 
             var nodeLast = treeView1.Nodes[treeView1.Nodes.Count - 1];
             {
-                nodeLast.Nodes.Add(MakeShapeNode(drawShape));
+                var idx = nodeLast.Nodes.Add(MakeShapeNode(drawShape));
+                if (focus)
+                {
+                    treeView1.SelectedNode = nodeLast.Nodes[idx];
+                }
             }
         }
 
@@ -1205,11 +1214,12 @@ namespace AssaDraw
                     p.Y += yAdjust;
                 }
 
-                TreeViewFill(_drawShapes);
+                TreeViewUpdate(_activeDrawShape);
                 pictureBoxCanvas.Invalidate();
                 return;
             }
 
+            treeView1.BeginUpdate();
             foreach (var drawShape in _drawShapes)
             {
                 foreach (var p in drawShape.Points)
@@ -1217,10 +1227,10 @@ namespace AssaDraw
                     p.X += xAdjust;
                     p.Y += yAdjust;
                 }
-
-                TreeViewFill(_drawShapes);
-                pictureBoxCanvas.Invalidate();
+                TreeViewUpdate(drawShape);
             }
+            treeView1.EndUpdate();
+            pictureBoxCanvas.Invalidate();
         }
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
@@ -1401,7 +1411,7 @@ namespace AssaDraw
                 }
 
                 _drawShapes.Add(_activeDrawShape);
-                TreeViewAdd(_activeDrawShape);
+                TreeViewAdd(_activeDrawShape, true);
             }
 
             _x = int.MinValue;
