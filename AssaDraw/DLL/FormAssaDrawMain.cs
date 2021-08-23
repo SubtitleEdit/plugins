@@ -292,7 +292,7 @@ namespace AssaDraw
 
             Draw(_activeDrawShape, graphics, true);
 
-            if (_activePoint != null)
+            if (_activePoint != null && !toolStripButtonCircle.Checked)
             {
                 using (var pen = new Pen(new SolidBrush(Color.FromArgb(255, _activePoint.PointColor)), 3))
                 {
@@ -351,6 +351,27 @@ namespace AssaDraw
                 return;
             }
 
+            var isCircle = false;
+            if (isActive && toolStripButtonCircle.Checked && !_drawShapes.Contains(drawShape) && _x > int.MinValue && _y > int.MinValue)
+            {
+                var start = drawShape.Points.FirstOrDefault();
+                if (start == null)
+                {
+                    return;
+                }
+
+                var xDiff = _x > start.X ? _x - start.X : start.X - _x;
+                var yDiff = _y > start.Y ? _y - start.Y : start.Y - _y;
+                var maxDiff = Math.Max(xDiff, yDiff);
+                if (maxDiff < 1)
+                {
+                    return;
+                }
+
+                drawShape = CirleBezier.MakeCircle(start.X, start.Y, maxDiff, drawShape.Layer, drawShape.ForeColor);
+                isCircle = true;
+            }
+
             var color = isActive ? DrawSettings.ActiveShapeLineColor : DrawSettings.ShapeLineColor;
             using (var pen = new Pen(new SolidBrush(color), 2))
             {
@@ -382,7 +403,7 @@ namespace AssaDraw
                         }
 
                         i++;
-                        if (i >= drawShape.Points.Count - 1)
+                        if (i >= drawShape.Points.Count - 1 && !isCircle)
                         {
                             var c = isActive ? DrawSettings.ActiveShapeLineColor : DrawSettings.ShapeLineColor;
                             if (drawShape == _activeDrawShape && !_drawShapes.Contains(drawShape))
@@ -410,7 +431,7 @@ namespace AssaDraw
                             i += 3;
                         }
 
-                        if (isActive && drawShape.Points.Count > 0 && (_x != int.MinValue || _y != int.MinValue) && !_drawShapes.Contains(_activeDrawShape))
+                        if (isActive && drawShape.Points.Count > 0 && (_x != int.MinValue || _y != int.MinValue) && !_drawShapes.Contains(_activeDrawShape) && !isCircle)
                         {
                             using (var penNewLine = new Pen(new SolidBrush(DrawSettings.ActiveShapeLineColor), 2))
                             {
@@ -419,7 +440,7 @@ namespace AssaDraw
                         }
 
                         i++;
-                        if (i >= drawShape.Points.Count - 1)
+                        if (i >= drawShape.Points.Count - 1 && !isCircle)
                         {
                             var c = isActive ? DrawSettings.ActiveShapeLineColor : DrawSettings.ShapeLineColor;
                             if (drawShape == _activeDrawShape && !_drawShapes.Contains(drawShape))
@@ -493,6 +514,11 @@ namespace AssaDraw
                 {
                     _activeDrawShape = new DrawShape();
                     _activeDrawShape.AddPoint(DrawCoordinateType.BezierCurve, x, y, DrawSettings.PointColor);
+                }
+                else if (toolStripButtonCircle.Checked)
+                {
+                    _activeDrawShape = new DrawShape();
+                    _activeDrawShape.AddPoint(DrawCoordinateType.Line, x, y, DrawSettings.PointColor);
                 }
             }
 
@@ -921,6 +947,17 @@ namespace AssaDraw
                 {
                     toolStripButtonBeizer_Click(null, null);
                 }
+                else if (toolStripButtonBeizer.Checked)
+                {
+                    if (_activeDrawShape?.Points.Count > 1 && !_drawShapes.Contains(_activeDrawShape))
+                    {
+                        toolStripButtonLine_Click(null, null);
+                    }
+                    else
+                    {
+                        toolStripButtonCircle_Click(null, null);
+                    }
+                }
                 else
                 {
                     toolStripButtonLine_Click(null, null);
@@ -967,6 +1004,11 @@ namespace AssaDraw
                 e.SuppressKeyPress = true;
             }
             else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F5)
+            {
+                toolStripButtonCircle_Click(null, null);
+                e.SuppressKeyPress = true;
+            }
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F6)
             {
                 toolStripButtonCloseShape_Click(null, null);
                 e.SuppressKeyPress = true;
@@ -1392,9 +1434,27 @@ namespace AssaDraw
                 return;
             }
 
-            if (_activeDrawShape.Points.Count < 2)
+            if (toolStripButtonCircle.Checked)
             {
-                _activeDrawShape = null;
+                var start = _activeDrawShape.Points.FirstOrDefault();
+                if (start == null)
+                {
+                    return;
+                }
+
+                var xDiff = _x > start.X ? _x - start.X : start.X - _x;
+                var yDiff = _y > start.Y ? _y - start.Y : start.Y - _y;
+                var maxDiff = Math.Max(xDiff, yDiff);
+                if (maxDiff < 1)
+                {
+                    return;
+                }
+
+                _activeDrawShape = CirleBezier.MakeCircle(start.X, start.Y, maxDiff, _activeDrawShape.Layer, _activeDrawShape.ForeColor);
+            }
+            else if (_activeDrawShape.Points.Count <= 2)
+            {
+                return;
             }
 
             _activePoint = null;
@@ -1805,13 +1865,29 @@ namespace AssaDraw
         private void toolStripButtonLine_Click(object sender, EventArgs e)
         {
             toolStripButtonBeizer.Checked = false;
+            toolStripButtonCircle.Checked = false;
             toolStripButtonLine.Checked = true;
+
         }
 
         private void toolStripButtonBeizer_Click(object sender, EventArgs e)
         {
             toolStripButtonLine.Checked = false;
+            toolStripButtonCircle.Checked = false;
             toolStripButtonBeizer.Checked = true;
+        }
+
+        private void toolStripButtonCircle_Click(object sender, EventArgs e)
+        {
+            if (_activeDrawShape?.Points.Count > 1 && !_drawShapes.Contains(_activeDrawShape))
+            {
+                // cannot combine circle with bezier or lines
+                return;
+            }
+
+            toolStripButtonBeizer.Checked = false;
+            toolStripButtonLine.Checked = false;
+            toolStripButtonCircle.Checked = true;
         }
 
         private void buttonCopyAssaToClipboard_Click(object sender, EventArgs e)
@@ -1960,6 +2036,14 @@ namespace AssaDraw
             {
                 _drawShapes.Remove(_activeDrawShape);
                 TreeViewRemove(_activeDrawShape);
+            }
+            else if (_activeDrawShape != null && !_drawShapes.Contains(_activeDrawShape))
+            {
+                _x = int.MinValue;
+                _y = int.MinValue;
+                _activeDrawShape = null;
+                pictureBoxCanvas.Invalidate();
+                return;
             }
             else if (treeView1.SelectedNode?.Tag is DrawShape drawShape)
             {
@@ -2427,5 +2511,6 @@ namespace AssaDraw
         {
             DrawSettings.SaveSettings();
         }
+
     }
 }

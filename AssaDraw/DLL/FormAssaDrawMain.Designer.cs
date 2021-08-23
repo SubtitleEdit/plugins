@@ -75,6 +75,7 @@ namespace AssaDraw
             this.clearBackgroundImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOk = new System.Windows.Forms.Button();
+            this.toolStripButtonCircle = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCanvas)).BeginInit();
             this.contextMenuStripTreeView.SuspendLayout();
             this.groupBoxSettings.SuspendLayout();
@@ -354,6 +355,7 @@ namespace AssaDraw
             this.toolStripSeparator1,
             this.toolStripButtonLine,
             this.toolStripButtonBeizer,
+            this.toolStripButtonCircle,
             this.toolStripButtonCloseShape,
             this.toolStripSeparator2,
             this.toolStripButtonClearCurrent,
@@ -564,6 +566,16 @@ namespace AssaDraw
             this.buttonOk.UseVisualStyleBackColor = true;
             this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
             // 
+            // toolStripButtonCircle
+            // 
+            this.toolStripButtonCircle.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonCircle.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonCircle.Image")));
+            this.toolStripButtonCircle.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonCircle.Name = "toolStripButtonCircle";
+            this.toolStripButtonCircle.Size = new System.Drawing.Size(36, 36);
+            this.toolStripButtonCircle.Text = "toolStripButton2";
+            this.toolStripButtonCircle.Click += new System.EventHandler(this.toolStripButtonCircle_Click);
+            // 
             // FormAssaDrawMain
             // 
             this.AllowDrop = true;
@@ -649,6 +661,7 @@ namespace AssaDraw
         private System.Windows.Forms.ToolStripMenuItem useShapeForDrawToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem hideLayerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showLayerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton toolStripButtonCircle;
     }
 }
 

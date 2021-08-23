@@ -130,10 +130,11 @@ Shortcuts:
 * Shift+mouse move: Pan screen area
 * Ctrl+mouse-down-move: Move active shape/layer
 * Ctrl+Shift+Minus/Plus: Scale active shape/layer
-* F2: Toggle line/curve
+* F2: Toggle line/curve/circle
 * F3: Line mode
 * F4: Curve (beizer) mode
-* F5: Complete/close shape
+* F5: Circle mode
+* F6: Complete/close shape
 * F12: Toggle "settings + treeview"
 * Ctrl+C: Copy current ASSA codes to clipboard
 * Ctrl+V: Paste ASSA codes from clipboard to canvas
@@ -146,6 +147,6 @@ Shortcuts:
 
 Tips: 
 * A color can be applied to each layer.
-* "Erase shape" (iclip) must be used in same layers as the drawing.</value>
+* "Erase shape" (iclip) must be used in same layer as the drawing.</value>
   </data>
 </root>
