@@ -170,6 +170,11 @@ namespace AssaDraw
                 ScaleActiveShapes(e.Delta > 0 ? 1.1f : 0.9f);
                 ZoomChangedPostFix();
             }
+            else if (ModifierKeys == Keys.Alt)
+            {
+                ScaleAll(e.Delta > 0 ? 1.1f : 0.9f);
+                ZoomChangedPostFix();
+            }
         }
 
         private void ZoomChangedPostFix()
@@ -1236,7 +1241,6 @@ namespace AssaDraw
             var activeLayer = _activeDrawShape == null && treeView1.Visible && treeView1.SelectedNode?.Tag is int layer ? layer : int.MinValue;
             if (_activeDrawShape == null && activeLayer > int.MinValue)
             {
-
                 var allPoints = new List<DrawCoordinate>();
                 var layerShapes = _drawShapes.Where(p => p.Layer == activeLayer).ToList();
                 foreach (var drawShape in layerShapes)
@@ -1293,6 +1297,37 @@ namespace AssaDraw
             pictureBoxCanvas.Invalidate();
         }
 
+        private void ScaleAll(float factor)
+        {
+            var allPoints = _drawShapes.SelectMany(p => p.Points).ToList();
+            if (allPoints.Count == 0)
+            {
+                return;
+            }
+
+            var minX = allPoints.Min(p => p.X);
+            var minY = allPoints.Min(p => p.Y);
+            var maxX = allPoints.Max(p => p.X);
+            var maxY = allPoints.Max(p => p.Y);
+            if (factor < 1 && (maxX - minX < 5 || maxY - minY < 5))
+            {
+                return;
+            }
+
+            foreach (var point in allPoints)
+            {
+                var x = point.X - minX;
+                var y = point.Y - minY;
+                var newX = x * factor + minX;
+                var newY = y * factor + minY;
+                point.X = newX;
+                point.Y = newY;
+            }
+
+            _treeViewInvalidated = true;
+            pictureBoxCanvas.Invalidate();
+        }
+
         private bool ScaleShape(DrawShape shape, float factor)
         {
             var minX = shape.Points.Min(p => p.X);
@@ -1331,10 +1366,10 @@ namespace AssaDraw
                 pictureBoxCanvas.Invalidate();
                 return;
             }
-            
+
             if (!all && treeView1.SelectedNode?.Tag is int layer) // layer
             {
-                foreach (var p in _drawShapes.Where(p=>p.Layer == layer).SelectMany(drawShape => drawShape.Points))
+                foreach (var p in _drawShapes.Where(p => p.Layer == layer).SelectMany(drawShape => drawShape.Points))
                 {
                     p.X += xAdjust;
                     p.Y += yAdjust;

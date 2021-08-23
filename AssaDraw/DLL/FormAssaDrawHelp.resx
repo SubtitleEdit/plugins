@@ -131,6 +131,8 @@ Shortcuts:
 * Shift+mouse move: Pan screen area
 * Ctrl+mouse-down-move: Move active shape/layer
 * Ctrl+Shift+Minus/Plus: Scale active shape/layer
+* Ctrl+Shift+Mousewheel: Scale active shape/layer
+* Alt+Mousewheel: Scale all
 * F2: Toggle line/curve/circle
 * F3: Line mode
 * F4: Curve (beizer) mode
