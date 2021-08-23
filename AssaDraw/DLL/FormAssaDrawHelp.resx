@@ -123,8 +123,9 @@
 Shortcuts:
 * Enter: Complete/close shape
 * Esc: Clear current new shape
-* Ctrl+arrow: Move 10 pixels
-* Alt+arrow: Move 1 pixel
+* Ctrl+arrow: Move active shape/layer 10 pixels
+* Alt+arrow: Move  active shape/layer1 pixel
+* Ctrl+Shift+arrow: Move all 2 pixels
 * Ctrl+Minus/Plus or ctrl+Mousewheel: Zoom in/out
 * Shift+arrow: Pan screen area
 * Shift+mouse move: Pan screen area

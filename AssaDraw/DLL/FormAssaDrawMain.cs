@@ -34,6 +34,9 @@ namespace AssaDraw
         private DrawCoordinate _mouseDownPoint;
         private bool _panOn;
 
+        private readonly object _treeViewLock = new object();
+        private bool _treeViewInvalidated;
+
         private readonly DrawHistory _history;
         private readonly object _historyLock = new object();
         private int _historyHash;
@@ -110,6 +113,8 @@ namespace AssaDraw
             {
                 GetVideoBackground(videoFileName, videoPosition);
             }
+
+            timerTreeViewUpdate.Start();
         }
 
         private void GetVideoBackground(string videoFileName, string videoPosition)
@@ -629,7 +634,6 @@ namespace AssaDraw
                 _moveActiveDrawShapeStart.X = x;
                 _moveActiveDrawShapeStart.Y = y;
                 var layerShapes = _drawShapes.Where(p => p.Layer == activeLayer).ToList();
-                treeView1.BeginUpdate();
                 foreach (var drawShape in layerShapes)
                 {
                     foreach (var p in drawShape.Points)
@@ -637,14 +641,36 @@ namespace AssaDraw
                         p.X += xAdjust;
                         p.Y += yAdjust;
                     }
-
-                    TreeViewUpdate(drawShape);
                 }
-                treeView1.EndUpdate();
                 pictureBoxCanvas.Invalidate();
+                _treeViewInvalidated = true;
+
                 _activePoint = null;
                 return;
             }
+
+            // Move ALL
+            if (ModifierKeys == (Keys.Control | Keys.Shift) && _moveActiveDrawShapeStart.X != int.MinValue && _moveActiveDrawShapeStart.Y != int.MinValue)
+            {
+                Cursor = Cursors.SizeAll;
+                var xAdjust = x - _moveActiveDrawShapeStart.X;
+                var yAdjust = y - _moveActiveDrawShapeStart.Y;
+                _moveActiveDrawShapeStart.X = x;
+                _moveActiveDrawShapeStart.Y = y;
+                foreach (var drawShape in _drawShapes)
+                {
+                    foreach (var p in drawShape.Points)
+                    {
+                        p.X += xAdjust;
+                        p.Y += yAdjust;
+                    }
+                }
+                pictureBoxCanvas.Invalidate();
+                _treeViewInvalidated = true;
+                _activePoint = null;
+                return;
+            }
+
 
             if (_activeDrawShape == null && _activePoint == null)
             {
@@ -682,7 +708,9 @@ namespace AssaDraw
                     p.Y += yAdjust;
                 }
 
-                TreeViewUpdate(_activeDrawShape);
+                //TreeViewUpdate(_activeDrawShape);
+                _treeViewInvalidated = true;
+
                 pictureBoxCanvas.Invalidate();
                 _activePoint = null;
                 return;
@@ -722,8 +750,12 @@ namespace AssaDraw
 
         private void TreeViewFill(List<DrawShape> drawShapes)
         {
+            var selectedNodeTag = treeView1.SelectedNode?.Tag;
+            var selectedShape = selectedNodeTag as DrawShape;
+            var selectedLayer = selectedNodeTag as int?;
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
+
             foreach (var layer in drawShapes.OrderBy(p => p.Layer).GroupBy(p => p.Layer))
             {
                 var layerNode = new TreeNode($"Layer {layer.Key}" + (layer.First().Hidden ? " (hidden)" : string.Empty)) { Tag = layer.Key };
@@ -735,12 +767,21 @@ namespace AssaDraw
                         layerNode.ForeColor = drawShape.ForeColor;
                     }
 
-                    var node = MakeShapeNode(drawShape);
-                    layerNode.Nodes.Add(node);
+                    var shapeNode = MakeShapeNode(drawShape);
+                    layerNode.Nodes.Add(shapeNode);
+                    if (drawShape == selectedShape)
+                    {
+                        treeView1.SelectedNode = shapeNode;
+                    }
+                }
+
+                layerNode.Expand();
+                if (selectedLayer == layer.Key)
+                {
+                    treeView1.SelectedNode = layerNode;
                 }
             }
 
-            treeView1.ExpandAll();
             treeView1.EndUpdate();
         }
 
@@ -752,6 +793,11 @@ namespace AssaDraw
                 var text = p.GetText(p.X, p.Y);
                 var subNode = new TreeNode(text) { Tag = p };
                 node.Nodes.Add(subNode);
+            }
+
+            if (drawShape.Expanded)
+            {
+                node.Expand();
             }
 
             return node;
@@ -1091,22 +1137,47 @@ namespace AssaDraw
 
                 if (e.KeyCode == Keys.Up)
                 {
-                    AdjustPosition(0, -v);
+                    AdjustPosition(0, -v, false);
                     e.SuppressKeyPress = true;
                 }
                 else if (e.KeyCode == Keys.Down)
                 {
-                    AdjustPosition(0, v);
+                    AdjustPosition(0, v, false);
                     e.SuppressKeyPress = true;
                 }
                 else if (e.KeyCode == Keys.Left)
                 {
-                    AdjustPosition(-v, 0);
+                    AdjustPosition(-v, 0, false);
                     e.SuppressKeyPress = true;
                 }
                 else if (e.KeyCode == Keys.Right)
                 {
-                    AdjustPosition(v, 0);
+                    AdjustPosition(v, 0, false);
+                    e.SuppressKeyPress = true;
+                }
+            }
+            else if (e.Modifiers == (Keys.Control | Keys.Shift))
+            {
+                var v = 2;
+
+                if (e.KeyCode == Keys.Up)
+                {
+                    AdjustPosition(0, -v, true);
+                    e.SuppressKeyPress = true;
+                }
+                else if (e.KeyCode == Keys.Down)
+                {
+                    AdjustPosition(0, v, true);
+                    e.SuppressKeyPress = true;
+                }
+                else if (e.KeyCode == Keys.Left)
+                {
+                    AdjustPosition(-v, 0, true);
+                    e.SuppressKeyPress = true;
+                }
+                else if (e.KeyCode == Keys.Right)
+                {
+                    AdjustPosition(v, 0, true);
                     e.SuppressKeyPress = true;
                 }
             }
@@ -1246,9 +1317,35 @@ namespace AssaDraw
             return true;
         }
 
-        private void AdjustPosition(int xAdjust, int yAdjust)
+        private void AdjustPosition(int xAdjust, int yAdjust, bool all)
         {
-            if (_activeDrawShape != null)
+            if (!all && treeView1.SelectedNode?.Tag is DrawShape shape)
+            {
+                foreach (var p in shape.Points)
+                {
+                    p.X += xAdjust;
+                    p.Y += yAdjust;
+                }
+
+                TreeViewUpdate(shape);
+                pictureBoxCanvas.Invalidate();
+                return;
+            }
+            
+            if (!all && treeView1.SelectedNode?.Tag is int layer) // layer
+            {
+                foreach (var p in _drawShapes.Where(p=>p.Layer == layer).SelectMany(drawShape => drawShape.Points))
+                {
+                    p.X += xAdjust;
+                    p.Y += yAdjust;
+                }
+
+                _treeViewInvalidated = true;
+                pictureBoxCanvas.Invalidate();
+                return;
+            }
+
+            if (_activeDrawShape != null && !all)
             {
                 foreach (var p in _activeDrawShape.Points)
                 {
@@ -1261,17 +1358,13 @@ namespace AssaDraw
                 return;
             }
 
-            treeView1.BeginUpdate();
-            foreach (var drawShape in _drawShapes)
+            foreach (var p in _drawShapes.SelectMany(drawShape => drawShape.Points))
             {
-                foreach (var p in drawShape.Points)
-                {
-                    p.X += xAdjust;
-                    p.Y += yAdjust;
-                }
-                TreeViewUpdate(drawShape);
+                p.X += xAdjust;
+                p.Y += yAdjust;
             }
-            treeView1.EndUpdate();
+
+            _treeViewInvalidated = true;
             pictureBoxCanvas.Invalidate();
         }
 
@@ -1411,6 +1504,12 @@ namespace AssaDraw
             else if (ModifierKeys == Keys.Control && _activeDrawShape != null && _drawShapes.Contains(_activeDrawShape))
             {
                 // move active shape
+                _moveActiveDrawShapeStart = new Point(x, y);
+                Cursor = Cursors.SizeAll;
+            }
+            else if (ModifierKeys == (Keys.Control | Keys.Shift) && _drawShapes.Count > 0)
+            {
+                // move ALL
                 _moveActiveDrawShapeStart = new Point(x, y);
                 Cursor = Cursors.SizeAll;
             }
@@ -2512,5 +2611,40 @@ namespace AssaDraw
             DrawSettings.SaveSettings();
         }
 
+        private void timerTreeViewUpdate_Tick(object sender, EventArgs e)
+        {
+            if (!_treeViewInvalidated)
+            {
+                return;
+            }
+
+            lock (_treeViewLock)
+            {
+                TreeViewFill(_drawShapes);
+                _treeViewInvalidated = false;
+            }
+        }
+
+        private void treeView1_AfterExpand(object sender, TreeViewEventArgs e)
+        {
+            if (!(e.Node.Tag is DrawShape command))
+            {
+                return;
+            }
+
+            if (e.Action == TreeViewAction.Expand)
+            {
+                command.Expanded = true;
+            }
+            else if (e.Action == TreeViewAction.Collapse)
+            {
+                command.Expanded = false;
+            }
+        }
+
+        private void treeView1_AfterCollapse(object sender, TreeViewEventArgs e)
+        {
+            treeView1_AfterExpand(sender, e);
+        }
     }
 }

@@ -61,6 +61,7 @@ namespace AssaDraw
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButtonLine = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonBeizer = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonCircle = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonCloseShape = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButtonClearCurrent = new System.Windows.Forms.ToolStripButton();
@@ -75,7 +76,7 @@ namespace AssaDraw
             this.clearBackgroundImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOk = new System.Windows.Forms.Button();
-            this.toolStripButtonCircle = new System.Windows.Forms.ToolStripButton();
+            this.timerTreeViewUpdate = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCanvas)).BeginInit();
             this.contextMenuStripTreeView.SuspendLayout();
             this.groupBoxSettings.SuspendLayout();
@@ -112,6 +113,8 @@ namespace AssaDraw
             this.treeView1.Name = "treeView1";
             this.treeView1.Size = new System.Drawing.Size(226, 487);
             this.treeView1.TabIndex = 2;
+            this.treeView1.AfterCollapse += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterCollapse);
+            this.treeView1.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterExpand);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
             // contextMenuStripTreeView
@@ -438,6 +441,16 @@ namespace AssaDraw
             this.toolStripButtonBeizer.Text = "Draw curve";
             this.toolStripButtonBeizer.Click += new System.EventHandler(this.toolStripButtonBeizer_Click);
             // 
+            // toolStripButtonCircle
+            // 
+            this.toolStripButtonCircle.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonCircle.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonCircle.Image")));
+            this.toolStripButtonCircle.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonCircle.Name = "toolStripButtonCircle";
+            this.toolStripButtonCircle.Size = new System.Drawing.Size(36, 36);
+            this.toolStripButtonCircle.Text = "toolStripButton2";
+            this.toolStripButtonCircle.Click += new System.EventHandler(this.toolStripButtonCircle_Click);
+            // 
             // toolStripButtonCloseShape
             // 
             this.toolStripButtonCloseShape.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -566,15 +579,10 @@ namespace AssaDraw
             this.buttonOk.UseVisualStyleBackColor = true;
             this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
             // 
-            // toolStripButtonCircle
+            // timerTreeViewUpdate
             // 
-            this.toolStripButtonCircle.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonCircle.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonCircle.Image")));
-            this.toolStripButtonCircle.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonCircle.Name = "toolStripButtonCircle";
-            this.toolStripButtonCircle.Size = new System.Drawing.Size(36, 36);
-            this.toolStripButtonCircle.Text = "toolStripButton2";
-            this.toolStripButtonCircle.Click += new System.EventHandler(this.toolStripButtonCircle_Click);
+            this.timerTreeViewUpdate.Interval = 1000;
+            this.timerTreeViewUpdate.Tick += new System.EventHandler(this.timerTreeViewUpdate_Tick);
             // 
             // FormAssaDrawMain
             // 
@@ -662,6 +670,7 @@ namespace AssaDraw
         private System.Windows.Forms.ToolStripMenuItem hideLayerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showLayerToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton toolStripButtonCircle;
+        private System.Windows.Forms.Timer timerTreeViewUpdate;
     }
 }
 

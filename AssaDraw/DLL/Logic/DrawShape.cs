@@ -12,6 +12,7 @@ namespace AssaDraw.Logic
         public int Layer { get; set; }
         public bool IsEraser { get; set; }
         public bool Hidden { get; set; }
+        public bool Expanded { get; set; }
 
         public DrawShape()
         {
