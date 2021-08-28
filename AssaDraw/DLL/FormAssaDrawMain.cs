@@ -302,7 +302,7 @@ namespace AssaDraw
 
             Draw(_activeDrawShape, graphics, true);
 
-            if (_activePoint != null && !toolStripButtonCircle.Checked)
+            if (_activePoint != null)
             {
                 using (var pen = new Pen(new SolidBrush(Color.FromArgb(255, _activePoint.PointColor)), 3))
                 {

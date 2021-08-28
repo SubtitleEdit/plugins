@@ -448,7 +448,7 @@ namespace AssaDraw
             this.toolStripButtonCircle.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonCircle.Name = "toolStripButtonCircle";
             this.toolStripButtonCircle.Size = new System.Drawing.Size(36, 36);
-            this.toolStripButtonCircle.Text = "toolStripButton2";
+            this.toolStripButtonCircle.Text = "Draw circle";
             this.toolStripButtonCircle.Click += new System.EventHandler(this.toolStripButtonCircle_Click);
             // 
             // toolStripButtonCloseShape
