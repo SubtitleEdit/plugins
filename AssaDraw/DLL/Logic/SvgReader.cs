@@ -38,25 +38,33 @@ namespace AssaDraw.Logic
             int layer = 100;
             var namespaceManager = new XmlNamespaceManager(xml.NameTable);
             namespaceManager.AddNamespace("ns", "http://www.w3.org/2000/svg");
-            var elements = xml.DocumentElement.SelectNodes("//*", namespaceManager);
-            foreach (var node in elements)
+            if (xml.DocumentElement != null)
             {
-                if (node is XmlElement element)
+                var elements = xml.DocumentElement.SelectNodes("//*", namespaceManager);
+                if (elements == null)
                 {
-                    if (element.Name == "path")
+                    return shapes;
+                }
+
+                foreach (var node in elements)
+                {
+                    if (node is XmlElement element)
                     {
-                        ReadPath(element, layer, shapes);
-                        layer--;
-                    }
-                    else if (element.Name == "rect")
-                    {
-                        ReadRect(element, layer, shapes);
-                        layer--;
-                    }
-                    else if (element.Name == "circle")
-                    {
-                        ReadCircle(element, layer, shapes);
-                        layer--;
+                        if (element.Name == "path")
+                        {
+                            ReadPath(element, layer, shapes);
+                            layer--;
+                        }
+                        else if (element.Name == "rect")
+                        {
+                            ReadRect(element, layer, shapes);
+                            layer--;
+                        }
+                        else if (element.Name == "circle")
+                        {
+                            ReadCircle(element, layer, shapes);
+                            layer--;
+                        }
                     }
                 }
             }
@@ -68,8 +76,7 @@ namespace AssaDraw.Logic
         {
             // <circle r="3.625" cy="472.13062" cx="335.03351"
 
-            if (circleNode?.Attributes?["cx"] == null || circleNode.Attributes["cy"] == null ||
-                circleNode.Attributes["r"] == null)
+            if (circleNode?.Attributes["cx"] == null || circleNode.Attributes["cy"] == null || circleNode.Attributes["r"] == null)
             {
                 return;
             }
@@ -141,6 +148,9 @@ namespace AssaDraw.Logic
             }
         }
 
+        /// <summary>
+        /// Convert the 20 path commands the shapes.
+        /// </summary>
         private static void ReadPath(XmlNode pathNode, int layer, List<DrawShape> shapes)
         {
             if (pathNode?.Attributes == null)
@@ -156,16 +166,118 @@ namespace AssaDraw.Logic
                 {
                     var drawCodes = pathNode.Attributes["d"].InnerText;
                     drawCodes = drawCodes.Replace("m", " m ");
+                    drawCodes = drawCodes.Replace("M", " M ");
+                    drawCodes = drawCodes.Replace("c", " c ");
+                    drawCodes = drawCodes.Replace("C", " C ");
+                    drawCodes = drawCodes.Replace("l", " l ");
+                    drawCodes = drawCodes.Replace("L", " L ");
+                    drawCodes = drawCodes.Replace("-", " -");
+                    drawCodes = drawCodes.Replace(",", " ");
+
+                    var drawCodeList = drawCodes.Split(new[] { ' ', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    var newDrawCodeList = new List<string>();
+                    var x = 0.0f;
+                    var y = 0.0f;
+                    var index = 0;
+                    var qOn = false;
+                    var countSinceLastCode = 0;
+                    var lastCode = string.Empty;
+                    var relativeOn = false;
+                    while (index < drawCodeList.Count)
+                    {
+                        var code = drawCodeList[index];
+                        if (code == "Q" || code == "q")
+                        {
+                            qOn = true;
+                            countSinceLastCode = 0;
+                            lastCode = code;
+                        }
+                        else if (code == "A" || code == "a")
+                        {
+                            qOn = false;
+                            countSinceLastCode = 0;
+                            lastCode = code;
+                        }
+                        else if (code == "M" || code == "m")
+                        {
+                            qOn = false;
+                            countSinceLastCode = 0;
+                            lastCode = code;
+                        }
+                        else if (code == "C" || code == "c")
+                        {
+                            qOn = false;
+                            countSinceLastCode = 0;
+                            lastCode = code;
+                        }
+                        else if (code == "L" || code == "l")
+                        {
+                            qOn = false;
+                            countSinceLastCode = 0;
+                            lastCode = code;
+                        }
+                        else if (code == "Z" || code == "z")
+                        {
+                            qOn = false;
+                            countSinceLastCode = 0;
+                            lastCode = code;
+                        }
+
+                        countSinceLastCode++;
+
+                        if ("QqAaMmCcLlZz".Contains(code))
+                        {
+                            relativeOn = "qamclz".Contains(lastCode);
+                        }
+
+                        if (code == "M" && index + 2 < drawCodeList.Count &&
+                            float.TryParse(drawCodeList[index + 1], NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var x1) &&
+                            float.TryParse(drawCodeList[index + 2], NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var y1))
+                        {
+                            x = x1;
+                            y = y1;
+                        }
+                        else if (relativeOn && float.TryParse(code, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var relativeNumber))
+                        {
+                            if (countSinceLastCode % 2 == 0)
+                            {
+                                x += relativeNumber;
+                                code = x.ToString(CultureInfo.InvariantCulture);
+                            }
+                            else
+                            {
+                                y += relativeNumber;
+                                code = y.ToString(CultureInfo.InvariantCulture);
+                            }
+                        }
+
+                        newDrawCodeList.Add(code);
+
+                        if (qOn && countSinceLastCode == 3)
+                        {
+                            newDrawCodeList.Add(newDrawCodeList[newDrawCodeList.Count - 2]);
+                            newDrawCodeList.Add(newDrawCodeList[newDrawCodeList.Count - 2]);
+                        }
+
+                        index++;
+                    }
+
+                    drawCodes = string.Join(" ", newDrawCodeList);
+
+                    drawCodes = drawCodes.Replace("m", " m ");
                     drawCodes = drawCodes.Replace("M", " m ");
                     drawCodes = drawCodes.Replace("c", " b ");
                     drawCodes = drawCodes.Replace("C", " b ");
+                    drawCodes = drawCodes.Replace("q", " b ");
+                    drawCodes = drawCodes.Replace("Q", " b ");
                     drawCodes = drawCodes.Replace("l", " l ");
                     drawCodes = drawCodes.Replace("L", " l ");
                     drawCodes = drawCodes.Replace("z", " ");
                     drawCodes = drawCodes.Replace("Z", " ");
                     drawCodes = drawCodes.Replace("-", " -");
                     drawCodes = drawCodes.Replace(",", " ");
-                    var drawCodeList = drawCodes.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    drawCodeList = drawCodes.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
                     if (drawCodeList.Count > 3 && drawCodeList[0] == "m" &&
                         float.TryParse(drawCodeList[3], NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var _))
                     {
@@ -173,8 +285,8 @@ namespace AssaDraw.Logic
                         drawCodes = string.Join(" ", drawCodeList);
                     }
 
+                    drawCodes = drawCodes.Trim().Replace("  ", " ");
                     var newShapes = ImportShape(drawCodes, layer, color, false);
-
 
                     shapes.AddRange(newShapes);
                 }
@@ -189,7 +301,7 @@ namespace AssaDraw.Logic
         {
             var color = Color.Black;
             var colorFound = false;
-            if (svgNode.Attributes["fill"] != null)
+            if (svgNode.Attributes?["fill"] != null)
             {
                 try
                 {
@@ -203,36 +315,33 @@ namespace AssaDraw.Logic
                 }
             }
 
-            if (!colorFound)
+            if (!colorFound && svgNode.Attributes?["style"] != null)
             {
-                if (svgNode.Attributes["style"] != null)
+                // style="fill:white;fill-rule:nonzero;"
+                // style = "fill:rgb(38,87,135);fill-rule:nonzero;"
+                var styleText = svgNode.Attributes["style"].InnerText;
+                var regexFill = new Regex(@"fill\s*:\s*[a-zA-Z()\d,\s]*");
+                var match = regexFill.Match(styleText);
+                if (match.Success)
                 {
-                    // style="fill:white;fill-rule:nonzero;"
-                    // style = "fill:rgb(38,87,135);fill-rule:nonzero;"
-                    var styleText = svgNode.Attributes["style"].InnerText;
-                    var regexFill = new Regex(@"fill\s*:\s*[a-zA-Z()\d,\s]*");
-                    var match = regexFill.Match(styleText);
-                    if (match.Success)
+                    try
                     {
-                        try
-                        {
-                            var colorCode = match.Value.Split(':')[1].Trim();
+                        var colorCode = match.Value.Split(':')[1].Trim();
 
-                            if (colorCode.StartsWith("rgb(", StringComparison.Ordinal))
-                            {
-                                var arr = colorCode.Remove(0, 4).TrimEnd(')')
-                                    .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                                color = Color.FromArgb(int.Parse(arr[0]), int.Parse(arr[1]), int.Parse(arr[2]));
-                            }
-                            else
-                            {
-                                color = ColorTranslator.FromHtml(colorCode);
-                            }
-                        }
-                        catch
+                        if (colorCode.StartsWith("rgb(", StringComparison.Ordinal))
                         {
-                            // ignore
+                            var arr = colorCode.Remove(0, 4).TrimEnd(')')
+                                .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                            color = Color.FromArgb(int.Parse(arr[0]), int.Parse(arr[1]), int.Parse(arr[2]));
                         }
+                        else
+                        {
+                            color = ColorTranslator.FromHtml(colorCode);
+                        }
+                    }
+                    catch
+                    {
+                        // ignore
                     }
                 }
             }
@@ -270,7 +379,7 @@ namespace AssaDraw.Logic
 
         private static List<DrawShape> ImportShape(string drawCodes, int layer, Color c, bool isEraser)
         {
-            var arr = drawCodes.Split();
+            var arr = drawCodes.TrimEnd().Replace("  ", " ").Replace("  ", " ").Split();
             int i = 0;
             int bezierCount = 0;
             var state = DrawCoordinateType.None;
@@ -309,10 +418,7 @@ namespace AssaDraw.Logic
                     state = DrawCoordinateType.BezierCurve;
                     if (moveCoordinate != null)
                     {
-                        drawShape = new DrawShape();
-                        drawShape.Layer = layer;
-                        drawShape.ForeColor = c;
-                        drawShape.IsEraser = isEraser;
+                        drawShape = new DrawShape { Layer = layer, ForeColor = c, IsEraser = isEraser };
                         drawShape.AddPoint(state, moveCoordinate.X, moveCoordinate.Y, DrawSettings.PointColor);
                         moveCoordinate = null;
                         drawShapes.Add(drawShape);
