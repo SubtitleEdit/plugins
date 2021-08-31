@@ -15,7 +15,7 @@ namespace AssaDraw.Logic
     LineTo: L, l, H, h, V, v
     Cubic Bézier Curve: C, c, S, s
     Quadratic Bézier Curve: Q, q, T, t (3 points - only one control point)
-    Elliptical Arc Curve: A, a (
+    Elliptical Arc Curve: A, a 
     ClosePath: Z, z
 
     Note: Commands are case-sensitive. 
@@ -169,8 +169,22 @@ namespace AssaDraw.Logic
                     drawCodes = drawCodes.Replace("M", " M ");
                     drawCodes = drawCodes.Replace("c", " c ");
                     drawCodes = drawCodes.Replace("C", " C ");
+                    drawCodes = drawCodes.Replace("s", " s ");
+                    drawCodes = drawCodes.Replace("S", " S ");
                     drawCodes = drawCodes.Replace("l", " l ");
                     drawCodes = drawCodes.Replace("L", " L ");
+                    drawCodes = drawCodes.Replace("V", " V ");
+                    drawCodes = drawCodes.Replace("v", " v ");
+                    drawCodes = drawCodes.Replace("H", " H ");
+                    drawCodes = drawCodes.Replace("h", " h ");
+                    drawCodes = drawCodes.Replace("Q", " Q ");
+                    drawCodes = drawCodes.Replace("q", " q ");
+                    drawCodes = drawCodes.Replace("T", " T ");
+                    drawCodes = drawCodes.Replace("t", " t ");
+                    drawCodes = drawCodes.Replace("A", " A ");
+                    drawCodes = drawCodes.Replace("a", " a ");
+                    drawCodes = drawCodes.Replace("Z", " Z ");
+                    drawCodes = drawCodes.Replace("z", " z ");
                     drawCodes = drawCodes.Replace("-", " -");
                     drawCodes = drawCodes.Replace(",", " ");
 
@@ -179,56 +193,22 @@ namespace AssaDraw.Logic
                     var x = 0.0f;
                     var y = 0.0f;
                     var index = 0;
-                    var qOn = false;
                     var countSinceLastCode = 0;
-                    var lastCode = string.Empty;
+                    var lastCommandCode = string.Empty;
                     var relativeOn = false;
+                    var lastMoveX = 0.0f;
+                    var lastMoveY = 0.0f;
                     while (index < drawCodeList.Count)
                     {
                         var code = drawCodeList[index];
-                        if (code == "Q" || code == "q")
+                        if ("MmCcSsLlVvHhQqTtAaZz".Contains(code))
                         {
-                            qOn = true;
+                            relativeOn = "mcslvhqtaz".Contains(code);
                             countSinceLastCode = 0;
-                            lastCode = code;
-                        }
-                        else if (code == "A" || code == "a")
-                        {
-                            qOn = false;
-                            countSinceLastCode = 0;
-                            lastCode = code;
-                        }
-                        else if (code == "M" || code == "m")
-                        {
-                            qOn = false;
-                            countSinceLastCode = 0;
-                            lastCode = code;
-                        }
-                        else if (code == "C" || code == "c")
-                        {
-                            qOn = false;
-                            countSinceLastCode = 0;
-                            lastCode = code;
-                        }
-                        else if (code == "L" || code == "l")
-                        {
-                            qOn = false;
-                            countSinceLastCode = 0;
-                            lastCode = code;
-                        }
-                        else if (code == "Z" || code == "z")
-                        {
-                            qOn = false;
-                            countSinceLastCode = 0;
-                            lastCode = code;
+                            lastCommandCode = code;
                         }
 
                         countSinceLastCode++;
-
-                        if ("QqAaMmCcLlZz".Contains(code))
-                        {
-                            relativeOn = "qamclz".Contains(lastCode);
-                        }
 
                         if (code == "M" && index + 2 < drawCodeList.Count &&
                             float.TryParse(drawCodeList[index + 1], NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var x1) &&
@@ -236,9 +216,55 @@ namespace AssaDraw.Logic
                         {
                             x = x1;
                             y = y1;
+                            lastMoveX = x;
+                            lastMoveY = y;
+                            newDrawCodeList.Add(code);
+                            newDrawCodeList.Add(x.ToString(CultureInfo.InvariantCulture));
+                            newDrawCodeList.Add(y.ToString(CultureInfo.InvariantCulture));
+                            index += 3;
+                            continue;
+                        }
+
+                        if (code == "m" && index + 2 < drawCodeList.Count &&
+                            float.TryParse(drawCodeList[index + 1], NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var x2) &&
+                            float.TryParse(drawCodeList[index + 2], NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var y2))
+                        {
+                            x += x2;
+                            y += y2;
+                            lastMoveX = x;
+                            lastMoveY = y;
+                            newDrawCodeList.Add(code);
+                            newDrawCodeList.Add(x.ToString(CultureInfo.InvariantCulture));
+                            newDrawCodeList.Add(y.ToString(CultureInfo.InvariantCulture));
+                            index += 3;
+                            continue;
+                        }
+
+                        if (code == "Z" || code == "z")
+                        {
+                            x = lastMoveX;
+                            y = lastMoveY;
                         }
                         else if (relativeOn && float.TryParse(code, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var relativeNumber))
                         {
+                            if (lastCommandCode == "v")
+                            {
+                                y += relativeNumber;
+                                newDrawCodeList.Add(x.ToString(CultureInfo.InvariantCulture));
+                                newDrawCodeList.Add(y.ToString(CultureInfo.InvariantCulture));
+                                index++;
+                                continue;
+                            }
+
+                            if (lastCommandCode == "h")
+                            {
+                                x += relativeNumber;
+                                newDrawCodeList.Add(x.ToString(CultureInfo.InvariantCulture));
+                                newDrawCodeList.Add(y.ToString(CultureInfo.InvariantCulture));
+                                index++;
+                                continue;
+                            }
+
                             if (countSinceLastCode % 2 == 0)
                             {
                                 x += relativeNumber;
@@ -251,9 +277,12 @@ namespace AssaDraw.Logic
                             }
                         }
 
-                        newDrawCodeList.Add(code);
+                        if (!string.IsNullOrEmpty(code))
+                        {
+                            newDrawCodeList.Add(code);
+                        }
 
-                        if (qOn && countSinceLastCode == 3)
+                        if ((lastCommandCode.ToUpperInvariant() == "Q" || lastCommandCode.ToUpperInvariant() == "T") && countSinceLastCode == 3)
                         {
                             newDrawCodeList.Add(newDrawCodeList[newDrawCodeList.Count - 2]);
                             newDrawCodeList.Add(newDrawCodeList[newDrawCodeList.Count - 2]);
@@ -268,10 +297,18 @@ namespace AssaDraw.Logic
                     drawCodes = drawCodes.Replace("M", " m ");
                     drawCodes = drawCodes.Replace("c", " b ");
                     drawCodes = drawCodes.Replace("C", " b ");
+                    drawCodes = drawCodes.Replace("s", " b ");
+                    drawCodes = drawCodes.Replace("S", " b ");
                     drawCodes = drawCodes.Replace("q", " b ");
                     drawCodes = drawCodes.Replace("Q", " b ");
+                    drawCodes = drawCodes.Replace("t", " b ");
+                    drawCodes = drawCodes.Replace("T", " b ");
                     drawCodes = drawCodes.Replace("l", " l ");
                     drawCodes = drawCodes.Replace("L", " l ");
+                    drawCodes = drawCodes.Replace("v", " l ");
+                    drawCodes = drawCodes.Replace("V", " l ");
+                    drawCodes = drawCodes.Replace("h", " l ");
+                    drawCodes = drawCodes.Replace("H", " l ");
                     drawCodes = drawCodes.Replace("z", " ");
                     drawCodes = drawCodes.Replace("Z", " ");
                     drawCodes = drawCodes.Replace("-", " -");
@@ -404,10 +441,7 @@ namespace AssaDraw.Logic
                     bezierCount = 0;
                     if (moveCoordinate != null)
                     {
-                        drawShape = new DrawShape();
-                        drawShape.Layer = layer;
-                        drawShape.ForeColor = c;
-                        drawShape.IsEraser = isEraser;
+                        drawShape = new DrawShape { Layer = layer, ForeColor = c, IsEraser = isEraser };
                         drawShape.AddPoint(state, moveCoordinate.X, moveCoordinate.Y, DrawSettings.PointColor);
                         moveCoordinate = null;
                         drawShapes.Add(drawShape);
