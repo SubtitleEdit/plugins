@@ -483,7 +483,7 @@ namespace AssaDraw
             this.toolStripButtonMirrorHor.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonMirrorHor.Name = "toolStripButtonMirrorHor";
             this.toolStripButtonMirrorHor.Size = new System.Drawing.Size(36, 36);
-            this.toolStripButtonMirrorHor.Text = "Mirror horizontally";
+            this.toolStripButtonMirrorHor.Text = "Mirror vertically";
             this.toolStripButtonMirrorHor.Click += new System.EventHandler(this.toolStripButtonMirrorHor_Click);
             // 
             // toolStripButtonMirrorVert
@@ -493,7 +493,7 @@ namespace AssaDraw
             this.toolStripButtonMirrorVert.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonMirrorVert.Name = "toolStripButtonMirrorVert";
             this.toolStripButtonMirrorVert.Size = new System.Drawing.Size(36, 36);
-            this.toolStripButtonMirrorVert.Text = "Mirror vertically";
+            this.toolStripButtonMirrorVert.Text = "Mirror horizontally";
             this.toolStripButtonMirrorVert.Click += new System.EventHandler(this.toolStripButtonMirrorVert_Click);
             // 
             // toolStripSeparator3

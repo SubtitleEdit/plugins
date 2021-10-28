@@ -131,7 +131,7 @@ namespace AssaDraw
             {
                 try
                 {
-                    args.Result = VideoPreviewGenerator.GetScreenshot(videoFileName, videoPosition);
+                    args.Result = VideoPreviewGenerator.GetScreenShot(videoFileName, videoPosition);
                 }
                 catch (Exception e)
                 {
@@ -1735,7 +1735,7 @@ namespace AssaDraw
             using (var openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.FileName = string.Empty;
-                openFileDialog.Filter = "ASSA drawing|*.assadraw|ASSA files|*.ass|SVG files|*.svg";
+                openFileDialog.Filter = "Supported files|*.assadraw;*.ass;*.svg|ASSA drawing|*.assadraw|ASSA files|*.ass|SVG files|*.svg";
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     ClearAll();
@@ -2448,9 +2448,45 @@ namespace AssaDraw
                 if (!toolStripButtonPreview.Checked)
                 {
                     Bitmap backgroundImage = null;
-                    if (!_backgroundOff)
+                    if (!_backgroundOff && _backgroundImage != null)
                     {
-                        backgroundImage = _backgroundImage;
+                        backgroundImage = (Bitmap)_backgroundImage.Clone();
+                    }
+                    else if (numericUpDownWidth.Value > 0 && numericUpDownHeight.Value > 0)
+                    {
+                        backgroundImage = new Bitmap((int)numericUpDownWidth.Value, (int)numericUpDownHeight.Value);
+                        int rectangleSize = 8;
+                        var dark = false;
+                        using (var g = Graphics.FromImage(backgroundImage))
+                        {
+
+                            for (int y = 0; y < pictureBoxCanvas.Height; y += rectangleSize)
+                            {
+                                for (int x = 0; x < pictureBoxCanvas.Width; x += rectangleSize)
+                                {
+                                    var c = dark ? Color.Black : Color.WhiteSmoke;
+                                    if (y % (rectangleSize * 2) == 0)
+                                    {
+                                        if (x % (rectangleSize * 2) == 0)
+                                        {
+                                            c = dark ? Color.DimGray : Color.LightGray;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (x % (rectangleSize * 2) != 0)
+                                        {
+                                            c = dark ? Color.DimGray : Color.LightGray;
+                                        }
+                                    }
+
+                                    using (var brush = new SolidBrush(c))
+                                    {
+                                        g.FillRectangle(brush, x, y, rectangleSize, rectangleSize);
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     var fileName = VideoPreviewGenerator.GetVideoPreviewFileName((int)numericUpDownWidth.Value, (int)numericUpDownHeight.Value, backgroundImage);

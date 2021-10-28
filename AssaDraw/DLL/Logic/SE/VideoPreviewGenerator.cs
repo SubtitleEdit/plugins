@@ -136,12 +136,12 @@ namespace Nikse.SubtitleEdit.Logic
         }
 
         /// <summary>
-        /// Get screenshot from video at a time code.
+        /// Get screen shot from video at a time code.
         /// </summary>
         /// <param name="inputFileName">Input video file name</param>
         /// <param name="timeCode">time code in format hh:mm:ss[.xxx]</param>
-        /// <returns>png file with screenshot</returns>
-        public static string GetScreenshot(string inputFileName, string timeCode)
+        /// <returns>png file with screen shot</returns>
+        public static string GetScreenShot(string inputFileName, string timeCode)
         {
             var outputFileName = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.png");
             var process = new Process
