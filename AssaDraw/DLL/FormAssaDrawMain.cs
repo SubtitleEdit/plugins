@@ -1915,6 +1915,7 @@ namespace AssaDraw
                     i++;
                 }
                 else if (state == DrawCoordinateType.BezierCurve && drawShape != null &&
+                    arr.Length >= i + 2 &&
                     float.TryParse(arr[i + 0], NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var bX) &&
                     float.TryParse(arr[i + 1], NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var bY))
                 {
@@ -1936,6 +1937,7 @@ namespace AssaDraw
                     {
                         drawShape.AddPoint(state, (int)Math.Round(bX), (int)Math.Round(bY), DrawSettings.PointColor);
                     }
+
                     i++;
                 }
 
