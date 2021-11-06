@@ -12,7 +12,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "Translate with Google screen-scraping...";
 
-        decimal IPlugin.Version => 1.06m;
+        decimal IPlugin.Version => 1.07m;
 
         string IPlugin.Description => "GT screen-scraper: .net 4.6.2+ and Win10/April-2018";
 
@@ -26,8 +26,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             subtitle = subtitle.Trim();
             if (string.IsNullOrEmpty(subtitle))
             {
-                MessageBox.Show("No subtitle loaded", parentForm.Text,
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("No subtitle loaded", parentForm.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return string.Empty;
             }
 
