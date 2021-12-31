@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColumnSorter.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="Logic\Configuration.cs" />
     <Compile Include="Logic\Paragraph.cs" />

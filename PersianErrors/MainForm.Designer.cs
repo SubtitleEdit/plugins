@@ -45,6 +45,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.linkLabelEmail = new System.Windows.Forms.LinkLabel();
             this.labelNote = new System.Windows.Forms.Label();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.labelPercent = new System.Windows.Forms.Label();
+            this.labelWorking = new System.Windows.Forms.Label();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // listViewFixes
@@ -61,12 +65,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.listViewFixes.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listViewFixes.FullRowSelect = true;
             this.listViewFixes.GridLines = true;
+            this.listViewFixes.HideSelection = false;
             this.listViewFixes.Location = new System.Drawing.Point(234, 12);
             this.listViewFixes.Name = "listViewFixes";
             this.listViewFixes.Size = new System.Drawing.Size(905, 555);
             this.listViewFixes.TabIndex = 0;
             this.listViewFixes.UseCompatibleStateImageBehavior = false;
             this.listViewFixes.View = System.Windows.Forms.View.Details;
+            this.listViewFixes.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listViewFixes_ColumnClick);
             // 
             // columnHeader1
             // 
@@ -106,7 +112,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.buttonApply.TabIndex = 5;
             this.buttonApply.Text = "Apply";
             this.buttonApply.UseVisualStyleBackColor = true;
-            this.buttonApply.Click += new System.EventHandler(this.buttonApply_Click);
+            this.buttonApply.Click += new System.EventHandler(this.ButtonApply_Click);
             // 
             // buttonOK
             // 
@@ -117,7 +123,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.buttonOK.TabIndex = 6;
             this.buttonOK.Text = "OK";
             this.buttonOK.UseVisualStyleBackColor = true;
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -128,7 +134,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.buttonCancel.TabIndex = 7;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
             // 
             // buttonCheckAll
             // 
@@ -157,6 +163,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox1.Controls.Add(this.labelWorking);
             this.groupBox1.Location = new System.Drawing.Point(12, 6);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(216, 561);
@@ -174,7 +181,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.linkLabelEmail.TabIndex = 12;
             this.linkLabelEmail.TabStop = true;
             this.linkLabelEmail.Text = "MSasanMH";
-            this.linkLabelEmail.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelEmail_LinkClicked);
+            this.linkLabelEmail.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelEmail_LinkClicked);
             // 
             // labelNote
             // 
@@ -186,11 +193,40 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.labelNote.TabIndex = 13;
             this.labelNote.Text = "Report Bugs:";
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar1.Location = new System.Drawing.Point(599, 573);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(297, 23);
+            this.progressBar1.TabIndex = 14;
+            // 
+            // labelPercent
+            // 
+            this.labelPercent.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.labelPercent.Location = new System.Drawing.Point(731, 578);
+            this.labelPercent.Name = "labelPercent";
+            this.labelPercent.Size = new System.Drawing.Size(34, 13);
+            this.labelPercent.TabIndex = 15;
+            this.labelPercent.Text = "100%";
+            this.labelPercent.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labelWorking
+            // 
+            this.labelWorking.AutoSize = true;
+            this.labelWorking.Location = new System.Drawing.Point(6, 509);
+            this.labelWorking.Name = "labelWorking";
+            this.labelWorking.Size = new System.Drawing.Size(0, 13);
+            this.labelWorking.TabIndex = 0;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1151, 603);
+            this.Controls.Add(this.labelPercent);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.labelNote);
             this.Controls.Add(this.linkLabelEmail);
             this.Controls.Add(this.groupBox1);
@@ -205,6 +241,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.Name = "MainForm";
             this.Text = "Persian Subtitle Fixes (Persian Common Errors)";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -228,6 +266,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.LinkLabel linkLabelEmail;
         private System.Windows.Forms.Label labelNote;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Label labelPercent;
+        private System.Windows.Forms.Label labelWorking;
     }
 }
 
