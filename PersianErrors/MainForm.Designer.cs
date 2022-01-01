@@ -43,11 +43,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.buttonCheckAll = new System.Windows.Forms.Button();
             this.buttonInvertCheck = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.labelWorking = new System.Windows.Forms.Label();
             this.linkLabelEmail = new System.Windows.Forms.LinkLabel();
             this.labelNote = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.labelPercent = new System.Windows.Forms.Label();
-            this.labelWorking = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -171,6 +171,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Groups";
             // 
+            // labelWorking
+            // 
+            this.labelWorking.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.labelWorking.AutoSize = true;
+            this.labelWorking.Location = new System.Drawing.Point(6, 509);
+            this.labelWorking.Name = "labelWorking";
+            this.labelWorking.Size = new System.Drawing.Size(0, 13);
+            this.labelWorking.TabIndex = 0;
+            // 
             // linkLabelEmail
             // 
             this.linkLabelEmail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -204,6 +213,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // 
             // labelPercent
             // 
+            this.labelPercent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.labelPercent.BackColor = System.Drawing.SystemColors.ControlLight;
             this.labelPercent.Location = new System.Drawing.Point(731, 578);
             this.labelPercent.Name = "labelPercent";
@@ -211,14 +222,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.labelPercent.TabIndex = 15;
             this.labelPercent.Text = "100%";
             this.labelPercent.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // labelWorking
-            // 
-            this.labelWorking.AutoSize = true;
-            this.labelWorking.Location = new System.Drawing.Point(6, 509);
-            this.labelWorking.Name = "labelWorking";
-            this.labelWorking.Size = new System.Drawing.Size(0, 13);
-            this.labelWorking.TabIndex = 0;
             // 
             // MainForm
             // 
