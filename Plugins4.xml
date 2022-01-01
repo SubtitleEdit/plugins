@@ -220,7 +220,7 @@
 	<Plugin>
 		<Name>Persian Subtitle Fixes</Name>
 		<Description>Makes Persian subtitles nice and tidy!</Description>
-		<Version>0.2</Version>
+		<Version>0.3</Version>
 		<Date>2022-01-01</Date>
 		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/PersianErrors.zip</Url>
 		<Author>MSasanMH</Author>

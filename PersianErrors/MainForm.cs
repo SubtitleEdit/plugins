@@ -34,6 +34,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             InitializeComponent();
             Text = "Persian Subtitle Fixes (Persian Common Errors)";
+            StartPosition = FormStartPosition.CenterScreen;
             FormClosing += MainForm_FormClosing;
             // Sort Column Line#
             lvwColumnSorter = new ListViewColumnSorter();
