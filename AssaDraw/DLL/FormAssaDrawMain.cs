@@ -57,7 +57,7 @@ namespace AssaDraw
 
         private const string StyleName = "AssaDraw";
 
-        public FormAssaDrawMain(string text, string videoFileName, string videoPosition)
+        public FormAssaDrawMain(string text, string videoFileName, string videoPosition, string fileName)
         {
             InitializeComponent();
 
@@ -77,20 +77,14 @@ namespace AssaDraw
             historyTimer.Tick += _historyTimer_Tick;
             historyTimer.Start();
 
-
             if (text == "standalone")
             {
                 DrawSettings.Standalone = true;
                 buttonCancel.Visible = false;
                 buttonOk.Visible = false;
-                var args = Environment.GetCommandLineArgs();
-                if (args.Length > 1)
+                if (!string.IsNullOrEmpty(fileName) && File.Exists(fileName))
                 {
-                    var fileName = args[1];
-                    if (File.Exists(fileName))
-                    {
-                        ImportAssaDrawing(fileName);
-                    }
+                    ImportAssaDrawing(fileName);
                 }
             }
             else if (!string.IsNullOrEmpty(text))

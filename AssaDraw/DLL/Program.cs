@@ -13,7 +13,15 @@ namespace AssaDraw
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormAssaDrawMain("standalone", null, null));
+
+            var fileName = string.Empty;
+            var args = Environment.GetCommandLineArgs();
+            if (args.Length > 1)
+            {
+                fileName = args[1];
+            }
+
+            Application.Run(new FormAssaDrawMain("standalone", null, null, fileName));
         }
     }
 }

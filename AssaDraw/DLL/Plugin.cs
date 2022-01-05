@@ -11,7 +11,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "ASSA Draw..."; // will be used in context menu item
 
-        decimal IPlugin.Version => 0.17M;
+        decimal IPlugin.Version => 0.18M;
 
         string IPlugin.Description => "Draw for Advanced Sub Station Alpha";
 
@@ -82,7 +82,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var tempSub = new Subtitle(selectedParagraphs) { Header = sub.Header };
             var text = new AdvancedSubStationAlpha().ToText(tempSub, string.Empty);
 
-            using (var form = new FormAssaDrawMain(text, videoFileName, videoPosition))
+            using (var form = new FormAssaDrawMain(subtitle == "standalone" ? "standalone" : text, videoFileName, videoPosition, subtitleFileName))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
                 {
