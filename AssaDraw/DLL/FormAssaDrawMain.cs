@@ -75,7 +75,7 @@ namespace AssaDraw
             numericUpDownWidth.Left = left + 3;
             numericUpDownHeight.Left = numericUpDownWidth.Left + numericUpDownWidth.Width + 3;
             numericUpDownX.Left = left + 3;
-            numericUpDownY.Left = numericUpDownX.Left + numericUpDownX.Width + 3; 
+            numericUpDownY.Left = numericUpDownX.Left + numericUpDownX.Width + 3;
 
             _history = new DrawHistory();
 
@@ -382,6 +382,21 @@ namespace AssaDraw
                 isCircle = true;
             }
 
+            var isRectangle = false;
+            if (isActive && toolStripButtonRectangle.Checked && !_drawShapes.Contains(drawShape) && _x > int.MinValue && _y > int.MinValue)
+            {
+                var start = drawShape.Points.FirstOrDefault();
+                if (start == null)
+                {
+                    return;
+                }
+
+                var xDiff = _x - start.X;
+                var yDiff = _y - start.Y;
+                drawShape = MakeRectangle(start.X, start.Y, xDiff, yDiff, drawShape.Layer, drawShape.ForeColor);
+                isRectangle = true;
+            }
+
             var color = isActive ? DrawSettings.ActiveShapeLineColor : DrawSettings.ShapeLineColor;
             using (var pen = new Pen(new SolidBrush(color), 2))
             {
@@ -404,7 +419,8 @@ namespace AssaDraw
                             graphics.DrawLine(pen, ToZoomFactorPoint(drawShape.Points[i - 1]), ToZoomFactorPoint(drawShape.Points[i]));
                         }
 
-                        if (isActive && drawShape.Points.Count > 0 && (_x != int.MinValue || _y != int.MinValue) && !_drawShapes.Contains(_activeDrawShape))
+                        if (isActive && drawShape.Points.Count > 0 && (_x != int.MinValue || _y != int.MinValue) && 
+                            !_drawShapes.Contains(_activeDrawShape) && !isCircle && !isRectangle)
                         {
                             using (var penNewLine = new Pen(new SolidBrush(DrawSettings.ActiveShapeLineColor), 2))
                             {
@@ -413,7 +429,7 @@ namespace AssaDraw
                         }
 
                         i++;
-                        if (i >= drawShape.Points.Count - 1 && !isCircle)
+                        if (i >= drawShape.Points.Count - 1 && !isCircle && !isRectangle)
                         {
                             var c = isActive ? DrawSettings.ActiveShapeLineColor : DrawSettings.ShapeLineColor;
                             if (drawShape == _activeDrawShape && !_drawShapes.Contains(drawShape))
@@ -450,7 +466,7 @@ namespace AssaDraw
                         }
 
                         i++;
-                        if (i >= drawShape.Points.Count - 1 && !isCircle)
+                        if (i >= drawShape.Points.Count - 1 && !isCircle && !isRectangle)
                         {
                             var c = isActive ? DrawSettings.ActiveShapeLineColor : DrawSettings.ShapeLineColor;
                             if (drawShape == _activeDrawShape && !_drawShapes.Contains(drawShape))
@@ -470,6 +486,31 @@ namespace AssaDraw
                     }
                 }
             }
+        }
+
+        private static DrawShape MakeRectangle(float x, float y, float width, float height, int layer, Color c)
+        {
+            var shape = new DrawShape { ForeColor = c, Layer = layer };
+
+            shape.Points.Add(new DrawCoordinate(shape, DrawCoordinateType.Line, x, y, DrawSettings.PointColor));
+
+            var pointX2 = x + width;
+            var pointY2 = y;
+            shape.Points.Add(new DrawCoordinate(shape, DrawCoordinateType.Line, pointX2, pointY2, DrawSettings.PointColor));
+
+            var pointX3 = x + width;
+            var pointY3 = y + height;
+            shape.Points.Add(new DrawCoordinate(shape, DrawCoordinateType.Line, pointX3, pointY3, DrawSettings.PointColor));
+
+            var pointX4 = x;
+            var pointY4 = y + height;
+            shape.Points.Add(new DrawCoordinate(shape, DrawCoordinateType.Line, pointX4, pointY4, DrawSettings.PointColor));
+
+            var pointX5 = x;
+            var pointY5 = y;
+            shape.Points.Add(new DrawCoordinate(shape, DrawCoordinateType.Line, pointX5, pointY5, DrawSettings.PointColor));
+
+            return shape;
         }
 
         private void pictureBoxCanvas_MouseClick(object sender, MouseEventArgs e)
@@ -526,6 +567,15 @@ namespace AssaDraw
                     _activeDrawShape.AddPoint(DrawCoordinateType.BezierCurve, x, y, DrawSettings.PointColor);
                 }
                 else if (toolStripButtonCircle.Checked)
+                {
+                    if (DateTime.UtcNow.Ticks - _drawingEndTicks > 10_000 * 250)
+                    {
+                        _activeDrawShape = new DrawShape();
+                        _activeDrawShape.AddPoint(DrawCoordinateType.Line, x, y, DrawSettings.PointColor);
+                        _drawingStartTicks = DateTime.UtcNow.Ticks;
+                    }
+                }
+                else if (toolStripButtonRectangle.Checked)
                 {
                     if (DateTime.UtcNow.Ticks - _drawingEndTicks > 10_000 * 250)
                     {
@@ -1568,6 +1618,12 @@ namespace AssaDraw
                     toolStripButtonCloseShape_Click(null, null);
                     _drawingEndTicks = DateTime.UtcNow.Ticks;
                 }
+                else if (_activeDrawShape != null && toolStripButtonRectangle.Checked &&
+                         _drawingStartTicks > 0 && DateTime.UtcNow.Ticks - _drawingStartTicks > 10_000 * 500)
+                {
+                    toolStripButtonCloseShape_Click(null, null);
+                    _drawingEndTicks = DateTime.UtcNow.Ticks;
+                }
             }
         }
 
@@ -1596,6 +1652,20 @@ namespace AssaDraw
                 }
 
                 _activeDrawShape = CirleBezier.MakeCircle(start.X, start.Y, maxDiff, _activeDrawShape.Layer, _activeDrawShape.ForeColor);
+            }
+            if (toolStripButtonRectangle.Checked)
+            {
+                var start = _activeDrawShape.Points.FirstOrDefault();
+                if (start == null)
+                {
+                    return;
+                }
+
+                var xDiff = _x - start.X;
+                var yDiff = _y - start.Y;
+                _activeDrawShape = MakeRectangle(start.X, start.Y, xDiff, yDiff, _activeDrawShape.Layer, _activeDrawShape.ForeColor);
+                _activeDrawShape.Points.RemoveAt(_activeDrawShape.Points.Count - 1);
+                Clipboard.SetText(_activeDrawShape.ToAssa());
             }
             else if (_activeDrawShape.Points.Count <= 2)
             {
@@ -2014,6 +2084,7 @@ namespace AssaDraw
         {
             toolStripButtonBeizer.Checked = false;
             toolStripButtonCircle.Checked = false;
+            toolStripButtonRectangle.Checked = false;
             toolStripButtonLine.Checked = true;
 
         }
@@ -2022,6 +2093,7 @@ namespace AssaDraw
         {
             toolStripButtonLine.Checked = false;
             toolStripButtonCircle.Checked = false;
+            toolStripButtonRectangle.Checked = false;
             toolStripButtonBeizer.Checked = true;
         }
 
@@ -2035,8 +2107,25 @@ namespace AssaDraw
 
             toolStripButtonBeizer.Checked = false;
             toolStripButtonLine.Checked = false;
+            toolStripButtonRectangle.Checked = false;
             toolStripButtonCircle.Checked = true;
         }
+
+
+        private void toolStripButtonRectangle_Click(object sender, EventArgs e)
+        {
+            if (_activeDrawShape?.Points.Count > 1 && !_drawShapes.Contains(_activeDrawShape))
+            {
+                // cannot combine rect with bezier or lines
+                return;
+            }
+
+            toolStripButtonBeizer.Checked = false;
+            toolStripButtonLine.Checked = false;
+            toolStripButtonRectangle.Checked = true;
+            toolStripButtonCircle.Checked = false;
+        }
+
 
         private void buttonCopyAssaToClipboard_Click(object sender, EventArgs e)
         {
@@ -2731,5 +2820,7 @@ namespace AssaDraw
         {
             treeView1_AfterExpand(sender, e);
         }
+
+
     }
 }

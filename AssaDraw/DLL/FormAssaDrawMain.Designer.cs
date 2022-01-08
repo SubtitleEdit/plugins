@@ -77,6 +77,7 @@ namespace AssaDraw
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOk = new System.Windows.Forms.Button();
             this.timerTreeViewUpdate = new System.Windows.Forms.Timer(this.components);
+            this.toolStripButtonRectangle = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCanvas)).BeginInit();
             this.contextMenuStripTreeView.SuspendLayout();
             this.groupBoxSettings.SuspendLayout();
@@ -358,6 +359,7 @@ namespace AssaDraw
             this.toolStripSeparator1,
             this.toolStripButtonLine,
             this.toolStripButtonBeizer,
+            this.toolStripButtonRectangle,
             this.toolStripButtonCircle,
             this.toolStripButtonCloseShape,
             this.toolStripSeparator2,
@@ -584,6 +586,16 @@ namespace AssaDraw
             this.timerTreeViewUpdate.Interval = 1000;
             this.timerTreeViewUpdate.Tick += new System.EventHandler(this.timerTreeViewUpdate_Tick);
             // 
+            // toolStripButtonRectangle
+            // 
+            this.toolStripButtonRectangle.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonRectangle.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonRectangle.Image")));
+            this.toolStripButtonRectangle.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonRectangle.Name = "toolStripButtonRectangle";
+            this.toolStripButtonRectangle.Size = new System.Drawing.Size(36, 36);
+            this.toolStripButtonRectangle.Text = "Draw circle";
+            this.toolStripButtonRectangle.Click += new System.EventHandler(this.toolStripButtonRectangle_Click);
+            // 
             // FormAssaDrawMain
             // 
             this.AllowDrop = true;
@@ -671,6 +683,7 @@ namespace AssaDraw
         private System.Windows.Forms.ToolStripMenuItem showLayerToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton toolStripButtonCircle;
         private System.Windows.Forms.Timer timerTreeViewUpdate;
+        private System.Windows.Forms.ToolStripButton toolStripButtonRectangle;
     }
 }
 
