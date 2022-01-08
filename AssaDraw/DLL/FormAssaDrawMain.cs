@@ -1613,13 +1613,13 @@ namespace AssaDraw
                     Cursor = Cursors.SizeAll;
                 }
                 else if (_activeDrawShape != null && toolStripButtonCircle.Checked &&
-                         _drawingStartTicks > 0 && DateTime.UtcNow.Ticks - _drawingStartTicks > 10_000 * 500)
+                         _drawingStartTicks > 0 && DateTime.UtcNow.Ticks - _drawingStartTicks > 10_000 * 250)
                 {
                     toolStripButtonCloseShape_Click(null, null);
                     _drawingEndTicks = DateTime.UtcNow.Ticks;
                 }
                 else if (_activeDrawShape != null && toolStripButtonRectangle.Checked &&
-                         _drawingStartTicks > 0 && DateTime.UtcNow.Ticks - _drawingStartTicks > 10_000 * 500)
+                         _drawingStartTicks > 0 && DateTime.UtcNow.Ticks - _drawingStartTicks > 10_000 * 250)
                 {
                     toolStripButtonCloseShape_Click(null, null);
                     _drawingEndTicks = DateTime.UtcNow.Ticks;
@@ -1653,7 +1653,7 @@ namespace AssaDraw
 
                 _activeDrawShape = CirleBezier.MakeCircle(start.X, start.Y, maxDiff, _activeDrawShape.Layer, _activeDrawShape.ForeColor);
             }
-            if (toolStripButtonRectangle.Checked)
+            if (toolStripButtonRectangle.Checked && !_drawShapes.Contains(_activeDrawShape))
             {
                 var start = _activeDrawShape.Points.FirstOrDefault();
                 if (start == null)
@@ -1665,7 +1665,6 @@ namespace AssaDraw
                 var yDiff = _y - start.Y;
                 _activeDrawShape = MakeRectangle(start.X, start.Y, xDiff, yDiff, _activeDrawShape.Layer, _activeDrawShape.ForeColor);
                 _activeDrawShape.Points.RemoveAt(_activeDrawShape.Points.Count - 1);
-                Clipboard.SetText(_activeDrawShape.ToAssa());
             }
             else if (_activeDrawShape.Points.Count <= 2)
             {

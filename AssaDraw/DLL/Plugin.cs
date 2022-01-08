@@ -11,7 +11,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "ASSA Draw..."; // will be used in context menu item
 
-        decimal IPlugin.Version => 0.20M;
+        decimal IPlugin.Version => 0.21M;
 
         string IPlugin.Description => "Draw for Advanced Sub Station Alpha";
 
