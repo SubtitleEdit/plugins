@@ -33,6 +33,8 @@ namespace AssaDraw
         private float _panY;
         private DrawCoordinate _mouseDownPoint;
         private bool _panOn;
+        private long _drawingStartTicks;
+        private long _drawingEndTicks;
 
         private readonly object _treeViewLock = new object();
         private bool _treeViewInvalidated;
@@ -60,16 +62,20 @@ namespace AssaDraw
         public FormAssaDrawMain(string text, string videoFileName, string videoPosition, string fileName)
         {
             InitializeComponent();
-
-
             DrawSettings.LoadSettings();
-
             _x = int.MinValue;
             _y = int.MinValue;
             _drawShapes = new List<DrawShape>();
             numericUpDownX.Enabled = false;
             numericUpDownY.Enabled = false;
             EnableDisableCurrentShapeActions();
+            _drawingEndTicks = DateTime.UtcNow.Ticks;
+
+            var left = Math.Max(labelResolution.Left + labelResolution.Width, labelActivePoint.Left + labelActivePoint.Width);
+            numericUpDownWidth.Left = left + 3;
+            numericUpDownHeight.Left = numericUpDownWidth.Left + numericUpDownWidth.Width + 3;
+            numericUpDownX.Left = left + 3;
+            numericUpDownY.Left = numericUpDownX.Left + numericUpDownX.Width + 3; 
 
             _history = new DrawHistory();
 
@@ -521,8 +527,12 @@ namespace AssaDraw
                 }
                 else if (toolStripButtonCircle.Checked)
                 {
-                    _activeDrawShape = new DrawShape();
-                    _activeDrawShape.AddPoint(DrawCoordinateType.Line, x, y, DrawSettings.PointColor);
+                    if (DateTime.UtcNow.Ticks - _drawingEndTicks > 10_000 * 250)
+                    {
+                        _activeDrawShape = new DrawShape();
+                        _activeDrawShape.AddPoint(DrawCoordinateType.Line, x, y, DrawSettings.PointColor);
+                        _drawingStartTicks = DateTime.UtcNow.Ticks;
+                    }
                 }
             }
 
@@ -1082,6 +1092,7 @@ namespace AssaDraw
             }
             else if (_activeDrawShape != null && e.KeyCode == Keys.Escape)
             {
+                _drawingStartTicks = 0;
                 if (!_drawShapes.Contains(_activeDrawShape))
                 {
                     toolStripButtonClearCurrent_Click(null, null);
@@ -1551,6 +1562,12 @@ namespace AssaDraw
                     _moveActiveDrawShapeStart = new Point(x, y);
                     Cursor = Cursors.SizeAll;
                 }
+                else if (_activeDrawShape != null && toolStripButtonCircle.Checked &&
+                         _drawingStartTicks > 0 && DateTime.UtcNow.Ticks - _drawingStartTicks > 10_000 * 500)
+                {
+                    toolStripButtonCloseShape_Click(null, null);
+                    _drawingEndTicks = DateTime.UtcNow.Ticks;
+                }
             }
         }
 
@@ -1588,6 +1605,7 @@ namespace AssaDraw
             _activePoint = null;
             numericUpDownX.Enabled = false;
             numericUpDownY.Enabled = false;
+            _drawingStartTicks = 0;
 
             if (_activeDrawShape != null && !_drawShapes.Contains(_activeDrawShape))
             {

@@ -46,7 +46,7 @@ namespace AssaDraw
             this.hideLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBoxSettings = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.labelActivePoint = new System.Windows.Forms.Label();
             this.numericUpDownY = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownX = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownHeight = new System.Windows.Forms.NumericUpDown();
@@ -214,7 +214,7 @@ namespace AssaDraw
             // 
             // groupBoxSettings
             // 
-            this.groupBoxSettings.Controls.Add(this.label1);
+            this.groupBoxSettings.Controls.Add(this.labelActivePoint);
             this.groupBoxSettings.Controls.Add(this.numericUpDownY);
             this.groupBoxSettings.Controls.Add(this.numericUpDownX);
             this.groupBoxSettings.Controls.Add(this.numericUpDownHeight);
@@ -227,18 +227,18 @@ namespace AssaDraw
             this.groupBoxSettings.TabStop = false;
             this.groupBoxSettings.Text = "Settings";
             // 
-            // label1
+            // labelActivePoint
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(7, 60);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(63, 13);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Active point";
+            this.labelActivePoint.AutoSize = true;
+            this.labelActivePoint.Location = new System.Drawing.Point(6, 60);
+            this.labelActivePoint.Name = "labelActivePoint";
+            this.labelActivePoint.Size = new System.Drawing.Size(63, 13);
+            this.labelActivePoint.TabIndex = 3;
+            this.labelActivePoint.Text = "Active point";
             // 
             // numericUpDownY
             // 
-            this.numericUpDownY.Location = new System.Drawing.Point(149, 58);
+            this.numericUpDownY.Location = new System.Drawing.Point(148, 58);
             this.numericUpDownY.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -261,7 +261,7 @@ namespace AssaDraw
             // 
             // numericUpDownX
             // 
-            this.numericUpDownX.Location = new System.Drawing.Point(76, 58);
+            this.numericUpDownX.Location = new System.Drawing.Point(75, 58);
             this.numericUpDownX.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -284,7 +284,7 @@ namespace AssaDraw
             // 
             // numericUpDownHeight
             // 
-            this.numericUpDownHeight.Location = new System.Drawing.Point(149, 29);
+            this.numericUpDownHeight.Location = new System.Drawing.Point(148, 29);
             this.numericUpDownHeight.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -307,7 +307,7 @@ namespace AssaDraw
             // 
             // numericUpDownWidth
             // 
-            this.numericUpDownWidth.Location = new System.Drawing.Point(76, 29);
+            this.numericUpDownWidth.Location = new System.Drawing.Point(75, 29);
             this.numericUpDownWidth.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -331,7 +331,7 @@ namespace AssaDraw
             // labelResolution
             // 
             this.labelResolution.AutoSize = true;
-            this.labelResolution.Location = new System.Drawing.Point(7, 29);
+            this.labelResolution.Location = new System.Drawing.Point(6, 29);
             this.labelResolution.Name = "labelResolution";
             this.labelResolution.Size = new System.Drawing.Size(57, 13);
             this.labelResolution.TabIndex = 0;
@@ -643,7 +643,7 @@ namespace AssaDraw
         private System.Windows.Forms.ToolStripButton toolStripButtonCloseShape;
         private System.Windows.Forms.ToolStripButton toolStripButtonClearCurrent;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label labelActivePoint;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripTreeView;
         private System.Windows.Forms.ToolStripMenuItem deleteShapeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deletePointToolStripMenuItem;
