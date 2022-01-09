@@ -23,7 +23,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             labelCount.Text = string.Empty;
             labelImportCount.Text = string.Empty;
             labelTransfered.Text = string.Empty;
-            string defaultFileName = @"C:\Data\SubtitleEdit\subtitleedit\Dictionaries\names.xml";
+            string defaultFileName = @"C:\git\SubtitleEdit\Dictionaries\names.xml";
             if (File.Exists(defaultFileName))
             {
                 LoadNamesFile(defaultFileName);
@@ -39,12 +39,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 foreach (var nameNode in _namesXml.Document.Descendants("name"))
                 {
-                    string s = nameNode.Value;
-                    if (!_namesList.Contains(s))
+                    var s = nameNode.Value;
+                    if (nameNode.Parent?.Name == "blacklist")
+                    {
+                        // skip
+                    }
+                    else if (!_namesList.Contains(s))
+                    {
                         _namesList.Add(s);
+                    }
                 }
+
                 FillNames();
             }
+
             _changed = false;
         }
 
@@ -99,7 +107,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             try
             {
-                _namesXml.Document?.Descendants("name").Remove();
+                _namesXml.Document?.Root.Elements("name").Remove();
                 // will throw an exception if no element satisfy the predicate/empty
                 var root = _namesXml.Descendants().First(p => p.NodeType == XmlNodeType.Element);
                 foreach (var name in _namesList)
@@ -169,6 +177,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             openFileDialog1.FileName = string.Empty;
             if (openFileDialog1.ShowDialog(this) == DialogResult.OK)
             {
+                _namesList.Clear();
                 LoadNamesFile(openFileDialog1.FileName);
             }
         }
