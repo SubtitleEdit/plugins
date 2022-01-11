@@ -51,26 +51,29 @@ namespace SubtitleEdit
             textBoxLog.Visible = false;
             listView1.Columns[2].Width = -2;
             buttonCancelTranslate.Enabled = false;
+            comboBoxApiUrl.SelectedIndex = 0;
         }
 
-        private void SetLanguages(ComboBox comboBox, string language)
+        private static void SetLanguages(ComboBox comboBox, string language)
         {
             comboBox.Items.Clear();
-            foreach (var pair in new DeepLTranslator2("").GetTranslationPairs())
+            foreach (var pair in new DeepLTranslator2("", "").GetTranslationPairs())
             {
                 comboBox.Items.Add(pair);
             }
-            int i = 0;
+
+            var i = 0;
             foreach (var l in comboBox.Items)
             {
-                var tl = l as TranslationPair;
-                if (tl != null && tl.Code.Equals(language, StringComparison.OrdinalIgnoreCase))
+                if (l is TranslationPair tl && tl.Code.Equals(language, StringComparison.OrdinalIgnoreCase))
                 {
                     comboBox.SelectedIndex = i;
                     return;
                 }
+
                 i++;
             }
+
             comboBox.SelectedIndex = 0;
         }
 
@@ -93,8 +96,8 @@ namespace SubtitleEdit
 
         public sealed override string Text
         {
-            get { return base.Text; }
-            set { base.Text = value; }
+            get => base.Text;
+            set => base.Text = value;
         }
 
         private void Translate(string source, string target, DeepLTranslator2 translator, int maxTextSize, int maximumRequestArrayLength = 100)
@@ -115,9 +118,9 @@ namespace SubtitleEdit
                 var startIndex = selectedItems.Count <= 0 ? 0 : selectedItems[0].Index;
                 var start = startIndex;
                 int index = startIndex;
-                for (int i = startIndex; i < _subtitleOriginal.Paragraphs.Count; i++)
+                for (var i = startIndex; i < _subtitleOriginal.Paragraphs.Count; i++)
                 {
-                    Paragraph p = _subtitleOriginal.Paragraphs[i];
+                    var p = _subtitleOriginal.Paragraphs[i];
                     sourceLength += Uri.EscapeDataString(p.Text).Length;
                     if ((sourceLength >= maxTextSize || sourceParagraphs.Count > maximumRequestArrayLength) && sourceParagraphs.Count > 0)
                     {
@@ -130,11 +133,14 @@ namespace SubtitleEdit
                         Application.DoEvents();
                         start = index;
                     }
+
                     sourceParagraphs.Add(p);
                     index++;
                     progressBar1.Value = index;
                     if (_abort)
+                    {
                         break;
+                    }
                 }
 
                 if (sourceParagraphs.Count > 0)
@@ -160,9 +166,9 @@ namespace SubtitleEdit
 
         private void FillTranslatedText(List<string> translatedLines, int start, int end)
         {
-            int index = start;
+            var index = start;
             listView1.BeginUpdate();
-            foreach (string s in translatedLines)
+            foreach (var s in translatedLines)
             {
                 if (index < listView1.Items.Count)
                 {
@@ -170,19 +176,27 @@ namespace SubtitleEdit
                     _subtitle.Paragraphs[index].Text = s;
                     item.SubItems[2].Text = s.Replace(Environment.NewLine, "<br />");
                     if (listView1.CanFocus)
+                    {
                         listView1.EnsureVisible(index);
+                    }
                 }
                 index++;
             }
+
             if (index > 0 && index < listView1.Items.Count - 1)
+            {
                 listView1.EnsureVisible(index - 1);
+            }
+
             listView1.EndUpdate();
         }
 
         private void GeneratePreview(bool setText)
         {
             if (_subtitle == null)
+            {
                 return;
+            }
 
             try
             {
@@ -207,8 +221,8 @@ namespace SubtitleEdit
                         }
                     }
 
-                    Paragraph p = _subtitleOriginal.Paragraphs[index];
-                    string text = p.Text;
+                    var p = _subtitleOriginal.Paragraphs[index];
+                    var text = p.Text;
                     var before = text;
                     var after = string.Empty;
                     AddToListView(p, before, after);
@@ -217,6 +231,7 @@ namespace SubtitleEdit
                         _abort = false;
                         return;
                     }
+
                     if (_tooManyRequests)
                     {
                         _tooManyRequests = false;
@@ -278,7 +293,7 @@ namespace SubtitleEdit
             {
                 _from = ((TranslationPair)comboBoxLanguageFrom.Items[comboBoxLanguageFrom.SelectedIndex]).Code;
                 _to = ((TranslationPair)comboBoxLanguageTo.Items[comboBoxLanguageTo.SelectedIndex]).Code;
-                Translate(_from, _to, new DeepLTranslator2(textBoxApiKey.Text), 1);
+                Translate(_from, _to, new DeepLTranslator2(textBoxApiKey.Text, comboBoxApiUrl.Text ), 1);
             }
             finally
             {
@@ -318,43 +333,50 @@ namespace SubtitleEdit
             Process.Start("https://www.deepl.com/pro.html#pricing");
         }
 
-
-        private string GetSettingsFileName()
+        private static string GetSettingsFileName()
         {
-            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
             if (path != null && path.StartsWith("file:\\", StringComparison.Ordinal))
+            {
                 path = path.Remove(0, 6);
+            }
+
             path = Path.Combine(path, "Plugins");
             if (!Directory.Exists(path))
+            {
                 path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Plugins");
+            }
+
             return Path.Combine(path, "DeepLProTranslator.xml");
         }
 
-
         private void RestoreSettings()
         {
-            string fileName = GetSettingsFileName();
+            var fileName = GetSettingsFileName();
             try
             {
                 var doc = new XmlDocument();
                 doc.Load(fileName);
                 textBoxApiKey.Text = DecodeFrom64(doc.DocumentElement.SelectSingleNode("ApiKey").InnerText);
+                comboBoxApiUrl.Text = doc.DocumentElement.SelectSingleNode("ApiUrl").InnerText;
                 _to = doc.DocumentElement.SelectSingleNode("Target").InnerText;
             }
             catch
             {
+                // ignore
             }
         }
 
         private void SaveSettings()
         {
-            string fileName = GetSettingsFileName();
+            var fileName = GetSettingsFileName();
             try
             {
                 var doc = new XmlDocument();
-                doc.LoadXml("<Translator><ApiKey/><Target/></Translator>");
+                doc.LoadXml("<Translator><ApiKey/><Target/><ApiUrl/></Translator>");
                 doc.DocumentElement.SelectSingleNode("ApiKey").InnerText = EncodeTo64(textBoxApiKey.Text.Trim());
                 doc.DocumentElement.SelectSingleNode("Target").InnerText = _to;
+                doc.DocumentElement.SelectSingleNode("ApiUrl").InnerText = comboBoxApiUrl.Text;
                 doc.Save(fileName);
             }
             catch (Exception e)
@@ -365,19 +387,19 @@ namespace SubtitleEdit
 
         private static string EncodeTo64(string toEncode)
         {
-            byte[] toEncodeAsBytes = Encoding.Unicode.GetBytes(toEncode);
+            var toEncodeAsBytes = Encoding.Unicode.GetBytes(toEncode);
             return Convert.ToBase64String(toEncodeAsBytes);
         }
 
         public static string DecodeFrom64(string encodedData)
         {
-            byte[] encodedDataAsBytes = Convert.FromBase64String(encodedData);
+            var encodedDataAsBytes = Convert.FromBase64String(encodedData);
             return Encoding.Unicode.GetString(encodedDataAsBytes);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-
+            SaveSettings();
         }
     }
 }

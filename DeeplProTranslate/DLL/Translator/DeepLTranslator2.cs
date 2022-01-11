@@ -14,10 +14,12 @@ namespace SubtitleEdit.Translator
     public class DeepLTranslator2 : ITranslator
     {
         private readonly string _apiKey;
+        private readonly string _apiUrl;
 
-        public DeepLTranslator2(string apiKey)
+        public DeepLTranslator2(string apiKey, string apiUrl)
         {
             _apiKey = apiKey;
+            _apiUrl = apiUrl;
         }
 
         public List<TranslationPair> GetTranslationPairs()
@@ -35,6 +37,17 @@ namespace SubtitleEdit.Translator
                 new TranslationPair("Russian", "ru"),
                 new TranslationPair("Japanese", "ja"),
                 new TranslationPair("Chinese", "zh"),
+                new TranslationPair("Danish", "da"),
+                new TranslationPair("Bulgarian", "bg"),
+                new TranslationPair("Czech", "cs"),
+                new TranslationPair("Estonian", "et"),
+                new TranslationPair("Latvian", "lv"),
+                new TranslationPair("Lithuanian", "lt"),
+                new TranslationPair("Finnish", "fi"),
+                new TranslationPair("Slovak", "sk"),
+                new TranslationPair("Slovenian", "sl"),
+                new TranslationPair("Greek", "el"),
+                new TranslationPair("Romanian", "ro"),
             };
         }
 
@@ -50,7 +63,7 @@ namespace SubtitleEdit.Translator
 
         public List<string> Translate(string sourceLanguage, string targetLanguage, List<Paragraph> paragraphs, StringBuilder log)
         {
-            var baseUrl = "https://api.deepl.com/v2/translate";
+            var baseUrl = _apiUrl.Trim().TrimEnd('/') + "/v2/translate";
             var input = new StringBuilder();
             var formattings = new Formatting[paragraphs.Count];
             for (var index = 0; index < paragraphs.Count; index++)
@@ -64,7 +77,7 @@ namespace SubtitleEdit.Translator
                 input.Append("text=" + Uri.EscapeDataString(text));
             }
             // /v2/translate?text=Hallo%20Welt!&source_lang=DE&target_lang=EN&auth_key=123
-            string uri = $"{baseUrl}/?{input}&target_lang={targetLanguage}&source_lang={sourceLanguage}&auth_key={_apiKey}";
+            var uri = $"{baseUrl}?{input}&target_lang={targetLanguage}&source_lang={sourceLanguage}&auth_key={_apiKey}";
             log.AppendLine("GET Request: " + uri + Environment.NewLine);
             var request = WebRequest.Create(uri);
             request.ContentType = "application/json";
@@ -72,7 +85,7 @@ namespace SubtitleEdit.Translator
             request.Method = "GET";
             var response = request.GetResponse();
             var reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-            string content = reader.ReadToEnd();
+            var content = reader.ReadToEnd();
             log.AppendLine("GET Response: " + uri + Environment.NewLine + "---------------------" + Environment.NewLine);
             // Example response: { "translations": [ { "detected_source_language": "DE", "text": "Hello World!" } ] }
 

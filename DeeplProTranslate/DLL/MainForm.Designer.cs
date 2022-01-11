@@ -44,6 +44,8 @@
             this.comboBoxLanguageTo = new System.Windows.Forms.ComboBox();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.textBoxApiKey = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.comboBoxApiUrl = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // listView1
@@ -195,12 +197,31 @@
             // 
             // textBoxApiKey
             // 
-            this.textBoxApiKey.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxApiKey.Location = new System.Drawing.Point(147, 40);
             this.textBoxApiKey.Name = "textBoxApiKey";
             this.textBoxApiKey.Size = new System.Drawing.Size(230, 20);
             this.textBoxApiKey.TabIndex = 12;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(410, 43);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(41, 13);
+            this.label2.TabIndex = 13;
+            this.label2.Text = "API url:";
+            // 
+            // comboBoxApiUrl
+            // 
+            this.comboBoxApiUrl.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxApiUrl.FormattingEnabled = true;
+            this.comboBoxApiUrl.Items.AddRange(new object[] {
+            "https://api-free.deepl.com/",
+            "https://api.deepl.com"});
+            this.comboBoxApiUrl.Location = new System.Drawing.Point(457, 40);
+            this.comboBoxApiUrl.Name = "comboBoxApiUrl";
+            this.comboBoxApiUrl.Size = new System.Drawing.Size(362, 21);
+            this.comboBoxApiUrl.TabIndex = 14;
             // 
             // MainForm
             // 
@@ -209,6 +230,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(831, 557);
+            this.Controls.Add(this.comboBoxApiUrl);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.linkLabel2);
             this.Controls.Add(this.textBoxApiKey);
             this.Controls.Add(this.comboBoxLanguageTo);
@@ -254,5 +277,7 @@
         private System.Windows.Forms.ComboBox comboBoxLanguageTo;
         private System.Windows.Forms.LinkLabel linkLabel2;
         private System.Windows.Forms.TextBox textBoxApiKey;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ComboBox comboBoxApiUrl;
     }
 }
