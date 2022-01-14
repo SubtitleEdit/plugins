@@ -22,7 +22,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        public static List<string> SplitToThree(string input, int singleLineMaxLength)
+        public static List<string> SplitToXLines(int lineCount, string input, int singleLineMaxLength)
         {
             var text = input.Trim();
             var results = new List<SplitListItem>();
@@ -48,7 +48,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                 var lastLine = text.Substring(start);
                 list.Add(lastLine.Trim());
-                if (list.Count > 3)
+                if (list.Count > lineCount)
                 {
                     break;
                 }
@@ -56,11 +56,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 results.Add(new SplitListItem { Lines = list });
             }
 
-            var avg = text.Length / 3.0;
+            var avg = text.Length / (double)lineCount;
             var best = results
-                .Where(p => p.Lines.Count == 3)
+                .Where(p => p.Lines.Count == lineCount)
                 .OrderBy(p => p.DiffFromAverage(avg))
-                .FirstOrDefault() ?? results.Where(p => p.Lines.Count == 3)
+                .FirstOrDefault() ?? results.Where(p => p.Lines.Count == lineCount)
                 .OrderBy(p => p.DiffFromAverage(avg))
                 .FirstOrDefault();
 

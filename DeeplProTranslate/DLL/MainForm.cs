@@ -117,6 +117,7 @@ namespace SubtitleEdit
                 var start = startIndex;
                 var index = startIndex;
                 var skipIndices = new List<int>();
+                var autoMergeAndSplit = checkBoxAutoMergeSplit.Checked;
                 for (var i = startIndex; i < _subtitleOriginal.Paragraphs.Count; i++)
                 {
                     if (skipIndices.Contains(i))
@@ -127,29 +128,40 @@ namespace SubtitleEdit
 
                     var p = new Paragraph(_subtitleOriginal.Paragraphs[i]);
                     var mergeCount = 0;
-                    if (MergeWithTwoNext(_subtitleOriginal, i, source))
+                    if (autoMergeAndSplit)
                     {
-                        skipIndices.Add(i + 1);
-                        skipIndices.Add(i + 2);
-                        mergeCount = 2;
-                        p.Text = Utilities.RemoveLineBreaks(p.Text + Environment.NewLine +
-                                                            _subtitleOriginal.Paragraphs[i + 1].Text + Environment.NewLine +
-                                                            _subtitleOriginal.Paragraphs[i + 2].Text);
-                    }
-                    else if (MergeWithNext(_subtitleOriginal, i, source))
-                    {
-                        skipIndices.Add(i + 1);
-                        mergeCount = 1;
-                        p.Text = Utilities.RemoveLineBreaks(p.Text + Environment.NewLine + _subtitleOriginal.Paragraphs[i + 1].Text);
+                        if (MergeWithThreeNext(_subtitleOriginal, i, source))
+                        {
+                            skipIndices.Add(i + 1);
+                            skipIndices.Add(i + 2);
+                            skipIndices.Add(i + 3);
+                            mergeCount = 3;
+                            p.Text = Utilities.RemoveLineBreaks(p.Text + Environment.NewLine +
+                                                                _subtitleOriginal.Paragraphs[i + 1].Text + Environment.NewLine +
+                                                                _subtitleOriginal.Paragraphs[i + 2].Text);
+                        }
+                        else if (MergeWithTwoNext(_subtitleOriginal, i, source))
+                        {
+                            skipIndices.Add(i + 1);
+                            skipIndices.Add(i + 2);
+                            mergeCount = 2;
+                            p.Text = Utilities.RemoveLineBreaks(p.Text + Environment.NewLine +
+                                                                _subtitleOriginal.Paragraphs[i + 1].Text + Environment.NewLine +
+                                                                _subtitleOriginal.Paragraphs[i + 2].Text);
+                        }
+                        else if (MergeWithNext(_subtitleOriginal, i, source))
+                        {
+                            skipIndices.Add(i + 1);
+                            mergeCount = 1;
+                            p.Text = Utilities.RemoveLineBreaks(p.Text + Environment.NewLine + _subtitleOriginal.Paragraphs[i + 1].Text);
+                        }
                     }
 
-                    var result = translator.Translate(source, target, new List<Paragraph> { p }, log);
-                    var temp1 = result;
-
-                    result = MergeResult(result, mergeCount, source);
+                    var translateResult = translator.Translate(source, target, new List<Paragraph> { p }, log);
+                    var result = SplitResult(translateResult, mergeCount, source);
 
                     textBoxLog.Text = log.ToString();
-                    FillTranslatedText(result, start, index - 1);
+                    FillTranslatedText(result, start, index, mergeCount);
                     progressBar1.Refresh();
                     Application.DoEvents();
                     start = index;
@@ -176,7 +188,7 @@ namespace SubtitleEdit
             }
         }
 
-        private static List<string> MergeResult(List<string> result, int mergeCount, string language)
+        private static List<string> SplitResult(List<string> result, int mergeCount, string language)
         {
             if (result.Count != 1)
             {
@@ -219,7 +231,7 @@ namespace SubtitleEdit
 
             if (mergeCount == 2)
             {
-                var arr = SplitHelper.SplitToThree(result[0], 84).ToArray();
+                var arr = SplitHelper.SplitToXLines(3, result[0], 84).ToArray();
 
                 if (arr.Length == 3)
                 {
@@ -246,6 +258,57 @@ namespace SubtitleEdit
                     return new List<string>
                     {
                         Utilities.AutoBreakLine(arr[0], 42, language == "zh" ? 0 : 25, language),
+                        string.Empty,
+                        string.Empty,
+                    };
+                }
+
+                return result;
+            }
+
+            if (mergeCount == 3)
+            {
+                var arr = SplitHelper.SplitToXLines(4, result[0], 84).ToArray();
+
+                if (arr.Length == 4)
+                {
+                    return new List<string>
+                    {
+                        Utilities.AutoBreakLine(arr[0], 42, language == "zh" ? 0 : 25, language),
+                        Utilities.AutoBreakLine(arr[1], 42, language == "zh" ? 0 : 25, language),
+                        Utilities.AutoBreakLine(arr[2], 42, language == "zh" ? 0 : 25, language),
+                        Utilities.AutoBreakLine(arr[3], 42, language == "zh" ? 0 : 25, language),
+                    };
+                }
+
+                if (arr.Length == 3)
+                {
+                    return new List<string>
+                    {
+                        Utilities.AutoBreakLine(arr[0], 42, language == "zh" ? 0 : 25, language),
+                        Utilities.AutoBreakLine(arr[1], 42, language == "zh" ? 0 : 25, language),
+                        Utilities.AutoBreakLine(arr[2], 42, language == "zh" ? 0 : 25, language),
+                        string.Empty,
+                    };
+                }
+
+                if (arr.Length == 2)
+                {
+                    return new List<string>
+                    {
+                        Utilities.AutoBreakLine(arr[0], 42, language == "zh" ? 0 : 25, language),
+                        Utilities.AutoBreakLine(arr[1], 42, language == "zh" ? 0 : 25, language),
+                        string.Empty,
+                        string.Empty,
+                    };
+                }
+
+                if (arr.Length == 1)
+                {
+                    return new List<string>
+                    {
+                        Utilities.AutoBreakLine(arr[0], 42, language == "zh" ? 0 : 25, language),
+                        string.Empty,
                         string.Empty,
                         string.Empty,
                     };
@@ -287,7 +350,17 @@ namespace SubtitleEdit
             return MergeWithNext(subtitle, i, source) && MergeWithNext(subtitle, i + 1, source);
         }
 
-        private void FillTranslatedText(List<string> translatedLines, int start, int end)
+        private static bool MergeWithThreeNext(Subtitle subtitle, int i, string source)
+        {
+            if (i + 3 >= subtitle.Paragraphs.Count || source.ToLowerInvariant() == "zh" || source.ToLowerInvariant() == "ja")
+            {
+                return false;
+            }
+
+            return MergeWithNext(subtitle, i, source) && MergeWithNext(subtitle, i + 1, source) && MergeWithNext(subtitle, i + 2, source);
+        }
+
+        private void FillTranslatedText(List<string> translatedLines, int start, int end, int mergeCount)
         {
             var index = start;
             listView1.BeginUpdate();
@@ -303,6 +376,7 @@ namespace SubtitleEdit
                         listView1.EnsureVisible(index);
                     }
                 }
+
                 index++;
             }
 

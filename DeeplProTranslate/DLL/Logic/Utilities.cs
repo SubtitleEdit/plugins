@@ -20,8 +20,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         #region StringExtension
         public static bool Contains(this string s, char c)
         {
-            return s.Length > 0 && s.IndexOf(c) > 0;
+            return s.Length > 0 && s.IndexOf(c) >= 0;
         }
+
         public static string[] SplitToLines(this string s)
         {
             return s.Replace(Environment.NewLine, "\n").Replace('\r', '\n').Split('\n');

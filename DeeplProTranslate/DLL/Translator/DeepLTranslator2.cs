@@ -107,7 +107,14 @@ namespace SubtitleEdit.Translator
                             {
                                 if (transItem == "text")
                                 {
-                                    resultList.Add(innerDic[transItem].ToString());
+                                    var s = innerDic[transItem].ToString();
+                                    var index = resultList.Count;
+                                    if (formattingList.Length > index)
+                                    {
+                                        s = formattingList[index].ReAddFormatting(s);
+                                    }
+
+                                    resultList.Add(s);
                                 }
                             }
                         }

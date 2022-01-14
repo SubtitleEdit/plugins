@@ -46,6 +46,7 @@
             this.textBoxApiKey = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.comboBoxApiUrl = new System.Windows.Forms.ComboBox();
+            this.checkBoxAutoMergeSplit = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // listView1
@@ -60,9 +61,9 @@
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
             this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(15, 66);
+            this.listView1.Location = new System.Drawing.Point(15, 110);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(804, 454);
+            this.listView1.Size = new System.Drawing.Size(804, 410);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -150,11 +151,11 @@
             this.textBoxLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxLog.Location = new System.Drawing.Point(15, 66);
+            this.textBoxLog.Location = new System.Drawing.Point(15, 110);
             this.textBoxLog.Multiline = true;
             this.textBoxLog.Name = "textBoxLog";
             this.textBoxLog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxLog.Size = new System.Drawing.Size(804, 454);
+            this.textBoxLog.Size = new System.Drawing.Size(804, 410);
             this.textBoxLog.TabIndex = 5;
             // 
             // buttonCancelTranslate
@@ -187,7 +188,7 @@
             // linkLabel2
             // 
             this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Location = new System.Drawing.Point(99, 40);
+            this.linkLabel2.Location = new System.Drawing.Point(409, 71);
             this.linkLabel2.Name = "linkLabel2";
             this.linkLabel2.Size = new System.Drawing.Size(42, 13);
             this.linkLabel2.TabIndex = 11;
@@ -197,7 +198,7 @@
             // 
             // textBoxApiKey
             // 
-            this.textBoxApiKey.Location = new System.Drawing.Point(147, 40);
+            this.textBoxApiKey.Location = new System.Drawing.Point(457, 71);
             this.textBoxApiKey.Name = "textBoxApiKey";
             this.textBoxApiKey.Size = new System.Drawing.Size(230, 20);
             this.textBoxApiKey.TabIndex = 12;
@@ -223,6 +224,18 @@
             this.comboBoxApiUrl.Size = new System.Drawing.Size(362, 21);
             this.comboBoxApiUrl.TabIndex = 14;
             // 
+            // checkBoxAutoMergeSplit
+            // 
+            this.checkBoxAutoMergeSplit.AutoSize = true;
+            this.checkBoxAutoMergeSplit.Checked = true;
+            this.checkBoxAutoMergeSplit.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxAutoMergeSplit.Location = new System.Drawing.Point(147, 44);
+            this.checkBoxAutoMergeSplit.Name = "checkBoxAutoMergeSplit";
+            this.checkBoxAutoMergeSplit.Size = new System.Drawing.Size(127, 17);
+            this.checkBoxAutoMergeSplit.TabIndex = 15;
+            this.checkBoxAutoMergeSplit.Text = "Auto merge/split lines";
+            this.checkBoxAutoMergeSplit.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AcceptButton = this.buttonOk;
@@ -230,6 +243,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(831, 557);
+            this.Controls.Add(this.checkBoxAutoMergeSplit);
             this.Controls.Add(this.comboBoxApiUrl);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.linkLabel2);
@@ -279,5 +293,6 @@
         private System.Windows.Forms.TextBox textBoxApiKey;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox comboBoxApiUrl;
+        private System.Windows.Forms.CheckBox checkBoxAutoMergeSplit;
     }
 }
