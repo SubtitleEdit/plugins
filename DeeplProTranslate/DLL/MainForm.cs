@@ -22,24 +22,10 @@ namespace SubtitleEdit
     /// </summary>
     public partial class MainForm : Form
     {
-
-        private enum FormattingType
-        {
-            None,
-            Italic,
-            ItalicTwoLines,
-            Parentheses,
-            SquareBrackets
-        }
-
-        private FormattingType[] _formattingTypes;
-        private bool[] _autoSplit;
-
         private readonly Subtitle _subtitle;
         private readonly Subtitle _subtitleOriginal;
         private static string _from = "EN";
         private static string _to = "DE";
-        private const string ParagraphSplitter = "*";
         private bool _abort;
         private bool _tooManyRequests;
 
@@ -86,8 +72,6 @@ namespace SubtitleEdit
             foreach (var p in sub.Paragraphs)
                 p.Text = string.Empty;
             var languageCode = LanguageAutoDetect.AutoDetectGoogleLanguage(_subtitleOriginal);
-            _formattingTypes = new FormattingType[_subtitle.Paragraphs.Count];
-            _autoSplit = new bool[_subtitle.Paragraphs.Count];
             SetLanguages(comboBoxLanguageFrom, languageCode);
             SetLanguages(comboBoxLanguageTo, "DE");
             GeneratePreview(false);
@@ -118,6 +102,7 @@ namespace SubtitleEdit
                 var index = startIndex;
                 var skipIndices = new List<int>();
                 var autoMergeAndSplit = checkBoxAutoMergeSplit.Checked;
+                var unbreak = checkBoxUnbreakLines.Checked;
                 for (var i = startIndex; i < _subtitleOriginal.Paragraphs.Count; i++)
                 {
                     if (skipIndices.Contains(i))
@@ -159,6 +144,17 @@ namespace SubtitleEdit
 
                     var translateResult = translator.Translate(source, target, new List<Paragraph> { p }, log);
                     var result = SplitResult(translateResult, mergeCount, source);
+                    
+                    if (unbreak)
+                    {
+                        var tmp = new List<string>();
+                        foreach (var s in result)
+                        {
+                            tmp.Add(Utilities.RemoveLineBreaks(s));
+                        }
+
+                        result = tmp;
+                    }
 
                     textBoxLog.Text = log.ToString();
                     FillTranslatedText(result, start, index, mergeCount);

@@ -47,6 +47,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.comboBoxApiUrl = new System.Windows.Forms.ComboBox();
             this.checkBoxAutoMergeSplit = new System.Windows.Forms.CheckBox();
+            this.checkBoxUnbreakLines = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // listView1
@@ -236,6 +237,16 @@
             this.checkBoxAutoMergeSplit.Text = "Auto merge/split lines";
             this.checkBoxAutoMergeSplit.UseVisualStyleBackColor = true;
             // 
+            // checkBoxUnbreakLines
+            // 
+            this.checkBoxUnbreakLines.AutoSize = true;
+            this.checkBoxUnbreakLines.Location = new System.Drawing.Point(147, 67);
+            this.checkBoxUnbreakLines.Name = "checkBoxUnbreakLines";
+            this.checkBoxUnbreakLines.Size = new System.Drawing.Size(91, 17);
+            this.checkBoxUnbreakLines.TabIndex = 16;
+            this.checkBoxUnbreakLines.Text = "Unbreak lines";
+            this.checkBoxUnbreakLines.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AcceptButton = this.buttonOk;
@@ -243,6 +254,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(831, 557);
+            this.Controls.Add(this.checkBoxUnbreakLines);
             this.Controls.Add(this.checkBoxAutoMergeSplit);
             this.Controls.Add(this.comboBoxApiUrl);
             this.Controls.Add(this.label2);
@@ -294,5 +306,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox comboBoxApiUrl;
         private System.Windows.Forms.CheckBox checkBoxAutoMergeSplit;
+        private System.Windows.Forms.CheckBox checkBoxUnbreakLines;
     }
 }
