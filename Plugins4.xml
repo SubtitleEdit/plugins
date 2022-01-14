@@ -66,18 +66,10 @@
 		<Author>Nikse</Author>
 	</Plugin>
 	<Plugin>
-		<Name>DeepL Screen-Scraper translate</Name>
-		<Description>DL screen-scraper translate: Requires .net 4.6.2+</Description>
-		<Version>0.5</Version>
-		<Date>2020-04-26</Date>
-		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/DeepLScreenScraper.zip</Url>
-		<Author>Nikse</Author>
-	</Plugin>
-	<Plugin>
 		<Name>DeepL Pro translate</Name>
 		<Description>DeepL Pro translate: Requires .net 4.6.2+</Description>
-		<Version>0.3</Version>
-		<Date>2022-01-11</Date>
+		<Version>0.4</Version>
+		<Date>2022-01-14</Date>
 		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/DeeplProTranslate.zip</Url>
 		<Author>Nikse</Author>
 	</Plugin>

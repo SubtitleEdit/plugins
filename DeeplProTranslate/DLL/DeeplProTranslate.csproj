@@ -55,6 +55,7 @@
     <Compile Include="IPlugin.cs" />
     <Compile Include="Logic\HtmlUtil.cs" />
     <Compile Include="Logic\LanguageAutoDetect.cs" />
+    <Compile Include="Logic\SplitHelper.cs" />
     <Compile Include="Logic\StringExtensions.cs" />
     <Compile Include="Logic\TinyJsonParser.cs" />
     <Compile Include="MainForm.cs">

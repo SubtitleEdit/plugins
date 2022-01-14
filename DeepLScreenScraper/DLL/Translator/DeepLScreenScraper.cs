@@ -61,6 +61,17 @@ namespace DeepLScreenScraper.Translator
                 new TranslationPair("Russian", "ru"),
                 new TranslationPair("Japanese", "ja"),
                 new TranslationPair("Chinese", "zh"),
+                new TranslationPair("Danish", "da"),
+                new TranslationPair("Bulgarian", "bg"),
+                new TranslationPair("Czech", "cs"),
+                new TranslationPair("Estonian", "et"),
+                new TranslationPair("Latvian", "lv"),
+                new TranslationPair("Lithuanian", "lt"),
+                new TranslationPair("Finnish", "fi"),
+                new TranslationPair("Slovak", "sk"),
+                new TranslationPair("Slovenian", "sl"),
+                new TranslationPair("Greek", "el"),
+                new TranslationPair("Romanian", "ro"),
             };
         }
 
@@ -76,7 +87,7 @@ namespace DeepLScreenScraper.Translator
 
         public void Translate(string sourceLanguage, string targetLanguage, List<Paragraph> paragraphs, StringBuilder log)
         {
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 if (!_loaded)
                 {
@@ -95,10 +106,16 @@ namespace DeepLScreenScraper.Translator
                 var f = new Formatting();
                 _formattings[index] = f;
                 if (input.Length > 0)
+                {
                     input.Append(Environment.NewLine + Environment.NewLine);
+                }
+
                 var text = f.SetTagsAndReturnTrimmed(TranslationHelper.PreTranslate(p.Text, sourceLanguage), sourceLanguage);
                 while (text.Contains(Environment.NewLine + Environment.NewLine))
+                {
                     text = text.Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
+                }
+
                 text = text.Replace(Environment.NewLine, "\n");
                 input.Append(text);
             }
@@ -107,18 +124,20 @@ namespace DeepLScreenScraper.Translator
             var url = _translateUrl + "#" + sourceLanguage.ToLower() + "/" + targetLanguage.ToLower() + "/" + WebUtility.UrlEncode(input.ToString());
             _webView.Navigate(new Uri(url));
 
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 System.Windows.Forms.Application.DoEvents();
                 System.Threading.Thread.Sleep(10);
                 if (_loaded)
+                {
                     break;
+                }
             }
         }
 
         public List<string> GetTranslationResult(string targetLanguage, List<Paragraph> paragraphs)
         {
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 if (!_loaded)
                 {
@@ -132,7 +151,7 @@ namespace DeepLScreenScraper.Translator
                 //lmt__textarea lmt__target_textarea lmt__textarea_base_style
                 _translateResult = _webView.InvokeScript("eval", "document.getElementsByClassName('lmt__target_textarea')[0].innerText");
 
-                string html = _webView.InvokeScript("eval", "document.documentElement.outerHTML;");
+                var html = _webView.InvokeScript("eval", "document.documentElement.outerHTML;");
 
                 if (string.IsNullOrEmpty(html) || !html.Contains("lmt__target_textarea"))
                 {
@@ -155,7 +174,9 @@ namespace DeepLScreenScraper.Translator
 
 
                 if (string.IsNullOrEmpty(_translateResult))
+                {
                     return null;
+                }
 
                 var list = MakeList(_translateResult, targetLanguage, _formattings);
 
@@ -168,12 +189,14 @@ namespace DeepLScreenScraper.Translator
                 {
                     var splitList = SplitMergedLines(list, paragraphs);
                     if (splitList.Count == paragraphs.Count)
+                    {
                         return splitList;
+                    }
                 }
 
                 return list;
             }
-            catch (Exception e)
+            catch 
             {
                 return null;
             }
@@ -190,7 +213,10 @@ namespace DeepLScreenScraper.Translator
                 if (string.IsNullOrEmpty(l))
                 {
                     if (sb.Length > 0)
+                    {
                         lines.Add(sb.ToString().Trim());
+                    }
+
                     sb.Clear();
                 }
                 else
@@ -198,8 +224,11 @@ namespace DeepLScreenScraper.Translator
                     sb.AppendLine(l);
                 }
             }
+
             if (sb.Length > 0)
+            {
                 lines.Add(sb.ToString().Trim());
+            }
 
             var resultList = new List<string>();
             for (var index = 0; index < lines.Count; index++)
@@ -223,7 +252,10 @@ namespace DeepLScreenScraper.Translator
                 s = s.Replace(" " + Environment.NewLine, Environment.NewLine);
                 s = s.Replace(" " + Environment.NewLine, Environment.NewLine).Trim();
                 if (formattings.Length > index)
+                {
                     s = formattings[index].ReAddFormatting(s);
+                }
+
                 resultList.Add(s.Replace("  ", " "));
             }
             return resultList;
@@ -254,6 +286,7 @@ namespace DeepLScreenScraper.Translator
                     badPoints++;
                 if (text.EndsWith(":") && !line.EndsWith(":"))
                     badPoints++;
+
                 var added = false;
                 if (badPoints > 0 && hits + input.Count < paragraphs.Count)
                 {
@@ -270,16 +303,14 @@ namespace DeepLScreenScraper.Translator
                         }
                     }
                 }
+
                 if (!added)
                 {
                     results.Add(line);
                 }
             }
 
-            if (results.Count == paragraphs.Count)
-                return results;
-
-            return input;
+            return results.Count == paragraphs.Count ? results : input;
         }
     }
 }

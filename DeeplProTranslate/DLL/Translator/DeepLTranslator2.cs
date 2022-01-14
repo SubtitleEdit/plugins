@@ -65,14 +65,17 @@ namespace SubtitleEdit.Translator
         {
             var baseUrl = _apiUrl.Trim().TrimEnd('/') + "/v2/translate";
             var input = new StringBuilder();
-            var formattings = new Formatting[paragraphs.Count];
+            var formattingList = new Formatting[paragraphs.Count];
             for (var index = 0; index < paragraphs.Count; index++)
             {
                 var p = paragraphs[index];
                 var f = new Formatting();
-                formattings[index] = f;
+                formattingList[index] = f;
                 if (input.Length > 0)
+                {
                     input.Append("&");
+                }
+
                 var text = f.SetTagsAndReturnTrimmed(TranslationHelper.PreTranslate(p.Text, sourceLanguage), sourceLanguage);
                 input.Append("text=" + Uri.EscapeDataString(text));
             }
@@ -94,13 +97,11 @@ namespace SubtitleEdit.Translator
             var x = (Dictionary<string, object>)parser.Parse(content);
             foreach (var k in x.Keys)
             {
-                var mainList = x[k] as List<object>;
-                if (mainList != null)
+                if (x[k] is List<object> mainList)
                 {
                     foreach (var mainListItem in mainList)
                     {
-                        var innerDic = mainListItem as Dictionary<string, object>;
-                        if (innerDic != null)
+                        if (mainListItem is Dictionary<string, object> innerDic)
                         {
                             foreach (var transItem in innerDic.Keys)
                             {
@@ -113,6 +114,7 @@ namespace SubtitleEdit.Translator
                     }
                 }
             }
+
             return resultList;
         }
     }
