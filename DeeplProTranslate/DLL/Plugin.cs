@@ -11,7 +11,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "Translate with DeepL.com Pro";
 
-        decimal IPlugin.Version => 0.7M;
+        decimal IPlugin.Version => 0.8M;
 
         string IPlugin.Description => "Translate subtitle with DeepL.com API (free or Pro)";
 

@@ -98,11 +98,9 @@ namespace SubtitleEdit
                 var log = new StringBuilder();
                 var selectedItems = listView1.SelectedItems;
                 var startIndex = selectedItems.Count <= 0 ? 0 : selectedItems[0].Index;
-                var start = startIndex;
                 var index = startIndex;
                 var skipIndices = new List<int>();
                 var autoMergeAndSplit = checkBoxAutoMergeSplit.Checked;
-                var unbreak = checkBoxUnbreakLines.Checked;
                 for (var i = startIndex; i < _subtitleOriginal.Paragraphs.Count; i++)
                 {
                     if (skipIndices.Contains(i))
@@ -145,22 +143,10 @@ namespace SubtitleEdit
                     var translateResult = translator.Translate(source, target, new List<Paragraph> { p }, log);
                     var result = SplitResult(translateResult, mergeCount, source);
                     
-                    if (unbreak)
-                    {
-                        var tmp = new List<string>();
-                        foreach (var s in result)
-                        {
-                            tmp.Add(Utilities.RemoveLineBreaks(s));
-                        }
-
-                        result = tmp;
-                    }
-
                     textBoxLog.Text = log.ToString();
-                    FillTranslatedText(result, start, index, mergeCount);
+                    FillTranslatedText(result, index);
                     progressBar1.Refresh();
                     Application.DoEvents();
-                    start = index;
 
                     index++;
                     progressBar1.Value = index;
@@ -356,7 +342,7 @@ namespace SubtitleEdit
             return MergeWithNext(subtitle, i, source) && MergeWithNext(subtitle, i + 1, source) && MergeWithNext(subtitle, i + 2, source);
         }
 
-        private void FillTranslatedText(List<string> translatedLines, int start, int end, int mergeCount)
+        private void FillTranslatedText(List<string> translatedLines, int start)
         {
             var index = start;
             listView1.BeginUpdate();
@@ -365,8 +351,14 @@ namespace SubtitleEdit
                 if (index < listView1.Items.Count)
                 {
                     var item = listView1.Items[index];
-                    _subtitle.Paragraphs[index].Text = s;
-                    item.SubItems[2].Text = s.Replace(Environment.NewLine, "<br />");
+                    var text = s;
+                    if (checkBoxUnbreakLines.Checked)
+                    {
+                        text = Utilities.RemoveLineBreaks(s);
+                    }
+                    _subtitle.Paragraphs[index].Text = text;
+
+                    item.SubItems[2].Text = text.Replace(Environment.NewLine, "<br />");
                     if (listView1.CanFocus)
                     {
                         listView1.EnsureVisible(index);
