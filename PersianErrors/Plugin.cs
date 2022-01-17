@@ -1,10 +1,7 @@
-﻿using PersianErrors;
+﻿using Nikse.SubtitleEdit.Core.Common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using System.IO;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -22,7 +19,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         decimal IPlugin.Version
         {
-            get { return 0.3M; }
+            get { return 0.4M; }
         }
 
         string IPlugin.Description
