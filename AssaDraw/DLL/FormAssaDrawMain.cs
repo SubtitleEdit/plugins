@@ -56,6 +56,8 @@ namespace AssaDraw
         private LibMpvDynamic _mpv;
         private string _mpvTextFileName;
 
+        private bool _colorPickerNew;
+
 
         private const string StyleName = "AssaDraw";
 
@@ -113,6 +115,9 @@ namespace AssaDraw
             {
                 GetVideoBackground(videoFileName, videoPosition);
             }
+
+            textBoxColorPicker.Visible = false;
+            panelColorPicker.Visible = false;
 
             timerTreeViewUpdate.Start();
         }
@@ -519,6 +524,13 @@ namespace AssaDraw
             {
                 return;
             }
+
+            if (toolStripButtonColorPicker.Checked)
+            {
+                _colorPickerNew = !_colorPickerNew;
+                return;
+            }
+
             var x = FromZoomFactor((int)Math.Round(e.Location.X - _panX));
             var y = FromZoomFactor((int)Math.Round(e.Location.Y - _panY));
 
@@ -637,6 +649,23 @@ namespace AssaDraw
                 _mouseDownPoint.Y = e.Location.Y;
                 pictureBoxCanvas.Invalidate();
                 _activePoint = null;
+                return;
+            }
+
+            if (toolStripButtonColorPicker.Checked)
+            {
+                Cursor = Cursors.Cross;
+                if (_backgroundImage != null && _colorPickerNew)
+                {
+                    if (x >= 0 && x < _backgroundImage.Width &&
+                        y >= 0 && y < _backgroundImage.Height)
+                    {
+                        var c = _backgroundImage.GetPixel(x, y);
+                        panelColorPicker.BackColor = _backgroundImage.GetPixel(x, y);
+                        textBoxColorPicker.Text = $"{c.A:x2}{c.R:x2}{c.G:x2}{c.B:x2}";
+                    }
+                }
+
                 return;
             }
 
@@ -1048,24 +1077,25 @@ namespace AssaDraw
             }
             else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F2)
             {
-                if (toolStripButtonLine.Checked)
+                if (toolStripButtonColorPicker.Checked)
+                {
+                    toolStripButtonLine_Click(null, null);
+                }
+                else if (toolStripButtonLine.Checked)
                 {
                     toolStripButtonBeizer_Click(null, null);
                 }
                 else if (toolStripButtonBeizer.Checked)
                 {
-                    if (_activeDrawShape?.Points.Count > 1 && !_drawShapes.Contains(_activeDrawShape))
-                    {
-                        toolStripButtonLine_Click(null, null);
-                    }
-                    else
-                    {
-                        toolStripButtonCircle_Click(null, null);
-                    }
+                    toolStripButtonRectangle_Click(null, null);
                 }
-                else
+                else if (toolStripButtonRectangle.Checked)
                 {
-                    toolStripButtonLine_Click(null, null);
+                    toolStripButtonCircle_Click(null, null);
+                }
+                else if (toolStripButtonCircle.Checked)
+                {
+                    toolStripButtonColorPicker_Click(null, null);
                 }
 
                 e.SuppressKeyPress = true;
@@ -1100,20 +1130,30 @@ namespace AssaDraw
             }
             else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F3)
             {
-                toolStripButtonLine_Click(null, null);
+                toolStripButtonColorPicker_Click(null, null);
                 e.SuppressKeyPress = true;
             }
             else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F4)
             {
-                toolStripButtonBeizer_Click(null, null);
+                toolStripButtonLine_Click(null, null);
                 e.SuppressKeyPress = true;
             }
             else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F5)
             {
-                toolStripButtonCircle_Click(null, null);
+                toolStripButtonBeizer_Click(null, null);
                 e.SuppressKeyPress = true;
             }
             else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F6)
+            {
+                toolStripButtonRectangle_Click(null, null);
+                e.SuppressKeyPress = true;
+            }
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F7)
+            {
+                toolStripButtonCircle_Click(null, null);
+                e.SuppressKeyPress = true;
+            }
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F8)
             {
                 toolStripButtonCloseShape_Click(null, null);
                 e.SuppressKeyPress = true;
@@ -2085,7 +2125,9 @@ namespace AssaDraw
             toolStripButtonCircle.Checked = false;
             toolStripButtonRectangle.Checked = false;
             toolStripButtonLine.Checked = true;
-
+            toolStripButtonColorPicker.Checked = false;
+            textBoxColorPicker.Visible = false;
+            panelColorPicker.Visible = false;
         }
 
         private void toolStripButtonBeizer_Click(object sender, EventArgs e)
@@ -2094,6 +2136,9 @@ namespace AssaDraw
             toolStripButtonCircle.Checked = false;
             toolStripButtonRectangle.Checked = false;
             toolStripButtonBeizer.Checked = true;
+            toolStripButtonColorPicker.Checked = false;
+            textBoxColorPicker.Visible = false;
+            panelColorPicker.Visible = false;
         }
 
         private void toolStripButtonCircle_Click(object sender, EventArgs e)
@@ -2108,6 +2153,11 @@ namespace AssaDraw
             toolStripButtonLine.Checked = false;
             toolStripButtonRectangle.Checked = false;
             toolStripButtonCircle.Checked = true;
+            toolStripButtonColorPicker.Checked = false;
+            textBoxColorPicker.Visible = false;
+            panelColorPicker.Visible = false;
+            textBoxColorPicker.Visible = false;
+            panelColorPicker.Visible = false;
         }
 
 
@@ -2123,6 +2173,9 @@ namespace AssaDraw
             toolStripButtonLine.Checked = false;
             toolStripButtonRectangle.Checked = true;
             toolStripButtonCircle.Checked = false;
+            toolStripButtonColorPicker.Checked = false;
+            textBoxColorPicker.Visible = false;
+            panelColorPicker.Visible = false;
         }
 
 
@@ -2820,6 +2873,30 @@ namespace AssaDraw
             treeView1_AfterExpand(sender, e);
         }
 
+        private void toolStripButtonColorPicker_Click(object sender, EventArgs e)
+        {
+            if (_backgroundImage != null)
+            {
+                _backgroundOff = false;
+                toolStripButtonBeizer.Checked = false;
+                toolStripButtonLine.Checked = false;
+                toolStripButtonRectangle.Checked = false;
+                toolStripButtonCircle.Checked = false;
+                toolStripButtonColorPicker.Checked = true;
 
+                _activePoint = null;
+                numericUpDownX.Enabled = false;
+                numericUpDownY.Enabled = false;
+                _activeDrawShape = null;
+
+                textBoxColorPicker.Visible = true;
+                panelColorPicker.Visible = true;
+                _colorPickerNew = true;
+            }
+            else
+            {
+                MessageBox.Show("No background image loaded!");
+            }
+        }
     }
 }

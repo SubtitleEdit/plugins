@@ -133,11 +133,13 @@ Shortcuts:
 * Ctrl+Shift+Minus/Plus: Scale active shape/layer
 * Ctrl+Shift+Mousewheel: Scale active shape/layer
 * Alt+Mousewheel: Scale all
-* F2: Toggle line/curve/circle
-* F3: Line mode
-* F4: Curve (beizer) mode
-* F5: Circle mode
-* F6: Complete/close shape
+* F2: Toggle color-picker/line/curve/rectangle/circle
+* F3: Color picker mode
+* F4: Line mode
+* F5: Curve (beizer) mode
+* F6: Rectangle mode
+* F7: Circle mode 
+* F8: Complete/close shape
 * F12: Toggle "settings + treeview"
 * Ctrl+C: Copy current ASSA codes to clipboard
 * Ctrl+V: Paste ASSA codes from clipboard to canvas

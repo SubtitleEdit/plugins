@@ -59,8 +59,10 @@ namespace AssaDraw
             this.toolStripButtonSave = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonCopyToClipboard = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButtonColorPicker = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonLine = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonBeizer = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonRectangle = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonCircle = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonCloseShape = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -77,7 +79,8 @@ namespace AssaDraw
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOk = new System.Windows.Forms.Button();
             this.timerTreeViewUpdate = new System.Windows.Forms.Timer(this.components);
-            this.toolStripButtonRectangle = new System.Windows.Forms.ToolStripButton();
+            this.textBoxColorPicker = new System.Windows.Forms.TextBox();
+            this.panelColorPicker = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCanvas)).BeginInit();
             this.contextMenuStripTreeView.SuspendLayout();
             this.groupBoxSettings.SuspendLayout();
@@ -357,6 +360,7 @@ namespace AssaDraw
             this.toolStripButtonSave,
             this.toolStripButtonCopyToClipboard,
             this.toolStripSeparator1,
+            this.toolStripButtonColorPicker,
             this.toolStripButtonLine,
             this.toolStripButtonBeizer,
             this.toolStripButtonRectangle,
@@ -421,6 +425,16 @@ namespace AssaDraw
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 39);
             // 
+            // toolStripButtonColorPicker
+            // 
+            this.toolStripButtonColorPicker.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonColorPicker.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonColorPicker.Image")));
+            this.toolStripButtonColorPicker.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonColorPicker.Name = "toolStripButtonColorPicker";
+            this.toolStripButtonColorPicker.Size = new System.Drawing.Size(36, 36);
+            this.toolStripButtonColorPicker.Text = "Color picker";
+            this.toolStripButtonColorPicker.Click += new System.EventHandler(this.toolStripButtonColorPicker_Click);
+            // 
             // toolStripButtonLine
             // 
             this.toolStripButtonLine.Checked = true;
@@ -442,6 +456,16 @@ namespace AssaDraw
             this.toolStripButtonBeizer.Size = new System.Drawing.Size(36, 36);
             this.toolStripButtonBeizer.Text = "Draw curve";
             this.toolStripButtonBeizer.Click += new System.EventHandler(this.toolStripButtonBeizer_Click);
+            // 
+            // toolStripButtonRectangle
+            // 
+            this.toolStripButtonRectangle.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonRectangle.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonRectangle.Image")));
+            this.toolStripButtonRectangle.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonRectangle.Name = "toolStripButtonRectangle";
+            this.toolStripButtonRectangle.Size = new System.Drawing.Size(36, 36);
+            this.toolStripButtonRectangle.Text = "Draw circle";
+            this.toolStripButtonRectangle.Click += new System.EventHandler(this.toolStripButtonRectangle_Click);
             // 
             // toolStripButtonCircle
             // 
@@ -586,15 +610,19 @@ namespace AssaDraw
             this.timerTreeViewUpdate.Interval = 1000;
             this.timerTreeViewUpdate.Tick += new System.EventHandler(this.timerTreeViewUpdate_Tick);
             // 
-            // toolStripButtonRectangle
+            // textBoxColorPicker
             // 
-            this.toolStripButtonRectangle.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonRectangle.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonRectangle.Image")));
-            this.toolStripButtonRectangle.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonRectangle.Name = "toolStripButtonRectangle";
-            this.toolStripButtonRectangle.Size = new System.Drawing.Size(36, 36);
-            this.toolStripButtonRectangle.Text = "Draw circle";
-            this.toolStripButtonRectangle.Click += new System.EventHandler(this.toolStripButtonRectangle_Click);
+            this.textBoxColorPicker.Location = new System.Drawing.Point(348, 605);
+            this.textBoxColorPicker.Name = "textBoxColorPicker";
+            this.textBoxColorPicker.Size = new System.Drawing.Size(100, 20);
+            this.textBoxColorPicker.TabIndex = 13;
+            // 
+            // panelColorPicker
+            // 
+            this.panelColorPicker.Location = new System.Drawing.Point(454, 605);
+            this.panelColorPicker.Name = "panelColorPicker";
+            this.panelColorPicker.Size = new System.Drawing.Size(24, 21);
+            this.panelColorPicker.TabIndex = 14;
             // 
             // FormAssaDrawMain
             // 
@@ -602,6 +630,8 @@ namespace AssaDraw
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1060, 638);
+            this.Controls.Add(this.panelColorPicker);
+            this.Controls.Add(this.textBoxColorPicker);
             this.Controls.Add(this.labelPosition);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOk);
@@ -684,6 +714,9 @@ namespace AssaDraw
         private System.Windows.Forms.ToolStripButton toolStripButtonCircle;
         private System.Windows.Forms.Timer timerTreeViewUpdate;
         private System.Windows.Forms.ToolStripButton toolStripButtonRectangle;
+        private System.Windows.Forms.ToolStripButton toolStripButtonColorPicker;
+        private System.Windows.Forms.TextBox textBoxColorPicker;
+        private System.Windows.Forms.Panel panelColorPicker;
     }
 }
 
