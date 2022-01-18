@@ -22,26 +22,12 @@ namespace SubtitleEdit
     /// </summary>
     public partial class MainForm : Form
     {
-
-        private enum FormattingType
-        {
-            None,
-            Italic,
-            ItalicTwoLines,
-            Parentheses,
-            SquareBrackets
-        }
-
-        private FormattingType[] _formattingTypes;
-        private bool[] _autoSplit;
-
         private readonly Subtitle _subtitle;
         private readonly Subtitle _subtitleOriginal;
         private static string _from = "EN";
         private static string _to = "DE";
-        private const string ParagraphSplitter = "*";
         private bool _abort;
-        private bool _tooManyRequests;        
+        private bool _tooManyRequests;
 
         public string FixedSubtitle { get; private set; }
 
@@ -51,26 +37,29 @@ namespace SubtitleEdit
             textBoxLog.Visible = false;
             listView1.Columns[2].Width = -2;
             buttonCancelTranslate.Enabled = false;
+            comboBoxApiUrl.SelectedIndex = 0;
         }
 
-        private void SetLanguages(ComboBox comboBox, string language)
+        private static void SetLanguages(ComboBox comboBox, string language)
         {
             comboBox.Items.Clear();
-            foreach (var pair in new DeepLTranslator2("").GetTranslationPairs())
+            foreach (var pair in new DeepLTranslator2("", "").GetTranslationPairs())
             {
                 comboBox.Items.Add(pair);
             }
-            int i = 0;
+
+            var i = 0;
             foreach (var l in comboBox.Items)
             {
-                var tl = l as TranslationPair;
-                if (tl != null && tl.Code.Equals(language, StringComparison.OrdinalIgnoreCase))
+                if (l is TranslationPair tl && tl.Code.Equals(language, StringComparison.OrdinalIgnoreCase))
                 {
                     comboBox.SelectedIndex = i;
                     return;
                 }
+
                 i++;
             }
+
             comboBox.SelectedIndex = 0;
         }
 
@@ -83,8 +72,6 @@ namespace SubtitleEdit
             foreach (var p in sub.Paragraphs)
                 p.Text = string.Empty;
             var languageCode = LanguageAutoDetect.AutoDetectGoogleLanguage(_subtitleOriginal);
-            _formattingTypes = new FormattingType[_subtitle.Paragraphs.Count];
-            _autoSplit = new bool[_subtitle.Paragraphs.Count];
             SetLanguages(comboBoxLanguageFrom, languageCode);
             SetLanguages(comboBoxLanguageTo, "DE");
             GeneratePreview(false);
@@ -93,8 +80,8 @@ namespace SubtitleEdit
 
         public sealed override string Text
         {
-            get { return base.Text; }
-            set { base.Text = value; }
+            get => base.Text;
+            set => base.Text = value;
         }
 
         private void Translate(string source, string target, DeepLTranslator2 translator, int maxTextSize, int maximumRequestArrayLength = 100)
@@ -106,42 +93,67 @@ namespace SubtitleEdit
             progressBar1.Maximum = _subtitleOriginal.Paragraphs.Count;
             progressBar1.Value = 0;
             progressBar1.Visible = true;
-            var sourceParagraphs = new List<Paragraph>();
             try
             {
                 var log = new StringBuilder();
-                var sourceLength = 0;
                 var selectedItems = listView1.SelectedItems;
                 var startIndex = selectedItems.Count <= 0 ? 0 : selectedItems[0].Index;
-                var start = startIndex;
-                int index = startIndex;
-                for (int i = startIndex; i < _subtitleOriginal.Paragraphs.Count; i++)
+                var index = startIndex;
+                var skipIndices = new List<int>();
+                var autoMergeAndSplit = checkBoxAutoMergeSplit.Checked;
+                for (var i = startIndex; i < _subtitleOriginal.Paragraphs.Count; i++)
                 {
-                    Paragraph p = _subtitleOriginal.Paragraphs[i];
-                    sourceLength += Uri.EscapeDataString(p.Text).Length;
-                    if ((sourceLength >= maxTextSize || sourceParagraphs.Count > maximumRequestArrayLength) && sourceParagraphs.Count > 0)
+                    if (skipIndices.Contains(i))
                     {
-                        var result = translator.Translate(source, target, sourceParagraphs, log);
-                        textBoxLog.Text = log.ToString();
-                        FillTranslatedText(result, start, index - 1);
-                        sourceLength = 0;
-                        sourceParagraphs.Clear();
-                        progressBar1.Refresh();
-                        Application.DoEvents();
-                        start = index;
+                        index++;
+                        continue;
                     }
-                    sourceParagraphs.Add(p);
+
+                    var p = new Paragraph(_subtitleOriginal.Paragraphs[i]);
+                    var mergeCount = 0;
+                    if (autoMergeAndSplit)
+                    {
+                        if (MergeWithThreeNext(_subtitleOriginal, i, source))
+                        {
+                            skipIndices.Add(i + 1);
+                            skipIndices.Add(i + 2);
+                            skipIndices.Add(i + 3);
+                            mergeCount = 3;
+                            p.Text = Utilities.RemoveLineBreaks(p.Text + Environment.NewLine +
+                                                                _subtitleOriginal.Paragraphs[i + 1].Text + Environment.NewLine +
+                                                                _subtitleOriginal.Paragraphs[i + 2].Text);
+                        }
+                        else if (MergeWithTwoNext(_subtitleOriginal, i, source))
+                        {
+                            skipIndices.Add(i + 1);
+                            skipIndices.Add(i + 2);
+                            mergeCount = 2;
+                            p.Text = Utilities.RemoveLineBreaks(p.Text + Environment.NewLine +
+                                                                _subtitleOriginal.Paragraphs[i + 1].Text + Environment.NewLine +
+                                                                _subtitleOriginal.Paragraphs[i + 2].Text);
+                        }
+                        else if (MergeWithNext(_subtitleOriginal, i, source))
+                        {
+                            skipIndices.Add(i + 1);
+                            mergeCount = 1;
+                            p.Text = Utilities.RemoveLineBreaks(p.Text + Environment.NewLine + _subtitleOriginal.Paragraphs[i + 1].Text);
+                        }
+                    }
+
+                    var translateResult = translator.Translate(source, target, new List<Paragraph> { p }, log);
+                    var result = SplitResult(translateResult, mergeCount, source);
+                    
+                    textBoxLog.Text = log.ToString();
+                    FillTranslatedText(result, index);
+                    progressBar1.Refresh();
+                    Application.DoEvents();
+
                     index++;
                     progressBar1.Value = index;
                     if (_abort)
+                    {
                         break;
-                }
-
-                if (sourceParagraphs.Count > 0)
-                {
-                    var result = translator.Translate(source, target, sourceParagraphs, log);
-                    textBoxLog.Text = log.ToString();
-                    FillTranslatedText(result, start, index - 1);
+                    }
                 }
             }
             catch (WebException webException)
@@ -158,31 +170,218 @@ namespace SubtitleEdit
             }
         }
 
-        private void FillTranslatedText(List<string> translatedLines, int start, int end)
+        private static List<string> SplitResult(List<string> result, int mergeCount, string language)
         {
-            int index = start;
+            if (result.Count != 1)
+            {
+                return result;
+            }
+
+            if (mergeCount == 1)
+            {
+                var arr = Utilities.AutoBreakLine(result[0], 84, 1, language).SplitToLines();
+                if (arr.Length == 1)
+                {
+                    arr = Utilities.AutoBreakLine(result[0], 42, 1, language).SplitToLines();
+                }
+
+                if (arr.Length == 1)
+                {
+                    arr = Utilities.AutoBreakLine(result[0], 22, 1, language).SplitToLines();
+                }
+
+                if (arr.Length == 2)
+                {
+                    return new List<string>
+                    {
+                        Utilities.AutoBreakLine(arr[0], 42, language == "zh" ? 0 : 25, language),
+                        Utilities.AutoBreakLine(arr[1], 42, language == "zh" ? 0 : 25, language),
+                    };
+                }
+
+                if (arr.Length == 1)
+                {
+                    return new List<string>
+                    {
+                        Utilities.AutoBreakLine(arr[0], 42, language == "zh" ? 0 : 25, language),
+                        string.Empty,
+                    };
+                }
+
+                return result;
+            }
+
+            if (mergeCount == 2)
+            {
+                var arr = SplitHelper.SplitToXLines(3, result[0], 84).ToArray();
+
+                if (arr.Length == 3)
+                {
+                    return new List<string>
+                    {
+                        Utilities.AutoBreakLine(arr[0], 42, language == "zh" ? 0 : 25, language),
+                        Utilities.AutoBreakLine(arr[1], 42, language == "zh" ? 0 : 25, language),
+                        Utilities.AutoBreakLine(arr[2], 42, language == "zh" ? 0 : 25, language),
+                    };
+                }
+
+                if (arr.Length == 2)
+                {
+                    return new List<string>
+                    {
+                        Utilities.AutoBreakLine(arr[0], 42, language == "zh" ? 0 : 25, language),
+                        Utilities.AutoBreakLine(arr[1], 42, language == "zh" ? 0 : 25, language),
+                        string.Empty,
+                    };
+                }
+
+                if (arr.Length == 1)
+                {
+                    return new List<string>
+                    {
+                        Utilities.AutoBreakLine(arr[0], 42, language == "zh" ? 0 : 25, language),
+                        string.Empty,
+                        string.Empty,
+                    };
+                }
+
+                return result;
+            }
+
+            if (mergeCount == 3)
+            {
+                var arr = SplitHelper.SplitToXLines(4, result[0], 84).ToArray();
+
+                if (arr.Length == 4)
+                {
+                    return new List<string>
+                    {
+                        Utilities.AutoBreakLine(arr[0], 42, language == "zh" ? 0 : 25, language),
+                        Utilities.AutoBreakLine(arr[1], 42, language == "zh" ? 0 : 25, language),
+                        Utilities.AutoBreakLine(arr[2], 42, language == "zh" ? 0 : 25, language),
+                        Utilities.AutoBreakLine(arr[3], 42, language == "zh" ? 0 : 25, language),
+                    };
+                }
+
+                if (arr.Length == 3)
+                {
+                    return new List<string>
+                    {
+                        Utilities.AutoBreakLine(arr[0], 42, language == "zh" ? 0 : 25, language),
+                        Utilities.AutoBreakLine(arr[1], 42, language == "zh" ? 0 : 25, language),
+                        Utilities.AutoBreakLine(arr[2], 42, language == "zh" ? 0 : 25, language),
+                        string.Empty,
+                    };
+                }
+
+                if (arr.Length == 2)
+                {
+                    return new List<string>
+                    {
+                        Utilities.AutoBreakLine(arr[0], 42, language == "zh" ? 0 : 25, language),
+                        Utilities.AutoBreakLine(arr[1], 42, language == "zh" ? 0 : 25, language),
+                        string.Empty,
+                        string.Empty,
+                    };
+                }
+
+                if (arr.Length == 1)
+                {
+                    return new List<string>
+                    {
+                        Utilities.AutoBreakLine(arr[0], 42, language == "zh" ? 0 : 25, language),
+                        string.Empty,
+                        string.Empty,
+                        string.Empty,
+                    };
+                }
+
+                return result;
+            }
+
+            return result;
+        }
+
+        private static bool MergeWithNext(Subtitle subtitle, int i, string source)
+        {
+            if (i + 1 >= subtitle.Paragraphs.Count || source.ToLowerInvariant() == "zh" || source.ToLowerInvariant() == "ja")
+            {
+                return false;
+            }
+
+            var p = subtitle.Paragraphs[i];
+            var text = Utilities.RemoveHtmlTags(p.Text, true).TrimEnd('"');
+            if (text.EndsWith(".", StringComparison.Ordinal) ||
+                text.EndsWith("!", StringComparison.Ordinal) ||
+                text.EndsWith("?", StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            var next = subtitle.Paragraphs[i + 1];
+            return next.StartTime.TotalMilliseconds - p.EndTime.TotalMilliseconds < 500;
+        }
+
+        private static bool MergeWithTwoNext(Subtitle subtitle, int i, string source)
+        {
+            if (i + 2 >= subtitle.Paragraphs.Count || source.ToLowerInvariant() == "zh" || source.ToLowerInvariant() == "ja")
+            {
+                return false;
+            }
+
+            return MergeWithNext(subtitle, i, source) && MergeWithNext(subtitle, i + 1, source);
+        }
+
+        private static bool MergeWithThreeNext(Subtitle subtitle, int i, string source)
+        {
+            if (i + 3 >= subtitle.Paragraphs.Count || source.ToLowerInvariant() == "zh" || source.ToLowerInvariant() == "ja")
+            {
+                return false;
+            }
+
+            return MergeWithNext(subtitle, i, source) && MergeWithNext(subtitle, i + 1, source) && MergeWithNext(subtitle, i + 2, source);
+        }
+
+        private void FillTranslatedText(List<string> translatedLines, int start)
+        {
+            var index = start;
             listView1.BeginUpdate();
-            foreach (string s in translatedLines)
+            foreach (var s in translatedLines)
             {
                 if (index < listView1.Items.Count)
                 {
                     var item = listView1.Items[index];
-                    _subtitle.Paragraphs[index].Text = s;
-                    item.SubItems[2].Text = s.Replace(Environment.NewLine, "<br />");
+                    var text = s;
+                    if (checkBoxUnbreakLines.Checked)
+                    {
+                        text = Utilities.RemoveLineBreaks(s);
+                    }
+                    _subtitle.Paragraphs[index].Text = text;
+
+                    item.SubItems[2].Text = text.Replace(Environment.NewLine, "<br />");
                     if (listView1.CanFocus)
+                    {
                         listView1.EnsureVisible(index);
+                    }
                 }
+
                 index++;
             }
+
             if (index > 0 && index < listView1.Items.Count - 1)
+            {
                 listView1.EnsureVisible(index - 1);
+            }
+
             listView1.EndUpdate();
         }
 
         private void GeneratePreview(bool setText)
         {
             if (_subtitle == null)
+            {
                 return;
+            }
 
             try
             {
@@ -207,8 +406,8 @@ namespace SubtitleEdit
                         }
                     }
 
-                    Paragraph p = _subtitleOriginal.Paragraphs[index];
-                    string text = p.Text;
+                    var p = _subtitleOriginal.Paragraphs[index];
+                    var text = p.Text;
                     var before = text;
                     var after = string.Empty;
                     AddToListView(p, before, after);
@@ -217,6 +416,7 @@ namespace SubtitleEdit
                         _abort = false;
                         return;
                     }
+
                     if (_tooManyRequests)
                     {
                         _tooManyRequests = false;
@@ -262,7 +462,7 @@ namespace SubtitleEdit
         {
             if (string.IsNullOrWhiteSpace(textBoxApiKey.Text))
             {
-                MessageBox.Show("Please enter API key from deepl.com");
+                MessageBox.Show("Please enter API key from DeepL.com");
                 textBoxApiKey.Focus();
                 return;
             }
@@ -278,7 +478,7 @@ namespace SubtitleEdit
             {
                 _from = ((TranslationPair)comboBoxLanguageFrom.Items[comboBoxLanguageFrom.SelectedIndex]).Code;
                 _to = ((TranslationPair)comboBoxLanguageTo.Items[comboBoxLanguageTo.SelectedIndex]).Code;
-                Translate(_from, _to, new DeepLTranslator2(textBoxApiKey.Text), 1);
+                Translate(_from, _to, new DeepLTranslator2(textBoxApiKey.Text, comboBoxApiUrl.Text), 1);
             }
             finally
             {
@@ -318,43 +518,50 @@ namespace SubtitleEdit
             Process.Start("https://www.deepl.com/pro.html#pricing");
         }
 
-
-        private string GetSettingsFileName()
+        private static string GetSettingsFileName()
         {
-            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
             if (path != null && path.StartsWith("file:\\", StringComparison.Ordinal))
+            {
                 path = path.Remove(0, 6);
+            }
+
             path = Path.Combine(path, "Plugins");
             if (!Directory.Exists(path))
+            {
                 path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Plugins");
+            }
+
             return Path.Combine(path, "DeepLProTranslator.xml");
         }
 
-
         private void RestoreSettings()
         {
-            string fileName = GetSettingsFileName();
+            var fileName = GetSettingsFileName();
             try
             {
                 var doc = new XmlDocument();
                 doc.Load(fileName);
                 textBoxApiKey.Text = DecodeFrom64(doc.DocumentElement.SelectSingleNode("ApiKey").InnerText);
+                comboBoxApiUrl.Text = doc.DocumentElement.SelectSingleNode("ApiUrl").InnerText;
                 _to = doc.DocumentElement.SelectSingleNode("Target").InnerText;
             }
             catch
             {
+                // ignore
             }
         }
 
         private void SaveSettings()
         {
-            string fileName = GetSettingsFileName();
+            var fileName = GetSettingsFileName();
             try
             {
                 var doc = new XmlDocument();
-                doc.LoadXml("<Translator><ApiKey/><Target/></Translator>");
+                doc.LoadXml("<Translator><ApiKey/><Target/><ApiUrl/></Translator>");
                 doc.DocumentElement.SelectSingleNode("ApiKey").InnerText = EncodeTo64(textBoxApiKey.Text.Trim());
                 doc.DocumentElement.SelectSingleNode("Target").InnerText = _to;
+                doc.DocumentElement.SelectSingleNode("ApiUrl").InnerText = comboBoxApiUrl.Text;
                 doc.Save(fileName);
             }
             catch (Exception e)
@@ -365,19 +572,19 @@ namespace SubtitleEdit
 
         private static string EncodeTo64(string toEncode)
         {
-            byte[] toEncodeAsBytes = Encoding.Unicode.GetBytes(toEncode);
+            var toEncodeAsBytes = Encoding.Unicode.GetBytes(toEncode);
             return Convert.ToBase64String(toEncodeAsBytes);
         }
 
         public static string DecodeFrom64(string encodedData)
         {
-            byte[] encodedDataAsBytes = Convert.FromBase64String(encodedData);
+            var encodedDataAsBytes = Convert.FromBase64String(encodedData);
             return Encoding.Unicode.GetString(encodedDataAsBytes);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-
+            SaveSettings();
         }
     }
 }

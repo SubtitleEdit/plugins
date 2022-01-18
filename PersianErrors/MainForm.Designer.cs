@@ -72,7 +72,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.listViewFixes.TabIndex = 0;
             this.listViewFixes.UseCompatibleStateImageBehavior = false;
             this.listViewFixes.View = System.Windows.Forms.View.Details;
-            this.listViewFixes.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listViewFixes_ColumnClick);
+            this.listViewFixes.SelectedIndexChanged += new System.EventHandler(this.listViewFixes_SelectedIndexChanged);
             // 
             // columnHeader1
             // 
@@ -82,6 +82,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // columnHeader2
             // 
             this.columnHeader2.Text = "Line#";
+            this.columnHeader2.Width = 40;
             // 
             // columnHeader3
             // 
@@ -206,17 +207,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // 
             this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar1.Location = new System.Drawing.Point(599, 573);
+            this.progressBar1.Location = new System.Drawing.Point(518, 573);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(297, 23);
+            this.progressBar1.Size = new System.Drawing.Size(378, 23);
             this.progressBar1.TabIndex = 14;
+            this.progressBar1.Click += new System.EventHandler(this.progressBar1_Click);
             // 
             // labelPercent
             // 
             this.labelPercent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.labelPercent.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.labelPercent.Location = new System.Drawing.Point(731, 578);
+            this.labelPercent.Location = new System.Drawing.Point(691, 578);
             this.labelPercent.Name = "labelPercent";
             this.labelPercent.Size = new System.Drawing.Size(34, 13);
             this.labelPercent.TabIndex = 15;
