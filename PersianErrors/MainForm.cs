@@ -507,7 +507,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             closeForm = true;
             Task.Delay(500).Wait();
-            source.Cancel();
+            if (applyClicked == true)
+                source.Cancel();
             listViewFixes.Items.Clear();
             DialogResult = DialogResult.Cancel;
         }
@@ -516,7 +517,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Cursor.Current = Cursors.WaitCursor;
             _totalFixes = 0;
             //closeForm = true;
-            source.Cancel();
+            if (applyClicked == true)
+                source.Cancel();
             listViewFixes.Items.Clear();
             StartThread();
             Cursor.Current = Cursors.Default;
@@ -553,7 +555,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 closeForm = true;
                 Task.Delay(500).Wait();
-                source.Cancel();
+                if (applyClicked == true)
+                    source.Cancel();
                 listViewFixes.Items.Clear();
 
                 //source.Dispose();
@@ -575,7 +578,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 // Eg. Autosave and clear up ressources
                 closeForm = true;
                 Task.Delay(500).Wait();
-                source.Cancel();
+                if (applyClicked == true)
+                    source.Cancel();
                 listViewFixes.Items.Clear();
             }
         }
