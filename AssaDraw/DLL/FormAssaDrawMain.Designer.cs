@@ -45,6 +45,18 @@ namespace AssaDraw
             this.deleteLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hideLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setOutlineColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setOutlineWidthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem9 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem10 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem11 = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBoxSettings = new System.Windows.Forms.GroupBox();
             this.labelActivePoint = new System.Windows.Forms.Label();
             this.numericUpDownY = new System.Windows.Forms.NumericUpDown();
@@ -81,6 +93,7 @@ namespace AssaDraw
             this.timerTreeViewUpdate = new System.Windows.Forms.Timer(this.components);
             this.textBoxColorPicker = new System.Windows.Forms.TextBox();
             this.panelColorPicker = new System.Windows.Forms.Panel();
+            this.toolStripMenuItem12 = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCanvas)).BeginInit();
             this.contextMenuStripTreeView.SuspendLayout();
             this.groupBoxSettings.SuspendLayout();
@@ -135,9 +148,11 @@ namespace AssaDraw
             this.changeLayerToolStripMenuItem,
             this.deleteLayerToolStripMenuItem,
             this.hideLayerToolStripMenuItem,
-            this.showLayerToolStripMenuItem});
+            this.showLayerToolStripMenuItem,
+            this.setOutlineColorToolStripMenuItem,
+            this.setOutlineWidthToolStripMenuItem});
             this.contextMenuStripTreeView.Name = "contextMenuStripTreeView";
-            this.contextMenuStripTreeView.Size = new System.Drawing.Size(176, 246);
+            this.contextMenuStripTreeView.Size = new System.Drawing.Size(181, 312);
             this.contextMenuStripTreeView.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTreeView_Opening);
             // 
             // deleteShapeToolStripMenuItem
@@ -216,6 +231,101 @@ namespace AssaDraw
             this.showLayerToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.showLayerToolStripMenuItem.Text = "Show layer";
             this.showLayerToolStripMenuItem.Click += new System.EventHandler(this.showLayerToolStripMenuItem_Click);
+            // 
+            // setOutlineColorToolStripMenuItem
+            // 
+            this.setOutlineColorToolStripMenuItem.Name = "setOutlineColorToolStripMenuItem";
+            this.setOutlineColorToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.setOutlineColorToolStripMenuItem.Text = "Set outline color...";
+            this.setOutlineColorToolStripMenuItem.Click += new System.EventHandler(this.setOutlineColorToolStripMenuItem_Click);
+            // 
+            // setOutlineWidthToolStripMenuItem
+            // 
+            this.setOutlineWidthToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem2,
+            this.toolStripMenuItem3,
+            this.toolStripMenuItem4,
+            this.toolStripMenuItem5,
+            this.toolStripMenuItem6,
+            this.toolStripMenuItem7,
+            this.toolStripMenuItem8,
+            this.toolStripMenuItem9,
+            this.toolStripMenuItem10,
+            this.toolStripMenuItem11,
+            this.toolStripMenuItem12});
+            this.setOutlineWidthToolStripMenuItem.Name = "setOutlineWidthToolStripMenuItem";
+            this.setOutlineWidthToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.setOutlineWidthToolStripMenuItem.Text = "Set outline width";
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem2.Text = "0";
+            this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItemOutlineWidth);
+            // 
+            // toolStripMenuItem3
+            // 
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem3.Text = "1";
+            this.toolStripMenuItem3.Click += new System.EventHandler(this.toolStripMenuItemOutlineWidth);
+            // 
+            // toolStripMenuItem4
+            // 
+            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem4.Text = "2";
+            this.toolStripMenuItem4.Click += new System.EventHandler(this.toolStripMenuItemOutlineWidth);
+            // 
+            // toolStripMenuItem5
+            // 
+            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem5.Text = "3";
+            this.toolStripMenuItem5.Click += new System.EventHandler(this.toolStripMenuItemOutlineWidth);
+            // 
+            // toolStripMenuItem6
+            // 
+            this.toolStripMenuItem6.Name = "toolStripMenuItem6";
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem6.Text = "4";
+            this.toolStripMenuItem6.Click += new System.EventHandler(this.toolStripMenuItemOutlineWidth);
+            // 
+            // toolStripMenuItem7
+            // 
+            this.toolStripMenuItem7.Name = "toolStripMenuItem7";
+            this.toolStripMenuItem7.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem7.Text = "5";
+            this.toolStripMenuItem7.Click += new System.EventHandler(this.toolStripMenuItemOutlineWidth);
+            // 
+            // toolStripMenuItem8
+            // 
+            this.toolStripMenuItem8.Name = "toolStripMenuItem8";
+            this.toolStripMenuItem8.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem8.Text = "6";
+            this.toolStripMenuItem8.Click += new System.EventHandler(this.toolStripMenuItemOutlineWidth);
+            // 
+            // toolStripMenuItem9
+            // 
+            this.toolStripMenuItem9.Name = "toolStripMenuItem9";
+            this.toolStripMenuItem9.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem9.Text = "7";
+            this.toolStripMenuItem9.Click += new System.EventHandler(this.toolStripMenuItemOutlineWidth);
+            // 
+            // toolStripMenuItem10
+            // 
+            this.toolStripMenuItem10.Name = "toolStripMenuItem10";
+            this.toolStripMenuItem10.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem10.Text = "8";
+            this.toolStripMenuItem10.Click += new System.EventHandler(this.toolStripMenuItemOutlineWidth);
+            // 
+            // toolStripMenuItem11
+            // 
+            this.toolStripMenuItem11.Name = "toolStripMenuItem11";
+            this.toolStripMenuItem11.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem11.Text = "9";
+            this.toolStripMenuItem11.Click += new System.EventHandler(this.toolStripMenuItemOutlineWidth);
             // 
             // groupBoxSettings
             // 
@@ -627,6 +737,13 @@ namespace AssaDraw
             this.panelColorPicker.Size = new System.Drawing.Size(24, 21);
             this.panelColorPicker.TabIndex = 14;
             // 
+            // toolStripMenuItem12
+            // 
+            this.toolStripMenuItem12.Name = "toolStripMenuItem12";
+            this.toolStripMenuItem12.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem12.Text = "10";
+            this.toolStripMenuItem12.Click += new System.EventHandler(this.toolStripMenuItemOutlineWidth);
+            // 
             // FormAssaDrawMain
             // 
             this.AllowDrop = true;
@@ -720,6 +837,19 @@ namespace AssaDraw
         private System.Windows.Forms.ToolStripButton toolStripButtonColorPicker;
         private System.Windows.Forms.TextBox textBoxColorPicker;
         private System.Windows.Forms.Panel panelColorPicker;
+        private System.Windows.Forms.ToolStripMenuItem setOutlineColorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem setOutlineWidthToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem6;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem7;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem8;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem9;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem10;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem11;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem12;
     }
 }
 

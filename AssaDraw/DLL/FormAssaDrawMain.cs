@@ -808,7 +808,7 @@ namespace AssaDraw
             Cursor = Cursors.Default;
         }
 
-        private string WrapInPTag(string s, Color color)
+        private string WrapInPTag(string s, Color color, int outlineWidth, Color outlineColor)
         {
             if (string.IsNullOrEmpty(s))
             {
@@ -824,6 +824,16 @@ namespace AssaDraw
             {
                 startTag = startTag.Insert(idx, AdvancedSubStationAlpha.GetSsaColorStringForEvent(color).TrimEnd('&') + "&");
             }
+
+            if (idx > 0 && outlineWidth > 0)
+            {
+                startTag = startTag.Insert(idx, $"\\bord{outlineWidth}");
+                var temp = AdvancedSubStationAlpha.GetSsaColorStringForEvent(outlineColor).TrimEnd('&') + "&";
+                temp = temp.Replace("\\c&", "\\3c&");
+                temp = temp.Replace("\\1a&", "\\3a&");
+                startTag = startTag.Insert(idx, temp);
+            }
+
             return $"{startTag}{s.Trim()}{_assaEndTag}";
         }
 
@@ -1782,16 +1792,20 @@ namespace AssaDraw
                 // make {\p1}...{\p0} tag
                 var sb = new StringBuilder();
                 var color = Color.White;
+                var outlineColor = Color.White;
+                var outlineWidth = 0;;
                 foreach (var drawShape in layer.Where(p => !p.IsEraser))
                 {
                     color = drawShape.ForeColor;
+                    outlineColor = drawShape.OutlineColor;
+                    outlineWidth = drawShape.OutlineWidth;
                     sb.Append(drawShape.ToAssa());
                     sb.Append("  ");
                 }
                 var drawText = sb.ToString().Trim();
                 if (!string.IsNullOrEmpty(drawText))
                 {
-                    drawText = WrapInPTag(drawText, color);
+                    drawText = WrapInPTag(drawText, color, outlineWidth, outlineColor);
                 }
 
                 // make {\iclip(...)} tag
@@ -1905,11 +1919,16 @@ namespace AssaDraw
             var regexAlpha = new Regex(@"\\1a&H[0123456789ABCDEFabcdef]{1,2}&");
             var regexColor = new Regex(@"\\1?c&H[0123456789ABCDEFabcdef]{1,8}&");
             var regexIClip = new Regex(@"{\\iclip\([mblspcn0123456789\s\.-]*\)}");
+            var regexOutline = new Regex(@"\\bord[0123456789\.]*[}\\]");
+            var regexOutlineColor = new Regex(@"\\3c&H[0123456789ABCDEFabcdef]{1,8}&");
+            var regexOutlineAlpha = new Regex(@"\\3a&H[0123456789ABCDEFabcdef]{1,2}&");
             if (sub.Paragraphs.Count > 0)
             {
                 foreach (var p in sub.Paragraphs)
                 {
                     var c = Color.Transparent;
+                    var outlineColor = Color.Transparent;
+                    var outlineWidth = 0;
                     var styleName = styles.FirstOrDefault(s => s == p.Extra);
                     if (!string.IsNullOrEmpty(styleName))
                     {
@@ -1953,18 +1972,51 @@ namespace AssaDraw
                         }
                     }
 
+                    var borderOutlineMatch = regexOutline.Match(p.Text);
+                    if (borderOutlineMatch.Success)
+                    {
+                        var outline = borderOutlineMatch.Value.Remove(0, 5).TrimEnd('\\');
+                        if (float.TryParse(outline, NumberStyles.AllowDecimalPoint, CultureInfo.InstalledUICulture, out var f))
+                        {
+                            outlineWidth = (int)f;
+                        }
+                    }
+
+                    match = regexOutlineColor.Match(p.Text);
+                    if (match.Success)
+                    {
+                        var colorString = match.Value;
+                        colorString = colorString.Remove(0, 3);
+                        outlineColor = AdvancedSubStationAlpha.GetSsaColor(colorString, c);
+                    }
+
+                    match = regexOutlineAlpha.Match(p.Text);
+                    if (match.Success)
+                    {
+                        var alpha = match.Value.Remove(0, 5).TrimEnd('&');
+                        try
+                        {
+                            var a = int.Parse(alpha, NumberStyles.HexNumber);
+                            outlineColor = Color.FromArgb(byte.MaxValue - a, outlineColor);
+                        }
+                        catch
+                        {
+                            // ignore
+                        }
+                    }
+
                     var clipMatch = regexIClip.Match(p.Text);
                     if (clipMatch.Success)
                     {
                         var drawText = p.Text.Remove(clipMatch.Index, clipMatch.Value.Length);
-                        ImportAssaDrawingFromText(drawText, p.Layer, c, false);
+                        ImportAssaDrawingFromText(drawText, p.Layer, c, false, outlineWidth, outlineColor);
 
                         var eraseText = clipMatch.Value.Replace("{\\iclip(", string.Empty).TrimEnd('}').TrimEnd(')');
-                        ImportAssaDrawingFromText(eraseText, p.Layer, c, true);
+                        ImportAssaDrawingFromText(eraseText, p.Layer, c, true, outlineWidth, outlineColor);
                     }
                     else
                     {
-                        ImportAssaDrawingFromText(p.Text, p.Layer, c, false);
+                        ImportAssaDrawingFromText(p.Text, p.Layer, c, false, outlineWidth, outlineColor);
                     }
                 }
                 treeView1.Enabled = true;
@@ -1977,13 +2029,14 @@ namespace AssaDraw
             ShowTitle();
         }
 
-        private void ImportAssaDrawingFromText(string text, int layer, Color c, bool isEraser)
+        private void ImportAssaDrawingFromText(string text, int layer, Color c, bool isEraser, int outlineWidth = 0, Color? outlineColorOrNull = null)
         {
+            var outlineColor = outlineColorOrNull ?? Color.Transparent;
             text = _regexStart.Replace(text, string.Empty);
             text = _regexEnd.Replace(text, string.Empty);
             var arr = text.Split();
-            int i = 0;
-            int bezierCount = 0;
+            var i = 0;
+            var bezierCount = 0;
             var state = DrawCoordinateType.None;
             DrawCoordinate moveCoordinate = null;
             DrawShape drawShape = null;
@@ -2008,6 +2061,8 @@ namespace AssaDraw
                         drawShape = new DrawShape();
                         drawShape.Layer = layer;
                         drawShape.ForeColor = c;
+                        drawShape.OutlineWidth = outlineWidth;
+                        drawShape.OutlineColor = outlineColor;
                         drawShape.IsEraser = isEraser;
                         drawShape.AddPoint(state, moveCoordinate.X, moveCoordinate.Y, DrawSettings.PointColor);
                         moveCoordinate = null;
@@ -2022,6 +2077,8 @@ namespace AssaDraw
                         drawShape = new DrawShape();
                         drawShape.Layer = layer;
                         drawShape.ForeColor = c;
+                        drawShape.OutlineWidth = outlineWidth;
+                        drawShape.OutlineColor = outlineColor;
                         drawShape.IsEraser = isEraser;
                         drawShape.AddPoint(state, moveCoordinate.X, moveCoordinate.Y, DrawSettings.PointColor);
                         moveCoordinate = null;
@@ -2282,6 +2339,8 @@ namespace AssaDraw
             useShapeForDrawToolStripMenuItem.Visible = false;
             hideLayerToolStripMenuItem.Visible = false;
             showLayerToolStripMenuItem.Visible = false;
+            setOutlineColorToolStripMenuItem.Visible = false;
+            setOutlineWidthToolStripMenuItem.Visible = false;
             if (treeView1.SelectedNode.Tag is DrawCoordinate point)
             {
                 if (point.DrawType == DrawCoordinateType.Line)
@@ -2309,10 +2368,33 @@ namespace AssaDraw
             else if (treeView1.SelectedNode.Tag is int layer) // layer
             {
                 setColorToolStripMenuItem.Visible = true;
+                var c = _drawShapes.First(p => p.Layer == layer).ForeColor;
+                if (c.A > 0)
+                {
+                    setColorToolStripMenuItem.Text = $"Set color... (#{c.A:X2}{c.R:X2}{c.G:X2}{c.B:X2})";
+                }
+                else
+                {
+                    setColorToolStripMenuItem.Text = "Set color...";
+                }
+
                 changeLayerToolStripMenuItem.Visible = true;
                 deleteLayerToolStripMenuItem.Visible = true;
                 hideLayerToolStripMenuItem.Visible = !_drawShapes.First(p => p.Layer == layer).Hidden;
                 showLayerToolStripMenuItem.Visible = _drawShapes.First(p => p.Layer == layer).Hidden;
+                setOutlineColorToolStripMenuItem.Visible = true;
+                setOutlineWidthToolStripMenuItem.Visible = true;
+                c = _drawShapes.First(p => p.Layer == layer).OutlineColor;
+                if (c.A > 0)
+                {
+                    setOutlineColorToolStripMenuItem.Text = $"Set outline color... (#{c.A:X2}{c.R:X2}{c.G:X2}{c.B:X2})";
+                }
+                else
+                {
+                    setOutlineColorToolStripMenuItem.Text = "Set outline color...";
+                }
+
+                setOutlineWidthToolStripMenuItem.Text = $"Outline witdh ({_drawShapes.First(p => p.Layer == layer).OutlineWidth})";
             }
             else
             {
@@ -2611,7 +2693,7 @@ namespace AssaDraw
                     else if (numericUpDownWidth.Value > 0 && numericUpDownHeight.Value > 0)
                     {
                         backgroundImage = new Bitmap((int)numericUpDownWidth.Value, (int)numericUpDownHeight.Value);
-                        int rectangleSize = 8;
+                        var rectangleSize = 8;
                         var dark = false;
                         using (var g = Graphics.FromImage(backgroundImage))
                         {
@@ -2904,6 +2986,40 @@ namespace AssaDraw
         private void pictureBoxCanvas_MouseLeave(object sender, EventArgs e)
         {
             Cursor = Cursors.Default;
+        }
+
+        private void setOutlineColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (treeView1.SelectedNode.Tag is int layer)
+            {
+                var first = _drawShapes.First(p => p.Layer == layer);
+                var c = first.OutlineColor.A > 0 ? first.OutlineColor : Configuration.LastColorPickerColor;
+                using (var colorChooser = new ColorChooser { Color = c })
+                {
+                    if (colorChooser.ShowDialog() == DialogResult.OK)
+                    {
+                        foreach (var shape in _drawShapes.Where(p => p.Layer == layer))
+                        {
+                            shape.OutlineColor = colorChooser.Color;
+                        }
+
+                        TreeViewFill(_drawShapes);
+                    }
+                }
+            }
+        }
+
+        private void toolStripMenuItemOutlineWidth(object sender, EventArgs e)
+        {
+            if (treeView1.SelectedNode.Tag is int layer)
+            {
+                foreach (var shape in _drawShapes.Where(p => p.Layer == layer))
+                {
+                    shape.OutlineWidth = int.Parse((sender as ToolStripMenuItem).Text);
+                }
+
+                TreeViewFill(_drawShapes);
+            }
         }
     }
 }

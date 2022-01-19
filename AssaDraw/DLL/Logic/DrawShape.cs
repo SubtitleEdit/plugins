@@ -54,7 +54,7 @@ namespace AssaDraw.Logic
 
             var sb = new StringBuilder();
             var state = DrawCoordinateType.None;
-            for (int i = 0; i < Points.Count; i++)
+            for (var i = 0; i < Points.Count; i++)
             {
                 var point = Points[i];
                 if (i == 0)
