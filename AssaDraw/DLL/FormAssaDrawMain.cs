@@ -424,7 +424,7 @@ namespace AssaDraw
                             graphics.DrawLine(pen, ToZoomFactorPoint(drawShape.Points[i - 1]), ToZoomFactorPoint(drawShape.Points[i]));
                         }
 
-                        if (isActive && drawShape.Points.Count > 0 && (_x != int.MinValue || _y != int.MinValue) && 
+                        if (isActive && drawShape.Points.Count > 0 && (_x != int.MinValue || _y != int.MinValue) &&
                             !_drawShapes.Contains(_activeDrawShape) && !isCircle && !isRectangle)
                         {
                             using (var penNewLine = new Pen(new SolidBrush(DrawSettings.ActiveShapeLineColor), 2))
@@ -528,6 +528,7 @@ namespace AssaDraw
             if (toolStripButtonColorPicker.Checked)
             {
                 _colorPickerNew = !_colorPickerNew;
+                Configuration.LastColorPickerColor = panelColorPicker.BackColor;
                 return;
             }
 
@@ -2720,7 +2721,8 @@ namespace AssaDraw
             if (treeView1.SelectedNode.Tag is int layer)
             {
                 var first = _drawShapes.First(p => p.Layer == layer);
-                using (var colorChooser = new ColorChooser { Color = first.ForeColor })
+                var c = first.ForeColor != Color.Transparent ? first.ForeColor : Configuration.LastColorPickerColor;
+                using (var colorChooser = new ColorChooser { Color = c })
                 {
                     if (colorChooser.ShowDialog() == DialogResult.OK)
                     {
@@ -2897,6 +2899,11 @@ namespace AssaDraw
             {
                 MessageBox.Show("No background image loaded!");
             }
+        }
+
+        private void pictureBoxCanvas_MouseLeave(object sender, EventArgs e)
+        {
+            Cursor = Cursors.Default;
         }
     }
 }

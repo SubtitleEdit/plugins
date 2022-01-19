@@ -13,14 +13,18 @@ namespace AssaDraw.Logic
         public bool IsEraser { get; set; }
         public bool Hidden { get; set; }
         public bool Expanded { get; set; }
+        public Color OutlineColor { get; set; }
+        public int OutlineWidth { get; set; }
 
         public DrawShape()
         {
+            ForeColor = Color.White;
             Points = new List<DrawCoordinate>();
         }
 
         public DrawShape(DrawShape drawShape)
         {
+            ForeColor = drawShape.ForeColor;
             Points = new List<DrawCoordinate>();
             foreach (var point in drawShape.Points)
             {

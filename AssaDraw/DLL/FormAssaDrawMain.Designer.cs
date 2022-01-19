@@ -105,6 +105,7 @@ namespace AssaDraw
             this.pictureBoxCanvas.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBoxCanvas_Paint);
             this.pictureBoxCanvas.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pictureBoxCanvas_MouseClick);
             this.pictureBoxCanvas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBoxCanvas_MouseDown);
+            this.pictureBoxCanvas.MouseLeave += new System.EventHandler(this.pictureBoxCanvas_MouseLeave);
             this.pictureBoxCanvas.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBoxCanvas_MouseMove);
             this.pictureBoxCanvas.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBoxCanvas_MouseUp);
             // 
@@ -612,6 +613,7 @@ namespace AssaDraw
             // 
             // textBoxColorPicker
             // 
+            this.textBoxColorPicker.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.textBoxColorPicker.Location = new System.Drawing.Point(348, 605);
             this.textBoxColorPicker.Name = "textBoxColorPicker";
             this.textBoxColorPicker.Size = new System.Drawing.Size(100, 20);
@@ -619,6 +621,7 @@ namespace AssaDraw
             // 
             // panelColorPicker
             // 
+            this.panelColorPicker.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.panelColorPicker.Location = new System.Drawing.Point(454, 605);
             this.panelColorPicker.Name = "panelColorPicker";
             this.panelColorPicker.Size = new System.Drawing.Size(24, 21);

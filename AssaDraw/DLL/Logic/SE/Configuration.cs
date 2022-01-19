@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Reflection;
 
@@ -12,6 +13,11 @@ namespace SubtitleEdit.Logic
         private const int PlatformLinux = 2;
         private const int PlatformMac = 3;
         private static int _platform;
+
+        public static Color LastColorPickerColor { get; set; } = Color.Yellow;
+        public static Color LastColorPickerColor1 { get; set; } = Color.Red;
+        public static Color LastColorPickerColor2 { get; set; } = Color.White;
+        public static Color LastColorPickerColor3 { get; set; } = Color.Black;
 
         private static int GetPlatform()
         {
