@@ -1793,7 +1793,7 @@ namespace AssaDraw
                 var sb = new StringBuilder();
                 var color = Color.White;
                 var outlineColor = Color.White;
-                var outlineWidth = 0;;
+                var outlineWidth = 0; ;
                 foreach (var drawShape in layer.Where(p => !p.IsEraser))
                 {
                     color = drawShape.ForeColor;
@@ -3016,6 +3016,10 @@ namespace AssaDraw
                 foreach (var shape in _drawShapes.Where(p => p.Layer == layer))
                 {
                     shape.OutlineWidth = int.Parse((sender as ToolStripMenuItem).Text);
+                    if (shape.OutlineWidth > 0 && shape.OutlineColor.A == 0)
+                    {
+                        setOutlineColorToolStripMenuItem_Click(null, null);
+                    }
                 }
 
                 TreeViewFill(_drawShapes);
