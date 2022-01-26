@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using Microsoft.CSharp;
 
 namespace AssaDraw
 {
@@ -55,9 +56,6 @@ namespace AssaDraw
 
         private LibMpvDynamic _mpv;
         private string _mpvTextFileName;
-
-        private bool _colorPickerNew;
-
 
         private const string StyleName = "AssaDraw";
 
@@ -118,6 +116,9 @@ namespace AssaDraw
 
             textBoxColorPicker.Visible = false;
             panelColorPicker.Visible = false;
+            panelColorPickerChoice.Visible = false;
+            buttonSetColor.Visible = false;
+            buttonSetOutlineColor.Visible = false;
 
             timerTreeViewUpdate.Start();
         }
@@ -527,8 +528,8 @@ namespace AssaDraw
 
             if (toolStripButtonColorPicker.Checked)
             {
-                _colorPickerNew = !_colorPickerNew;
                 Configuration.LastColorPickerColor = panelColorPicker.BackColor;
+                panelColorPickerChoice.BackColor = panelColorPicker.BackColor;
                 return;
             }
 
@@ -656,7 +657,7 @@ namespace AssaDraw
             if (toolStripButtonColorPicker.Checked)
             {
                 Cursor = Cursors.Cross;
-                if (_backgroundImage != null && _colorPickerNew)
+                if (_backgroundImage != null)
                 {
                     if (x >= 0 && x < _backgroundImage.Width &&
                         y >= 0 && y < _backgroundImage.Height)
@@ -1680,7 +1681,7 @@ namespace AssaDraw
 
         private void toolStripButtonCloseShape_Click(object sender, EventArgs e)
         {
-            if (_activeDrawShape == null)
+            if (_activeDrawShape == null || _x == int.MinValue || _y == int.MinValue)
             {
                 pictureBoxCanvas.Invalidate();
                 return;
@@ -2186,6 +2187,9 @@ namespace AssaDraw
             toolStripButtonColorPicker.Checked = false;
             textBoxColorPicker.Visible = false;
             panelColorPicker.Visible = false;
+            panelColorPickerChoice.Visible = false;
+            buttonSetColor.Visible = false;
+            buttonSetOutlineColor.Visible = false;
         }
 
         private void toolStripButtonBeizer_Click(object sender, EventArgs e)
@@ -2197,6 +2201,9 @@ namespace AssaDraw
             toolStripButtonColorPicker.Checked = false;
             textBoxColorPicker.Visible = false;
             panelColorPicker.Visible = false;
+            panelColorPickerChoice.Visible = false;
+            buttonSetColor.Visible = false;
+            buttonSetOutlineColor.Visible = false;
         }
 
         private void toolStripButtonCircle_Click(object sender, EventArgs e)
@@ -2215,7 +2222,9 @@ namespace AssaDraw
             textBoxColorPicker.Visible = false;
             panelColorPicker.Visible = false;
             textBoxColorPicker.Visible = false;
-            panelColorPicker.Visible = false;
+            panelColorPickerChoice.Visible = false;
+            buttonSetColor.Visible = false;
+            buttonSetOutlineColor.Visible = false;
         }
 
 
@@ -2234,6 +2243,9 @@ namespace AssaDraw
             toolStripButtonColorPicker.Checked = false;
             textBoxColorPicker.Visible = false;
             panelColorPicker.Visible = false;
+            panelColorPickerChoice.Visible = false;
+            buttonSetColor.Visible = false;
+            buttonSetOutlineColor.Visible = false;
         }
 
 
@@ -2975,7 +2987,9 @@ namespace AssaDraw
 
                 textBoxColorPicker.Visible = true;
                 panelColorPicker.Visible = true;
-                _colorPickerNew = true;
+                panelColorPickerChoice.Visible = true;
+                buttonSetColor.Visible = true;
+                buttonSetOutlineColor.Visible = true;
             }
             else
             {
@@ -3023,6 +3037,36 @@ namespace AssaDraw
                 }
 
                 TreeViewFill(_drawShapes);
+            }
+        }
+
+        private void buttonSetColor_Click(object sender, EventArgs e)
+        {
+            using (var form = new SetColor(_drawShapes, panelColorPickerChoice.BackColor, "Set fore color"))
+            {
+                if (form.ShowDialog(this) == DialogResult.OK)
+                {
+                    foreach (var shape in _drawShapes.Where(p=>form.Layers.Contains(p.Layer)))
+                    {
+                        shape.ForeColor = form.Color;
+                    }
+                    TreeViewFill(_drawShapes);
+                }
+            }
+        }
+
+        private void buttonSetOutlineColor_Click(object sender, EventArgs e)
+        {
+            using (var form = new SetColor(_drawShapes, panelColorPickerChoice.BackColor, "Set outline color"))
+            {
+                if (form.ShowDialog(this) == DialogResult.OK)
+                {
+                    foreach (var shape in _drawShapes.Where(p => form.Layers.Contains(p.Layer)))
+                    {
+                        shape.OutlineColor = form.Color;
+                    }
+                    TreeViewFill(_drawShapes);
+                }
             }
         }
     }

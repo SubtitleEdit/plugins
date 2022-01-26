@@ -107,6 +107,12 @@
     <Compile Include="FormSetLayer.Designer.cs">
       <DependentUpon>FormSetLayer.cs</DependentUpon>
     </Compile>
+    <Compile Include="SetColor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SetColor.Designer.cs">
+      <DependentUpon>SetColor.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="ColorPicker\ColorChooser.resx">
       <DependentUpon>ColorChooser.cs</DependentUpon>
     </EmbeddedResource>
@@ -132,6 +138,9 @@
     </Compile>
     <EmbeddedResource Include="FormSetLayer.resx">
       <DependentUpon>FormSetLayer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SetColor.resx">
+      <DependentUpon>SetColor.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
