@@ -46,8 +46,10 @@ namespace SubtitleEdit.Translator
                 new TranslationPair("Finnish", "fi"),
                 new TranslationPair("Slovak", "sk"),
                 new TranslationPair("Slovenian", "sl"),
+                new TranslationPair("Swedish", "sv"),
                 new TranslationPair("Greek", "el"),
                 new TranslationPair("Romanian", "ro"),
+                new TranslationPair("Hungarian", "hu"),
             };
         }
 
