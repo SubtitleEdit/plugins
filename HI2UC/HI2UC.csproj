@@ -59,7 +59,6 @@
     <Compile Include="Commands\RemoveExtraSpaceCommand.cs" />
     <Compile Include="Commands\StyleMoodsCommand.cs" />
     <Compile Include="Commands\StyleNarratorCommand.cs" />
-    <Compile Include="Context.cs" />
     <Compile Include="Enums\HIStyle.cs" />
     <Compile Include="Models\HIConfigs.cs" />
     <Compile Include="Models\Record.cs" />
