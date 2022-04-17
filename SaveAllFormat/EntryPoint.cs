@@ -5,7 +5,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
     public class ExportAllFormats : EntryPointBase
     {
         public ExportAllFormats()
-            : base("Export to all formats", "Export to all formats (non binary)", 1.1m, "Export current subtitle to all available text format.", "file", string.Empty)
+            : base("Export to all formats", "Export to all formats (non binary)", 1.2m, "Export current subtitle to all available text format.", "file", string.Empty)
         {
         }
 

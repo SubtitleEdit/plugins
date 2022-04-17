@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -20,7 +19,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         // todo: add support to portable version
         // todo: add support to export specific format e.g: xml, txt...
-        // todo: add ui which options
+        // todo: add ui with options
 
         public Main(Form parentForm, string file)
         {
@@ -91,13 +90,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return;
             }
 
-            // todo: progress bar
-            //progressBar1.Style = ProgressBarStyle.Continuous;
-            //progressBar1.Visible = true;
+            progressBar1.Style = ProgressBarStyle.Continuous;
+            progressBar1.Visible = true;
 
-            var type = _parentForm.GetType().Assembly.GetType("Nikse.SubtitleEdit.Core.SubtitleFormats.SubtitleFormat");
-            var prop = type.GetProperty("AllSubtitleFormats", BindingFlags.Public | BindingFlags.Static);
+            var subtitleFormat = Utils.AssemblyUtils.GetLibse().GetType("Nikse.SubtitleEdit.Core.SubtitleFormats.SubtitleFormat");
+            var prop = subtitleFormat.GetProperty("AllSubtitleFormats", BindingFlags.Public | BindingFlags.Static);
             var subtitle = _parentForm.GetType().GetField("_subtitle", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_parentForm);
+
             //var parallelOptions = new ParallelOptions();
             //TaskScheduler.FromCurrentSynchronizationContext();
             // run export parallel (faster)
@@ -108,7 +107,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 try
                 {
                     var name = format.GetType().GetProperty("Name", BindingFlags.Public | BindingFlags.Instance).GetValue(format, default);
-                    string extension = (string)format.GetType().GetProperty("Extension", BindingFlags.Public | BindingFlags.Instance).GetValue(format, default);
+                    var extension = (string)format.GetType().GetProperty("Extension", BindingFlags.Public | BindingFlags.Instance).GetValue(format, default);
 
                     // filter by extension
                     if (_selExtension.Equals("all") == false && !_selExtension.Equals(extension, StringComparison.OrdinalIgnoreCase))
@@ -126,17 +125,25 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
             });
 
-            // todo: progressbar
-            //progressBar1.Style = ProgressBarStyle.Blocks;
-            //progressBar1.Visible = false;
+            progressBar1.Style = ProgressBarStyle.Blocks;
+            progressBar1.Visible = false;
 
+            // Explorer.ex "C:\Demo"
+            Process.Start("explorer", $"\"{_exportLocation}\"");
             MessageBox.Show(_parentForm, "Export completed!", "Subtitle exported", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private IEnumerable<string> GetAvailableExtensions()
         {
-            var type = _parentForm.GetType().Assembly.GetType("Nikse.SubtitleEdit.Core.SubtitleFormats.SubtitleFormat");
-            var prop = type.GetProperty("AllSubtitleFormats", BindingFlags.Public | BindingFlags.Static);
+            var assembly = _parentForm.GetType().Assembly;
+            if (assembly == null)
+            {
+                throw new InvalidCastException();
+            }
+
+            var assemblyLibse = Utils.AssemblyUtils.GetLibse();
+            var subtitleFormat = assemblyLibse.GetType("Nikse.SubtitleEdit.Core.SubtitleFormats.SubtitleFormat");
+            var prop = subtitleFormat.GetProperty("AllSubtitleFormats", BindingFlags.Public | BindingFlags.Static);
             var formats = (IEnumerable<object>)prop.GetValue(_parentForm, null);
             var listExtension = new HashSet<string>();
 

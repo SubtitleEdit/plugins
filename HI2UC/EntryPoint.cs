@@ -42,7 +42,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             Name = assemblyName.Name;
             Text = assemblyName.Name;
-
             Description = descriptionAttribute.Description;
 
             // use invariant-culture due to some culture uses "," as decimal separator
