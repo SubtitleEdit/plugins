@@ -90,8 +90,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return;
             }
 
-            progressBar1.Style = ProgressBarStyle.Continuous;
-            progressBar1.Visible = true;
+            //progressBar1.Style = ProgressBarStyle.Continuous;
+            //progressBar1.Visible = true;
 
             var subtitleFormat = Utils.AssemblyUtils.GetLibse().GetType("Nikse.SubtitleEdit.Core.SubtitleFormats.SubtitleFormat");
             var prop = subtitleFormat.GetProperty("AllSubtitleFormats", BindingFlags.Public | BindingFlags.Static);
@@ -125,8 +125,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
             });
 
-            progressBar1.Style = ProgressBarStyle.Blocks;
-            progressBar1.Visible = false;
+            //progressBar1.Style = ProgressBarStyle.Blocks;
+            //progressBar1.Visible = false;
 
             // Explorer.ex "C:\Demo"
             Process.Start("explorer", $"\"{_exportLocation}\"");
