@@ -42,7 +42,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             Name = assemblyName.Name;
             Text = assemblyName.Name;
-
             Description = descriptionAttribute.Description;
 
             // use invariant-culture due to some culture uses "," as decimal separator
@@ -65,7 +64,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // Use custom separator for list view new lines
             if (!string.IsNullOrEmpty(uiLineBreak))
             {
-                Options.UiLineBreak = uiLineBreak;
+                Options.UILineBreak = uiLineBreak;
             }
 
             // Get subtitle raw lines
