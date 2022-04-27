@@ -19,7 +19,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         decimal IPlugin.Version
         {
-            get { return 0.5M; }
+            get { return 0.7M; }
         }
 
         string IPlugin.Description
@@ -57,13 +57,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 using (var form = new MainForm(sub, (this as IPlugin).Name, (this as IPlugin).Description, parentForm))
                 {
                     if (form.ShowDialog(parentForm) == DialogResult.OK)
-                        return form.FixedSubtitle;
+                        return form.SaveSubtitle;
                 }
                 return string.Empty;
             }
 
-            MessageBox.Show("No subtitle loaded", parentForm.Text,
-                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show("No subtitle loaded", parentForm.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return string.Empty;
         }
     }
