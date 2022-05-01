@@ -2,6 +2,52 @@
 <Settings>
   <MultipleSearchAndReplaceList>
     <Group>
+      <Name>Change Arabic Char to Persian</Name>
+      <Enabled>True</Enabled>
+      <MultipleSearchAndReplaceItem>
+        <Enabled>False</Enabled>
+        <FindWhat>\\\\ (Change Arabic Char to Persian) \\\\</FindWhat>
+        <ReplaceWith> \\\\ (Change Arabic Char to Persian) \\\\</ReplaceWith>
+        <SearchType>CaseSensitive</SearchType>
+        <Description>Change Arabic Char to Persian</Description>
+      </MultipleSearchAndReplaceItem>
+      <MultipleSearchAndReplaceItem>
+        <Enabled>True</Enabled>
+        <FindWhat>آّ</FindWhat>
+        <ReplaceWith>آ</ReplaceWith>
+        <SearchType>Normal</SearchType>
+        <Description>Change Arabic Char to Persian</Description>
+      </MultipleSearchAndReplaceItem>
+      <MultipleSearchAndReplaceItem>
+        <Enabled>True</Enabled>
+        <FindWhat>ّ</FindWhat>
+        <ReplaceWith />
+        <SearchType>Normal</SearchType>
+        <Description>Change Arabic Char to Persian</Description>
+      </MultipleSearchAndReplaceItem>
+      <MultipleSearchAndReplaceItem>
+        <Enabled>True</Enabled>
+        <FindWhat>ك</FindWhat>
+        <ReplaceWith>ک</ReplaceWith>
+        <SearchType>Normal</SearchType>
+        <Description>Change Arabic Char to Persian</Description>
+      </MultipleSearchAndReplaceItem>
+      <MultipleSearchAndReplaceItem>
+        <Enabled>True</Enabled>
+        <FindWhat>ي</FindWhat>
+        <ReplaceWith>ی</ReplaceWith>
+        <SearchType>Normal</SearchType>
+        <Description>Change Arabic Char to Persian</Description>
+      </MultipleSearchAndReplaceItem>
+      <MultipleSearchAndReplaceItem>
+        <Enabled>True</Enabled>
+        <FindWhat>ى</FindWhat>
+        <ReplaceWith>ی</ReplaceWith>
+        <SearchType>Normal</SearchType>
+        <Description>Change Arabic Char to Persian</Description>
+      </MultipleSearchAndReplaceItem>
+    </Group>
+    <Group>
       <Name>Dialog Hyphen Fix</Name>
       <Enabled>True</Enabled>
       <MultipleSearchAndReplaceItem>
@@ -20,28 +66,28 @@
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>\A([،\.\!\s"]*)(\-)(.*)(\r\n)([،\.\!\s"]*)(\-)(.*)\z</FindWhat>
+        <FindWhat>\A([،\.\!\s\"]*)(\-)(.*)(\r\n)([،\.\!\s\"]*)(\-)(.*)\z</FindWhat>
         <ReplaceWith>$1$3 $2$4$5$7 $6</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Dialog Hyphen Fix: both incorrect</Description>
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>\A(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s"]*)(\-)(.*)(\&lt;[^&lt;&gt;]+\&gt;)*(\r\n)(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s"]*)(\-)(.*)(\&lt;[^&lt;&gt;]+\&gt;)*\z</FindWhat>
+        <FindWhat>\A(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s\"]*)(\-)(.*)(\&lt;[^&lt;&gt;]+\&gt;)*(\r\n)(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s\"]*)(\-)(.*)(\&lt;[^&lt;&gt;]+\&gt;)*\z</FindWhat>
         <ReplaceWith>$1$2$4 $3$5$6$7$8$10 $9$11</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Dialog Hyphen Fix: both incorrect with or without Tag</Description>
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>\A(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s"]*)(\-)(.*)(\&lt;[^&lt;&gt;]+\&gt;)*(\r\n)</FindWhat>
+        <FindWhat>\A(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s\"]*)(\-)(.*)(\&lt;[^&lt;&gt;]+\&gt;)*(\r\n)</FindWhat>
         <ReplaceWith>$1$2$4 $3$5$6</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Dialog Hyphen Fix: 1st Line</Description>
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>(\r\n)(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s"]*)(\-)(.*)(\&lt;[^&lt;&gt;]+\&gt;)*\z</FindWhat>
+        <FindWhat>(\r\n)(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s\"]*)(\-)(.*)(\&lt;[^&lt;&gt;]+\&gt;)*\z</FindWhat>
         <ReplaceWith>$1$2$3$5 $4$6</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Dialog Hyphen Fix: 2nd Line</Description>
@@ -118,28 +164,28 @@
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>\A(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s"]*)(.*)(\-)(\&lt;[^&lt;&gt;]+\&gt;)*(\r\n)(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s"]*)(\-)(.*)(\&lt;[^&lt;&gt;]+\&gt;)*\z</FindWhat>
+        <FindWhat>\A(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s\"]*)(.*)(\-)(\&lt;[^&lt;&gt;]+\&gt;)*(\r\n)(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s\"]*)(\-)(.*)(\&lt;[^&lt;&gt;]+\&gt;)*\z</FindWhat>
         <ReplaceWith>$1$2$3$4$5$6$7$8$10 $9$11</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Dialog Hyphen Fix: Remove wrong - from 2nd Line</Description>
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>\A(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s"]*)(\-)(.*)(\&lt;[^&lt;&gt;]+\&gt;)*(\r\n)(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s"]*)(.*)(\-)(\&lt;[^&lt;&gt;]+\&gt;)*\z</FindWhat>
+        <FindWhat>\A(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s\"]*)(\-)(.*)(\&lt;[^&lt;&gt;]+\&gt;)*(\r\n)(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s\"]*)(.*)(\-)(\&lt;[^&lt;&gt;]+\&gt;)*\z</FindWhat>
         <ReplaceWith>$1$2$4 $3$5$6$7$8$9$10$11</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Dialog Hyphen Fix: Remove wrong - from 1st Line</Description>
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>\A(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s"]*)(.*)(\-)(\&lt;[^&lt;&gt;]+\&gt;)*(\r\n)(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s"]*)(.*)([^\-])(\&lt;[^&lt;&gt;]+\&gt;)*\z</FindWhat>
+        <FindWhat>\A(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s\"]*)(.*)(\-)(\&lt;[^&lt;&gt;]+\&gt;)*(\r\n)(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s\"]*)(.*)([^\-])(\&lt;[^&lt;&gt;]+\&gt;)*\z</FindWhat>
         <ReplaceWith>$1$2$3$4$5$6$7$8$9$10 -$11</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Dialog Hyphen Fix: Add Missing - at 2nd Line</Description>
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>\A(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s"]*)(.*)([^\-])(\&lt;[^&lt;&gt;]+\&gt;)*(\r\n)(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s"]*)(.*)(\-)(\&lt;[^&lt;&gt;]+\&gt;)*\z</FindWhat>
+        <FindWhat>\A(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s\"]*)(.*)([^\-])(\&lt;[^&lt;&gt;]+\&gt;)*(\r\n)(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s\"]*)(.*)(\-)(\&lt;[^&lt;&gt;]+\&gt;)*\z</FindWhat>
         <ReplaceWith>$1$2$3$4 -$5$6$7$8$9$10$11</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Dialog Hyphen Fix: Add Missing - at 1st Line</Description>
@@ -209,14 +255,14 @@
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>\A(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s"]*)(.*)(\-)(\&lt;[^&lt;&gt;]+\&gt;)*\z</FindWhat>
+        <FindWhat>\A(\&lt;[^&lt;&gt;]+\&gt;)*([،\.\!\s\"]*)(.*)(\-)(\&lt;[^&lt;&gt;]+\&gt;)*\z</FindWhat>
         <ReplaceWith>$1$2$3$5</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Dialog Hyphen Fix: Remove - when there is only 1 Line (1)</Description>
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>\A(\&lt;[^&lt;&gt;]+\&gt;)*(\- )([،\.\!"]*)(.*)(\&lt;[^&lt;&gt;]+\&gt;)*\z</FindWhat>
+        <FindWhat>\A(\&lt;[^&lt;&gt;]+\&gt;)*(\- )([،\.\!\"]*)(.*)(\&lt;[^&lt;&gt;]+\&gt;)*\z</FindWhat>
         <ReplaceWith>$1$3$4$5</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Dialog Hyphen Fix: Remove - when there is only 1 Line (2)</Description>
@@ -402,6 +448,13 @@
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
+        <FindWhat>([\u0600-\u06FF\d]+)( *)(،)( *)([\u0600-\u06FF\d]+)</FindWhat>
+        <ReplaceWith>$1$3 $5</ReplaceWith>
+        <SearchType>CaseSensitive</SearchType>
+        <Description>Comma Fixes</Description>
+      </MultipleSearchAndReplaceItem>
+      <MultipleSearchAndReplaceItem>
+        <Enabled>True</Enabled>
         <FindWhat>\b(")( *)([،؟\.!])( *)\b</FindWhat>
         <ReplaceWith>$1$3 </ReplaceWith>
         <SearchType>RegularExpression</SearchType>
@@ -437,7 +490,7 @@
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>\b(،\s)((["\-0-9]*)([A-Za-z]+)(["\-0-9]*))([\s]*)\b</FindWhat>
+        <FindWhat>\b(،\s)(([\"\-0-9]*)([A-Za-z]+)([\"\-0-9]*))([\s]*)\b</FindWhat>
         <ReplaceWith> ،$2$6</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Comma Fixes</Description>
@@ -886,7 +939,7 @@
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>(\b[^\u0000-\u007F]+\b)( *)(\!)( *)([^\-\&lt;\&gt;"\! ])</FindWhat>
+        <FindWhat>(\b[^\u0000-\u007F]+\b)( *)(\!)( *)([^\-\&lt;\&gt;\"\! ])</FindWhat>
         <ReplaceWith>$1$3 $5</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>! Mark Fixes</Description>
@@ -1125,7 +1178,7 @@
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>(&lt;font color)(\s)*(=)(\s)*(["#a-zA-Z0-9]+)+([\s\/]*)*(&gt;)(.*)(&lt;/font)([\s\/]*)*(&gt;)(\s)*(:)(\s)*</FindWhat>
+        <FindWhat>(&lt;font color)(\s)*(=)(\s)*([\"#a-zA-Z0-9]+)+([\s\/]*)*(&gt;)(.*)(&lt;/font)([\s\/]*)*(&gt;)(\s)*(:)(\s)*</FindWhat>
         <ReplaceWith>$1$2$3$4$5$6$7$8$13$9$10$11 </ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Fix HI Colorer</Description>
@@ -1351,6 +1404,13 @@
         <SearchType>RegularExpression</SearchType>
         <Description>Remove Unneeded Spaces-Double Quotes-Question Mark</Description>
       </MultipleSearchAndReplaceItem>
+      <MultipleSearchAndReplaceItem>
+        <Enabled>True</Enabled>
+        <FindWhat>( )+</FindWhat>
+        <ReplaceWith> </ReplaceWith>
+        <SearchType>RegularExpression</SearchType>
+        <Description>Remove Unneeded Spaces</Description>
+      </MultipleSearchAndReplaceItem>
     </Group>
     <Group>
       <Name>Parentheses Fixes</Name>
@@ -1481,6 +1541,13 @@
         <SearchType>RegularExpression</SearchType>
         <Description>Parentheses z2</Description>
       </MultipleSearchAndReplaceItem>
+      <MultipleSearchAndReplaceItem>
+        <Enabled>True</Enabled>
+        <FindWhat>(\b[\b\w\d ]+\b)( *)(\()( *)(\b[\b\w\d ]+\b)( *)(\))( *)(\b[\b\w\d ]+\b)</FindWhat>
+        <ReplaceWith>$1 $3$5$7 $9</ReplaceWith>
+        <SearchType>RegularExpression</SearchType>
+        <Description>Parentheses</Description>
+      </MultipleSearchAndReplaceItem>
     </Group>
     <Group>
       <Name>Double-Quotes Fixes</Name>
@@ -1494,14 +1561,14 @@
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>\b([\s]*)((["\-0-9]*)([A-Za-z]+)(["\-0-9]*))(،\s)\b</FindWhat>
+        <FindWhat>\b([\s]*)(([\"\-0-9]*)([A-Za-z]+)([\"\-0-9]*))(،\s)\b</FindWhat>
         <ReplaceWith>$1$2 ،</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Double-Quotes Fixes</Description>
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>\b(،\s)((["\-0-9]*)([A-Za-z]+)(["\-0-9]*))([\s]*)\b</FindWhat>
+        <FindWhat>\b(،\s)(([\"\-0-9]*)([A-Za-z]+)([\"\-0-9]*))([\s]*)\b</FindWhat>
         <ReplaceWith> ،$2$6</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Double-Quotes Fixes</Description>
@@ -1515,14 +1582,14 @@
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>(\b\.*\؟*\،*\!*[\b\w\d\.\؟\،\! ]+\b\.*\؟*\،*\!*)( *)(")( *)([^\u0000-\u007F]{1,2})( *)(")( *)\z</FindWhat>
+        <FindWhat>(\b\.*\؟*\،*\!*[\b\w\d\.\؟\،\! ]+\b\.*\؟*\،*\!*)( *)(\")( *)([^\u0000-\u007F]{1,2})( *)(\")( *)\z</FindWhat>
         <ReplaceWith>$1$3$5$7</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Double-Quotes Fixes</Description>
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>\A(\&lt;[^&lt;&gt;]+\&gt;)*([\!\.\،\(\)\[\]]+)*( *)(")( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{2,999999}\b\.*\؟*\،*\!*)( *)(")( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{2,999999}\b\.*\؟*\،*\!*)([\!\.\،\(\)\[\]]+)*( *)(\-*)(\&lt;[^&lt;&gt;]+\&gt;)*\z</FindWhat>
+        <FindWhat>\A(\&lt;[^&lt;&gt;]+\&gt;)*([\!\.\،\(\)\[\]]+)*( *)(\")( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{2,999999}\b\.*\؟*\،*\!*)( *)(\")( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{2,999999}\b\.*\؟*\،*\!*)([\!\.\،\(\)\[\]]+)*( *)(\-*)(\&lt;[^&lt;&gt;]+\&gt;)*\z</FindWhat>
         <ReplaceWith>$1$2$4$6 $8$10$11$12$13$14</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Double-Quotes Fixes A1 2 "</Description>
@@ -1690,21 +1757,21 @@
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>\A(\&lt;[^&lt;&gt;]+\&gt;)*([\!\.\،]+)*(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)( *)(")( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)( *)(")( *)([\.\!\،\؟]+)*( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)*( *)(")( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)( *)(")( *)([\.\!\،\؟]+)*( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)([\!\.\،\؟]+)*(\&lt;[^&lt;&gt;]+\&gt;)*\z</FindWhat>
+        <FindWhat>\A(\&lt;[^&lt;&gt;]+\&gt;)*([\!\.\،]+)*(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)( *)(\")( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)( *)(")( *)([\.\!\،\؟]+)*( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)*( *)(\")( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)( *)(")( *)([\.\!\،\؟]+)*( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)([\!\.\،\؟]+)*(\&lt;[^&lt;&gt;]+\&gt;)*\z</FindWhat>
         <ReplaceWith>$1$2$3 $5$7$9$11 $13 $15$17$19$21 $23$24$25</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Double-Quotes Fixes C1 4 "</Description>
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>\A(\&lt;[^&lt;&gt;]+\&gt;)*([\!\.\،]+)*(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)( *)(")( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)( *)(")( *)([\.\!\،\؟]+)*( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)*( *)(")( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)( *)(")( *)([\.\!\،\؟]+)*( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)([\!\.\،\؟]+)*( -)*(\&lt;[^&lt;&gt;]+\&gt;)*\r\n</FindWhat>
+        <FindWhat>\A(\&lt;[^&lt;&gt;]+\&gt;)*([\!\.\،]+)*(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)( *)(\")( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)( *)(")( *)([\.\!\،\؟]+)*( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)*( *)(\")( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)( *)(")( *)([\.\!\،\؟]+)*( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)([\!\.\،\؟]+)*( -)*(\&lt;[^&lt;&gt;]+\&gt;)*\r\n</FindWhat>
         <ReplaceWith>$1$2$3 $5$7$9$11 $13 $15$17$19$21 $23$24$25$26\n</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Double-Quotes Fixes C2 4 "</Description>
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>\r\n(\&lt;[^&lt;&gt;]+\&gt;)*([\!\.\،]+)*(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)( *)(")( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)( *)(")( *)([\.\!\،\؟]+)*( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)*( *)(")( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)( *)(")( *)([\.\!\،\؟]+)*( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)([\!\.\،\؟]+)*( -)*(\&lt;[^&lt;&gt;]+\&gt;)*\z</FindWhat>
+        <FindWhat>\r\n(\&lt;[^&lt;&gt;]+\&gt;)*([\!\.\،]+)*(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)( *)(\")( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)( *)(")( *)([\.\!\،\؟]+)*( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)*( *)(\")( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)( *)(")( *)([\.\!\،\؟]+)*( *)(\b\.*\؟*\،*\!*[\u0600-\u06FF\d\p{C}\p{Cf}\.\؟\،\! ]{1,999999}\b\.*\؟*\،*\!*)([\!\.\،\؟]+)*( -)*(\&lt;[^&lt;&gt;]+\&gt;)*\z</FindWhat>
         <ReplaceWith>\n$1$2$3 $5$7$9$11 $13 $15$17$19$21 $23$24$25$26</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Double-Quotes Fixes C3 4 "</Description>
@@ -1837,73 +1904,66 @@
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>(")( )(؟)\r\n</FindWhat>
+        <FindWhat>(\")( )(؟)\r\n</FindWhat>
         <ReplaceWith>$1$3\n</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Double-Quotes Fixes</Description>
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>(")( )(؟)\z</FindWhat>
+        <FindWhat>(\")( )(؟)\z</FindWhat>
         <ReplaceWith>$1$3</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Double-Quotes Fixes</Description>
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>(")( )(ـه)\b</FindWhat>
+        <FindWhat>(\")( )(ـه)\b</FindWhat>
         <ReplaceWith>$1$3</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Double-Quotes Fixes</Description>
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>(")( )(ئه)\b</FindWhat>
+        <FindWhat>(\")( )(ئه)\b</FindWhat>
         <ReplaceWith>$1$3</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Double-Quotes Fixes</Description>
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>(")( )(ها)\b</FindWhat>
+        <FindWhat>(\")( )(ها)\b</FindWhat>
         <ReplaceWith>$1$3</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Double-Quotes Fixes</Description>
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>(")( )(ست)\b</FindWhat>
+        <FindWhat>(\")( )(ست)\b</FindWhat>
         <ReplaceWith>$1$3</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Double-Quotes Fixes</Description>
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>(")( )(ت)\b</FindWhat>
+        <FindWhat>(\")( )(ت)\b</FindWhat>
         <ReplaceWith>$1$3</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Double-Quotes Fixes</Description>
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>(")( )(ی)\b</FindWhat>
+        <FindWhat>(\")( )(ی)\b</FindWhat>
         <ReplaceWith>$1$3</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Double-Quotes Fixes</Description>
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>(")( )(ی )</FindWhat>
+        <FindWhat>(\")( )(ی )</FindWhat>
         <ReplaceWith>$1$3</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Double-Quotes Fixes</Description>
-      </MultipleSearchAndReplaceItem>
-      <MultipleSearchAndReplaceItem>
-        <Enabled>True</Enabled>
-        <FindWhat> +( |$)</FindWhat>
-        <ReplaceWith> </ReplaceWith>
-        <SearchType>RegularExpression</SearchType>
-        <Description>Double-Quotes Fixes: Trim Space z</Description>
       </MultipleSearchAndReplaceItem>
     </Group>
     <Group>
@@ -2003,59 +2063,6 @@
         <ReplaceWith>$1$2، $6$7</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Number Fixes 6: between Persian Char</Description>
-      </MultipleSearchAndReplaceItem>
-    </Group>
-    <Group>
-      <Name>Change Arabic Char to Persian</Name>
-      <Enabled>True</Enabled>
-      <MultipleSearchAndReplaceItem>
-        <Enabled>False</Enabled>
-        <FindWhat>\\\\ (Change Arabic Char to Persian) \\\\</FindWhat>
-        <ReplaceWith> \\\\ (Change Arabic Char to Persian) \\\\</ReplaceWith>
-        <SearchType>CaseSensitive</SearchType>
-        <Description>Change Arabic Char to Persian</Description>
-      </MultipleSearchAndReplaceItem>
-      <MultipleSearchAndReplaceItem>
-        <Enabled>True</Enabled>
-        <FindWhat>آّ</FindWhat>
-        <ReplaceWith>آ</ReplaceWith>
-        <SearchType>Normal</SearchType>
-        <Description>Change Arabic Char to Persian</Description>
-      </MultipleSearchAndReplaceItem>
-      <MultipleSearchAndReplaceItem>
-        <Enabled>True</Enabled>
-        <FindWhat>ّ</FindWhat>
-        <ReplaceWith />
-        <SearchType>Normal</SearchType>
-        <Description>Change Arabic Char to Persian</Description>
-      </MultipleSearchAndReplaceItem>
-      <MultipleSearchAndReplaceItem>
-        <Enabled>True</Enabled>
-        <FindWhat>ك</FindWhat>
-        <ReplaceWith>ک</ReplaceWith>
-        <SearchType>Normal</SearchType>
-        <Description>Change Arabic Char to Persian</Description>
-      </MultipleSearchAndReplaceItem>
-      <MultipleSearchAndReplaceItem>
-        <Enabled>True</Enabled>
-        <FindWhat>و</FindWhat>
-        <ReplaceWith>و</ReplaceWith>
-        <SearchType>Normal</SearchType>
-        <Description>Change Arabic Char to Persian</Description>
-      </MultipleSearchAndReplaceItem>
-      <MultipleSearchAndReplaceItem>
-        <Enabled>True</Enabled>
-        <FindWhat>ي</FindWhat>
-        <ReplaceWith>ی</ReplaceWith>
-        <SearchType>Normal</SearchType>
-        <Description>Change Arabic Char to Persian</Description>
-      </MultipleSearchAndReplaceItem>
-      <MultipleSearchAndReplaceItem>
-        <Enabled>True</Enabled>
-        <FindWhat>ى</FindWhat>
-        <ReplaceWith>ی</ReplaceWith>
-        <SearchType>Normal</SearchType>
-        <Description>Change Arabic Char to Persian</Description>
       </MultipleSearchAndReplaceItem>
     </Group>
     <Group>
@@ -2273,7 +2280,7 @@
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>(\w)( )(ای)( -)*([\r\n\-\،\؟"\!\&lt;\&gt;])</FindWhat>
+        <FindWhat>(\w)( )(ای)( -)*([\r\n\-\،\؟\"\!\&lt;\&gt;])</FindWhat>
         <ReplaceWith>$1‌$3$4$5</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Space to Invisible Space 0</Description>
@@ -2287,7 +2294,7 @@
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>(\w)( )(ای)(\.)(["\.\(\)\[\]\{\} ])</FindWhat>
+        <FindWhat>(\w)( )(ای)(\.)([\"\.\(\)\[\]\{\} ])</FindWhat>
         <ReplaceWith>$1‌$3$4$5</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Space to Invisible Space 0 - 1</Description>

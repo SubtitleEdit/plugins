@@ -48,6 +48,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.labelNote = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.labelPercent = new System.Windows.Forms.Label();
+            this.LinkLabelHomepage = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -187,10 +188,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.linkLabelEmail.AutoSize = true;
             this.linkLabelEmail.Location = new System.Drawing.Point(83, 578);
             this.linkLabelEmail.Name = "linkLabelEmail";
-            this.linkLabelEmail.Size = new System.Drawing.Size(63, 13);
+            this.linkLabelEmail.Size = new System.Drawing.Size(32, 13);
             this.linkLabelEmail.TabIndex = 12;
             this.linkLabelEmail.TabStop = true;
-            this.linkLabelEmail.Text = "MSasanMH";
+            this.linkLabelEmail.Text = "Email";
             this.linkLabelEmail.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelEmail_LinkClicked);
             // 
             // labelNote
@@ -210,6 +211,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.progressBar1.Location = new System.Drawing.Point(518, 573);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(378, 23);
+            this.progressBar1.Step = 1;
             this.progressBar1.TabIndex = 14;
             this.progressBar1.Click += new System.EventHandler(this.progressBar1_Click);
             // 
@@ -225,11 +227,23 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.labelPercent.Text = "100%";
             this.labelPercent.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // LinkLabelHomepage
+            // 
+            this.LinkLabelHomepage.AutoSize = true;
+            this.LinkLabelHomepage.Location = new System.Drawing.Point(151, 578);
+            this.LinkLabelHomepage.Name = "LinkLabelHomepage";
+            this.LinkLabelHomepage.Size = new System.Drawing.Size(29, 13);
+            this.LinkLabelHomepage.TabIndex = 16;
+            this.LinkLabelHomepage.TabStop = true;
+            this.LinkLabelHomepage.Text = "Help";
+            this.LinkLabelHomepage.Click += new System.EventHandler(this.LinkLabelHomepage_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1151, 603);
+            this.Controls.Add(this.LinkLabelHomepage);
             this.Controls.Add(this.labelPercent);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.labelNote);
@@ -245,7 +259,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "Persian Subtitle Fixes (Persian Common Errors)";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
@@ -274,6 +288,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Label labelPercent;
         private System.Windows.Forms.Label labelWorking;
+        private System.Windows.Forms.LinkLabel LinkLabelHomepage;
     }
 }
 

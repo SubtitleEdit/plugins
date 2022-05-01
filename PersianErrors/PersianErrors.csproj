@@ -64,6 +64,7 @@
     <Compile Include="Logic\SubtitleFormat.cs" />
     <Compile Include="Logic\TimeCode.cs" />
     <Compile Include="Logic\Utilities.cs" />
+    <Compile Include="MsmhTools\Tools.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
