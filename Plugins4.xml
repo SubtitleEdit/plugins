@@ -282,4 +282,12 @@
 		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/LoadFormatting.zip</Url>
 		<Author>Nikse</Author>
 	</Plugin>
+	<Plugin>
+		<Name>Reverse text</Name>
+		<Description>Reverse text in each line</Description>
+		<Version>0.1</Version>
+		<Date>2022-05-15</Date>
+		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/ReverseText.zip</Url>
+		<Author>Nikse</Author>
+	</Plugin>
 </Plugins>
