@@ -32,14 +32,33 @@ namespace ReverseText
         public static string Reverse(string s)
         {
             var sb = new StringBuilder();
+            var pre = string.Empty;
+            var post = string.Empty;
+
+            if (s.StartsWith("{\\") && s.IndexOf("}") > 0)
+            {
+                var end = s.IndexOf("}");
+                pre += s.Substring(0, end + 1);
+                s = s.Remove(0, end + 1);
+            }
+
             foreach (var line in s.SplitToLines())
             {
-                var charArray = s.ToCharArray();
+                var charArray = line.ToCharArray();
                 Array.Reverse(charArray);
                 sb.AppendLine(new string(charArray));
             }
 
-            return sb.ToString().TrimEnd();
+            s = sb.ToString().Trim();
+            s = s.Replace(">i<", "</i>");
+            s = s.Replace(">b<", "</b>");
+            s = s.Replace(">u<", "</u>");
+
+            s = s.Replace(">i/<", "<i>");
+            s = s.Replace(">b/<", "<b>");
+            s = s.Replace(">u/<", "<u>");
+
+            return pre + s;
         }
 
         public sealed override string Text

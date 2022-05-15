@@ -19,7 +19,7 @@ namespace ReverseText
             using (var form = new MainForm(new Subtitle { Paragraphs =
             {
                 new Paragraph("<i>Previously on</i>\r\nRiverdale...",0,0),
-                new Paragraph("I'm Fine?",0,0),
+                new Paragraph("{\\an8}I'm Fine?",0,0),
                 new Paragraph("How nice of you to join us today"  + Environment.NewLine + 
                               "so we all can work on the project together",0,0),
                 new Paragraph("Tuesday",0,0),

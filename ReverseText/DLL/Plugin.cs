@@ -12,7 +12,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "Reverse text..."; // text in menu
 
-        decimal IPlugin.Version => 0.1M;
+        decimal IPlugin.Version => 0.2M;
 
         string IPlugin.Description => "Reverse each line in text";
 
