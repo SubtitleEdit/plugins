@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -12,6 +13,58 @@ using System.Xml;
 
 namespace MsmhTools
 {
+    public static class Extensions
+    {
+        //-----------------------------------------------------------------------------------
+        /// <summary>
+        /// Creates color with corrected brightness.
+        /// </summary>
+        /// <param name="color">Color to correct.</param>
+        /// <param name="correctionFactor">The brightness correction factor. Must be between -1 and 1. 
+        /// Negative values produce darker colors.</param>
+        /// <returns>
+        /// Corrected <see cref="Color"/> structure.
+        /// </returns>
+        public static Color ChangeBrightness(this Color color, float correctionFactor)
+        {
+            float red = (float)color.R;
+            float green = (float)color.G;
+            float blue = (float)color.B;
+
+            if (correctionFactor < 0)
+            {
+                correctionFactor = 1 + correctionFactor;
+                red *= correctionFactor;
+                green *= correctionFactor;
+                blue *= correctionFactor;
+            }
+            else
+            {
+                red = (255 - red) * correctionFactor + red;
+                green = (255 - green) * correctionFactor + green;
+                blue = (255 - blue) * correctionFactor + blue;
+            }
+            return Color.FromArgb(color.A, (int)red, (int)green, (int)blue);
+        }
+        //-----------------------------------------------------------------------------------
+        /// <summary>
+        /// Check Color is Light or Dark.
+        /// </summary>
+        /// <returns>
+        /// Returns "Dark" or "Light" as string.
+        /// </returns>
+        public static string DarkOrLight(this Color color)
+        {
+            if (color.R * 0.2126 + color.G * 0.7152 + color.B * 0.0722 < 255 / 2)
+            {
+                return "Dark";
+            }
+            else
+            {
+                return "Light";
+            }
+        }
+    }
     public static class Tools
     {
         public static void WriteAllText(string filePath, string fileContent, Encoding encoding)
@@ -121,6 +174,18 @@ namespace MsmhTools
             sync.Invoke(action, Array.Empty<object>());
             // Usage:
             // textBox1.InvokeIt(() => textBox1.Text = text);
+        }
+        public static Control GetTopParent(Control control)
+        {
+            Control parent = control;
+            if (control.Parent != null)
+            {
+                parent = control.Parent;
+                if (parent.Parent != null)
+                    while (parent.Parent != null)
+                        parent = parent.Parent;
+            }
+            return parent;
         }
     }
 }

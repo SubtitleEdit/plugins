@@ -16,6 +16,8 @@ using Nikse.SubtitleEdit.Core.Common;
 using MsmhTools;
 using System.Data;
 using System.Text;
+using System.Xml.Linq;
+using System.Resources;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -35,7 +37,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         // Sort Column Line#
         private ListViewColumnSorter lvwColumnSorter = null;
         private readonly Dictionary<string, Regex> CompiledRegExList = new Dictionary<string, Regex>();
-        private readonly HashSet<ReplaceExpression> replaceExpressions = new HashSet<ReplaceExpression>();
         public static DataSet DataSetSettings = new DataSet();
         private readonly static Label WaitLabel = new Label();
 
@@ -46,7 +47,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Text = "Persian Subtitle Fixes (Persian Common Errors)" + " - v" + AV;
             StartPosition = FormStartPosition.CenterScreen;
             buttonApply.SetToolTip("Info", "You can apply multiple times.");
-            labelPercent.Text = string.Empty;
 
             // DataSet Name
             DataSetSettings.DataSetName = "Settings";
@@ -88,6 +88,21 @@ namespace Nikse.SubtitleEdit.PluginLogic
             };
             buttonOK.Enabled = false;
             GetGroupNames();
+        }
+
+        private static string FindWhatRule(string findWhat)
+        {
+            findWhat = findWhat.Replace("\"", "\\\"");
+            findWhat = findWhat.Replace("\\\\\"", "\\\"");
+            findWhat = findWhat.Replace("\\r\\n", Environment.NewLine).Replace("\\n", Environment.NewLine);
+            return findWhat;
+        }
+
+        private static string ReplaceWithRule(string replaceWith)
+        {
+            //if (replaceWith == "") replaceWith = " ";
+            replaceWith = replaceWith.Replace("\\r\\n", Environment.NewLine).Replace("\\n", Environment.NewLine);
+            return replaceWith;
         }
 
         public void GetGroupNames()
@@ -142,6 +157,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 box.AutoSize = true;
                 box.UseVisualStyleBackColor = true;
                 box.Click += new EventHandler(CheckboxHandler);
+                box.MouseHover += Box_MouseHover;
+                box.MouseLeave += Box_MouseLeave;
                 box.Location = new Point(10, (i + 1) * 20); //vertical
                                                             //box.Location = new Point(i * 50, 10); //horizontal
                 groupBox1.Controls.Add(box); // Add CheckBoxes inside GroupBox1
@@ -184,7 +201,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 buttonApply.Enabled = false;
                 buttonCheckAll.Enabled = false;
                 buttonInvertCheck.Enabled = false;
-                //foreach (Control c in groupBox1.Controls)
                 for (int n = 0; n < groupBox1.Controls.Count; n++)
                 {
                     var c = groupBox1.Controls[n];
@@ -200,7 +216,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
                 //-------------------------------------------------------------
                 WaitLabel.BringToFront();
-                labelPercent.Visible = true;
                 progressBar1.Visible = true;
                 var t = new System.Windows.Forms.Timer();
                 t.Interval = 500;
@@ -243,7 +258,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             catch (OperationCanceledException)
             {
-                labelPercent.Text = "Error";
+                //
             }
         }
 
@@ -260,17 +275,21 @@ namespace Nikse.SubtitleEdit.PluginLogic
         
         public void FindAndListFixes(CancellationToken token)
         {
+            DateTime startTime = DateTime.Now;
             _totalFixes = 0;
-            labelPercent.Visible = true;
             progressBar1.Visible = true;
             progressBar1.Minimum = 0;
             progressBar1.Maximum = 100;
             progressBar1.Step = 1;
             progressBar1.Value = 0;
-            labelPercent.Text = progressBar1.Value + "%";
             //========== Creating List ============================================
-            replaceExpressions.Clear();
+            List<Tuple<string, string, string>> ReplaceExpressionList = new List<Tuple<string, string, string>>();
+            ReplaceExpressionList.Clear();
             var fileContent = GetResourceTextFile("PersianErrors.multiple_replace.xml"); // Load from Embedded Resource
+
+            XDocument doc = XDocument.Parse(fileContent);
+            var groups = doc.Root.Elements().Elements();
+
             for (int n = 0; n < groupBox1.Controls.Count; n++)
             {
                 if (token.IsCancellationRequested == true || closeForm == true)
@@ -278,67 +297,34 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 var cc = groupBox1.Controls[n];
                 if ((cc is CheckBox box) && box.Checked)
                 {
-                    XmlDocument doc = new XmlDocument();
-                    if (fileContent != null)
+                    for (int a = 0; a < groups.Count(); a++)
                     {
-                        doc.LoadXml(fileContent); // Load from String
-                                                  //doc.Load(fileContent); // Load from URL
-                        XmlNodeList nodes = doc.GetElementsByTagName("Group");
-                        //foreach (XmlNode node in nodes)
-                        for (int a = 0; a < nodes.Count; a++)
+                        var group = groups.ToList()[a];
+                        string groupName = group.Element("Name").Value;
+
+                        if (groupName == box.Text)
                         {
-                            var node = nodes[a];
-                            //Console.WriteLine(node.Name);
-                            //foreach (XmlNode childN in node.SelectNodes("Name"))
-                            for (int b = 0; b < node.SelectNodes("Name").Count; b++)
+                            var rules = group.Elements("MultipleSearchAndReplaceItem");
+                            for (int b = 0; b < rules.Count(); b++)
                             {
-                                var childN = node.SelectNodes("Name")[b];
-                                //Console.WriteLine("Group " + childN.Name + ": " + childN.InnerText);
-                                if (childN.InnerText == cc.Text)
+                                var rule = rules.ToList()[b];
+                                bool ruleEnabled = Convert.ToBoolean(rule.Element("Enabled").Value);
+                                if (ruleEnabled)
                                 {
-                                    //foreach (XmlNode child in node.SelectNodes("Enabled"))
-                                    for (int c = 0; c < node.SelectNodes("Enabled").Count; c++)
+                                    string findWhat = rule.Element("FindWhat").Value;
+                                    string replaceWith = rule.Element("ReplaceWith").Value;
+                                    string searchType = rule.Element("SearchType").Value;
+
+                                    findWhat = FindWhatRule(findWhat);
+                                    replaceWith = ReplaceWithRule(replaceWith);
+
+                                    if (searchType == "RegularExpression" && !CompiledRegExList.ContainsKey(findWhat))
                                     {
-                                        var child = node.SelectNodes("Enabled")[c];
-                                        //Console.WriteLine("Group " + child.Name + ": " + child.InnerText);
-                                        if (child.InnerText == "True")
-                                        {
-                                            //foreach (XmlNode child1 in node.SelectNodes("MultipleSearchAndReplaceItem"))
-                                            for (int d = 0; d < node.SelectNodes("MultipleSearchAndReplaceItem").Count; d++)
-                                            {
-                                                var child1 = node.SelectNodes("MultipleSearchAndReplaceItem")[d];
-                                                //Console.WriteLine(child3.ChildNodes[0].Name); // Enabled
-                                                //Console.WriteLine(child3.ChildNodes[1].Name); // FindWhat
-                                                //Console.WriteLine(child3.ChildNodes[2].Name); // ReplaceWith
-                                                //Console.WriteLine(child3.ChildNodes[3].Name); // SearchType
-                                                //Console.WriteLine(child3.ChildNodes[4].Name); // Description
-                                                if (child1.ChildNodes[0].InnerText == "True")
-                                                {
-                                                    string findWhat = @child1.ChildNodes[1].InnerText;
-                                                    findWhat = findWhat.Replace("\"", "\\\"");
-                                                    findWhat = findWhat.Replace("\\\\\"", "\\\"");
-                                                    string replaceWith = @child1.ChildNodes[2].InnerText;
-                                                    if (replaceWith == "")
-                                                        replaceWith = " ";
-                                                    string searchType = @child1.ChildNodes[3].InnerText;
-                                                    if (!string.IsNullOrEmpty(findWhat)) // allow space or spaces
-                                                    {
-                                                        //findWhat = RegexUtils.FixNewLine(findWhat);
-                                                        //replaceWith = RegexUtils.FixNewLine(replaceWith);
-                                                        // Or
-                                                        findWhat = findWhat.Replace("\\r\\n", Environment.NewLine).Replace("\\n", Environment.NewLine);
-                                                        replaceWith = replaceWith.Replace("\\r\\n", Environment.NewLine).Replace("\\n", Environment.NewLine);
-                                                        var mpi = new ReplaceExpression(findWhat, replaceWith, searchType);
-                                                        replaceExpressions.Add(mpi);
-                                                        if (mpi.SearchType == ReplaceExpression.SearchRegEx && !CompiledRegExList.ContainsKey(findWhat))
-                                                        {
-                                                            CompiledRegExList.Add(findWhat, new Regex(findWhat, RegexOptions.Compiled | RegexOptions.Multiline));
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
+                                        CompiledRegExList.Add(findWhat, new Regex(findWhat, RegexOptions.Compiled | RegexOptions.Multiline,
+                                            TimeSpan.FromMilliseconds(2000)));
                                     }
+
+                                    ReplaceExpressionList.Add(new Tuple<string, string, string>(findWhat, replaceWith, searchType));
                                 }
                             }
                         }
@@ -348,6 +334,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             //========== Replacing List ===========================================
             List<ListViewItem> fixes = new List<ListViewItem>();
             fixes.Clear();
+
+            // Set a timeout interval of 2 seconds.
+            AppDomain domain = AppDomain.CurrentDomain;
+            domain.SetData("REGEX_DEFAULT_MATCH_TIMEOUT", TimeSpan.FromMilliseconds(2000));
+
             for (int pn = 0; pn < SubCurrent.Paragraphs.Count; pn++)
             {
                 Paragraph p = SubCurrent.Paragraphs[pn];
@@ -366,44 +357,48 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (VC > 100)
                     return;
                 progressBar1.Value = CC;
+                progressBar1.StartTime = startTime;
                 //== Fixing issue caused by the animation (Bug)
                 if (CC > 1)
                     progressBar1.Value = CC - 1;
                 if (VC == 100)
                     progressBar1.Value = progressBar1.Maximum;
                 //== End of fix
-                if (Enumerable.Range(50, 100).Contains(VC))
-                {
-                    labelPercent.BackColor = Color.FromArgb(6, 176, 37);
-                }
-                else { labelPercent.BackColor = SystemColors.ControlLight; }
-                labelPercent.Text = VC.ToString() + "%";
                 labelWorking.Text = "Working On Line#\n" + CC + "/" + TC;
 
-                //if (p.Text[0] == '"')
-                //    p.Text = "\\\"" + p.Text.Substring(1);
-                //if (p.Text[p.Text.Length - 1] == '"')
-                //    p.Text = p.Text.Remove(p.Text.Length - 1, 1) + "\\\"";
                 p.Text = p.Text.Replace("<br />", Environment.NewLine).Replace("</ br>", Environment.NewLine);
                 string Before = @p.Text;
                 string After = @p.Text;
-                After = After.Replace("<br />", Environment.NewLine).Replace("</ br>", Environment.NewLine);
 
-                foreach (ReplaceExpression item in replaceExpressions)
+                for (int i = 0; i < ReplaceExpressionList.Count; i++)
                 {
-                    if (token.IsCancellationRequested == true || closeForm == true)
-                        return;
-                    if (item.SearchType == ReplaceExpression.SearchRegEx)
+                    var list = ReplaceExpressionList[i];
+                    string findWhat = list.Item1;
+                    string replaceWith = list.Item2;
+                    string searchType = list.Item3;
+
+                    if (searchType == "RegularExpression")
                     {
-                        Regex r = CompiledRegExList[item.FindWhat];
-                        if (r.IsMatch(After))
+                        Regex regExFindWhat = CompiledRegExList[findWhat];
+
+                        try
                         {
-                            After = RegexUtils.ReplaceNewLineSafe(r, After, item.ReplaceWith);
+                            if (regExFindWhat.IsMatch(After))
+                            {
+                                After = regExFindWhat.Replace(After, replaceWith);
+                            }
+                        }
+                        catch (RegexMatchTimeoutException ex)
+                        {
+                            Debug.WriteLine("Regex timed out!");
+                            Debug.WriteLine("- Timeout interval specified: " + ex.MatchTimeout.TotalMilliseconds);
+                            Debug.WriteLine("- Pattern: " + ex.Pattern);
+                            Debug.WriteLine("- Input: " + ex.Input);
                         }
                     }
-                    else if (item.SearchType == ReplaceExpression.SearchNormal)
+                    else if (searchType == "Normal")
                     {
-                        After = After.Replace(item.FindWhat, item.ReplaceWith);
+                        After = After.Replace(findWhat, replaceWith);
                     }
                 }
 
@@ -436,8 +431,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             labelTotal.ForeColor = _totalFixes <= 0 ? Color.Green : Color.Blue;
             listViewFixes.InvokeIt(() => listViewFixes.Items.AddRange(fixes.ToArray()));
             labelWorking.Text = null;
-            //labelPercent.Visible = false;
-            //progressBar1.Visible = false;
         }
 
         private static void SettingsSaveCheckBoxes(string checkBoxName, string value)
@@ -487,7 +480,41 @@ namespace Nikse.SubtitleEdit.PluginLogic
             else
                 buttonApply.Enabled = false;
         }
-        
+
+        private void Box_MouseHover(object sender, EventArgs e)
+        {
+            CheckBox ch = sender as CheckBox;
+            if (ch.Text.Equals("Fix Unicode Control Char"))
+                pictureBox1.Image = global::PersianErrors.Properties.Resources.FixUnicodeControlChar;
+            else if (ch.Text.Equals("Change Arabic Chars to Persian"))
+                pictureBox1.Image = global::PersianErrors.Properties.Resources.ChangeArabicCharsToPersian;
+            else if (ch.Text.Equals("Remove Unneeded Spaces"))
+                pictureBox1.Image = global::PersianErrors.Properties.Resources.RemoveUnneededSpaces;
+            else if (ch.Text.Equals("Add Missing Spaces"))
+                pictureBox1.Image = global::PersianErrors.Properties.Resources.AddMissingSpaces;
+            else if (ch.Text.Equals("Fix Dialog Hyphen"))
+                pictureBox1.Image = global::PersianErrors.Properties.Resources.FixDialogHyphen;
+            else if (ch.Text.Equals("Fix Wrong Chars"))
+                pictureBox1.Image = global::PersianErrors.Properties.Resources.FixWrongChars;
+            else if (ch.Text.Equals("Fix Misplaced Chars"))
+                pictureBox1.Image = global::PersianErrors.Properties.Resources.FixMisplacedChars;
+            else if (ch.Text.Equals("Fix Abbreviations"))
+                pictureBox1.Image = global::PersianErrors.Properties.Resources.FixAbbreviations;
+            else if (ch.Text.Equals("Space to Invisible Space"))
+                pictureBox1.Image = global::PersianErrors.Properties.Resources.SpaceToInvisibleSpace;
+            else if (ch.Text.Equals("OCR"))
+                pictureBox1.Image = global::PersianErrors.Properties.Resources.OCR;
+            else if (ch.Text.Equals("Remove Leading Dots"))
+                pictureBox1.Image = global::PersianErrors.Properties.Resources.RemoveLeadingDots;
+            else if (ch.Text.Equals("Remove Dot from the End of Line"))
+                pictureBox1.Image = global::PersianErrors.Properties.Resources.RemoveDotFromTheEndOfLine;
+        }
+
+        private void Box_MouseLeave(object sender, EventArgs e)
+        {
+            pictureBox1.Image = global::PersianErrors.Properties.Resources.ICON;
+        }
+
         private void LinkLabelEmail_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("mailto:msasanmh@gmail.com");
@@ -603,36 +630,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs ex)
         {
-            if (ex.CloseReason == CloseReason.UserClosing)
-            {
-                Tools.WriteAllText(Tools.SettingsFilePath(), DataSetSettings.ToXmlWithWriteMode(XmlWriteMode.IgnoreSchema), new UTF8Encoding(false));
-                if (applyClicked == true)
-                {
-                    if (TaskApply != null)
-                    {
-                        if (!TaskApply.IsCompleted)
-                        {
-                            ex.Cancel = true;
-                            SourceApply.Cancel();
-                            closeForm = true;
-                            TaskApply.ContinueWith(t => Close(),
-                                TaskScheduler.FromCurrentSynchronizationContext());
-                        }
-                    }
-                }
-
-                // Confirm user wants to close
-                //switch (MessageBox.Show(this, "Are you sure?", "Do you still want ... ?", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-                //{
-                //    //Stay on this form
-                //    case DialogResult.No:
-                //        e.Cancel = true;
-                //        break;
-                //    default:
-                //        break;
-                //}
-            }
-            if (ex.CloseReason == CloseReason.WindowsShutDown)
+            if (ex.CloseReason == CloseReason.UserClosing || ex.CloseReason == CloseReason.WindowsShutDown)
             {
                 Tools.WriteAllText(Tools.SettingsFilePath(), DataSetSettings.ToXmlWithWriteMode(XmlWriteMode.IgnoreSchema), new UTF8Encoding(false));
                 if (applyClicked == true)

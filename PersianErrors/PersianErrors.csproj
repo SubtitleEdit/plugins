@@ -64,6 +64,9 @@
     <Compile Include="Logic\SubtitleFormat.cs" />
     <Compile Include="Logic\TimeCode.cs" />
     <Compile Include="Logic\Utilities.cs" />
+    <Compile Include="MsmhTools\CustomProgressBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MsmhTools\Tools.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="MainForm.cs">
@@ -78,19 +81,18 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -99,6 +101,21 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="multiple_replace.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\AddMissingSpaces.png" />
+    <Content Include="Images\ChangeArabicCharsToPersian.png" />
+    <Content Include="Images\FixAbbreviations.png" />
+    <Content Include="Images\FixDialogHyphen.png" />
+    <Content Include="Images\FixMisplacedChars.png" />
+    <Content Include="Images\FixUnicodeControlChar.png" />
+    <Content Include="Images\FixWrongChars.png" />
+    <Content Include="Images\ICON.png" />
+    <Content Include="Images\OCR.png" />
+    <Content Include="Images\RemoveDotFromTheEndOfLine.png" />
+    <Content Include="Images\RemoveLeadingDots.png" />
+    <Content Include="Images\RemoveUnneededSpaces.png" />
+    <Content Include="Images\SpaceToInvisibleSpace.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
