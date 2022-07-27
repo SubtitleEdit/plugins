@@ -46,10 +46,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.labelWorking = new System.Windows.Forms.Label();
             this.linkLabelEmail = new System.Windows.Forms.LinkLabel();
             this.labelNote = new System.Windows.Forms.Label();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.labelPercent = new System.Windows.Forms.Label();
             this.LinkLabelHomepage = new System.Windows.Forms.LinkLabel();
+            this.progressBar1 = new CustomControls.CustomProgressBar();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // listViewFixes
@@ -166,6 +167,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox1.Controls.Add(this.labelWorking);
+            this.groupBox1.Controls.Add(this.pictureBox1);
             this.groupBox1.Location = new System.Drawing.Point(12, 6);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(216, 561);
@@ -204,31 +206,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.labelNote.TabIndex = 13;
             this.labelNote.Text = "Report Bugs:";
             // 
-            // progressBar1
-            // 
-            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar1.Location = new System.Drawing.Point(518, 573);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(378, 23);
-            this.progressBar1.Step = 1;
-            this.progressBar1.TabIndex = 14;
-            this.progressBar1.Click += new System.EventHandler(this.progressBar1_Click);
-            // 
-            // labelPercent
-            // 
-            this.labelPercent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelPercent.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.labelPercent.Location = new System.Drawing.Point(691, 578);
-            this.labelPercent.Name = "labelPercent";
-            this.labelPercent.Size = new System.Drawing.Size(34, 13);
-            this.labelPercent.TabIndex = 15;
-            this.labelPercent.Text = "100%";
-            this.labelPercent.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // LinkLabelHomepage
             // 
+            this.LinkLabelHomepage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.LinkLabelHomepage.AutoSize = true;
             this.LinkLabelHomepage.Location = new System.Drawing.Point(151, 578);
             this.LinkLabelHomepage.Name = "LinkLabelHomepage";
@@ -238,14 +218,40 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.LinkLabelHomepage.Text = "Help";
             this.LinkLabelHomepage.Click += new System.EventHandler(this.LinkLabelHomepage_Click);
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar1.BackColor = System.Drawing.SystemColors.Control;
+            this.progressBar1.BorderColor = System.Drawing.SystemColors.ActiveBorder;
+            this.progressBar1.ChunksColor = System.Drawing.Color.LightBlue;
+            this.progressBar1.CustomText = "";
+            this.progressBar1.ForeColor = System.Drawing.Color.Black;
+            this.progressBar1.Location = new System.Drawing.Point(518, 573);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(378, 23);
+            this.progressBar1.StartTime = null;
+            this.progressBar1.TabIndex = 17;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.pictureBox1.Image = global::PersianErrors.Properties.Resources.ICON;
+            this.pictureBox1.InitialImage = global::PersianErrors.Properties.Resources.ICON;
+            this.pictureBox1.Location = new System.Drawing.Point(8, 355);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(200, 200);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 1;
+            this.pictureBox1.TabStop = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1151, 603);
-            this.Controls.Add(this.LinkLabelHomepage);
-            this.Controls.Add(this.labelPercent);
             this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.LinkLabelHomepage);
             this.Controls.Add(this.labelNote);
             this.Controls.Add(this.linkLabelEmail);
             this.Controls.Add(this.groupBox1);
@@ -262,6 +268,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -285,10 +292,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.LinkLabel linkLabelEmail;
         private System.Windows.Forms.Label labelNote;
-        private System.Windows.Forms.ProgressBar progressBar1;
-        private System.Windows.Forms.Label labelPercent;
         private System.Windows.Forms.Label labelWorking;
         private System.Windows.Forms.LinkLabel LinkLabelHomepage;
+        private CustomControls.CustomProgressBar progressBar1;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 

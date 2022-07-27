@@ -19,12 +19,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         decimal IPlugin.Version
         {
-            get { return 0.7M; }
+            get { return 0.8M; }
         }
 
         string IPlugin.Description
         {
-            get { return "Makes Persian subtitles nice and tidy!"; }
+            get { return "Fix Persian Common Errors."; }
         }
 
         string IPlugin.ActionType // Can be one of these: file, tool, sync, translate, spellcheck
