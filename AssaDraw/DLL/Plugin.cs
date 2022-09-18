@@ -11,7 +11,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "ASSA Draw..."; // will be used in context menu item
 
-        decimal IPlugin.Version => 0.24M;
+        decimal IPlugin.Version => 0.25M;
 
         string IPlugin.Description => "Draw for Advanced Sub Station Alpha";
 
@@ -84,52 +84,52 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             using (var form = new FormAssaDrawMain(subtitle == "standalone" ? "standalone" : text, videoFileName, videoPosition, subtitleFileName))
             {
-                if (form.ShowDialog(parentForm) == DialogResult.OK)
+                if (form.ShowDialog(parentForm) != DialogResult.OK)
                 {
-                    if (firstParagraph != null && form.AssaDrawCodes.Paragraphs.Count > 0)
+                    return string.Empty;
+                }
+
+                if (firstParagraph != null && form.AssaDrawCodes.Paragraphs.Count > 0)
+                {
+                    for (var i = 1; i < selectedParagraphs.Count; i++)
                     {
-                        for (int i = 1; i < selectedParagraphs.Count; i++)
-                        {
-                            sub.Paragraphs.Remove(selectedParagraphs[i]);
-                        }
-
-                        firstParagraph.Text = form.AssaDrawCodes.Paragraphs[0].Text;
-                        firstParagraph.Layer = form.AssaDrawCodes.Paragraphs[0].Layer;
-
-                        firstParagraph.Extra = "AssaDraw";
-                        var styles = AdvancedSubStationAlpha.GetStylesFromHeader(sub.Header);
-                        if (!styles.Contains(firstParagraph.Extra))
-                        {
-                            var assaDrawStyle = new SsaStyle
-                            {
-                                Name = firstParagraph.Extra,
-                                Alignment = "7",
-                                MarginVertical = 0,
-                                MarginLeft = 0,
-                                MarginRight = 0,
-                                ShadowWidth = 0,
-                                OutlineWidth = 0,
-                            };
-                            sub.Header = AdvancedSubStationAlpha.AddSsaStyle(assaDrawStyle, sub.Header);
-                        }
-
-                        var idx = sub.Paragraphs.IndexOf(firstParagraph);
-                        for (var i = 1; i < form.AssaDrawCodes.Paragraphs.Count; i++)
-                        {
-                            var newP = new Paragraph(firstParagraph)
-                            {
-                                Text = form.AssaDrawCodes.Paragraphs[i].Text,
-                                Layer = form.AssaDrawCodes.Paragraphs[i].Layer
-                            };
-                            sub.Paragraphs.Insert(idx + i - 1, newP);
-                        }
+                        sub.Paragraphs.Remove(selectedParagraphs[i]);
                     }
 
-                    return sub.ToText(assa);
-                }
-            }
+                    firstParagraph.Text = form.AssaDrawCodes.Paragraphs[0].Text;
+                    firstParagraph.Layer = form.AssaDrawCodes.Paragraphs[0].Layer;
 
-            return string.Empty;
+                    firstParagraph.Extra = "AssaDraw";
+                    var styles = AdvancedSubStationAlpha.GetStylesFromHeader(sub.Header);
+                    if (!styles.Contains(firstParagraph.Extra))
+                    {
+                        var assaDrawStyle = new SsaStyle
+                        {
+                            Name = firstParagraph.Extra,
+                            Alignment = "7",
+                            MarginVertical = 0,
+                            MarginLeft = 0,
+                            MarginRight = 0,
+                            ShadowWidth = 0,
+                            OutlineWidth = 0,
+                        };
+                        sub.Header = AdvancedSubStationAlpha.AddSsaStyle(assaDrawStyle, sub.Header);
+                    }
+
+                    var idx = sub.Paragraphs.IndexOf(firstParagraph);
+                    for (var i = 1; i < form.AssaDrawCodes.Paragraphs.Count; i++)
+                    {
+                        var newP = new Paragraph(firstParagraph)
+                        {
+                            Text = form.AssaDrawCodes.Paragraphs[i].Text,
+                            Layer = form.AssaDrawCodes.Paragraphs[i].Layer
+                        };
+                        sub.Paragraphs.Insert(idx + i - 1, newP);
+                    }
+                }
+
+                return sub.ToText(assa);
+            }
         }
     }
 }
