@@ -100,8 +100,8 @@
 	<Plugin>
 		<Name>Upload subtitle to OpenSubtitles.org</Name>
 		<Description>Upload a subtitle quickly to OpenSubtitles.Org</Description>
-		<Version>2.0</Version>
-		<Date>2016-01-30</Date>
+		<Version>2.1</Version>
+		<Date>2022-09-20</Date>
 		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/OpenSubtitlesUpload.zip</Url>
 		<Author>Nikse</Author>
 	</Plugin>
