@@ -2763,8 +2763,8 @@
       </MultipleSearchAndReplaceItem>
       <MultipleSearchAndReplaceItem>
         <Enabled>True</Enabled>
-        <FindWhat>(\.)([\!\,\?\u060C\u061F]+)</FindWhat>
-        <ReplaceWith>$1</ReplaceWith>
+        <FindWhat>([^\.])(\.)([\!\,\?\u060C\u061F]+)</FindWhat>
+        <ReplaceWith>$1$2</ReplaceWith>
         <SearchType>RegularExpression</SearchType>
         <Description>Dot Fixes</Description>
       </MultipleSearchAndReplaceItem>
@@ -10305,7 +10305,7 @@
     </Group>
     <Group>
       <Name>Remove Leading Dots</Name>
-      <Enabled>False</Enabled>
+      <Enabled>True</Enabled>
       <MultipleSearchAndReplaceItem>
         <Enabled>False</Enabled>
         <FindWhat>\\\\ (Remove Leading Dots) \\\\</FindWhat>
@@ -10638,7 +10638,7 @@
     </Group>
     <Group>
       <Name>Remove Dot from the End of Line</Name>
-      <Enabled>False</Enabled>
+      <Enabled>True</Enabled>
       <MultipleSearchAndReplaceItem>
         <Enabled>False</Enabled>
         <FindWhat>\\\\ (Delete Dot from the End of Line) \\\\</FindWhat>

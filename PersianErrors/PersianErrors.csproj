@@ -100,9 +100,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="multiple_replace.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Images\AddMissingSpaces.png" />
     <Content Include="Images\ChangeArabicCharsToPersian.png" />
     <Content Include="Images\FixAbbreviations.png" />
@@ -116,6 +113,7 @@
     <Content Include="Images\RemoveLeadingDots.png" />
     <Content Include="Images\RemoveUnneededSpaces.png" />
     <Content Include="Images\SpaceToInvisibleSpace.png" />
+    <EmbeddedResource Include="multiple_replace.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

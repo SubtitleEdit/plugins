@@ -77,6 +77,7 @@ namespace MsmhTools
             writer.Close();
             fileStream.Close();
         }
+
         public static string ToXmlWithWriteMode(this DataSet ds, XmlWriteMode xmlWriteMode)
         {
             var ms = new MemoryStream();
@@ -86,20 +87,27 @@ namespace MsmhTools
             ms.Close();
             return new UTF8Encoding(false).GetString(ms.ToArray());
         }
+
         public static bool IsBool(this string s)
         {
             if (bool.TryParse(s, out _))
                 return true;
             return false;
         }
+
         public static string SettingsFilePath()
         {
-            string assemblyFolder = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            string pluginFolder = Path.Combine(assemblyFolder, "Plugins");
+            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+            if (path != null && path.StartsWith("file:\\"))
+                path = path.Remove(0, 6);
+            if (path != null)
+                path = Path.Combine(path, "Plugins");
+            if (path == null || !Directory.Exists(path))
+                path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Subtitle Edit"), "Plugins");
             string dllName = Assembly.GetExecutingAssembly().GetName().Name.ToString();
-            string settingsFile = Path.Combine(pluginFolder, dllName + ".xml");
-            return settingsFile;
+            return Path.Combine(path, dllName + ".xml");
         }
+
         public static bool IsSettingsValid(string filePath)
         {
             if (File.Exists(filePath))
@@ -122,6 +130,7 @@ namespace MsmhTools
                 return false;
             }
         }
+
         public static bool IsValidXML(string content)
         {
             try
@@ -143,12 +152,14 @@ namespace MsmhTools
                 return false;
             }
         }
+
         public static DataSet ToDataSet(string xmlFile, XmlReadMode xmlReadMode)
         {
             DataSet ds = new DataSet();
             ds.ReadXml(xmlFile, xmlReadMode);
             return ds;
         }
+
         public static void SetToolTip(this Control control, string titleMessage, string bodyMessage)
         {
             ToolTip tt = new ToolTip();
@@ -163,6 +174,7 @@ namespace MsmhTools
             tt.ToolTipTitle = titleMessage;
             tt.SetToolTip(control, bodyMessage);
         }
+
         public static void InvokeIt(this ISynchronizeInvoke sync, Action action)
         {
             // If the invoke is not required, then invoke here and get out.
@@ -175,6 +187,7 @@ namespace MsmhTools
             // Usage:
             // textBox1.InvokeIt(() => textBox1.Text = text);
         }
+
         public static Control GetTopParent(Control control)
         {
             Control parent = control;
