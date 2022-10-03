@@ -220,8 +220,8 @@
 	<Plugin>
 		<Name>Persian Subtitle Fixes</Name>
 		<Description>Fix Persian Common Errors.</Description>
-		<Version>0.8</Version>
-		<Date>2022-07-27</Date>
+		<Version>0.9</Version>
+		<Date>2022-10-03</Date>
 		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/PersianErrors.zip</Url>
 		<Author>MSasanMH</Author>
 	</Plugin>
