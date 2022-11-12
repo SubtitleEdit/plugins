@@ -26,6 +26,7 @@ namespace SubtitleEdit
         private readonly Subtitle _subtitleOriginal;
         private static string _from = "EN";
         private static string _to = "DE";
+        private static TranslationPair _toPair;
         private bool _abort;
         private bool _tooManyRequests;
 
@@ -38,12 +39,13 @@ namespace SubtitleEdit
             listView1.Columns[2].Width = -2;
             buttonCancelTranslate.Enabled = false;
             comboBoxApiUrl.SelectedIndex = 0;
+            comboBoxFormality.SelectedIndex = 0;
         }
 
         private static void SetLanguages(ComboBox comboBox, string language)
         {
             comboBox.Items.Clear();
-            foreach (var pair in new DeepLTranslator2("", "").GetTranslationPairs())
+            foreach (var pair in new DeepLTranslator2("", "", "").GetTranslationPairs())
             {
                 comboBox.Items.Add(pair);
             }
@@ -140,9 +142,9 @@ namespace SubtitleEdit
                         }
                     }
 
-                    var translateResult = translator.Translate(source, target, new List<Paragraph> { p }, log);
+                    var translateResult = translator.Translate(source, target, p, log);
                     var result = SplitResult(translateResult, mergeCount, source);
-                    
+
                     textBoxLog.Text = log.ToString();
                     FillTranslatedText(result, index);
                     progressBar1.Refresh();
@@ -478,7 +480,7 @@ namespace SubtitleEdit
             {
                 _from = ((TranslationPair)comboBoxLanguageFrom.Items[comboBoxLanguageFrom.SelectedIndex]).Code;
                 _to = ((TranslationPair)comboBoxLanguageTo.Items[comboBoxLanguageTo.SelectedIndex]).Code;
-                Translate(_from, _to, new DeepLTranslator2(textBoxApiKey.Text, comboBoxApiUrl.Text), 1);
+                Translate(_from, _to, new DeepLTranslator2(textBoxApiKey.Text, comboBoxApiUrl.Text, GetFormality()), 1);
             }
             finally
             {
@@ -486,6 +488,16 @@ namespace SubtitleEdit
                 buttonCancelTranslate.Enabled = false;
                 progressBar1.Visible = false;
             }
+        }
+
+        private string GetFormality()
+        {
+            if (_toPair?.HasFormality == true && comboBoxFormality.SelectedIndex > 0)
+            {
+                return comboBoxFormality.Text;
+            }
+
+            return string.Empty;
         }
 
         private void buttonCancelTranslate_Click(object sender, EventArgs e)
@@ -585,6 +597,17 @@ namespace SubtitleEdit
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveSettings();
+        }
+
+        private void comboBoxLanguageTo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBoxLanguageTo.SelectedIndex < 0)
+            {
+                return;
+            }
+
+            _toPair = (TranslationPair)comboBoxLanguageTo.Items[comboBoxLanguageTo.SelectedIndex];
+            comboBoxFormality.Enabled = _toPair?.HasFormality == true;
         }
     }
 }

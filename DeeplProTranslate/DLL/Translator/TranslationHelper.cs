@@ -57,8 +57,8 @@ namespace SubtitleEdit.Translator
                 s = Regex.Replace(s, @"\b(W|w)ho's ", "$1ho is ");
                 s = Regex.Replace(s, @"\B'(C|c)ause ", "$1ecause "); // \b (word boundry) does not workig with '
             }
+
             return s;
         }
-
     }
 }

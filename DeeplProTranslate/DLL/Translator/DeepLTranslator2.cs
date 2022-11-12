@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Text;
+using Microsoft.SqlServer.Server;
 
 namespace SubtitleEdit.Translator
 {
@@ -15,26 +17,38 @@ namespace SubtitleEdit.Translator
     {
         private readonly string _apiKey;
         private readonly string _apiUrl;
+        private readonly string _formality;
+        private readonly HttpClient _client;
 
-        public DeepLTranslator2(string apiKey, string apiUrl)
+        public DeepLTranslator2(string apiKey, string apiUrl, string formality)
         {
             _apiKey = apiKey;
             _apiUrl = apiUrl;
+
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                return;
+            }
+
+            _client = new HttpClient();
+            _client.BaseAddress = new Uri(_apiUrl.Trim().TrimEnd('/'));
+            _client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", "DeepL-Auth-Key " + _apiKey);
+            _formality = formality ?? "default";
         }
 
         public List<TranslationPair> GetTranslationPairs()
         {
             return new List<TranslationPair>
             {
-                new TranslationPair("English", "en"),
-                new TranslationPair("German", "de"),
-                new TranslationPair("French", "fr"),
-                new TranslationPair("Spanish", "es"),
-                new TranslationPair("Italian", "it"),
-                new TranslationPair("Dutch", "nl"),
-                new TranslationPair("Polish", "pl"),
-                new TranslationPair("Portuguese", "pt"),
-                new TranslationPair("Russian", "ru"),
+                new TranslationPair("English", "en", true),
+                new TranslationPair("German", "de", true),
+                new TranslationPair("French", "fr", true),
+                new TranslationPair("Spanish", "es", true),
+                new TranslationPair("Italian", "it", true),
+                new TranslationPair("Dutch", "nl", true),
+                new TranslationPair("Polish", "pl", true),
+                new TranslationPair("Portuguese", "pt", true),
+                new TranslationPair("Russian", "ru", true),
                 new TranslationPair("Japanese", "ja"),
                 new TranslationPair("Chinese", "zh"),
                 new TranslationPair("Danish", "da"),
@@ -65,40 +79,25 @@ namespace SubtitleEdit.Translator
             return "https://www.deepl.com";
         }
 
-        public List<string> Translate(string sourceLanguage, string targetLanguage, List<Paragraph> paragraphs, StringBuilder log)
+        public List<string> Translate(string sourceLanguage, string targetLanguage, Paragraph paragraph, StringBuilder log)
         {
-            var baseUrl = _apiUrl.Trim().TrimEnd('/') + "/v2/translate";
-            var input = new StringBuilder();
-            var formattingList = new Formatting[paragraphs.Count];
-            for (var index = 0; index < paragraphs.Count; index++)
+            var formattingList = new Formatting[1];
+            var f = new Formatting();
+            formattingList[0] = f;
+            var text = f.SetTagsAndReturnTrimmed(TranslationHelper.PreTranslate(paragraph.Text, sourceLanguage), sourceLanguage);
+            var postContent = new FormUrlEncodedContent(new[]
             {
-                var p = paragraphs[index];
-                var f = new Formatting();
-                formattingList[index] = f;
-                if (input.Length > 0)
-                {
-                    input.Append("&");
-                }
-
-                var text = f.SetTagsAndReturnTrimmed(TranslationHelper.PreTranslate(p.Text, sourceLanguage), sourceLanguage);
-                input.Append("text=" + Uri.EscapeDataString(text));
-            }
-            // /v2/translate?text=Hallo%20Welt!&source_lang=DE&target_lang=EN&auth_key=123
-            var uri = $"{baseUrl}?{input}&target_lang={targetLanguage}&source_lang={sourceLanguage}&auth_key={_apiKey}";
-            log.AppendLine("GET Request: " + uri + Environment.NewLine);
-            var request = WebRequest.Create(uri);
-            request.ContentType = "application/json";
-            request.ContentLength = 0;
-            request.Method = "GET";
-            var response = request.GetResponse();
-            var reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-            var content = reader.ReadToEnd();
-            log.AppendLine("GET Response: " + uri + Environment.NewLine + "---------------------" + Environment.NewLine);
-            // Example response: { "translations": [ { "detected_source_language": "DE", "text": "Hello World!" } ] }
+                new KeyValuePair<string, string>("text", text),
+                new KeyValuePair<string, string>("target_lang", targetLanguage),
+                new KeyValuePair<string, string>("source_lang", sourceLanguage),
+                new KeyValuePair<string, string>("formality", _formality),
+            });
+            var result = _client.PostAsync("/v2/translate", postContent).Result;
+            var resultContent = result.Content.ReadAsStringAsync().Result;
 
             var resultList = new List<string>();
             var parser = new JsonParser();
-            var x = (Dictionary<string, object>)parser.Parse(content);
+            var x = (Dictionary<string, object>)parser.Parse(resultContent);
             foreach (var k in x.Keys)
             {
                 if (x[k] is List<object> mainList)

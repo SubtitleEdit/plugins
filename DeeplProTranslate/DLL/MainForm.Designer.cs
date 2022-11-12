@@ -48,6 +48,7 @@
             this.comboBoxApiUrl = new System.Windows.Forms.ComboBox();
             this.checkBoxAutoMergeSplit = new System.Windows.Forms.CheckBox();
             this.checkBoxUnbreakLines = new System.Windows.Forms.CheckBox();
+            this.comboBoxFormality = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // listView1
@@ -139,7 +140,7 @@
             // 
             // buttonTranslate
             // 
-            this.buttonTranslate.Location = new System.Drawing.Point(383, 10);
+            this.buttonTranslate.Location = new System.Drawing.Point(601, 9);
             this.buttonTranslate.Name = "buttonTranslate";
             this.buttonTranslate.Size = new System.Drawing.Size(113, 23);
             this.buttonTranslate.TabIndex = 2;
@@ -161,7 +162,7 @@
             // 
             // buttonCancelTranslate
             // 
-            this.buttonCancelTranslate.Location = new System.Drawing.Point(502, 10);
+            this.buttonCancelTranslate.Location = new System.Drawing.Point(720, 9);
             this.buttonCancelTranslate.Name = "buttonCancelTranslate";
             this.buttonCancelTranslate.Size = new System.Drawing.Size(99, 23);
             this.buttonCancelTranslate.TabIndex = 3;
@@ -171,9 +172,11 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(607, 11);
+            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar1.Location = new System.Drawing.Point(113, 536);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(212, 23);
+            this.progressBar1.Size = new System.Drawing.Size(544, 13);
             this.progressBar1.TabIndex = 4;
             this.progressBar1.Visible = false;
             // 
@@ -185,6 +188,7 @@
             this.comboBoxLanguageTo.Name = "comboBoxLanguageTo";
             this.comboBoxLanguageTo.Size = new System.Drawing.Size(112, 21);
             this.comboBoxLanguageTo.TabIndex = 10;
+            this.comboBoxLanguageTo.SelectedIndexChanged += new System.EventHandler(this.comboBoxLanguageTo_SelectedIndexChanged);
             // 
             // linkLabel2
             // 
@@ -247,6 +251,21 @@
             this.checkBoxUnbreakLines.Text = "Unbreak lines";
             this.checkBoxUnbreakLines.UseVisualStyleBackColor = true;
             // 
+            // comboBoxFormality
+            // 
+            this.comboBoxFormality.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxFormality.FormattingEnabled = true;
+            this.comboBoxFormality.Items.AddRange(new object[] {
+            "Formality: default",
+            "more",
+            "less",
+            "prefer_more",
+            "prefer_less"});
+            this.comboBoxFormality.Location = new System.Drawing.Point(383, 11);
+            this.comboBoxFormality.Name = "comboBoxFormality";
+            this.comboBoxFormality.Size = new System.Drawing.Size(212, 21);
+            this.comboBoxFormality.TabIndex = 17;
+            // 
             // MainForm
             // 
             this.AcceptButton = this.buttonOk;
@@ -254,6 +273,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(831, 557);
+            this.Controls.Add(this.comboBoxFormality);
             this.Controls.Add(this.checkBoxUnbreakLines);
             this.Controls.Add(this.checkBoxAutoMergeSplit);
             this.Controls.Add(this.comboBoxApiUrl);
@@ -307,5 +327,6 @@
         private System.Windows.Forms.ComboBox comboBoxApiUrl;
         private System.Windows.Forms.CheckBox checkBoxAutoMergeSplit;
         private System.Windows.Forms.CheckBox checkBoxUnbreakLines;
+        private System.Windows.Forms.ComboBox comboBoxFormality;
     }
 }
