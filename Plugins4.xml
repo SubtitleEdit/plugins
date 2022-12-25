@@ -25,7 +25,7 @@
 		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/LinesUnbreaker.zip</Url>
 		<Author>ivandrofly</Author>
 	</Plugin>
-	<Plugin>
+	<!--<Plugin>
 		<Name>Load from Dropbox</Name>
 		<Description>Load subtitles from Dropbox</Description>
 		<Version>1.6</Version>
@@ -40,7 +40,7 @@
 		<Date>2020-10-22</Date>
 		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/SeDropBoxSave14.zip</Url>
 		<Author>Nikse</Author>
-	</Plugin>
+	</Plugin>-->
 	<Plugin>
 		<Name>Yandex Translate</Name>
 		<Description>Translate with Yandex</Description>
@@ -81,14 +81,14 @@
 		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/CopyPasteTranslate.zip</Url>
 		<Author>Nikse</Author>
 	</Plugin>
-	<Plugin>
+	<!--<Plugin>
 		<Name>PROMPT translate</Name>
 		<Description>Translate with PROMPT</Description>
 		<Version>0.3</Version>
 		<Date>2019-03-03</Date>
 		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/PromptTranslate.zip</Url>
 		<Author>Nikse</Author>
-	</Plugin>
+	</Plugin>-->
 	<Plugin>
 		<Name>Haxor</Name>
 		<Description>Translates subtitle to Haxor</Description>
