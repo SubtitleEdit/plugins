@@ -6,35 +6,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
     public class SeDropBoxSave : IPlugin // dll file name must "<classname>.dll" - e.g. "SyncViaOtherSubtitle.dll"
     {
 
-        string IPlugin.Name
-        {
-            get { return "Save to Dropbox"; }
-        }
+        string IPlugin.Name => "Save to Dropbox";
 
-        string IPlugin.Text
-        {
-            get { return "Save subtitle to Dropbox..."; } // text in interface
-        }
+        string IPlugin.Text => "Save subtitle to Dropbox..."; // text in interface
 
-        decimal IPlugin.Version
-        {
-            get { return 1.6M; }
-        }
+        decimal IPlugin.Version => 1.7M;
 
-        string IPlugin.Description
-        {
-            get { return "Save subtitle to dropbox"; }
-        }
+        string IPlugin.Description => "Save subtitle to dropbox";
 
-        string IPlugin.ActionType // Can be one of these: file, tool, sync, translate, spellcheck
-        {
-            get { return "file"; }
-        }
+        string IPlugin.ActionType => "file"; // Can be one of these: file, tool, sync, translate, spellcheck
 
-        string IPlugin.Shortcut
-        {
-            get { return string.Empty; }
-        }
+        string IPlugin.Shortcut => string.Empty;
 
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {

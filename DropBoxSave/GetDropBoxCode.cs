@@ -22,5 +22,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             DialogResult = DialogResult.Cancel;
         }
+
+        private void GetDropBoxCode_Activated(object sender, EventArgs e)
+        {
+            textBoxCode.Focus();
+        }
     }
 }

@@ -61,8 +61,8 @@ namespace Dropbox.Api
 
         public static string Base64Encode(string plainText)
         {
-            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
-            return System.Convert.ToBase64String(plainTextBytes);
+            var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+            return Convert.ToBase64String(plainTextBytes);
         }
 
         private string GetResponse(Uri uri, string body)
@@ -94,12 +94,21 @@ namespace Dropbox.Api
         public static string FormatBytesToDisplayFileSize(long fileSize)
         {
             if (fileSize <= 1024)
-                return string.Format("{0} bytes", fileSize);
+            {
+                return $"{fileSize} bytes";
+            }
+
             if (fileSize <= 1024 * 1024)
-                return string.Format("{0} kb", fileSize / 1024);
+            {
+                return $"{fileSize / 1024} kb";
+            }
+
             if (fileSize <= 1024 * 1024 * 1024)
-                return string.Format("{0:0.0} mb", (float)fileSize / (1024 * 1024));
-            return string.Format("{0:0.0} gb", (float)fileSize / (1024 * 1024 * 1024));
+            {
+                return $"{(float)fileSize / (1024 * 1024):0.0} mb";
+            }
+
+            return $"{(float)fileSize / (1024 * 1024 * 1024):0.0} gb";
         }
 
         public DropboxFile GetFiles(string path)

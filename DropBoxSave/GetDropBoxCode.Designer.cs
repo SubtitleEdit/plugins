@@ -85,6 +85,7 @@
             this.Controls.Add(this.buttonOk);
             this.Name = "GetDropBoxCode";
             this.Text = "Subtitle Edit - DropBox authorization";
+            this.Activated += new System.EventHandler(this.GetDropBoxCode_Activated);
             this.ResumeLayout(false);
             this.PerformLayout();
 

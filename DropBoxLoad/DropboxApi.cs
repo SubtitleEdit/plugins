@@ -48,10 +48,10 @@ namespace Dropbox.Api
             var response = request.GetResponse();
             var reader = new StreamReader(response.GetResponseStream());
             var json = reader.ReadToEnd();
-            JavaScriptSerializer jss = new JavaScriptSerializer();
-            OAuth2Token oAuth2token = jss.Deserialize<OAuth2Token>(json);
-            Accesstoken = oAuth2token;
-            return oAuth2token;
+            var jss = new JavaScriptSerializer();
+            var oAuth2Token = jss.Deserialize<OAuth2Token>(json);
+            Accesstoken = oAuth2Token;
+            return oAuth2Token;
         }
 
         private string GenerateBasicAuth()
@@ -94,12 +94,21 @@ namespace Dropbox.Api
         public static string FormatBytesToDisplayFileSize(long fileSize)
         {
             if (fileSize <= 1024)
-                return string.Format("{0} bytes", fileSize);
+            {
+                return $"{fileSize} bytes";
+            }
+
             if (fileSize <= 1024 * 1024)
-                return string.Format("{0} kb", fileSize / 1024);
+            {
+                return $"{fileSize / 1024} kb";
+            }
+
             if (fileSize <= 1024 * 1024 * 1024)
-                return string.Format("{0:0.0} mb", (float)fileSize / (1024 * 1024));
-            return string.Format("{0:0.0} gb", (float)fileSize / (1024 * 1024 * 1024));
+            {
+                return $"{(float)fileSize / (1024 * 1024):0.0} mb";
+            }
+
+            return $"{(float)fileSize / (1024 * 1024 * 1024):0.0} gb";
         }
 
         public DropboxFile GetFiles(string path)
@@ -141,10 +150,10 @@ namespace Dropbox.Api
         public DropboxFile DownloadFile(DropboxFile target)
         {
             var uri = new Uri(new Uri(ApiContentServer), "files/download");
-            using (Stream responseStream = GetResponseStream(uri, "{\"path\":\"/" + target.Path.TrimStart('/') + "\"}"))
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (var responseStream = GetResponseStream(uri, "{\"path\":\"/" + target.Path.TrimStart('/') + "\"}"))
+            using (var memoryStream = new MemoryStream())
             {
-                byte[] buffer = new byte[1024];
+                var buffer = new byte[1024];
                 int bytesRead;
                 do
                 {

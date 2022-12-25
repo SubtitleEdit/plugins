@@ -22,5 +22,10 @@ namespace SeDropBoxLoad
         {
             DialogResult = DialogResult.Cancel;
         }
+
+        private void GetDropBoxCode_Activated(object sender, EventArgs e)
+        {
+            textBoxCode.Focus();
+        }
     }
 }

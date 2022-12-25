@@ -48,17 +48,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return Encoding.Unicode.GetString(encodedDataAsBytes);
         }
 
-        private OAuth2Token GetSavedToken()
+        private static OAuth2Token GetSavedToken()
         {
-            string fileName = GetSettingsFileName();
+            var fileName = GetSettingsFileName();
             try
             {
                 var doc = new XmlDocument();
                 doc.Load(fileName);
-                string accessToken = DecodeFrom64(doc.DocumentElement.SelectSingleNode("Accesstoken").InnerText);
-                string uid = DecodeFrom64(doc.DocumentElement.SelectSingleNode("UId").InnerText);
-                string accountId = DecodeFrom64(doc.DocumentElement.SelectSingleNode("AccountId").InnerText);
-                string tokenType = DecodeFrom64(doc.DocumentElement.SelectSingleNode("TokenType").InnerText);
+                var accessToken = DecodeFrom64(doc.DocumentElement.SelectSingleNode("Accesstoken").InnerText);
+                var uid = DecodeFrom64(doc.DocumentElement.SelectSingleNode("UId").InnerText);
+                var accountId = DecodeFrom64(doc.DocumentElement.SelectSingleNode("AccountId").InnerText);
+                var tokenType = DecodeFrom64(doc.DocumentElement.SelectSingleNode("TokenType").InnerText);
                 return new OAuth2Token()
                 {
                     access_token = accessToken,
@@ -75,7 +75,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void SaveToken(OAuth2Token token)
         {
-            string fileName = GetSettingsFileName();
+            var fileName = GetSettingsFileName();
             try
             {
                 var doc = new XmlDocument();
@@ -88,6 +88,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             catch
             {
+                // ignore
             }
         }
 
@@ -115,6 +116,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return;
             }
 
+            buttonOK.Enabled = false;
+            textBoxFileName.Enabled = false;
             labelInfo.Text = "Saving...";
             Refresh();
             _oAuth2Token = GetSavedToken();
@@ -129,6 +132,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             catch (Exception exception)
             {
                 MessageBox.Show(exception.Message);
+            }
+            finally
+            {
+                buttonOK.Enabled = false;
+                textBoxFileName.Enabled = false;
             }
         }
 
@@ -175,6 +183,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     return;
                 }
             }
+
             labelInfo.Text = "Getting file list...";
             Refresh();
             try
@@ -198,6 +207,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 buttonOK.Enabled = false;
                 return;
             }
+
             labelInfo.Text = string.Empty;
             MakeDescriptionPrompt();
         }
@@ -207,9 +217,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             bool overWrite = false;
             if (_fileList != null)
             {
-                foreach (DropboxFile f in _fileList.Contents)
+                foreach (var f in _fileList.Contents)
                 {
-                    if (f.Path.ToLower() == _fileName.ToLower())
+                    if (string.Equals(f.Path, _fileName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         overWrite = true;
                     }
@@ -218,11 +228,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             if (overWrite)
             {
-                labelDescription.Text = string.Format("Save (and overwrite) subtitle '{0}' to your Dropbox SubtitleEdit App folder?", Path.GetFileName(_fileName));
+                labelDescription.Text = $"Save (and overwrite) subtitle '{Path.GetFileName(_fileName)}' to your Dropbox SubtitleEdit App folder?";
             }
             else
             {
-                labelDescription.Text = string.Format("Save subtitle '{0}' to your Dropbox SubtitleEdit App folder?", Path.GetFileName(_fileName));
+                labelDescription.Text = $"Save subtitle '{Path.GetFileName(_fileName)}' to your Dropbox SubtitleEdit App folder?";
             }
 
             buttonOK.Enabled = true;
@@ -235,5 +245,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
             MakeDescriptionPrompt();
         }
 
+        private void textBoxFileName_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                buttonOK_Click(null, null);
+            }
+        }
     }
 }

@@ -73,7 +73,7 @@
             this.labelInfo.AutoSize = true;
             this.labelInfo.Location = new System.Drawing.Point(13, 91);
             this.labelInfo.Name = "labelInfo";
-            this.labelInfo.Size = new System.Drawing.Size(126, 13);
+            this.labelInfo.Size = new System.Drawing.Size(125, 13);
             this.labelInfo.TabIndex = 3;
             this.labelInfo.Text = "Connecting to Dropbox...";
             // 
@@ -94,6 +94,7 @@
             this.textBoxFileName.Size = new System.Drawing.Size(347, 20);
             this.textBoxFileName.TabIndex = 5;
             this.textBoxFileName.TextChanged += new System.EventHandler(this.textBoxFileName_TextChanged);
+            this.textBoxFileName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxFileName_KeyDown);
             // 
             // PluginForm
             // 
