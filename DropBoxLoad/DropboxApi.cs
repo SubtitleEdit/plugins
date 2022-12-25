@@ -30,11 +30,8 @@ namespace Dropbox.Api
 
         public string GetPromptForCodeUrl()
         {
-            var uri = new Uri(OAuthUrl + "authorize");
-            StringBuilder requestUri = new StringBuilder(uri.ToString());
-            requestUri.AppendFormat("?response_type={0}&", "code"); // code will supply an code to be copy pasted - for more info see https://www.dropbox.com/developers/documentation/http/documentation#oauth2-authorize
-            requestUri.AppendFormat("client_id={0}", _appKey);
-            return requestUri.ToString();
+            var uri = new Uri(OAuthUrl + $"authorize?client_id={_appKey}&token_access_type=offline&response_type=code");
+            return uri.ToString();
         }
 
         public OAuth2Token GetAccessToken(string code)

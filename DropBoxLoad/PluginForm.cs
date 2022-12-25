@@ -215,6 +215,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     return;
                 }
             }
+
             labelDescription.Text = string.Empty;
             labelInfo.Text = "Getting file list...";
             Cursor = Cursors.WaitCursor;
@@ -238,11 +239,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 buttonOK.Enabled = false;
                 return;
             }
+
             labelInfo.Text = string.Empty;
             FillListView();
         }
 
-        private string GetLastPart(string path)
+        private static string GetLastPart(string path)
         {
             var idx = path.LastIndexOf("/");
             if (idx < 0)
@@ -252,7 +254,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return path.Remove(0, idx).TrimStart('/');
         }
 
-        private string GetWithoutPart(string path)
+        private static string GetWithoutPart(string path)
         {
             var idx = path.LastIndexOf("/");
             return idx > 0 ? path.Substring(0, idx) : string.Empty;
@@ -278,6 +280,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 item.SubItems.Add(f.Description);
                 listViewFiles.Items.Add(item);
             }
+
             listViewFiles.EndUpdate();
             if (listViewFiles.Items.Count > 0)
             {
@@ -304,7 +307,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     if (f.IsDirectory && f.Description == "..")
                     {
                         listViewFiles.BeginUpdate();
-                        for (int i = 1; i < listViewFiles.Items.Count; i++)
+                        for (var i = 1; i < listViewFiles.Items.Count; i++)
                         {
                             listViewFiles.Items[i].Selected = false;
                         }
