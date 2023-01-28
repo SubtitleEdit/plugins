@@ -120,22 +120,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReverseText", "ReverseText\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersianErrors", "PersianErrors\PersianErrors.csproj", "{FD60BAFA-3AD2-4303-9B02-EA120B9FFF2C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItalicEachLine", "ItalicEachLine\DLL\ItalicEachLine.csproj", "{E1DFE79F-1019-4C28-B396-9ACA436444CD}"
+EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Plugin-Shared\Plugin-Shared.projitems*{143a1481-b4ee-4aa3-8e5e-af1712477f57}*SharedItemsImports = 4
-		Plugin-Shared\Plugin-Shared.projitems*{16b4be52-050a-4161-b0e3-9b07aa5f650b}*SharedItemsImports = 4
-		Plugin-Shared\Plugin-Shared.projitems*{52a7c014-3be1-4c7a-90aa-e864cefc63a0}*SharedItemsImports = 4
-		Plugin-Shared\Plugin-Shared.projitems*{59aa41aa-6c3e-456f-8ec1-3c0c90e31811}*SharedItemsImports = 13
-		Plugin-Shared\Plugin-Shared.projitems*{705be92d-37ff-4320-85fd-90133c009c8c}*SharedItemsImports = 4
-		Plugin-Shared\Plugin-Shared.projitems*{7b7c681e-960e-414f-b5ea-1b9beba71b09}*SharedItemsImports = 4
-		Plugin-Shared\Plugin-Shared.projitems*{8500e79b-a64b-4fdf-924c-b959a93a5717}*SharedItemsImports = 4
-		Plugin-Shared\Plugin-Shared.projitems*{9443a623-77c2-499e-85d2-f7aa77daaa00}*SharedItemsImports = 4
-		Plugin-Shared\Plugin-Shared.projitems*{9e25ee45-e764-444f-9756-fe5479f4914d}*SharedItemsImports = 4
-		Plugin-Shared\Plugin-Shared.projitems*{a075780c-6bab-4e78-9fb2-b477219ddd72}*SharedItemsImports = 4
-		Plugin-Shared\Plugin-Shared.projitems*{d678802e-5d3a-4db0-94e9-104790d3044b}*SharedItemsImports = 4
-		Plugin-Shared\Plugin-Shared.projitems*{e9d300dd-f041-47a8-b395-cf6e35d7a4c2}*SharedItemsImports = 4
-		Plugin-Shared\Plugin-Shared.projitems*{fed0e724-a2aa-4b46-b20e-f1376a191e89}*SharedItemsImports = 4
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -341,6 +328,10 @@ Global
 		{FD60BAFA-3AD2-4303-9B02-EA120B9FFF2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD60BAFA-3AD2-4303-9B02-EA120B9FFF2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD60BAFA-3AD2-4303-9B02-EA120B9FFF2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1DFE79F-1019-4C28-B396-9ACA436444CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1DFE79F-1019-4C28-B396-9ACA436444CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1DFE79F-1019-4C28-B396-9ACA436444CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1DFE79F-1019-4C28-B396-9ACA436444CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -396,8 +387,24 @@ Global
 		{5FF4BA34-CD4D-4971-AD92-15586F72959D} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 		{B34EA26F-366B-48C5-94DE-8149D9115EF9} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 		{FD60BAFA-3AD2-4303-9B02-EA120B9FFF2C} = {5CFB52BC-B6FF-43FA-979D-0C5B0FD05884}
+		{E1DFE79F-1019-4C28-B396-9ACA436444CD} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8BBF401C-6D00-4F22-BFC0-DE2673213D5B}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Plugin-Shared\Plugin-Shared.projitems*{143a1481-b4ee-4aa3-8e5e-af1712477f57}*SharedItemsImports = 4
+		Plugin-Shared\Plugin-Shared.projitems*{16b4be52-050a-4161-b0e3-9b07aa5f650b}*SharedItemsImports = 4
+		Plugin-Shared\Plugin-Shared.projitems*{52a7c014-3be1-4c7a-90aa-e864cefc63a0}*SharedItemsImports = 4
+		Plugin-Shared\Plugin-Shared.projitems*{59aa41aa-6c3e-456f-8ec1-3c0c90e31811}*SharedItemsImports = 13
+		Plugin-Shared\Plugin-Shared.projitems*{705be92d-37ff-4320-85fd-90133c009c8c}*SharedItemsImports = 4
+		Plugin-Shared\Plugin-Shared.projitems*{7b7c681e-960e-414f-b5ea-1b9beba71b09}*SharedItemsImports = 4
+		Plugin-Shared\Plugin-Shared.projitems*{8500e79b-a64b-4fdf-924c-b959a93a5717}*SharedItemsImports = 4
+		Plugin-Shared\Plugin-Shared.projitems*{9443a623-77c2-499e-85d2-f7aa77daaa00}*SharedItemsImports = 4
+		Plugin-Shared\Plugin-Shared.projitems*{9e25ee45-e764-444f-9756-fe5479f4914d}*SharedItemsImports = 4
+		Plugin-Shared\Plugin-Shared.projitems*{a075780c-6bab-4e78-9fb2-b477219ddd72}*SharedItemsImports = 4
+		Plugin-Shared\Plugin-Shared.projitems*{d678802e-5d3a-4db0-94e9-104790d3044b}*SharedItemsImports = 4
+		Plugin-Shared\Plugin-Shared.projitems*{e9d300dd-f041-47a8-b395-cf6e35d7a4c2}*SharedItemsImports = 4
+		Plugin-Shared\Plugin-Shared.projitems*{fed0e724-a2aa-4b46-b20e-f1376a191e89}*SharedItemsImports = 4
 	EndGlobalSection
 EndGlobal
