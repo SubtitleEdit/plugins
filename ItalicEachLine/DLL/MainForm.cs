@@ -143,7 +143,7 @@ namespace ItalicEachLine
                 var item = listView1.Items[index];
                 if (item.Checked)
                 {
-                    var p = _subtitle.Paragraphs[index];
+                    var p = (Paragraph)item.Tag;
                     p.Text = ItalicEachLine(p.Text);
                 }
             }

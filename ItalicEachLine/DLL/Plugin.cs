@@ -6,7 +6,7 @@ using ItalicEachLine.Logic;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    public class ReverseText : IPlugin // dll file name must "<classname>.dll" - e.g. "Haxor.dll"
+    public class ItalicEachLine : IPlugin // dll file name must "<classname>.dll" - e.g. "Haxor.dll"
     {
         string IPlugin.Name => "Italic each line";
 
