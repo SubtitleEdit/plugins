@@ -12,7 +12,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "Italic each line..."; // text in menu
 
-        decimal IPlugin.Version => 0.1M;
+        decimal IPlugin.Version => 0.2M;
 
         string IPlugin.Description => "Close/open italic tags on same line";
 

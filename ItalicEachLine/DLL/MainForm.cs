@@ -138,7 +138,7 @@ namespace ItalicEachLine
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
-            for (var index = 0; index < _subtitle.Paragraphs.Count; index++)
+            for (var index = 0; index < listView1.Items.Count; index++)
             {
                 var item = listView1.Items[index];
                 if (item.Checked)
