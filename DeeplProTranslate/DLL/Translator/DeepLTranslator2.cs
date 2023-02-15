@@ -66,6 +66,9 @@ namespace SubtitleEdit.Translator
                 new TranslationPair("Hungarian", "hu"),
                 new TranslationPair("Indonesian", "fi"),
                 new TranslationPair("Ukranian", "uk"),
+                new TranslationPair("Norwegian (Bokmål)", "nb"),
+                new TranslationPair("Korean", "ko"),
+                new TranslationPair("Turkish", "tk"),
             };
         }
 
