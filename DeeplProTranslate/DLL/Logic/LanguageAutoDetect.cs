@@ -177,7 +177,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 int danishCount = GetCount(text, "siger", "dig", "mig", "mærkelig", "tilbage", "spørge");
                 int dutchCount = GetCount(text, AutoDetectWordsDutch);
                 if (danishCount < 2 && dutchCount < count)
-                    return "no";
+                    return "nb";
             }
 
             count = GetCount(text, AutoDetectWordsSwedish);
