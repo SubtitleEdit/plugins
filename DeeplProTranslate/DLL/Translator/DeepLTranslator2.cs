@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using Microsoft.SqlServer.Server;
+using SubtitleEdit.Logic;
 
 namespace SubtitleEdit.Translator
 {
@@ -97,6 +98,10 @@ namespace SubtitleEdit.Translator
             });
             var result = _client.PostAsync("/v2/translate", postContent).Result;
             var resultContent = result.Content.ReadAsStringAsync().Result;
+            if (result.StatusCode == HttpStatusCode.Forbidden)
+            {
+                throw new BadApiKeyException();
+            }
 
             var resultList = new List<string>();
             var parser = new JsonParser();

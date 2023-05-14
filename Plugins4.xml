@@ -68,8 +68,8 @@
 	<Plugin>
 		<Name>DeepL Pro translate</Name>
 		<Description>DeepL Pro translate: Requires .net 4.6.2+</Description>
-		<Version>1.3</Version>
-		<Date>2023-02-16</Date>
+		<Version>1.4</Version>
+		<Date>2023-05-14</Date>
 		<Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/DeeplProTranslate.zip</Url>
 		<Author>Nikse</Author>
 	</Plugin>

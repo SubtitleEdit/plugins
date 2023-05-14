@@ -181,15 +181,15 @@ namespace SubtitleEdit
 
             if (mergeCount == 1)
             {
-                var arr = Utilities.AutoBreakLine(result[0], 84, 1, language).SplitToLines();
+                var arr = Utilities.SplitToLines(Utilities.AutoBreakLine(result[0], 84, 1, language));
                 if (arr.Length == 1)
                 {
-                    arr = Utilities.AutoBreakLine(result[0], 42, 1, language).SplitToLines();
+                    arr = Utilities.SplitToLines(Utilities.AutoBreakLine(result[0], 42, 1, language));
                 }
 
                 if (arr.Length == 1)
                 {
-                    arr = Utilities.AutoBreakLine(result[0], 22, 1, language).SplitToLines();
+                    arr = Utilities.SplitToLines(Utilities.AutoBreakLine(result[0], 22, 1, language));
                 }
 
                 if (arr.Length == 2)
@@ -481,6 +481,10 @@ namespace SubtitleEdit
                 _from = ((TranslationPair)comboBoxLanguageFrom.Items[comboBoxLanguageFrom.SelectedIndex]).Code;
                 _to = ((TranslationPair)comboBoxLanguageTo.Items[comboBoxLanguageTo.SelectedIndex]).Code;
                 Translate(_from, _to, new DeepLTranslator2(textBoxApiKey.Text, comboBoxApiUrl.Text, GetFormality()), 1);
+            }
+            catch (Logic.BadApiKeyException)
+            {
+                MessageBox.Show("DeepL returned 'Forbidden' - API key is not valid or billing is not enabled.");
             }
             finally
             {

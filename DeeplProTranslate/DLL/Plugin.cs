@@ -11,7 +11,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "Translate with DeepL.com Pro";
 
-        decimal IPlugin.Version => 1.3M;
+        decimal IPlugin.Version => 1.4M;
 
         string IPlugin.Description => "Translate subtitle with DeepL.com API (free or Pro)";
 
@@ -34,7 +34,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
 
             var list = new List<string>();
-            foreach (string line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
+            foreach (var line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
             {
                 list.Add(line);
             }

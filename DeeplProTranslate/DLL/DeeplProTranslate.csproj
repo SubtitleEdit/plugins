@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Logic\BadApiKeyException.cs" />
     <Compile Include="Logic\Configuration.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="Logic\HtmlUtil.cs" />
