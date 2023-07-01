@@ -16,9 +16,10 @@ namespace SubtitleEdit
             Application.SetCompatibleTextRenderingDefault(false);
 
             var sub = new Subtitle();
-            sub.Paragraphs.Add(new Paragraph("<i>Hallo world!</i>", 0, 2000));
-            sub.Paragraphs.Add(new Paragraph("All the right things in his very own coat pocket", 2001, 4000));
-            sub.Paragraphs.Add(new Paragraph("and the pocket is really really big!", 4001, 6000));
+            sub.Paragraphs.Add(new Paragraph("<b>He was one of my favorite little minor</b>", 0, 2000));
+            sub.Paragraphs.Add(new Paragraph("<b>characters in Ulysses,</b>", 2001, 4000));
+            sub.Paragraphs.Add(new Paragraph("<b>but that's why I have</b>", 4001, 6000));
+            sub.Paragraphs.Add(new Paragraph("<b>the hat on and the jacket.</b>", 6001, 8000));
             Application.Run(new MainForm(sub, "translate", "description", null));
         }
     }

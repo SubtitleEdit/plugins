@@ -9,6 +9,8 @@ namespace SubtitleEdit.Translator
     {
         public bool Italic { get; set; }
         public bool ItalicTwoLines { get; set; }
+        public bool Bold { get; set; }
+        public bool BoldTwoLines { get; set; }
         public string StartTags { get; set; }
         public bool AutoBreak { get; set; }
 
@@ -39,6 +41,18 @@ namespace SubtitleEdit.Translator
                 text = text.Substring(3, text.Length - 7);
             }
 
+            // Bold tags
+            if (text.StartsWith("<b>", StringComparison.Ordinal) && text.EndsWith("</b>", StringComparison.Ordinal) && text.Contains("</i>" + Environment.NewLine + "<i>") && Utilities.GetNumberOfLines(text) == 2 && Utilities.CountTagInText(text, "<b>") == 2)
+            {
+                BoldTwoLines = true;
+                text = HtmlUtil.RemoveOpenCloseTags(text, HtmlUtil.TagBold);
+            }
+            else if (text.StartsWith("<b>", StringComparison.Ordinal) && text.EndsWith("</b>", StringComparison.Ordinal) && Utilities.CountTagInText(text, "<b>") == 1)
+            {
+                Bold = true;
+                text = text.Substring(3, text.Length - 7);
+            }
+
             // Un-break line
             var allowedLanguages = new List<string> { "en", "da", "nl", "de", "sv", "nb", "fr", "it" };
             if (allowedLanguages.Contains(source))
@@ -62,7 +76,22 @@ namespace SubtitleEdit.Translator
             // Auto-break line
             if (AutoBreak)
             {
-                text = Utilities.AutoBreakLine(text);
+                text = Utilities.AutoBreakLine(text, 43, 20, "en");
+            }
+
+            // Bold tags
+            if (BoldTwoLines)
+            {
+                var sb = new StringBuilder();
+                foreach (var line in text.SplitToLines())
+                {
+                    sb.AppendLine("<b>" + line + "</b>");
+                }
+                text = sb.ToString().Trim();
+            }
+            else if (Bold)
+            {
+                text = "<b>" + text + "</b>";
             }
 
             // Italic tags
@@ -85,6 +114,5 @@ namespace SubtitleEdit.Translator
 
             return text;
         }
-
     }
 }

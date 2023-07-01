@@ -58,6 +58,8 @@
     <Compile Include="Logic\LanguageAutoDetect.cs" />
     <Compile Include="Logic\SplitHelper.cs" />
     <Compile Include="Logic\StringExtensions.cs" />
+    <Compile Include="Logic\TextSplit.cs" />
+    <Compile Include="Logic\TextSplitResult.cs" />
     <Compile Include="Logic\TinyJsonParser.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

@@ -1,10 +1,11 @@
-﻿using Nikse.SubtitleEdit.PluginLogic;
-using SubtitleEdit.Logic;
+﻿using SubtitleEdit.Logic;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using Nikse.SubtitleEdit.Core.Common;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -28,18 +29,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return s.Replace(Environment.NewLine, "\n").Replace('\r', '\n').Split('\n');
         }
         #endregion
-        internal static string AssemblyVersion
-        {
-            get
-            {
-                return Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            }
-        }
+        internal static string AssemblyVersion => Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
         public static bool IsInteger(string s)
         {
-            int i;
-            return int.TryParse(s, out i);
+            return int.TryParse(s, out _);
         }
 
         public static string RemoveHtmlTags(string s, bool alsoSSA = false)
@@ -86,7 +80,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return s;
         }
 
-        internal unsafe static int NumberOfLines(string text)
+        internal static unsafe int NumberOfLines(string text)
         {
             var ln = 1;
             fixed (char* tPtr = text)
@@ -104,67 +98,31 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public static int CountTagInText(string text, string tag)
         {
-            int count = 0;
-            int index = text.IndexOf(tag, StringComparison.Ordinal);
+            var count = 0;
+            var index = text.IndexOf(tag, StringComparison.Ordinal);
             while (index >= 0)
             {
                 count++;
                 index = index + tag.Length;
                 if (index >= text.Length)
+                {
                     return count;
+                }
+
                 index = text.IndexOf(tag, index, StringComparison.Ordinal);
             }
             return count;
         }
 
-        public static string FixExtraSpaces(this string s)
-        {
-            if (string.IsNullOrEmpty(s))
-                return s;
-            int len = s.Length;
-            int k = -1;
-            for (int i = len - 1; i >= 0; i--)
-            {
-                char ch = s[i];
-                if (k < 2)
-                {
-                    if (ch == 0x20)
-                    {
-                        k = i + 1;
-                    }
-                }
-                else if (ch != 0x20)
-                {
-                    // Two or more white-spaces found!
-                    if (k - (i + 1) > 1)
-                    {
-                        // Keep only one white-space.
-                        s = s.Remove(i + 1, k - (i + 2));
-                    }
-
-                    // No white-space after/before line break.
-                    if ((ch == '\n' || ch == '\r') && i + 1 < s.Length && s[i + 1] == 0x20)
-                    {
-                        s = s.Remove(i + 1, 1);
-                    }
-                    // Reset remove length.
-                    k = -1;
-                }
-                if (ch == 0x20 && i + 1 < s.Length && (s[i + 1] == '\n' || s[i + 1] == '\r'))
-                {
-                    s = s.Remove(i, 1);
-                }
-            }
-            return s;
-        }
-
         public static int GetNumberOfLines(string text)
         {
             if (string.IsNullOrEmpty(text))
+            {
                 return 0;
+            }
 
-            int lines = 1;
-            int idx = text.IndexOf('\n');
+            var lines = 1;
+            var idx = text.IndexOf('\n');
             while (idx >= 0)
             {
                 lines++;
@@ -284,197 +242,153 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return text;
         }
 
-
-
-        public static string AutoBreakLine(string text, string language)
+        public static string RemoveUnicodeControlChars(string input)
         {
-            return AutoBreakLine(text, 43, 22, language);
-        }
-
-        public static string AutoBreakLine(string text)
-        {
-            return AutoBreakLine(text, string.Empty); // no language
-        }
-
-        private static bool CanBreak(string s, int index, string language)
-        {
-            char nextChar;
-            if (index >= 0 && index < s.Length)
-                nextChar = s[index];
-            else
-                return false;
-            if (!"\r\n\t ".Contains(nextChar))
-                return false;
-
-            // Some words we don't like breaking after
-            string s2 = s.Substring(0, index);
-            if (s2.EndsWith("? -", StringComparison.Ordinal) || s2.EndsWith("! -", StringComparison.Ordinal) || s2.EndsWith(". -", StringComparison.Ordinal))
-                return false;
-
-            return true;
-        }
-
-        public static string AutoBreakLineMoreThanTwoLines(string text, int maximumLineLength, string language)
-        {
-            if (text == null || text.Length < 3)
-                return text;
-
-            string s = AutoBreakLine(text, 0, 0, language);
-
-            var arr = s.SplitToLines();
-            if ((arr.Length < 2 && arr[0].Length <= maximumLineLength) || (arr[0].Length <= maximumLineLength && arr[1].Length <= maximumLineLength))
-                return s;
-
-            s = RemoveLineBreaks(s);
-
-            var htmlTags = new Dictionary<int, string>();
-            var sb = new StringBuilder(s.Length);
-            int six = 0;
-            while (six < s.Length)
-            {
-                var letter = s[six];
-                var tagFound = letter == '<' && (s.Substring(six).StartsWith("<font", StringComparison.OrdinalIgnoreCase)
-                                                 || s.Substring(six).StartsWith("</font", StringComparison.OrdinalIgnoreCase)
-                                                 || s.Substring(six).StartsWith("<u", StringComparison.OrdinalIgnoreCase)
-                                                 || s.Substring(six).StartsWith("</u", StringComparison.OrdinalIgnoreCase)
-                                                 || s.Substring(six).StartsWith("<b", StringComparison.OrdinalIgnoreCase)
-                                                 || s.Substring(six).StartsWith("</b", StringComparison.OrdinalIgnoreCase)
-                                                 || s.Substring(six).StartsWith("<i", StringComparison.OrdinalIgnoreCase)
-                                                 || s.Substring(six).StartsWith("</i", StringComparison.OrdinalIgnoreCase));
-                int endIndex = -1;
-                if (tagFound)
-                    endIndex = s.IndexOf('>', six + 1);
-
-                if (tagFound && endIndex > 0)
-                {
-                    string tag = s.Substring(six, endIndex - six + 1);
-                    s = s.Remove(six, tag.Length);
-                    if (htmlTags.ContainsKey(six))
-                        htmlTags[six] = htmlTags[six] + tag;
-                    else
-                        htmlTags.Add(six, tag);
-                }
-                else
-                {
-                    sb.Append(letter);
-                    six++;
-                }
-            }
-            s = sb.ToString();
-
-            var words = s.Split(' ');
-            for (int numberOfLines = 3; numberOfLines < 9999; numberOfLines++)
-            {
-                int average = s.Length / numberOfLines + 1;
-                for (int len = average; len < maximumLineLength; len++)
-                {
-                    List<int> list = SplitToX(words, numberOfLines, len);
-                    bool allOk = true;
-                    foreach (var lineLength in list)
-                    {
-                        if (lineLength > maximumLineLength)
-                            allOk = false;
-                    }
-                    if (allOk)
-                    {
-                        int index = 0;
-                        foreach (var item in list)
-                        {
-                            index += item;
-                            htmlTags.Add(index, Environment.NewLine);
-                        }
-                        s = ReInsertHtmlTags(s, htmlTags);
-                        s = s.Replace(" " + Environment.NewLine, Environment.NewLine);
-                        s = s.Replace(Environment.NewLine + " ", Environment.NewLine);
-                        s = s.Replace(Environment.NewLine + "</i>", "</i>" + Environment.NewLine);
-                        s = s.Replace(Environment.NewLine + "</b>", "</b>" + Environment.NewLine);
-                        s = s.Replace(Environment.NewLine + "</u>", "</u>" + Environment.NewLine);
-                        s = s.Replace(Environment.NewLine + "</font>", "</font>" + Environment.NewLine);
-                        return s.TrimEnd();
-                    }
-                }
-            }
-
-            return text;
-        }
-
-        private static List<int> SplitToX(string[] words, int count, int average)
-        {
-            var list = new List<int>();
-            int currentIdx = 0;
-            int currentCount = 0;
-            foreach (string word in words)
-            {
-                if (currentCount + word.Length + 3 > average && currentIdx < count)
-                {
-                    list.Add(currentCount);
-                    currentIdx++;
-                    currentCount = 0;
-                }
-                currentCount += word.Length + 1;
-            }
-            if (currentIdx < count)
-                list.Add(currentCount);
-            else
-                list[list.Count - 1] += currentCount;
-            return list;
+            return input.Replace("\u200E", string.Empty)
+                .Replace("\u200F", string.Empty)
+                .Replace("\u202A", string.Empty)
+                .Replace("\u202B", string.Empty)
+                .Replace("\u202C", string.Empty)
+                .Replace("\u202D", string.Empty)
+                .Replace("\u202E", string.Empty)
+                .Replace("\u00A0", " "); // no break space
         }
 
         public static string AutoBreakLine(string text, int maximumLength, int mergeLinesShorterThan, string language)
         {
-            if (text == null || text.Length < 3)
-                return text;
+            return AutoBreakLinePrivate(text, maximumLength, mergeLinesShorterThan, language, false);
+        }
 
-            // do not autobreak dialogs
-            if (text.Contains('-') && text.Contains(Environment.NewLine))
+        public static string AutoBreakLine(string text, string language, bool autoBreakLineEndingEarly)
+        {
+            return AutoBreakLinePrivate(text, 43, 30, language, autoBreakLineEndingEarly);
+        }
+
+        public static string AutoBreakLinePrivate(string input, int maximumLength, int mergeLinesShorterThan, string language, bool autoBreakLineEndingEarly)
+        {
+            if (string.IsNullOrEmpty(input) || input.Length < 3)
             {
-                var noTagLines = HtmlUtil.RemoveHtmlTags(text, true).SplitToLines();
-                if (noTagLines.Length == 2)
+                return input;
+            }
+
+            var text = input.Replace('\u00a0', ' '); // replace non-break-space (160 decimal) ascii char with normal space
+            if (!(text.IndexOf(' ') >= 0 || text.IndexOf('\n') >= 0))
+            {
+                if (new[] { "zh", "ja", "ko" }.Contains(language) == false)
                 {
-                    var arr0 = noTagLines[0].Trim().TrimEnd('"', '\'').TrimEnd();
-                    if (arr0.StartsWith('-') && noTagLines[1].TrimStart().StartsWith('-') && arr0.Length > 1 && (".?!)]".Contains(arr0[arr0.Length - 1]) || arr0.EndsWith("--", StringComparison.Ordinal) || arr0.EndsWith('–')))
-                        return text;
+                    return input;
                 }
             }
 
-            string s = RemoveLineBreaks(text);
-            if (HtmlUtil.RemoveHtmlTags(s, true).Length < mergeLinesShorterThan)
+            // do not auto break dialogs or music symbol
+            if (text.Contains(Environment.NewLine) && (text.IndexOf('-') >= 0 || text.IndexOf('♪') >= 0))
             {
+                var sanitizedLines = RemoveUnicodeControlChars(HtmlUtil.RemoveHtmlTags(text, true)).SplitToLines();
+                if (sanitizedLines.Length == 2)
+                {
+                    var arr0 = sanitizedLines[0].Trim().TrimEnd('"', '\'').TrimEnd();
+                    if (language == "ar")
+                    {
+                        if (arr0.EndsWith('-') && sanitizedLines[1].TrimStart().EndsWith('-') && arr0.Length > 1 && (".?!)]♪؟".Contains(arr0[0]) || arr0.StartsWith("--", StringComparison.Ordinal) || arr0.StartsWith('–')))
+                        {
+                            return input;
+                        }
+                    }
+                    else
+                    {
+                        if (arr0.StartsWith('-') && sanitizedLines[1].TrimStart().StartsWith('-') && arr0.Length > 1 && (".?!)]♪؟".Contains(arr0[arr0.Length - 1]) || arr0.EndsWith("--", StringComparison.Ordinal) || arr0.EndsWith('–') || arr0 == "- _" || arr0 == "-_"))
+                        {
+                            return input;
+                        }
+                    }
+                    if (sanitizedLines[0].StartsWith('♪') && sanitizedLines[0].EndsWith('♪') || sanitizedLines[1].StartsWith('♪') && sanitizedLines[0].EndsWith('♪'))
+                    {
+                        return input;
+                    }
+                    if (sanitizedLines[0].StartsWith('[') && sanitizedLines[0].Length > 1 && (".?!)]♪؟".Contains(arr0[arr0.Length - 1]) && (sanitizedLines[1].StartsWith('-') || sanitizedLines[1].StartsWith('['))))
+                    {
+                        return input;
+                    }
+                    if (sanitizedLines[0].StartsWith('-') && sanitizedLines[0].Length > 1 && (".?!)]♪؟".Contains(arr0[arr0.Length - 1]) && (sanitizedLines[1].StartsWith('-') || sanitizedLines[1].StartsWith('['))))
+                    {
+                        if (true)
+                        {
+                            return input;
+                        }
+                    }
+                }
+            }
+
+            var s = RemoveLineBreaks(text);
+            if (s.Length < mergeLinesShorterThan)
+            {
+                var lastIndexOfDash = s.LastIndexOf(" -", StringComparison.Ordinal);
+                if (lastIndexOfDash > 4 && s.Substring(0, lastIndexOfDash).HasSentenceEnding(language))
+                {
+                    s = s.Remove(lastIndexOfDash, 1).Insert(lastIndexOfDash, Environment.NewLine);
+                }
+
                 return s;
             }
 
             var htmlTags = new Dictionary<int, string>();
             var sb = new StringBuilder();
-            int six = 0;
+            var six = 0;
             while (six < s.Length)
             {
                 var letter = s[six];
-                bool tagFound = false;
+                var tagFound = false;
                 if (letter == '<')
                 {
-                    string tagString = s.Substring(six);
+                    var tagString = s.Substring(six);
                     tagFound = tagString.StartsWith("<font", StringComparison.OrdinalIgnoreCase)
-                               || tagString.StartsWith("</font", StringComparison.OrdinalIgnoreCase)
-                               || tagString.StartsWith("<u", StringComparison.OrdinalIgnoreCase)
-                               || tagString.StartsWith("</u", StringComparison.OrdinalIgnoreCase)
-                               || tagString.StartsWith("<b", StringComparison.OrdinalIgnoreCase)
-                               || tagString.StartsWith("</b", StringComparison.OrdinalIgnoreCase)
-                               || tagString.StartsWith("<i", StringComparison.OrdinalIgnoreCase)
-                               || tagString.StartsWith("</i", StringComparison.OrdinalIgnoreCase);
+                            || tagString.StartsWith("</font", StringComparison.OrdinalIgnoreCase)
+                            || tagString.StartsWith("<u", StringComparison.OrdinalIgnoreCase)
+                            || tagString.StartsWith("</u", StringComparison.OrdinalIgnoreCase)
+                            || tagString.StartsWith("<b", StringComparison.OrdinalIgnoreCase)
+                            || tagString.StartsWith("</b", StringComparison.OrdinalIgnoreCase)
+                            || tagString.StartsWith("<i", StringComparison.OrdinalIgnoreCase)
+                            || tagString.StartsWith("</i", StringComparison.OrdinalIgnoreCase);
+                }
+                else if (letter == '{' && s.Substring(six).StartsWith("{\\"))
+                {
+                    var tagString = s.Substring(six);
+                    var endIndexAssTag = tagString.IndexOf('}') + 1;
+                    if (endIndexAssTag > 0)
+                    {
+                        tagString = tagString.Substring(0, endIndexAssTag);
+                        if (htmlTags.ContainsKey(six))
+                        {
+                            htmlTags[six] = htmlTags[six] + tagString;
+                        }
+                        else
+                        {
+                            htmlTags.Add(six, tagString);
+                        }
+
+                        s = s.Remove(six, endIndexAssTag);
+                        continue;
+                    }
                 }
 
-                int endIndex = -1;
+                var endIndex = -1;
                 if (tagFound)
+                {
                     endIndex = s.IndexOf('>', six + 1);
+                }
 
                 if (tagFound && endIndex > 0)
                 {
-                    string tag = s.Substring(six, endIndex - six + 1);
+                    var tag = s.Substring(six, endIndex - six + 1);
                     s = s.Remove(six, tag.Length);
                     if (htmlTags.ContainsKey(six))
-                        htmlTags[six] = htmlTags[six] + tag;
+                    {
+                        htmlTags[six] += tag;
+                    }
                     else
+                    {
                         htmlTags.Add(six, tag);
+                    }
                 }
                 else
                 {
@@ -484,142 +398,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
             s = sb.ToString();
 
-            int splitPos = -1;
-            int mid = s.Length / 2;
-
-            // try to find " - " with uppercase letter after (dialog)
-            if (s.Contains(" - "))
+            var textSplit = new TextSplit(s, maximumLength, language);
+            var split = textSplit.AutoBreak(true, autoBreakLineEndingEarly, false, true);
+            if (split != null)
             {
-                for (int j = 0; j <= (maximumLength / 2) + 5; j++)
-                {
-                    if (mid + j + 4 < s.Length)
-                    {
-                        if (s[mid + j] == '-' && s[mid + j + 1] == ' ' && s[mid + j - 1] == ' ')
-                        {
-                            string rest = s.Substring(mid + j + 1).TrimStart();
-                            if (rest.Length > 0 && char.IsUpper(rest[0]))
-                            {
-                                splitPos = mid + j;
-                                break;
-                            }
-                        }
-                    }
-                    if (mid - (j + 1) > 4)
-                    {
-                        if (s[mid - j] == '-' && s[mid - j + 1] == ' ' && s[mid - j - 1] == ' ')
-                        {
-                            string rest = s.Substring(mid - j + 1).TrimStart();
-                            if (rest.Length > 0 && char.IsUpper(rest[0]))
-                            {
-                                if (mid - j > 5 && s[mid - j - 1] == ' ')
-                                {
-                                    if ("!?.".Contains(s[mid - j - 2]))
-                                    {
-                                        splitPos = mid - j;
-                                        break;
-                                    }
-                                    var first = s.Substring(0, mid - j - 1);
-                                    if (first.EndsWith(".\"", StringComparison.Ordinal) || first.EndsWith("!\"", StringComparison.Ordinal) || first.EndsWith("?\"", StringComparison.Ordinal))
-                                    {
-                                        splitPos = mid - j;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                s = split;
             }
-
-            if (splitPos == maximumLength + 1 && s[maximumLength] != ' ') // only allow space for last char (as it does not count)
-                splitPos = -1;
-
-            if (splitPos < 0)
-            {
-                const string expectedChars1 = ".!?0123456789";
-                const string expectedChars2 = ".!?";
-                for (int j = 0; j < 15; j++)
-                {
-                    if (mid + j + 1 < s.Length && mid + j > 0)
-                    {
-                        if (expectedChars2.Contains(s[mid + j]) && !IsPartOfNumber(s, mid + j) && CanBreak(s, mid + j + 1, language))
-                        {
-                            splitPos = mid + j + 1;
-                            if (expectedChars1.Contains(s[splitPos]))
-                            { // do not break double/tripple end lines like "!!!" or "..."
-                                splitPos++;
-                                if (expectedChars1.Contains(s[mid + j + 1]))
-                                    splitPos++;
-                            }
-                            break;
-                        }
-                        if (expectedChars2.Contains(s[mid - j]) && !IsPartOfNumber(s, mid - j) && CanBreak(s, mid - j, language))
-                        {
-                            splitPos = mid - j;
-                            splitPos++;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (splitPos > maximumLength) // too long first line
-            {
-                if (splitPos != maximumLength + 1 || s[maximumLength] != ' ') // allow for maxlength+1 char to be space (does not count)
-                    splitPos = -1;
-            }
-            else if (splitPos >= 0 && s.Length - splitPos > maximumLength) // too long second line
-            {
-                splitPos = -1;
-            }
-
-            if (splitPos < 0)
-            {
-                const string expectedChars1 = ".!?, ";
-                const string expectedChars2 = " .!?";
-                const string expectedChars3 = ".!?";
-                for (int j = 0; j < 25; j++)
-                {
-                    if (mid + j + 1 < s.Length && mid + j > 0)
-                    {
-                        if (expectedChars1.Contains(s[mid + j]) && !IsPartOfNumber(s, mid + j) && s.Length > mid + j + 2 && CanBreak(s, mid + j, language))
-                        {
-                            splitPos = mid + j;
-                            if (expectedChars2.Contains(s[mid + j + 1]))
-                            {
-                                splitPos++;
-                                if (expectedChars2.Contains(s[mid + j + 2]))
-                                    splitPos++;
-                            }
-                            break;
-                        }
-                        if (expectedChars1.Contains(s[mid - j]) && !IsPartOfNumber(s, mid - j) && s.Length > mid + j + 2 && CanBreak(s, mid - j, language))
-                        {
-                            splitPos = mid - j;
-                            if (expectedChars3.Contains(s[splitPos]))
-                                splitPos--;
-                            if (expectedChars3.Contains(s[splitPos]))
-                                splitPos--;
-                            if (expectedChars3.Contains(s[splitPos]))
-                                splitPos--;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (splitPos < 0)
-            {
-                splitPos = mid;
-                s = s.Insert(mid - 1, Environment.NewLine);
-                s = ReInsertHtmlTags(s, htmlTags);
-                htmlTags = new Dictionary<int, string>();
-                s = s.Replace(Environment.NewLine, "-");
-            }
-            if (splitPos < s.Length - 2)
-                s = s.Substring(0, splitPos) + Environment.NewLine + s.Substring(splitPos);
-
-            s = ReInsertHtmlTags(s, htmlTags);
+            s = ReInsertHtmlTags(s.Replace(Environment.NewLine, " " + Environment.NewLine), htmlTags);
             var idx = s.IndexOf(Environment.NewLine + "</", StringComparison.Ordinal);
             if (idx > 2)
             {
@@ -636,31 +421,72 @@ namespace Nikse.SubtitleEdit.PluginLogic
             return s.TrimEnd();
         }
 
-        public static string RemoveLineBreaks(string s)
+        public static bool HasSentenceEnding(this string value, string twoLetterLanguageCode)
         {
-            s = HtmlUtil.FixUpperTags(s);
+            if (string.IsNullOrEmpty(value))
+            {
+                return false;
+            }
+
+            var s = HtmlUtil.RemoveHtmlTags(value, true).TrimEnd('"').TrimEnd('”');
+            if (s == string.Empty)
+            {
+                return false;
+            }
+
+            var last = s[s.Length - 1];
+            return last == '.' || last == '!' || last == '?' || last == ']' || last == ')' || last == '…' || last == '♪' || last == '؟' ||
+                   twoLetterLanguageCode == "el" && last == ';' || twoLetterLanguageCode == "el" && last == '\u037E' ||
+                   last == '-' && s.Length > 3 && s.EndsWith("--", StringComparison.Ordinal) && char.IsLetter(s[s.Length - 3]) ||
+                   last == '—' && s.Length > 2 && char.IsLetter(s[s.Length - 2]);
+        }
+
+        public static string RemoveLineBreaks(string input)
+        {
+            var s = HtmlUtil.FixUpperTags(input);
+
+            s = s.Replace("</i> " + Environment.NewLine + "<i>", Environment.NewLine);
+            s = s.Replace("</i>" + Environment.NewLine + " <i>", Environment.NewLine);
+            s = s.Replace("</i>" + Environment.NewLine + "<i>", Environment.NewLine);
+
+            s = s.Replace(Environment.NewLine + " </i>", "</i>" + Environment.NewLine);
+            s = s.Replace(Environment.NewLine + " </b>", "</b>" + Environment.NewLine);
+            s = s.Replace(Environment.NewLine + " </u>", "</u>" + Environment.NewLine);
+            s = s.Replace(Environment.NewLine + " </font>", "</font>" + Environment.NewLine);
+
+            s = s.Replace(" " + Environment.NewLine + "</i>", "</i>" + Environment.NewLine);
+            s = s.Replace(" " + Environment.NewLine + "</b>", "</b>" + Environment.NewLine);
+            s = s.Replace(" " + Environment.NewLine + "</u>", "</u>" + Environment.NewLine);
+            s = s.Replace(" " + Environment.NewLine + "</font>", "</font>" + Environment.NewLine);
+
             s = s.Replace(Environment.NewLine + "</i>", "</i>" + Environment.NewLine);
             s = s.Replace(Environment.NewLine + "</b>", "</b>" + Environment.NewLine);
             s = s.Replace(Environment.NewLine + "</u>", "</u>" + Environment.NewLine);
             s = s.Replace(Environment.NewLine + "</font>", "</font>" + Environment.NewLine);
-            s = s.Replace("</i> " + Environment.NewLine + "<i>", " ");
-            s = s.Replace("</i>" + Environment.NewLine + " <i>", " ");
-            s = s.Replace("</i>" + Environment.NewLine + "<i>", " ");
+
+            while (s.Contains(" " + Environment.NewLine))
+            {
+                s = s.Replace(" " + Environment.NewLine, Environment.NewLine);
+            }
+
+            while (s.Contains(Environment.NewLine + " "))
+            {
+                s = s.Replace(Environment.NewLine + " ", Environment.NewLine);
+            }
+
             s = s.Replace(Environment.NewLine, " ");
-            s = s.Replace(" </i>", "</i> ");
-            s = s.Replace(" </b>", "</b> ");
-            s = s.Replace(" </u>", "</u> ");
-            s = s.Replace(" </font>", "</font> ");
-            s = s.FixExtraSpaces();
             return s.Trim();
         }
 
+        /// <summary>
+        /// Note: Requires a space before the NewLine
+        /// </summary>
         private static string ReInsertHtmlTags(string s, Dictionary<int, string> htmlTags)
         {
             if (htmlTags.Count > 0)
             {
                 var sb = new StringBuilder(s.Length);
-                int six = 0;
+                var six = 0;
                 foreach (var letter in s)
                 {
                     if (Environment.NewLine.Contains(letter))
@@ -677,26 +503,60 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         six++;
                     }
                 }
-                if (htmlTags.ContainsKey(six))
+
+                for (var i = 0; i < 15; i++)
                 {
-                    sb.Append(htmlTags[six]);
+                    if (htmlTags.ContainsKey(six + i))
+                    {
+                        sb.Append(htmlTags[six + i]);
+                    }
                 }
+
                 return sb.ToString();
             }
             return s;
         }
 
-        private static bool IsPartOfNumber(string s, int position)
+        internal static bool CanBreak(string s, int index, string language)
         {
-            if (string.IsNullOrWhiteSpace(s) || position + 1 >= s.Length)
-                return false;
-
-            if (position > 0 && @",.".Contains(s[position]))
+            char nextChar;
+            if (index >= 0 && index < s.Length)
             {
-                return char.IsDigit(s[position - 1]) && char.IsDigit(s[position + 1]);
+                nextChar = s[index];
             }
-            return false;
-        }
+            else
+            {
+                return false;
+            }
 
+            if (!"\r\n\t ".Contains(nextChar))
+            {
+                return false;
+            }
+
+            // Some words we don't like breaking after
+            var s2 = s.Substring(0, index);
+            if (s2.EndsWith(" mr.", StringComparison.OrdinalIgnoreCase) ||
+                s2.EndsWith(" dr.", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            if (s2.EndsWith("? -", StringComparison.Ordinal) || s2.EndsWith("! -", StringComparison.Ordinal) || s2.EndsWith(". -", StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            if (nextChar == ' ' && language == "fr" && index + 1 < s.Length)
+            {
+                var nextNext = s[index + 1];
+                if (nextNext == '?' || nextNext == '!' || nextNext == '.')
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
 }

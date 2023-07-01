@@ -2,11 +2,9 @@
 using Nikse.SubtitleEdit.PluginLogic;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using Microsoft.SqlServer.Server;
 using SubtitleEdit.Logic;
 
 namespace SubtitleEdit.Translator

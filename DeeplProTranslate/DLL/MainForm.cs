@@ -86,7 +86,7 @@ namespace SubtitleEdit
             set => base.Text = value;
         }
 
-        private void Translate(string source, string target, DeepLTranslator2 translator, int maxTextSize, int maximumRequestArrayLength = 100)
+        private void Translate(string source, string target, ITranslator translator, int maxTextSize, int maximumRequestArrayLength = 100)
         {
             buttonOk.Enabled = false;
             buttonCancel.Enabled = false;
@@ -113,6 +113,8 @@ namespace SubtitleEdit
 
                     var p = new Paragraph(_subtitleOriginal.Paragraphs[i]);
                     var mergeCount = 0;
+                    var allItalic = false;
+                    var allBold = false;
                     if (autoMergeAndSplit)
                     {
                         if (MergeWithThreeNext(_subtitleOriginal, i, source))
@@ -121,29 +123,48 @@ namespace SubtitleEdit
                             skipIndices.Add(i + 2);
                             skipIndices.Add(i + 3);
                             mergeCount = 3;
-                            p.Text = Utilities.RemoveLineBreaks(p.Text + Environment.NewLine +
-                                                                _subtitleOriginal.Paragraphs[i + 1].Text + Environment.NewLine +
-                                                                _subtitleOriginal.Paragraphs[i + 2].Text);
+                            allItalic = HasAllLinesTag(_subtitleOriginal, i, mergeCount, "i");
+                            allBold = HasAllLinesTag(_subtitleOriginal, i, mergeCount, "b");
+                            p.Text = MergeLines(_subtitleOriginal, i, mergeCount, allItalic, allBold);
+
                         }
                         else if (MergeWithTwoNext(_subtitleOriginal, i, source))
                         {
                             skipIndices.Add(i + 1);
                             skipIndices.Add(i + 2);
                             mergeCount = 2;
-                            p.Text = Utilities.RemoveLineBreaks(p.Text + Environment.NewLine +
-                                                                _subtitleOriginal.Paragraphs[i + 1].Text + Environment.NewLine +
-                                                                _subtitleOriginal.Paragraphs[i + 2].Text);
+                            allItalic = HasAllLinesTag(_subtitleOriginal, i, mergeCount, "i");
+                            allBold = HasAllLinesTag(_subtitleOriginal, i, mergeCount, "b");
+                            p.Text = MergeLines(_subtitleOriginal, i, mergeCount, allItalic, allBold);
                         }
                         else if (MergeWithNext(_subtitleOriginal, i, source))
                         {
                             skipIndices.Add(i + 1);
                             mergeCount = 1;
-                            p.Text = Utilities.RemoveLineBreaks(p.Text + Environment.NewLine + _subtitleOriginal.Paragraphs[i + 1].Text);
+                            allItalic = HasAllLinesTag(_subtitleOriginal, i, mergeCount, "i");
+                            allBold = HasAllLinesTag(_subtitleOriginal, i, mergeCount, "b");
+                            p.Text = MergeLines(_subtitleOriginal, i, mergeCount, allItalic, allBold);
                         }
                     }
 
                     var translateResult = translator.Translate(source, target, p, log);
                     var result = SplitResult(translateResult, mergeCount, source);
+
+                    if (allItalic)
+                    {
+                        for (var k = 0; k < result.Count; k++)
+                        {
+                            result[k] = "<i>" + result[k] + "</i>";
+                        }
+                    }
+
+                    if (allBold)
+                    {
+                        for (var k = 0; k < result.Count; k++)
+                        {
+                            result[k] = "<b>" + result[k] + "</b>";
+                        }
+                    }
 
                     textBoxLog.Text = log.ToString();
                     FillTranslatedText(result, index);
@@ -170,6 +191,49 @@ namespace SubtitleEdit
                 buttonOk.Enabled = true;
                 buttonCancel.Enabled = true;
             }
+        }
+
+        private static string MergeLines(Subtitle subtitle,int i, int mergeCount, bool italic, bool bold)
+        {
+            var sb = new StringBuilder();
+            for (var j = i; j < subtitle.Paragraphs.Count && j <= i + mergeCount; j++)
+            {
+                var text = subtitle.Paragraphs[j].Text.Trim();
+                sb.AppendLine(RemoveAllLinesTag(text, italic, bold));
+            }
+
+            return Utilities.RemoveLineBreaks(sb.ToString());
+        }
+
+        private static string RemoveAllLinesTag(string text, bool allItalic, bool allBold)
+        {
+            if (allItalic)
+            {
+                text = text.Replace("<i>", string.Empty);
+                text = text.Replace("</i>", string.Empty);
+            }
+
+            if (allBold)
+            {
+               text = text.Replace("<b>", string.Empty);
+                text = text.Replace("</b>", string.Empty);
+            }
+
+            return text;
+        }
+
+        private bool HasAllLinesTag(Subtitle subtitle, int i, int mergeCount, string tag)
+        {
+            for (var j = i; j < subtitle.Paragraphs.Count && j <= i + mergeCount; j++)
+            {
+                var text = subtitle.Paragraphs[j].Text.Trim();
+                if (!text.StartsWith("<" + tag + ">") && !text.EndsWith("</" + tag + ">"))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private static List<string> SplitResult(List<string> result, int mergeCount, string language)
