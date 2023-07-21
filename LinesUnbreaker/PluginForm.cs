@@ -105,10 +105,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void AddToListView(ParagraphEventArgs prgEventArgs)
         {
-            string noTagOldText = HtmlUtils.RemoveTags(prgEventArgs.Paragraph.Text);
+            var noTagOldText = HtmlUtils.RemoveTags(prgEventArgs.Paragraph.Text);
 
-            // length of only visilbe characters
-            int lineLength = noTagOldText.Length - (StringUtils.CountTagInText(noTagOldText, Environment.NewLine) * Environment.NewLine.Length);
+            // length of only visible characters
+            var lineLength = noTagOldText.Length - (StringUtils.CountTagInText(noTagOldText, Environment.NewLine) * Environment.NewLine.Length);
 
             var item = new ListViewItem(string.Empty)
             {
@@ -161,23 +161,23 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void ListView1_Resize(object sender, EventArgs e)
         {
-            int exclusiveWidth = 0;
+            var exclusiveWidth = 0;
 
             // text columns indeces
-            int IndexBeforeChanges = listView1.Columns.Count - 2;
-            int IndexAfterChanges = listView1.Columns.Count - 1;
+            var IndexBeforeChanges = listView1.Columns.Count - 2;
+            var IndexAfterChanges = listView1.Columns.Count - 1;
 
             // columns from check-box to line length
-            int count = listView1.Columns.Count - 2;
+            var count = listView1.Columns.Count - 2;
 
             // all columns width excluding last two
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
                 exclusiveWidth += listView1.Columns[i].Width;
             }
 
             // cut in half
-            int remainingWidth = (listView1.Width - exclusiveWidth) >> 1;
+            var remainingWidth = (listView1.Width - exclusiveWidth) >> 1;
 
             // before changes 
             listView1.Columns[IndexBeforeChanges].Width = remainingWidth;
@@ -195,22 +195,28 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public void LoadConfigurations()
         {
-            string configFile = Path.Combine(FileUtils.Plugins, "linesunbreaker-config.xml");
+            var configFile = Path.Combine(FileUtils.Plugins, "linesunbreaker-config.xml");
+            _configs = LoadOrCreateConfiguration(configFile);
+            ApplyConfigurations();
+        }
 
+        private UnBreakConfigs LoadOrCreateConfiguration(string configFile)
+        {
             // load configuration from file
             if (File.Exists(configFile))
             {
-                _configs = UnBreakConfigs.LoadConfiguration(configFile);
+                return UnBreakConfigs.LoadConfiguration(configFile);
             }
 
             // unable to load configuration file
-            if (_configs == null)
-            {
-                // generate and save new configuration file
-                _configs = new UnBreakConfigs(configFile);
-                _configs.SaveConfigurations();
-            }
+            // generate and save new configuration file
+            var newConfig = new UnBreakConfigs(configFile);
+            newConfig.SaveConfigurations();
+            return newConfig;
+        }
 
+        private void ApplyConfigurations()
+        {
             // load configurations
             checkBoxMoods.Checked = _configs.SkipMoods;
             checkBoxSkipDialog.Checked = _configs.SkipDialogs;
@@ -221,6 +227,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 _configs.MaxLineLength = Convert.ToInt32(numericUpDown1.Minimum);
                 numericUpDown1.Minimum = 0;
             }
+
             numericUpDown1.Value = _configs.MaxLineLength;
         }
 
