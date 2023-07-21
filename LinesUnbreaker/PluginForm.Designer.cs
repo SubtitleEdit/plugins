@@ -217,7 +217,6 @@
             this.checkBoxSkipDialog.TabIndex = 6;
             this.checkBoxSkipDialog.Text = "Skip Dialog";
             this.checkBoxSkipDialog.UseVisualStyleBackColor = true;
-            this.checkBoxSkipDialog.CheckedChanged += new System.EventHandler(this.ConfigurationChanged);
             // 
             // checkBoxSkipNarrator
             // 
@@ -229,7 +228,6 @@
             this.checkBoxSkipNarrator.TabIndex = 7;
             this.checkBoxSkipNarrator.Text = "Skip Narrator";
             this.checkBoxSkipNarrator.UseVisualStyleBackColor = true;
-            this.checkBoxSkipNarrator.CheckedChanged += new System.EventHandler(this.ConfigurationChanged);
             // 
             // checkBoxMoods
             // 
@@ -241,7 +239,6 @@
             this.checkBoxMoods.TabIndex = 8;
             this.checkBoxMoods.Text = "Skip Moods";
             this.checkBoxMoods.UseVisualStyleBackColor = true;
-            this.checkBoxMoods.CheckedChanged += new System.EventHandler(this.ConfigurationChanged);
             // 
             // label1
             // 
@@ -269,7 +266,6 @@
             0,
             0,
             0});
-            this.numericUpDown1.ValueChanged += new System.EventHandler(this.ConfigurationChanged);
             // 
             // labelTotal
             // 

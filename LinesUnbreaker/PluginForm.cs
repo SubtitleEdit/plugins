@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
+using Nikse.SubtitleEdit.PluginLogic.Models;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -10,16 +13,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         //private string path = Path.Combine("Plugins", "SeLinesUnbreaker.xml");
         private readonly Subtitle _subtitle;
-        private int _totalFixed;
 
         public string Subtiitle { get; private set; }
 
-        // Var used to track user click.
-        private bool _updateListview;
-
-        private readonly RemoveLineBreak _lineUnbreakerController;
+        private readonly RemoveLineBreak _removeLineBreak;
 
         private UnBreakConfigs _configs;
+        private ICollection<RemoveLineBreakResult> _removeLineBreakItems;
 
         public PluginForm(Subtitle subtitle)
         {
@@ -27,7 +27,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             _subtitle = subtitle;
 
-            // Save user-configuartions on form-close.
+            // Save user-configs on form-close.
             FormClosing += delegate
             {
                 _configs.SaveConfigurations();
@@ -41,22 +41,24 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 System.Diagnostics.Process.Start(StringUtils.DonateUrl);
             };
 
-            // disable triggerer controls
-            ChangeControlsState(false);
-
             LoadConfigurations();
-            _lineUnbreakerController = new RemoveLineBreak(subtitle.Paragraphs, _configs);
-            _lineUnbreakerController.TextUnbreaked += LineUnbreakerControllerTextUnbreaked;
+
+            _removeLineBreak = new RemoveLineBreak(_configs);
+
+            // disable triggers
+            ChangeControlsState(false);
 
             // restore trigger states
             ChangeControlsState(true);
+            
+            checkBoxSkipDialog.CheckedChanged += ConfigurationChanged;
+            checkBoxSkipNarrator.CheckedChanged += ConfigurationChanged;
+            checkBoxMoods.CheckedChanged += ConfigurationChanged;
+            numericUpDown1.ValueChanged += ConfigurationChanged;
+            
             GeneratePreview();
         }
 
-        /// <summary>
-        /// Disable all the control in order to prevent triggering changes event.
-        /// </summary>
-        /// <param name="state"></param>
         private void ChangeControlsState(bool state)
         {
             checkBoxMoods.Enabled = state;
@@ -65,31 +67,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
             numericUpDown1.Enabled = state;
         }
 
-        private void LineUnbreakerControllerTextUnbreaked(object sender, ParagraphEventArgs e)
-        {
-            // Update View
-            if (_updateListview)
-            {
-                _totalFixed++;
-                AddToListView(e);
-            }
-            else // Invoked by button OK.
-            {
-                e.Paragraph.Text = e.NewText;
-            }
-        }
-
         private void GeneratePreview()
         {
-            _totalFixed = 0;
             listView1.BeginUpdate();
             listView1.Items.Clear();
             UpdateConfigurations();
-            _updateListview = true;
-            _lineUnbreakerController.Remove();
+            
+            _removeLineBreakItems = _removeLineBreak.Remove(_subtitle.Paragraphs);
+            foreach (var removeLineBreakResult in _removeLineBreakItems)
+            {
+                AddToListView(removeLineBreakResult);
+            }
 
-            labelTotal.Text = $"Total: {_totalFixed}";
-            labelTotal.ForeColor = _totalFixed < 1 ? Color.Red : Color.Green;
+            labelTotal.Text = $"Total: {_removeLineBreakItems.Count}";
+            labelTotal.ForeColor = _removeLineBreakItems.Count < 1 ? Color.Red : Color.Green;
             listView1.EndUpdate();
             //listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             //listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
@@ -103,9 +94,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _configs.SkipNarrator = checkBoxSkipNarrator.Checked;
         }
 
-        private void AddToListView(ParagraphEventArgs prgEventArgs)
+        private void AddToListView(RemoveLineBreakResult removeResult)
         {
-            var noTagOldText = HtmlUtils.RemoveTags(prgEventArgs.Paragraph.Text);
+            var noTagOldText = HtmlUtils.RemoveTags(removeResult.Paragraph.Text);
 
             // length of only visible characters
             var lineLength = noTagOldText.Length - (StringUtils.CountTagInText(noTagOldText, Environment.NewLine) * Environment.NewLine.Length);
@@ -116,12 +107,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 UseItemStyleForSubItems = true,
                 SubItems =
                 {
-                    prgEventArgs.Paragraph.Number.ToString(),
-                    lineLength.ToString(CultureInfo.InvariantCulture), // line length
-                    StringUtils.GetListViewString(prgEventArgs.Paragraph.Text, true), // old text
-                    StringUtils.GetListViewString(prgEventArgs.NewText, true) // new text
+                    removeResult.Paragraph.Number.ToString(),
+                    lineLength.ToString(CultureInfo.InvariantCulture),
+                    StringUtils.GetListViewString(removeResult.BeforeText, true),
+                    StringUtils.GetListViewString(removeResult.AfterText, true)  
                 },
-                Tag = prgEventArgs
+                Tag = removeResult
             };
             listView1.Items.Add(item);
         }
@@ -133,19 +124,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            _updateListview = false;
-            //_lineUnbreakerController.Action();
-            foreach (ListViewItem lvi in listView1.Items)
+            foreach (var removeLineBreakResult in _removeLineBreakItems)
             {
-                // changes not accepted
-                if (!lvi.Checked)
-                {
-                    continue;
-                }
-
-                // update paragraph with new text
-                var prgEventArgs = (ParagraphEventArgs)lvi.Tag;
-                prgEventArgs.Paragraph.Text = prgEventArgs.NewText;
+                removeLineBreakResult.Paragraph.Text = removeLineBreakResult.AfterText;
             }
             Subtiitle = _subtitle.ToText();
             DialogResult = DialogResult.OK;
@@ -163,7 +144,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             var exclusiveWidth = 0;
 
-            // text columns indeces
+            // text columns indices
             var indexBeforeChanges = listView1.Columns.Count - 2;
             var indexAfterChanges = listView1.Columns.Count - 1;
 
@@ -185,13 +166,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listView1.Columns[indexAfterChanges].Width = remainingWidth;
         }
 
-        private void ConfigurationChanged(object sender, EventArgs e)
-        {
-            if (_updateListview)
-            {
-                GeneratePreview();
-            }
-        }
+        private void ConfigurationChanged(object sender, EventArgs e) => GeneratePreview();
 
         public void LoadConfigurations()
         {
@@ -202,14 +177,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private UnBreakConfigs LoadOrCreateConfiguration(string configFile)
         {
-            // load configuration from file
+            // load
             if (File.Exists(configFile))
             {
                 return UnBreakConfigs.LoadConfiguration(configFile);
             }
-
-            // unable to load configuration file
-            // generate and save new configuration file
+            
+            // create
             var newConfig = new UnBreakConfigs(configFile);
             newConfig.SaveConfigurations();
             return newConfig;
@@ -231,10 +205,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             numericUpDown1.Value = _configs.MaxLineLength;
         }
 
-        public void SaveConfigurations()
-        {
-            _configs.SaveConfigurations();
-        }
+        public void SaveConfigurations() => _configs.SaveConfigurations();
 
         private void ReportProblemToolStripMenuItem_Click(object sender, EventArgs e)
         {

@@ -1,34 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Nikse.SubtitleEdit.PluginLogic.Models;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal class RemoveLineBreak
     {
         private readonly Regex _regexNarrator = new Regex(":\\B", RegexOptions.Compiled);
-        private readonly IList<Paragraph> _paragraphs;
         private readonly UnBreakConfigs _configs;
         private readonly char[] _moodChars = { '(', '[' };
 
-        public event EventHandler<ParagraphEventArgs> TextUnbreaked;
-
-        public RemoveLineBreak(IList<Paragraph> paragraphs, UnBreakConfigs configs)
+        public RemoveLineBreak(UnBreakConfigs configs)
         {
-            _paragraphs = paragraphs;
             _configs = configs;
         }
 
-        public void Remove()
+        public ICollection<RemoveLineBreakResult> Remove(IList<Paragraph> paragraphs)
         {
-            foreach (var p in _paragraphs)
+            var result = new List<RemoveLineBreakResult>();
+            foreach (var paragraph in paragraphs)
             {
-                if (ShouldRemoveLineBreaks(p))
+                if (ShouldRemoveLineBreaks(paragraph))
                 {
-                    var text = RemoveLineBreaks(p.Text);
-                    OnTextUnbreaked(p, text);
+                    var text = RemoveLineBreaks(paragraph.Text);
+                    
+                    result.Add(new RemoveLineBreakResult()
+                    {
+                        Paragraph = paragraph,
+                        AfterText = text
+                    });
                 }
             }
+
+            return result;
         }
         
         private bool ShouldRemoveLineBreaks(Paragraph p)
@@ -46,8 +51,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             return text.Length != p.Text.Length;
         }
-
-        private void OnTextUnbreaked(Paragraph p, string newText) => TextUnbreaked?.Invoke(this, new ParagraphEventArgs(p, newText));
 
         private string RemoveLineBreaks(string text)
         {
