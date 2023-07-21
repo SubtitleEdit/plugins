@@ -17,7 +17,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         // Var used to track user click.
         private bool _updateListview;
 
-        private readonly LinesUnbreakerController _lineUnbreakerController;
+        private readonly RemoveLineBreak _lineUnbreakerController;
 
         private UnBreakConfigs _configs;
 
@@ -45,7 +45,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             ChangeControlsState(false);
 
             LoadConfigurations();
-            _lineUnbreakerController = new LinesUnbreakerController(subtitle.Paragraphs, _configs);
+            _lineUnbreakerController = new RemoveLineBreak(subtitle.Paragraphs, _configs);
             _lineUnbreakerController.TextUnbreaked += LineUnbreakerControllerTextUnbreaked;
 
             // restore trigger states
@@ -86,7 +86,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listView1.Items.Clear();
             UpdateConfigurations();
             _updateListview = true;
-            _lineUnbreakerController.Action();
+            _lineUnbreakerController.Remove();
 
             labelTotal.Text = $"Total: {_totalFixed}";
             labelTotal.ForeColor = _totalFixed < 1 ? Color.Red : Color.Green;
@@ -164,8 +164,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var exclusiveWidth = 0;
 
             // text columns indeces
-            var IndexBeforeChanges = listView1.Columns.Count - 2;
-            var IndexAfterChanges = listView1.Columns.Count - 1;
+            var indexBeforeChanges = listView1.Columns.Count - 2;
+            var indexAfterChanges = listView1.Columns.Count - 1;
 
             // columns from check-box to line length
             var count = listView1.Columns.Count - 2;
@@ -180,9 +180,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var remainingWidth = (listView1.Width - exclusiveWidth) >> 1;
 
             // before changes 
-            listView1.Columns[IndexBeforeChanges].Width = remainingWidth;
+            listView1.Columns[indexBeforeChanges].Width = remainingWidth;
             // after changes
-            listView1.Columns[IndexAfterChanges].Width = remainingWidth;
+            listView1.Columns[indexAfterChanges].Width = remainingWidth;
         }
 
         private void ConfigurationChanged(object sender, EventArgs e)
@@ -241,20 +241,22 @@ namespace Nikse.SubtitleEdit.PluginLogic
             System.Diagnostics.Process.Start("https://github.com/SubtitleEdit/plugins/issues/new");
         }
 
-        private void CheckAllToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SetAllItemsChecked(bool isChecked)
         {
             foreach (ListViewItem lvi in listView1.Items)
             {
-                lvi.Checked = true;
+                lvi.Checked = isChecked;
             }
+        }
+
+        private void CheckAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetAllItemsChecked(true);
         }
 
         private void UncheckAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            foreach (ListViewItem lvi in listView1.Items)
-            {
-                lvi.Checked = false;
-            }
+            SetAllItemsChecked(false);
         }
 
         private void InvertCheckedToolStripMenuItem_Click(object sender, EventArgs e)
