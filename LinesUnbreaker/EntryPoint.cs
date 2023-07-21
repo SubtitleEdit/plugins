@@ -7,7 +7,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         // Metadata
         string IPlugin.Name => "Lines Unbreaker";
         string IPlugin.Text => "Lines Unbreaker";
-        decimal IPlugin.Version => 2.3M;
+        decimal IPlugin.Version => 2.4M;
         string IPlugin.Description => "Helps unbreaking unnecessary shorten lines.";
         string IPlugin.ActionType => "tool";
         string IPlugin.Shortcut => string.Empty;
@@ -25,11 +25,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 Options.UILineBreak = listViewLineSeparatorString;
             }
 
-            var list = subtitle.SplitToLines();
+            var lines = subtitle.SplitToLines();
 
-            var srt = new SubRip();
-            var sub = new Subtitle(srt);
-            srt.LoadSubtitle(sub, list, subtitleFileName);
+            var subRipFormat = new SubRip();
+            var sub = new Subtitle(subRipFormat);
+            subRipFormat.LoadSubtitle(sub, lines, subtitleFileName);
+            
             using (var form = new PluginForm(sub))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
