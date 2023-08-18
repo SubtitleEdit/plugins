@@ -1,38 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using Nikse.SubtitleEdit.PluginLogic.Strategies;
+using Nikse.SubtitleEdit.PluginLogic.Converters.Strategies;
 
-namespace Nikse.SubtitleEdit.PluginLogic.Commands
+namespace Nikse.SubtitleEdit.PluginLogic.Converters
 {
-    public class StyleMoodsCommand : ICommand
+    public class MoodCasingConverter : ICasingConverter
     {
         private static readonly char[] Symbols = {'.', '!', '?', ')', ']'};
         private static readonly char[] HiChars = {'(', '['};
 
-        private IStrategy Strategy { get; }
+        private IConverterStrategy ConverterStrategy { get; }
 
-        public StyleMoodsCommand(IStrategy strategy)
+        public MoodCasingConverter(IConverterStrategy converterStrategy)
         {
-            Strategy = strategy;
+            ConverterStrategy = converterStrategy;
         }
 
-        public void Convert(IList<Paragraph> paragraphs, IController controller)
+        public void Convert(IList<Paragraph> paragraphs, ConverterContext converterContext)
         {
             foreach (var paragraph in paragraphs)
             {
-                string text = paragraph.Text;
+                var text = paragraph.Text;
 
                 // doesn't have balanced brackets. O(2n)
                 if (!(HasBalancedParentheses(text) && HasBalancedBrackets(text)))
                 {
-                    controller.AddResult(text, text, "Line contains unbalanced []/()", paragraph);
+                    converterContext.AddResult(text, text, "Line contains unbalanced []/()", paragraph);
                 }
 
-                string output = MoodsToUppercase(text);
+                var output = MoodsToUppercase(text);
 
                 if (!output.Equals(paragraph.Text, StringComparison.Ordinal))
                 {
-                    controller.AddResult(paragraph.Text, output, "Moods", paragraph);
+                    converterContext.AddResult(paragraph.Text, output, "Moods", paragraph);
                 }
             }
         }
@@ -46,24 +46,24 @@ namespace Nikse.SubtitleEdit.PluginLogic.Commands
             text = text.Replace("( )", string.Empty);
             text = text.Replace("[ ]", string.Empty);
 
-            if (!IsQualifedMoods(text))
+            if (!IsQualifiedMoods(text))
             {
                 return text;
             }
 
-            int idx = text.IndexOfAny(HiChars);
-            char openChar = text[idx];
-            char closeChar = openChar == '(' ? ')' : ']';
+            var idx = text.IndexOfAny(HiChars);
+            var openChar = text[idx];
+            var closeChar = openChar == '(' ? ')' : ']';
             do
             {
-                int endIdx = text.IndexOf(closeChar, idx + 1); // ] or )
+                var endIdx = text.IndexOf(closeChar, idx + 1); // ] or )
                 // There most be at lease one chars inside brackets.
                 if (endIdx < idx + 2)
                 {
                     break;
                 }
 
-                string moodText = text.Substring(idx, endIdx - idx + 1);
+                var moodText = text.Substring(idx, endIdx - idx + 1);
                 text = text.Remove(idx, moodText.Length);
                 if (string.IsNullOrWhiteSpace(HtmlUtils.RemoveTags(moodText, true)))
                 {
@@ -71,8 +71,8 @@ namespace Nikse.SubtitleEdit.PluginLogic.Commands
                 }
                 else
                 {
-                    string textBetween = moodText.Substring(1, moodText.Length - 2);
-                    text = text.Insert(idx, $"{moodText[0]}{Strategy.Execute(textBetween)}{moodText[moodText.Length-1]}");
+                    var textBetween = moodText.Substring(1, moodText.Length - 2);
+                    text = text.Insert(idx, $"{moodText[0]}{ConverterStrategy.Execute(textBetween)}{moodText[moodText.Length-1]}");
                     idx = text.IndexOf(openChar, endIdx + 1); // ( or [
                 }
             } while (idx >= 0);
@@ -80,20 +80,19 @@ namespace Nikse.SubtitleEdit.PluginLogic.Commands
             return text;
         }
 
-
         public string ConvertMoods(string text)
         {
-            int j = 0;
-            for (int i = text.Length - 1; i > 0; i--)
+            var j = 0;
+            for (var i = text.Length - 1; i > 0; i--)
             {
-                char ch = text[i];
+                var ch = text[i];
                 if (ch == ')')
                 {
                     j = i;
                 }
                 else if (ch == '(' && j > i)
                 {
-                    string textInRange = Strategy.Execute(text.Substring(i + 1, j - i - 1));
+                    var textInRange = ConverterStrategy.Execute(text.Substring(i + 1, j - i - 1));
                     text = text.Remove(i, j + 1 - i).Insert(i, textInRange);
                     j = -1;
                 }
@@ -104,10 +103,10 @@ namespace Nikse.SubtitleEdit.PluginLogic.Commands
 
         public bool HasBalancedParentheses(string input)
         {
-            int count = 0;
-            for (int i = input.Length - 1; i >= 0; i--)
+            var count = 0;
+            for (var i = input.Length - 1; i >= 0; i--)
             {
-                char ch = input[i];
+                var ch = input[i];
                 if (ch == ')')
                 {
                     count++;
@@ -139,10 +138,10 @@ namespace Nikse.SubtitleEdit.PluginLogic.Commands
 
         public bool HasBalancedBrackets(string input)
         {
-            int count = 0;
-            for (int i = input.Length - 1; i >= 0; i--)
+            var count = 0;
+            for (var i = input.Length - 1; i >= 0; i--)
             {
-                char ch = input[i];
+                var ch = input[i];
                 if (ch == ']')
                 {
                     count++;
@@ -172,15 +171,14 @@ namespace Nikse.SubtitleEdit.PluginLogic.Commands
             return count == 0;
         }
 
-
-        private static bool IsQualifedMoods(string text)
+        private static bool IsQualifiedMoods(string text)
         {
             if (text == null)
             {
                 return false;
             }
 
-            int idx = text.IndexOfAny(HiChars);
+            var idx = text.IndexOfAny(HiChars);
             return (idx >= 0 && idx + 1 < text.Length);
         }
     }

@@ -1,4 +1,6 @@
-﻿namespace Nikse.SubtitleEdit.PluginLogic
+﻿using Nikse.SubtitleEdit.PluginLogic.Enums;
+
+namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class HiConfigs : Configuration<HiConfigs>
     {

@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 
-namespace Nikse.SubtitleEdit.PluginLogic.Strategies
+namespace Nikse.SubtitleEdit.PluginLogic.Converters.Strategies
 {
-    public class TitleWordsStrategy : IStrategy
+    public class TitleWordsConverterStrategy : IConverterStrategy
     {
         public string Name => "Title words";
 

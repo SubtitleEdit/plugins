@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 
-namespace Nikse.SubtitleEdit.PluginLogic.Strategies
+namespace Nikse.SubtitleEdit.PluginLogic.Converters.Strategies
 {
-    public class UpperLowercase : IStrategy
+    public class UpperLowercase : IConverterStrategy
     {
         public string Name => "UpperLower case";
 

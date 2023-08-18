@@ -10,10 +10,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Nikse.SubtitleEdit.PluginLogic</RootNamespace>
     <AssemblyName>HI2UC</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -55,10 +53,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\ICommand.cs" />
-    <Compile Include="Commands\RemoveExtraSpaceCommand.cs" />
-    <Compile Include="Commands\StyleMoodsCommand.cs" />
-    <Compile Include="Commands\StyleNarratorCommand.cs" />
+    <Compile Include="Converters\ICasingConverter.cs" />
+    <Compile Include="Converters\MoodCasingConverter.cs" />
+    <Compile Include="Converters\NarratorCasingConverter.cs" />
+    <Compile Include="Converters\Strategies\ConverterContext.cs" />
+    <Compile Include="Converters\Strategies\IConverterStrategy.cs" />
+    <Compile Include="Converters\Strategies\LowercaseConverterStrategy.cs" />
+    <Compile Include="Converters\Strategies\NoneConverterStrategy.cs" />
+    <Compile Include="Converters\Strategies\TitleCaseConverterStrategy.cs" />
+    <Compile Include="Converters\Strategies\TitleWordsConverterStrategy.cs" />
+    <Compile Include="Converters\Strategies\UppercaseConverterStrategy.cs" />
+    <Compile Include="Converters\Strategies\UpperLowercase.cs" />
     <Compile Include="Enums\HIStyle.cs" />
     <Compile Include="Models\HIConfigs.cs" />
     <Compile Include="Models\Record.cs" />
@@ -75,15 +80,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Strategies\Controller.cs" />
-    <Compile Include="Strategies\IController.cs" />
-    <Compile Include="Strategies\IStrategy.cs" />
-    <Compile Include="Strategies\LowercaseStrategy.cs" />
-    <Compile Include="Strategies\NoneStrategy.cs" />
-    <Compile Include="Strategies\TitlecaseStrategy.cs" />
-    <Compile Include="Strategies\TitleWordsStrategy.cs" />
-    <Compile Include="Strategies\UppercaseStrategy.cs" />
-    <Compile Include="Strategies\UpperLowercase.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="PluginForm.resx">

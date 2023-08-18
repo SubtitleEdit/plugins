@@ -1,6 +1,6 @@
-﻿namespace Nikse.SubtitleEdit.PluginLogic.Strategies
+﻿namespace Nikse.SubtitleEdit.PluginLogic.Converters.Strategies
 {
-    public class LowercaseStrategy : IStrategy
+    public class LowercaseConverterStrategy : IConverterStrategy
     {
         // todo: add cultureinfo
         public string Name => "Lowercase";

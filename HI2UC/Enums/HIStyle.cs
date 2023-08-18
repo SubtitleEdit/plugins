@@ -1,4 +1,4 @@
-﻿namespace Nikse.SubtitleEdit.PluginLogic
+﻿namespace Nikse.SubtitleEdit.PluginLogic.Enums
 {
     public enum HiStyle
     {

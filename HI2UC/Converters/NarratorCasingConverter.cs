@@ -1,30 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using Nikse.SubtitleEdit.PluginLogic.Strategies;
+using Nikse.SubtitleEdit.PluginLogic.Converters.Strategies;
 
-namespace Nikse.SubtitleEdit.PluginLogic.Commands
+namespace Nikse.SubtitleEdit.PluginLogic.Converters
 {
-    public class StyleNarratorCommand : ICommand
+    public class NarratorCasingConverter : ICasingConverter
     {
         private static readonly char[] LineCloseChars = {'!', '?', '¿', '¡'};
         private static readonly char[] Symbols = {'.', '!', '?', ')', ']'};
 
-        public IStrategy Strategy { get; }
+        public IConverterStrategy ConverterStrategy { get; }
 
-        public StyleNarratorCommand(IStrategy strategy)
+        public NarratorCasingConverter(IConverterStrategy converterStrategy)
         {
-            Strategy = strategy;
+            ConverterStrategy = converterStrategy;
         }
 
-        public void Convert(IList<Paragraph> paragraph, IController controller)
+        public void Convert(IList<Paragraph> paragraphs, ConverterContext converterContext)
         {
-            foreach (var p in paragraph)
+            foreach (var p in paragraphs)
             {
                 string input = p.Text;
                 string output = NarratorToUppercase(p.Text);
                 if (!input.Equals(output, StringComparison.Ordinal))
                 {
-                    controller.AddResult(input, output, "Narrator converted", p);
+                    converterContext.AddResult(input, output, "Narrator converted", p);
                 }
             }
         }
@@ -78,7 +78,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Commands
                     // Find index from original text.
                     colonIdx = line.IndexOf(':') + 1;
                     string preText = line.Substring(0, colonIdx);
-                    preText = Strategy.Execute(preText);
+                    preText = ConverterStrategy.Execute(preText);
                     lines[i] = preText + line.Substring(colonIdx);
                 }
             }
@@ -116,7 +116,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Commands
                         k++;
                     }
 
-                    string textFromRange = Strategy.Execute(text.Substring(k, j - k));
+                    string textFromRange = ConverterStrategy.Execute(text.Substring(k, j - k));
                     text = text.Remove(k, j - k).Insert(k, textFromRange);
                 }
             }

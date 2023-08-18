@@ -5,18 +5,16 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
 using System.Windows.Forms;
-using Nikse.SubtitleEdit.PluginLogic.Commands;
-using Nikse.SubtitleEdit.PluginLogic.Strategies;
+using Nikse.SubtitleEdit.PluginLogic.Converters;
+using Nikse.SubtitleEdit.PluginLogic.Converters.Strategies;
+using Nikse.SubtitleEdit.PluginLogic.Models;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     internal partial class PluginForm : Form, IConfigurable
     {
-        private const int AfterTextIndex = 4;
         private static readonly Color Color = Color.FromArgb(41, 57, 85);
-        private readonly LinearGradientBrush _gradientBrush;
         public string Subtitle { get; private set; }
         private readonly Subtitle _subtitle;
 
@@ -26,14 +24,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
         //private Context _hearingImpaired;
         private readonly bool _isLoading;
 
-        private IStrategy _strategy = new TitlecaseStrategy();
-
         public PluginForm(Subtitle subtitle, string name, string description)
         {
             InitializeComponent();
 
             //SetControlColor(this);
-            _gradientBrush = new LinearGradientBrush(ClientRectangle, Color, Color.White, 0f);
+            new LinearGradientBrush(ClientRectangle, Color, Color.White, 0f);
 
             Text = $@"{name} - v{System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(2)}";
 
@@ -149,12 +145,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void InitComboBoxHiStyle()
         {
-            comboBoxStyle.Items.Add(new NoneStrategy());
-            comboBoxStyle.Items.Add(new TitlecaseStrategy());
-            comboBoxStyle.Items.Add(new UppercaseStrategy());
-            comboBoxStyle.Items.Add(new LowercaseStrategy());
+            comboBoxStyle.Items.Add(new NoneConverterStrategy());
+            comboBoxStyle.Items.Add(new TitleCaseConverterStrategy());
+            comboBoxStyle.Items.Add(new UppercaseConverterStrategy());
+            comboBoxStyle.Items.Add(new LowercaseConverterStrategy());
             comboBoxStyle.Items.Add(new UpperLowercase());
-            comboBoxStyle.Items.Add(new TitleWordsStrategy());
+            comboBoxStyle.Items.Add(new TitleWordsConverterStrategy());
             // set default selected to titlecase
             comboBoxStyle.SelectedIndex = 1;
         }
@@ -288,8 +284,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listViewFixes.BeginUpdate();
             listViewFixes.Items.Clear();
 
-            var controller = new Controller();
-            foreach (ICommand command in GetCommands())
+            var controller = new ConverterContext();
+            foreach (ICasingConverter command in GetCommands())
             {
                 command.Convert(_subtitle.Paragraphs, controller);
             }
@@ -351,28 +347,28 @@ namespace Nikse.SubtitleEdit.PluginLogic
             GeneratePreview();
         }
 
-        private ICollection<ICommand> GetCommands()
+        private ICollection<ICasingConverter> GetCommands()
         {
-            var commands = new List<ICommand>();
-            if (checkBoxRemoveSpaces.Checked)
-            {
-                commands.Add(new RemoveExtraSpaceCommand());
-            }
+            var commands = new List<ICasingConverter>();
+            // if (checkBoxRemoveSpaces.Checked)
+            // {
+            //     commands.Add(new RemoveExtraSpaceCasingConverter());
+            // }
 
             if (checkBoxMoods.Checked)
             {
-                commands.Add(new StyleMoodsCommand(GetStrategy()));
+                commands.Add(new MoodCasingConverter(GetStrategy()));
             }
 
             if (checkBoxNames.Checked)
             {
-                commands.Add(new StyleNarratorCommand(GetStrategy()));
+                commands.Add(new NarratorCasingConverter(GetStrategy()));
             }
 
             return commands;
         }
 
-        private IStrategy GetStrategy() => (IStrategy) comboBoxStyle.SelectedItem;
+        private IConverterStrategy GetStrategy() => (IConverterStrategy) comboBoxStyle.SelectedItem;
 
         public void LoadConfigurations()
         {

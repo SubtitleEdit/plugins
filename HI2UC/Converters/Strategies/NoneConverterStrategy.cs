@@ -1,6 +1,6 @@
-﻿namespace Nikse.SubtitleEdit.PluginLogic.Strategies
+﻿namespace Nikse.SubtitleEdit.PluginLogic.Converters.Strategies
 {
-    public class NoneStrategy : IStrategy
+    public class NoneConverterStrategy : IConverterStrategy
     {
         public string Name => "None";
         public string Execute(string input) => input;
