@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace Nikse.SubtitleEdit.PluginLogic.Strategies
+namespace Nikse.SubtitleEdit.PluginLogic.Converters.Strategies
 {
     public static class ExtensionMethods
     {
@@ -10,6 +10,8 @@ namespace Nikse.SubtitleEdit.PluginLogic.Strategies
             if (ci == null)
             {
                 ci = CultureInfo.CurrentCulture;
+                // todo: use instead?
+                // ci.TextInfo.ToTitleCase()
             }
 
             if (si.LengthInTextElements > 0)
@@ -26,9 +28,9 @@ namespace Nikse.SubtitleEdit.PluginLogic.Strategies
         }
     }
 
-    public class TitlecaseStrategy : IStrategy
+    public class TitleCaseConverterStrategy : IConverterStrategy
     {
-        public string Name => "Title case";
+        public string Name => "Title case (sentence)";
 
         public string Execute(string input) => input.CapitalizeFirstLetter();
 

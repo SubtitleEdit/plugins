@@ -41,14 +41,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // Trace.WriteLine(Name);
 
             Name = assemblyName.Name;
-            Text = assemblyName.Name;
+            Text = "Hearing Impaired to Uppercase";
             Description = descriptionAttribute.Description;
 
             // use invariant-culture due to some culture uses "," as decimal separator
-            Version = decimal.Parse(assemblyName.Version.ToString(2), System.Globalization.CultureInfo.InvariantCulture);
+            Version = decimal.Parse(assemblyName.Version.ToString(2),
+                System.Globalization.CultureInfo.InvariantCulture);
             Shortcut = string.Empty;
         }
-
 
         public string DoAction(Form parentForm, string srtText, double frame, string uiLineBreak, string file,
             string videoFile, string rawText)

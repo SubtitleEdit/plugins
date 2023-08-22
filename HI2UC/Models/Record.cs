@@ -1,4 +1,4 @@
-﻿namespace Nikse.SubtitleEdit.PluginLogic.Strategies
+﻿namespace Nikse.SubtitleEdit.PluginLogic.Models
 {
     public class Record
     {
