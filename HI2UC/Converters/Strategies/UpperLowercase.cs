@@ -4,22 +4,51 @@ namespace Nikse.SubtitleEdit.PluginLogic.Converters.Strategies
 {
     public class UpperLowercase : IConverterStrategy
     {
-        public string Name => "UpperLower case";
+        public string Name => "Toggle case";
 
+
+        private bool IsOpenTag(char ch) => ch == '<' || ch == '{';
+
+        private static char GetClosingPair(char ch) => ch == '<' ? '>' : '}';
+        
         public string Execute(string input)
         {
-            var state = true;
-            return string.Join(string.Empty, input.Select(ch =>
+            var buffer = new char[input.Length];
+            var len = input.Length;
+            var writeTrack = 0;
+            var caseState = true;
+            for (var i = 0; i < len; i++)
             {
-                if (!char.IsLetter(ch))
+                var ch = input[i];
+                // skip tags
+                if (IsOpenTag(ch))
                 {
-                    return ch;
+                    var closingPair = GetClosingPair(ch);
+                    // look for closing tag
+                    while (input[i] != closingPair)
+                    {
+                        buffer[writeTrack++] = ch;
+                        if (++i == len)
+                        {
+                            return input;
+                        }
+
+                        ch = input[i];
+                    }
                 }
 
-                char output = state ? char.ToUpper(ch) : char.ToLower(ch);
-                state = !state;
-                return output;
-            }));
+                if (!char.IsLetter(ch))
+                {
+                    buffer[writeTrack++] = ch;
+                }
+                else
+                {
+                    buffer[writeTrack++] = caseState ? char.ToUpper(ch) : char.ToLower(ch);
+                    caseState = !caseState;
+                }
+            }
+
+            return new string(buffer, 0, writeTrack);
         }
 
         public override string ToString() => Name;

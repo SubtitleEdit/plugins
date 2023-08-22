@@ -6,7 +6,6 @@ namespace Nikse.SubtitleEdit.PluginLogic.Converters
 {
     public class MoodCasingConverter : ICasingConverter
     {
-        private static readonly char[] Symbols = {'.', '!', '?', ')', ']'};
         private static readonly char[] HiChars = {'(', '['};
 
         private IConverterStrategy ConverterStrategy { get; }
@@ -23,7 +22,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Converters
                 var text = paragraph.Text;
 
                 // doesn't have balanced brackets. O(2n)
-                if (!(HasBalancedParentheses(text) && HasBalancedBrackets(text)))
+                if (!HasBalancedParentheses(text))
                 {
                     converterContext.AddResult(text, text, "Line contains unbalanced []/()", paragraph);
                 }
@@ -37,141 +36,97 @@ namespace Nikse.SubtitleEdit.PluginLogic.Converters
             }
         }
 
+        private string RemoveInvalid(string input)
+        {
+            input = input.Replace("()", string.Empty);
+            input = input.Replace("()", string.Empty);
+            input = input.Replace("( )", string.Empty);
+            return input.Replace("[ ]", string.Empty);
+        }
+
         public string MoodsToUppercase(string text)
         {
-            // <font color="#ff00ff">(SIGHS)</font>
-            // Remove invalid tags.
-            text = text.Replace("()", string.Empty);
-            text = text.Replace("()", string.Empty);
-            text = text.Replace("( )", string.Empty);
-            text = text.Replace("[ ]", string.Empty);
+            text = RemoveInvalid(text);
 
-            if (!IsQualifiedMoods(text))
+            if (!HasValidMood(text))
             {
                 return text;
             }
 
-            var idx = text.IndexOfAny(HiChars);
-            var openChar = text[idx];
-            var closeChar = openChar == '(' ? ')' : ']';
-            do
+            var openSymbolIndex = text.IndexOfAny(HiChars);
+            while (openSymbolIndex >= 0)
             {
-                var endIdx = text.IndexOf(closeChar, idx + 1); // ] or )
+                var closingPair = GetClosingPair(text[openSymbolIndex]);
+                var closeSymbolIndex = text.IndexOf(closingPair, openSymbolIndex + 1); // ] or )
                 // There most be at lease one chars inside brackets.
-                if (endIdx < idx + 2)
+                if (closeSymbolIndex < openSymbolIndex + 2)
                 {
                     break;
                 }
 
-                var moodText = text.Substring(idx, endIdx - idx + 1);
-                text = text.Remove(idx, moodText.Length);
-                if (string.IsNullOrWhiteSpace(HtmlUtils.RemoveTags(moodText, true)))
+                var mood = text.Substring(openSymbolIndex + 1, closeSymbolIndex - (openSymbolIndex + 1));
+
+                var moodToken = new MoodToken(mood, text[openSymbolIndex], text[closeSymbolIndex]);
+                if (moodToken.IsConvertible())
                 {
-                    idx = text.IndexOf(openChar, idx); // if invalid take out the tag!
+                    // take out the mood (including open/start symbol)
+                    text = text.Remove(openSymbolIndex, closeSymbolIndex - openSymbolIndex + 1);
+                    // convert, reinsert and restore wrapping token e.g: () or []
+                    text = text.Insert(openSymbolIndex, moodToken.Tokenize(ConverterStrategy.Execute(mood)));
                 }
-                else
-                {
-                    var textBetween = moodText.Substring(1, moodText.Length - 2);
-                    text = text.Insert(idx, $"{moodText[0]}{ConverterStrategy.Execute(textBetween)}{moodText[moodText.Length-1]}");
-                    idx = text.IndexOf(openChar, endIdx + 1); // ( or [
-                }
-            } while (idx >= 0);
+
+                openSymbolIndex = text.IndexOfAny(HiChars, closeSymbolIndex + 1); // ( or [
+            }
 
             return text;
         }
 
-        public string ConvertMoods(string text)
+        private static char GetClosingPair(char openToken)
         {
-            var j = 0;
-            for (var i = text.Length - 1; i > 0; i--)
+            switch (openToken)
             {
-                var ch = text[i];
-                if (ch == ')')
-                {
-                    j = i;
-                }
-                else if (ch == '(' && j > i)
-                {
-                    var textInRange = ConverterStrategy.Execute(text.Substring(i + 1, j - i - 1));
-                    text = text.Remove(i, j + 1 - i).Insert(i, textInRange);
-                    j = -1;
-                }
+                case '(': return ')';
+                case '[': return ']';
+                case '{': return '}';
             }
 
-            return text;
+            return '\0';
         }
 
         public bool HasBalancedParentheses(string input)
         {
-            var count = 0;
+            var countParentheses = 0;
+            var countBrackets = 0;
             for (var i = input.Length - 1; i >= 0; i--)
             {
                 var ch = input[i];
-                if (ch == ')')
+                switch (ch)
                 {
-                    count++;
-                }
-                else if (ch == '(')
-                {
-                    count--;
+                    case '(':
+                        countParentheses++;
+                        break;
+                    case ')':
+                        countParentheses--;
+                        break;
+                    case '[':
+                        countBrackets++;
+                        break;
+                    case ']':
+                        countBrackets--;
+                        break;
                 }
 
                 // even if you check to the end there won't be enough to balance
-                if (i - count < 0)
+                if (i - countBrackets < 0 || i - countParentheses < 0)
                 {
-                    Console.WriteLine("too much close");
                     return false;
                 }
             }
 
-            if (count > 0)
-            {
-                Console.WriteLine("too much close");
-            }
-            else if (count < 0)
-            {
-                Console.WriteLine("too much open");
-            }
-
-            return count == 0;
+            return countBrackets == 0 && countParentheses == 0;
         }
-
-        public bool HasBalancedBrackets(string input)
-        {
-            var count = 0;
-            for (var i = input.Length - 1; i >= 0; i--)
-            {
-                var ch = input[i];
-                if (ch == ']')
-                {
-                    count++;
-                }
-                else if (ch == '[')
-                {
-                    count--;
-                }
-
-                // even if you check to the end there won't be enough to balance
-                if (i - count < 0)
-                {
-                    Console.WriteLine("too much close");
-                    return false;
-                }
-            }
-
-            if (count > 0)
-            {
-                Console.WriteLine("too much close");
-            }
-            else if (count < 0)
-            {
-                Console.WriteLine("too much open");
-            }
-
-            return count == 0;
-        }
-
-        private static bool IsQualifiedMoods(string text)
+        
+        private static bool HasValidMood(string text)
         {
             if (text == null)
             {
@@ -180,6 +135,54 @@ namespace Nikse.SubtitleEdit.PluginLogic.Converters
 
             var idx = text.IndexOfAny(HiChars);
             return (idx >= 0 && idx + 1 < text.Length);
+        }
+        
+        public struct MoodToken
+        {
+            private readonly string _moodText;
+            private readonly char _startToken;
+            private readonly char _endToken;
+
+            public MoodToken(string moodText, char startToken, char endToken)
+            {
+                _moodText = moodText;
+                _startToken = startToken;
+                _endToken = endToken;
+            }
+
+            public bool IsConvertible()
+            {
+                if (string.IsNullOrWhiteSpace(_moodText))
+                {
+                    return false;
+                }
+                
+                // skip tag inside mood
+                var indexFromStart = 0;
+                var len = _moodText.Length;
+                
+                // skip all adjacent open tags e.: <i><b>...
+                while (_moodText[indexFromStart] == '<')
+                {
+                    var tagCloseIndex = _moodText.IndexOf('>', indexFromStart) + 1;
+                    if (tagCloseIndex < indexFromStart) return true;
+                    indexFromStart = tagCloseIndex; // will contains the next char after the closing
+                    if (indexFromStart >= len) return false;
+                }
+                
+                // skip all adjacent closing tags </i></i>
+                var indexFromEnd = len - 1;
+                while (_moodText[indexFromEnd] == '>')
+                {
+                    var tagOpenIndex = _moodText.LastIndexOf('<', indexFromEnd - 1) - 1;
+                    if (tagOpenIndex < indexFromStart) return false;
+                    indexFromEnd = tagOpenIndex;
+                }
+
+                return indexFromStart < indexFromEnd;
+            }
+
+            public string Tokenize(string input) => $"{_startToken}{input}{_endToken}";
         }
     }
 }
