@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using Nikse.SubtitleEdit.PluginLogic.Models;
 
@@ -14,7 +13,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         //private string path = Path.Combine("Plugins", "SeLinesUnbreaker.xml");
         private readonly Subtitle _subtitle;
 
-        public string Subtiitle { get; private set; }
+        public string Subtitle { get; private set; }
 
         private readonly RemoveLineBreak _removeLineBreak;
 
@@ -128,7 +127,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 removeLineBreakResult.Paragraph.Text = removeLineBreakResult.AfterText;
             }
-            Subtiitle = _subtitle.ToText();
+            Subtitle = _subtitle.ToText();
             DialogResult = DialogResult.OK;
         }
 

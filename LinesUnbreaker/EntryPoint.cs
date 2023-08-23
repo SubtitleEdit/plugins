@@ -35,7 +35,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
                 {
-                    return form.Subtiitle;
+                    return form.Subtitle;
                 }
             }
             return string.Empty;
