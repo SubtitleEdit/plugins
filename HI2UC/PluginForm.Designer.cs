@@ -45,7 +45,6 @@
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.buttonApply = new System.Windows.Forms.Button();
             this.checkBoxMoods = new System.Windows.Forms.CheckBox();
-            this.checkBoxSingleLineNarrator = new System.Windows.Forms.CheckBox();
             this.groupBoxOptions = new System.Windows.Forms.GroupBox();
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -218,7 +217,7 @@
             this.checkBoxMoods.AutoSize = true;
             this.checkBoxMoods.Checked = true;
             this.checkBoxMoods.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxMoods.Location = new System.Drawing.Point(302, 33);
+            this.checkBoxMoods.Location = new System.Drawing.Point(16, 60);
             this.checkBoxMoods.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxMoods.Name = "checkBoxMoods";
             this.checkBoxMoods.Size = new System.Drawing.Size(213, 19);
@@ -227,25 +226,10 @@
             this.checkBoxMoods.UseVisualStyleBackColor = true;
             this.checkBoxMoods.CheckedChanged += new System.EventHandler(this.CheckBoxMoods_CheckedChanged);
             // 
-            // checkBoxSingleLineNarrator
-            // 
-            this.checkBoxSingleLineNarrator.AutoSize = true;
-            this.checkBoxSingleLineNarrator.Checked = true;
-            this.checkBoxSingleLineNarrator.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxSingleLineNarrator.Location = new System.Drawing.Point(16, 60);
-            this.checkBoxSingleLineNarrator.Margin = new System.Windows.Forms.Padding(4);
-            this.checkBoxSingleLineNarrator.Name = "checkBoxSingleLineNarrator";
-            this.checkBoxSingleLineNarrator.Size = new System.Drawing.Size(249, 19);
-            this.checkBoxSingleLineNarrator.TabIndex = 11;
-            this.checkBoxSingleLineNarrator.Text = "Lena:<br/>A ring?! => LENA:<br/>A ring?!";
-            this.checkBoxSingleLineNarrator.UseVisualStyleBackColor = true;
-            this.checkBoxSingleLineNarrator.CheckedChanged += new System.EventHandler(this.CheckBoxSingleLineNarrator_CheckedChanged);
-            // 
             // groupBoxOptions
             // 
             this.groupBoxOptions.BackColor = System.Drawing.Color.Transparent;
             this.groupBoxOptions.Controls.Add(this.checkBoxNames);
-            this.groupBoxOptions.Controls.Add(this.checkBoxSingleLineNarrator);
             this.groupBoxOptions.Controls.Add(this.checkBoxMoods);
             this.groupBoxOptions.Location = new System.Drawing.Point(14, 14);
             this.groupBoxOptions.Margin = new System.Windows.Forms.Padding(4);
@@ -367,7 +351,6 @@
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.Button buttonApply;
         private System.Windows.Forms.CheckBox checkBoxMoods;
-        private System.Windows.Forms.CheckBox checkBoxSingleLineNarrator;
         private System.Windows.Forms.CheckBox checkBoxNames;
         private System.Windows.Forms.GroupBox groupBoxOptions;
         private System.Windows.Forms.ColumnHeader columnHeader4;

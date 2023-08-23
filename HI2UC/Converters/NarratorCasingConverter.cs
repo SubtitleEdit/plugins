@@ -43,16 +43,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Converters
             {
                 return text;
             }
-
-            // Lena:
-            // A ring?!
-            // var newLineIdx = noTagText.IndexOf(Environment.NewLine, StringComparison.Ordinal);
-            // todo: handle
-            //if (!Config.SingleLineNarrator && index + 1 == newLineIdx)
-            //{
-            //    return text;
-            //}
-
+            
             var lines = text.SplitToLines();
             for (var i = 0; i < lines.Length; i++)
             {
@@ -66,7 +57,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Converters
                 }
 
                 // Only allow colon at last position if it's 1st line.
-                if (colonIdx + 1 == noTagLine.Length)
+                if (colonIdx + 1 == noTagLine.Length && i != 0)
                 {
                     continue;
                 }
