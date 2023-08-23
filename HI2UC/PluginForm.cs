@@ -242,20 +242,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             Refresh();
         }
 
-        private void ButtonApply_Click(object sender, EventArgs e)
-        {
-            if (listViewFixes.Items.Count == 0)
-            {
-                return;
-            }
-
-            Cursor = Cursors.WaitCursor;
-            listViewFixes.Resize -= ListViewFixes_Resize;
-            ApplyChanges();
-            listViewFixes.Resize += ListViewFixes_Resize;
-            Cursor = Cursors.Default;
-        }
-
         private void ListViewFixes_Resize(object sender, EventArgs e)
         {
             var newWidth = (listViewFixes.Width - (listViewFixes.Columns[0].Width + listViewFixes.Columns[1].Width +
@@ -265,11 +251,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         }
 
         private void CheckBoxMoods_CheckedChanged(object sender, EventArgs e)
-        {
-            GeneratePreview();
-        }
-
-        private void CheckBoxSingleLineNarrator_CheckedChanged(object sender, EventArgs e)
         {
             GeneratePreview();
         }
