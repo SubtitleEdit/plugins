@@ -74,7 +74,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void UpdateUiFromConfigs(HiConfigs configs)
         {
-            checkBoxSingleLineNarrator.Checked = configs.SingleLineNarrator;
             checkBoxNames.Checked = configs.NarratorToUppercase;
             checkBoxMoods.Checked = configs.MoodsToUppercase;
         }
@@ -214,8 +213,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // update options
             _hiConfigs.NarratorToUppercase = checkBoxNames.Checked;
             _hiConfigs.MoodsToUppercase = checkBoxMoods.Checked;
-            _hiConfigs.SingleLineNarrator = checkBoxSingleLineNarrator.Checked;
-            // _hiConfigs.Style = ((ComboBoxItem) comboBoxStyle.SelectedItem).Style;
 
             listViewFixes.BeginUpdate();
             listViewFixes.Items.Clear();
