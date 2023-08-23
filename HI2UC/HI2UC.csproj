@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\ChunkReader.cs" />
     <Compile Include="Converters\ICasingConverter.cs" />
     <Compile Include="Converters\MoodCasingConverter.cs" />
     <Compile Include="Converters\NarratorCasingConverter.cs" />
@@ -60,7 +61,7 @@
     <Compile Include="Converters\Strategies\IConverterStrategy.cs" />
     <Compile Include="Converters\Strategies\LowercaseConverterStrategy.cs" />
     <Compile Include="Converters\Strategies\NoneConverterStrategy.cs" />
-    <Compile Include="Converters\Strategies\TitleCaseConverterStrategy.cs" />
+    <Compile Include="Converters\Strategies\TitleCaseSentenceConverter.cs" />
     <Compile Include="Converters\Strategies\TitleWordsConverterStrategy.cs" />
     <Compile Include="Converters\Strategies\UppercaseConverterStrategy.cs" />
     <Compile Include="Converters\Strategies\UpperLowercase.cs" />

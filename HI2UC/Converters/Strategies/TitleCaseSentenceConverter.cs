@@ -28,7 +28,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Converters.Strategies
         }
     }
 
-    public class TitleCaseConverterStrategy : IConverterStrategy
+    public class TitleCaseSentenceConverter : IConverterStrategy
     {
         public string Name => "Title case (sentence)";
 

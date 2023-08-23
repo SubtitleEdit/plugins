@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haxor", "Haxor\DLL\Haxor.cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenSubtitlesUpload", "OpenSubtitlesUpload\DLL\OpenSubtitlesUpload.csproj", "{96468C8C-4E33-4931-8A9C-36D688319C44}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinesUnbreaker", "LinesUnbreaker\LinesUnbreaker.csproj", "{7B7C681E-960E-414F-B5EA-1B9BEBA71B09}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinesUnbreaker", "LinesUnbreaker\LinesUnbreaker.csproj", "{7B7C681E-960E-414F-B5EA-1B9BEBA71B09}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HI2UC", "HI2UC\HI2UC.csproj", "{16B4BE52-050A-4161-B0E3-9B07AA5F650B}"
 EndProject
@@ -121,6 +121,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersianErrors", "PersianErrors\PersianErrors.csproj", "{FD60BAFA-3AD2-4303-9B02-EA120B9FFF2C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItalicEachLine", "ItalicEachLine\DLL\ItalicEachLine.csproj", "{E1DFE79F-1019-4C28-B396-9ACA436444CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ivandrofly.Test", "Ivandrofly.Test\Ivandrofly.Test.csproj", "{C1D9A29C-6734-48CC-9C65-3E1728037A36}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -332,6 +334,10 @@ Global
 		{E1DFE79F-1019-4C28-B396-9ACA436444CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1DFE79F-1019-4C28-B396-9ACA436444CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1DFE79F-1019-4C28-B396-9ACA436444CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1D9A29C-6734-48CC-9C65-3E1728037A36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1D9A29C-6734-48CC-9C65-3E1728037A36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1D9A29C-6734-48CC-9C65-3E1728037A36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1D9A29C-6734-48CC-9C65-3E1728037A36}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -388,6 +394,7 @@ Global
 		{B34EA26F-366B-48C5-94DE-8149D9115EF9} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 		{FD60BAFA-3AD2-4303-9B02-EA120B9FFF2C} = {5CFB52BC-B6FF-43FA-979D-0C5B0FD05884}
 		{E1DFE79F-1019-4C28-B396-9ACA436444CD} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
+		{C1D9A29C-6734-48CC-9C65-3E1728037A36} = {21BBD88D-F935-419F-A68B-E8DA9F08E9C1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8BBF401C-6D00-4F22-BFC0-DE2673213D5B}
@@ -398,7 +405,7 @@ Global
 		Plugin-Shared\Plugin-Shared.projitems*{52a7c014-3be1-4c7a-90aa-e864cefc63a0}*SharedItemsImports = 4
 		Plugin-Shared\Plugin-Shared.projitems*{59aa41aa-6c3e-456f-8ec1-3c0c90e31811}*SharedItemsImports = 13
 		Plugin-Shared\Plugin-Shared.projitems*{705be92d-37ff-4320-85fd-90133c009c8c}*SharedItemsImports = 4
-		Plugin-Shared\Plugin-Shared.projitems*{7b7c681e-960e-414f-b5ea-1b9beba71b09}*SharedItemsImports = 4
+		Plugin-Shared\Plugin-Shared.projitems*{7b7c681e-960e-414f-b5ea-1b9beba71b09}*SharedItemsImports = 5
 		Plugin-Shared\Plugin-Shared.projitems*{8500e79b-a64b-4fdf-924c-b959a93a5717}*SharedItemsImports = 4
 		Plugin-Shared\Plugin-Shared.projitems*{9443a623-77c2-499e-85d2-f7aa77daaa00}*SharedItemsImports = 4
 		Plugin-Shared\Plugin-Shared.projitems*{9e25ee45-e764-444f-9756-fe5479f4914d}*SharedItemsImports = 4

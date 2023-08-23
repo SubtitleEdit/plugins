@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Nikse.SubtitleEdit.PluginLogic.Common;
 using Nikse.SubtitleEdit.PluginLogic.Converters;
 using Nikse.SubtitleEdit.PluginLogic.Converters.Strategies;
 using Nikse.SubtitleEdit.PluginLogic.Models;
@@ -80,12 +81,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void InitComboBoxHiStyle()
         {
+            var chuckReader = new ChunkReader();
             comboBoxStyle.Items.Add(new NoneConverterStrategy());
-            comboBoxStyle.Items.Add(new TitleCaseConverterStrategy());
-            comboBoxStyle.Items.Add(new UppercaseConverterStrategy());
+            comboBoxStyle.Items.Add(new TitleCaseSentenceConverter());
+            comboBoxStyle.Items.Add(new UppercaseConverterStrategy(chuckReader));
             comboBoxStyle.Items.Add(new LowercaseConverterStrategy());
             comboBoxStyle.Items.Add(new UpperLowercase());
-            comboBoxStyle.Items.Add(new TitleWordsConverterStrategy());
+            comboBoxStyle.Items.Add(new TitleWordsConverterStrategy(chuckReader));
             // set default selected to titlecase
             comboBoxStyle.SelectedIndex = 1;
         }

@@ -1,17 +1,41 @@
 ﻿using System.Linq;
+using System.Text;
+using Nikse.SubtitleEdit.PluginLogic.Common;
 
 namespace Nikse.SubtitleEdit.PluginLogic.Converters.Strategies
 {
     public class TitleWordsConverterStrategy : IConverterStrategy
     {
+        private readonly ChunkReader _chunkReader;
         public string Name => "Title case (word)";
+        private readonly char[] _wordSplitChars = {' ' };
+
+        public TitleWordsConverterStrategy(ChunkReader chunkReader)
+        {
+            _chunkReader = chunkReader;
+        }
 
         public string Execute(string input)
         {
-            // this won't be affect even if one of the word has tag the tag is what we will try to
-            // convert the casing instead of the tag-name so <i> won't turn out <I>
-            input = string.Join(" ", input.Split(' ').Select(word => word.CapitalizeFirstLetter()));
-            return string.Join("-", input.Split('-').Select(word => word.CapitalizeFirstLetter()));
+            var sb = new StringBuilder();
+            const string whiteSpace = " ";
+            foreach (var chunk in _chunkReader.Read(input))
+            {
+                var content = input.Substring(chunk.Start, chunk.End - chunk.Start);
+                if (chunk.IsTag)
+                {
+                    sb.Append(content);
+                }
+                else
+                {
+                    var procContent = string.Join(whiteSpace, content.Split(_wordSplitChars)
+                        .Select(word => word.CapitalizeFirstLetter()));
+
+                    sb.Append(procContent);
+                }
+            }
+
+            return sb.ToString();
         }
 
         public override string ToString() => Name;
