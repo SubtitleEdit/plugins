@@ -96,6 +96,12 @@
   <ItemGroup>
     <None Include="Resources\paypal-donate.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\paypal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\paypal1.png" />
+  </ItemGroup>
   <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

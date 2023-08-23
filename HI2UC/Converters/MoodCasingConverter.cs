@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Nikse.SubtitleEdit.PluginLogic.Converters.Strategies;
 
 namespace Nikse.SubtitleEdit.PluginLogic.Converters
@@ -22,6 +23,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Converters
                 var text = paragraph.Text;
 
                 // doesn't have balanced brackets. O(2n)
+             
                 if (!HasBalancedParentheses(text))
                 {
                     converterContext.AddResult(text, text, "Line contains unbalanced []/()", paragraph);
@@ -165,7 +167,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Converters
                 while (_moodText[indexFromStart] == '<')
                 {
                     var tagCloseIndex = _moodText.IndexOf('>', indexFromStart) + 1;
-                    if (tagCloseIndex < indexFromStart) return true;
+                    if (tagCloseIndex <= indexFromStart) return true;
                     indexFromStart = tagCloseIndex; // will contains the next char after the closing
                     if (indexFromStart >= len) return false;
                 }
@@ -175,10 +177,10 @@ namespace Nikse.SubtitleEdit.PluginLogic.Converters
                 while (_moodText[indexFromEnd] == '>')
                 {
                     var tagOpenIndex = _moodText.LastIndexOf('<', indexFromEnd - 1) - 1;
-                    if (tagOpenIndex < indexFromStart) return false;
+                    if (tagOpenIndex < 0 || tagOpenIndex <= indexFromStart) return false;
                     indexFromEnd = tagOpenIndex;
                 }
-
+                
                 return indexFromStart < indexFromEnd;
             }
 

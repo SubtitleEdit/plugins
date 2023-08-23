@@ -63,9 +63,9 @@ namespace Nikse.SubtitleEdit.PluginLogic.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap paypal_donate {
+        internal static System.Drawing.Bitmap paypal1 {
             get {
-                object obj = ResourceManager.GetObject("paypal-donate", resourceCulture);
+                object obj = ResourceManager.GetObject("paypal1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
