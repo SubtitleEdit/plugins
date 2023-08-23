@@ -83,7 +83,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             var chuckReader = new ChunkReader();
             comboBoxStyle.Items.Add(new NoneConverterStrategy());
-            comboBoxStyle.Items.Add(new TitleCaseSentenceConverter());
+            comboBoxStyle.Items.Add(new SentenceCaseConverter());
             comboBoxStyle.Items.Add(new UppercaseConverterStrategy(chuckReader));
             comboBoxStyle.Items.Add(new LowercaseConverterStrategy());
             comboBoxStyle.Items.Add(new UpperLowercase());

@@ -1,15 +1,11 @@
 ﻿using System.Linq;
+using Nikse.SubtitleEdit.PluginLogic.Common;
 
 namespace Nikse.SubtitleEdit.PluginLogic.Converters.Strategies
 {
     public class UpperLowercase : IConverterStrategy
     {
         public string Name => "Toggle case";
-
-
-        private bool IsOpenTag(char ch) => ch == '<' || ch == '{';
-
-        private static char GetClosingPair(char ch) => ch == '<' ? '>' : '}';
         
         public string Execute(string input)
         {
@@ -21,9 +17,9 @@ namespace Nikse.SubtitleEdit.PluginLogic.Converters.Strategies
             {
                 var ch = input[i];
                 // skip tags
-                if (IsOpenTag(ch))
+                if (TagUtils.IsOpenTag(ch))
                 {
-                    var closingPair = GetClosingPair(ch);
+                    var closingPair = TagUtils.GetClosingPair(ch);
                     // look for closing tag
                     while (input[i] != closingPair)
                     {

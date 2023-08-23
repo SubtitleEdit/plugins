@@ -4,10 +4,6 @@ namespace Nikse.SubtitleEdit.PluginLogic.Common;
 
 public class ChunkReader
 {
-    private bool IsTag(char ch) => ch == '<' | ch == '{';
-
-    private char GetClosingPair(char openTag) => openTag == '<' ? '>' : '}';
-
     private bool IsWordBoundary(char ch) => ch == ' ' || ch == '-' || ch == '<';
 
     public IEnumerable<Chunk> Read(string input)
@@ -18,7 +14,7 @@ public class ChunkReader
         {
             var ch = input[i];
 
-            if (IsTag(ch))
+            if (TagUtils.IsOpenTag(ch))
             {
                 // process any pending
                 if (rangeStart != i)
@@ -27,7 +23,7 @@ public class ChunkReader
                     rangeStart = i;
                 }
 
-                var closingPair = GetClosingPair(ch);
+                var closingPair = TagUtils.GetClosingPair(ch);
                 while (ch != closingPair)
                 {
                     i++;
@@ -63,7 +59,7 @@ public class ChunkReader
     }
 
     private Chunk ChunkFromRange(int start, int end) => ChunkFromRange(start, end, false);
-    
+
     private Chunk ChunkFromRange(int start, int end, bool isTag) => new(start, end, isTag);
 
     public struct Chunk
