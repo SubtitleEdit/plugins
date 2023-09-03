@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <OutputType>WinExe</OutputType>
+        <OutputType>Library</OutputType>
         <TargetFramework>NET48</TargetFramework>
         <UseWindowsForms>true</UseWindowsForms>
     </PropertyGroup>
