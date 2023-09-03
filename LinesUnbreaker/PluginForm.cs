@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 using Nikse.SubtitleEdit.PluginLogic.Models;
+using Nikse.SubtitleEdit.PluginLogic.UnbreakLine;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
