@@ -72,11 +72,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             listView1.BeginUpdate();
             listView1.Items.Clear();
             UpdateConfigurations();
-            
+
             _removeLineBreakItems = _removeLineBreak.Remove(_subtitle.Paragraphs);
-            foreach (var removeLineBreakResult in _removeLineBreakItems)
+            foreach (var result in _removeLineBreakItems)
             {
-                AddToListView(removeLineBreakResult);
+                listView1.Items.Add(result.ToListViewItem());
             }
 
             labelTotal.Text = $"Total: {_removeLineBreakItems.Count}";
@@ -92,29 +92,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _configs.SkipDialogs = checkBoxSkipDialog.Checked;
             _configs.SkipMoods = checkBoxMoods.Checked;
             _configs.SkipNarrator = checkBoxSkipNarrator.Checked;
-        }
-
-        private void AddToListView(RemoveLineBreakResult removeResult)
-        {
-            var noTagOldText = HtmlUtils.RemoveTags(removeResult.Paragraph.Text);
-
-            // length of only visible characters
-            var lineLength = noTagOldText.Length - (StringUtils.CountTagInText(noTagOldText, Environment.NewLine) * Environment.NewLine.Length);
-
-            var item = new ListViewItem(string.Empty)
-            {
-                Checked = true,
-                UseItemStyleForSubItems = true,
-                SubItems =
-                {
-                    removeResult.Paragraph.Number.ToString(),
-                    lineLength.ToString(CultureInfo.InvariantCulture),
-                    StringUtils.GetListViewString(removeResult.BeforeText, true),
-                    StringUtils.GetListViewString(removeResult.AfterText, true)  
-                },
-                Tag = removeResult
-            };
-            listView1.Items.Add(item);
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
