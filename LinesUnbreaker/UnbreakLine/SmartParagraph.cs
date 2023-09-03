@@ -8,13 +8,12 @@ namespace Nikse.SubtitleEdit.PluginLogic.UnbreakLine
     {
         public Paragraph Paragraph { get; }
 
-        // private int _currentIndex = 0;
         private Line[] _lines;
 
         public IEnumerable<Line> Lines => _lines;
 
         public bool IsMultiLined => _lines.Length > 1;
-        
+
         public string Text
         {
             set => _lines = ReadLines(value).ToArray();
@@ -26,7 +25,28 @@ namespace Nikse.SubtitleEdit.PluginLogic.UnbreakLine
             Paragraph = paragraph;
             _lines = ReadLines(paragraph.Text).ToArray();
         }
-        
+
         private IEnumerable<Line> ReadLines(string text) => text.SplitToLines().Select(line => new Line(line));
+    }
+
+    public static class ParagraphExtensions
+    {
+        public static bool IsUnbreakable(this SmartParagraph paragraph, int maxSingleLineLength)
+        {
+            if (!paragraph.IsMultiLined)
+            {
+                return false;
+            }
+
+            if (paragraph.Lines.Any(line => line.Content.Length >= maxSingleLineLength))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public static IEnumerable<SmartParagraph> ToSmartParagraphs(this IEnumerable<Paragraph> paragraphs) =>
+            paragraphs.Select(p => new SmartParagraph(p));
     }
 }
