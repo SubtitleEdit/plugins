@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Windows.Forms;
 
-namespace Nikse.SubtitleEdit.PluginLogic.Models
+namespace Nikse.SubtitleEdit.PluginLogic.UnbreakLine
 {
     public class RemoveLineBreakResult
     {
