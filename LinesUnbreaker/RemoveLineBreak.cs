@@ -28,11 +28,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
                 
                 var text = Unbreak(paragraph);
-                result.Add(new RemoveLineBreakResult()
+                if (!text.Equals(paragraph.Paragraph.Text))
                 {
-                    Paragraph = paragraph.Paragraph,
-                    AfterText = text
-                });
+                    result.Add(new RemoveLineBreakResult()
+                    {
+                        Paragraph = paragraph.Paragraph,
+                        AfterText = text
+                    });
+                }
             }
 
             return result;
@@ -154,23 +157,28 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     if (!_line[_position].IsTagStart())
                     {
-                        return _line[_position++];
+                        return ReadAdvance();
                     }
 
                     var closingPair = _line[_position].ClosingPair();
-                    _position = Math.Max(_line.IndexOf(closingPair) + 1, _position);
+                    // Note: _line.IndexOf(closingPair) + 1
+                    // fail: -1 + 1 = 0
+                    // found last char: index + 1 == _line.Length
+                    // found: position + 1 (jump tag)
+                    var nextPosition = Math.Max(_line.IndexOf(closingPair) + 1, _position);
+                    if (nextPosition != _line.Length)
+                    {
+                        _position = nextPosition;
+                    }
+
+                    // return tag start or character after open tag close. e.g: <i>F => F
+                    return ReadAdvance();
                 }
 
                 return '\0';
             }
 
-            public int GetCurrentPosition() => _position;
-
-            // public char GetCurrent()
-            // {
-            //     if (_position < 0) return '\0';
-            //     return _line[_position++];
-            // }
+            private char ReadAdvance() => _line[_position++];
         }
     }
 
@@ -209,10 +217,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return false;
             }
 
-            if (paragraph.Lines.Any(line => line.IsDialog))
-            {
-                return false;
-            }
+            // if (paragraph.Lines.Any(line => line.IsDialog))
+            // {
+            //     return false;
+            // }
 
             if (paragraph.Lines.Any(line => line.Content.Length >= maxSingleLineLength))
             {
