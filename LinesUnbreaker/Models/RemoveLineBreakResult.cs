@@ -1,8 +1,9 @@
-namespace Nikse.SubtitleEdit.PluginLogic.Models;
-
-public class RemoveLineBreakResult
+namespace Nikse.SubtitleEdit.PluginLogic.Models
 {
-    public Paragraph Paragraph { get; set; }
-    public string BeforeText => Paragraph.Text;
-    public string AfterText { get; set; }
+    public class RemoveLineBreakResult
+    {
+        public Paragraph Paragraph { get; set; }
+        public string BeforeText => Paragraph.Text;
+        public string AfterText { get; set; }
+    }
 }
