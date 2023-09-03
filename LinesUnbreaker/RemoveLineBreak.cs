@@ -88,9 +88,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var reader = new LineReader(line);
             var buffer = new char[line.Length];
             var writeTrack = 0;
-            while (reader.Read())
+            const char Eof = '\0';
+            var ch = reader.Read();
+            while (ch != Eof)
             {
-                buffer[writeTrack++] = reader.GetCurrent();
+                buffer[writeTrack++] = ch;
+                ch = reader.Read();
             }
 
             var noTagLine = new string(buffer, 0, writeTrack);
@@ -145,35 +148,29 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 _position = 0;
             }
 
-            public bool Read()
+            public char Read()
             {
-                if (_position + 1 < _line.Length)
+                if (_position < _line.Length)
                 {
-                    _position++;
                     if (!_line[_position].IsTagStart())
                     {
-                        return true;
+                        return _line[_position++];
                     }
 
                     var closingPair = _line[_position].ClosingPair();
-                    _position = _line.IndexOf(closingPair) + 1;
-
-                    // closing not found
-                    if (_position == 0)
-                    {
-                        _position = -1;
-                        return false;
-                    }
+                    _position = Math.Max(_line.IndexOf(closingPair) + 1, _position);
                 }
 
-                return false;
+                return '\0';
             }
 
-            public char GetCurrent()
-            {
-                if (_position < 0) return '\0';
-                return _line[_position];
-            }
+            public int GetCurrentPosition() => _position;
+
+            // public char GetCurrent()
+            // {
+            //     if (_position < 0) return '\0';
+            //     return _line[_position++];
+            // }
         }
     }
 
