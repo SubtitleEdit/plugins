@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Nikse.SubtitleEdit.PluginLogic.Extensions;
 
 namespace Nikse.SubtitleEdit.PluginLogic.UnbreakLine
 {

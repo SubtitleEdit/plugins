@@ -14,10 +14,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.UnbreakLine
         private readonly UnBreakConfigs _configs;
         // private readonly char[] _moodChars = { '(', '[' };
 
-        public RemoveLineBreak(UnBreakConfigs configs)
-        {
-            _configs = configs;
-        }
+        public RemoveLineBreak(UnBreakConfigs configs) => _configs = configs;
 
         public ICollection<RemoveLineBreakResult> Remove(IList<Paragraph> paragraphs)
         {
@@ -43,32 +40,28 @@ namespace Nikse.SubtitleEdit.PluginLogic.UnbreakLine
             return result;
         }
 
-        private string Unbreak(SmartParagraph smartParagraph)
+        // ReSharper disable once IdentifierTypo
+        private string Unbreak(SmartParagraph paragraph)
         {
-            // var noTagText = HtmlUtils.RemoveTags(smartParagraph, true);
-            // smartParagraph = smartParagraph.FixExtraSpaces().Trim();
-            var lines = smartParagraph.Lines.ToArray();
-
             // dialog
-            if (_configs.SkipDialogs && lines.Any(line => line.IsDialog))
+            if (_configs.SkipDialogs && paragraph.Lines.Any(line => line.IsDialog))
             {
-                return smartParagraph.Text;
+                return paragraph.Text;
             }
 
             // mood
-            if (_configs.SkipMoods && lines.Any(line => line.HasMood))
+            if (_configs.SkipMoods && paragraph.Lines.Any(line => line.HasMood))
             {
-                return smartParagraph.Text;
+                return paragraph.Text;
             }
 
             // narrator
-            // if (_configs.SkipNarrator && _regexNarrator.IsMatch(noTagText))
-            if (_configs.SkipNarrator && lines.Any(line => line.HasNarrator))
+            if (_configs.SkipNarrator && paragraph.Lines.Any(line => line.HasNarrator))
             {
-                return smartParagraph.Text;
+                return paragraph.Text;
             }
 
-            return StringUtils.UnbreakLine(smartParagraph.Paragraph.Text);
+            return StringUtils.UnbreakLine(paragraph.Paragraph.Text);
         }
     }
 }
