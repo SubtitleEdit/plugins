@@ -62,7 +62,7 @@ public class ChunkReader
 
     private Chunk ChunkFromRange(int start, int end, bool isTag) => new(start, end, isTag);
 
-    public struct Chunk
+    public readonly struct Chunk
     {
         public int Start { get; }
         public int End { get; }

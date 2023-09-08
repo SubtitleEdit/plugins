@@ -251,7 +251,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 throw new InvalidOperationException("Method not found!");
             }
-
+            
             ConstantExpression targetObject = Expression.Constant(_parentForm, mainType);
             MethodCallExpression methodCallExp = Expression.Call(targetObject, insertClick, senderParam, eventArgParam);
             // TODO: BUILD THE HANDLER
