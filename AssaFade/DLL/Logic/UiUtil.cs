@@ -326,5 +326,42 @@ namespace SubtitleEdit.Logic
         }
 
         public static string DecimalSeparator => CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+
+        internal static bool UseDarkTheme { get; set; }
+
+        public static void FixFonts(Control form, int iterations = 5)
+        {
+            if (form == null)
+            {
+                return;
+            }
+
+            FixFontsInner(form, iterations);
+            if (UseDarkTheme)
+            {
+                DarkTheme.SetDarkTheme(form, 1500);
+            }
+        }
+
+        internal static void FixFonts(ToolStripItem item)
+        {
+            if (UseDarkTheme)
+            {
+                DarkTheme.SetDarkTheme(item);
+            }
+        }
+
+        private static void FixFontsInner(Control form, int iterations = 5)
+        {
+
+            foreach (Control c in form.Controls)
+            {
+
+                foreach (Control inner in c.Controls)
+                {
+                    FixFontsInner(inner, iterations - 1);
+                }
+            }
+        }
     }
 }

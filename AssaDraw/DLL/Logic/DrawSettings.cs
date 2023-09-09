@@ -96,8 +96,8 @@ namespace AssaDraw.Logic
 
             try
             {
-                var seSetttings = File.ReadAllText(GetSeSettingsFileName());
-                FormAssaDrawMain.UseDarkTheme = seSetttings.Contains("<UseDarkTheme>True</UseDarkTheme>", StringComparison.Ordinal);
+                var seSettings = File.ReadAllText(GetSeSettingsFileName());
+                FormAssaDrawMain.UseDarkTheme = seSettings.Contains("<UseDarkTheme>True</UseDarkTheme>", StringComparison.Ordinal);
             }
             catch 
             {
