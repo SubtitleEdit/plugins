@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using SubtitleEdit.Logic;
@@ -16,10 +17,11 @@ namespace SubtitleEdit
         public AdvancedSelectionHelper(Subtitle subtitle)
         {
             InitializeComponent();
+            UiUtil.FixFonts(this);
 
             _loading = true;
             _subtitle = subtitle;
-            Indices = new int[0];
+            Indices = Array.Empty<int>();
 
             comboBoxRule.Items.Clear();
             comboBoxRule.Items.Add("Style");
