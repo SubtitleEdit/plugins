@@ -57,6 +57,9 @@
     <Compile Include="ColorPicker\ColorChangedEventArgs.cs" />
     <Compile Include="ColorPicker\ColorHandler.cs" />
     <Compile Include="ColorPicker\ColorWheel.cs" />
+    <Compile Include="Controls\ToolStripNikseSeparator.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="FormAssaDrawHelp.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -177,5 +180,6 @@
     <None Include="Resources\toolStripButtonBeizer.Image.png" />
     <None Include="Resources\Help32.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
