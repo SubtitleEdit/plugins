@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Windows.Forms;
 using System.Xml;
 using SubtitleEdit.Logic;
 
@@ -52,6 +53,24 @@ namespace AssaDraw.Logic
             return Path.Combine(path, "AssaDraw.xml");
         }
 
+        private static string GetSeSettingsFileName()
+        {
+            var codeBase = Assembly.GetExecutingAssembly().CodeBase;
+            var path = Path.GetDirectoryName(codeBase);
+            if (path != null && path.StartsWith("file:\\", StringComparison.Ordinal))
+            {
+                path = path.Remove(0, 6);
+            }
+
+            if (codeBase.EndsWith("AssaDraw.exe", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+
+            return Path.Combine(path, "Settings.xml");
+        }
+
+
         public static void LoadSettings()
         {
             Initialize();
@@ -71,6 +90,16 @@ namespace AssaDraw.Logic
                 Configuration.LastColorPickerColor3 = ColorTranslator.FromHtml(doc.DocumentElement.SelectSingleNode("Color4").InnerText);
             }
             catch
+            {
+                // ignore
+            }
+
+            try
+            {
+                var seSetttings = File.ReadAllText(GetSeSettingsFileName());
+                FormAssaDrawMain.UseDarkTheme = seSetttings.Contains("<UseDarkTheme>True</UseDarkTheme>", StringComparison.Ordinal);
+            }
+            catch 
             {
                 // ignore
             }

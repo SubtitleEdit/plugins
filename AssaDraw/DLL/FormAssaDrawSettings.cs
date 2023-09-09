@@ -1,4 +1,5 @@
 ﻿using AssaDraw.Logic;
+using SubtitleEdit.Logic;
 using System;
 using System.Windows.Forms;
 
@@ -9,6 +10,7 @@ namespace AssaDraw
         public FormAssaDrawSettings()
         {
             InitializeComponent();
+            UiUtil.FixFonts(this);
 
             panelLineColor.BackColor = DrawSettings.ShapeLineColor;
             panelLineActiveColor.BackColor = DrawSettings.ActiveShapeLineColor;

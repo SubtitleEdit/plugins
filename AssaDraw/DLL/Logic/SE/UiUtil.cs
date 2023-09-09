@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AssaDraw.Logic;
+using AssaDraw;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -326,5 +328,45 @@ namespace SubtitleEdit.Logic
         }
 
         public static string DecimalSeparator => CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+
+        internal static void PreInitialize(Form form)
+        {
+            form.AutoScaleMode = AutoScaleMode.Dpi;
+        }
+
+        public static void FixFonts(Control form, int iterations = 5)
+        {
+            if (form == null)
+            {
+                return;
+            }
+
+            FixFontsInner(form, iterations);
+            if (FormAssaDrawMain.UseDarkTheme)
+            {
+                DarkTheme.SetDarkTheme(form, 1500);
+            }
+        }
+
+        internal static void FixFonts(ToolStripItem item)
+        {
+            if (FormAssaDrawMain.UseDarkTheme)
+            {
+                DarkTheme.SetDarkTheme(item);
+            }
+        }
+
+        private static void FixFontsInner(Control form, int iterations = 5)
+        {
+
+            foreach (Control c in form.Controls)
+            {
+
+                foreach (Control inner in c.Controls)
+                {
+                    FixFontsInner(inner, iterations - 1);
+                }
+            }
+        }
     }
 }

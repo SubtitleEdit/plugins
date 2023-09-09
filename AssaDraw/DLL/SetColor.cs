@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using AssaDraw.ColorPicker;
 using AssaDraw.Logic;
+using SubtitleEdit.Logic;
 
 namespace AssaDraw
 {
@@ -15,6 +16,8 @@ namespace AssaDraw
         public SetColor(List<DrawShape> drawShapes, Color backColor, string title)
         {
             InitializeComponent();
+            UiUtil.FixFonts(this);
+
             Text = title;
             FillStyles(drawShapes);
             panelColorPicker.BackColor = backColor;

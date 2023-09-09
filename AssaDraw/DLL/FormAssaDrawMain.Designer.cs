@@ -457,6 +457,7 @@ namespace AssaDraw
             // 
             // toolStripAssaDraw
             // 
+            this.toolStripAssaDraw.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStripAssaDraw.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.toolStripAssaDraw.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonNew,
@@ -644,7 +645,7 @@ namespace AssaDraw
             // toolStripButton1
             // 
             this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+            this.toolStripButton1.Image = global::AssaDraw.Properties.Resources.Help32;
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
             this.toolStripButton1.Size = new System.Drawing.Size(36, 36);
