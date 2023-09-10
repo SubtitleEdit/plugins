@@ -16,6 +16,7 @@ namespace ItalicEachLine
         {
             InitializeComponent();
             labelChanges.Text = string.Empty;
+            UiUtil.FixFonts(this);
         }
 
 

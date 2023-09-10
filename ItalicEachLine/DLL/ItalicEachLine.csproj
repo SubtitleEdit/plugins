@@ -63,10 +63,12 @@
     </Compile>
     <Compile Include="IPlugin.cs" />
     <Compile Include="Logic\Configuration.cs" />
+    <Compile Include="Logic\DarkTheme.cs" />
     <Compile Include="Logic\Formatting.cs" />
     <Compile Include="Logic\HtmlUtil.cs" />
     <Compile Include="Logic\Json.cs" />
     <Compile Include="Logic\LanguageAutoDetect.cs" />
+    <Compile Include="Logic\NativeMethods.cs" />
     <Compile Include="Logic\Paragraph.cs" />
     <Compile Include="Logic\StringExtensions.cs" />
     <Compile Include="Logic\SubRip.cs" />
@@ -74,6 +76,7 @@
     <Compile Include="Logic\SubtitleFormat.cs" />
     <Compile Include="Logic\TimeCode.cs" />
     <Compile Include="Logic\TinyJsonParser.cs" />
+    <Compile Include="Logic\UiUtil.cs" />
     <Compile Include="Logic\Utilities.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

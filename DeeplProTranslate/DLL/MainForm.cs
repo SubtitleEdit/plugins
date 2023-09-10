@@ -40,6 +40,7 @@ namespace SubtitleEdit
             buttonCancelTranslate.Enabled = false;
             comboBoxApiUrl.SelectedIndex = 0;
             comboBoxFormality.SelectedIndex = 0;
+            UiUtil.FixFonts(this);
         }
 
         private static void SetLanguages(ComboBox comboBox, string language)

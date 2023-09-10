@@ -74,24 +74,6 @@ namespace SubtitleEdit
             GeneratePreview();
         }
 
-        private static string GetSeSettingsFileName()
-        {
-            var codeBase = Assembly.GetExecutingAssembly().CodeBase;
-            var path = Path.GetDirectoryName(codeBase);
-            if (path != null && path.StartsWith("file:\\", StringComparison.Ordinal))
-            {
-                path = path.Remove(0, 6);
-            }
-
-            if (codeBase.EndsWith("AssaDraw.exe", StringComparison.InvariantCultureIgnoreCase))
-            {
-                return null;
-            }
-
-            return Path.Combine(path, "Settings.xml");
-        }
-
-
         public sealed override string Text
         {
             get => base.Text;
@@ -180,16 +162,6 @@ namespace SubtitleEdit
                 doc.Load(GetSettingsFileName());
                 numericUpDownFadeIn.Value = decimal.Parse(doc.DocumentElement.SelectSingleNode("FadeInMs").InnerText, CultureInfo.InvariantCulture);
                 numericUpDownFadeOut.Value = decimal.Parse(doc.DocumentElement.SelectSingleNode("FadeOutMs").InnerText, CultureInfo.InvariantCulture);
-            }
-            catch
-            {
-                // ignore
-            }
-
-            try
-            {
-                var seSettings = File.ReadAllText(GetSeSettingsFileName());
-                UiUtil.UseDarkTheme = seSettings.Contains("<UseDarkTheme>True</UseDarkTheme>", StringComparison.Ordinal);
             }
             catch
             {

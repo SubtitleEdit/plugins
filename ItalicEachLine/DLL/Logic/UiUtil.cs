@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
-namespace SubtitleEdit.Logic
+namespace ItalicEachLine.Logic
 {
     internal static class UiUtil
     {
@@ -224,16 +224,6 @@ namespace SubtitleEdit.Logic
             return c == UnicodeCategory.SpaceSeparator || c == UnicodeCategory.Control || c == UnicodeCategory.LineSeparator || c == UnicodeCategory.ParagraphSeparator;
         }
 
-        private static void AddExtension(StringBuilder sb, string extension)
-        {
-            if (!sb.ToString().Contains("*" + extension + ";", StringComparison.OrdinalIgnoreCase))
-            {
-                sb.Append('*');
-                sb.Append(extension.TrimStart('*'));
-                sb.Append(';');
-            }
-        }
-
         public static string ListViewLineSeparatorString = "<br />";
 
         public static string GetListViewTextFromString(string s) =>
@@ -358,7 +348,6 @@ namespace SubtitleEdit.Logic
                 return _useDarkTheme.Value;
             }
         }
-
 
         public static void FixFonts(Control form, int iterations = 5)
         {
