@@ -122,13 +122,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
 
             listViewFixes.BeginUpdate();
-            foreach (ListViewItem listViewItem in listViewFixes.Items)
+            foreach (var listViewItem in listViewFixes.Items.CheckItems())
             {
-                if (!listViewItem.Checked)
-                {
-                    continue;
-                }
-
                 var record = (Record) listViewItem.Tag;
                 record.Paragraph.Text = record.After;
             }

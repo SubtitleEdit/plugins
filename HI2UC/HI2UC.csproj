@@ -68,6 +68,7 @@
     <Compile Include="Converters\Strategies\UpperLowercase.cs" />
     <Compile Include="Enums\HIStyle.cs" />
     <Compile Include="Extensions\ListViewExtensions.cs" />
+    <Compile Include="Extensions\ListViewItemCollectionExtensions.cs" />
     <Compile Include="Models\HIConfigs.cs" />
     <Compile Include="Models\Record.cs" />
     <Compile Include="PluginForm.cs">
