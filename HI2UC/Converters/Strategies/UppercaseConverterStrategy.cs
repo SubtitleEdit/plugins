@@ -19,6 +19,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Converters.Strategies
 
         public string Execute(string input)
         {
+            // Chunk(c) => Array(chunk) => 
             var sb = new StringBuilder();
             foreach (var splitRange in _chunkReader.Read(input))
             {

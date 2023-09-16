@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Nikse.SubtitleEdit.PluginLogic.Common;
 using Nikse.SubtitleEdit.PluginLogic.Converters;
 using Nikse.SubtitleEdit.PluginLogic.Converters.Strategies;
+using Nikse.SubtitleEdit.PluginLogic.Extensions;
 using Nikse.SubtitleEdit.PluginLogic.Models;
 
 namespace Nikse.SubtitleEdit.PluginLogic
@@ -36,7 +37,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             labelDesc.Text = "Description: " + description;
 
             LoadConfigurations();
-            FormClosed += (s, e) =>
+            FormClosed += (_, _) =>
             {
                 // update config
                 //_hiConfigs.NarratorToUppercase = checkBoxNames.Checked;
@@ -51,6 +52,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             Resize += delegate { listViewFixes.Columns[listViewFixes.Columns.Count - 1].Width = -2; };
 
+            checkAllToolStripMenuItem.Click += (_, _) => listViewFixes.CheckAll();
+            uncheckAllToolStripMenuItem.Click += (_, _) => listViewFixes.UncheckAll();
+            invertCheckToolStripMenuItem.Click += (_, _) => listViewFixes.InvertCheck();
+
             linkLabel1.DoubleClick += LinkLabel1_DoubleClick;
 
             // force layout
@@ -64,7 +69,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             GeneratePreview();
 
             // donate handler
-            pictureBoxDonate.Click += (s, e) => { Process.Start(StringUtils.DonateUrl); };
+            pictureBoxDonate.Click += (_, _) => { Process.Start(StringUtils.DonateUrl); };
         }
 
         private void LinkLabel1_DoubleClick(object sender, EventArgs e)
@@ -135,67 +140,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void CheckBoxNarrator_CheckedChanged(object sender, EventArgs e)
         {
             GeneratePreview();
-        }
-
-        private void CheckTypeStyle(object sender, EventArgs e)
-        {
-            if (listViewFixes.Items.Count <= 0 || !(sender is ToolStripMenuItem menuItem))
-            {
-                return;
-            }
-
-            switch (menuItem.Text)
-            {
-                case "Check all":
-                {
-                    for (var i = 0; i < listViewFixes.Items.Count; i++)
-                    {
-                        listViewFixes.Items[i].Checked = true;
-                    }
-
-                    break;
-                }
-                case "Uncheck all":
-                {
-                    for (var i = 0; i < listViewFixes.Items.Count; i++)
-                    {
-                        listViewFixes.Items[i].Checked = false;
-                    }
-
-                    break;
-                }
-                case "Invert check":
-                {
-                    for (var i = 0; i < listViewFixes.Items.Count; i++)
-                    {
-                        listViewFixes.Items[i].Checked = !listViewFixes.Items[i].Checked;
-                    }
-
-                    break;
-                }
-                case "Copy":
-                {
-                    var text = ((Paragraph) listViewFixes.FocusedItem.Tag).ToString();
-                    Clipboard.SetText(text, TextDataFormat.UnicodeText);
-                    break;
-                }
-                default:
-                {
-                    for (var idx = listViewFixes.SelectedIndices.Count - 1; idx >= 0; idx--)
-                    {
-                        var index = listViewFixes.SelectedIndices[idx];
-                        if (listViewFixes.Items[idx].Tag is Paragraph p)
-                        {
-                            _subtitle.RemoveLine(p.Number);
-                        }
-
-                        listViewFixes.Items.RemoveAt(index);
-                    }
-
-                    _subtitle.Renumber();
-                    break;
-                }
-            }
         }
 
         private void ComboBoxStyle_SelectedIndexChanged(object sender, EventArgs e)
@@ -293,9 +237,30 @@ namespace Nikse.SubtitleEdit.PluginLogic
             //_hearingImpaired = new Context(_hiConfigs);
         }
 
-        public void SaveConfigurations()
+        public void SaveConfigurations() => _hiConfigs.SaveConfigurations();
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _hiConfigs.SaveConfigurations();
+            var text = ((Paragraph) listViewFixes.FocusedItem.Tag).ToString();
+            Clipboard.SetText(text, TextDataFormat.UnicodeText);
+        }
+
+        private void deleteLineToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            listViewFixes.BeginUpdate();
+            for (var idx = listViewFixes.SelectedIndices.Count - 1; idx >= 0; idx--)
+            {
+                var index = listViewFixes.SelectedIndices[idx];
+                if (listViewFixes.Items[idx].Tag is Paragraph p)
+                {
+                    _subtitle.RemoveLine(p.Number);
+                }
+
+                listViewFixes.Items.RemoveAt(index);
+            }
+            listViewFixes.EndUpdate();
+
+            _subtitle.Renumber();
         }
     }
 }

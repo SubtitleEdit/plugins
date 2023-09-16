@@ -45,11 +45,11 @@
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.checkBoxMoods = new System.Windows.Forms.CheckBox();
             this.groupBoxOptions = new System.Windows.Forms.GroupBox();
-            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader5 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
             this.listViewFixes = new System.Windows.Forms.ListView();
             this.pictureBoxDonate = new System.Windows.Forms.PictureBox();
             this.contextMenuStrip1.SuspendLayout();
@@ -59,12 +59,7 @@
             // 
             // contextMenuStrip1
             // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.checkAllToolStripMenuItem,
-            this.uncheckAllToolStripMenuItem,
-            this.invertCheckToolStripMenuItem,
-            this.copyToolStripMenuItem,
-            this.deleteLineToolStripMenuItem});
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.checkAllToolStripMenuItem, this.uncheckAllToolStripMenuItem, this.invertCheckToolStripMenuItem, this.copyToolStripMenuItem, this.deleteLineToolStripMenuItem });
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(153, 114);
             // 
@@ -73,35 +68,32 @@
             this.checkAllToolStripMenuItem.Name = "checkAllToolStripMenuItem";
             this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.checkAllToolStripMenuItem.Text = "Check all";
-            this.checkAllToolStripMenuItem.Click += new System.EventHandler(this.CheckTypeStyle);
             // 
             // uncheckAllToolStripMenuItem
             // 
             this.uncheckAllToolStripMenuItem.Name = "uncheckAllToolStripMenuItem";
             this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.uncheckAllToolStripMenuItem.Text = "Uncheck all";
-            this.uncheckAllToolStripMenuItem.Click += new System.EventHandler(this.CheckTypeStyle);
             // 
             // invertCheckToolStripMenuItem
             // 
             this.invertCheckToolStripMenuItem.Name = "invertCheckToolStripMenuItem";
             this.invertCheckToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.invertCheckToolStripMenuItem.Text = "Invert check";
-            this.invertCheckToolStripMenuItem.Click += new System.EventHandler(this.CheckTypeStyle);
             // 
             // copyToolStripMenuItem
             // 
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
             this.copyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.copyToolStripMenuItem.Text = "Copy";
-            this.copyToolStripMenuItem.Click += new System.EventHandler(this.CheckTypeStyle);
+            this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
             // 
             // deleteLineToolStripMenuItem
             // 
             this.deleteLineToolStripMenuItem.Name = "deleteLineToolStripMenuItem";
             this.deleteLineToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.deleteLineToolStripMenuItem.Text = "Remove Line/s";
-            this.deleteLineToolStripMenuItem.Click += new System.EventHandler(this.CheckTypeStyle);
+            this.deleteLineToolStripMenuItem.Click += new System.EventHandler(this.deleteLineToolStripMenuItem_Click);
             // 
             // toolTip1
             // 
@@ -162,8 +154,7 @@
             // 
             // label2
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(665, 84);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -174,8 +165,7 @@
             // 
             // comboBoxStyle
             // 
-            this.comboBoxStyle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxStyle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxStyle.FormattingEnabled = true;
             this.comboBoxStyle.Location = new System.Drawing.Point(668, 102);
@@ -255,17 +245,10 @@
             // listViewFixes
             // 
             this.listViewFixes.AllowColumnReorder = true;
-            this.listViewFixes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listViewFixes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.listViewFixes.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.listViewFixes.CheckBoxes = true;
-            this.listViewFixes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader4,
-            this.columnHeader1,
-            this.columnHeader5,
-            this.columnHeader2,
-            this.columnHeader3});
+            this.listViewFixes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { this.columnHeader4, this.columnHeader1, this.columnHeader5, this.columnHeader2, this.columnHeader3 });
             this.listViewFixes.ContextMenuStrip = this.contextMenuStrip1;
             this.listViewFixes.FullRowSelect = true;
             this.listViewFixes.GridLines = true;
@@ -326,7 +309,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDonate)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         private System.Windows.Forms.Label labelDesc;
