@@ -1,8 +1,8 @@
-﻿namespace Nikse.SubtitleEdit.PluginLogic.Converters.Strategies
+﻿namespace Nikse.SubtitleEdit.PluginLogic.Converters.Strategies;
+
+public interface IConverterStrategy
 {
-    public interface IConverterStrategy
-    {
-        string Name { get; }
-        string Execute(string input);
-    }
+    string Name { get; }
+    string Example { get; }
+    string Execute(string input);
 }

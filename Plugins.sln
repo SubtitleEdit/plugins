@@ -1,4 +1,3 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32002.185
@@ -11,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenSubtitlesUpload", "Open
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinesUnbreaker", "LinesUnbreaker\LinesUnbreaker.csproj", "{7B7C681E-960E-414F-B5EA-1B9BEBA71B09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HI2UC", "HI2UC\HI2UC.csproj", "{16B4BE52-050A-4161-B0E3-9B07AA5F650B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HI2UC", "HI2UC\HI2UC.csproj", "{16B4BE52-050A-4161-B0E3-9B07AA5F650B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DialogueOneHyphen", "DialogueOneHyphen\DLL\DialogueOneHyphen.csproj", "{156A3B1C-12BB-42D4-B008-BD56A0181B75}"
 EndProject
@@ -401,7 +400,7 @@ Global
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Plugin-Shared\Plugin-Shared.projitems*{143a1481-b4ee-4aa3-8e5e-af1712477f57}*SharedItemsImports = 4
-		Plugin-Shared\Plugin-Shared.projitems*{16b4be52-050a-4161-b0e3-9b07aa5f650b}*SharedItemsImports = 4
+		Plugin-Shared\Plugin-Shared.projitems*{16b4be52-050a-4161-b0e3-9b07aa5f650b}*SharedItemsImports = 5
 		Plugin-Shared\Plugin-Shared.projitems*{52a7c014-3be1-4c7a-90aa-e864cefc63a0}*SharedItemsImports = 4
 		Plugin-Shared\Plugin-Shared.projitems*{59aa41aa-6c3e-456f-8ec1-3c0c90e31811}*SharedItemsImports = 13
 		Plugin-Shared\Plugin-Shared.projitems*{705be92d-37ff-4320-85fd-90133c009c8c}*SharedItemsImports = 4

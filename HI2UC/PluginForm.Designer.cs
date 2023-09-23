@@ -45,13 +45,14 @@
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.checkBoxMoods = new System.Windows.Forms.CheckBox();
             this.groupBoxOptions = new System.Windows.Forms.GroupBox();
-            this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader5 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.listViewFixes = new System.Windows.Forms.ListView();
             this.pictureBoxDonate = new System.Windows.Forms.PictureBox();
+            this.labelExample = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBoxOptions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDonate)).BeginInit();
@@ -59,7 +60,12 @@
             // 
             // contextMenuStrip1
             // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.checkAllToolStripMenuItem, this.uncheckAllToolStripMenuItem, this.invertCheckToolStripMenuItem, this.copyToolStripMenuItem, this.deleteLineToolStripMenuItem });
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.checkAllToolStripMenuItem,
+            this.uncheckAllToolStripMenuItem,
+            this.invertCheckToolStripMenuItem,
+            this.copyToolStripMenuItem,
+            this.deleteLineToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(153, 114);
             // 
@@ -154,7 +160,8 @@
             // 
             // label2
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Right)));
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(665, 84);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -165,7 +172,8 @@
             // 
             // comboBoxStyle
             // 
-            this.comboBoxStyle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxStyle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxStyle.FormattingEnabled = true;
             this.comboBoxStyle.Location = new System.Drawing.Point(668, 102);
@@ -245,10 +253,17 @@
             // listViewFixes
             // 
             this.listViewFixes.AllowColumnReorder = true;
-            this.listViewFixes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.listViewFixes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listViewFixes.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.listViewFixes.CheckBoxes = true;
-            this.listViewFixes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { this.columnHeader4, this.columnHeader1, this.columnHeader5, this.columnHeader2, this.columnHeader3 });
+            this.listViewFixes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader4,
+            this.columnHeader1,
+            this.columnHeader5,
+            this.columnHeader2,
+            this.columnHeader3});
             this.listViewFixes.ContextMenuStrip = this.contextMenuStrip1;
             this.listViewFixes.FullRowSelect = true;
             this.listViewFixes.GridLines = true;
@@ -277,6 +292,18 @@
             this.pictureBoxDonate.TabIndex = 17;
             this.pictureBoxDonate.TabStop = false;
             // 
+            // labelExample
+            // 
+            this.labelExample.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.labelExample.AutoSize = true;
+            this.labelExample.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelExample.ForeColor = System.Drawing.Color.SeaGreen;
+            this.labelExample.Location = new System.Drawing.Point(13, 490);
+            this.labelExample.Name = "labelExample";
+            this.labelExample.Size = new System.Drawing.Size(59, 15);
+            this.labelExample.TabIndex = 18;
+            this.labelExample.Text = "Example:";
+            // 
             // PluginForm
             // 
             this.AcceptButton = this.buttonConvert;
@@ -285,6 +312,7 @@
             this.BackColor = System.Drawing.SystemColors.Control;
             this.CancelButton = this.btn_Cancel;
             this.ClientSize = new System.Drawing.Size(861, 599);
+            this.Controls.Add(this.labelExample);
             this.Controls.Add(this.pictureBoxDonate);
             this.Controls.Add(this.listViewFixes);
             this.Controls.Add(this.groupBoxOptions);
@@ -309,6 +337,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDonate)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         private System.Windows.Forms.Label labelDesc;
@@ -337,5 +366,6 @@
         private System.Windows.Forms.ToolStripMenuItem invertCheckToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteLineToolStripMenuItem;
+        private System.Windows.Forms.Label labelExample;
     }
 }

@@ -1,122 +1,24 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{16B4BE52-050A-4161-B0E3-9B07AA5F650B}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Nikse.SubtitleEdit.PluginLogic</RootNamespace>
-    <AssemblyName>HI2UC</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>
-    </ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
-  <PropertyGroup />
-  <PropertyGroup>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Common\ChunkReader.cs" />
-    <Compile Include="Common\TagUtils.cs" />
-    <Compile Include="Converters\ICasingConverter.cs" />
-    <Compile Include="Converters\MoodCasingConverter.cs" />
-    <Compile Include="Converters\NarratorCasingConverter.cs" />
-    <Compile Include="Converters\Strategies\ConverterContext.cs" />
-    <Compile Include="Converters\Strategies\IConverterStrategy.cs" />
-    <Compile Include="Converters\Strategies\LowercaseConverterStrategy.cs" />
-    <Compile Include="Converters\Strategies\NoneConverterStrategy.cs" />
-    <Compile Include="Converters\Strategies\SentenceCaseConverter.cs" />
-    <Compile Include="Converters\Strategies\TitleWordsConverterStrategy.cs" />
-    <Compile Include="Converters\Strategies\UppercaseConverterStrategy.cs" />
-    <Compile Include="Converters\Strategies\UpperLowercase.cs" />
-    <Compile Include="Enums\HIStyle.cs" />
-    <Compile Include="Extensions\ListViewExtensions.cs" />
-    <Compile Include="Extensions\ListViewItemCollectionExtensions.cs" />
-    <Compile Include="Models\HIConfigs.cs" />
-    <Compile Include="Models\Record.cs" />
-    <Compile Include="PluginForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PluginForm.Designer.cs">
-      <DependentUpon>PluginForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="EntryPoint.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="PluginForm.resx">
-      <DependentUpon>PluginForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\paypal-donate.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\paypal.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\paypal1.png" />
-  </ItemGroup>
-  <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>copy $(TargetDir)\HI2UC.dll "%25appdata%25\Subtitle Edit\Plugins\" || Exit 0
-copy $(TargetDir)\HI2UC.pdb "%25appdata%25\Subtitle Edit\Plugins\" || Exit 0</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>NET48</TargetFramework>
+        <UseWindowsForms>true</UseWindowsForms>
+        <RootNamespace>Nikse.SubtitleEdit.PluginLogic</RootNamespace>
+        <AssemblyVersion>4.5</AssemblyVersion>
+        <FileVersion>4.5</FileVersion>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+    <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared"/>
+    <ItemGroup>
+        <Compile Update="Properties\Resources.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Resources.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Update="Properties\Resources.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+    </ItemGroup>
 </Project>

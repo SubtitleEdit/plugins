@@ -10,7 +10,7 @@ namespace Ivandrofly.Test
         [Fact]
         public void ExecuteTest()
         {
-            var sut = new UppercaseConverterStrategy(new ChunkReader());
+            var sut = new UppercaseConverter(new ChunkReader());
             var input = "<font color=\"#0000ff\">Foobar</font>: Mmm.";
             var sentence = sut.Execute(input);
             Assert.NotEqual("<font color=\"#0000ff\">FOOBAR</font>: Mmm.", sentence);
@@ -19,14 +19,14 @@ namespace Ivandrofly.Test
         [Fact]
         public void MoodsNoParenthesesTest()
         {
-            var sut = new UppercaseConverterStrategy(new ChunkReader());
+            var sut = new UppercaseConverter(new ChunkReader());
             Assert.Equal("CREATURE GROWLING", sut.Execute("creature growling"));
         }
         
         [Fact]
         public void MoodsTest()
         {
-            var sut = new UppercaseConverterStrategy(new ChunkReader());
+            var sut = new UppercaseConverter(new ChunkReader());
             
             var expected = "- <font color=\"#800000\">(CREATURE)</font>" + Environment.NewLine +
                         "- <font color=\"#800000\">(OBJECTS CRASHING AND)</font>";
