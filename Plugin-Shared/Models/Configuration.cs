@@ -56,6 +56,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                     //xmlWriter.WriteEndElement();
                 }
+
                 xmlWriter.WriteEndElement();
 
                 //xmlWriter.WriteEndDocument();

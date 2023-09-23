@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using Nikse.SubtitleEdit.PluginLogic.Converters.Strategies;
 
 namespace Nikse.SubtitleEdit.PluginLogic.Converters;
@@ -33,36 +34,31 @@ public class NarratorCasingConverter : ICasingConverter
     {
         var noTagText = HtmlUtils.RemoveTags(text, true).TrimEnd().TrimEnd('"');
 
-        if (noTagText.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+        if (IsHttp(noTagText))
         {
             return text;
         }
 
         // Skip single line that ends with ':'.
-        if (!noTagText.Contains(':'))
+        if (!HasColon(text))
         {
             return text;
         }
-            
+
         var lines = text.SplitToLines();
         for (var i = 0; i < lines.Length; i++)
         {
             var line = lines[i];
             var noTagLine = HtmlUtils.RemoveTags(line, true);
 
+            if (!HasColon(noTagLine))
+            {
+                continue;
+            }
+
             var colonIdx = noTagLine.IndexOf(':');
-            if (colonIdx < 1)
-            {
-                continue;
-            }
 
-            // Only allow colon at last position if it's 1st line.
-            if (colonIdx + 1 == noTagLine.Length && i != 0)
-            {
-                continue;
-            }
-
-            if (IsValid(noTagLine, colonIdx))
+            if (IsConvertible(noTagLine, colonIdx))
             {
                 // Find index from original text.
                 colonIdx = line.IndexOf(':') + 1;
@@ -76,8 +72,19 @@ public class NarratorCasingConverter : ICasingConverter
         return string.Join(Environment.NewLine, lines);
     }
 
-    private static bool IsValid(string noTagsLine, int colonIdx)
+    private bool IsHttp(string text) => text.StartsWith("http");
+    
+    private bool HasColon(string text) => text.Contains(':');
+
+    private static bool IsColonAtValidPosition(string text, int colonIndex) => colonIndex > 1 && colonIndex + 1 < text.Length;
+
+    private static bool IsConvertible(string noTagsLine, int colonIdx)
     {
+        if (!IsColonAtValidPosition(noTagsLine, colonIdx))
+        {
+            return false;
+        }
+        
         var noTagCapturedText = noTagsLine.Substring(0, colonIdx + 1);
         if (string.IsNullOrWhiteSpace(noTagCapturedText))
         {
