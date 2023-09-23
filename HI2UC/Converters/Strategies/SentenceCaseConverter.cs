@@ -69,7 +69,7 @@ public class SentenceCaseConverter : IConverterStrategy
                 // skip tag
                 var closingPair = TagUtils.GetClosingPair(ch);
                 var closingPairIndex = input.IndexOf(closingPair, i + 1);
-                if (closingPair < i) return invalidIndex;
+                if (closingPairIndex < i) return invalidIndex;
                 i = closingPairIndex;
             }
             else if (char.IsLetter(ch))
