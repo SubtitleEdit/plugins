@@ -21,6 +21,7 @@ namespace AssaDraw
     public partial class FormAssaDrawMain : Form
     {
         public Subtitle AssaDrawCodes { get; set; }
+        internal static bool UseDarkTheme { get; set; }
 
         private readonly List<DrawShape> _drawShapes;
         private float _zoomFactor = 1.0f;
@@ -63,6 +64,8 @@ namespace AssaDraw
         {
             InitializeComponent();
             DrawSettings.LoadSettings();
+            UiUtil.FixFonts(this);
+
             _x = int.MinValue;
             _y = int.MinValue;
             _drawShapes = new List<DrawShape>();

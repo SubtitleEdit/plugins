@@ -21,6 +21,8 @@ namespace SubtitleEdit
         public MainForm()
         {
             InitializeComponent();
+
+
             KeyDown += (s, e) =>
             {
                 if (e.KeyCode == Keys.Escape)
@@ -33,6 +35,8 @@ namespace SubtitleEdit
                 }
             };
             RestoreSettings();
+
+            UiUtil.FixFonts(this);
         }
 
         public MainForm(Subtitle sub, string title, string description, Form parentForm)

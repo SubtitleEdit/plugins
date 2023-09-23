@@ -11,12 +11,10 @@
 // projects, without the express and written consent of
 // the Author.
 
-using AssaDraw.ColorPicker;
-using Nikse.SubtitleEdit.Logic;
+using SubtitleEdit.Logic;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using SubtitleEdit.Logic;
 
 namespace AssaDraw.ColorPicker
 {
@@ -69,6 +67,8 @@ namespace AssaDraw.ColorPicker
         public ColorChooser()
         {
             InitializeComponent();
+            UiUtil.FixFonts(this);
+
             _hexCodeEditTimer = new Timer { Interval = 100 };
             _hexCodeEditTimer.Tick += (sender, args) =>
             {

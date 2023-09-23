@@ -70,18 +70,18 @@ namespace AssaDraw
             this.toolStripButtonOpen = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonSave = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonCopyToClipboard = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator1 = new AssaDraw.Controls.ToolStripNikseSeparator();
             this.toolStripButtonColorPicker = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonLine = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonBeizer = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonRectangle = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonCircle = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonCloseShape = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator2 = new AssaDraw.Controls.ToolStripNikseSeparator();
             this.toolStripButtonClearCurrent = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonMirrorHor = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonMirrorVert = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator3 = new AssaDraw.Controls.ToolStripNikseSeparator();
             this.toolStripButtonSettings = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonPreview = new System.Windows.Forms.ToolStripButton();
@@ -457,6 +457,7 @@ namespace AssaDraw
             // 
             // toolStripAssaDraw
             // 
+            this.toolStripAssaDraw.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStripAssaDraw.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.toolStripAssaDraw.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonNew,
@@ -644,7 +645,7 @@ namespace AssaDraw
             // toolStripButton1
             // 
             this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+            this.toolStripButton1.Image = global::AssaDraw.Properties.Resources.Help32;
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
             this.toolStripButton1.Size = new System.Drawing.Size(36, 36);
@@ -838,12 +839,12 @@ namespace AssaDraw
         private System.Windows.Forms.ToolStrip toolStripAssaDraw;
         private System.Windows.Forms.ToolStripButton toolStripButtonOpen;
         private System.Windows.Forms.ToolStripButton toolStripButtonSave;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private AssaDraw.Controls.ToolStripNikseSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton toolStripButtonLine;
         private System.Windows.Forms.ToolStripButton toolStripButtonBeizer;
         private System.Windows.Forms.ToolStripButton toolStripButtonCloseShape;
         private System.Windows.Forms.ToolStripButton toolStripButtonClearCurrent;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private AssaDraw.Controls.ToolStripNikseSeparator toolStripSeparator2;
         private System.Windows.Forms.Label labelActivePoint;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripTreeView;
         private System.Windows.Forms.ToolStripMenuItem deleteShapeToolStripMenuItem;
@@ -855,7 +856,7 @@ namespace AssaDraw
         private System.Windows.Forms.ContextMenuStrip contextMenuStripCanvasBackground;
         private System.Windows.Forms.ToolStripMenuItem chooseBackgroundImagesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem clearBackgroundImageToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private AssaDraw.Controls.ToolStripNikseSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripButton toolStripButtonSettings;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.Button buttonCancel;

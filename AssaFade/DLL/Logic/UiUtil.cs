@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
@@ -326,5 +328,71 @@ namespace SubtitleEdit.Logic
         }
 
         public static string DecimalSeparator => CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+
+        private static bool? _useDarkTheme;
+        internal static bool UseDarkTheme
+        {
+            get
+            {
+                if (_useDarkTheme == null)
+                {
+                    try
+                    {
+                        var codeBase = Assembly.GetExecutingAssembly().CodeBase;
+                        var path = Path.GetDirectoryName(codeBase);
+                        if (path != null && path.StartsWith("file:\\", StringComparison.Ordinal))
+                        {
+                            path = path.Remove(0, 6);
+                        }
+
+                        path = Path.Combine(path, "Settings.xml");
+                        var seSettings = File.ReadAllText(path);
+                        _useDarkTheme = seSettings.Contains("<UseDarkTheme>True</UseDarkTheme>");
+                    }
+                    catch
+                    {
+                        _useDarkTheme = false;
+                    }
+                }
+
+                return _useDarkTheme.Value;
+            }
+        }
+
+
+        public static void FixFonts(Control form, int iterations = 5)
+        {
+            if (form == null)
+            {
+                return;
+            }
+
+            FixFontsInner(form, iterations);
+            if (UseDarkTheme)
+            {
+                DarkTheme.SetDarkTheme(form, 1500);
+            }
+        }
+
+        internal static void FixFonts(ToolStripItem item)
+        {
+            if (UseDarkTheme)
+            {
+                DarkTheme.SetDarkTheme(item);
+            }
+        }
+
+        private static void FixFontsInner(Control form, int iterations = 5)
+        {
+
+            foreach (Control c in form.Controls)
+            {
+
+                foreach (Control inner in c.Controls)
+                {
+                    FixFontsInner(inner, iterations - 1);
+                }
+            }
+        }
     }
 }

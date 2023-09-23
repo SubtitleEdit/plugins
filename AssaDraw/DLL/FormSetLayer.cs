@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SubtitleEdit.Logic;
+using System;
 using System.Windows.Forms;
 
 namespace AssaDraw
@@ -10,6 +11,7 @@ namespace AssaDraw
         public FormSetLayer(int value)
         {
             InitializeComponent();
+            UiUtil.FixFonts(this);
 
             numericUpDownLayer.Value = value;
         }

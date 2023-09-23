@@ -54,13 +54,16 @@
     <Compile Include="Logic\BadApiKeyException.cs" />
     <Compile Include="Logic\Configuration.cs" />
     <Compile Include="IPlugin.cs" />
+    <Compile Include="Logic\DarkTheme.cs" />
     <Compile Include="Logic\HtmlUtil.cs" />
     <Compile Include="Logic\LanguageAutoDetect.cs" />
+    <Compile Include="Logic\NativeMethods.cs" />
     <Compile Include="Logic\SplitHelper.cs" />
     <Compile Include="Logic\StringExtensions.cs" />
     <Compile Include="Logic\TextSplit.cs" />
     <Compile Include="Logic\TextSplitResult.cs" />
     <Compile Include="Logic\TinyJsonParser.cs" />
+    <Compile Include="Logic\UiUtil.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -76,6 +79,11 @@
     <Compile Include="Logic\SubtitleFormat.cs" />
     <Compile Include="Logic\TimeCode.cs" />
     <Compile Include="Logic\Utilities.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Translator\Formatting.cs" />
     <Compile Include="Translator\DeepLTranslator2.cs" />
     <Compile Include="Translator\ITranslator.cs" />
@@ -86,6 +94,13 @@
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tick.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

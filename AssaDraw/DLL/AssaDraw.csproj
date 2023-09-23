@@ -57,6 +57,9 @@
     <Compile Include="ColorPicker\ColorChangedEventArgs.cs" />
     <Compile Include="ColorPicker\ColorHandler.cs" />
     <Compile Include="ColorPicker\ColorWheel.cs" />
+    <Compile Include="Controls\ToolStripNikseSeparator.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="FormAssaDrawHelp.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -77,6 +80,7 @@
     </Compile>
     <Compile Include="IPlugin.cs" />
     <Compile Include="Logic\CirleBezier.cs" />
+    <Compile Include="Logic\DarkTheme.cs" />
     <Compile Include="Logic\DrawCoordinateType.cs" />
     <Compile Include="Logic\DrawSettings.cs" />
     <Compile Include="Logic\DrawShape.cs" />
@@ -159,5 +163,23 @@
   <ItemGroup>
     <None Include="Resources\Transparent Background.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tick.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Help.png" />
+    <None Include="Resources\toolStripButtonRectangle.Image.png" />
+    <None Include="Resources\toolStripButtonMirrorVert.Image.png" />
+    <None Include="Resources\toolStripButtonMirrorHor.Image.png" />
+    <None Include="Resources\toolStripButtonLine.Image.png" />
+    <None Include="Resources\toolStripButtonCopyToClipboard.Image.png" />
+    <None Include="Resources\toolStripButtonColorPicker.Image.png" />
+    <None Include="Resources\toolStripButtonCloseShape.Image.png" />
+    <None Include="Resources\toolStripButtonClearCurrent.Image.png" />
+    <None Include="Resources\toolStripButtonCircle.Image.png" />
+    <None Include="Resources\toolStripButtonBeizer.Image.png" />
+    <None Include="Resources\Help32.png" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

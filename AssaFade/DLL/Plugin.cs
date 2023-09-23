@@ -10,7 +10,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "Fade..."; // will be used in context menu item
 
-        decimal IPlugin.Version => 0.4M;
+        decimal IPlugin.Version => 0.5M;
 
         string IPlugin.Description => "Fade effect for Advanced Sub Station Alpha";
 

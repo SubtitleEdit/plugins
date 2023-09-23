@@ -51,7 +51,7 @@ namespace SubtitleEdit.Translator
                 new TranslationPair("German", "de", true),
                 new TranslationPair("Greek", "el"),
                 new TranslationPair("Hungarian", "hu"),
-                new TranslationPair("Indonesian", "fi"),
+                new TranslationPair("Indonesian", "id"),
                 new TranslationPair("Italian", "it", true),
                 new TranslationPair("Japanese", "ja"),
                 new TranslationPair("Korean", "ko"),

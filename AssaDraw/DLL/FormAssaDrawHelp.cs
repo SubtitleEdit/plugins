@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using SubtitleEdit.Logic;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace AssaDraw
@@ -8,6 +9,7 @@ namespace AssaDraw
         public FormAssaDrawHelp()
         {
             InitializeComponent();
+            UiUtil.FixFonts(this);
 
             var version = (new Nikse.SubtitleEdit.PluginLogic.AssaDraw() as Nikse.SubtitleEdit.PluginLogic.IPlugin).Version.ToString(CultureInfo.InvariantCulture);
             richTextBoxHelpInfo.Text = richTextBoxHelpInfo.Text.Replace("[VERSION]", version);
