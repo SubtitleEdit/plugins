@@ -31,19 +31,15 @@ namespace Nikse.SubtitleEdit.PluginLogic.UnbreakLine
 
     public static class ParagraphExtensions
     {
-        public static bool IsUnbreakable(this SmartParagraph paragraph, int maxSingleLineLength)
+        // ReSharper disable once IdentifierTypo
+        public static bool IsUnbreakable(this SmartParagraph paragraph, int unbreakShorterThisValue)
         {
             if (!paragraph.IsMultiLined)
             {
                 return false;
             }
 
-            if (paragraph.Lines.Any(line => line.Content.Length >= maxSingleLineLength))
-            {
-                return false;
-            }
-
-            return true;
+            return paragraph.Lines.Sum(line => line.Content.Length) < unbreakShorterThisValue;
         }
 
         public static IEnumerable<SmartParagraph> ToSmartParagraphs(this IEnumerable<Paragraph> paragraphs) =>
