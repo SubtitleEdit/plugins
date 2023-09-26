@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using Nikse.SubtitleEdit.PluginLogic.Extensions;
 using Nikse.SubtitleEdit.PluginLogic.UnbreakLine;
 
 namespace Nikse.SubtitleEdit.PluginLogic
@@ -80,8 +81,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             labelTotal.Text = $"Total: {_removeLineBreakItems.Count}";
             labelTotal.ForeColor = _removeLineBreakItems.Count < 1 ? Color.Red : Color.Green;
             listView1.EndUpdate();
-            //listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-            //listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
         private void UpdateConfigurations()
@@ -187,30 +186,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
             System.Diagnostics.Process.Start("https://github.com/SubtitleEdit/plugins/issues/new");
         }
 
-        private void SetAllItemsChecked(bool isChecked)
-        {
-            foreach (ListViewItem lvi in listView1.Items)
-            {
-                lvi.Checked = isChecked;
-            }
-        }
-
-        private void CheckAllToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SetAllItemsChecked(true);
-        }
-
-        private void UncheckAllToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SetAllItemsChecked(false);
-        }
-
-        private void InvertCheckedToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            foreach (ListViewItem lvi in listView1.Items)
-            {
-                lvi.Checked = !lvi.Checked;
-            }
-        }
+        private void CheckAllToolStripMenuItem_Click(object sender, EventArgs e) => listView1.CheckAll();
+        private void UncheckAllToolStripMenuItem_Click(object sender, EventArgs e) => listView1.UncheckAll();
+        private void InvertCheckedToolStripMenuItem_Click(object sender, EventArgs e) => listView1.InvertCheck();
     }
 }
