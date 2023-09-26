@@ -5,6 +5,7 @@
         <RootNamespace>Nikse.SubtitleEdit.PluginLogic</RootNamespace>
         <AssemblyVersion>3</AssemblyVersion>
         <FileVersion>3</FileVersion>
+        <LangVersion>latest</LangVersion>
     </PropertyGroup>
     <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared" />
     <ItemGroup>
