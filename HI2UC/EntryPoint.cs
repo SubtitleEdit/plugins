@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -41,6 +42,18 @@ public class HI2UC : IPlugin
     public string DoAction(Form parentForm, string srtText, double frame, string uiLineBreak, string file,
         string videoFile, string rawText)
     {
+        
+#if DEBUG
+        /// <summary>
+        /// Launch and attach a debugger to the process if it's not already attached.
+        /// This is helpful when a need arises to debug code in the startup sequence of an application
+        /// or to debug issues that occur when a debugger isn't already attached.
+        /// </summary>
+        if (!Debugger.IsAttached)
+        {
+            Debugger.Launch();
+        }
+#endif
         // Make sure subtitle isn't null or empty
         if (string.IsNullOrWhiteSpace(srtText))
         {
