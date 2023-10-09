@@ -2,8 +2,10 @@
 
 public enum HiStyle
 {
+    None,
     UpperCase,
+    UpperLowerCase,
     LowerCase,
     TitleCase,
-    UpperLowerCase
+    SentenceCase,
 }
