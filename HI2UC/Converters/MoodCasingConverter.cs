@@ -7,7 +7,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Converters;
 
 public class MoodCasingConverter : ICasingConverter
 {
-    private static readonly char[] HiChars = {'(', '['};
+    private static readonly char[] MoodChars = {'(', '['};
 
     private IConverterStrategy ConverterStrategy { get; }
 
@@ -42,12 +42,12 @@ public class MoodCasingConverter : ICasingConverter
     {
         text = RemoveInvalidParantheses(text);
 
-        if (HasValidMood(text))
+        if (!HasValidMood(text))
         {
             return text;
         }
 
-        var openSymbolIndex = text.IndexOfAny(HiChars);
+        var openSymbolIndex = text.IndexOfAny(MoodChars);
         while (openSymbolIndex >= 0)
         {
             var closingPair = GetClosingPair(text[openSymbolIndex]);
@@ -70,7 +70,7 @@ public class MoodCasingConverter : ICasingConverter
                 text = text.Insert(openSymbolIndex, moodToken.Tokenize(ConverterStrategy.Execute(mood)));
             }
 
-            openSymbolIndex = text.IndexOfAny(HiChars, closeSymbolIndex + 1); // ( or [
+            openSymbolIndex = text.IndexOfAny(MoodChars, closeSymbolIndex + 1); // ( or [
         }
 
         return text;
@@ -138,8 +138,8 @@ public class MoodCasingConverter : ICasingConverter
             return false;
         }
 
-        var idx = text.IndexOfAny(HiChars);
-        if (idx < 0)
+        var moodStartIndex = text.IndexOfAny(MoodChars);
+        if (moodStartIndex < 0)
         {
             return false;
         }
@@ -153,11 +153,12 @@ public class MoodCasingConverter : ICasingConverter
         if (lastCharIndex < 0) return false;
 
         // check if open parentheses/bracket is at the end of the text
-        if (idx + 1 <= text.Length && text[idx + 1] == '<')
+        if (moodStartIndex + 1 <= text.Length && text[moodStartIndex + 1] == '<')
         {
+            return false;
         }
 
-        return idx + 1 != text.Length;
+        return moodStartIndex + 1 < text.Length;
     }
         
     public struct Mood
