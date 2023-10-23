@@ -21,24 +21,6 @@ public class HI2UC : IPlugin
 
     public decimal Version => 4.6m;
 
-    public HI2UC()
-    {
-        // get metadata from assembly
-        // var thisAssembly = Assembly.GetExecutingAssembly();
-        // var descriptionAttribute = AssemblyUtils.GetCustomAttribute<AssemblyDescriptionAttribute>(thisAssembly);
-        //var assemblyVersion = AssemblyUtils.GetCustomAttribute<AssemblyVersionAttribute>(thisAssembly); why null?
-        // AssemblyName assemblyName = thisAssembly.GetName();
-        // var AssemblyTitleAttribute = AssemblyUtils.GetCustomAttribute<AssemblyTitleAttribute>(thisAssembly);
-        // Name = AssemblyTitleAttribute.Title;
-        // Trace.WriteLine(Name);
-        // Name = assemblyName.Name;
-        // Text = "Hearing Impaired to Uppercase";
-        // Description = descriptionAttribute.Description;
-        // use invariant-culture due to some culture uses "," as decimal separator
-        // Version = decimal.Parse(assemblyName.Version.ToString(2), System.Globalization.CultureInfo.InvariantCulture);
-        // Shortcut = string.Empty;
-    }
-
     public string DoAction(Form parentForm, string srtText, double frame, string uiLineBreak, string file,
         string videoFile, string rawText)
     {
