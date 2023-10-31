@@ -1,4 +1,5 @@
-﻿using Nikse.SubtitleEdit.PluginLogic.Views;
+﻿using System.Diagnostics;
+using Nikse.SubtitleEdit.PluginLogic.Views;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
@@ -10,8 +11,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
         }
 
-        public override string DoAction(Form parentForm, string srtText, double frameRate, string uiLineBreak, string file, string videoFile, string rawText)
+        public override string DoAction(Form parentForm, string srtText, double frameRate, string uiLineBreak,
+            string file, string videoFile, string rawText)
         {
+#if DEBUG
+            /// <summary>
+            /// Launch and attach a debugger to the process if it's not already attached.
+            /// This is helpful when a need arises to debug code in the startup sequence of an application
+            /// or to debug issues that occur when a debugger isn't already attached.
+            /// </summary>
+            if (!Debugger.IsAttached)
+            {
+                Debugger.Launch();
+            }
+#endif
             Init(srtText, uiLineBreak, file);
 
             using (var main = new Main(_subtitle))
