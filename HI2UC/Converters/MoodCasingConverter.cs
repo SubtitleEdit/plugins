@@ -40,7 +40,7 @@ public class MoodCasingConverter : ICasingConverter
         
     public string MoodsToUppercase(string text)
     {
-        text = RemoveInvalidParantheses(text);
+        text = RemoveInvalidParentheses(text);
 
         if (!HasValidMood(text))
         {
@@ -78,10 +78,10 @@ public class MoodCasingConverter : ICasingConverter
         
     // private Mood NewMood(string text, int index, int len)
         
-    private string RemoveInvalidParantheses(string input)
+    private string RemoveInvalidParentheses(string input)
     {
         input = input.Replace("()", string.Empty);
-        input = input.Replace("()", string.Empty);
+        input = input.Replace("[]", string.Empty);
         input = input.Replace("( )", string.Empty);
         return input.Replace("[ ]", string.Empty);
     }
