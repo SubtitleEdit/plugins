@@ -38,11 +38,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             labelNarratorsColor.Text = HtmlUtils.ColorToHtml(Color.FromArgb(_configs.Narrator));
             labelMoodsColor.Text = HtmlUtils.ColorToHtml(Color.FromArgb(_configs.Moods));
-            labelMusicColor.Text = HtmlUtils.ColorToHtml(Color.FromArgb(_configs.Moods));
+            labelMusicColor.Text = HtmlUtils.ColorToHtml(Color.FromArgb(_configs.Music));
             
             labelNarratorsColor.BackColor = Color.FromArgb(_configs.Narrator);
             labelMoodsColor.BackColor = Color.FromArgb(_configs.Moods);
-            labelMusicColor.BackColor = Color.FromArgb(_configs.Moods);
+            labelMusicColor.BackColor = Color.FromArgb(_configs.Music);
         }
 
         private void ChangeColorHandler(object sender, EventArgs e)
