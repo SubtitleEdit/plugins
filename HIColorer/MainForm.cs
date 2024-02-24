@@ -152,6 +152,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 yield return new NarratorArtist(GetPaletteFromARGB(_configs.Narrator));
             }
+            if (checkBoxEnabledNarrator.Checked)
+            {
+                yield return new MusicArtist(GetPaletteFromARGB(_configs.Music));
+            }
         }
 
         private static Palette GetPaletteFromARGB(int argbCode)
@@ -186,5 +190,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         }
 
         public void SaveConfigurations() => _configs.SaveConfigurations();
+
+        private void label7_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

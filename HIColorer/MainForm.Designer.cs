@@ -30,8 +30,10 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.pictureBoxDonate = new System.Windows.Forms.PictureBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.buttonRemove = new System.Windows.Forms.Button();
             this.checkBoxEnabledMoods = new System.Windows.Forms.CheckBox();
             this.checkBoxEnabledNarrator = new System.Windows.Forms.CheckBox();
             this.labelNarratorsColor = new System.Windows.Forms.Label();
@@ -42,16 +44,24 @@
             this.label1 = new System.Windows.Forms.Label();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOK = new System.Windows.Forms.Button();
-            this.buttonRemove = new System.Windows.Forms.Button();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.linkLabelIvandrofly = new System.Windows.Forms.LinkLabel();
-            this.pictureBoxDonate = new System.Windows.Forms.PictureBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.checkBoxEnabledMusic = new System.Windows.Forms.CheckBox();
+            this.buttonPickMusicColor = new System.Windows.Forms.Button();
+            this.labelMusicColor = new System.Windows.Forms.Label();
+            this.labelMusic = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDonate)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.Controls.Add(this.checkBoxEnabledMusic);
+            this.groupBox1.Controls.Add(this.buttonPickMusicColor);
+            this.groupBox1.Controls.Add(this.labelMusicColor);
+            this.groupBox1.Controls.Add(this.labelMusic);
             this.groupBox1.Controls.Add(this.pictureBoxDonate);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label3);
@@ -66,10 +76,22 @@
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(13, 13);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(519, 165);
+            this.groupBox1.Size = new System.Drawing.Size(519, 202);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Color options:";
+            // 
+            // pictureBoxDonate
+            // 
+            this.pictureBoxDonate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBoxDonate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureBoxDonate.Image = ((System.Drawing.Image)(resources.GetObject("pictureBoxDonate.Image")));
+            this.pictureBoxDonate.Location = new System.Drawing.Point(413, 19);
+            this.pictureBoxDonate.Name = "pictureBoxDonate";
+            this.pictureBoxDonate.Size = new System.Drawing.Size(100, 67);
+            this.pictureBoxDonate.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBoxDonate.TabIndex = 19;
+            this.pictureBoxDonate.TabStop = false;
             // 
             // label4
             // 
@@ -88,6 +110,16 @@
             this.label3.Size = new System.Drawing.Size(84, 13);
             this.label3.TabIndex = 8;
             this.label3.Text = "e.g: John: Hello!";
+            // 
+            // buttonRemove
+            // 
+            this.buttonRemove.Location = new System.Drawing.Point(413, 173);
+            this.buttonRemove.Name = "buttonRemove";
+            this.buttonRemove.Size = new System.Drawing.Size(100, 23);
+            this.buttonRemove.TabIndex = 1;
+            this.buttonRemove.Text = "Remove color/s";
+            this.buttonRemove.UseVisualStyleBackColor = true;
+            this.buttonRemove.Click += new System.EventHandler(this.ButtonRemove_Click);
             // 
             // checkBoxEnabledMoods
             // 
@@ -178,7 +210,7 @@
             // buttonCancel
             // 
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(457, 194);
+            this.buttonCancel.Location = new System.Drawing.Point(457, 221);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 3;
@@ -187,7 +219,7 @@
             // 
             // buttonOK
             // 
-            this.buttonOK.Location = new System.Drawing.Point(376, 194);
+            this.buttonOK.Location = new System.Drawing.Point(376, 221);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 2;
@@ -195,20 +227,10 @@
             this.buttonOK.UseVisualStyleBackColor = true;
             this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
             // 
-            // buttonRemove
-            // 
-            this.buttonRemove.Location = new System.Drawing.Point(413, 127);
-            this.buttonRemove.Name = "buttonRemove";
-            this.buttonRemove.Size = new System.Drawing.Size(100, 23);
-            this.buttonRemove.TabIndex = 1;
-            this.buttonRemove.Text = "Remove color/s";
-            this.buttonRemove.UseVisualStyleBackColor = true;
-            this.buttonRemove.Click += new System.EventHandler(this.ButtonRemove_Click);
-            // 
             // linkLabelIvandrofly
             // 
             this.linkLabelIvandrofly.AutoSize = true;
-            this.linkLabelIvandrofly.Location = new System.Drawing.Point(10, 204);
+            this.linkLabelIvandrofly.Location = new System.Drawing.Point(10, 231);
             this.linkLabelIvandrofly.Name = "linkLabelIvandrofly";
             this.linkLabelIvandrofly.Size = new System.Drawing.Size(81, 13);
             this.linkLabelIvandrofly.TabIndex = 8;
@@ -217,17 +239,56 @@
             this.linkLabelIvandrofly.Text = "By: @ivandrofly";
             this.linkLabelIvandrofly.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelIvandrofly_LinkClicked);
             // 
-            // pictureBoxDonate
+            // label5
             // 
-            this.pictureBoxDonate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxDonate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBoxDonate.Image = ((System.Drawing.Image)(resources.GetObject("pictureBoxDonate.Image")));
-            this.pictureBoxDonate.Location = new System.Drawing.Point(413, 19);
-            this.pictureBoxDonate.Name = "pictureBoxDonate";
-            this.pictureBoxDonate.Size = new System.Drawing.Size(100, 67);
-            this.pictureBoxDonate.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBoxDonate.TabIndex = 19;
-            this.pictureBoxDonate.TabStop = false;
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(135, 157);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(72, 13);
+            this.label5.TabIndex = 24;
+            this.label5.Text = "e.g: ♪ Gone ♪";
+            // 
+            // checkBoxEnabledMusic
+            // 
+            this.checkBoxEnabledMusic.AutoSize = true;
+            this.checkBoxEnabledMusic.Checked = true;
+            this.checkBoxEnabledMusic.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxEnabledMusic.Location = new System.Drawing.Point(307, 153);
+            this.checkBoxEnabledMusic.Name = "checkBoxEnabledMusic";
+            this.checkBoxEnabledMusic.Size = new System.Drawing.Size(65, 17);
+            this.checkBoxEnabledMusic.TabIndex = 23;
+            this.checkBoxEnabledMusic.Text = "Enabled";
+            this.checkBoxEnabledMusic.UseVisualStyleBackColor = true;
+            // 
+            // buttonPickMusicColor
+            // 
+            this.buttonPickMusicColor.Location = new System.Drawing.Point(29, 173);
+            this.buttonPickMusicColor.Name = "buttonPickMusicColor";
+            this.buttonPickMusicColor.Size = new System.Drawing.Size(75, 23);
+            this.buttonPickMusicColor.TabIndex = 21;
+            this.buttonPickMusicColor.Text = "Pick color";
+            this.buttonPickMusicColor.UseVisualStyleBackColor = true;
+            // 
+            // labelMusicColor
+            // 
+            this.labelMusicColor.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.labelMusicColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelMusicColor.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.labelMusicColor.Location = new System.Drawing.Point(138, 173);
+            this.labelMusicColor.Name = "labelMusicColor";
+            this.labelMusicColor.Size = new System.Drawing.Size(234, 23);
+            this.labelMusicColor.TabIndex = 22;
+            this.labelMusicColor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labelMusic
+            // 
+            this.labelMusic.AutoSize = true;
+            this.labelMusic.Location = new System.Drawing.Point(26, 157);
+            this.labelMusic.Name = "labelMusic";
+            this.labelMusic.Size = new System.Drawing.Size(35, 13);
+            this.labelMusic.TabIndex = 20;
+            this.labelMusic.Text = "Music";
+            this.labelMusic.Click += new System.EventHandler(this.label7_Click);
             // 
             // MainForm
             // 
@@ -235,7 +296,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(544, 229);
+            this.ClientSize = new System.Drawing.Size(544, 255);
             this.Controls.Add(this.linkLabelIvandrofly);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.buttonCancel);
@@ -275,5 +336,10 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.PictureBox pictureBoxDonate;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.CheckBox checkBoxEnabledMusic;
+        private System.Windows.Forms.Button buttonPickMusicColor;
+        private System.Windows.Forms.Label labelMusicColor;
+        private System.Windows.Forms.Label labelMusic;
     }
 }

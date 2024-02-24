@@ -13,10 +13,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
         /// Moods color.
         /// </summary>
         public int Moods { get; set; }
+        
+        /// <summary>
+        /// Music paragraph color
+        /// </summary>
+        public int Music { get; set; }
 
         public ColorConfig(string configFile) : base(configFile)
         {
             Narrator = Color.Blue.ToArgb();
+            Moods = Color.Maroon.ToArgb();
             Moods = Color.Maroon.ToArgb();
         }
     }
