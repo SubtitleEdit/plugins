@@ -140,8 +140,8 @@
   <Plugin>
     <Name>Hearing Impaired Colorer</Name>
     <Description>Set color for Hearing Impaired annotations</Description>
-    <Version>0.5</Version>
-    <Date>2019-07-09</Date>
+    <Version>1.0</Version>
+    <Date>2019-02-24</Date>
     <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/HIColorer.zip</Url>
     <Author>ivandrofly</Author>
   </Plugin>
