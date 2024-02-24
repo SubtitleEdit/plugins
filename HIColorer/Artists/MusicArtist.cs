@@ -42,7 +42,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private static bool IsMusicText(SkipText skipText)
         {
-            if (skipText.IsReadable()) return false;
+            if (!skipText.IsReadable()) return false;
             var ch = skipText.Read();
             return ch == '♫' || ch == '♪';
         }
