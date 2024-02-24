@@ -13,6 +13,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public override void Paint(Subtitle subtitle)
         {
+            // TODO: Handle when text contains both mood and music
+            // e.g:  ♪ Foobar (drum) ♪
             foreach (var p in subtitle.Paragraphs)
             {
                 var text = p.Text;
@@ -21,13 +23,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 var len = text.Length;
 
                 // todo: move these into 'SkipText' struct?
-                if (i < len && text[i] == '{')
+                while (i < len && text[i] == '<' || text[i] == '{')
                 {
-                    i = Math.Max(text.IndexOf('}', i + 1) + 1, 0);
-                }
-                while (i < len && text[i] == '<')
-                {
-                    i = Math.Max(text.IndexOf('>', i + 1) + 1, 0);
+                    i = Math.Max(text.IndexOf(GetClosingPair(text[i]), i + 1) + 1, 0);
                 }
 
                 var skipText = ToSkipText(text, i);
@@ -37,6 +35,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 }
             }
         }
+
+        private static char GetClosingPair(char ch) => ch == '<' ? '>' : '}';
 
         private static SkipText ToSkipText(string text, int index) => new SkipText(text, index);
 
