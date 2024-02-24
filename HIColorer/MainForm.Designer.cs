@@ -30,6 +30,11 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.checkBoxEnabledMusic = new System.Windows.Forms.CheckBox();
+            this.buttonPickMusicColor = new System.Windows.Forms.Button();
+            this.labelMusicColor = new System.Windows.Forms.Label();
+            this.labelMusic = new System.Windows.Forms.Label();
             this.pictureBoxDonate = new System.Windows.Forms.PictureBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -46,11 +51,6 @@
             this.buttonOK = new System.Windows.Forms.Button();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.linkLabelIvandrofly = new System.Windows.Forms.LinkLabel();
-            this.label5 = new System.Windows.Forms.Label();
-            this.checkBoxEnabledMusic = new System.Windows.Forms.CheckBox();
-            this.buttonPickMusicColor = new System.Windows.Forms.Button();
-            this.labelMusicColor = new System.Windows.Forms.Label();
-            this.labelMusic = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDonate)).BeginInit();
             this.SuspendLayout();
@@ -80,6 +80,57 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Color options:";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(135, 157);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(72, 13);
+            this.label5.TabIndex = 24;
+            this.label5.Text = "e.g: ♪ Gone ♪";
+            // 
+            // checkBoxEnabledMusic
+            // 
+            this.checkBoxEnabledMusic.AutoSize = true;
+            this.checkBoxEnabledMusic.Checked = true;
+            this.checkBoxEnabledMusic.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxEnabledMusic.Location = new System.Drawing.Point(307, 153);
+            this.checkBoxEnabledMusic.Name = "checkBoxEnabledMusic";
+            this.checkBoxEnabledMusic.Size = new System.Drawing.Size(65, 17);
+            this.checkBoxEnabledMusic.TabIndex = 23;
+            this.checkBoxEnabledMusic.Text = "Enabled";
+            this.checkBoxEnabledMusic.UseVisualStyleBackColor = true;
+            // 
+            // buttonPickMusicColor
+            // 
+            this.buttonPickMusicColor.Location = new System.Drawing.Point(29, 173);
+            this.buttonPickMusicColor.Name = "buttonPickMusicColor";
+            this.buttonPickMusicColor.Size = new System.Drawing.Size(75, 23);
+            this.buttonPickMusicColor.TabIndex = 21;
+            this.buttonPickMusicColor.Text = "Pick color";
+            this.buttonPickMusicColor.UseVisualStyleBackColor = true;
+            this.buttonPickMusicColor.Click += new System.EventHandler(this.buttonPickMusicColor_Click);
+            // 
+            // labelMusicColor
+            // 
+            this.labelMusicColor.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.labelMusicColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelMusicColor.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.labelMusicColor.Location = new System.Drawing.Point(138, 173);
+            this.labelMusicColor.Name = "labelMusicColor";
+            this.labelMusicColor.Size = new System.Drawing.Size(234, 23);
+            this.labelMusicColor.TabIndex = 22;
+            this.labelMusicColor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labelMusic
+            // 
+            this.labelMusic.AutoSize = true;
+            this.labelMusic.Location = new System.Drawing.Point(26, 157);
+            this.labelMusic.Name = "labelMusic";
+            this.labelMusic.Size = new System.Drawing.Size(35, 13);
+            this.labelMusic.TabIndex = 20;
+            this.labelMusic.Text = "Music";
             // 
             // pictureBoxDonate
             // 
@@ -239,57 +290,6 @@
             this.linkLabelIvandrofly.Text = "By: @ivandrofly";
             this.linkLabelIvandrofly.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelIvandrofly_LinkClicked);
             // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(135, 157);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(72, 13);
-            this.label5.TabIndex = 24;
-            this.label5.Text = "e.g: ♪ Gone ♪";
-            // 
-            // checkBoxEnabledMusic
-            // 
-            this.checkBoxEnabledMusic.AutoSize = true;
-            this.checkBoxEnabledMusic.Checked = true;
-            this.checkBoxEnabledMusic.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxEnabledMusic.Location = new System.Drawing.Point(307, 153);
-            this.checkBoxEnabledMusic.Name = "checkBoxEnabledMusic";
-            this.checkBoxEnabledMusic.Size = new System.Drawing.Size(65, 17);
-            this.checkBoxEnabledMusic.TabIndex = 23;
-            this.checkBoxEnabledMusic.Text = "Enabled";
-            this.checkBoxEnabledMusic.UseVisualStyleBackColor = true;
-            // 
-            // buttonPickMusicColor
-            // 
-            this.buttonPickMusicColor.Location = new System.Drawing.Point(29, 173);
-            this.buttonPickMusicColor.Name = "buttonPickMusicColor";
-            this.buttonPickMusicColor.Size = new System.Drawing.Size(75, 23);
-            this.buttonPickMusicColor.TabIndex = 21;
-            this.buttonPickMusicColor.Text = "Pick color";
-            this.buttonPickMusicColor.UseVisualStyleBackColor = true;
-            // 
-            // labelMusicColor
-            // 
-            this.labelMusicColor.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.labelMusicColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelMusicColor.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.labelMusicColor.Location = new System.Drawing.Point(138, 173);
-            this.labelMusicColor.Name = "labelMusicColor";
-            this.labelMusicColor.Size = new System.Drawing.Size(234, 23);
-            this.labelMusicColor.TabIndex = 22;
-            this.labelMusicColor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // labelMusic
-            // 
-            this.labelMusic.AutoSize = true;
-            this.labelMusic.Location = new System.Drawing.Point(26, 157);
-            this.labelMusic.Name = "labelMusic";
-            this.labelMusic.Size = new System.Drawing.Size(35, 13);
-            this.labelMusic.TabIndex = 20;
-            this.labelMusic.Text = "Music";
-            this.labelMusic.Click += new System.EventHandler(this.label7_Click);
-            // 
             // MainForm
             // 
             this.AcceptButton = this.buttonOK;
@@ -314,7 +314,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDonate)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion

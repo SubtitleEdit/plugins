@@ -61,7 +61,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     _configs.Moods = colorDialog1.Color.ToArgb();
                 }
             }
+
             UpdateUIOnColorChange();
+        }
+
+        private void buttonPickMusicColor_Click(object sender, EventArgs e)
+        {
+            if (colorDialog1.ShowDialog() == DialogResult.OK)
+            {
+                _configs.Music = colorDialog1.Color.ToArgb();
+                UpdateUIOnColorChange();
+            }
         }
 
         private void ButtonRemove_Click(object sender, EventArgs e)
@@ -193,10 +203,5 @@ namespace Nikse.SubtitleEdit.PluginLogic
         }
 
         public void SaveConfigurations() => _configs.SaveConfigurations();
-
-        private void label7_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
