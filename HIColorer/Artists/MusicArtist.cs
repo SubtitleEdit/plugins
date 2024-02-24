@@ -23,11 +23,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 // todo: move these into 'SkipText' struct?
                 if (i < len && text[i] == '{')
                 {
-                    i = Math.Max(text.IndexOf('}') + 1, 0);
+                    i = Math.Max(text.IndexOf('}', i + 1) + 1, 0);
                 }
                 while (i < len && text[i] == '<')
                 {
-                    i = Math.Max(text.IndexOf('>') + 1, 0);
+                    i = Math.Max(text.IndexOf('>', i + 1) + 1, 0);
                 }
 
                 var skipText = ToSkipText(text, i);
