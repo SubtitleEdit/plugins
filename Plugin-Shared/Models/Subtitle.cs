@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -7,10 +8,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
     public class Subtitle
     {
         private List<Paragraph> _paragraphs;
+        private readonly SubRip _subFormat;
+
         public string Header { get; set; }
         public string Footer { get; set; }
         public string FileName { get; set; }
-        private readonly SubRip _subFormat;
+        
+        // todo: change this in future to IEnumerable to avoid external source to change the internal values
         public List<Paragraph> Paragraphs => _paragraphs;
 
         public Subtitle(SubRip subrip)
@@ -24,10 +28,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public void Renumber(int startNumber = 1)
         {
-            if (startNumber < 0)
-            {
-                startNumber = 1;
-            }
+            startNumber = Math.Max(1, startNumber);
             foreach (Paragraph p in _paragraphs)
             {
                 p.Number = startNumber++;
@@ -41,8 +42,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return;
             }
 
-            _paragraphs.Remove(_paragraphs.Single(p => p.Number == lineNumber));
-            Renumber();
+            if (_paragraphs.Remove(_paragraphs.Single(p => p.Number == lineNumber)))
+            {
+                Renumber();
+            }
         }
     }
 }

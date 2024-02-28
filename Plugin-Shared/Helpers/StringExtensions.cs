@@ -179,5 +179,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         }
 
         public static bool ContainsColor(this string s) => s?.IndexOf("<font", StringComparison.OrdinalIgnoreCase) >= 0;
+
+        public static string ToListViewText(this string value) => value.Replace(Environment.NewLine, "<br/>");
     }
 }
