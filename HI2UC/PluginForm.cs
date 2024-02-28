@@ -163,8 +163,8 @@ internal partial class PluginForm : Form, IConfigurable
             var item = new ListViewItem(string.Empty) { Checked = true };
             item.SubItems.Add(record.Paragraph.Number.ToString());
             item.SubItems.Add(record.Comment);
-            item.SubItems.Add(record.Before);
-            item.SubItems.Add(record.After);
+            item.SubItems.Add(record.Before.ToListViewText());
+            item.SubItems.Add(record.After.ToListViewText());
             item.Tag = record;
             listViewFixes.Items.Add(item);
         }
