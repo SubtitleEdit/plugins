@@ -19,7 +19,7 @@ public class ChunkReader
                 // process any pending
                 if (rangeStart != i)
                 {
-                    yield return ChunkFromRange(rangeStart, i);
+                    yield return NewWordChunk(rangeStart, i);
                     rangeStart = i;
                 }
 
@@ -31,7 +31,7 @@ public class ChunkReader
                     // end reached, no closing
                     if (i == len)
                     {
-                        yield return ChunkFromRange(rangeStart, i);
+                        yield return NewWordChunk(rangeStart, i);
                         rangeStart = i;
                     }
 
@@ -39,14 +39,14 @@ public class ChunkReader
                 }
 
                 // closing pair found
-                yield return ChunkFromRange(rangeStart, i + 1, true);
+                yield return NewTagChunk(rangeStart, i + 1, true);
 
                 // update the start to be the current end
                 rangeStart = i + 1;
             }
             else if (IsWordBoundary(ch) && i > rangeStart)
             {
-                yield return ChunkFromRange(rangeStart, i);
+                yield return NewWordChunk(rangeStart, i);
                 rangeStart = i;
             }
         }
@@ -54,13 +54,13 @@ public class ChunkReader
         // still got pending range to process
         if (len - rangeStart > 0)
         {
-            yield return ChunkFromRange(rangeStart, len);
+            yield return NewWordChunk(rangeStart, len);
         }
     }
 
-    private Chunk ChunkFromRange(int start, int end) => ChunkFromRange(start, end, false);
+    private Chunk NewWordChunk(int start, int end) => new Chunk(start, end, false);
 
-    private Chunk ChunkFromRange(int start, int end, bool isTag) => new(start, end, isTag);
+    private Chunk NewTagChunk(int start, int end, bool isTag) => new Chunk(start, end, isTag);
 
     public readonly struct Chunk
     {
