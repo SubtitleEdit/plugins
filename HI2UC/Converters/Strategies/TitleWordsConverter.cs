@@ -23,6 +23,7 @@ public class TitleWordsConverter : IConverterStrategy
         const string whiteSpace = " ";
         foreach (var chunk in _chunkReader.Read(input))
         {
+            // When in newer version of .NET use Span when possible to avoid alloc new string
             var content = input.Substring(chunk.Start, chunk.End - chunk.Start);
             if (chunk.IsTag)
             {
