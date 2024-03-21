@@ -8,5 +8,13 @@ public class Record
     public Paragraph Paragraph { get; set; }
     public override string ToString() => $"#{Paragraph.Number}: {Before} => {After}";
 
-    public void Apply() => Paragraph.Text = After;
+    public void Apply()
+    {
+        if (Paragraph == null)
+        {
+            return;
+        }
+
+        Paragraph.Text = After;
+    }
 }
