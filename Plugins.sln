@@ -125,6 +125,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ivandrofly.Test", "Ivandrof
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoRecursiveDash", "NoRecursiveDash\NoRecursiveDash.csproj", "{E85516B2-26AC-4AA9-A175-4AF832147DB3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSeBasedPlugin", "LibSeBasedPlugin\LibSeBasedPlugin.csproj", "{051A7D15-8D15-40E3-8545-69AA89770F72}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -343,6 +345,10 @@ Global
 		{E85516B2-26AC-4AA9-A175-4AF832147DB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E85516B2-26AC-4AA9-A175-4AF832147DB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E85516B2-26AC-4AA9-A175-4AF832147DB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{051A7D15-8D15-40E3-8545-69AA89770F72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{051A7D15-8D15-40E3-8545-69AA89770F72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{051A7D15-8D15-40E3-8545-69AA89770F72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{051A7D15-8D15-40E3-8545-69AA89770F72}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -401,6 +407,7 @@ Global
 		{E1DFE79F-1019-4C28-B396-9ACA436444CD} = {65E5C891-9AB9-48E1-8DC5-A490BC4EF2FC}
 		{C1D9A29C-6734-48CC-9C65-3E1728037A36} = {21BBD88D-F935-419F-A68B-E8DA9F08E9C1}
 		{E85516B2-26AC-4AA9-A175-4AF832147DB3} = {21BBD88D-F935-419F-A68B-E8DA9F08E9C1}
+		{051A7D15-8D15-40E3-8545-69AA89770F72} = {21BBD88D-F935-419F-A68B-E8DA9F08E9C1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8BBF401C-6D00-4F22-BFC0-DE2673213D5B}
