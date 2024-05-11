@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Nikse.SubtitleEdit.PluginLogic.Extensions;
 using Nikse.SubtitleEdit.PluginLogic.UnbreakLine;
@@ -27,55 +28,41 @@ namespace Nikse.SubtitleEdit.PluginLogic
             _subtitle = subtitle;
 
             // Save user-configs on form-close.
-            FormClosing += delegate
-            {
-                _configs.SaveConfigurations();
-            };
+            FormClosing += delegate { SaveConfigurations(); };
 
             linkLabelGithub.Click += (sender, e) => System.Diagnostics.Process.Start(linkLabelGithub.Tag.ToString());
 
             // donate handler
-            pictureBoxDonate.Click += (s, e) =>
-            {
-                System.Diagnostics.Process.Start(StringUtils.DonateUrl);
-            };
+            pictureBoxDonate.Click += (s, e) => { System.Diagnostics.Process.Start(StringUtils.DonateUrl); };
 
             LoadConfigurations();
-
             _removeLineBreak = new RemoveLineBreak(_configs);
 
-            // disable triggers
-            ChangeControlsState(false);
-
-            // restore trigger states
-            ChangeControlsState(true);
-            
+            // hook event handler after configuration and line-unbreaker read
             checkBoxSkipDialog.CheckedChanged += ConfigurationChanged;
             checkBoxSkipNarrator.CheckedChanged += ConfigurationChanged;
             checkBoxMoods.CheckedChanged += ConfigurationChanged;
             numericUpDown1.ValueChanged += ConfigurationChanged;
-            
-            GeneratePreview();
-        }
 
-        private void ChangeControlsState(bool state)
-        {
-            checkBoxMoods.Enabled = state;
-            checkBoxSkipDialog.Enabled = state;
-            checkBoxSkipNarrator.Enabled = state;
-            numericUpDown1.Enabled = state;
+            // trigger first preview
+            GeneratePreview();
         }
 
         private void GeneratePreview()
         {
+            if (_removeLineBreak is null)
+            {
+                return;
+            }
+
             listView1.BeginUpdate();
             listView1.Items.Clear();
             UpdateConfigurations();
 
             _removeLineBreakItems = _removeLineBreak.Remove(_subtitle.Paragraphs);
-            foreach (var result in _removeLineBreakItems)
+            foreach (var removeLineBreakResult in _removeLineBreakItems)
             {
-                listView1.Items.Add(result.ToListViewItem());
+                listView1.Items.Add(removeLineBreakResult.ToListViewItem());
             }
 
             labelTotal.Text = $"Total: {_removeLineBreakItems.Count}";
@@ -102,6 +89,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 removeLineBreakResult.Paragraph.Text = removeLineBreakResult.AfterText;
             }
+
             Subtitle = _subtitle.ToText();
             DialogResult = DialogResult.OK;
         }
@@ -145,18 +133,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public void LoadConfigurations()
         {
             var configFile = Path.Combine(FileUtils.Plugins, "linesunbreaker-config.xml");
-            _configs = LoadOrCreateConfiguration(configFile);
+            _configs = LoadOrCreateFromFile(configFile);
             ApplyConfigurations();
         }
 
-        private UnBreakConfigs LoadOrCreateConfiguration(string configFile)
+        private UnBreakConfigs LoadOrCreateFromFile(string configFile)
         {
             // load
             if (File.Exists(configFile))
             {
                 return UnBreakConfigs.LoadConfiguration(configFile);
             }
-            
+
             // create
             var newConfig = new UnBreakConfigs(configFile);
             newConfig.SaveConfigurations();
