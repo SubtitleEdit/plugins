@@ -52,7 +52,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Tests.cs"/>
+        <Compile Include="HI2UC\Tests.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>
     <ItemGroup>
