@@ -40,7 +40,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (noTagLines.Length == 1)
                 {
                     if (IsStartEndBraces(noTagLines[0], idx))
+                    {
                         continue;
+                    }
 
                     FindNamesInText(text, idx);
                 }
@@ -65,13 +67,21 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         var noTagLine = noTagLines[k];
                         idx = noTagLine.IndexOf('(');
                         if (idx < 0)
+                        {
                             continue;
+                        }
+
                         if (IsStartEndBraces(noTagLine, idx))
                         {
                             if (k > 0) // continue is second line starts and ends with '(' & ')'
+                            {
                                 continue;
+                            }
+
                             if (k == 0 && noTagLine.StartsWith("-", StringComparison.Ordinal)) // Continue if it's dialog
+                            {
                                 continue;
+                            }
                         }
                         FindNamesInText(noTagLine, idx);
                     }
@@ -83,14 +93,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        char[] _trimChars = { '♯', '♯', '♯', '♯', '♯' , ' ', '.', '!', '?', '-', '"' };
-
         private bool IsStartEndBraces(string noTagLine, int startIdx)
         {
             noTagLine = noTagLine.TrimEnd(' ', '.', '!', '?', '-', '"');
             var endIdx = noTagLine.IndexOf(')', startIdx + 1);
             if (endIdx + 1 == noTagLine.Length)
+            {
                 return true;
+            }
+
             return false;
         }
 
@@ -101,7 +112,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 //(ismael)
                 var endIdx = text.IndexOf(')', idx + 1);
                 if (endIdx < idx)
+                {
                     break; // break while
+                }
+
                 var name = text.Substring(idx, endIdx - idx + 1); // (Jonh)
                 TryAddToListBox(text, name);
                 idx = text.IndexOf('(', endIdx + 1);
@@ -148,7 +162,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
             if (idx < 0)
             {
                 MessageBox.Show("Nothing selected, please select something from List box and try again!");
-                return;
             }
             else
             {
@@ -163,14 +176,18 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     textBox1.Text = listBox1.Items[idx].ToString();
                 }
                 else
+                {
                     textBox1.Text = "";
+                }
             }
         }
 
         private void buttonAddToIgnore_Click(object sender, EventArgs e)
         {
             if (listBox1.Items.Count <= 0)
+            {
                 return;
+            }
 
             // if file doesn't exist create a new one, check iisn't already in list
             var settingFile = Path.Combine(FileUtils.Dictionaries, "moodsIgnore.xml");
@@ -210,15 +227,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
         }
 
-        private void StoreItemsIntoXmlFile(string path)
-        {
-
-        }
-
         private void GetNames_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyData == Keys.Escape)
+            {
                 DialogResult = DialogResult.Cancel;
+            }
         }
     }
 }
