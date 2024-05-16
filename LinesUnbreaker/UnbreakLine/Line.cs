@@ -42,6 +42,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.UnbreakLine
         }
 
         private static bool CheckClosing(string line) => line.Length > 0 && line[line.Length - 1].IsClosed();
+        
         private static bool CheckDialog(string line) => line.Length > 0 && line.StartsWith('-');
 
         private static bool CheckMood(string line)
@@ -59,7 +60,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.UnbreakLine
             {
                 return false;
             }
-
+  
             var colonAdjacent = line[colonIndex + 1];
             if (char.IsDigit(colonAdjacent))
             {

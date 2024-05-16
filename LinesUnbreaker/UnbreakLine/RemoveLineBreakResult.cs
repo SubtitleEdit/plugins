@@ -20,7 +20,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.UnbreakLine
             var lineLength = noTagOldText.Length - StringUtils.CountTagInText(noTagOldText, Environment.NewLine) *
                 Environment.NewLine.Length;
 
-            var item = new ListViewItem(string.Empty)
+            return new ListViewItem(string.Empty)
             {
                 Checked = true,
                 UseItemStyleForSubItems = true,
@@ -33,8 +33,6 @@ namespace Nikse.SubtitleEdit.PluginLogic.UnbreakLine
                 },
                 Tag = result
             };
-
-            return item;
         }
     }
 }
