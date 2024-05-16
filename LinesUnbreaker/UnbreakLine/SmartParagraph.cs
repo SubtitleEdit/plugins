@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Nikse.SubtitleEdit.PluginLogic.UnbreakLine
 {
-    public class SmartParagraph
+    public struct SmartParagraph
     {
         public Paragraph Paragraph { get; }
 
@@ -32,7 +32,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.UnbreakLine
     public static class ParagraphExtensions
     {
         // ReSharper disable once IdentifierTypo
-        public static bool IsUnbreakable(this SmartParagraph paragraph, int unbreakShorterThisValue)
+        public static bool IsUnbreakable(in this SmartParagraph paragraph, int unbreakShorterThisValue)
         {
             if (!paragraph.IsMultiLined)
             {
