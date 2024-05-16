@@ -4,7 +4,7 @@ using Nikse.SubtitleEdit.PluginLogic.Extensions;
 
 namespace Nikse.SubtitleEdit.PluginLogic.UnbreakLine
 {
-    public class Line
+    public struct Line
     {
         private readonly string _line;
 
@@ -43,15 +43,17 @@ namespace Nikse.SubtitleEdit.PluginLogic.UnbreakLine
 
         private static bool CheckClosing(string line) => line.Length > 0 && line[line.Length - 1].IsClosed();
         private static bool CheckDialog(string line) => line.Length > 0 && line.StartsWith('-');
+
         private static bool CheckMood(string line)
         {
             // todo: this need improvement
             return line.Contains('(') || line.Contains('[');
         }
+
         private static bool CheckNarrator(string line)
         {
             var colonIndex = line.IndexOf(':');
-            
+
             // doesn't have colon or colon is last char
             if (colonIndex < 0 || colonIndex + 1 == line.Length)
             {
@@ -65,9 +67,9 @@ namespace Nikse.SubtitleEdit.PluginLogic.UnbreakLine
             }
 
             var narratorCandidate = line.Substring(0, colonIndex);
-            
+
             // ! ? , shouldn't exists in narrator 
-            return !"?.,".Any(ch => StringExtensions.Contains(narratorCandidate, (char)ch));
+            return !"?.,".Any(ch => narratorCandidate.Contains(ch));
         }
 
         public string Content => _line;
@@ -99,7 +101,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.UnbreakLine
                     // fail: -1 + 1 = 0
                     // found last char: index + 1 == _line.Length
                     // found: position + 1 (jump tag)
-                    var nextPosition = Math.Max(_line.IndexOf(closingPair) + 1, _position);
+                    var nextPosition = Math.Max(_line.IndexOf(closingPair, _position + 1) + 1, _position);
                     if (nextPosition != _line.Length)
                     {
                         _position = nextPosition;
