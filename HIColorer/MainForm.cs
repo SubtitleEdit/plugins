@@ -103,7 +103,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             // take out all <font tags
             // (warning: this may cause some problems if subtitle already contain 'font face' attribute)
-            foreach (Paragraph p in _subtitle.Paragraphs)
+            foreach (var p in _subtitle.Paragraphs)
             {
                 p.Text = HtmlUtils.RemoveOpenCloseTags(p.Text, HtmlUtils.TagFont);
             }
@@ -159,19 +159,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             if (checkBoxEnabledMoods.Checked)
             {
-                yield return new MoodsArtist(GetPaletteFromARGB(_configs.Moods));
+                yield return new MoodsArtist(GetPaletteFromArgb(_configs.Moods));
             }
             if (checkBoxEnabledNarrator.Checked)
             {
-                yield return new NarratorArtist(GetPaletteFromARGB(_configs.Narrator));
+                yield return new NarratorArtist(GetPaletteFromArgb(_configs.Narrator));
             }
             if (checkBoxEnabledNarrator.Checked)
             {
-                yield return new MusicArtist(GetPaletteFromARGB(_configs.Music));
+                yield return new MusicArtist(GetPaletteFromArgb(_configs.Music));
             }
         }
 
-        private static Palette GetPaletteFromARGB(int argbCode)
+        private static Palette GetPaletteFromArgb(int argbCode)
         {
             return new Palette()
             {
@@ -190,7 +190,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
             }
 
-            string configFile = Path.Combine(FileUtils.Plugins, "hicolor-config.xml");
+            var configFile = Path.Combine(FileUtils.Plugins, "hicolor-config.xml");
             if (File.Exists(configFile))
             {
                 _configs = Configuration<ColorConfig>.LoadConfiguration(configFile);
