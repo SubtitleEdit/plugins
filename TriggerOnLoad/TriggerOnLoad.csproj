@@ -16,4 +16,5 @@
   <PropertyGroup>
     <PostBuildEvent Condition="$(SE_Plugin) != ''">xcopy /s /y $(TargetDir)*.* "$(SE_Plugin)"</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared" />
 </Project>

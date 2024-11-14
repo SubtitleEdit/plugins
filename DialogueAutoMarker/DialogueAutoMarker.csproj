@@ -16,4 +16,5 @@
   <PropertyGroup>
     <PostBuildEvent>rem copy /v /y "$(TargetPath)" "C:\Users\ivandro\Desktop\SubtitleEdit\Plugins"</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared" />
 </Project>

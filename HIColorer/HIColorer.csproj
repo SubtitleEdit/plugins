@@ -15,4 +15,5 @@
     <PostBuildEvent>copy $(TargetDir)\HIColorer.dll "%25appdata%25\Subtitle Edit\Plugins\"  || Exit 0
 copy $(TargetDir)\HIColorer.pdb "%25appdata%25\Subtitle Edit\Plugins\"  || Exit 0</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared" />
 </Project>

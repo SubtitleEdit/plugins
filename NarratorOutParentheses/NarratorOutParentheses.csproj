@@ -11,4 +11,5 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
   <PropertyGroup />
+  <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared" />
 </Project>

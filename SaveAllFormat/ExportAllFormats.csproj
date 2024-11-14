@@ -15,4 +15,5 @@
     <PostBuildEvent>copy $(TargetDir)\exportallformats.dll "%25appdata%25\Subtitle Edit\Plugins\"
 copy $(TargetDir)\exportallformats.pdb "%25appdata%25\Subtitle Edit\Plugins\"</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared" />
 </Project>
