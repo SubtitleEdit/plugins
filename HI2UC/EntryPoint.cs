@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using Moq;
 
 namespace Nikse.SubtitleEdit.PluginLogic;
 
@@ -20,6 +23,11 @@ public class HI2UC : IPlugin
     public string Text => "Hearing Impaired to Uppercase";
 
     public decimal Version => 4.7m;
+
+    public HI2UC()
+    {
+      
+    }
 
     public string DoAction(Form parentForm, string srtText, double frame, string uiLineBreak, string file,
         string videoFile, string rawText)
@@ -68,5 +76,4 @@ public class HI2UC : IPlugin
 
         return string.Empty;
     }
-
 }
