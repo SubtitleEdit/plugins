@@ -32,7 +32,7 @@ namespace SubtitleEdit
                     OnClick(EventArgs.Empty);
                 }
             };
-            listView1.Columns[2].Width = -2;
+            listViewPreview.Columns[2].Width = -2;
             linkLabel1.Click += delegate { Process.Start("https://github.com/SubtitleEdit/plugins/issues/new"); };
 
             Text = title;
@@ -64,7 +64,7 @@ namespace SubtitleEdit
 
             if (isPreviewMode)
             {
-                listView1.BeginUpdate();
+                listViewPreview.BeginUpdate();
             }
 
             var characterMapping = CreateCharacterMapping();
@@ -88,7 +88,7 @@ namespace SubtitleEdit
 
             if (isPreviewMode)
             {
-                listView1.EndUpdate();
+                listViewPreview.EndUpdate();
             }
         }
 
@@ -129,12 +129,12 @@ namespace SubtitleEdit
             var item = new ListViewItem(p.Number.ToString(CultureInfo.InvariantCulture)) { Tag = p };
             item.SubItems.Add(before);
             item.SubItems.Add(after);
-            listView1.Items.Add(item);
+            listViewPreview.Items.Add(item);
         }
 
         private void buttonUpdate_Click(object sender, EventArgs e)
         {
-            listView1.Items.Clear();
+            listViewPreview.Items.Clear();
             GeneratePreview(isPreviewMode: true);
         }
 
@@ -142,7 +142,7 @@ namespace SubtitleEdit
         {
             _defaultReplacementChars = "4b©d3fgH!jlKmñ0pqr$tuvwx¥z"; // these are the default haxor char
             textBoxTo.Text = _defaultReplacementChars;
-            listView1.Items.Clear();
+            listViewPreview.Items.Clear();
             GeneratePreview(isPreviewMode: true);
         }
 
@@ -155,9 +155,9 @@ namespace SubtitleEdit
 
         private void listView1_Resize(object sender, EventArgs e)
         {
-            var size = (listView1.Width - (listView1.Columns[0].Width)) >> 2;
-            listView1.Columns[1].Width = size;
-            listView1.Columns[2].Width = -2;
+            var size = (listViewPreview.Width - (listViewPreview.Columns[0].Width)) >> 2;
+            listViewPreview.Columns[1].Width = size;
+            listViewPreview.Columns[2].Width = -2;
         }
     }
 }

@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.listViewPreview = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -45,22 +45,22 @@
             // 
             // listView1
             // 
-            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.listViewPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.listViewPreview.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
             this.columnHeader3});
-            this.listView1.FullRowSelect = true;
-            this.listView1.GridLines = true;
-            this.listView1.Location = new System.Drawing.Point(12, 93);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(727, 314);
-            this.listView1.TabIndex = 0;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
-            this.listView1.Resize += new System.EventHandler(this.listView1_Resize);
+            this.listViewPreview.FullRowSelect = true;
+            this.listViewPreview.GridLines = true;
+            this.listViewPreview.Location = new System.Drawing.Point(12, 93);
+            this.listViewPreview.Name = "listViewPreview";
+            this.listViewPreview.Size = new System.Drawing.Size(727, 314);
+            this.listViewPreview.TabIndex = 0;
+            this.listViewPreview.UseCompatibleStateImageBehavior = false;
+            this.listViewPreview.View = System.Windows.Forms.View.Details;
+            this.listViewPreview.Resize += new System.EventHandler(this.listView1_Resize);
             // 
             // columnHeader1
             // 
@@ -183,7 +183,7 @@
             this.Controls.Add(this.buttonOk);
             this.Controls.Add(this.textBoxTo);
             this.Controls.Add(this.textBoxFrom);
-            this.Controls.Add(this.listView1);
+            this.Controls.Add(this.listViewPreview);
             this.KeyPreview = true;
             this.MinimumSize = new System.Drawing.Size(733, 478);
             this.Name = "MainForm";
@@ -198,7 +198,7 @@
 
         #endregion
 
-        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ListView listViewPreview;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
