@@ -12,7 +12,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.Text => "Translate to Haxor";
 
-        decimal IPlugin.Version => 1.5M;
+        decimal IPlugin.Version => 1.6M;
 
         string IPlugin.Description => "Translates to haxor";
 

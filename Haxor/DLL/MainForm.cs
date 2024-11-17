@@ -14,7 +14,7 @@ namespace SubtitleEdit
         private readonly Subtitle _subtitle;
         private readonly StringBuilder _stringBuilder = new StringBuilder();
         private const string From = "abcdefghijlkmnopqrstuvwxyz";
-        private string _defaultReplacementChars;
+        private readonly string _defaultReplacementChars;
 
         public string TransformedSubtitle { get; private set; }
 
@@ -141,7 +141,6 @@ namespace SubtitleEdit
 
         private void buttonReset_Click(object sender, EventArgs e)
         {
-            _defaultReplacementChars = "4b©d3fgH!jlKmñ0pqr$tuvwx¥z"; // these are the default haxor char
             textBoxTo.Text = _defaultReplacementChars;
             listViewPreview.Items.Clear();
             GeneratePreview(isPreviewMode: true);
