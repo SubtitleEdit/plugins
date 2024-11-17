@@ -7,6 +7,7 @@
     <File Path="..\Plugins4.xml" />
     <File Path="..\README.md" />
     <File Path="Directory.Build.Props" />
+    <File Path="Directory.Build.targets" />
   </Folder>
   <Folder Name="/Ivandrofly/">
     <Project Path="DialogueAutoMarker\DialogueAutoMarker.csproj" Type="Classic C#" />

@@ -1,0 +1,16 @@
+<Project>
+    <!-- Example of a custom target that runs before the build -->
+    <Target Name="BeforeBuild" BeforeTargets="Build">
+        <!-- Custom operations to perform before the build -->
+    </Target>
+
+    <!-- Example of a custom target that runs after the build -->
+    <Target Name="AfterBuild" AfterTargets="Build">
+        <!-- Custom operations to perform after the build -->
+    </Target>
+
+    <!-- You can even define your own targets -->
+    <Target Name="CustomClean" DependsOnTargets="Clean">
+        <!-- Add custom clean operations here -->
+    </Target>
+</Project>
