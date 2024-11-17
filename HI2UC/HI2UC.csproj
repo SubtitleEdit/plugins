@@ -3,8 +3,8 @@
         <TargetFramework>NET48</TargetFramework>
         <UseWindowsForms>true</UseWindowsForms>
         <RootNamespace>Nikse.SubtitleEdit.PluginLogic</RootNamespace>
-        <AssemblyVersion>4.5</AssemblyVersion>
-        <FileVersion>4.5</FileVersion>
+        <AssemblyVersion>4.8</AssemblyVersion>
+        <FileVersion>4.8</FileVersion>
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
