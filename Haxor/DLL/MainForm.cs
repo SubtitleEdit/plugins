@@ -33,7 +33,7 @@ namespace SubtitleEdit
                 }
             };
             listViewPreview.Columns[2].Width = -2;
-            linkLabel1.Click += delegate { Process.Start("https://github.com/SubtitleEdit/plugins/issues/new"); };
+            linkLabelReportBugs.Click += delegate { Process.Start("https://github.com/SubtitleEdit/plugins/issues/new"); };
 
             Text = title;
             _subtitle = sub;
