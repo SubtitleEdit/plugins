@@ -10,6 +10,7 @@ namespace SubtitleEdit
     public partial class MainForm : Form
     {
         private readonly Subtitle _subtitle;
+        private readonly StringBuilder _stringBuilder = new StringBuilder();
         private const string From = "abcdefghijlkmnopqrstuvwxyz";
         private string _to;
 
@@ -72,13 +73,20 @@ namespace SubtitleEdit
 
         private string TranslateToHaxor(string text)
         {
-            var strBuilder = new StringBuilder(text);
+            _stringBuilder.Append(text);
             for (int i = 0; i < From.Length; i++)
             {
-                strBuilder.Replace(From[i], _to[i]);
+                _stringBuilder.Replace(From[i], _to[i]);
             }
 
-            return strBuilder.ToString();
+            return FlushStringBuilder();
+        }
+        
+        private string FlushStringBuilder()
+        {
+            var result = _stringBuilder.ToString();
+            _stringBuilder.Clear();
+            return result;
         }
 
         private void AddToListView(Paragraph p, string before, string after)
