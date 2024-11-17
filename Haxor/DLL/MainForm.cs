@@ -15,26 +15,31 @@ namespace SubtitleEdit
 
         public string FixedSubtitle { get; private set; }
 
-        public MainForm()
+        public MainForm(Subtitle sub, string title, string description, Form parentForm)
         {
             InitializeComponent();
             KeyDown += (s, e) =>
             {
                 if (e.KeyCode == Keys.Escape)
+                {
                     DialogResult = DialogResult.Cancel;
+                }
                 else if (e.KeyCode == Keys.Enter)
+                {
                     OnClick(EventArgs.Empty);
+                }
             };
             listView1.Columns[2].Width = -2;
             linkLabel1.Click += delegate { Process.Start("https://github.com/SubtitleEdit/plugins/issues/new"); };
-        }
 
-        public MainForm(Subtitle sub, string title, string description, Form parentForm)
-            : this()
-        {
             Text = title;
             _subtitle = sub;
             _to = textBoxTo.Text;
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
             GeneratePreview(false);
         }
 
@@ -46,16 +51,22 @@ namespace SubtitleEdit
 
         private void GeneratePreview(bool setText)
         {
-            if (_subtitle == null) 
-            listView1.BeginUpdate();
+            if (_subtitle == null)
+            {
+                listView1.BeginUpdate();
+            }
+
             foreach (Paragraph p in _subtitle.Paragraphs)
             {
                 var before = Utilities.RemoveHtmlTags(p.Text, true).ToLower();
                 var after = TranslateToHaxor(before);
                 AddToListView(p, before, after);
                 if (setText)
+                {
                     p.Text = after;
+                }
             }
+
             listView1.EndUpdate();
         }
 
@@ -66,6 +77,7 @@ namespace SubtitleEdit
             {
                 strBuilder.Replace(From[i], _to[i]);
             }
+
             return strBuilder.ToString();
         }
 
@@ -104,6 +116,5 @@ namespace SubtitleEdit
             listView1.Columns[1].Width = size;
             listView1.Columns[2].Width = -2;
         }
-
     }
 }
