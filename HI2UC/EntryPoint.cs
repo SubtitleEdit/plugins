@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
-using Moq;
 
 namespace Nikse.SubtitleEdit.PluginLogic;
 
