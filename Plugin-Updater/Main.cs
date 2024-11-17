@@ -183,50 +183,6 @@ namespace Plugin_Updater
             LoadInfoFromMetadata(SortContext.DefaultContext);
         }
 
-        //private void ReadContent(string metaFile)
-        //{
-        //    if (!Path.IsPathRooted(metaFile))
-        //    {
-        //        return;
-        //    }
-
-        //    _xDoc = XDocument.Load(metaFile);
-        //    _plugins = new List<PluginInfo>();
-        //    foreach (XElement el in _xDoc.Root.Elements("Plugin"))
-        //    {
-        //        var pluginInfo = new PluginInfo
-        //        {
-        //            Name = el.Element(nameof(PluginInfo.Name)).Value,
-        //            Description = el.Element(nameof(PluginInfo.Description)).Value,
-        //            Version = Convert.ToDecimal(el.Element(nameof(PluginInfo.Version)).Value),
-        //            Date = Convert.ToDateTime(el.Element(nameof(PluginInfo.Date)).Value.Replace('-', '/')),
-        //            Url = new Uri(el.Element(nameof(PluginInfo.Url)).Value),
-        //            Author = el.Element(nameof(PluginInfo.Author))?.Value,
-        //            Element = el
-        //        };
-
-        //        _plugins.Add(pluginInfo);
-        //    }
-
-        //    PushToListView(_plugins);
-        //}
-
-        //private void PushToListView(IList<PluginInfo> plugins)
-        //{
-        //    listViewPluginInfo.BeginUpdate();
-        //    foreach (PluginInfo pluginInfo in plugins.OrderBy(plugin => plugin.Name))
-        //    {
-        //        var lvi = new ListViewItem(pluginInfo.Name) { Tag = pluginInfo };
-        //        lvi.SubItems.Add(pluginInfo.Description);
-        //        lvi.SubItems.Add(pluginInfo.Version.ToString());
-        //        lvi.SubItems.Add(pluginInfo.Date.ToString("yyyy-MM-dd"));
-        //        lvi.SubItems.Add(pluginInfo.Author);
-        //        lvi.SubItems.Add(pluginInfo.Url.ToString());
-        //        listViewPluginInfo.Items.Add(lvi);
-        //    }
-        //    listViewPluginInfo.EndUpdate();
-        //}
-
         private void ListViewPluginInfo_SelectedIndexChanged(object sender, EventArgs e)
         {
             // really? :D
