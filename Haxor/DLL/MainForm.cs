@@ -38,16 +38,15 @@ namespace SubtitleEdit
             GeneratePreview(false);
         }
 
-        public override sealed string Text
+        public sealed override string Text
         {
-            get { return base.Text; }
-            set { base.Text = value; }
+            get => base.Text;
+            set => base.Text = value;
         }
 
         private void GeneratePreview(bool setText)
         {
-            if (_subtitle == null)
-                return;
+            if (_subtitle == null) 
             listView1.BeginUpdate();
             foreach (Paragraph p in _subtitle.Paragraphs)
             {
