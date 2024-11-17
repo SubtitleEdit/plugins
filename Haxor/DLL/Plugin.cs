@@ -7,35 +7,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class Haxor : IPlugin // dll file name must "<classname>.dll" - e.g. "Haxor.dll"
     {
-        string IPlugin.Name
-        {
-            get { return "Haxor"; }
-        }
+        string IPlugin.Name => "Haxor";
 
-        string IPlugin.Text
-        {
-            get { return "Translate to Haxor"; }
-        }
+        string IPlugin.Text => "Translate to Haxor";
 
-        decimal IPlugin.Version
-        {
-            get { return 1.5M; }
-        }
+        decimal IPlugin.Version => 1.5M;
 
-        string IPlugin.Description
-        {
-            get { return "Translates to haxor"; }
-        }
+        string IPlugin.Description => "Translates to haxor";
 
-        string IPlugin.ActionType // Can be one of these: file, tool, sync, translate, spellcheck
-        {
-            get { return "translate"; }
-        }
+        string IPlugin.ActionType => "translate"; // Can be one of these: file, tool, sync, translate, spellcheck
 
-        string IPlugin.Shortcut
-        {
-            get { return string.Empty; }
-        }
+        string IPlugin.Shortcut => string.Empty;
 
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
