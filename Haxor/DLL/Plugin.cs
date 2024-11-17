@@ -1,6 +1,7 @@
 ﻿using SubtitleEdit;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.PluginLogic
@@ -21,6 +22,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
+#if DEBUG
+            if (!Debugger.IsAttached)
+            {
+                Debugger.Launch();
+            }
+#endif
             subtitle = subtitle.Trim();
             if (string.IsNullOrEmpty(subtitle))
             {
@@ -34,20 +41,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
             }
 
-            var list = new List<string>();
+            var lines = new List<string>();
             foreach (string line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
             {
-                list.Add(line);
+                lines.Add(line);
             }
 
             var sub = new Subtitle();
             var srt = new SubRip();
-            srt.LoadSubtitle(sub, list, subtitleFileName);
-            using (var form = new MainForm(sub, (this as IPlugin).Text, (this as IPlugin).Description, parentForm))
+            srt.LoadSubtitle(sub, lines, subtitleFileName);
+            using (var mainForm = new MainForm(sub, (this as IPlugin).Text, (this as IPlugin).Description, parentForm))
             {
-                if (form.ShowDialog(parentForm) == DialogResult.OK)
+                if (mainForm.ShowDialog(parentForm) == DialogResult.OK)
                 {
-                    return form.FixedSubtitle;
+                    return mainForm.TransformedSubtitle;
                 }
             }
             return string.Empty;
