@@ -1,7 +1,9 @@
 ﻿using System.Globalization;
 using Nikse.SubtitleEdit.PluginLogic;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -12,9 +14,9 @@ namespace SubtitleEdit
         private readonly Subtitle _subtitle;
         private readonly StringBuilder _stringBuilder = new StringBuilder();
         private const string From = "abcdefghijlkmnopqrstuvwxyz";
-        private string _to;
+        private string _defaultReplacementChars;
 
-        public string FixedSubtitle { get; private set; }
+        public string TransformedSubtitle { get; private set; }
 
         public MainForm(Subtitle sub, string title, string description, Form parentForm)
         {
@@ -35,13 +37,13 @@ namespace SubtitleEdit
 
             Text = title;
             _subtitle = sub;
-            _to = textBoxTo.Text;
+            _defaultReplacementChars = textBoxTo.Text;
         }
 
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
-            GeneratePreview(false);
+            GeneratePreview(true);
         }
 
         public sealed override string Text
@@ -50,38 +52,71 @@ namespace SubtitleEdit
             set => base.Text = value;
         }
 
-        private void GeneratePreview(bool setText)
+        private bool CanMapToHaxorChars() => From.Length == textBoxTo.Text.Length;
+
+        private void GeneratePreview(bool isPreviewMode)
         {
-            if (_subtitle == null)
+            if (!CanMapToHaxorChars())
+            {
+                MessageBox.Show("'From' and 'To' most have equal number of chars");
+                return;
+            }
+
+            if (isPreviewMode)
             {
                 listView1.BeginUpdate();
             }
 
+            var characterMapping = CreateCharacterMapping();
+
             foreach (Paragraph p in _subtitle.Paragraphs)
             {
                 var before = Utilities.RemoveHtmlTags(p.Text, true).ToLower();
-                var after = TranslateToHaxor(before);
-                AddToListView(p, before, after);
-                if (setText)
+                var after = TranslateToHaxor(before, characterMapping);
+                if (before != after)
                 {
-                    p.Text = after;
+                    if (isPreviewMode)
+                    {
+                        AddToListView(p, before, after);
+                    }
+                    else
+                    {
+                        p.Text = after;
+                    }
                 }
             }
 
-            listView1.EndUpdate();
+            if (isPreviewMode)
+            {
+                listView1.EndUpdate();
+            }
         }
 
-        private string TranslateToHaxor(string text)
+        private Dictionary<char, char> CreateCharacterMapping()
         {
-            _stringBuilder.Append(text);
-            for (int i = 0; i < From.Length; i++)
+            var fromChars = textBoxFrom.Text;
+            var toChars = textBoxTo.Text;
+            var characterMapping = new Dictionary<char, char>(fromChars.Length);
+            for (int i = 0; i < fromChars.Length; i++)
             {
-                _stringBuilder.Replace(From[i], _to[i]);
+                characterMapping.Add(fromChars[i], toChars[i]);
+            }
+
+            return characterMapping;
+        }
+
+        private string TranslateToHaxor(string text, Dictionary<char, char> characterMapping)
+        {
+            for (int i = 0; i < text.Length; i++)
+            {
+                Append(characterMapping.TryGetValue(text[i], out var mapped) ? mapped : text[i]);
             }
 
             return FlushStringBuilder();
         }
-        
+
+        private void Append(char ch) => _stringBuilder.Append(ch);
+
         private string FlushStringBuilder()
         {
             var result = _stringBuilder.ToString();
@@ -100,21 +135,21 @@ namespace SubtitleEdit
         private void buttonUpdate_Click(object sender, EventArgs e)
         {
             listView1.Items.Clear();
-            GeneratePreview(false);
+            GeneratePreview(isPreviewMode: true);
         }
 
         private void buttonReset_Click(object sender, EventArgs e)
         {
-            _to = "4b©d3fgH!jlKmñ0pqr$tuvwx¥z"; // these are the default haxor char
-            textBoxTo.Text = _to;
+            _defaultReplacementChars = "4b©d3fgH!jlKmñ0pqr$tuvwx¥z"; // these are the default haxor char
+            textBoxTo.Text = _defaultReplacementChars;
             listView1.Items.Clear();
-            GeneratePreview(false);
+            GeneratePreview(isPreviewMode: true);
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
-            GeneratePreview(true);
-            FixedSubtitle = _subtitle.ToText(new SubRip());
+            GeneratePreview(isPreviewMode: false);
+            TransformedSubtitle = _subtitle.ToText(new SubRip());
             DialogResult = DialogResult.OK;
         }
 
