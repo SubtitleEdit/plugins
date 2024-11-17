@@ -34,13 +34,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public static string RemoveHtmlTags(string s, bool alsoSSA = false)
         {
             if (string.IsNullOrEmpty(s))
+            {
                 return string.Empty;
+            }
 
             if (alsoSSA)
+            {
                 s = RemoveSsaTags(s);
+            }
 
             if (!s.Contains('<'))
+            {
                 return s;
+            }
+
             s = Regex.Replace(s, "(?i)</?[ibu]>", string.Empty);
             while (s.Contains("  ")) s = s.Replace("  ", " ");
             return RemoveHtmlFontTag(s).Trim();
@@ -54,7 +61,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 var endIdx = s.IndexOf('}');
                 if (endIdx < idx)
+                {
                     break;
+                }
+
                 s = s.Remove(idx, endIdx - idx + 1);
                 idx = s.IndexOf(tag, StringComparison.Ordinal);
             }
@@ -68,7 +78,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             while (idx >= 0)
             {
                 var endIdx = s.IndexOf('>', idx + 5);
-                if (endIdx < idx) break;
+                if (endIdx < idx)
+                {
+                    break;
+                }
+
                 s = s.Remove(idx, endIdx - idx + 1);
                 idx = s.IndexOf("<font", idx, StringComparison.OrdinalIgnoreCase);
             }
@@ -84,7 +98,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 while (*ptr != '\0')
                 {
                     if (*ptr == '\n')
+                    {
                         ln++;
+                    }
+
                     ptr++;
                 }
             }

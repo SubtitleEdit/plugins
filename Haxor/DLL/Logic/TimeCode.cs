@@ -69,9 +69,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
             string s = string.Format("{0:00}:{1:00}:{2:00},{3:000}", _time.Hours, _time.Minutes, _time.Seconds, _time.Milliseconds);
 
             if (TotalMilliseconds >= 0)
+            {
                 return s;
+            }
             else
+            {
                 return "-" + s.Replace("-", string.Empty);
+            }
         }
 
         internal void AddTime(double milliseconds)

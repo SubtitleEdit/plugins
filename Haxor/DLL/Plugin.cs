@@ -48,11 +48,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
 
             if (!string.IsNullOrEmpty(listViewLineSeparatorString))
+            {
                 Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
+            }
 
             var list = new List<string>();
             foreach (string line in subtitle.Replace(Environment.NewLine, "\n").Split('\n'))
+            {
                 list.Add(line);
+            }
 
             var sub = new Subtitle();
             var srt = new SubRip();
@@ -60,7 +64,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             using (var form = new MainForm(sub, (this as IPlugin).Text, (this as IPlugin).Description, parentForm))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
+                {
                     return form.FixedSubtitle;
+                }
             }
             return string.Empty;
         }

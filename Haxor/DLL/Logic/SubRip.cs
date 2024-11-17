@@ -70,7 +70,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                 string next = string.Empty;
                 if (i + 1 < lines.Count)
+                {
                     next = lines[i + 1];
+                }
 
                 // A new line is missing between two paragraphs (buggy srt file)
                 if (_expecting == ExpectingLine.Text && i + 1 < lines.Count &&
@@ -90,14 +92,22 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
 
             if (_paragraph.Text.Trim().Length > 0)
+            {
                 subtitle.Paragraphs.Add(_paragraph);
+            }
 
             foreach (Paragraph p in subtitle.Paragraphs)
+            {
                 p.Text = p.Text.Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
+            }
 
             if (_errorCount < 100)
+            {
                 if (doRenum)
+                {
                     subtitle.Renumber(1);
+                }
+            }
 
             Errors = _errorCount.ToString();
         }
@@ -119,7 +129,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private bool IsText(string text)
         {
             if (text.Trim().Length == 0 || Utilities.IsInteger(text) || _regexTimeCodes.IsMatch(text))
+            {
                 return false;
+            }
+
             return true;
         }
 
@@ -156,13 +169,19 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     if (line.Trim().Length > 0)
                     {
                         if (_paragraph.Text.Length > 0)
+                        {
                             _paragraph.Text += Environment.NewLine;
+                        }
+
                         _paragraph.Text += RemoveBadChars(line).TrimEnd().Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
                     }
                     else if (IsText(next))
                     {
                         if (_paragraph.Text.Length > 0)
+                        {
                             _paragraph.Text += Environment.NewLine;
+                        }
+
                         _paragraph.Text += RemoveBadChars(line).TrimEnd().Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine);
                     }
                     else if (string.IsNullOrEmpty(line) && string.IsNullOrEmpty(_paragraph.Text))
@@ -209,7 +228,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // Removed stuff after timecodes - like subtitle position
             // - example of position info: 00:02:26,407 --> 00:02:31,356  X1:100 X2:100 Y1:100 Y2:100
             if (line.Length > 30 && line[29] == ' ')
+            {
                 line = line.Substring(0, 29);
+            }
 
             // removes all extra spaces
             line = line.Replace(" ", string.Empty).Replace("-->", defaultTimeSeparator);
@@ -218,9 +239,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // Fix a few more cases of wrong time codes, seen this: 00.00.02,000 --> 00.00.04,000
             line = line.Replace('.', ':');
             if (line.Length >= 29 && ":;".Contains(line[8].ToString()))
+            {
                 line = line.Substring(0, 8) + ',' + line.Substring(8 + 1);
+            }
+
             if (line.Length >= 29 && line.Length <= 30 && ":;".Contains(line[25].ToString()))
+            {
                 line = line.Substring(0, 25) + ',' + line.Substring(25 + 1);
+            }
 
             if (_regexTimeCodes.IsMatch(line) || _regexTimeCodes2.IsMatch(line))
             {

@@ -62,7 +62,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         internal void Renumber(int startNumber = 1)
         {
             if (startNumber < 1)
+            {
                 startNumber = 1;
+            }
+
             foreach (Paragraph p in _paragraphs)
             {
                 p.Number = startNumber++;
