@@ -153,11 +153,12 @@ public class MoodCasingConverter : ICasingConverter
         if (lastCharIndex < 0) return false;
 
         // check if open parentheses/bracket is at the end of the text
-        if (moodStartIndex + 1 <= text.Length && text[moodStartIndex + 1] == '<')
+        if (moodStartIndex + 1 < text.Length && text[moodStartIndex + 1] == '<')
         {
             return false;
         }
 
+        // ensure mood char is not the last character in sentense
         return moodStartIndex + 1 < text.Length;
     }
         
