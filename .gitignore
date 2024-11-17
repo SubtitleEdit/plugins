@@ -1,20 +1,25 @@
+# Build Folders
 bin/
 obj/
+
+# User-Specific Files
 *.user
 *.suo
 token.txt
 
-# Visual Studio 2015/2017 cache/options directory
+# Visual Studio Cache / Options Directory
 .vs/
 *.ide
 
 # NuGet
+# Individual NuGet executables and config files
 /src/.nuget/NuGet.exe
 /src/.nuget/NuGet.Config
+
+# NuGet packages directories
 /src/packages/
-/packages/Microsoft.Toolkit.Forms.UI.Controls.WebView.5.0.1
 packages/
+packages/Microsoft.Toolkit.Forms.UI.Controls.WebView.5.0.1
 
-
-# Rider
+# Rider Project Files
 *.idea
