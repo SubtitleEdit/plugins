@@ -107,6 +107,7 @@ namespace SubtitleEdit
 
         private string TranslateToHaxor(string text, Dictionary<char, char> characterMapping)
         {
+            // O(n)
             for (int i = 0; i < text.Length; i++)
             {
                 Append(characterMapping.TryGetValue(text[i], out var mapped) ? mapped : text[i]);
