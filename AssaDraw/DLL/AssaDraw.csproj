@@ -1,185 +1,25 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{450EA09F-C37C-4AC1-AF5C-EAB3AEE52B62}</ProjectGuid>
+    <TargetFramework>net48</TargetFramework>
     <OutputType>Library</OutputType>
-    <RootNamespace>AssaDraw</RootNamespace>
-    <AssemblyName>AssaDraw</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <PlatformTarget>x64</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>
-    </StartupObject>
+    <StartupObject></StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ColorPicker\ColorChooser.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ColorPicker\ColorChangedEventArgs.cs" />
-    <Compile Include="ColorPicker\ColorHandler.cs" />
-    <Compile Include="ColorPicker\ColorWheel.cs" />
-    <Compile Include="Controls\ToolStripNikseSeparator.cs">
+    <Compile Update="Controls\ToolStripNikseSeparator.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FormAssaDrawHelp.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormAssaDrawHelp.Designer.cs">
-      <DependentUpon>FormAssaDrawHelp.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormAssaDrawMain.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormAssaDrawMain.Designer.cs">
-      <DependentUpon>FormAssaDrawMain.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormAssaDrawSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormAssaDrawSettings.Designer.cs">
-      <DependentUpon>FormAssaDrawSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="IPlugin.cs" />
-    <Compile Include="Logic\CirleBezier.cs" />
-    <Compile Include="Logic\DarkTheme.cs" />
-    <Compile Include="Logic\DrawCoordinateType.cs" />
-    <Compile Include="Logic\DrawSettings.cs" />
-    <Compile Include="Logic\DrawShape.cs" />
-    <Compile Include="Logic\DrawCoordinate.cs" />
-    <Compile Include="Logic\DrawHistoryItem.cs" />
-    <Compile Include="Logic\DrawHistory.cs" />
-    <Compile Include="Logic\SE\AdvancedSubStationAlpha.cs" />
-    <Compile Include="Logic\SE\Configuration.cs" />
-    <Compile Include="Logic\SE\HtmlUtil.cs" />
-    <Compile Include="Logic\SE\LibMpvDynamic.cs" />
-    <Compile Include="Logic\SE\NativeMethods.cs" />
-    <Compile Include="Logic\SE\Paragraph.cs" />
-    <Compile Include="Logic\SE\SsaStyle.cs" />
-    <Compile Include="Logic\SE\StringExtensions.cs" />
-    <Compile Include="Logic\SE\Subtitle.cs" />
-    <Compile Include="Logic\SE\SubtitleFormat.cs" />
-    <Compile Include="Logic\SE\TimeCode.cs" />
-    <Compile Include="Logic\SE\UiUtil.cs" />
-    <Compile Include="Logic\SE\Utilities.cs" />
-    <Compile Include="Logic\SE\VideoPreviewGenerator.cs" />
-    <Compile Include="Logic\SvgReader.cs" />
-    <Compile Include="Logic\SvgWriter.cs" />
-    <Compile Include="Plugin.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="FormSetLayer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormSetLayer.Designer.cs">
-      <DependentUpon>FormSetLayer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="SetColor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SetColor.Designer.cs">
-      <DependentUpon>SetColor.cs</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="ColorPicker\ColorChooser.resx">
-      <DependentUpon>ColorChooser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormAssaDrawHelp.resx">
-      <DependentUpon>FormAssaDrawHelp.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormAssaDrawMain.resx">
-      <DependentUpon>FormAssaDrawMain.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormAssaDrawSettings.resx">
-      <DependentUpon>FormAssaDrawSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <EmbeddedResource Include="FormSetLayer.resx">
-      <DependentUpon>FormSetLayer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SetColor.resx">
-      <DependentUpon>SetColor.cs</DependentUpon>
-    </EmbeddedResource>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Transparent Background.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\tick.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Help.png" />
-    <None Include="Resources\toolStripButtonRectangle.Image.png" />
-    <None Include="Resources\toolStripButtonMirrorVert.Image.png" />
-    <None Include="Resources\toolStripButtonMirrorHor.Image.png" />
-    <None Include="Resources\toolStripButtonLine.Image.png" />
-    <None Include="Resources\toolStripButtonCopyToClipboard.Image.png" />
-    <None Include="Resources\toolStripButtonColorPicker.Image.png" />
-    <None Include="Resources\toolStripButtonCloseShape.Image.png" />
-    <None Include="Resources\toolStripButtonClearCurrent.Image.png" />
-    <None Include="Resources\toolStripButtonCircle.Image.png" />
-    <None Include="Resources\toolStripButtonBeizer.Image.png" />
-    <None Include="Resources\Help32.png" />
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+  </ItemGroup>
 </Project>

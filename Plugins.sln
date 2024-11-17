@@ -34,6 +34,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckLineWidth", "CheckLine
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F0EF5CDC-FD6D-4559-ACD0-138A14FADDFA}"
 	ProjectSection(SolutionItems) = preProject
+		Directory.Packages.props = Directory.Packages.props
 		Plugins4.xml = Plugins4.xml
 	EndProjectSection
 EndProject
@@ -413,18 +414,12 @@ Global
 		SolutionGuid = {8BBF401C-6D00-4F22-BFC0-DE2673213D5B}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Plugin-Shared\Plugin-Shared.projitems*{143a1481-b4ee-4aa3-8e5e-af1712477f57}*SharedItemsImports = 4
 		Plugin-Shared\Plugin-Shared.projitems*{16b4be52-050a-4161-b0e3-9b07aa5f650b}*SharedItemsImports = 5
+		Plugin-Shared\Plugin-Shared.projitems*{1781d429-ccb5-4dbe-b0ca-1c15736d4855}*SharedItemsImports = 5
 		Plugin-Shared\Plugin-Shared.projitems*{52a7c014-3be1-4c7a-90aa-e864cefc63a0}*SharedItemsImports = 4
 		Plugin-Shared\Plugin-Shared.projitems*{59aa41aa-6c3e-456f-8ec1-3c0c90e31811}*SharedItemsImports = 13
-		Plugin-Shared\Plugin-Shared.projitems*{705be92d-37ff-4320-85fd-90133c009c8c}*SharedItemsImports = 4
 		Plugin-Shared\Plugin-Shared.projitems*{7b7c681e-960e-414f-b5ea-1b9beba71b09}*SharedItemsImports = 5
 		Plugin-Shared\Plugin-Shared.projitems*{8500e79b-a64b-4fdf-924c-b959a93a5717}*SharedItemsImports = 4
-		Plugin-Shared\Plugin-Shared.projitems*{9443a623-77c2-499e-85d2-f7aa77daaa00}*SharedItemsImports = 4
-		Plugin-Shared\Plugin-Shared.projitems*{9e25ee45-e764-444f-9756-fe5479f4914d}*SharedItemsImports = 4
-		Plugin-Shared\Plugin-Shared.projitems*{a075780c-6bab-4e78-9fb2-b477219ddd72}*SharedItemsImports = 4
-		Plugin-Shared\Plugin-Shared.projitems*{d678802e-5d3a-4db0-94e9-104790d3044b}*SharedItemsImports = 4
 		Plugin-Shared\Plugin-Shared.projitems*{e9d300dd-f041-47a8-b395-cf6e35d7a4c2}*SharedItemsImports = 4
-		Plugin-Shared\Plugin-Shared.projitems*{fed0e724-a2aa-4b46-b20e-f1376a191e89}*SharedItemsImports = 4
 	EndGlobalSection
 EndGlobal
