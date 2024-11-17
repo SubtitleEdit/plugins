@@ -23,15 +23,9 @@ public class HI2UC : IPlugin
 
     public decimal Version => 4.8m;
 
-    public HI2UC()
-    {
-      
-    }
-
     public string DoAction(Form parentForm, string srtText, double frame, string uiLineBreak, string file,
         string videoFile, string rawText)
     {
-        
 #if DEBUG
         /// <summary>
         /// Launch and attach a debugger to the process if it's not already attached.
