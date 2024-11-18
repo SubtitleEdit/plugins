@@ -1,6 +1,6 @@
 <Project>
     <PropertyGroup>
-        <TargetFramework>net48</TargetFramework>
+<!--        <TargetFramework>net48</TargetFramework>-->
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
