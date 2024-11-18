@@ -1,0 +1,15 @@
+<Project>
+    <PropertyGroup>
+        <TargetFramework>net48</TargetFramework>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Add any common package references here -->
+        <!--<PackageReference Include="ExamplePackage" Version="1.0.0" />-->
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Add any other common settings here -->
+    </ItemGroup>
+</Project>

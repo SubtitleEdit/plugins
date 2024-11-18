@@ -1,0 +1,81 @@
+﻿<Solution>
+  <Folder Name="/.Solution Items/">
+    <File Path="Directory.Packages.props" />
+    <File Path="..\.gitignore" />
+    <File Path="..\LICENSE.txt" />
+    <File Path="..\Plugins2.xml" />
+    <File Path="..\Plugins4.xml" />
+    <File Path="..\README.md" />
+    <File Path="Directory.Build.Props" />
+    <File Path="Directory.Build.targets" />
+  </Folder>
+  <Folder Name="/Ivandrofly/">
+    <Project Path="DialogueAutoMarker\DialogueAutoMarker.csproj" Type="Classic C#" />
+    <Project Path="DictionariesProvider\DictionariesProvider.csproj" Type="Classic C#" />
+    <Project Path="ExposeSEApi\ExposeSEApi.csproj" />
+    <Project Path="HI2UC\HI2UC.csproj">
+      <Configuration Solution="Debug|Any CPU" Project="Debug|Any CPU|Deploy" />
+    </Project>
+    <Project Path="HIColorer\HIColorer.csproj" Type="Classic C#" />
+    <Project Path="Ivandrofly.Test\Ivandrofly.Test.csproj" Type="Classic C#" />
+    <Project Path="JackSE\JackSE.csproj" Type="Classic C#" />
+    <Project Path="LibSeBasedPlugin\LibSeBasedPlugin.csproj" Type="Classic C#" />
+    <Project Path="LinesUnbreaker\LinesUnbreaker.csproj" />
+    <Project Path="NarratorOutParentheses\NarratorOutParentheses.csproj" Type="Classic C#" />
+    <Project Path="NoRecursiveDash\NoRecursiveDash.csproj" Type="Classic C#" />
+    <Project Path="OnlineCasing\OnlineCasing.csproj" Type="Classic C#" />
+    <Project Path="Plugin-Shared\Plugin-Shared.shproj" />
+    <Project Path="SaveAllFormat\ExportAllFormats.csproj" Type="Classic C#" />
+    <Project Path="TightHyphen\TightHyphen.csproj" Type="Classic C#" />
+    <Project Path="TriggerOnLoad\TriggerOnLoad.csproj" Type="Classic C#" />
+    <Project Path="WordCensor\WordCensor.csproj" Type="Classic C#" />
+  </Folder>
+  <Folder Name="/MSasanMH/">
+    <Project Path="PersianErrors\PersianErrors.csproj" Type="Classic C#" />
+  </Folder>
+  <Folder Name="/Nikse/">
+    <Project Path="AmericanToBritish\DLL\AmericanToBritish.csproj" Type="Classic C#" />
+    <Project Path="AssaDraw\DLL\AssaDraw.csproj" Type="Classic C#" />
+    <Project Path="AssaFade\DLL\AssaFade.csproj" Type="Classic C#" />
+    <Project Path="BaiduTranslate\DLL\BaiduTranslate.csproj" Type="Classic C#" />
+    <Project Path="BTScreenScraper\DLL\BTScreenScraper.csproj" Type="Classic C#" />
+    <Project Path="CheckLineWidth\DLL\CheckLineWidth.csproj" Type="Classic C#" />
+    <Project Path="ColorToDialog\DLL\ColorToDialog.csproj" Type="Classic C#" />
+    <Project Path="CopyPasteTranslate\DLL\CopyPasteTranslate.csproj" Type="Classic C#" />
+    <Project Path="DeeplProTranslate\DLL\DeeplProTranslate.csproj" Type="Classic C#" />
+    <Project Path="DeepLScreenScraper\DLL\DeepLScreenScraper.csproj" Type="Classic C#" />
+    <Project Path="DeeplTranslate\DLL\DeeplTranslate.csproj" Type="Classic C#" />
+    <Project Path="DialogueOneHyphen\DLL\DialogueOneHyphen.csproj" Type="Classic C#" />
+    <Project Path="DropBoxLoad\DropBoxLoad.csproj" Type="Classic C#" />
+    <Project Path="DropBoxSave\DropBoxSave.csproj" Type="Classic C#" />
+    <Project Path="GTScreenScraper\DLL\GTScreenScraper.csproj" Type="Classic C#" />
+    <Project Path="Haxor\DLL\Haxor.csproj" Type="Classic C#" />
+    <Project Path="IspraviMeTranslate\DLL\IspraviMe.csproj" Type="Classic C#" />
+    <Project Path="ItalicEachLine\DLL\ItalicEachLine.csproj" Type="Classic C#" />
+    <Project Path="LoadFormatting\DLL\LoadFormatting.csproj" Type="Classic C#" />
+    <Project Path="MergeTwoSrtToAss\DLL\MergeTwoSrtToAss.csproj" Type="Classic C#" />
+    <Project Path="NamesListManager\DLL\NameListManager.csproj" Type="Classic C#" />
+    <Project Path="NetflixRulesCheck\DLL\NetflixRulesCheck.csproj" Type="Classic C#" />
+    <Project Path="OcrListManager\DLL\OcrListManager.csproj" Type="Classic C#" />
+    <Project Path="OpenSubtitlesUpload\DLL\OpenSubtitlesUpload.csproj" Type="Classic C#" />
+    <Project Path="PapagoTranslate\DLL\PapagoTranslate.csproj" Type="Classic C#" />
+    <Project Path="PromptTranslate\DLL\PromptTranslate.csproj" Type="Classic C#" />
+    <Project Path="RemoveUnicodeCharacters\DLL\RemoveUnicodeCharacters.csproj" Type="Classic C#" />
+    <Project Path="ReverseText\DLL\ReverseText.csproj" Type="Classic C#" />
+    <Project Path="ReversoTranslate\DLL\ReversoTranslate.csproj" Type="Classic C#" />
+    <Project Path="SeSkydriveLoad\OneDriveLoad.csproj" Type="Classic C#">
+      <Configuration Solution="Release|Any CPU" Project="Release|Any CPU|NoBuild" />
+    </Project>
+    <Project Path="SeSkydriveSave\OneDriveSave.csproj" Type="Classic C#" />
+    <Project Path="WordSpellCheck\DLL\WordSpellCheck.csproj" Type="Classic C#" />
+    <Project Path="YandexTranslate\DLL\YandexTranslate.csproj" Type="Classic C#" />
+  </Folder>
+  <Folder Name="/Tester/">
+    <Project Path="GenericPluginTester\GenericPluginTester.csproj" Type="Classic C#" />
+    <Project Path="UnitTests\UnitTests.csproj" Type="Classic C#" />
+  </Folder>
+  <Folder Name="/Xylographe/">
+    <Project Path="VobSubTimestamps\DLL\VobSubTimestamps.csproj" Type="Classic C#" />
+  </Folder>
+  <Project Path="Plugin-Updater\Plugin-Updater.csproj" Type="Classic C#" />
+</Solution>
