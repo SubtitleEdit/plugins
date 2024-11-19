@@ -1,18 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-  </ItemGroup>
-  <PropertyGroup />
-  <PropertyGroup>
-    <PostBuildEvent>copy $(TargetDir)\JackSE.dll "%25appdata%25\Subtitle Edit\Plugins\"
-copy $(TargetDir)\JackSE.pdb "%25appdata%25\Subtitle Edit\Plugins\"</PostBuildEvent>
-  </PropertyGroup>
-  <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared" />
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <UseWindowsForms>true</UseWindowsForms>
+        <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    </PropertyGroup>
+    <PropertyGroup/>
+    <!--  <PropertyGroup>-->
+    <!--    <PostBuildEvent>copy $(TargetDir)\JackSE.dll "%25appdata%25\Subtitle Edit\Plugins\"-->
+    <!--copy $(TargetDir)\JackSE.pdb "%25appdata%25\Subtitle Edit\Plugins\"</PostBuildEvent>-->
+    <!--  </PropertyGroup>-->
+    <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared"/>
 </Project>

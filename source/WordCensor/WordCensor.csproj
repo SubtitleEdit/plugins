@@ -6,9 +6,5 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" />
-    <PackageReference Include="System.Data.DataSetExtensions" />
-  </ItemGroup>
   <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared" />
 </Project>
