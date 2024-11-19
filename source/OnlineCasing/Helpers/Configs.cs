@@ -12,7 +12,6 @@ using TMDbLib.Objects.Search;
 
 namespace OnlineCasing
 {
-
     public class BoolConverter : JsonConverter
     {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -26,6 +25,7 @@ namespace OnlineCasing
             {
                 return false;
             }
+
             return true;
         }
 
@@ -93,7 +93,6 @@ namespace OnlineCasing
             //    jsonSettings.Converters.Add(item);
             //}
 
-
             //jsonSettings.Converters.Add(new Newtonsoft.Json.Converters.BinaryConverter());
             //jsonSettings.Converters.Add(new Newtonsoft.Json.Converters.BsonObjectIdConverter());
             //jsonSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
@@ -121,7 +120,7 @@ namespace OnlineCasing
 
         public static void Save()
         {
-            File.WriteAllText(SettingFile, JsonConvert.SerializeObject(Settings, jsonSettings), Encoding.UTF8);
+            // File.WriteAllText(SettingFile, JsonConvert.SerializeObject(Settings, jsonSettings), Encoding.UTF8);
         }
     }
 }

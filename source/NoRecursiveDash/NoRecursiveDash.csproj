@@ -6,6 +6,6 @@
         <FileVersion>1</FileVersion>
     </PropertyGroup>
     <ItemGroup>
-      <Folder Include="Properties\" />
+        <Folder Include="Properties\"/>
     </ItemGroup>
 </Project>

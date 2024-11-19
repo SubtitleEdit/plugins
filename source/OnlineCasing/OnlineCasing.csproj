@@ -7,16 +7,8 @@
         <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     </PropertyGroup>
     <ItemGroup>
-      <PackageReference Include="Newtonsoft.Json" />
-      <PackageReference Include="TMDbLib" />
+        <PackageReference Include="Newtonsoft.Json"/>
+        <PackageReference Include="TMDbLib"/>
     </ItemGroup>
-    <PropertyGroup>
-<!--        <PostBuildEvent Condition="$(SE_Plugin) != ''">xcopy /s /y $(TargetDir)*.* "$(SE_Plugin)"</PostBuildEvent>-->
-    </PropertyGroup>
-    <PropertyGroup>
-<!--        <PostBuildEvent>copy $(TargetDir)\OnlineCasing.dll "%25appdata%25\Subtitle Edit\Plugins\"-->
-<!--            copy $(TargetDir)\OnlineCasing.pdb "%25appdata%25\Subtitle Edit\Plugins\"-->
-<!--        </PostBuildEvent>-->
-    </PropertyGroup>
     <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared"/>
 </Project>

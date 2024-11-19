@@ -6,9 +6,5 @@
         <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     </PropertyGroup>
     <PropertyGroup/>
-    <!--  <PropertyGroup>-->
-    <!--    <PostBuildEvent>copy $(TargetDir)\JackSE.dll "%25appdata%25\Subtitle Edit\Plugins\"-->
-    <!--copy $(TargetDir)\JackSE.pdb "%25appdata%25\Subtitle Edit\Plugins\"</PostBuildEvent>-->
-    <!--  </PropertyGroup>-->
     <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared"/>
 </Project>

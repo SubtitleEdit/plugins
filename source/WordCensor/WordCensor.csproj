@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <RootNamespace>Nikse.SubtitleEdit.PluginLogic</RootNamespace>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-  </PropertyGroup>
-  <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared" />
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <RootNamespace>Nikse.SubtitleEdit.PluginLogic</RootNamespace>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <UseWindowsForms>true</UseWindowsForms>
+        <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    </PropertyGroup>
+    <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared"/>
 </Project>
