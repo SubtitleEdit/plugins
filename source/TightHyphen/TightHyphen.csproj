@@ -1,6 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
     <OutputType>Library</OutputType>
     <RootNamespace>Nikse.SubtitleEdit.PluginLogic</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
