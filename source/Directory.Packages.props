@@ -7,6 +7,7 @@
     <PackageVersion Include="Costura.Fody" Version="5.7.0" />
     <PackageVersion Include="libse" Version="3.6.13" />
     <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="9.0.0-preview.9.24556.5" />
+    <PackageVersion Include="Microsoft.Office.Interop.Word" Version="15.0.4797.1004" />
     <PackageVersion Include="Microsoft.Toolkit.Forms.UI.Controls.WebView" Version="5.1.1" />
     <PackageVersion Include="MSTest.TestAdapter" Version="2.1.1" />
     <PackageVersion Include="MSTest.TestFramework" Version="2.1.1" />
