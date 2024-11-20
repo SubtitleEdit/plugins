@@ -27,11 +27,11 @@ jobs:
       
       # Restore NuGet packages
       - name: Restore NuGet packages
-        run: nuget restore "source\Plugins.sln"
+        run: nuget restore "source\Plugins.Filter.slnf"
       
       # Build the solution
       - name: Build solution
-        run: msbuild "source\Plugins.sln" /p:Configuration=Release /p:SkipSharedProject=true
+        run: msbuild "source\Plugins.Filter.slnf" /p:Configuration=Release /p:SkipSharedProject=true
           
           # Run tests (optional)
           #- name: Run tests
