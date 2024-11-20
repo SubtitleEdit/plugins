@@ -1,0 +1,39 @@
+name: Build .NET Framework Project
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      # Setup MSBuild
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1
+      
+      # Setup NuGet
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1
+      
+      # Restore NuGet packages
+      - name: Restore NuGet packages
+        run: nuget restore "source\Plugins.sln"
+      
+      # Build the solution
+      - name: Build solution
+        run: msbuild "\source\Plugins.sln" /p:Configuration=Release
+          
+          # Run tests (optional)
+          #- name: Run tests
+          #run: |
+        #vstest.console.exe path\to\your\test\project.dll
