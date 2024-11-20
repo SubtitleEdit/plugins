@@ -425,7 +425,7 @@ Global
 		Plugin-Shared\Plugin-Shared.projitems*{b6beff13-3ddf-87d9-c875-312ea5aa33db}*SharedItemsImports = 13
 		Plugin-Shared\Plugin-Shared.projitems*{d91a3c86-6107-8cb0-f92e-a1628064b1d0}*SharedItemsImports = 5
 		Plugin-Shared\Plugin-Shared.projitems*{d94338c6-2fcb-8d23-8e04-b810c49a68ab}*SharedItemsImports = 5
-		Plugin-Shared\Plugin-Shared.projitems*{e9d300dd-f041-47a8-b395-cf6e35d7a4c2}*SharedItemsImports = 4
+		Plugin-Shared\Plugin-Shared.projitems*{e9d300dd-f041-47a8-b395-cf6e35d7a4c2}*SharedItemsImports = 5
 		Plugin-Shared\Plugin-Shared.projitems*{f341a40b-e691-3c3f-1d8b-f69a89fc2034}*SharedItemsImports = 5
 		Plugin-Shared\Plugin-Shared.projitems*{f5ca958d-5d27-e0bc-9f15-689a84c85c30}*SharedItemsImports = 5
 	EndGlobalSection
