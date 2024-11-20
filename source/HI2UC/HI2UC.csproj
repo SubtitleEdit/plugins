@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <UseWindowsForms>true</UseWindowsForms>
-        <RootNamespace>Nikse.SubtitleEdit.PluginLogic</RootNamespace>
         <AssemblyVersion>4.8</AssemblyVersion>
         <FileVersion>4.8</FileVersion>
         <LangVersion>latest</LangVersion>
