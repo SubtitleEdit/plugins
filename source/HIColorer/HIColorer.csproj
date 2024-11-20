@@ -7,9 +7,6 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-  </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>copy $(TargetDir)\HIColorer.dll "%25appdata%25\Subtitle Edit\Plugins\"  || Exit 0
 copy $(TargetDir)\HIColorer.pdb "%25appdata%25\Subtitle Edit\Plugins\"  || Exit 0</PostBuildEvent>
