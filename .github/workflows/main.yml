@@ -31,7 +31,7 @@ jobs:
       
       # Build the solution
       - name: Build solution
-        run: msbuild "source\Plugins.sln" /p:Configuration=Release
+        run: msbuild "source\Plugins.sln" /p:Configuration=Release -p BuildProjectReferences=false
           
           # Run tests (optional)
           #- name: Run tests
