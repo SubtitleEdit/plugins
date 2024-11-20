@@ -133,6 +133,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSpellCheck", "WordSpell
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{33ED37A4-FE3B-4E87-8989-E1947F8CCFF4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github-workflows", "github-workflows", "{0D36C631-720E-4AC3-B65E-4CDB8D2907E8}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\main.yml = ..\.github\workflows\main.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -413,6 +418,7 @@ Global
 		{B2A849FA-2754-9B1F-951B-CCF896842722} = {896E8CC0-2483-6EB0-203E-E8AEE0B21B86}
 		{AB317CC4-1867-4D9D-8626-A27BB2E473FE} = {997A92DC-0544-06E6-688C-4D1D9681F12C}
 		{33ED37A4-FE3B-4E87-8989-E1947F8CCFF4} = {15FFA8E7-DF0B-7AE9-1E07-2369D69EEB9B}
+		{0D36C631-720E-4AC3-B65E-4CDB8D2907E8} = {427DB63A-DE9F-4729-200B-9F09D838A0E0}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Plugin-Shared\Plugin-Shared.projitems*{03d2230d-8e96-bf32-3797-9eb2d1ea072f}*SharedItemsImports = 5
