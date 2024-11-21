@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Solution Items", ".Solutio
 		..\Plugins2.xml = ..\Plugins2.xml
 		..\Plugins4.xml = ..\Plugins4.xml
 		..\README.md = ..\README.md
+		zip-plugin-files.ps1 = zip-plugin-files.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ivandrofly", "Ivandrofly", "{F3F3B2F3-6894-7B89-2837-28958321D26E}"
