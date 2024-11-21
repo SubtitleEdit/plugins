@@ -1,8 +1,8 @@
 # Define the list of directories to zip
 $directories = @(
-    "HI2UC\bin\Release\net48",
-    "HIColorer\bin\Release\net48",
-    "LinesUnbreaker\bin\Release\net48"
+    "source\HI2UC\bin\Release\net48",
+    "source\HIColorer\bin\Release\net48",
+    "source\LinesUnbreaker\bin\Release\net48"
 )
 
 # Define the output directory where the zip files will be saved
