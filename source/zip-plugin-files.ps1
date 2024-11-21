@@ -2,6 +2,8 @@
 $directories = @(
     "source\HI2UC\bin\Release\net48",
     "source\HIColorer\bin\Release\net48",
+    "source\TightHyphen\bin\Release\net48",
+    "source\NoRecursiveDash\bin\Release\net48",
     "source\LinesUnbreaker\bin\Release\net48"
 )
 
