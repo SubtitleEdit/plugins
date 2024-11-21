@@ -32,18 +32,18 @@ jobs:
       # Build the solution
       - name: Build solution
         run: msbuild "source\Plugins.Filter.slnf" /p:Configuration=Release /p:SkipSharedProject=true
+      
+      # Run tests (optional)
+      #- name: Run tests
+      #run: |
+      #vstest.console.exe path\to\your\test\project.dll
 
       - name: Create archives
         shell: pwsh
         run: source\zip-plugin-files.ps1
-        
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Plugins
           path: C:\plugins\*.zip
-        
-        # Run tests (optional)
-        #- name: Run tests
-        #run: |
-        #vstest.console.exe path\to\your\test\project.dll
