@@ -34,6 +34,7 @@ jobs:
         run: msbuild "source\Plugins.Filter.slnf" /p:Configuration=Release /p:SkipSharedProject=true
       
       - name: Create archives
+        shell: pwsh
         run: source\zip-plugin-files.ps1
           # Run tests (optional)
           #- name: Run tests
