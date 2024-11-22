@@ -23,12 +23,19 @@ jobs:
       
       # Setup NuGet
       - name: Setup NuGet
-        uses: NuGet/setup-nuget@v1
-      
+        uses: nuget/setup-nuget@v2
+
+      - uses: actions/cache@v4
+        id: cache
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+
       # Restore NuGet packages
       - name: Restore NuGet packages
+        if: steps.cache.outputs.cache-hit != 'true'
         run: nuget restore "source\Plugins.Filter.slnf"
-      
+        
       # Build the solution
       - name: Build solution
         run: msbuild "source\Plugins.Filter.slnf" /p:Configuration=Release /p:SkipSharedProject=true
@@ -46,34 +53,34 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Plugins
-          path: C:\plugins\*.zip
+          path: C:\plugins\*.dll
 
       - name: Upload Artifact (HI2UC)
         uses: actions/upload-artifact@v4
         with:
           name: HI2UC
-          path: C:\plugins\HI2UC.zip
+          path: C:\plugins\HI2UC.dll
 
       - name: Upload Artifact (HIColorer)
         uses: actions/upload-artifact@v4
         with:
           name: HIColorer
-          path: C:\plugins\HIColorer.zip
+          path: C:\plugins\HIColorer.dll
 
       - name: Upload Artifact (TightHyphen)
         uses: actions/upload-artifact@v4
         with:
           name: TightHyphen
-          path: C:\plugins\TightHyphen.zip
+          path: C:\plugins\TightHyphen.dll
 
       - name: Upload Artifact (LinesUnbreaker)
         uses: actions/upload-artifact@v4
         with:
           name: LinesUnbreaker
-          path: C:\plugins\LinesUnbreaker.zip
+          path: C:\plugins\LinesUnbreaker.dll
           
       - name: Upload Artifact (NoRecursiveDash)
         uses: actions/upload-artifact@v4
         with:
           name: NoRecursiveDash
-          path: C:\plugins\NoRecursiveDash.zip
+          path: C:\plugins\NoRecursiveDash.dll
