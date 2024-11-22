@@ -4,16 +4,14 @@ on:
   push:
     branches:
       - main
+      - github-actions
   pull_request:
     branches:
       - main
 
 jobs:
-  build:
+  build-job:
     runs-on: windows-latest
-    #    strategy:
-    #      matrix:
-    #        plugin: [ 'NoRecursiveDash', 'HIColorer', 'HI2UC', 'LinesUnbreaker' ]
 
     steps:
       # Checkout the repository
@@ -41,21 +39,40 @@ jobs:
       
       # Build the solution
       - name: Build solution
-        run: msbuild "source\Plugins.Filter.slnf" /p:Configuration=Release /p:SkipSharedProject=true
+        run: msbuild "source\Plugins.Filter.slnf" /p:Configuration=Release
 
+      # Copy dll to target directory
       - name: Create archives
         shell: pwsh
         run: source\zip-plugin-files.ps1
-      
-      #      - name: Upload Artifact (All)
-      #        uses: actions/upload-artifact@v4
-      #        with:
-      #          name: Plugins
-      #          path: C:\plugins\*.dll
-    call-upload-artifacts-workflow:
-      - use: ./github/workflows/upload-artifacts.yml
-#      - name: Upload Artifact
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: ${{matrix.plugin}}
-#          path: C:\plugins\${{matrix.plugin}}.dll
+
+      # Upload plugins/artifacts
+      - name: Upload HI2UC
+        uses: actions/upload-artifact@v4
+        with:
+          name: HI2UC
+          path: C:\plugins\HI2UC.dll
+
+      - name: Upload HIColorer
+        uses: actions/upload-artifact@v4
+        with:
+          name: HIColorer
+          path: C:\plugins\HIColorer.dll
+
+      - name: Upload TightHyphen
+        uses: actions/upload-artifact@v4
+        with:
+          name: TightHyphen
+          path: C:\plugins\TightHyphen.dll
+
+      - name: Upload NoRecursiveDash
+        uses: actions/upload-artifact@v4
+        with:
+          name: NoRecursiveDash
+          path: C:\plugins\NoRecursiveDash.dll
+
+      - name: Upload LinesUnbreaker
+        uses: actions/upload-artifact@v4
+        with:
+          name: LinesUnbreaker
+          path: C:\plugins\LinesUnbreaker.dll
