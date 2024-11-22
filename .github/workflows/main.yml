@@ -24,27 +24,22 @@ jobs:
       # Setup NuGet
       - name: Setup NuGet
         uses: nuget/setup-nuget@v2
-
-      - uses: actions/cache@v4
-        id: cache
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+      
+      #- uses: actions/cache@v4
+      #  id: cache
+      #  with:
+      #    path: ~/.nuget/packages
+      #    key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 
       # Restore NuGet packages
       - name: Restore NuGet packages
-        if: steps.cache.outputs.cache-hit != 'true'
+        # if: steps.cache.outputs.cache-hit != 'true'
         run: nuget restore "source\Plugins.Filter.slnf"
-        
+      
       # Build the solution
       - name: Build solution
         run: msbuild "source\Plugins.Filter.slnf" /p:Configuration=Release /p:SkipSharedProject=true
-      
-      # Run tests (optional)
-      #- name: Run tests
-      #run: |
-      #vstest.console.exe path\to\your\test\project.dll
-
+        
       - name: Create archives
         shell: pwsh
         run: source\zip-plugin-files.ps1
@@ -78,7 +73,7 @@ jobs:
         with:
           name: LinesUnbreaker
           path: C:\plugins\LinesUnbreaker.dll
-          
+
       - name: Upload Artifact (NoRecursiveDash)
         uses: actions/upload-artifact@v4
         with:
