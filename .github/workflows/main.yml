@@ -13,7 +13,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        plugin: [ 'NoRecursiveDash', 'HIColorer', 'HI2UC', 'HIColorer', 'LinesUnbreaker' ]
+        plugin: [ 'NoRecursiveDash', 'HIColorer', 'HI2UC', 'LinesUnbreaker' ]
 
     steps:
       # Checkout the repository
@@ -42,19 +42,20 @@ jobs:
       # Build the solution
       - name: Build solution
         run: msbuild "source\Plugins.Filter.slnf" /p:Configuration=Release /p:SkipSharedProject=true
-        
+
       - name: Create archives
         shell: pwsh
         run: source\zip-plugin-files.ps1
-
-#      - name: Upload Artifact (All)
+      
+      #      - name: Upload Artifact (All)
+      #        uses: actions/upload-artifact@v4
+      #        with:
+      #          name: Plugins
+      #          path: C:\plugins\*.dll
+    call-upload-artifacts-workflow:
+      - use: ./github/workflows/upload-artifacts.yml
+#      - name: Upload Artifact
 #        uses: actions/upload-artifact@v4
 #        with:
-#          name: Plugins
-#          path: C:\plugins\*.dll
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{matrix.plugin}}
-          path: C:\plugins\${{matrix.plugin}}.dll
+#          name: ${{matrix.plugin}}
+#          path: C:\plugins\${{matrix.plugin}}.dll
