@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Nikse.SubtitleEdit.PluginLogic.Helpers;
+﻿using Nikse.SubtitleEdit.PluginLogic.Helpers;
 using Nikse.SubtitleEdit.PluginLogic.Models;
 using System;
 using System.Collections.Generic;
@@ -9,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using Newtonsoft.Json;
 
 namespace Nikse.SubtitleEdit.PluginLogic.Forms
 {
