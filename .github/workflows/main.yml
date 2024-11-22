@@ -11,6 +11,9 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        plugin: [ 'NoRecursiveDash', 'HIColorer', 'HI2UC', 'HIColorer', 'LinesUnbreaker' ]
 
     steps:
       # Checkout the repository
@@ -44,38 +47,14 @@ jobs:
         shell: pwsh
         run: source\zip-plugin-files.ps1
 
-      - name: Upload Artifact (All)
-        uses: actions/upload-artifact@v4
-        with:
-          name: Plugins
-          path: C:\plugins\*.dll
+#      - name: Upload Artifact (All)
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: Plugins
+#          path: C:\plugins\*.dll
 
-      - name: Upload Artifact (HI2UC)
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: HI2UC
-          path: C:\plugins\HI2UC.dll
-
-      - name: Upload Artifact (HIColorer)
-        uses: actions/upload-artifact@v4
-        with:
-          name: HIColorer
-          path: C:\plugins\HIColorer.dll
-
-      - name: Upload Artifact (TightHyphen)
-        uses: actions/upload-artifact@v4
-        with:
-          name: TightHyphen
-          path: C:\plugins\TightHyphen.dll
-
-      - name: Upload Artifact (LinesUnbreaker)
-        uses: actions/upload-artifact@v4
-        with:
-          name: LinesUnbreaker
-          path: C:\plugins\LinesUnbreaker.dll
-
-      - name: Upload Artifact (NoRecursiveDash)
-        uses: actions/upload-artifact@v4
-        with:
-          name: NoRecursiveDash
-          path: C:\plugins\NoRecursiveDash.dll
+          name: ${{matrix.plugin}}
+          path: C:\plugins\${{matrix.plugin}}.dll
