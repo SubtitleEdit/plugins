@@ -42,8 +42,38 @@ jobs:
         shell: pwsh
         run: source\zip-plugin-files.ps1
 
-      - name: Upload Artifact
+      - name: Upload Artifact (All)
         uses: actions/upload-artifact@v4
         with:
           name: Plugins
           path: C:\plugins\*.zip
+
+      - name: Upload Artifact (HI2UC)
+        uses: actions/upload-artifact@v4
+        with:
+          name: HI2UC
+          path: C:\plugins\HI2UC.zip
+
+      - name: Upload Artifact (HIColorer)
+        uses: actions/upload-artifact@v4
+        with:
+          name: HIColorer
+          path: C:\plugins\HIColorer.zip
+
+      - name: Upload Artifact (TightHyphen)
+        uses: actions/upload-artifact@v4
+        with:
+          name: TightHyphen
+          path: C:\plugins\TightHyphen.zip
+
+      - name: Upload Artifact (LinesUnbreaker)
+        uses: actions/upload-artifact@v4
+        with:
+          name: LinesUnbreaker
+          path: C:\plugins\LinesUnbreaker.zip
+          
+      - name: Upload Artifact (NoRecursiveDash)
+        uses: actions/upload-artifact@v4
+        with:
+          name: NoRecursiveDash
+          path: C:\plugins\NoRecursiveDash.zip
