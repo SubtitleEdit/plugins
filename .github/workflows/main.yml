@@ -11,9 +11,9 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-#    strategy:
-#      matrix:
-#        plugin: [ 'NoRecursiveDash', 'HIColorer', 'HI2UC', 'LinesUnbreaker' ]
+    #    strategy:
+    #      matrix:
+    #        plugin: [ 'NoRecursiveDash', 'HIColorer', 'HI2UC', 'LinesUnbreaker' ]
 
     steps:
       # Checkout the repository
@@ -52,8 +52,8 @@ jobs:
       #        with:
       #          name: Plugins
       #          path: C:\plugins\*.dll
-    call-upload-artifacts-workflow:
-      - use: ./github/workflows/upload-artifacts.yml
+  call-upload-artifacts-workflow:
+    - use: ./github/workflows/upload-artifacts.yml
 #      - name: Upload Artifact
 #        uses: actions/upload-artifact@v4
 #        with:
