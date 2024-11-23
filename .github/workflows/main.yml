@@ -47,10 +47,12 @@ jobs:
         run: source\zip-plugin-files.ps1
 
       # Upload plugins/artifacts
-      - uses: ./.github/plugin-update
+      - name: Upload HI2UC
+      - uses: ./.github/workflows/plugin-upload
         with:
           file-name: HI2UC
 
+      - name: Upload HIColorer
       - uses: ./.github/plugin-update
         with:
           file-name: HIColorer
