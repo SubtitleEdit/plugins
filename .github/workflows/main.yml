@@ -47,27 +47,28 @@ jobs:
         run: source\zip-plugin-files.ps1
 
       # Upload plugins/artifacts
-#      - name: Upload HI2UC
-#        uses: ./.github/workflows/plugin-upload
-#        with:
-#          file-name: HI2UC
-#
-#      - name: Upload HIColorer
-#        uses: ./.github/workflows/plugin-upload
-#        with:
-#          file-name: HIColorer
-
-  upload-job:
-    runs-on: windows-latest
-    needs: build-job
-    strategy:
-      matrix:
-        artifact_name: [ "HI2UC", "HIColorer" ]
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Upload ${{matrix.artifact_name}}
+      - name: Upload HI2UC
         uses: ./.github/workflows/plugin-upload
         with:
-          file-name: ${{matrix.artifact_name}}
+          file-name: HI2UC
+
+      - name: Upload HIColorer
+        uses: ./.github/workflows/plugin-upload
+        with:
+          file-name: HIColorer
+
+# won't work 'cause the two jobs are running in two difference instance of windows container
+#  upload-job:
+#    runs-on: windows-latest
+#    needs: build-job
+#    strategy:
+#      matrix:
+#        artifact_name: [ "HI2UC", "HIColorer" ]
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v3
+#
+#      - name: Upload ${{matrix.artifact_name}}
+#        uses: ./.github/workflows/plugin-upload
+#        with:
+#          file-name: ${{matrix.artifact_name}}
