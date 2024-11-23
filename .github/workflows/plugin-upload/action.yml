@@ -1,0 +1,38 @@
+name: Upload plugins
+description: Upload plugin/artifact
+inputs: 
+  file-name:
+    description: file name to create artifact (without extension e.g. HI2UC)
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Upload ${{inputs.file-name}}
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{inputs.file-name}}
+        path: C:\plugins\${{inputs.file-name}}.dll
+
+#    - name: Upload HIColorer
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: HIColorer
+#        path: C:\plugins\HIColorer.dll
+#
+#    - name: Upload TightHyphen
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: TightHyphen
+#        path: C:\plugins\TightHyphen.dll
+#
+#    - name: Upload NoRecursiveDash
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: NoRecursiveDash
+#        path: C:\plugins\NoRecursiveDash.dll
+#
+#    - name: Upload LinesUnbreaker
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: LinesUnbreaker
+#        path: C:\plugins\LinesUnbreaker.dll
