@@ -1,6 +1,8 @@
+#  https://docs.github.com/en/actions/sharing-automations/creating-actions/creating-a-composite-action#creating-an-action-metadata-file
+
 name: Upload plugins
 description: Upload plugin/artifact
-inputs: 
+inputs:
   file-name:
     description: file name to create artifact (without extension e.g. HI2UC)
     required: true
