@@ -64,6 +64,9 @@ jobs:
       matrix:
         artifact_name: [ "HI2UC", "HIColorer" ]
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Upload ${{matrix.artifact_name}}
         uses: ./.github/workflows/plugin-upload
         with:
