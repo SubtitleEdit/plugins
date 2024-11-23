@@ -48,11 +48,11 @@ jobs:
 
       # Upload plugins/artifacts
       - name: Upload HI2UC
-      - uses: ./.github/workflows/plugin-upload
+        uses: ./.github/workflows/plugin-upload
         with:
           file-name: HI2UC
 
       - name: Upload HIColorer
-      - uses: ./.github/plugin-update
+        uses: ./.github/plugin-update
         with:
           file-name: HIColorer
