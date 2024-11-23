@@ -47,32 +47,10 @@ jobs:
         run: source\zip-plugin-files.ps1
 
       # Upload plugins/artifacts
-      - name: Upload HI2UC
-        uses: actions/upload-artifact@v4
+      - uses: ./.github/plugin-update
         with:
-          name: HI2UC
-          path: C:\plugins\HI2UC.dll
+          file-name: HI2UC
 
-      - name: Upload HIColorer
-        uses: actions/upload-artifact@v4
+      - uses: ./.github/plugin-update
         with:
-          name: HIColorer
-          path: C:\plugins\HIColorer.dll
-
-      - name: Upload TightHyphen
-        uses: actions/upload-artifact@v4
-        with:
-          name: TightHyphen
-          path: C:\plugins\TightHyphen.dll
-
-      - name: Upload NoRecursiveDash
-        uses: actions/upload-artifact@v4
-        with:
-          name: NoRecursiveDash
-          path: C:\plugins\NoRecursiveDash.dll
-
-      - name: Upload LinesUnbreaker
-        uses: actions/upload-artifact@v4
-        with:
-          name: LinesUnbreaker
-          path: C:\plugins\LinesUnbreaker.dll
+          file-name: HIColorer
