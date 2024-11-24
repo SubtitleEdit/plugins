@@ -5,14 +5,18 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Nikse.SubtitleEdit.Core.Common;
+using Nikse.SubtitleEdit.Core.SubtitleFormats;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     public partial class Main : Form
     {
         private readonly Form _parentForm;
+        private readonly Subtitle _subtitle;
         private readonly string _file;
         private string _exportLocation;
         private volatile string _selExtension;
@@ -21,28 +25,21 @@ namespace Nikse.SubtitleEdit.PluginLogic
         // todo: add support to export specific format e.g: xml, txt...
         // todo: add ui with options
 
-        public Main(Form parentForm, string file)
+        public Main(Form parentForm, Subtitle subtitle)
         {
+            InitializeComponent();
+
             if (parentForm is null)
             {
                 throw new ArgumentNullException(nameof(parentForm));
             }
 
-            if (string.IsNullOrWhiteSpace(file))
-            {
-                throw new ArgumentException($"'{nameof(file)}' cannot be null or whitespace", nameof(file));
-            }
-
-            InitializeComponent();
             progressBar1.Visible = false;
             _parentForm = parentForm;
-            _file = file;
+            _subtitle = subtitle;
 
             // event handlers
-            buttonCancel.Click += delegate
-            {
-                DialogResult = DialogResult.Cancel;
-            };
+            buttonCancel.Click += delegate { DialogResult = DialogResult.Cancel; };
 
             textBoxLocation.DoubleClick += delegate
             {
@@ -57,10 +54,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             comboBoxExtension.BeginUpdate();
             comboBoxExtension.Items.Add("all");
-            foreach (var extension in GetAvailableExtensions())
+            foreach (var extension in SubtitleFormat.AllSubtitleFormats.Select(f => f.Extension))
             {
                 comboBoxExtension.Items.Add(extension);
             }
+
             comboBoxExtension.SelectedIndex = 0;
             comboBoxExtension.EndUpdate();
         }
@@ -76,84 +74,39 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     return;
                 }
 
-                _exportLocation = folderBrowse.SelectedPath;
-                textBoxLocation.Text = _exportLocation;
+                textBoxLocation.Text = _exportLocation = folderBrowse.SelectedPath;
             }
         }
 
-        private void buttonExport_Click(object sender, EventArgs e)
+        private async void buttonExport_Click(object sender, EventArgs e)
         {
-            // validate output path
             if (!Path.IsPathRooted(_exportLocation))
             {
                 MessageBox.Show("Invalid output path", "Invalid output", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            //progressBar1.Style = ProgressBarStyle.Continuous;
-            //progressBar1.Visible = true;
-
-            var subtitleFormat = Utils.AssemblyUtils.GetLibse().GetType("Nikse.SubtitleEdit.Core.SubtitleFormats.SubtitleFormat");
-            var prop = subtitleFormat.GetProperty("AllSubtitleFormats", BindingFlags.Public | BindingFlags.Static);
-            var subtitle = _parentForm.GetType().GetField("_subtitle", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_parentForm);
-
-            //var parallelOptions = new ParallelOptions();
-            //TaskScheduler.FromCurrentSynchronizationContext();
-            // run export parallel (faster)
-
             _selExtension = comboBoxExtension.SelectedItem.ToString();
-            Parallel.ForEach((IEnumerable<object>)prop.GetValue(default, default), format =>
+            await Task.Run(() =>
             {
-                try
+                ParallelLoopResult parallelLoopResult = Parallel.ForEach(SubtitleFormat.AllSubtitleFormats, exportFormat =>
                 {
-                    var name = format.GetType().GetProperty("Name", BindingFlags.Public | BindingFlags.Instance).GetValue(format, default);
-                    var extension = (string)format.GetType().GetProperty("Extension", BindingFlags.Public | BindingFlags.Instance).GetValue(format, default);
-
-                    // filter by extension
-                    if (_selExtension.Equals("all") == false && !_selExtension.Equals(extension, StringComparison.OrdinalIgnoreCase))
+                    try
                     {
-                        return;
+                        var outputFileName = Path.Combine(_exportLocation, GetExportFileName(_subtitle.FileName, exportFormat.Name, exportFormat.Extension));
+                        var content = exportFormat.ToText(_subtitle, _subtitle.FileName);
+                        File.WriteAllText(outputFileName, content, Encoding.UTF8);
                     }
+                    catch (Exception ex)
+                    {
+                        Trace.WriteLine(ex.Message);
+                    }
+                });
+                SpinWait.SpinUntil(() => parallelLoopResult.IsCompleted);
+            }).ConfigureAwait(true);
 
-                    var mi = format.GetType().GetMethod("ToText", BindingFlags.Public | BindingFlags.Instance /*| BindingFlags.DeclaredOnly*/, default, new Type[] { subtitle.GetType(), typeof(string) }, default);
-                    var result = (string)mi.Invoke(format, new[] { subtitle, name });
-                    File.WriteAllText(Path.Combine(_exportLocation, GetExportFileName(_file, (string)name, extension)), result, Encoding.UTF8);
-                }
-                catch (Exception ex)
-                {
-                    Trace.WriteLine(ex.Message);
-                }
-            });
-
-            //progressBar1.Style = ProgressBarStyle.Blocks;
-            //progressBar1.Visible = false;
-
-            // Explorer.ex "C:\Demo"
             Process.Start("explorer", $"\"{_exportLocation}\"");
             MessageBox.Show(_parentForm, "Export completed!", "Subtitle exported", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private IEnumerable<string> GetAvailableExtensions()
-        {
-            var assembly = _parentForm.GetType().Assembly;
-            if (assembly == null)
-            {
-                throw new InvalidCastException();
-            }
-
-            var assemblyLibse = Utils.AssemblyUtils.GetLibse();
-            var subtitleFormat = assemblyLibse.GetType("Nikse.SubtitleEdit.Core.SubtitleFormats.SubtitleFormat");
-            var prop = subtitleFormat.GetProperty("AllSubtitleFormats", BindingFlags.Public | BindingFlags.Static);
-            var formats = (IEnumerable<object>)prop.GetValue(_parentForm, null);
-            var listExtension = new HashSet<string>();
-
-            foreach (var item in formats)
-            {
-                var extension = (string)item.GetType().GetProperty("Extension").GetValue(item, null);
-                listExtension.Add(extension);
-            }
-
-            return listExtension;
         }
 
         private static string GetExportFileName(string file, string formatName, string extension)
