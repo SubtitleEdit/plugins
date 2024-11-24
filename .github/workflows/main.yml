@@ -76,3 +76,9 @@ jobs:
         with:
           name: LinesUnbreaker
           path: C:\plugins\LinesUnbreaker.dll
+
+      - name: Upload ExportAllFormats
+        uses: actions/upload-artifact@v4
+        with:
+          name: ExportAllFormats
+          path: C:\plugins\ExportAllFormats.dll
