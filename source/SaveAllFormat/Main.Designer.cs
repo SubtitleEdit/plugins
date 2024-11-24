@@ -31,18 +31,13 @@
             this.buttonCancel = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxLocation = new System.Windows.Forms.TextBox();
-            this.comboBoxExtension = new System.Windows.Forms.ComboBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.buttonBrowse = new System.Windows.Forms.Button();
             this.buttonExport = new System.Windows.Forms.Button();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Location = new System.Drawing.Point(385, 187);
+            this.buttonCancel.Location = new System.Drawing.Point(304, 78);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 1;
@@ -65,34 +60,6 @@
             this.textBoxLocation.Size = new System.Drawing.Size(364, 20);
             this.textBoxLocation.TabIndex = 3;
             // 
-            // comboBoxExtension
-            // 
-            this.comboBoxExtension.FormattingEnabled = true;
-            this.comboBoxExtension.Location = new System.Drawing.Point(9, 35);
-            this.comboBoxExtension.Name = "comboBoxExtension";
-            this.comboBoxExtension.Size = new System.Drawing.Size(121, 21);
-            this.comboBoxExtension.TabIndex = 4;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.comboBoxExtension);
-            this.groupBox1.Location = new System.Drawing.Point(15, 60);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(445, 79);
-            this.groupBox1.TabIndex = 5;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Filter";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 16);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(56, 13);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "Extension:";
-            // 
             // buttonBrowse
             // 
             this.buttonBrowse.Location = new System.Drawing.Point(385, 23);
@@ -105,7 +72,7 @@
             // 
             // buttonExport
             // 
-            this.buttonExport.Location = new System.Drawing.Point(15, 145);
+            this.buttonExport.Location = new System.Drawing.Point(385, 78);
             this.buttonExport.Name = "buttonExport";
             this.buttonExport.Size = new System.Drawing.Size(75, 23);
             this.buttonExport.TabIndex = 7;
@@ -113,44 +80,28 @@
             this.buttonExport.UseVisualStyleBackColor = true;
             this.buttonExport.Click += new System.EventHandler(this.buttonExport_Click);
             // 
-            // progressBar1
-            // 
-            this.progressBar1.Location = new System.Drawing.Point(15, 187);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(283, 23);
-            this.progressBar1.TabIndex = 8;
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(472, 222);
-            this.Controls.Add(this.progressBar1);
+            this.ClientSize = new System.Drawing.Size(472, 125);
             this.Controls.Add(this.buttonExport);
             this.Controls.Add(this.buttonBrowse);
-            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.textBoxLocation);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.buttonCancel);
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Main";
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBoxLocation;
-        private System.Windows.Forms.ComboBox comboBoxExtension;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button buttonBrowse;
         private System.Windows.Forms.Button buttonExport;
-        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }

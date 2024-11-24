@@ -19,7 +19,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private readonly Subtitle _subtitle;
         private readonly string _file;
         private string _exportLocation;
-        private volatile string _selExtension;
 
         // todo: add support to portable version
         // todo: add support to export specific format e.g: xml, txt...
@@ -34,7 +33,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 throw new ArgumentNullException(nameof(parentForm));
             }
 
-            progressBar1.Visible = false;
             _parentForm = parentForm;
             _subtitle = subtitle;
 
@@ -51,16 +49,6 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                 Process.Start($"{textBoxLocation.Text}");
             };
-
-            comboBoxExtension.BeginUpdate();
-            comboBoxExtension.Items.Add("all");
-            foreach (var extension in SubtitleFormat.AllSubtitleFormats.Select(f => f.Extension))
-            {
-                comboBoxExtension.Items.Add(extension);
-            }
-
-            comboBoxExtension.SelectedIndex = 0;
-            comboBoxExtension.EndUpdate();
         }
 
         private void buttonBrowse_Click(object sender, EventArgs e)
@@ -86,9 +74,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 return;
             }
 
-            _selExtension = comboBoxExtension.SelectedItem.ToString();
             await Task.Run(() =>
             {
+                // TODO: Use Parallel.ForeachAsync in .NET >= 6
                 ParallelLoopResult parallelLoopResult = Parallel.ForEach(SubtitleFormat.AllSubtitleFormats, exportFormat =>
                 {
                     try
@@ -111,6 +99,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private static string GetExportFileName(string file, string formatName, string extension)
         {
+            if (string.IsNullOrWhiteSpace(file))
+            {
+                return Path.GetRandomFileName() + extension;
+            }
+
             string fileName = Path.GetFileNameWithoutExtension(file);
             string newName = $"{fileName}_{formatName}{extension}";
             foreach (var ch in Path.GetInvalidFileNameChars().Concat(Path.GetInvalidPathChars()))
