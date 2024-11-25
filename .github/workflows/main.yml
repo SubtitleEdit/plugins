@@ -20,7 +20,7 @@ jobs:
       
       # Setup MSBuild
       - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v1
+        uses: microsoft/setup-msbuild@v2
       
       # Setup NuGet
       - name: Setup NuGet
