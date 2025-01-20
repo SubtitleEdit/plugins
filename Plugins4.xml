@@ -50,30 +50,6 @@
         <Author>Nikse</Author>
     </Plugin>
     <Plugin>
-        <Name>GT Screen-Scraper</Name>
-        <Description>GT screen-scraper: Requires Edge and .Net 4.6.2+</Description>
-        <Version>1.07</Version>
-        <Date>2022-11-06</Date>
-        <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/GTScreenScraper107.zip</Url>
-        <Author>Nikse</Author>
-    </Plugin>
-    <Plugin>
-        <Name>BT Screen-Scraper</Name>
-        <Description>BT screen-scraper: Requires .Net 4.6.2+</Description>
-        <Version>0.7</Version>
-        <Date>2019-11-13</Date>
-        <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/BTScreenScraper.zip</Url>
-        <Author>Nikse</Author>
-    </Plugin>
-    <Plugin>
-        <Name>DeepL Pro translate</Name>
-        <Description>DeepL Pro translate: Requires .net 4.6.2+</Description>
-        <Version>1.7</Version>
-        <Date>2023-09-11</Date>
-        <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/DeeplProTranslate.zip</Url>
-        <Author>Nikse</Author>
-    </Plugin>
-    <Plugin>
         <Name>Copy-Paste Translate</Name>
         <Description>Translate with 3rd party tool using copy/paste</Description>
         <Version>0.6</Version>
