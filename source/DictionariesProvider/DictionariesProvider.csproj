@@ -1,27 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Net.Http" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Costura.Fody">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Fody">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" />
-  </ItemGroup>
-  <PropertyGroup>
-<!--    <PostBuildEvent Condition="$(SE_Plugin) != ''">xcopy /s /y $(TargetDir)*.* "$(SE_Plugin)"</PostBuildEvent>-->
-  </PropertyGroup>
-  <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared" />
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <UseWindowsForms>true</UseWindowsForms>
+        <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="System.IO.Compression"/>
+        <Reference Include="System.Net.Http"/>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Costura.Fody">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Fody">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Newtonsoft.Json"/>
+    </ItemGroup>
+    <PropertyGroup>
+        <!--    <PostBuildEvent Condition="$(SE_Plugin) != ''">xcopy /s /y $(TargetDir)*.* "$(SE_Plugin)"</PostBuildEvent>-->
+    </PropertyGroup>
+    <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared"/>
 </Project>

@@ -4,7 +4,11 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Costura.Fody" Version="5.7.0" />
+    <PackageVersion Include="Costura.Fody" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageVersion>
+    <PackageVersion Include="Fody" Version="6.9.1" />
     <PackageVersion Include="libse" Version="3.6.13" />
     <PackageVersion Include="Microsoft.Office.Interop.Word" Version="15.0.4797.1004" />
     <PackageVersion Include="Microsoft.Toolkit.Forms.UI.Controls.WebView" Version="5.1.1" />
