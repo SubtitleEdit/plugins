@@ -139,6 +139,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Xylographe", "Xylographe", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VobSubTimestamps", "VobSubTimestamps\DLL\VobSubTimestamps.csproj", "{B2A849FA-2754-9B1F-951B-CCF896842722}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commas", "Commas\Commas.csproj", "{FB88238D-64C8-4F4A-82CE-3E88B10F39E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -357,6 +359,10 @@ Global
 		{B2A849FA-2754-9B1F-951B-CCF896842722}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2A849FA-2754-9B1F-951B-CCF896842722}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2A849FA-2754-9B1F-951B-CCF896842722}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB88238D-64C8-4F4A-82CE-3E88B10F39E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB88238D-64C8-4F4A-82CE-3E88B10F39E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB88238D-64C8-4F4A-82CE-3E88B10F39E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB88238D-64C8-4F4A-82CE-3E88B10F39E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -416,6 +422,7 @@ Global
 		{4BCE55FD-2A5A-F5BC-B181-4587ADD3098D} = {15FFA8E7-DF0B-7AE9-1E07-2369D69EEB9B}
 		{33ED37A4-FE3B-4E87-8989-E1947F8CCFF4} = {15FFA8E7-DF0B-7AE9-1E07-2369D69EEB9B}
 		{B2A849FA-2754-9B1F-951B-CCF896842722} = {896E8CC0-2483-6EB0-203E-E8AEE0B21B86}
+		{FB88238D-64C8-4F4A-82CE-3E88B10F39E1} = {F3F3B2F3-6894-7B89-2837-28958321D26E}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Plugin-Shared\Plugin-Shared.projitems*{03d2230d-8e96-bf32-3797-9eb2d1ea072f}*SharedItemsImports = 5
