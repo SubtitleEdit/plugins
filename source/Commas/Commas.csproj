@@ -14,8 +14,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="libse" PrivateAssets="all"/>
-        <PackageReference Include="Newtonsoft.Json" PrivateAssets="all"/>
+        <PackageReference Include="libse" IncludeAssets="compile"/>
+        <PackageReference Include="Newtonsoft.Json" IncludeAssets="compile"/>
     </ItemGroup>
 
 </Project>
