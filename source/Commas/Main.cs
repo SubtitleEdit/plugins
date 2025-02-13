@@ -20,7 +20,8 @@ public partial class Main : Form
 
     private async void buttonFixComma_Click(object sender, EventArgs e)
     {
-        using var lmStudioClient = LmStudioClient.Create(textBoxEndPoint.Text, textBoxPrompt.Text);
+
+        using var lmStudioClient = new LmStudioClient(textBoxEndPoint.Text, textBoxPrompt.Text);
 
         // listView1.BeginUpdate();
         _cancellationTokenSource = new CancellationTokenSource();

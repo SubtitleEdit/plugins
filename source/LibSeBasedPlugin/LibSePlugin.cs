@@ -17,8 +17,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public string Shortcut { get; } = "";
 
         public string DoAction(Form parentForm, string srtText, double frameRate, string uiLineBreak, string file,
-            string videoFile,
-            string rawText)
+            string videoFile, string rawText)
         {
 #if DEBUG
             if (!Debugger.IsAttached)
@@ -29,12 +28,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             var subrip = new SubRip();
             var subtitle = new Subtitle();
             subrip.LoadSubtitle(subtitle, srtText.SplitToLines(), file);
-            
-            
+
             // var subtitle = new Subtitle();
             // var format = subtitle.LoadSubtitle(rawText, out _, Encoding.UTF8);
             // if (format == null) return string.Empty;
-
 
             return subrip.ToText(subtitle, "");
         }

@@ -10,7 +10,7 @@ public class LmStudioClient : IDisposable
     private readonly string _prompt;
     private readonly HttpClient _httpClient;
 
-    private LmStudioClient(string url, string prompt)
+    public LmStudioClient(string url, string prompt)
     {
         _prompt = prompt;
         _httpClient = new HttpClient()
@@ -40,7 +40,7 @@ public class LmStudioClient : IDisposable
         var chatCompletionRequest = new ChatCompletionRequest(false, new[]
         {
             new Message("user", $"{_prompt}:\n\"{text}\""),
-            new Message("system", "You are very good at fixing commas.")
+            new Message("system", "You are a helpful assistant.")
         }, 0.7);
 
         var json = JsonConvert.SerializeObject(chatCompletionRequest);
@@ -56,11 +56,6 @@ public class LmStudioClient : IDisposable
     }
 
     public void Dispose() => _httpClient.Dispose();
-
-    public static LmStudioClient Create(string endpoint, string prompt)
-    {
-        return new LmStudioClient(endpoint, prompt);
-    }
 
     public class ChatCompletionRequest(bool stream, Message[] messages, double temperature)
     {

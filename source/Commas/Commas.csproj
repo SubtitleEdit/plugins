@@ -15,6 +15,8 @@
 
     <ItemGroup>
         <PackageReference Include="libse" IncludeAssets="compile"/>
+
+        <!-- https://learn.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#controlling-dependency-assets-->
         <PackageReference Include="Newtonsoft.Json" IncludeAssets="compile"/>
     </ItemGroup>
 
