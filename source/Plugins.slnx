@@ -14,6 +14,7 @@
     <File Path="..\.github\workflows\main.yml" />
   </Folder>
   <Folder Name="/Ivandrofly/">
+    <Project Path="Commas\Commas.csproj" Type="Classic C#" />
     <Project Path="DialogueAutoMarker\DialogueAutoMarker.csproj" Type="Classic C#" />
     <Project Path="DictionariesProvider\DictionariesProvider.csproj" Type="Classic C#" />
     <Project Path="ExposeSEApi\ExposeSEApi.csproj" Type="Classic C#" />
