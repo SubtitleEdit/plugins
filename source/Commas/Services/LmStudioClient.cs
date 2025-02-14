@@ -38,8 +38,8 @@ internal class LmStudioClient : IDisposable
 
         var chatCompletionRequest = new ChatCompletionRequest(false, new[]
         {
-            new Message("user", $"{_prompt}:\n\n{text}"),
-            new Message("system", "You are a helpful assistant.")
+            new Message("user", $"{_prompt}: \n\n{text}"),
+            // new Message("system", "You are a helpful assistant.")
         }, 0.7);
 
         var json = JsonConvert.SerializeObject(chatCompletionRequest);

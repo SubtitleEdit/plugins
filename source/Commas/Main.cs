@@ -21,6 +21,18 @@ internal partial class Main : Form
 
         Closing += (sender, args) => { _ = CancelAndDisposeResources(); };
         buttonOkay.Click += ButtonOkayOnClick;
+
+        ConfigurePrompt();
+    }
+
+    private void ConfigurePrompt()
+    {
+        textBoxPrompt.Text = "Fix commas only, " +
+                             "do not remove or add any words, " +
+                             "do not change the meaning of the sentence, " +
+                             "do do add or remove any other puntuation, " +
+                             "do not censor, " +
+                             "give only the output without comments or notes:";
     }
 
     private void ButtonOkayOnClick(object sender, EventArgs e)
@@ -96,11 +108,26 @@ internal partial class Main : Form
                     }
 
                     var paragraph = _subtitle.Paragraphs[index];
-                    var output = await lmStudioClient.SendAsync(paragraph.Text).ConfigureAwait(false);
 
-                    if (!output.Equals(paragraph.Text, StringComparison.Ordinal))
+                    var lines = paragraph.Text.SplitToLines();
+
+                    // try sending each line individually to avoid messing up with the line that
+                    // doesn't require fixing which tends to happen when using less capable models
+                    for (var i = 0; i < lines.Count; i++)
                     {
-                        progress.Report((new ListViewItem(new[] { paragraph.Text, output })
+                        string line = lines[i];
+
+                        // remove formatting before sending as some models also remove formattings unintentionally
+                        var st = new StrippableText(line);
+                        st.StrippedText = await lmStudioClient.SendAsync(st.StrippedText).ConfigureAwait(false);
+                        lines[i] = st.MergedString;
+                    }
+
+                    string result = string.Join(Environment.NewLine, lines);
+
+                    if (!result.Equals(paragraph.Text, StringComparison.Ordinal))
+                    {
+                        progress.Report((new ListViewItem(new[] { paragraph.Text, result })
                         {
                             Tag = paragraph,
                         }, index));

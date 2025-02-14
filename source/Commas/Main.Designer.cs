@@ -32,7 +32,7 @@ partial class Main
     /// </summary>
     private void InitializeComponent()
     {
-        this.listView1 = new DoubleBufferedListView();
+        this.listView1 = new Nikse.SubtitleEdit.PluginLogic.Controls.DoubleBufferedListView();
         this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
         this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
         this.buttonOkay = new System.Windows.Forms.Button();
@@ -77,11 +77,11 @@ partial class Main
         this.buttonOkay.Text = "OK";
         this.buttonOkay.UseVisualStyleBackColor = true;
         // 
-        // label1
+        // labelEndPoint
         // 
         this.labelEndPoint.AutoSize = true;
         this.labelEndPoint.Location = new System.Drawing.Point(9, 21);
-        this.labelEndPoint.Name = "label1";
+        this.labelEndPoint.Name = "labelEndPoint";
         this.labelEndPoint.Size = new System.Drawing.Size(52, 13);
         this.labelEndPoint.TabIndex = 2;
         this.labelEndPoint.Text = "Endpoint:";
@@ -118,7 +118,6 @@ partial class Main
         this.textBoxPrompt.Name = "textBoxPrompt";
         this.textBoxPrompt.Size = new System.Drawing.Size(198, 54);
         this.textBoxPrompt.TabIndex = 6;
-        this.textBoxPrompt.Text = "Fix commas.\r\nDo not explain.\r\nDo not censor.";
         // 
         // Main
         // 
