@@ -7,6 +7,7 @@ namespace Commas;
 public partial class Main : Form
 {
     private readonly Subtitle _subtitle;
+    private volatile bool _isProcessing;
 
     public Main(Subtitle subtitle)
     {
@@ -14,38 +15,77 @@ public partial class Main : Form
         InitializeComponent();
 
         buttonOkay.DialogResult = DialogResult.OK;
+
+        Closing += (sender, args) => { _ = CancelAndDisposeResources(); };
+    }
+
+    private bool CancelAndDisposeResources()
+    {
+        if (_isProcessing)
+        {
+            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource.Dispose();
+            _isProcessing = false;
+            return true;
+        }
+
+        return false;
     }
 
     private CancellationTokenSource _cancellationTokenSource;
 
     private async void buttonFixComma_Click(object sender, EventArgs e)
     {
+        if (CancelAndDisposeResources())
+        {
+            return;
+        }
 
         using var lmStudioClient = new LmStudioClient(textBoxEndPoint.Text, textBoxPrompt.Text);
 
         // listView1.BeginUpdate();
         _cancellationTokenSource = new CancellationTokenSource();
 
-        IProgress<ListViewItem> progress = new Progress<ListViewItem>(listViewItem =>
+        var previousPercentage = 0;
+        IProgress<(ListViewItem, int)> progress = new Progress<(ListViewItem listViewItem, int index)>(item =>
         {
-            listView1.Items.Add(listViewItem);
-            listView1.Refresh();
-        });
-        await Task.Run(async () =>
-        {
-            foreach (var paragraph in _subtitle.Paragraphs)
-            {
-                var output = await lmStudioClient.SendAsync(paragraph.Text).ConfigureAwait(false);
+            listView1.Items.Add(item.listViewItem);
 
-                if (!output.Equals(paragraph.Text, StringComparison.Ordinal))
-                {
-                    progress.Report(new ListViewItem(paragraph.Text)
-                    {
-                        SubItems = { output, }
-                    });
-                }
+            var percentage = (item.index * 100 / _subtitle.Paragraphs.Count);
+            // refresh every 5%
+            if (percentage != previousPercentage && percentage % 5 == 0)
+            {
+                listView1.Refresh();
+                previousPercentage = percentage;
             }
-        }, _cancellationTokenSource.Token);
+        });
+
+        try
+        {
+            await Task.Run(async () =>
+            {
+                _isProcessing = true;
+                for (var index = 0; index < _subtitle.Paragraphs.Count; index++)
+                {
+                    if (_cancellationTokenSource.IsCancellationRequested)
+                    {
+                        _cancellationTokenSource.Token.ThrowIfCancellationRequested();
+                    }
+
+                    var paragraph = _subtitle.Paragraphs[index];
+                    var output = await lmStudioClient.SendAsync(paragraph.Text).ConfigureAwait(false);
+
+                    if (!output.Equals(paragraph.Text, StringComparison.Ordinal))
+                    {
+                        progress.Report((new ListViewItem(new[] { paragraph.Text, output }), index));
+                    }
+                }
+            }, _cancellationTokenSource.Token).ConfigureAwait(false);
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine(exception);
+        }
         // listView1.EndUpdate();
     }
 }

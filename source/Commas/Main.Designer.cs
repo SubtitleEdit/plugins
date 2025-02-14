@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Nikse.SubtitleEdit.PluginLogic.Controls;
 
 namespace Commas;
 
@@ -31,7 +32,7 @@ partial class Main
     /// </summary>
     private void InitializeComponent()
     {
-        this.listView1 = new System.Windows.Forms.ListView();
+        this.listView1 = new DoubleBufferedListView();
         this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
         this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
         this.buttonOkay = new System.Windows.Forms.Button();
@@ -141,7 +142,7 @@ partial class Main
 
     #endregion
 
-    private System.Windows.Forms.ListView listView1;
+    private DoubleBufferedListView listView1;
     private Button buttonOkay;
     private Label labelEndPoint;
     private ColumnHeader columnHeader1;

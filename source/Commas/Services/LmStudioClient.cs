@@ -22,24 +22,23 @@ public class LmStudioClient : IDisposable
     public async Task<string> SendAsync(string text)
     {
         /*
-         * curl http://0.0.0.0:1234/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "deepseek-r1-distill-qwen-7b",
-    "messages": [
-      { "role": "system", "content": "Always answer in rhymes." },
-      { "role": "user", "content": "Introduce yourself." }
-    ],
-    "temperature": 0.7,
-    "max_tokens": -1,
-    "stream": true
-  }'
-
+          curl http://0.0.0.0:1234/v1/chat/completions \
+          -H "Content-Type: application/json" \
+          -d '{
+            "model": "deepseek-r1-distill-qwen-7b",
+            "messages": [
+              { "role": "system", "content": "Always answer in rhymes." },
+              { "role": "user", "content": "Introduce yourself." }
+            ],
+            "temperature": 0.7,
+            "max_tokens": -1,
+            "stream": true
+          }'
          */
 
         var chatCompletionRequest = new ChatCompletionRequest(false, new[]
         {
-            new Message("user", $"{_prompt}:\n\"{text}\""),
+            new Message("user", $"{_prompt}:\n\n{text}"),
             new Message("system", "You are a helpful assistant.")
         }, 0.7);
 
