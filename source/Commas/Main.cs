@@ -4,7 +4,7 @@ using Nikse.SubtitleEdit.PluginLogic;
 
 namespace Commas;
 
-public partial class Main : Form
+internal partial class Main : Form
 {
     private readonly Subtitle _subtitle;
     private volatile bool _isProcessing;

@@ -5,7 +5,7 @@ using Nikse.SubtitleEdit.Core.Common;
 
 namespace Nikse.SubtitleEdit.PluginLogic;
 
-public class LmStudioClient : IDisposable
+internal class LmStudioClient : IDisposable
 {
     private readonly string _prompt;
     private readonly HttpClient _httpClient;
@@ -56,7 +56,7 @@ public class LmStudioClient : IDisposable
 
     public void Dispose() => _httpClient.Dispose();
 
-    public class ChatCompletionRequest(bool stream, Message[] messages, double temperature)
+    internal class ChatCompletionRequest(bool stream, Message[] messages, double temperature)
     {
         [JsonProperty("stream")]
         public bool Stream { get; } = stream;
@@ -68,7 +68,7 @@ public class LmStudioClient : IDisposable
         public double Temperature { get; } = temperature;
     }
 
-    public class Message(string role, string content)
+    internal class Message(string role, string content)
     {
         [JsonProperty("role")]
         public string Role { get; } = role;
@@ -77,7 +77,7 @@ public class LmStudioClient : IDisposable
         public string Content { get; } = content;
     }
 
-    public class ChatResponse
+    internal class ChatResponse
     {
         [JsonProperty("model")]
         public string Model { get; set; }
@@ -86,7 +86,7 @@ public class LmStudioClient : IDisposable
         public Choices[] Choices { get; set; }
     }
 
-    public class Choices
+    internal class Choices
     {
         [JsonProperty("index")]
         public int Index { get; set; }
