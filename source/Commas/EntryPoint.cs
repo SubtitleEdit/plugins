@@ -20,6 +20,8 @@ public class Commas : IPlugin
 
     public Commas()
     {
+        // note: no need to try to get the resolve via current appdomain's loaded assemblies
+        // Application Base Directory will work just fine which is one of the steps performed when .net Runtime Locates Assemblies 
         // AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
         // {
         //     _ = AppDomain.CurrentDomain.GetAssemblies();
