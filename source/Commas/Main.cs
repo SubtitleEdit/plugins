@@ -62,9 +62,8 @@ public partial class Main : Form
             {
                 listView1.Refresh();
                 previousPercentage = percentage;
+                progressBar1.Value = percentage;
             }
-
-            progressBar1.Value = item.index;
         });
 
         try
