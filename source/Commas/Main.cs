@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Nikse.SubtitleEdit.Core.Common;
+using Nikse.SubtitleEdit.Core.Translate;
 using Nikse.SubtitleEdit.PluginLogic;
 using Nikse.SubtitleEdit.PluginLogic.Helpers;
 
@@ -113,19 +114,39 @@ internal partial class Main : Form
 
                     // try sending each line individually to avoid messing up with the line that
                     // doesn't require fixing which tends to happen when using less capable models
+
+                    var formatting = new Formatting();
+                    
+                    // todo:
+                    //  - skip hi text e.g.: (Footsteps approaching)
+                    //  - for narrator text like: "narrator: hello world", only process "hello world"
                     for (var i = 0; i < lines.Count; i++)
                     {
                         string line = lines[i];
 
                         // remove formatting before sending as some models also remove formattings unintentionally
-                        var st = new StrippableText(line);
-                        st.StrippedText = await lmStudioClient.SendAsync(st.StrippedText).ConfigureAwait(false);
-                        lines[i] = st.MergedString;
+                        // var st = new StrippableText(line);
+                        // st.StrippedText = await lmStudioClient.SendAsync(st.StrippedText).ConfigureAwait(false);
+                        // lines[i] = st.MergedString;
+
+                        line = formatting.SetTagsAndReturnTrimmed(line, "en");
+                        line = await lmStudioClient.SendAsync(line).ConfigureAwait(false);
+                        line = formatting.ReAddFormatting(line);
+                        if (line.StartsWith("- ", StringComparison.Ordinal) && !lines[i].Contains('-'))
+                        {
+                            line = line.TrimStart('-').Trim();
+                        }
+
+                        lines[i] = line;
                     }
 
                     string result = string.Join(Environment.NewLine, lines);
+                    result = Utilities.AutoBreakLine(result);
 
-                    if (!result.Equals(paragraph.Text, StringComparison.Ordinal))
+                    var beforeFixCommaCount = Utilities.CountTagInText(paragraph.Text, ',');
+                    var afterFixCommaCount = Utilities.CountTagInText(result, ',');
+                    
+                    if (beforeFixCommaCount != afterFixCommaCount)
                     {
                         progress.Report((new ListViewItem(new[] { paragraph.Text, result })
                         {
