@@ -16,6 +16,8 @@ public partial class Main : Form
 
         buttonOkay.DialogResult = DialogResult.OK;
 
+        progressBar1.Visible = false;
+
         Closing += (sender, args) => { _ = CancelAndDisposeResources(); };
     }
 
@@ -38,8 +40,11 @@ public partial class Main : Form
     {
         if (CancelAndDisposeResources())
         {
+            progressBar1.Visible = false;
             return;
         }
+
+        progressBar1.Visible = true;
 
         using var lmStudioClient = new LmStudioClient(textBoxEndPoint.Text, textBoxPrompt.Text);
 
@@ -58,6 +63,8 @@ public partial class Main : Form
                 listView1.Refresh();
                 previousPercentage = percentage;
             }
+
+            progressBar1.Value = item.index;
         });
 
         try
