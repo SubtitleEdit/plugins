@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.PluginLogic;
+using Nikse.SubtitleEdit.PluginLogic.Helpers;
 
 namespace Commas;
 
@@ -19,6 +20,22 @@ internal partial class Main : Form
         progressBar1.Visible = false;
 
         Closing += (sender, args) => { _ = CancelAndDisposeResources(); };
+        buttonOkay.Click += ButtonOkayOnClick;
+    }
+
+    private void ButtonOkayOnClick(object sender, EventArgs e)
+    {
+        if (_isProcessing)
+        {
+            return;
+        }
+
+        const int afterIndex = 1;
+        foreach (ListViewItem listView1Item in listView1.Items)
+        {
+            var paragraph = (Paragraph)listView1Item.Tag;
+            paragraph.Text = listView1Item.SubItems[afterIndex].Text.ToDomainText();
+        }
     }
 
     private bool CancelAndDisposeResources()
@@ -83,7 +100,10 @@ internal partial class Main : Form
 
                     if (!output.Equals(paragraph.Text, StringComparison.Ordinal))
                     {
-                        progress.Report((new ListViewItem(new[] { paragraph.Text, output }), index));
+                        progress.Report((new ListViewItem(new[] { paragraph.Text, output })
+                        {
+                            Tag = paragraph,
+                        }, index));
                     }
                 }
             }, _cancellationTokenSource.Token).ConfigureAwait(false);

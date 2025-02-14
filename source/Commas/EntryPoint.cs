@@ -41,6 +41,7 @@ public class Commas : IPlugin
 
         if (mainForm.ShowDialog() == DialogResult.OK)
         {
+            return subtitle.ToText(new SubRip());
         }
 
         return "";
