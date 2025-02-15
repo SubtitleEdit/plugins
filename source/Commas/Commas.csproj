@@ -14,9 +14,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="libse" IncludeAssets="compile"/>
-
         <!-- https://learn.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#controlling-dependency-assets-->
+        <!-- Note: these nuget package are already part of the main app (Subtititle Edit) so we are only using them here to allow the plugin to compaile-->
+        <!-- https://learn.microsoft.com/en-us/dotnet/framework/deployment/how-the-runtime-locates-assemblies#locating-the-assembly-through-probing (runtime will find these assembly in Application base)-->
+        <PackageReference Include="libse" IncludeAssets="compile"/>
         <PackageReference Include="Newtonsoft.Json" IncludeAssets="compile"/>
     </ItemGroup>
 
