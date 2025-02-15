@@ -148,7 +148,7 @@ internal partial class Main : Form
                     
                     if (beforeFixCommaCount != afterFixCommaCount)
                     {
-                        progress.Report((new ListViewItem(new[] { paragraph.Text, result })
+                        progress.Report((new ListViewItem(new[] { paragraph.Text.ToListViewText(), result.ToListViewText() })
                         {
                             Tag = paragraph,
                         }, index));
