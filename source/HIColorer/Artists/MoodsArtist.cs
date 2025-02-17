@@ -1,4 +1,6 @@
-﻿namespace Nikse.SubtitleEdit.PluginLogic
+﻿using Nikse.SubtitleEdit.Core.Common;
+
+namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class MoodsArtist : Artist
     {

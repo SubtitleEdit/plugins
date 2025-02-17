@@ -1,4 +1,5 @@
 using System;
+using Nikse.SubtitleEdit.Core.Common;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {

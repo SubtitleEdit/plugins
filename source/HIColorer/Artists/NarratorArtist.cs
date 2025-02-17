@@ -4,17 +4,18 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Nikse.SubtitleEdit.Core.Common;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class NarratorArtist : Artist
     {
-        private static readonly Regex _regexColonNonWord = new Regex(":\\B", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+        private static readonly Regex RegexColonNonWord = new(":\\B", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
         /// <summary>
         /// This regex pattern is written to not capture characters inside html tags
         /// </summary>
-        private static readonly Regex _regexFirtCharNotTag = new Regex("(?<!<)\\w", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+        private static readonly Regex RegexFirtCharNotTag = new("(?<!<)\\w", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
         /// <summary>
         /// Narrator ignore words
@@ -35,10 +36,11 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 var p = paragraphs[i];
                 string text = p.Text;
-                if (_regexColonNonWord.IsMatch(text))
+                if (RegexColonNonWord.IsMatch(text))
                 {
                     text = ProcessText(text);
                 }
+
                 if (text.Length != p.Text.Length)
                 {
                     p.Text = text;
@@ -49,13 +51,13 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private string ProcessText(string text)
         {
             char[] trimChars = { '"', '\\' };
-            string[] lines = text.SplitToLines();
-            for (int i = 0; i < lines.Length; i++)
+            var lines = text.SplitToLines();
+            for (int i = 0; i < lines.Count; i++)
             {
                 string line = lines[i];
 
                 //TODO: if text contains 2 hearing text
-                string lineNoTags = HtmlUtils.RemoveTags(line, true).TrimEnd(trimChars).TrimEnd();
+                string lineNoTags = HtmlUtil.RemoveHtmlTags(line, true).TrimEnd(trimChars).TrimEnd();
 
                 if (!ShouldApplyColor(lineNoTags, isFirstLine: i == 0))
                 {
@@ -68,7 +70,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
                 string preText = line.Substring(0, colonIdx);
 
-                string firstChr = _regexFirtCharNotTag.Match(preText).Value;
+                string firstChr = RegexFirtCharNotTag.Match(preText).Value;
                 if (string.IsNullOrEmpty(firstChr))
                 {
                     continue;
@@ -87,8 +89,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 line = line.Insert(0, preText);
 
                 lines[i] = line;
-
             }
+
             // re-construct text
             return string.Join(Environment.NewLine, lines);
         }
@@ -105,7 +107,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             // (foobar) foobar: hello world!
             string pre = textNoTags.Substring(0, colonIdx).TrimStart();
-            if (pre.ContainsAny(new[] { ')', ']' }))
+            if (pre.Contains(new[] { ')', ']' }))
             {
                 return false;
             }

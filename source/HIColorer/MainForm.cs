@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using Nikse.SubtitleEdit.Core.Common;
+using Nikse.SubtitleEdit.Core.SubtitleFormats;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
-    public partial class MainForm : Form, IConfigurable
+    public partial class MainForm : Form //, IConfigurable
     {
         public string Subtitle { get; private set; }
 
@@ -18,28 +20,23 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             InitializeComponent();
 
-            FormClosed += (s, e) =>
-            {
-                SaveConfigurations();
-            };
+            // save configure
+            FormClosed += (s, e) => _configs.Save();
 
             // donate handler
-            pictureBoxDonate.Click += (s, e) =>
-            {
-                System.Diagnostics.Process.Start(StringUtils.DonateUrl);
-            };
+            pictureBoxDonate.Click += (s, e) => { System.Diagnostics.Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9EFVREKVKC2VJ&source=url"); };
 
             _subtitle = sub;
-            LoadConfigurations();
+            _configs = ColorConfig.LoadOrCreateConfigurations();
             UpdateUIOnColorChange();
         }
 
         private void UpdateUIOnColorChange()
         {
-            labelNarratorsColor.Text = HtmlUtils.ColorToHtml(Color.FromArgb(_configs.Narrator));
-            labelMoodsColor.Text = HtmlUtils.ColorToHtml(Color.FromArgb(_configs.Moods));
-            labelMusicColor.Text = HtmlUtils.ColorToHtml(Color.FromArgb(_configs.Music));
-            
+            labelNarratorsColor.Text = Utilities.ColorToHex(Color.FromArgb(_configs.Narrator));
+            labelMoodsColor.Text = Utilities.ColorToHex(Color.FromArgb(_configs.Moods));
+            labelMusicColor.Text = Utilities.ColorToHex(Color.FromArgb(_configs.Music));
+
             labelNarratorsColor.BackColor = Color.FromArgb(_configs.Narrator);
             labelMoodsColor.BackColor = Color.FromArgb(_configs.Moods);
             labelMusicColor.BackColor = Color.FromArgb(_configs.Music);
@@ -79,17 +76,15 @@ namespace Nikse.SubtitleEdit.PluginLogic
             foreach (Paragraph p in _subtitle.Paragraphs)
             {
                 var text = p.Text;
-                if (!text.ContainsColor())
+                if (!text.HasColor())
                 {
                     continue;
                 }
-                text = HtmlUtils.RemoveOpenCloseTags(text, HtmlUtils.TagFont);
-                if (text.ContainsColor() == false)
-                {
-                    p.Text = text;
-                }
+
+                p.Text = HtmlUtil.RemoveOpenCloseTags(text, HtmlUtil.TagFont);
             }
-            Subtitle = _subtitle.ToText();
+
+            Subtitle = _subtitle.ToText(new SubRip());
             DialogResult = DialogResult.OK;
         }
 
@@ -105,7 +100,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
             // (warning: this may cause some problems if subtitle already contain 'font face' attribute)
             foreach (var p in _subtitle.Paragraphs)
             {
-                p.Text = HtmlUtils.RemoveOpenCloseTags(p.Text, HtmlUtils.TagFont);
+                p.Text = HtmlUtil.RemoveOpenCloseTags(p.Text, HtmlUtil.TagFont);
             }
 
             foreach (Artist artist in GetArtists())
@@ -113,7 +108,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 artist.Paint(_subtitle);
             }
 
-            Subtitle = _subtitle.ToText();
+            Subtitle = _subtitle.ToText(new SubRip());
             DialogResult = DialogResult.OK;
         }
 
@@ -161,10 +156,12 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 yield return new MoodsArtist(GetPaletteFromArgb(_configs.Moods));
             }
+
             if (checkBoxEnabledNarrator.Checked)
             {
                 yield return new NarratorArtist(GetPaletteFromArgb(_configs.Narrator));
             }
+
             if (checkBoxEnabledNarrator.Checked)
             {
                 yield return new MusicArtist(GetPaletteFromArgb(_configs.Music));
@@ -178,30 +175,5 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 Color = Color.FromArgb(argbCode)
             };
         }
-
-        public void LoadConfigurations()
-        {
-            // TODO: Get rid of this in up next version
-            try
-            {
-                File.Delete("hicolor.xml");
-            }
-            catch
-            {
-            }
-
-            var configFile = Path.Combine(FileUtils.Plugins, "hicolor-config.xml");
-            if (File.Exists(configFile))
-            {
-                _configs = Configuration<ColorConfig>.LoadConfiguration(configFile);
-            }
-            else
-            {
-                _configs = new ColorConfig(configFile);
-                _configs.SaveConfigurations();
-            }
-        }
-
-        public void SaveConfigurations() => _configs.SaveConfigurations();
     }
 }
