@@ -9,6 +9,7 @@ using Nikse.SubtitleEdit.PluginLogic.Converters;
 using Nikse.SubtitleEdit.PluginLogic.Converters.Strategies;
 using Nikse.SubtitleEdit.PluginLogic.Extensions;
 using Nikse.SubtitleEdit.PluginLogic.Models;
+using Nikse.SubtitleEdit.PluginLogic.Services;
 
 namespace Nikse.SubtitleEdit.PluginLogic;
 
@@ -55,7 +56,7 @@ internal partial class PluginForm : Form, IConfigurable
         uncheckAllToolStripMenuItem.Click += (_, _) => listViewFixes.UncheckAll();
         invertCheckToolStripMenuItem.Click += (_, _) => listViewFixes.InvertCheck();
 
-        linkLabel1.DoubleClick += LinkLabel1_DoubleClick;
+        linkLabel1.Click += LaunchReportWindow;
 
         // force layout
         // ReSharper disable once VirtualMemberCallInConstructor
@@ -71,9 +72,29 @@ internal partial class PluginForm : Form, IConfigurable
         pictureBoxDonate.Click += (_, _) => { Process.Start(StringUtils.DonateUrl); };
     }
 
-    private void LinkLabel1_DoubleClick(object sender, EventArgs e)
+    private readonly ReportService _reportService = new();
+
+    private async void LaunchReportWindow(object sender, EventArgs e)
     {
-        Process.Start("https://github.com/SubtitleEdit/plugins/issues/new");
+        using (var reportForm = new ReportForm(_reportService))
+        {
+            if (reportForm.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    var report = new Report(reportForm.ReportMessage, _subtitle.ToText());
+                    if (await _reportService.ReportAsync(report).ConfigureAwait(false))
+                    {
+                        MessageBox.Show("Thank you for your report!");
+                    }
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(exception.Message);
+                }
+            }
+        }
+        // Process.Start("https://github.com/SubtitleEdit/plugins/issues/new");
     }
 
     private void UpdateUiFromConfigs(HiConfigs configs)
@@ -123,7 +144,7 @@ internal partial class PluginForm : Form, IConfigurable
         listViewFixes.BeginUpdate();
         foreach (var listViewItem in listViewFixes.Items.CheckItems())
         {
-            var record = (Record) listViewItem.Tag;
+            var record = (Record)listViewItem.Tag;
             record.Paragraph.Text = record.After;
         }
 
@@ -208,7 +229,7 @@ internal partial class PluginForm : Form, IConfigurable
         return commands;
     }
 
-    private IConverterStrategy GetStrategy() => (IConverterStrategy) comboBoxStyle.SelectedItem;
+    private IConverterStrategy GetStrategy() => (IConverterStrategy)comboBoxStyle.SelectedItem;
 
     public void LoadConfigurations()
     {
@@ -232,7 +253,7 @@ internal partial class PluginForm : Form, IConfigurable
 
     private void copyToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        var text = ((Paragraph) listViewFixes.FocusedItem.Tag).ToString();
+        var text = ((Paragraph)listViewFixes.FocusedItem.Tag).ToString();
         Clipboard.SetText(text, TextDataFormat.UnicodeText);
     }
 
@@ -249,6 +270,7 @@ internal partial class PluginForm : Form, IConfigurable
 
             listViewFixes.Items.RemoveAt(index);
         }
+
         listViewFixes.EndUpdate();
 
         _subtitle.Renumber();

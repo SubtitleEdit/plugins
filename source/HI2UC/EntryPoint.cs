@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using Nikse.SubtitleEdit.PluginLogic.Services;
 
 namespace Nikse.SubtitleEdit.PluginLogic;
 
@@ -57,6 +58,15 @@ public class HI2UC : IPlugin
 
         // Load raws subtitle lines into Subtitle object
         srt.LoadSubtitle(sub, list, file);
+
+        // analytics
+
+        var analyticsService = new AnalyticsService();
+        _ = analyticsService.SendAsync(new Data()
+        {
+            OsVersion = Environment.OSVersion.ToString(),
+            LastActive = DateTimeOffset.Now
+        }).ConfigureAwait(false);
 
         IPlugin hi2Uc = this;
         using (var form = new PluginForm(sub, hi2Uc.Name, hi2Uc.Description))
