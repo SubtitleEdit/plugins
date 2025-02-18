@@ -1,20 +1,20 @@
-﻿namespace Nikse.SubtitleEdit.PluginLogic.Utils
+﻿namespace Nikse.SubtitleEdit.PluginLogic.Utils;
+
+using System;
+using System.Linq;
+using System.Reflection;
+
+public static class AssemblyUtils
 {
-    using System;
-    using System.Linq;
-    using System.Reflection;
+    private static Assembly _libseCached;
 
-    public static class AssemblyUtils
+    public static Assembly GetLibse()
     {
-        private static Assembly _libseCached;
-
-        public static Assembly GetLibse()
+        if (_libseCached == null)
         {
-            if (_libseCached == null)
-            {
-                _libseCached = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(asm => asm.GetName().Name.Equals("libse"));
-            }
-            return _libseCached;
+            _libseCached = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(asm => asm.GetName().Name.Equals("libse"));
         }
+
+        return _libseCached;
     }
 }

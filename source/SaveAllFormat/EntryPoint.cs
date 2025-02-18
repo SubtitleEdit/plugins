@@ -9,7 +9,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
     {
         public string Name { get; } = "Export all formats";
         public string Text { get; } = "Export all formats";
-        public decimal Version { get; } = 2.0m;
+        public decimal Version { get; } = 3.0m;
         public string Description { get; } = "Export current subtitle to all available text format.";
         public string ActionType { get; } = "file";
         public string Shortcut { get; } = string.Empty;

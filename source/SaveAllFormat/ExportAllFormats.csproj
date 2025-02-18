@@ -1,19 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-    <AssemblyVersion>2.0.0</AssemblyVersion>
-    <FileVersion>2.0.0</FileVersion>
-  </PropertyGroup>
-  <PropertyGroup />
-  <PropertyGroup>
-<!--    <PostBuildEvent>copy $(TargetDir)\exportallformats.dll "%25appdata%25\Subtitle Edit\Plugins\"-->
-<!--copy $(TargetDir)\exportallformats.pdb "%25appdata%25\Subtitle Edit\Plugins\"</PostBuildEvent>-->
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="libse" />
-  </ItemGroup>
-<!--  <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared" />-->
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <UseWindowsForms>true</UseWindowsForms>
+        <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+        <AssemblyVersion>3.0.0</AssemblyVersion>
+        <FileVersion>3.0.0</FileVersion>
+    </PropertyGroup>
+    <PropertyGroup/>
+    <PropertyGroup>
+        <!--    <PostBuildEvent>copy $(TargetDir)\exportallformats.dll "%25appdata%25\Subtitle Edit\Plugins\"-->
+        <!--copy $(TargetDir)\exportallformats.pdb "%25appdata%25\Subtitle Edit\Plugins\"</PostBuildEvent>-->
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="libse" IncludeAssets="compile"/>
+    </ItemGroup>
+    <!--  <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared" />-->
 </Project>
