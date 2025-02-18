@@ -81,8 +81,8 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     try
                     {
-                        var outputFileName = Path.Combine(_exportLocation, GetExportFileName(_subtitle.FileName, exportFormat.Name, exportFormat.Extension));
-                        var content = exportFormat.ToText(_subtitle, _subtitle.FileName);
+                        string outputFileName = Path.Combine(_exportLocation, GetExportFileName(_subtitle.FileName, exportFormat.Name, exportFormat.Extension));
+                        string content = exportFormat.ToText(_subtitle, _subtitle.FileName);
                         File.WriteAllText(outputFileName, content, Encoding.UTF8);
                     }
                     catch (Exception ex)
@@ -90,7 +90,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                         Trace.WriteLine(ex.Message);
                     }
                 });
-                SpinWait.SpinUntil(() => parallelLoopResult.IsCompleted);
+                // SpinWait.SpinUntil(() => parallelLoopResult.IsCompleted);
             }).ConfigureAwait(true);
 
             Process.Start("explorer", $"\"{_exportLocation}\"");
@@ -99,21 +99,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private static string GetExportFileName(string file, string formatName, string extension)
         {
-            if (string.IsNullOrWhiteSpace(file))
-            {
-                return Path.GetRandomFileName() + extension;
-            }
+            string newName = string.IsNullOrWhiteSpace(file)
+                ? Path.GetFileNameWithoutExtension(Path.GetRandomFileName()) + "_" + formatName + extension
+                : $"{Path.GetFileNameWithoutExtension(file)}_{formatName}{extension}";
 
-            string fileName = Path.GetFileNameWithoutExtension(file);
-            string newName = $"{fileName}_{formatName}{extension}";
-            foreach (var ch in Path.GetInvalidFileNameChars().Concat(Path.GetInvalidPathChars()))
+            foreach (char ch in Path.GetInvalidFileNameChars().Concat(Path.GetInvalidPathChars()))
             {
                 newName = newName.Replace(ch.ToString(), "_");
             }
 
-            newName = newName.Replace(" ", "-");
-            newName = newName.Replace(" ", "-");
-            return newName;
+            return newName.Replace(" ", "-");
         }
     }
 }
