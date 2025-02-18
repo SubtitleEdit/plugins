@@ -6,7 +6,8 @@
         <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json"/>
+        <PackageReference Include="libse" IncludeAssets="compile"/>
+        <PackageReference Include="Newtonsoft.Json" IncludeAssets="compile"/>
         <PackageReference Include="TMDbLib"/>
     </ItemGroup>
     <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared"/>
