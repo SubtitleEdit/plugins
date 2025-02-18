@@ -108,7 +108,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 newName = newName.Replace(ch.ToString(), "_");
             }
 
-            return newName.Replace(" ", "-");
+            return newName.Replace(" ", "_");
         }
     }
 }
