@@ -223,8 +223,8 @@
     <Plugin>
         <Name>Export to all formats</Name>
         <Description>Export current subtitle to all available text format.</Description>
-        <Version>1.2</Version>
-        <Date>2022-04-17</Date>
+        <Version>3.0</Version>
+        <Date>2025-02-18</Date>
         <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/ExportAllFormats.zip</Url>
         <Author>ivandrofly</Author>
     </Plugin>
