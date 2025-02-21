@@ -19,21 +19,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             public string ConvertedText { get; set; }
             public string EditedText { get; set; }
 
-            public string Before
-            {
-                get
-                {
-                    return Paragraph.Text.Trim().Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString);
-                }
-            }
+            public string Before => Paragraph.Text.Trim().Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString);
 
-            public string After
-            {
-                get
-                {
-                    return (EditedText ?? ConvertedText).Trim().Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString);
-                }
-            }
+            public string After => (EditedText ?? ConvertedText).Trim().Replace(Environment.NewLine, Configuration.ListViewLineSeparatorString);
         }
 
         internal string FixedSubtitle { get; private set; }
