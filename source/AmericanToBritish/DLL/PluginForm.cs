@@ -194,7 +194,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         private void linkLabelWordList_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("https://github.com/SubtitleEdit/plugins/blob/master/AmericanToBritish/DLL/WordList.xml");
+            Process.Start("https://raw.githubusercontent.com/SubtitleEdit/plugins/refs/heads/main/source/AmericanToBritish/DLL/WordList.xml");
             listViewFixes.Select();
         }
 
