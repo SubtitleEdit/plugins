@@ -62,12 +62,18 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
                 var line = _currentLine.Trim();
 
                 if (!TryParseLine(subtitle, line))
+                {
                     _errorCount++;
+                }
             }
             if (_expecting == LineType.Text)
+            {
                 subtitle.Paragraphs.Add(_paragraph);
+            }
             else if (_expecting != LineType.Number)
+            {
                 _errorCount++;
+            }
 
             subtitle.FileName = fileName;
         }
@@ -182,7 +188,10 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
         private void AddCurrentLineToParagraphText()
         {
             if (_paragraph.Text.Length > 0)
+            {
                 _paragraph.Text += Environment.NewLine;
+            }
+
             _paragraph.Text += _currentLine;
         }
 

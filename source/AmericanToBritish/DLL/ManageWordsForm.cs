@@ -43,7 +43,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 if (list.Count > 0 || !_isOk)
                 {
                     if (list.Count == 1)
+                    {
                         list.First.Value.BackColor = HighlightColor;
+                    }
+
                     BackColor = HighlightColor;
                 }
                 _pairNode = list.AddLast(this);
@@ -80,9 +83,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 var list = _pairNode.List;
                 list.Remove(_pairNode);
                 if (list.Count == 0)
+                {
                     PairsByUs.Remove(_usWord);
+                }
                 else if (list.Count == 1 && list.First.Value._isOk)
+                {
                     list.First.Value.BackColor = _defaultColor;
+                }
+
                 _node.Remove();
                 base.Remove();
             }
@@ -96,7 +104,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     cmp = string.Compare(wp1.Text, wp2.Text, StringComparison.InvariantCultureIgnoreCase);
                     if (cmp == 0)
+                    {
                         cmp = wp1._sortIndex.CompareTo(wp2._sortIndex);
+                    }
                 }
                 return cmp;
             }
@@ -153,7 +163,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void buttonOK_Click(object sender, EventArgs e)
         {
             if (_path != null && _xdoc != null)
+            {
                 _xdoc.Save(_path);
+            }
+
             DialogResult = DialogResult.OK;
         }
 
@@ -216,7 +229,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
         {
             if (_path == null)
+            {
                 e.Cancel = true;
+            }
         }
 
         private void ManageWordsForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -251,9 +266,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     var caret = tb.SelectionStart;
                     if (caret > 0)
+                    {
                         tb.Select(0, caret);
+                    }
                     else
+                    {
                         tb.SelectAll();
+                    }
+
                     tb.Copy();
                     tb.Select(caret, 0);
                     e.SuppressKeyPress = true;
@@ -266,9 +286,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 {
                     var caret = tb.SelectionStart;
                     if (caret > 0)
+                    {
                         tb.Select(0, caret);
+                    }
                     else
+                    {
                         tb.SelectAll();
+                    }
+
                     tb.Cut();
                     tb.Select(0, 0);
                     e.SuppressKeyPress = true;
@@ -282,7 +307,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 toolStripMenuItemRemoveSelected_Click(null, null);
                 if (!string.IsNullOrWhiteSpace(textBoxAmerican.Text))
+                {
                     textBoxBritish.Select();
+                }
+
                 e.SuppressKeyPress = true;
             }
             else if (e.KeyData == Keys.Right)
@@ -309,7 +337,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 do
                 {
                     if ((index = (index + direction + items.Count) % items.Count) == start)
+                    {
                         return;
+                    }
+
                     item = items[index] as WordPair;
                 }
                 while (item.IsHighlighted);
@@ -320,7 +351,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
                 while (!(item = items[index] as WordPair).IsHighlighted)
                 {
                     if ((index = (index + direction + items.Count) % items.Count) == start)
+                    {
                         return;
+                    }
                 }
                 listView1.SelectedItems.Clear();
                 item.EnsureVisible();

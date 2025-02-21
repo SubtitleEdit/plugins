@@ -66,7 +66,9 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
         public static string RemoveHtmlTags(string s, bool alsoSsa)
         {
             if (string.IsNullOrEmpty(s))
+            {
                 return null;
+            }
 
             int idx;
             if (alsoSsa)
@@ -77,13 +79,19 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
                 {
                     var endIdx = s.IndexOf('}', idx + 2);
                     if (endIdx < idx)
+                    {
                         break;
+                    }
+
                     s = s.Remove(idx, endIdx - idx + 1);
                     idx = s.IndexOf(SSATAg, idx, StringComparison.Ordinal);
                 }
             }
             if (!s.Contains("<"))
+            {
                 return s;
+            }
+
             s = Regex.Replace(s, "</?[ibu]>", string.Empty, RegexOptions.IgnoreCase);
 
             s = Regex.Replace(s, "</?font>", string.Empty, RegexOptions.IgnoreCase);
@@ -92,7 +100,10 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             {
                 var endIdx = s.IndexOf('>', idx + 5);
                 if (endIdx < idx)
+                {
                     break;
+                }
+
                 s = s.Remove(idx, endIdx - idx + 1);
                 idx = s.IndexOf("<font", idx, StringComparison.OrdinalIgnoreCase);
             }
@@ -102,7 +113,10 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
         public static int GetNumberOfLines(string text)
         {
             if (text == null)
+            {
                 return 0;
+            }
+
             var lines = 1;
             var idx = text.IndexOf('\n');
             while (idx >= 0)
@@ -124,7 +138,9 @@ namespace Nikse.SubtitleEdit.PluginLogic.Logic
             // the caller of the method, not the location of the loaded assembly.
             var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase); // Note: Subtitle edit loads assembly from raw bytes
             if (path.StartsWith("file:\\", StringComparison.Ordinal))
+            {
                 path = path.Remove(0, 6);
+            }
 
             path = Path.Combine(path, "Plugins"); // try to find portable SE Plugins folder
             if (!Directory.Exists(path))

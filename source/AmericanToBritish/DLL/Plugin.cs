@@ -44,7 +44,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
 
             if (!string.IsNullOrEmpty(listViewLineSeparatorString))
+            {
                 Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
+            }
 
             var srt = new SubRip();
             var sub = new Subtitle(srt);
@@ -59,7 +61,9 @@ namespace Nikse.SubtitleEdit.PluginLogic
             using (var form = new PluginForm(sub, (this as IPlugin).Name, (this as IPlugin).Description))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
+                {
                     return form.FixedSubtitle;
+                }
             }
             return string.Empty;
         }

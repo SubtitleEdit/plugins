@@ -23,7 +23,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         public string Convert(string text)
         {
             if (string.IsNullOrWhiteSpace(text))
+            {
                 return text;
+            }
+
             for (int index = 0; index < _regexList.Count; index++)
             {
                 var regex = _regexList[index];
@@ -119,7 +122,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
             {
                 var tagEndIndex = s.IndexOf('>', tagIndex + 5);
                 if (tagEndIndex < 0)
+                {
                     break;
+                }
+
                 var tag = s.Substring(tagIndex, tagEndIndex - tagIndex);
                 var colourIndex = tag.IndexOf("colour", StringComparison.OrdinalIgnoreCase);
                 while (colourIndex >= 0)

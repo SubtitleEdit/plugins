@@ -247,7 +247,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     do
                     {
                         if (++index >= listViewFixes.Items.Count)
+                        {
                             index = 0;
+                        }
+
                         if ((listViewFixes.Items[index].Tag as Conversion).EditedText != null)
                         {
                             e.SuppressKeyPress = true;
@@ -270,7 +273,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     do
                     {
                         if (--index < 0)
+                        {
                             index = listViewFixes.Items.Count - 1;
+                        }
+
                         if ((listViewFixes.Items[index].Tag as Conversion).EditedText != null)
                         {
                             e.SuppressKeyPress = true;
@@ -314,7 +320,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     while (eol < tb.TextLength && tb.Text[eol] != '\n')
                         eol++;
                     if (eol < tb.TextLength)
+                    {
                         eol++;
+                    }
+
                     tb.Select(sol, eol - sol);
                     tb.Copy();
                     tb.Select(sol, 0);
@@ -333,7 +342,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
                     while (eol < tb.TextLength && tb.Text[eol] != '\n')
                         eol++;
                     if (eol < tb.TextLength)
+                    {
                         eol++;
+                    }
+
                     tb.Select(sol, eol - sol);
                     tb.Cut();
                     if (sol >= tb.TextLength)
@@ -349,7 +361,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void toolStripMenuItemManageLocalwords_Click(object sender, EventArgs e)
         {
             if (!File.Exists(_localFileName))
+            {
                 return;
+            }
+
             using (var manageWords = new ManageWordsForm())
             {
                 manageWords.Initialize(_localFileName);
@@ -357,9 +372,14 @@ namespace Nikse.SubtitleEdit.PluginLogic
             }
 
             if (radioButtonLocalList.Checked)
+            {
                 radioButtonLocalList_Click(null, null);
+            }
+
             if (radioButtonBothLists.Checked)
+            {
                 radioButtonBothLists_Click(null, null);
+            }
         }
 
         private void toolStripMenuItemViewBuiltInWords_Click(object sender, EventArgs e)
@@ -407,14 +427,20 @@ namespace Nikse.SubtitleEdit.PluginLogic
         private void toolStripMenuItemSelectAll_Click(object sender, EventArgs e)
         {
             if (!SubtitleLoaded())
+            {
                 return;
+            }
+
             DoSelection(true);
         }
 
         private void toolStripMenuItemInvert_Click(object sender, EventArgs e)
         {
             if (!SubtitleLoaded())
+            {
                 return;
+            }
+
             DoSelection(false);
         }
 
