@@ -132,8 +132,8 @@
     <Plugin>
         <Name>American English to British English</Name>
         <Description>Convert American English to British English</Description>
-        <Version>0.5</Version>
-        <Date>2021-05-04</Date>
+        <Version>0.6</Version>
+        <Date>2025-02-21</Date>
         <Url>https://github.com/SubtitleEdit/plugins/releases/download/v.1.1/AmericanToBritish.zip</Url>
         <Author>Nikse</Author>
     </Plugin>
