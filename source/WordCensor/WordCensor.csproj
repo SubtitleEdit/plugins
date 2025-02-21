@@ -5,5 +5,7 @@
         <UseWindowsForms>true</UseWindowsForms>
         <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     </PropertyGroup>
-    <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared"/>
+    <ItemGroup>
+        <PackageReference Include="libse" IncludeAssets="compile"/>
+    </ItemGroup>
 </Project>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using Nikse.SubtitleEdit.Core.Common;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -104,6 +105,5 @@ wtf";
             string colorString = string.Format("#{0:x2}{1:x2}{2:x2}", c.R, c.G, c.B);
             return $"<font color=\"{colorString}\">{word}</font>";
         }
-
     }
 }

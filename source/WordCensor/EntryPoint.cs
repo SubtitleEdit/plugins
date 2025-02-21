@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
+using Nikse.SubtitleEdit.Core.Common;
+using Nikse.SubtitleEdit.Core.SubtitleFormats;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -17,10 +19,10 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public string Shortcut => string.Empty;
 
-        public string DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
+        public string DoAction(Form parentForm, string content, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
             // Make sure subtitle isn't null or empty
-            if (string.IsNullOrWhiteSpace(subtitle))
+            if (string.IsNullOrWhiteSpace(content))
             {
                 MessageBox.Show("No subtitle loaded", parentForm.Text,
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -29,25 +31,41 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             // Use custom separator for list view new lines
             if (!string.IsNullOrEmpty(listViewLineSeparatorString))
+            {
                 Configuration.ListViewLineSeparatorString = listViewLineSeparatorString;
+            }
 
-            // Get subtitle raw lines
-            var list = new List<string>();
-            list.AddRange(subtitle.SplitToLines());
+            var subRip = new SubRip();
+            var subrip = new Subtitle();
+            subRip.LoadSubtitle(subrip, content.SplitToLines(), subtitleFileName);
+            if (subrip.Paragraphs.Count < 1)
+            {
+                return string.Empty;
+            }
 
-            var srt = new SubRip();
-            var sub = new Subtitle(srt);
-
-            // Load raws subtitle lines into Subtitle object
-            srt.LoadSubtitle(sub, list, subtitleFileName);
-
-            IPlugin wordCensor = this;
-            using (var form = new Main(sub, wordCensor.Name, wordCensor.Description))
+            using (var form = new Main(subrip, Name, Description))
             {
                 if (form.ShowDialog(parentForm) == DialogResult.OK)
+                {
                     return form.FixedSubtitle;
+                }
             }
+
             return string.Empty;
         }
+    }
+
+    /// <summary>
+    /// Represents a plugin interface for subtitle editing functionality.
+    /// </summary>
+    public interface IPlugin
+    {
+        string Name { get; }
+        string Text { get; }
+        decimal Version { get; }
+        string Description { get; }
+        string ActionType { get; }
+        string Shortcut { get; }
+        string DoAction(Form parentForm, string content, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText);
     }
 }

@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Nikse.SubtitleEdit.Core.Common;
+using Nikse.SubtitleEdit.Core.SubtitleFormats;
 
 namespace Nikse.SubtitleEdit.PluginLogic
 {
@@ -28,7 +30,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
         {
             ReloadConfiguration();
             _wordHandler.CleanUpSubtitle(_subtitle);
-            FixedSubtitle = _subtitle.ToText();
+            FixedSubtitle = _subtitle.ToText(new SubRip());
             DialogResult = DialogResult.OK;
         }
 
