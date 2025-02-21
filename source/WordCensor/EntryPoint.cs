@@ -11,7 +11,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public string Text => "Word censor";
 
-        public decimal Version => 1m;
+        public decimal Version => 1.1m;
 
         public string Description => "Censor offensive words";
 
