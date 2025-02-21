@@ -5,35 +5,17 @@ namespace Nikse.SubtitleEdit.PluginLogic
 {
     public class AmericanToBritish : IPlugin
     {
-        string IPlugin.Name
-        {
-            get { return "American to British"; }
-        }
+        string IPlugin.Name => "American to British";
 
-        string IPlugin.Text
-        {
-            get { return "Convert American to British..."; }
-        }
+        string IPlugin.Text => "Convert American to British...";
 
-        decimal IPlugin.Version
-        {
-            get { return 0.5M; }
-        }
+        decimal IPlugin.Version => 0.6M;
 
-        string IPlugin.Description
-        {
-            get { return "Converts American English to British English"; }
-        }
+        string IPlugin.Description => "Converts American English to British English";
 
-        string IPlugin.ActionType
-        {
-            get { return "translate"; }
-        }
+        string IPlugin.ActionType => "translate";
 
-        string IPlugin.Shortcut
-        {
-            get { return string.Empty; }
-        }
+        string IPlugin.Shortcut => string.Empty;
 
         string IPlugin.DoAction(Form parentForm, string subtitle, double frameRate, string listViewLineSeparatorString, string subtitleFileName, string videoFileName, string rawText)
         {
