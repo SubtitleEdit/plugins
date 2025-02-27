@@ -13,11 +13,11 @@ using Nikse.SubtitleEdit.Core.Common;
 
 namespace Nikse.SubtitleEdit.PluginLogic.Helpers
 {
-    public class WebUtils : IDisposable
+    public class DictionaryClient : IDisposable
     {
         private readonly HttpClient _httpClient;
 
-        public WebUtils(HttpClient httpClient)
+        public DictionaryClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
 

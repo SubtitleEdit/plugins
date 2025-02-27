@@ -16,7 +16,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
     public partial class Main : Form
     {
         private const string SettingFile = "DictionariesProvider.json";
-        private WebUtils _webUtils;
+        private DictionaryClient _dictionaryClient;
 
         private List<DictionaryInfo> DictionariesInfo { get; set; }
 
@@ -58,7 +58,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
             {
                 comboBoxDownloadLinks.Text = comboBoxDownloadLinks.SelectedText;
             };
-            _webUtils = new WebUtils(new System.Net.Http.HttpClient());
+            _dictionaryClient = new DictionaryClient(new System.Net.Http.HttpClient());
         }
 
         private void LoadConfigs()
@@ -176,7 +176,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
 
             var downloadUrls = listViewDownloadUrls.SelectedItems.Cast<ListViewItem>().Select(lvi => lvi.Text);
             // parallel asnc download
-            await Task.WhenAll(downloadUrls.Select(url => _webUtils.Download(url)));
+            await Task.WhenAll(downloadUrls.Select(url => _dictionaryClient.Download(url)));
 
             Cursor = Cursors.Default;
             MessageBox.Show("Download completed");
@@ -203,7 +203,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
                             Description = el.Element("Description")?.Value,
                             DownloadLinks = new List<DownloadLink>
                             {
-                                new DownloadLink
+                                new()
                                 {
                                     Url = new Uri(el.Element("DownloadLink").Value),
                                     Status = true
@@ -220,7 +220,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
         {
             buttonUpdateStatus.Enabled = false;
             //await System.Threading.Tasks.Task.Yield();
-            await _webUtils.UpdateStateAsync(DictionariesInfo.SelectMany(di => di.DownloadLinks)); //.ConfigureAwait(true);
+            await _dictionaryClient.UpdateStateAsync(DictionariesInfo.SelectMany(di => di.DownloadLinks)); //.ConfigureAwait(true);
             buttonUpdateStatus.Enabled = true;
         }
     }
