@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Nikse.SubtitleEdit.Core.Common;
 
 namespace Nikse.SubtitleEdit.PluginLogic.Helpers
 {
@@ -111,7 +112,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Helpers
                         continue;
                     }
 
-                    string output = Path.Combine(FileUtils.Dictionaries, entry.FullName);
+                    string output = Path.Combine(Configuration.DictionariesDirectory, entry.FullName);
 
                     try
                     {

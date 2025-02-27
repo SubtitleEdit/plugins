@@ -12,7 +12,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public decimal Version => 1m;
 
-        public string Description => "Download and install dictionaries";
+        public string Description => "Download and install dictionaries (by Ivandrofly)";
 
         public string ActionType => "spellcheck";
 
@@ -20,7 +20,7 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
         public string DoAction(Form parentForm, string srtText, double frameRate, string uiLineBreak, string file, string videoFile, string rawText)
         {
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyUtils.CurrentDomainAssemblyResolve;
+            // AppDomain.CurrentDomain.AssemblyResolve += AssemblyUtils.CurrentDomainAssemblyResolve;
 
             using (var mainForm = new Main())
             {
@@ -31,6 +31,16 @@ namespace Nikse.SubtitleEdit.PluginLogic
 
             return string.Empty;
         }
+    }
 
+    public interface IPlugin
+    {
+        string Name { get; }
+        string Text { get; }
+        decimal Version { get; }
+        string Description { get; }
+        string ActionType { get; }
+        string Shortcut { get; }
+        string DoAction(Form parentForm, string srtText, double frameRate, string uiLineBreak, string file, string videoFile, string rawText);
     }
 }

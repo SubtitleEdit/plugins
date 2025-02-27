@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using Newtonsoft.Json;
+using Nikse.SubtitleEdit.Core.Common;
 
 namespace Nikse.SubtitleEdit.PluginLogic.Forms
 {
@@ -18,7 +19,6 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
         private WebUtils _webUtils;
 
         private List<DictionaryInfo> DictionariesInfo { get; set; }
-
 
         public Main()
         {
@@ -63,7 +63,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
 
         private void LoadConfigs()
         {
-            string file = Path.Combine(FileUtils.Plugins, SettingFile);
+            string file = Path.Combine(Configuration.PluginsDirectory, SettingFile);
             if (File.Exists(file))
             {
                 string content = File.ReadAllText(file);
@@ -75,9 +75,10 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
                 {
                     // maybe the saving configuration changes
                     File.Move(file, Path.GetDirectoryName(file) +
-                        Path.GetFileNameWithoutExtension(file) + ".old" + Path.GetExtension(file));
+                                    Path.GetFileNameWithoutExtension(file) + ".old" + Path.GetExtension(file));
                     DictionariesInfo = new List<DictionaryInfo>();
                 }
+
                 UpdateListView();
             }
             else
@@ -120,7 +121,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
                 NativeName = textBoxNativeName.Text,
                 Description = textBoxDescription.Text,
                 DownloadLinks = comboBoxDownloadLinks.Items.Cast<string>()
-                .Select(dl => new DownloadLink { Url = new Uri(dl) }).ToList()
+                    .Select(dl => new DownloadLink { Url = new Uri(dl) }).ToList()
             });
 
             UpdateListView();
@@ -160,7 +161,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
         private void ButtonOk_Click(object sender, EventArgs e)
         {
             var jsonString = JsonConvert.SerializeObject(DictionariesInfo, Formatting.Indented);
-            string file = Path.Combine(FileUtils.Plugins, SettingFile);
+            string file = Path.Combine(Configuration.PluginsDirectory, SettingFile);
             File.WriteAllText(file, jsonString);
             DialogResult = DialogResult.OK;
         }
@@ -195,23 +196,23 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
                     var elDics = xdoc.Descendants("Dictionary");
 
                     DictionariesInfo = elDics.Select(el =>
-                     new DictionaryInfo
-                     {
-                         NativeName = el.Element("NativeName")?.Value,
-                         EnglishName = el.Element("EnglishName")?.Value,
-                         Description = el.Element("Description")?.Value,
-                         DownloadLinks = new List<DownloadLink>{
-                              new DownloadLink
-                              {
-                                  Url = new Uri(el.Element("DownloadLink").Value),
-                                  Status = true
-                              }
-                         }
-                     }).ToList();
+                        new DictionaryInfo
+                        {
+                            NativeName = el.Element("NativeName")?.Value,
+                            EnglishName = el.Element("EnglishName")?.Value,
+                            Description = el.Element("Description")?.Value,
+                            DownloadLinks = new List<DownloadLink>
+                            {
+                                new DownloadLink
+                                {
+                                    Url = new Uri(el.Element("DownloadLink").Value),
+                                    Status = true
+                                }
+                            }
+                        }).ToList();
 
                     UpdateListView();
                 }
-
             }
         }
 
@@ -219,7 +220,7 @@ namespace Nikse.SubtitleEdit.PluginLogic.Forms
         {
             buttonUpdateStatus.Enabled = false;
             //await System.Threading.Tasks.Task.Yield();
-            await _webUtils.UpdateStateAsync(DictionariesInfo.SelectMany(di => di.DownloadLinks));//.ConfigureAwait(true);
+            await _webUtils.UpdateStateAsync(DictionariesInfo.SelectMany(di => di.DownloadLinks)); //.ConfigureAwait(true);
             buttonUpdateStatus.Enabled = true;
         }
     }

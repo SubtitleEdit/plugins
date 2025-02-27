@@ -10,18 +10,11 @@
         <Reference Include="System.Net.Http"/>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Costura.Fody">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-        <PackageReference Include="Fody">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-        <PackageReference Include="Newtonsoft.Json"/>
+        <PackageReference Include="libse" />
+        <PackageReference Include="Newtonsoft.Json" IncludeAssets="compile"/>
     </ItemGroup>
     <PropertyGroup>
         <!--    <PostBuildEvent Condition="$(SE_Plugin) != ''">xcopy /s /y $(TargetDir)*.* "$(SE_Plugin)"</PostBuildEvent>-->
     </PropertyGroup>
-    <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared"/>
+    <!--    <Import Project="..\Plugin-Shared\Plugin-Shared.projitems" Label="Shared"/>-->
 </Project>
