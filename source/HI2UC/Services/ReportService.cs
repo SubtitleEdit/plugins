@@ -81,17 +81,15 @@ public class Report
     /// <returns>The hash of the given input string as a lowercase hexadecimal string.</returns>
     private string ComputeHash(string fileName)
     {
-        using (var sha256 = SHA256.Create())
-        {
-            // Convert the fileName to a byte array
-            var fileNameBytes = Encoding.UTF8.GetBytes(fileName);
+        using var sha256 = SHA256.Create();
+        // Convert the fileName to a byte array
+        var fileNameBytes = Encoding.UTF8.GetBytes(fileName);
 
-            // Compute the hash
-            var hashBytes = sha256.ComputeHash(fileNameBytes);
+        // Compute the hash
+        var hashBytes = sha256.ComputeHash(fileNameBytes);
 
-            // Convert the hash bytes to a hexadecimal string
-            return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
-        }
+        // Convert the hash bytes to a hexadecimal string
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     /// <summary>

@@ -62,19 +62,13 @@ public class HI2UC : IPlugin
         // analytics
 
         var analyticsService = new AnalyticsService();
-        _ = analyticsService.SendAsync(new Data()
-        {
-            OsVersion = Environment.OSVersion.ToString(),
-            LastActive = DateTimeOffset.Now
-        }).ConfigureAwait(false);
+        _ = analyticsService.SendAsync(new Data()).ConfigureAwait(false);
 
         IPlugin hi2Uc = this;
-        using (var form = new PluginForm(sub, hi2Uc.Name, hi2Uc.Description))
+        using var form = new PluginForm(sub, hi2Uc.Name, hi2Uc.Description);
+        if (form.ShowDialog(parentForm) == DialogResult.OK)
         {
-            if (form.ShowDialog(parentForm) == DialogResult.OK)
-            {
-                return form.Subtitle;
-            }
+            return form.Subtitle;
         }
 
         return string.Empty;

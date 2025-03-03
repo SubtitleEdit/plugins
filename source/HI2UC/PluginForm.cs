@@ -74,27 +74,26 @@ internal partial class PluginForm : Form, IConfigurable
 
     private readonly ReportService _reportService = new();
 
-    private async void LaunchReportWindow(object sender, EventArgs e)
+    private void LaunchReportWindow(object sender, EventArgs e)
     {
-        using (var reportForm = new ReportForm(_reportService))
-        {
-            if (reportForm.ShowDialog() == DialogResult.OK)
-            {
-                try
-                {
-                    var report = new Report(reportForm.ReportMessage, _subtitle.ToText());
-                    if (await _reportService.ReportAsync(report).ConfigureAwait(false))
-                    {
-                        MessageBox.Show("Thank you for your report!");
-                    }
-                }
-                catch (Exception exception)
-                {
-                    MessageBox.Show(exception.Message);
-                }
-            }
-        }
-        // Process.Start("https://github.com/SubtitleEdit/plugins/issues/new");
+        // using var reportForm = new ReportForm(_reportService);
+        // if (reportForm.ShowDialog() == DialogResult.OK)
+        // {
+        //     try
+        //     {
+        //         var report = new Report(reportForm.ReportMessage, _subtitle.ToText());
+        //         if (await _reportService.ReportAsync(report).ConfigureAwait(false))
+        //         {
+        //             MessageBox.Show("Thank you for your report!");
+        //         }
+        //     }
+        //     catch (Exception exception)
+        //     {
+        //         MessageBox.Show(exception.Message);
+        //     }
+        // }
+
+        Process.Start("https://github.com/SubtitleEdit/plugins/issues/new");
     }
 
     private void UpdateUiFromConfigs(HiConfigs configs)

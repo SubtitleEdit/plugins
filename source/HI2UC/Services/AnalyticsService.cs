@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Net.Http;
+using System.Net.NetworkInformation;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,15 +17,10 @@ namespace Nikse.SubtitleEdit.PluginLogic.Services;
 /// </remarks>
 public class AnalyticsService : IDisposable
 {
-    private readonly HttpClient _httpClient;
-
-    public AnalyticsService()
+    private readonly HttpClient _httpClient = new()
     {
-        _httpClient = new HttpClient()
-        {
-            BaseAddress = new Uri("https://subtitleedit.ivandrofly.com/api/analytics")
-        };
-    }
+        BaseAddress = new Uri("https://subtitleedit.ivandrofly.com")
+    };
 
     /// <summary>
     /// Sends the provided analytics data asynchronously to the specified API endpoint.
@@ -34,11 +31,9 @@ public class AnalyticsService : IDisposable
     {
         try
         {
-            using (var jsonContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json"))
-            {
-                _ = await _httpClient.PostAsync("/api/analytics", jsonContent)
-                    .ConfigureAwait(false);
-            }
+            using var jsonContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+            _ = await _httpClient.PostAsync("/api/analytics", jsonContent)
+                .ConfigureAwait(false);
         }
         catch (Exception e)
         {
@@ -51,19 +46,46 @@ public class AnalyticsService : IDisposable
 
 public class Data
 {
+    public string UserId { get; } = GenerateId();
+
     /// <summary>
     /// Gets or sets the operating system version of the device or system sending analytics data.
     /// </summary>
-    public string OsVersion { get; set; }
+    public string OsVersion { get; } = Environment.OSVersion.VersionString;
 
     /// <summary>
     /// Gets or sets the timestamp of the last recorded activity.
     /// </summary>
-    public DateTimeOffset LastActive { get; set; }
+    public DateTimeOffset LastActive { get; } = DateTimeOffset.Now;
 
     public override string ToString()
     {
         // convert properties to json string
-        return $"{{\"osVersion\": \"{JsonUtils.EscapeJsonString(OsVersion)}\", \"lastActive\": \"{LastActive}\"}}";
+        return $"{{\"userId\": \"{UserId}\", \"osVersion\": \"{OsVersion}\", \"lastActive\": \"{LastActive}\"}}";
+    }
+
+    private static string GenerateId()
+    {
+        try
+        {
+            var mac = string.Empty;
+            foreach (var nic in NetworkInterface.GetAllNetworkInterfaces())
+            {
+                if (nic.OperationalStatus == OperationalStatus.Up &&
+                    nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+                {
+                    mac += nic.GetPhysicalAddress().ToString();
+                }
+            }
+
+            using var md5 = MD5.Create();
+            var inputBytes = Encoding.ASCII.GetBytes(mac);
+            var hashBytes = md5.ComputeHash(inputBytes);
+            return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
+        }
+        catch (Exception e)
+        {
+            return string.Empty;
+        }
     }
 }
