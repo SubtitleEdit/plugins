@@ -19,7 +19,7 @@ public class HI2UC : IPlugin
     // the text that will be displaying when subtitle edit context-menu
     public string Text => "Hearing Impaired to Uppercase";
 
-    public decimal Version => 4.8m;
+    public decimal Version => 4.9m;
 
     public string DoAction(Form parentForm, string srtText, double frame, string uiLineBreak, string file,
         string videoFile, string rawText)
@@ -53,7 +53,7 @@ public class HI2UC : IPlugin
         var srt = new SubRip();
         var sub = new Subtitle(srt);
 
-        // Load raws subtitle lines into Subtitle object
+        // Load raws subtitle lines into a Subtitle object
         srt.LoadSubtitle(sub, list, file);
 
         // analytics
