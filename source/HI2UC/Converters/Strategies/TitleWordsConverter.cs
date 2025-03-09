@@ -9,13 +9,10 @@ public class TitleWordsConverter : IConverterStrategy
     private readonly ChunkReader _chunkReader;
     public string Name => "Title case (word)";
     public string Example => "foobar foobar => Foobar Foobar";
-        
-    private readonly char[] _wordSplitChars = {' ' };
 
-    public TitleWordsConverter(ChunkReader chunkReader)
-    {
-        _chunkReader = chunkReader;
-    }
+    private readonly char[] _wordSplitChars = { ' ' };
+
+    public TitleWordsConverter(ChunkReader chunkReader) => _chunkReader = chunkReader;
 
     public string Execute(string input)
     {

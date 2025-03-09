@@ -12,10 +12,7 @@ public class NarratorCasingConverter : ICasingConverter
 
     public IConverterStrategy ConverterStrategy { get; }
 
-    public NarratorCasingConverter(IConverterStrategy converterStrategy)
-    {
-        ConverterStrategy = converterStrategy;
-    }
+    public NarratorCasingConverter(IConverterStrategy converterStrategy) => ConverterStrategy = converterStrategy;
 
     public void Convert(IList<Paragraph> paragraphs, ConverterContext converterContext)
     {
@@ -30,7 +27,7 @@ public class NarratorCasingConverter : ICasingConverter
         }
     }
 
-    public string NarratorToUppercase(string text)
+    private string NarratorToUppercase(string text)
     {
         var noTagText = HtmlUtils.RemoveTags(text, true).TrimEnd().TrimEnd('"');
 

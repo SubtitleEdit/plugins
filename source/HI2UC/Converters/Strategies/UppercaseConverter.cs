@@ -12,10 +12,7 @@ public class UppercaseConverter : IConverterStrategy
 
     public override string ToString() => Name;
 
-    public UppercaseConverter(ChunkReader chunkReader)
-    {
-        _chunkReader = chunkReader;
-    }
+    public UppercaseConverter(ChunkReader chunkReader) => _chunkReader = chunkReader;
 
     public string Execute(string input)
     {
