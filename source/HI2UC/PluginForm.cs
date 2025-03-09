@@ -252,7 +252,7 @@ internal partial class PluginForm : Form, IConfigurable
 
     private void copyToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        var text = ((Paragraph)listViewFixes.FocusedItem.Tag).ToString();
+        var text = ((Record)listViewFixes.FocusedItem.Tag).ToString();
         Clipboard.SetText(text, TextDataFormat.UnicodeText);
     }
 
