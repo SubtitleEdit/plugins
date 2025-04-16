@@ -46,7 +46,7 @@ public class AnalyticsService : IDisposable
 
 public class Data
 {
-    public string UserId { get; } = GenerateId();
+    public string UserId { get; } = Environment.UserName;
 
     /// <summary>
     /// Gets or sets the operating system version of the device or system sending analytics data.
