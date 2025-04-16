@@ -19,7 +19,7 @@ public class HI2UC : IPlugin
     // the text that will be displaying when subtitle edit context-menu
     public string Text => "Hearing Impaired to Uppercase";
 
-    public decimal Version => 4.9m;
+    public decimal Version => 4.10m;
 
     public string DoAction(Form parentForm, string srtText, double frame, string uiLineBreak, string file,
         string videoFile, string rawText)
