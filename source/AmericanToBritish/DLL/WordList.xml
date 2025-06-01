@@ -66,6 +66,7 @@
   <Word us="ax" br="axe" />
   <Word us="backpedaled" br="backpedalled" />
   <Word us="backpedaling" br="backpedalling" />
+  <Word us="bacterialized" br="bacterialised" />
   <Word us="battleax" br="battleaxe" />
   <Word us="bedeviled" br="bedevilled" />
   <Word us="bedeviling" br="bedevilling" />
@@ -119,7 +120,7 @@
   <Word us="caviler" br="caviller" />
   <Word us="cavilers" br="cavillers" />
   <Word us="caviling" br="cavilling" />
-  <Word us ="cellphone" br="mobile phone" />
+  <Word us="cellphone" br="mobile phone" />
   <Word us="center" br="centre" />
   <Word us="centered" br="centred" />
   <Word us="centerfold" br="centrefold" />
@@ -214,6 +215,7 @@
   <Word us="defenses" br="defences" />
   <Word us="demeanor" br="demeanour" />
   <Word us="demeanors" br="demeanours" />
+  <Word us="deodorized" br="deodourised" />
   <Word us="dialed" br="dialled" />
   <Word us="dialer" br="dialler" />
   <Word us="dialers" br="diallers" />
@@ -828,6 +830,7 @@
   <Word us="sabertooth" br="sabretooth" />
   <Word us="sabertooths" br="sabretooths" />
   <Word us="saltpeter" br="saltpetre" />
+  <Word us="sanitized" br="sanitised" />
   <Word us="savior" br="saviour" />
   <Word us="saviors" br="saviours" />
   <Word us="savor" br="savour" />
