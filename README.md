@@ -21,7 +21,7 @@ Framework version: If possible compile with .NET 4.0 (can be used with 4+).
 
 ## Requirements
 
-Use `Nikse.SubtitleEdit.PluginLogic` as Entry point namespace, take a look [here](https://github.com/SubtitleEdit/plugins/blob/master/Haxor/DLL/Plugin.cs#L6).
+Use `Nikse.SubtitleEdit.PluginLogic` as Entry point namespace, take a look [here](https://github.com/SubtitleEdit/plugins/blob/main/source/Haxor/DLL/Plugin.cs).
 
 The DLL filename must be `<classname>.dll` - e.g. `SyncViaOtherSubtitle.dll`.
 
