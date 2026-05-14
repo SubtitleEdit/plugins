@@ -1,0 +1,14 @@
+{
+  "plugins": [
+    {
+      "name": "Haxor",
+      "description": "Translates the text of the selected lines (or all lines) to haxor.",
+      "version": "1.0.0",
+      "author": "Subtitle Edit",
+      "url": "https://github.com/SubtitleEdit/plugins/tree/master/se5/Haxor",
+      "date": "2026-05-14",
+      "minSeVersion": "5.0.0",
+      "downloadUrl": "https://github.com/SubtitleEdit/plugins/releases/download/se5-v1.0/Haxor.zip"
+    }
+  ]
+}
