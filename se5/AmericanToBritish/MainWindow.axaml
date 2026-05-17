@@ -1,0 +1,95 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="using:SubtitleEdit.Plugins.AmericanToBritish"
+        x:Class="SubtitleEdit.Plugins.AmericanToBritish.MainWindow"
+        mc:Ignorable="d"
+        Title="American to British"
+        Width="720" Height="560"
+        MinWidth="500" MinHeight="360"
+        WindowStartupLocation="CenterScreen">
+    <DockPanel Margin="20">
+
+        <Grid DockPanel.Dock="Bottom"
+              ColumnDefinitions="*,Auto,Auto"
+              Margin="0,14,0,0">
+            <TextBlock Grid.Column="0"
+                       x:Name="SummaryLabel"
+                       VerticalAlignment="Center"
+                       Opacity="0.75" />
+            <Button Grid.Column="1"
+                    Content="Cancel"
+                    Click="OnCancel"
+                    MinWidth="100"
+                    Margin="0,0,8,0" />
+            <Button Grid.Column="2"
+                    x:Name="ApplyButton"
+                    Content="Apply"
+                    Click="OnApply"
+                    MinWidth="100"
+                    Classes="accent"
+                    IsDefault="True" />
+        </Grid>
+
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Spacing="10" Margin="0,0,0,4">
+            <Button Content="Select all" Click="OnSelectAll" />
+            <Button Content="Select none" Click="OnSelectNone" />
+        </StackPanel>
+
+        <TextBlock DockPanel.Dock="Top"
+                   FontSize="18"
+                   FontWeight="SemiBold"
+                   Text="American to British" />
+
+        <TextBlock DockPanel.Dock="Top"
+                   x:Name="SubtitleLabel"
+                   Margin="0,4,0,12"
+                   Opacity="0.7"
+                   TextWrapping="Wrap" />
+
+        <TextBlock DockPanel.Dock="Top"
+                   x:Name="NoChangesLabel"
+                   FontSize="14"
+                   Margin="0,30,0,0"
+                   HorizontalAlignment="Center"
+                   Opacity="0.65"
+                   Text="No American-to-British conversions found in the selected lines."
+                   IsVisible="False" />
+
+        <Border BorderBrush="#22808080"
+                BorderThickness="1"
+                CornerRadius="4"
+                Padding="0">
+            <ListBox x:Name="ChangesList"
+                     Background="Transparent"
+                     SelectionMode="Single">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="local:ChangeProposal">
+                        <Grid ColumnDefinitions="Auto,42,*" Margin="4,6">
+                            <CheckBox Grid.Column="0"
+                                      IsChecked="{Binding Include, Mode=TwoWay}"
+                                      VerticalAlignment="Top"
+                                      Margin="0,2,0,0" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding LineNumber}"
+                                       Opacity="0.55"
+                                       FontSize="12"
+                                       Margin="6,2,8,0"
+                                       VerticalAlignment="Top" />
+                            <StackPanel Grid.Column="2" Orientation="Vertical" Spacing="2">
+                                <TextBlock Text="{Binding OriginalText}"
+                                           TextWrapping="Wrap"
+                                           Opacity="0.55"
+                                           FontSize="12" />
+                                <TextBlock Text="{Binding ConvertedText}"
+                                           TextWrapping="Wrap"
+                                           FontWeight="SemiBold" />
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+    </DockPanel>
+</Window>
