@@ -1,0 +1,107 @@
+name: Build Haxor (SE5)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'se5/Haxor/**'
+      - '.github/workflows/haxor.yml'
+  pull_request:
+    paths:
+      - 'se5/Haxor/**'
+      - '.github/workflows/haxor.yml'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to publish the zips under (e.g. se5-haxor-v1.0). Leave empty to build artifacts only.'
+        required: false
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - rid: win-x64
+            os: windows
+            exe: Haxor.exe
+          - rid: win-arm64
+            os: windows
+            exe: Haxor.exe
+          - rid: linux-x64
+            os: linux
+            exe: Haxor
+          - rid: linux-arm64
+            os: linux
+            exe: Haxor
+          - rid: osx-x64
+            os: macos
+            exe: Haxor
+          - rid: osx-arm64
+            os: macos
+            exe: Haxor
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish self-contained (${{ matrix.rid }})
+        working-directory: se5/Haxor
+        run: |
+          dotnet publish Haxor.csproj \
+            -c Release \
+            -r ${{ matrix.rid }} \
+            --self-contained true \
+            -p:PublishSingleFile=true \
+            -p:IncludeNativeLibrariesForSelfExtract=true \
+            -o staging/Haxor
+
+      - name: Rewrite plugin.json for ${{ matrix.os }}
+        working-directory: se5/Haxor
+        run: |
+          jq '
+            del(.runtime, .entry) |
+            .executables = { "${{ matrix.os }}": "${{ matrix.exe }}" }
+          ' plugin.json > staging/Haxor/plugin.json
+
+      - name: Package zip
+        working-directory: se5/Haxor/staging
+        run: zip -r "$GITHUB_WORKSPACE/Haxor-${{ matrix.rid }}.zip" Haxor
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Haxor-${{ matrix.rid }}
+          path: Haxor-${{ matrix.rid }}.zip
+
+  release:
+    name: Publish GitHub Release
+    needs: build
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.tag != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all zips
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          pattern: Haxor-*
+          merge-multiple: true
+
+      - name: Create release and upload zips
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ github.event.inputs.tag }}" dist/Haxor-*.zip \
+            --repo "${{ github.repository }}" \
+            --target "${{ github.sha }}" \
+            --title "Haxor ${{ github.event.inputs.tag }}" \
+            --notes "Self-contained Haxor plugin builds for win/linux/osx (x64 + arm64)."
