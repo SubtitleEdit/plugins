@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using System;
+using System.Globalization;
 using System.Text.Json;
 
 namespace SubtitleEdit.Plugins.TypewriterEffect;
@@ -9,24 +10,31 @@ namespace SubtitleEdit.Plugins.TypewriterEffect;
 public partial class MainWindow : Window
 {
     private readonly PluginRequest _request;
+    private TextBlock _infoLabel = null!;
+    private NumericUpDown _endDelayInput = null!;
 
     // Parameterless constructor only exists for the XAML designer.
     public MainWindow() : this(new PluginRequest()) { }
 
     public MainWindow(PluginRequest request)
     {
-        InitializeComponent();
         _request = request;
+        InitializeComponent();
 
         var selectedCount = request.SelectedIndices.Count;
-        InfoLabel.Text = selectedCount > 0
+        _infoLabel.Text = selectedCount > 0
             ? $"Each of the {selectedCount} selected line(s) will be split into several short lines that progressively reveal the text."
             : "Every line will be split into several short lines that progressively reveal the text.";
 
-        EndDelayInput.Value = (decimal)LoadEndDelaySetting(request.Settings, defaultValue: 0.5);
+        _endDelayInput.Value = (decimal)LoadEndDelaySetting(request.Settings, defaultValue: 0.5);
     }
 
-    private void InitializeComponent() => AvaloniaXamlLoader.Load(this);
+    private void InitializeComponent()
+    {
+        AvaloniaXamlLoader.Load(this);
+        _infoLabel = this.FindControl<TextBlock>("InfoLabel")!;
+        _endDelayInput = this.FindControl<NumericUpDown>("EndDelayInput")!;
+    }
 
     private void OnCancel(object? sender, RoutedEventArgs e)
     {
@@ -36,7 +44,7 @@ public partial class MainWindow : Window
 
     private void OnOk(object? sender, RoutedEventArgs e)
     {
-        var endDelaySec = (double)(EndDelayInput.Value ?? 0m);
+        var endDelaySec = (double)(_endDelayInput.Value ?? 0m);
 
         try
         {
@@ -84,7 +92,8 @@ public partial class MainWindow : Window
 
     private static JsonElement BuildSettings(double endDelay)
     {
-        using var doc = JsonDocument.Parse($"{{\"endDelay\":{endDelay.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)}}}");
+        var json = $"{{\"endDelay\":{endDelay.ToString("0.###", CultureInfo.InvariantCulture)}}}";
+        using var doc = JsonDocument.Parse(json);
         return doc.RootElement.Clone();
     }
 }

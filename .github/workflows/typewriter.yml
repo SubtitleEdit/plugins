@@ -59,8 +59,8 @@ jobs:
             -c Release \
             -r ${{ matrix.rid }} \
             --self-contained true \
-            -p:PublishSingleFile=true \
-            -p:IncludeNativeLibrariesForSelfExtract=true \
+            -p:DebugType=None \
+            -p:DebugSymbols=false \
             -o staging/TypewriterEffect
 
       - name: Rewrite plugin.json for ${{ matrix.os }}
