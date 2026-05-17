@@ -1,6 +1,23 @@
 {
   "plugins": [
     {
+      "name": "Typewriter effect",
+      "description": "Splits each subtitle line into short timed parts that progressively reveal the text, character by character.",
+      "version": "1.0.0",
+      "author": "Subtitle Edit",
+      "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/TypewriterEffect",
+      "date": "2026-05-17",
+      "minSeVersion": "5.0.0",
+      "downloads": {
+        "win-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-typewriter-v1.0/TypewriterEffect-win-x64.zip",
+        "win-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-typewriter-v1.0/TypewriterEffect-win-arm64.zip",
+        "linux-x64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-typewriter-v1.0/TypewriterEffect-linux-x64.zip",
+        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-typewriter-v1.0/TypewriterEffect-linux-arm64.zip",
+        "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-typewriter-v1.0/TypewriterEffect-osx-x64.zip",
+        "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-typewriter-v1.0/TypewriterEffect-osx-arm64.zip"
+      }
+    },
+    {
       "name": "Haxor",
       "description": "Translates the text of the selected lines (or all lines) to haxor.",
       "version": "1.0.0",
