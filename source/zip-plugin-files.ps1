@@ -5,7 +5,8 @@ $directories = @(
     "source\TightHyphen\bin\Release\net48",
     "source\SaveAllFormat\bin\Release\net48",
     "source\NoRecursiveDash\bin\Release\net48",
-    "source\LinesUnbreaker\bin\Release\net48"
+    "source\LinesUnbreaker\bin\Release\net48",
+    "source\Haxor\DLL\bin\Release\net48"
 )
 
 # Define the output directory where the zip files will be saved

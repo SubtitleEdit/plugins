@@ -82,3 +82,9 @@ jobs:
         with:
           name: ExportAllFormats
           path: C:\plugins\ExportAllFormats.dll
+
+      - name: Upload Haxor
+        uses: actions/upload-artifact@v4
+        with:
+          name: Haxor
+          path: C:\plugins\Haxor.dll
