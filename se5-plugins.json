@@ -1,6 +1,23 @@
 {
   "plugins": [
     {
+      "name": "Word censor",
+      "description": "Censors offensive words by replacing the first half of each match with random grawlix characters (#@!$%). Optionally highlights censored words in red.",
+      "version": "1.0.0",
+      "author": "Subtitle Edit",
+      "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/WordCensor",
+      "date": "2026-05-17",
+      "minSeVersion": "5.0.0",
+      "downloads": {
+        "win-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-word-censor-v1.0/WordCensor-win-x64.zip",
+        "win-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-word-censor-v1.0/WordCensor-win-arm64.zip",
+        "linux-x64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-word-censor-v1.0/WordCensor-linux-x64.zip",
+        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-word-censor-v1.0/WordCensor-linux-arm64.zip",
+        "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-word-censor-v1.0/WordCensor-osx-x64.zip",
+        "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-word-censor-v1.0/WordCensor-osx-arm64.zip"
+      }
+    },
+    {
       "name": "British to American",
       "description": "Converts British English spellings to American English in the subtitle. Shows a checkable preview of every proposed change.",
       "version": "1.0.0",
