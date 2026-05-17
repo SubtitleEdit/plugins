@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 
-namespace SubtitleEdit.Plugins.AmericanToBritish;
+namespace SubtitleEdit.Plugins.BritishToAmerican;
 
 public partial class MainWindow : Window
 {
@@ -37,7 +37,7 @@ public partial class MainWindow : Window
         var scope = request.SelectedIndices.Count > 0
             ? $"the {request.SelectedIndices.Count} selected line(s)"
             : "all lines";
-        _subtitleLabel.Text = $"Convert American to British English spellings in {scope}.";
+        _subtitleLabel.Text = $"Convert British to American English spellings in {scope}.";
 
         if (_proposals.Count == 0)
         {
@@ -74,7 +74,7 @@ public partial class MainWindow : Window
 
     private void BuildProposals()
     {
-        var converter = new EnglishVariantConverter(EnglishVariantDirection.UsToBr);
+        var converter = new EnglishVariantConverter(EnglishVariantDirection.BrToUs);
         var selected = new HashSet<int>(_request.SelectedIndices);
         var applyToAll = selected.Count == 0;
 
@@ -156,8 +156,8 @@ public partial class MainWindow : Window
             App.Response = new PluginResponse
             {
                 Status = PluginStatus.Ok,
-                Message = $"Converted {changesByLine.Count} line(s) to British English.",
-                UndoDescription = "American to British",
+                Message = $"Converted {changesByLine.Count} line(s) to American English.",
+                UndoDescription = "British to American",
                 Subtitle = new PluginSubtitle
                 {
                     Format = "SubRip",

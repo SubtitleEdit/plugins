@@ -1,0 +1,12 @@
+{
+  "apiVersion": 1,
+  "name": "British to American",
+  "description": "Converts British English spellings to American English in the subtitle. Shows a checkable preview of every proposed change.",
+  "version": "1.0.0",
+  "author": "Subtitle Edit",
+  "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/BritishToAmerican",
+  "menu": "Tools",
+  "minSeVersion": "5.0.0",
+  "runtime": "dotnet",
+  "entry": "BritishToAmerican.dll"
+}

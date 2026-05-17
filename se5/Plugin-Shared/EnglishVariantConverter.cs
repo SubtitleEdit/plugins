@@ -1,23 +1,30 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
-namespace SubtitleEdit.Plugins.AmericanToBritish;
+namespace SubtitleEdit.Plugins.Shared;
+
+public enum EnglishVariantDirection
+{
+    UsToBr,
+    BrToUs,
+}
 
 /// <summary>
-/// Converts US English spellings to UK English using the bundled WordList.xml
-/// (~1000 word pairs). Each pair becomes three case-aware regexes: lowercase,
-/// UPPERCASE, and Titlecase, all matched as whole words.
+/// Converts between American and British English using the bundled WordList.xml
+/// (~1000 pairs). Each pair becomes three case-aware regexes: lowercase,
+/// UPPERCASE, and Titlecase, all matched as whole words. Picks direction via
+/// <see cref="EnglishVariantDirection"/>.
 /// </summary>
-public sealed class AmericanToBritishConverter
+public sealed class EnglishVariantConverter
 {
     private readonly List<(Regex Pattern, string Replacement)> _rules = new();
+    private readonly EnglishVariantDirection _direction;
 
-    public AmericanToBritishConverter()
+    public EnglishVariantConverter(EnglishVariantDirection direction)
     {
+        _direction = direction;
         LoadBuiltInWordList();
     }
 
@@ -38,12 +45,9 @@ public sealed class AmericanToBritishConverter
             }
         }
 
-        return RevertColourInFontTags(text);
+        return RevertFontColorAttribute(text);
     }
 
-    /// <summary>
-    /// Try converting <paramref name="text"/>; if it changed, return the new text via <paramref name="converted"/>.
-    /// </summary>
     public bool TryConvert(string text, out string converted)
     {
         converted = Convert(text);
@@ -52,9 +56,9 @@ public sealed class AmericanToBritishConverter
 
     private void LoadBuiltInWordList()
     {
-        using var stream = typeof(AmericanToBritishConverter).Assembly
-            .GetManifestResourceStream("SubtitleEdit.Plugins.AmericanToBritish.WordList.xml")
-            ?? throw new InvalidOperationException("Embedded WordList.xml not found.");
+        using var stream = typeof(EnglishVariantConverter).Assembly
+            .GetManifestResourceStream("SubtitleEdit.Plugins.Shared.WordList.xml")
+            ?? throw new InvalidOperationException("Embedded WordList.xml not found in Plugin-Shared.");
 
         var xml = XDocument.Load(stream);
         if (xml.Root?.Name != "Words")
@@ -71,22 +75,25 @@ public sealed class AmericanToBritishConverter
                 continue;
             }
 
-            AddRule(us, br);
-            AddRule(us.ToUpperInvariant(), br.ToUpperInvariant());
-            AddRule(char.ToUpperInvariant(us[0]) + us.Substring(1), char.ToUpperInvariant(br[0]) + br.Substring(1));
+            var (from, to) = _direction == EnglishVariantDirection.UsToBr ? (us, br) : (br, us);
+
+            AddRule(from, to);
+            AddRule(from.ToUpperInvariant(), to.ToUpperInvariant());
+            AddRule(char.ToUpperInvariant(from[0]) + from.Substring(1), char.ToUpperInvariant(to[0]) + to.Substring(1));
         }
     }
 
-    private void AddRule(string american, string british)
+    private void AddRule(string from, string to)
     {
-        _rules.Add((new Regex("\\b" + Regex.Escape(american) + "\\b", RegexOptions.ExplicitCapture | RegexOptions.Compiled), british));
+        _rules.Add((new Regex("\\b" + Regex.Escape(from) + "\\b", RegexOptions.ExplicitCapture | RegexOptions.Compiled), to));
     }
 
     /// <summary>
-    /// "color" inside &lt;font ... color="..."&gt; is HTML attribute syntax and must not be Britishized;
-    /// the word-list conversion would otherwise corrupt the tag. Undo "colour" back to "color" inside &lt;font ...&gt;.
+    /// "color" inside &lt;font color="..."&gt; is HTML attribute syntax and must not be Britishized
+    /// by the word-list pass — that would corrupt the tag. Undo "colour" back to "color" inside
+    /// &lt;font ...&gt;. No-op for BR→US.
     /// </summary>
-    private static string RevertColourInFontTags(string s)
+    private static string RevertFontColorAttribute(string s)
     {
         var tagIndex = s.IndexOf("<font", StringComparison.OrdinalIgnoreCase);
         while (tagIndex >= 0)

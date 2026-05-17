@@ -5,8 +5,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyName>AmericanToBritish</AssemblyName>
-    <RootNamespace>SubtitleEdit.Plugins.AmericanToBritish</RootNamespace>
+    <AssemblyName>BritishToAmerican</AssemblyName>
+    <RootNamespace>SubtitleEdit.Plugins.BritishToAmerican</RootNamespace>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
