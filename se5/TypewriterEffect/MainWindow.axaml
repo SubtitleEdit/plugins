@@ -1,0 +1,54 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="SubtitleEdit.Plugins.TypewriterEffect.MainWindow"
+        Title="Typewriter effect"
+        Width="520" Height="360"
+        WindowStartupLocation="CenterScreen"
+        CanResize="False">
+    <DockPanel Margin="20">
+        <StackPanel DockPanel.Dock="Bottom"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="10"
+                    Margin="0,16,0,0">
+            <Button Content="Cancel"
+                    Click="OnCancel"
+                    MinWidth="100" />
+            <Button x:Name="OkButton"
+                    Content="OK"
+                    Click="OnOk"
+                    MinWidth="100"
+                    Classes="accent"
+                    IsDefault="True" />
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" Spacing="14">
+            <TextBlock FontSize="18"
+                       FontWeight="SemiBold"
+                       Text="Typewriter effect" />
+
+            <TextBlock x:Name="InfoLabel"
+                       Opacity="0.8"
+                       TextWrapping="Wrap" />
+
+            <StackPanel Orientation="Vertical" Spacing="6">
+                <TextBlock Text="End delay (seconds)" />
+                <NumericUpDown x:Name="EndDelayInput"
+                               Minimum="0"
+                               Maximum="10"
+                               Increment="0.5"
+                               FormatString="0.0##"
+                               Value="0.5"
+                               Width="160"
+                               HorizontalAlignment="Left" />
+                <TextBlock Opacity="0.65"
+                           FontSize="11"
+                           TextWrapping="Wrap"
+                           Text="After the last character appears, the full line stays on screen for this long before the original end time." />
+            </StackPanel>
+        </StackPanel>
+    </DockPanel>
+</Window>

@@ -1,0 +1,107 @@
+name: Build TypewriterEffect (SE5)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'se5/TypewriterEffect/**'
+      - '.github/workflows/typewriter.yml'
+  pull_request:
+    paths:
+      - 'se5/TypewriterEffect/**'
+      - '.github/workflows/typewriter.yml'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to publish the zips under (e.g. se5-typewriter-v1.0). Leave empty to build artifacts only.'
+        required: false
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - rid: win-x64
+            os: windows
+            exe: TypewriterEffect.exe
+          - rid: win-arm64
+            os: windows
+            exe: TypewriterEffect.exe
+          - rid: linux-x64
+            os: linux
+            exe: TypewriterEffect
+          - rid: linux-arm64
+            os: linux
+            exe: TypewriterEffect
+          - rid: osx-x64
+            os: macos
+            exe: TypewriterEffect
+          - rid: osx-arm64
+            os: macos
+            exe: TypewriterEffect
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish self-contained (${{ matrix.rid }})
+        working-directory: se5/TypewriterEffect
+        run: |
+          dotnet publish TypewriterEffect.csproj \
+            -c Release \
+            -r ${{ matrix.rid }} \
+            --self-contained true \
+            -p:PublishSingleFile=true \
+            -p:IncludeNativeLibrariesForSelfExtract=true \
+            -o staging/TypewriterEffect
+
+      - name: Rewrite plugin.json for ${{ matrix.os }}
+        working-directory: se5/TypewriterEffect
+        run: |
+          jq '
+            del(.runtime, .entry) |
+            .executables = { "${{ matrix.os }}": "${{ matrix.exe }}" }
+          ' plugin.json > staging/TypewriterEffect/plugin.json
+
+      - name: Package zip
+        working-directory: se5/TypewriterEffect/staging
+        run: zip -r "$GITHUB_WORKSPACE/TypewriterEffect-${{ matrix.rid }}.zip" TypewriterEffect
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TypewriterEffect-${{ matrix.rid }}
+          path: TypewriterEffect-${{ matrix.rid }}.zip
+
+  release:
+    name: Publish GitHub Release
+    needs: build
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.tag != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all zips
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          pattern: TypewriterEffect-*
+          merge-multiple: true
+
+      - name: Create release and upload zips
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ github.event.inputs.tag }}" dist/TypewriterEffect-*.zip \
+            --repo "${{ github.repository }}" \
+            --target "${{ github.sha }}" \
+            --title "TypewriterEffect ${{ github.event.inputs.tag }}" \
+            --notes "Self-contained TypewriterEffect plugin builds for win/linux/osx (x64 + arm64)."
