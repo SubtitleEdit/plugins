@@ -36,6 +36,19 @@ public partial class MainWindow : Window
         _endDelayInput = this.FindControl<NumericUpDown>("EndDelayInput")!;
     }
 
+    protected override void OnOpened(EventArgs e)
+    {
+        base.OnOpened(e);
+
+        // The plugin is a fresh process with no parent window relationship to
+        // Subtitle Edit, so on macOS/Linux/sometimes Windows it can appear
+        // behind SE. Toggling Topmost briefly forces the window to the top of
+        // the z-order, and Activate() gives it focus.
+        Topmost = true;
+        Activate();
+        Topmost = false;
+    }
+
     private void OnCancel(object? sender, RoutedEventArgs e)
     {
         App.Response = new PluginResponse { Status = "cancelled" };
