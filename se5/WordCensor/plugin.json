@@ -1,0 +1,12 @@
+{
+  "apiVersion": 1,
+  "name": "Word censor",
+  "description": "Censors offensive words by replacing the first half of each match with random grawlix characters (#@!$%). Optionally highlights censored words in red.",
+  "version": "1.0.0",
+  "author": "Subtitle Edit",
+  "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/WordCensor",
+  "menu": "Tools",
+  "minSeVersion": "5.0.0",
+  "runtime": "dotnet",
+  "entry": "WordCensor.dll"
+}

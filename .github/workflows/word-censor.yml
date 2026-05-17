@@ -1,0 +1,109 @@
+name: Build WordCensor (SE5)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'se5/WordCensor/**'
+      - 'se5/Plugin-Shared/**'
+      - '.github/workflows/word-censor.yml'
+  pull_request:
+    paths:
+      - 'se5/WordCensor/**'
+      - 'se5/Plugin-Shared/**'
+      - '.github/workflows/word-censor.yml'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to publish the zips under (e.g. se5-word-censor-v1.0). Leave empty to build artifacts only.'
+        required: false
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - rid: win-x64
+            os: windows
+            exe: WordCensor.exe
+          - rid: win-arm64
+            os: windows
+            exe: WordCensor.exe
+          - rid: linux-x64
+            os: linux
+            exe: WordCensor
+          - rid: linux-arm64
+            os: linux
+            exe: WordCensor
+          - rid: osx-x64
+            os: macos
+            exe: WordCensor
+          - rid: osx-arm64
+            os: macos
+            exe: WordCensor
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish self-contained (${{ matrix.rid }})
+        working-directory: se5/WordCensor
+        run: |
+          dotnet publish WordCensor.csproj \
+            -c Release \
+            -r ${{ matrix.rid }} \
+            --self-contained true \
+            -p:DebugType=None \
+            -p:DebugSymbols=false \
+            -o staging/WordCensor
+
+      - name: Rewrite plugin.json for ${{ matrix.os }}
+        working-directory: se5/WordCensor
+        run: |
+          jq '
+            del(.runtime, .entry) |
+            .executables = { "${{ matrix.os }}": "${{ matrix.exe }}" }
+          ' plugin.json > staging/WordCensor/plugin.json
+
+      - name: Package zip
+        working-directory: se5/WordCensor/staging
+        run: zip -r "$GITHUB_WORKSPACE/WordCensor-${{ matrix.rid }}.zip" WordCensor
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WordCensor-${{ matrix.rid }}
+          path: WordCensor-${{ matrix.rid }}.zip
+
+  release:
+    name: Publish GitHub Release
+    needs: build
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.tag != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all zips
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          pattern: WordCensor-*
+          merge-multiple: true
+
+      - name: Create release and upload zips
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ github.event.inputs.tag }}" dist/WordCensor-*.zip \
+            --repo "${{ github.repository }}" \
+            --target "${{ github.sha }}" \
+            --title "WordCensor ${{ github.event.inputs.tag }}" \
+            --notes "Self-contained WordCensor plugin builds for win/linux/osx (x64 + arm64)."
