@@ -6,14 +6,15 @@
         x:Class="SubtitleEdit.Plugins.WordCensor.MainWindow"
         mc:Ignorable="d"
         Title="Word censor"
-        Width="720" Height="600"
-        MinWidth="500" MinHeight="380"
+        Width="780" Height="640"
+        MinWidth="560" MinHeight="420"
         WindowStartupLocation="CenterScreen">
     <DockPanel Margin="20">
 
+        <!-- Bottom: status + apply/cancel -->
         <Grid DockPanel.Dock="Bottom"
               ColumnDefinitions="*,Auto,Auto"
-              Margin="0,14,0,0">
+              Margin="0,16,0,0">
             <TextBlock Grid.Column="0"
                        x:Name="SummaryLabel"
                        VerticalAlignment="Center"
@@ -32,25 +33,75 @@
                     IsDefault="True" />
         </Grid>
 
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Spacing="10" Margin="0,0,0,4">
-            <Button Content="Select all" Click="OnSelectAll" />
-            <Button Content="Select none" Click="OnSelectNone" />
-            <CheckBox x:Name="ColorRedCheck"
-                      Content="Highlight censored words in red"
-                      VerticalAlignment="Center"
-                      Margin="12,0,0,0" />
-        </StackPanel>
-
+        <!-- Title -->
         <TextBlock DockPanel.Dock="Top"
-                   FontSize="18"
+                   FontSize="20"
                    FontWeight="SemiBold"
                    Text="Word censor" />
 
         <TextBlock DockPanel.Dock="Top"
                    x:Name="SubtitleLabel"
-                   Margin="0,4,0,12"
+                   Margin="0,4,0,0"
                    Opacity="0.7"
                    TextWrapping="Wrap" />
+
+        <!-- Mode picker card -->
+        <Border DockPanel.Dock="Top"
+                Margin="0,14,0,0"
+                Padding="16,14"
+                CornerRadius="6"
+                Background="#11808080"
+                BorderBrush="#22808080"
+                BorderThickness="1">
+            <StackPanel Spacing="10">
+                <TextBlock Text="How should offensive words be replaced?"
+                           FontWeight="SemiBold" />
+
+                <StackPanel Orientation="Vertical" Spacing="6">
+                    <RadioButton x:Name="GrawlixModeRadio"
+                                 GroupName="CensorMode"
+                                 Content="Grawlix — mask with #@!?$%&amp; characters"
+                                 IsChecked="True" />
+
+                    <Grid ColumnDefinitions="Auto,8,*"
+                          VerticalAlignment="Center">
+                        <RadioButton Grid.Column="0"
+                                     x:Name="ReplacementModeRadio"
+                                     GroupName="CensorMode"
+                                     Content="Replace with text:" />
+                        <TextBox Grid.Column="2"
+                                 x:Name="ReplacementBox"
+                                 Text="[censored]"
+                                 MinWidth="180"
+                                 HorizontalAlignment="Left"
+                                 Watermark="[censored]" />
+                    </Grid>
+
+                    <RadioButton x:Name="AlternativeModeRadio"
+                                 GroupName="CensorMode"
+                                 Content="Swap with a random alternative word from the list" />
+                </StackPanel>
+
+                <CheckBox x:Name="ColorRedCheck"
+                          Content="Highlight censored words in red"
+                          Margin="0,4,0,0" />
+            </StackPanel>
+        </Border>
+
+        <!-- Selection controls -->
+        <Grid DockPanel.Dock="Top"
+              ColumnDefinitions="Auto,Auto,*"
+              Margin="0,12,0,4">
+            <Button Grid.Column="0"
+                    Content="Select all"
+                    Click="OnSelectAll"
+                    MinWidth="100" />
+            <Button Grid.Column="1"
+                    Content="Select none"
+                    Click="OnSelectNone"
+                    MinWidth="100"
+                    Margin="8,0,0,0" />
+        </Grid>
 
         <TextBlock DockPanel.Dock="Top"
                    x:Name="NoChangesLabel"
@@ -64,7 +115,8 @@
         <Border BorderBrush="#22808080"
                 BorderThickness="1"
                 CornerRadius="4"
-                Padding="0">
+                Padding="0"
+                Margin="0,4,0,0">
             <ListBox x:Name="ChangesList"
                      Background="Transparent"
                      SelectionMode="Single">

@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Text.Json;
 
@@ -14,6 +13,8 @@ namespace SubtitleEdit.Plugins.WordCensor;
 
 public partial class MainWindow : Window
 {
+    private const string DefaultReplacement = "[censored]";
+
     private readonly PluginRequest _request;
     private readonly List<SrtBlock> _blocks;
     private readonly WordCensorEngine _engine;
@@ -25,6 +26,10 @@ public partial class MainWindow : Window
     private ListBox _changesList = null!;
     private Button _applyButton = null!;
     private CheckBox _colorRedCheck = null!;
+    private RadioButton _grawlixRadio = null!;
+    private RadioButton _replacementRadio = null!;
+    private RadioButton _alternativeRadio = null!;
+    private TextBox _replacementBox = null!;
 
     public MainWindow() : this(new PluginRequest()) { }
 
@@ -36,8 +41,23 @@ public partial class MainWindow : Window
         _engine = new WordCensorEngine();
         _blocks = SubRipParser.Parse(request.Subtitle.SubRip);
 
-        _colorRedCheck.IsChecked = LoadColorRedSetting(request.Settings);
-        _colorRedCheck.IsCheckedChanged += (_, _) => RebuildProposals();
+        var (mode, replacement, colorRed) = LoadSettings(request.Settings);
+        SetMode(mode);
+        _replacementBox.Text = replacement;
+        _colorRedCheck.IsChecked = colorRed;
+
+        _grawlixRadio.IsCheckedChanged += (_, _) => OnModeOrOptionChanged();
+        _replacementRadio.IsCheckedChanged += (_, _) => OnModeOrOptionChanged();
+        _alternativeRadio.IsCheckedChanged += (_, _) => OnModeOrOptionChanged();
+        _colorRedCheck.IsCheckedChanged += (_, _) => OnModeOrOptionChanged();
+        _replacementBox.TextChanged += (_, _) =>
+        {
+            // Only re-build when the textbox actually affects the preview.
+            if (CurrentMode() == CensorMode.Replacement)
+            {
+                OnModeOrOptionChanged();
+            }
+        };
 
         BuildProposals();
         _changesList.ItemsSource = _proposals;
@@ -45,7 +65,7 @@ public partial class MainWindow : Window
         var scope = request.SelectedIndices.Count > 0
             ? $"the {request.SelectedIndices.Count} selected line(s)"
             : "all lines";
-        _subtitleLabel.Text = $"Replace offensive words with grawlix characters (#@!$%) in {scope}.";
+        _subtitleLabel.Text = $"Replace offensive words in {scope}. Pick a style below.";
 
         UpdateUiForProposals();
     }
@@ -59,6 +79,10 @@ public partial class MainWindow : Window
         _changesList = this.FindControl<ListBox>("ChangesList")!;
         _applyButton = this.FindControl<Button>("ApplyButton")!;
         _colorRedCheck = this.FindControl<CheckBox>("ColorRedCheck")!;
+        _grawlixRadio = this.FindControl<RadioButton>("GrawlixModeRadio")!;
+        _replacementRadio = this.FindControl<RadioButton>("ReplacementModeRadio")!;
+        _alternativeRadio = this.FindControl<RadioButton>("AlternativeModeRadio")!;
+        _replacementBox = this.FindControl<TextBox>("ReplacementBox")!;
     }
 
     protected override void OnOpened(EventArgs e)
@@ -67,9 +91,30 @@ public partial class MainWindow : Window
         this.BringToForeground();
     }
 
+    private CensorOptions BuildOptions() => new()
+    {
+        Mode = CurrentMode(),
+        Replacement = string.IsNullOrEmpty(_replacementBox.Text) ? DefaultReplacement : _replacementBox.Text,
+        ColorRed = _colorRedCheck.IsChecked == true,
+    };
+
+    private CensorMode CurrentMode()
+    {
+        if (_replacementRadio.IsChecked == true) return CensorMode.Replacement;
+        if (_alternativeRadio.IsChecked == true) return CensorMode.Alternative;
+        return CensorMode.Grawlix;
+    }
+
+    private void SetMode(CensorMode mode)
+    {
+        _grawlixRadio.IsChecked = mode == CensorMode.Grawlix;
+        _replacementRadio.IsChecked = mode == CensorMode.Replacement;
+        _alternativeRadio.IsChecked = mode == CensorMode.Alternative;
+    }
+
     private void BuildProposals()
     {
-        var colorRed = _colorRedCheck.IsChecked == true;
+        var options = BuildOptions();
         var selected = new HashSet<int>(_request.SelectedIndices);
         var applyToAll = selected.Count == 0;
 
@@ -86,7 +131,7 @@ public partial class MainWindow : Window
                 continue;
             }
 
-            if (_engine.TryCensor(_blocks[i].Text, colorRed, out var censored))
+            if (_engine.TryCensor(_blocks[i].Text, options, out var censored))
             {
                 var proposal = new ChangeProposal(i, _blocks[i].Text, censored);
                 proposal.PropertyChanged += OnProposalChanged;
@@ -95,10 +140,10 @@ public partial class MainWindow : Window
         }
     }
 
-    private void RebuildProposals()
+    private void OnModeOrOptionChanged()
     {
-        // Re-censor existing proposals so the colour-toggle is reflected in the preview.
-        // The grawlix characters re-randomise, which is fine - the user is comparing approaches.
+        // Re-censor existing proposals so the new mode/colour/text is reflected in the preview.
+        // Grawlix re-randomises and Alternative re-rolls, which is fine — the user is comparing approaches.
         var previousInclude = _proposals.ToDictionary(p => p.LineIndex, p => p.Include);
         BuildProposals();
         foreach (var p in _proposals)
@@ -199,7 +244,7 @@ public partial class MainWindow : Window
                     Format = "SubRip",
                     Native = SubRipParser.Serialize(_blocks),
                 },
-                Settings = BuildSettings(_colorRedCheck.IsChecked == true),
+                Settings = BuildSettings(BuildOptions()),
             };
         }
         catch (Exception ex)
@@ -210,22 +255,50 @@ public partial class MainWindow : Window
         Close();
     }
 
-    private static bool LoadColorRedSetting(JsonElement? settings)
+    private static (CensorMode mode, string replacement, bool colorRed) LoadSettings(JsonElement? settings)
     {
+        var mode = CensorMode.Grawlix;
+        var replacement = DefaultReplacement;
+        var colorRed = false;
+
         if (settings is null || settings.Value.ValueKind != JsonValueKind.Object)
         {
-            return false;
+            return (mode, replacement, colorRed);
         }
-        if (settings.Value.TryGetProperty("colorRed", out var value) && value.ValueKind == JsonValueKind.True)
+
+        var root = settings.Value;
+
+        if (root.TryGetProperty("mode", out var modeProp) && modeProp.ValueKind == JsonValueKind.String &&
+            Enum.TryParse<CensorMode>(modeProp.GetString(), ignoreCase: true, out var parsed))
         {
-            return true;
+            mode = parsed;
         }
-        return false;
+        if (root.TryGetProperty("replacement", out var rep) && rep.ValueKind == JsonValueKind.String)
+        {
+            var s = rep.GetString();
+            if (!string.IsNullOrEmpty(s))
+            {
+                replacement = s;
+            }
+        }
+        if (root.TryGetProperty("colorRed", out var cr) && cr.ValueKind == JsonValueKind.True)
+        {
+            colorRed = true;
+        }
+
+        return (mode, replacement, colorRed);
     }
 
-    private static JsonElement BuildSettings(bool colorRed)
+    private static JsonElement BuildSettings(CensorOptions options)
     {
-        using var doc = JsonDocument.Parse($"{{\"colorRed\":{colorRed.ToString(CultureInfo.InvariantCulture).ToLowerInvariant()}}}");
+        var dto = new
+        {
+            mode = options.Mode.ToString(),
+            replacement = options.Replacement,
+            colorRed = options.ColorRed,
+        };
+        var json = JsonSerializer.Serialize(dto);
+        using var doc = JsonDocument.Parse(json);
         return doc.RootElement.Clone();
     }
 }

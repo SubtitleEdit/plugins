@@ -1,15 +1,41 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace SubtitleEdit.Plugins.WordCensor;
 
+/// <summary>How a matched offensive word should be replaced.</summary>
+public enum CensorMode
+{
+    /// <summary>Replace the first ~50% of letters with random grawlix characters (@#!?$%&amp;).</summary>
+    Grawlix = 0,
+
+    /// <summary>Replace the whole match with a user-supplied string, e.g. "[censored]".</summary>
+    Replacement = 1,
+
+    /// <summary>Replace the whole match with another (different) random word from the list.</summary>
+    Alternative = 2,
+}
+
+/// <summary>Per-call options for <see cref="WordCensorEngine.Censor"/>.</summary>
+public sealed class CensorOptions
+{
+    public CensorMode Mode { get; set; } = CensorMode.Grawlix;
+
+    /// <summary>Used when <see cref="Mode"/> is <see cref="CensorMode.Replacement"/>.</summary>
+    public string Replacement { get; set; } = "[censored]";
+
+    /// <summary>When true, wrap each replacement in <c>&lt;font color="#ff0000"&gt;...&lt;/font&gt;</c>.</summary>
+    public bool ColorRed { get; set; }
+}
+
 /// <summary>
-/// Censors offensive words by replacing the first ~50% of each match with
-/// random "grawlix" characters (@#!?$%&amp;). Optionally wraps the censored
-/// word in a red &lt;font&gt; tag. Matches whole words case-insensitively;
-/// multi-word phrases in the list are also matched verbatim.
+/// Censors offensive words. Three modes are supported via <see cref="CensorMode"/>:
+/// grawlix masking, fixed-string replacement, or substitution with another random
+/// word from the same list. Matches whole words case-insensitively; multi-word
+/// phrases in the list are matched verbatim.
 /// </summary>
 public sealed class WordCensorEngine
 {
@@ -18,6 +44,7 @@ public sealed class WordCensorEngine
 
     private readonly HashSet<string> _singleWords;
     private readonly List<string> _multiWordPhrases;
+    private readonly List<string> _allWords;
     private readonly Random _random;
 
     public WordCensorEngine(int? randomSeed = null)
@@ -26,15 +53,13 @@ public sealed class WordCensorEngine
         _multiWordPhrases = new List<string>();
         _random = randomSeed.HasValue ? new Random(randomSeed.Value) : new Random();
         LoadBuiltInList();
+        _allWords = _singleWords.Concat(_multiWordPhrases).ToList();
     }
 
-    public int WordCount => _singleWords.Count + _multiWordPhrases.Count;
+    public int WordCount => _allWords.Count;
 
-    /// <summary>
-    /// Censors all offensive words in <paramref name="text"/>. When <paramref name="colorRed"/> is true,
-    /// each censored word is wrapped in &lt;font color="#ff0000"&gt;...&lt;/font&gt;.
-    /// </summary>
-    public string Censor(string text, bool colorRed)
+    /// <summary>Censors all offensive words in <paramref name="text"/> using <paramref name="options"/>.</summary>
+    public string Censor(string text, CensorOptions options)
     {
         if (string.IsNullOrEmpty(text))
         {
@@ -44,7 +69,7 @@ public sealed class WordCensorEngine
         // First handle multi-word phrases (they need to match before single-word logic eats their pieces).
         foreach (var phrase in _multiWordPhrases)
         {
-            text = ReplacePhrase(text, phrase, colorRed);
+            text = ReplacePhrase(text, phrase, options);
         }
 
         // Then walk single words.
@@ -62,7 +87,7 @@ public sealed class WordCensorEngine
                 var word = text.Substring(start, i - start);
                 if (_singleWords.Contains(word))
                 {
-                    sb.Append(MaybeColor(Grawlix(word), colorRed));
+                    sb.Append(MaybeColor(BuildReplacement(word, options), options.ColorRed));
                 }
                 else
                 {
@@ -79,13 +104,13 @@ public sealed class WordCensorEngine
         return sb.ToString();
     }
 
-    public bool TryCensor(string text, bool colorRed, out string censored)
+    public bool TryCensor(string text, CensorOptions options, out string censored)
     {
-        censored = Censor(text, colorRed);
+        censored = Censor(text, options);
         return !string.Equals(text, censored, StringComparison.Ordinal);
     }
 
-    private string ReplacePhrase(string text, string phrase, bool colorRed)
+    private string ReplacePhrase(string text, string phrase, CensorOptions options)
     {
         var idx = 0;
         var sb = new StringBuilder(text.Length);
@@ -103,7 +128,8 @@ public sealed class WordCensorEngine
             sb.Append(text, idx, hit - idx);
             if (startsClean && endsClean)
             {
-                sb.Append(MaybeColor(Grawlix(text.Substring(hit, phrase.Length)), colorRed));
+                var match = text.Substring(hit, phrase.Length);
+                sb.Append(MaybeColor(BuildReplacement(match, options), options.ColorRed));
             }
             else
             {
@@ -112,6 +138,58 @@ public sealed class WordCensorEngine
             idx = hit + phrase.Length;
         }
         return sb.ToString();
+    }
+
+    private string BuildReplacement(string match, CensorOptions options) => options.Mode switch
+    {
+        CensorMode.Replacement => string.IsNullOrEmpty(options.Replacement) ? "[censored]" : options.Replacement,
+        CensorMode.Alternative => PickAlternative(match),
+        _ => Grawlix(match),
+    };
+
+    private string PickAlternative(string original)
+    {
+        if (_allWords.Count <= 1)
+        {
+            return original;
+        }
+
+        // Try a few times to avoid the original word; give up if everything resolves to it.
+        for (var attempt = 0; attempt < 8; attempt++)
+        {
+            var pick = _allWords[_random.Next(_allWords.Count)];
+            if (!string.Equals(pick, original, StringComparison.OrdinalIgnoreCase))
+            {
+                return MatchCase(pick, original);
+            }
+        }
+        return original;
+    }
+
+    /// <summary>Apply the rough case pattern of <paramref name="template"/> to <paramref name="word"/>.</summary>
+    private static string MatchCase(string word, string template)
+    {
+        if (string.IsNullOrEmpty(template))
+        {
+            return word;
+        }
+
+        var allUpper = template.All(c => !char.IsLetter(c) || char.IsUpper(c));
+        if (allUpper && template.Any(char.IsLetter))
+        {
+            return word.ToUpperInvariant();
+        }
+
+        if (char.IsUpper(template[0]))
+        {
+            if (word.Length == 0)
+            {
+                return word;
+            }
+            return char.ToUpperInvariant(word[0]) + word.Substring(1).ToLowerInvariant();
+        }
+
+        return word.ToLowerInvariant();
     }
 
     private string Grawlix(string word)
