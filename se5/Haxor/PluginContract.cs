@@ -24,6 +24,16 @@ public sealed class PluginRequest
 
     public string VideoFileName { get; set; } = string.Empty;
     public double FrameRate { get; set; }
+
+    /// <summary>Total video duration in seconds. Null when no video is loaded or on older SE versions.</summary>
+    public double? VideoDurationSeconds { get; set; }
+
+    /// <summary>Video frame width in pixels. Null when no video is loaded or on older SE versions.</summary>
+    public int? VideoWidth { get; set; }
+
+    /// <summary>Video frame height in pixels. Null when no video is loaded or on older SE versions.</summary>
+    public int? VideoHeight { get; set; }
+
     public string UiLanguage { get; set; } = string.Empty;
     public string Theme { get; set; } = string.Empty;
 
@@ -34,6 +44,12 @@ public sealed class PluginRequest
 
     /// <summary>This plugin's settings as last persisted by Subtitle Edit (null on first run).</summary>
     public JsonElement? Settings { get; set; }
+
+    /// <summary>
+    /// Schema version this plugin attached to <see cref="Settings"/> in its last response.
+    /// Null on first run, when settings were saved without a version, or on older SE versions.
+    /// </summary>
+    public int? SettingsVersion { get; set; }
 }
 
 /// <summary>Active theme colors. All values are <c>#AARRGGBB</c> hex strings.</summary>
@@ -77,6 +93,12 @@ public sealed class PluginResponse
 
     /// <summary>Settings to persist; handed back unchanged in the next request.</summary>
     public JsonElement? Settings { get; set; }
+
+    /// <summary>
+    /// Schema version for <see cref="Settings"/>. Bump when you change the shape of your
+    /// settings so you can migrate or reset on the next run. Optional; null = "unversioned".
+    /// </summary>
+    public int? SettingsVersion { get; set; }
 
     public string? UndoDescription { get; set; }
 }
