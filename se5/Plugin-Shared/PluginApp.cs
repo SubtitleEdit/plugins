@@ -21,9 +21,12 @@ public abstract class PluginApp : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        PluginDefaultStyles.Apply();
+
         if (PendingRequest is not null)
         {
             RequestedThemeVariant = ResolveThemeVariant(PendingRequest.Theme);
+            PluginThemeStyles.Apply(PendingRequest.ThemeColors);
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
