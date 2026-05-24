@@ -17,11 +17,15 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        PluginDefaultStyles.Apply();
+
         if (PendingRequest is not null)
         {
             RequestedThemeVariant = string.Equals(PendingRequest.Theme, "Dark", System.StringComparison.OrdinalIgnoreCase)
                 ? ThemeVariant.Dark
                 : ThemeVariant.Light;
+
+            PluginThemeStyles.Apply(PendingRequest.ThemeColors);
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {

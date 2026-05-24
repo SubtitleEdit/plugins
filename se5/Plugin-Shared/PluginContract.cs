@@ -18,8 +18,24 @@ public sealed class PluginRequest
     public double FrameRate { get; set; }
     public string UiLanguage { get; set; } = string.Empty;
     public string Theme { get; set; } = string.Empty;
+
+    /// <summary>Active theme's colors so the plugin's UI can match Subtitle Edit. Null on older SE versions.</summary>
+    public PluginThemeColors? ThemeColors { get; set; }
+
     public string SeVersion { get; set; } = string.Empty;
     public JsonElement? Settings { get; set; }
+}
+
+/// <summary>Active theme colors. All values are <c>#AARRGGBB</c> hex strings.</summary>
+public sealed class PluginThemeColors
+{
+    public bool IsDark { get; set; }
+    public string BackgroundColor { get; set; } = string.Empty;
+    public string ForegroundColor { get; set; } = string.Empty;
+    public string AccentColor { get; set; } = string.Empty;
+    public string BackgroundColorLighter { get; set; } = string.Empty;
+    public string BackgroundColorHeader { get; set; } = string.Empty;
+    public string BookmarkColor { get; set; } = string.Empty;
 }
 
 public sealed class PluginSubtitle

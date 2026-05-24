@@ -14,13 +14,71 @@ on:
       - '.github/workflows/american-to-british.yml'
   workflow_dispatch:
     inputs:
-      tag:
-        description: 'Release tag to publish the zips under (e.g. se5-american-to-british-v1.0). Leave empty to build artifacts only.'
+      release:
+        description: 'Publish a GitHub release. Bumps the minor in plugin.json and commits it back.'
+        type: boolean
+        default: false
+      version:
+        description: 'Optional explicit version (e.g. 1.2.0). Overrides the auto-minor-bump.'
         required: false
         type: string
 
+permissions:
+  contents: write
+
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.set.outputs.version }}
+      tag:     ${{ steps.set.outputs.tag }}
+      ref:     ${{ steps.set.outputs.ref }}
+      release: ${{ steps.set.outputs.release }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve version (and bump on release)
+        id: set
+        run: |
+          set -e
+          current=$(jq -r .version se5/AmericanToBritish/plugin.json)
+          release_flag="false"
+          ref="${{ github.sha }}"
+          version="$current"
+          tag=""
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.release }}" = "true" ]; then
+            release_flag="true"
+            if [ -n "${{ inputs.version }}" ]; then
+              version="${{ inputs.version }}"
+            else
+              IFS=. read -r major minor patch <<< "$current"
+              version="$major.$((minor + 1)).0"
+            fi
+
+            tmp=$(mktemp)
+            jq --arg v "$version" '.version = $v' se5/AmericanToBritish/plugin.json > "$tmp"
+            mv "$tmp" se5/AmericanToBritish/plugin.json
+
+            git config user.name  "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add se5/AmericanToBritish/plugin.json
+            git commit -m "Bump AmericanToBritish to $version [skip ci]"
+            git push
+            ref=$(git rev-parse HEAD)
+
+            IFS=. read -r major minor patch <<< "$version"
+            tag="se5-american-to-british-v$major.$minor"
+          fi
+
+          echo "version=$version"  >> "$GITHUB_OUTPUT"
+          echo "tag=$tag"          >> "$GITHUB_OUTPUT"
+          echo "ref=$ref"          >> "$GITHUB_OUTPUT"
+          echo "release=$release_flag" >> "$GITHUB_OUTPUT"
+
   build:
+    needs: prepare
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -48,6 +106,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.ref }}
 
       - name: Setup .NET 8
         uses: actions/setup-dotnet@v4
@@ -85,11 +145,9 @@ jobs:
 
   release:
     name: Publish GitHub Release
-    needs: build
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.tag != ''
+    needs: [prepare, build]
+    if: needs.prepare.outputs.release == 'true'
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: Download all zips
         uses: actions/download-artifact@v4
@@ -102,8 +160,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "${{ github.event.inputs.tag }}" dist/AmericanToBritish-*.zip \
+          gh release create "${{ needs.prepare.outputs.tag }}" dist/AmericanToBritish-*.zip \
             --repo "${{ github.repository }}" \
-            --target "${{ github.sha }}" \
-            --title "AmericanToBritish ${{ github.event.inputs.tag }}" \
+            --target "${{ needs.prepare.outputs.ref }}" \
+            --title "AmericanToBritish v${{ needs.prepare.outputs.version }}" \
             --notes "Self-contained AmericanToBritish plugin builds for win/linux/osx (x64 + arm64)."
