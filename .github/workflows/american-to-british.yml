@@ -65,7 +65,20 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add se5/AmericanToBritish/plugin.json
             git commit -m "Bump AmericanToBritish to $version [skip ci]"
-            git push
+
+            # Retry-with-rebase: if a concurrent release dispatched for a different
+            # plugin won the push first, pull --rebase and try again.
+            attempts=0
+            while ! git push 2>/tmp/push.err; do
+              attempts=$((attempts + 1))
+              if [ "$attempts" -ge 5 ]; then
+                echo "Failed to push after $attempts attempts:" >&2
+                cat /tmp/push.err >&2
+                exit 1
+              fi
+              echo "Push rejected (attempt $attempts), pulling --rebase and retrying..."
+              git pull --rebase --no-edit
+            done
             ref=$(git rev-parse HEAD)
 
             IFS=. read -r major minor patch <<< "$version"
