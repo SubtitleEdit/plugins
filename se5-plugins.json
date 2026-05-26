@@ -84,6 +84,23 @@
         "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-haxor-v1.1/Haxor-osx-x64.zip",
         "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-haxor-v1.1/Haxor-osx-arm64.zip"
       }
+    },
+    {
+      "name": "Remove Unicode characters",
+      "description": "Detects non-ANSI characters in the subtitle and lets you remove or replace each one. Shows a checkable preview with the count and line numbers per character.",
+      "version": "1.1.0",
+      "author": "Subtitle Edit",
+      "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/RemoveUnicodeCharacters",
+      "date": "2026-05-26",
+      "minSeVersion": "5.0.0",
+      "downloads": {
+        "win-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-remove-unicode-characters-v1.1/RemoveUnicodeCharacters-win-x64.zip",
+        "win-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-remove-unicode-characters-v1.1/RemoveUnicodeCharacters-win-arm64.zip",
+        "linux-x64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-remove-unicode-characters-v1.1/RemoveUnicodeCharacters-linux-x64.zip",
+        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-remove-unicode-characters-v1.1/RemoveUnicodeCharacters-linux-arm64.zip",
+        "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-remove-unicode-characters-v1.1/RemoveUnicodeCharacters-osx-x64.zip",
+        "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-remove-unicode-characters-v1.1/RemoveUnicodeCharacters-osx-arm64.zip"
+      }
     }
   ]
 }
