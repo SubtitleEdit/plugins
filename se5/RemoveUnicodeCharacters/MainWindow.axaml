@@ -1,0 +1,126 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="using:SubtitleEdit.Plugins.RemoveUnicodeCharacters"
+        x:Class="SubtitleEdit.Plugins.RemoveUnicodeCharacters.MainWindow"
+        mc:Ignorable="d"
+        Title="Remove Unicode characters"
+        Width="860" Height="620"
+        MinWidth="640" MinHeight="400"
+        WindowStartupLocation="CenterScreen">
+    <DockPanel Margin="20">
+
+        <Grid DockPanel.Dock="Bottom"
+              ColumnDefinitions="*,Auto,Auto"
+              Margin="0,14,0,0">
+            <TextBlock Grid.Column="0"
+                       x:Name="SummaryLabel"
+                       VerticalAlignment="Center"
+                       Opacity="0.75" />
+            <Button Grid.Column="1"
+                    Content="Cancel"
+                    Click="OnCancel"
+                    MinWidth="100"
+                    Margin="0,0,8,0" />
+            <Button Grid.Column="2"
+                    x:Name="ApplyButton"
+                    Content="Apply"
+                    Click="OnApply"
+                    MinWidth="100"
+                    Classes="accent"
+                    IsDefault="True" />
+        </Grid>
+
+        <StackPanel Orientation="Horizontal"
+                    DockPanel.Dock="Top"
+                    Spacing="10"
+                    Margin="0,0,0,4">
+            <Button Content="Select all" Click="OnSelectAll" />
+            <Button Content="Select none" Click="OnSelectNone" />
+            <Button Content="Google selected"
+                    Click="OnGoogleSelected"
+                    x:Name="GoogleButton"
+                    IsEnabled="False" />
+        </StackPanel>
+
+        <TextBlock DockPanel.Dock="Top"
+                   FontSize="18"
+                   FontWeight="SemiBold"
+                   Text="Remove Unicode characters" />
+
+        <TextBlock DockPanel.Dock="Top"
+                   x:Name="SubtitleLabel"
+                   Margin="0,4,0,12"
+                   Opacity="0.7"
+                   TextWrapping="Wrap" />
+
+        <TextBlock DockPanel.Dock="Top"
+                   x:Name="NoCharsLabel"
+                   FontSize="14"
+                   Margin="0,30,0,0"
+                   HorizontalAlignment="Center"
+                   Opacity="0.65"
+                   Text="No Unicode characters found in the selected lines."
+                   IsVisible="False" />
+
+        <Border DockPanel.Dock="Top"
+                x:Name="HeaderBorder"
+                BorderBrush="#22808080"
+                BorderThickness="1,1,1,0"
+                CornerRadius="4,4,0,0"
+                Padding="4,6"
+                IsVisible="False">
+            <Grid ColumnDefinitions="32,92,46,60,200,*">
+                <TextBlock Grid.Column="1" Text="Code"     FontWeight="SemiBold" Opacity="0.7" />
+                <TextBlock Grid.Column="2" Text="Char"     FontWeight="SemiBold" Opacity="0.7" />
+                <TextBlock Grid.Column="3" Text="Count"    FontWeight="SemiBold" Opacity="0.7" />
+                <TextBlock Grid.Column="4" Text="Replace with" FontWeight="SemiBold" Opacity="0.7" Margin="6,0,0,0" />
+                <TextBlock Grid.Column="5" Text="Lines"    FontWeight="SemiBold" Opacity="0.7" Margin="6,0,0,0" />
+            </Grid>
+        </Border>
+
+        <Border x:Name="ListBorder"
+                BorderBrush="#22808080"
+                BorderThickness="1"
+                CornerRadius="0,0,4,4"
+                Padding="0">
+            <ListBox x:Name="CharsList"
+                     Background="Transparent"
+                     SelectionMode="Single">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="local:UnicodeCharRow">
+                        <Grid ColumnDefinitions="32,92,46,60,200,*" Margin="0,6">
+                            <CheckBox Grid.Column="0"
+                                      IsChecked="{Binding Include, Mode=TwoWay}"
+                                      VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding HexCode}"
+                                       VerticalAlignment="Center"
+                                       FontFamily="Consolas,Menlo,Courier New" />
+                            <TextBlock Grid.Column="2"
+                                       Text="{Binding Glyph}"
+                                       FontSize="16"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="3"
+                                       Text="{Binding Count}"
+                                       VerticalAlignment="Center"
+                                       Opacity="0.8" />
+                            <TextBox Grid.Column="4"
+                                     Text="{Binding Replacement, Mode=TwoWay}"
+                                     Margin="6,0,8,0"
+                                     VerticalAlignment="Center"
+                                     Watermark="(remove)" />
+                            <TextBlock Grid.Column="5"
+                                       Text="{Binding LinesText}"
+                                       VerticalAlignment="Center"
+                                       TextWrapping="Wrap"
+                                       Opacity="0.7"
+                                       FontSize="12" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+    </DockPanel>
+</Window>

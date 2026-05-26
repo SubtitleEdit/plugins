@@ -1,0 +1,180 @@
+name: Build RemoveUnicodeCharacters (SE5)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'se5/RemoveUnicodeCharacters/**'
+      - 'se5/Plugin-Shared/**'
+      - '.github/workflows/remove-unicode-characters.yml'
+  pull_request:
+    paths:
+      - 'se5/RemoveUnicodeCharacters/**'
+      - 'se5/Plugin-Shared/**'
+      - '.github/workflows/remove-unicode-characters.yml'
+  workflow_dispatch:
+    inputs:
+      release:
+        description: 'Publish a GitHub release. Bumps the minor in plugin.json and commits it back.'
+        type: boolean
+        default: false
+      version:
+        description: 'Optional explicit version (e.g. 1.2.0). Overrides the auto-minor-bump.'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.set.outputs.version }}
+      tag:     ${{ steps.set.outputs.tag }}
+      ref:     ${{ steps.set.outputs.ref }}
+      release: ${{ steps.set.outputs.release }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve version (and bump on release)
+        id: set
+        run: |
+          set -e
+          current=$(jq -r .version se5/RemoveUnicodeCharacters/plugin.json)
+          release_flag="false"
+          ref="${{ github.sha }}"
+          version="$current"
+          tag=""
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.release }}" = "true" ]; then
+            release_flag="true"
+            if [ -n "${{ inputs.version }}" ]; then
+              version="${{ inputs.version }}"
+            else
+              IFS=. read -r major minor patch <<< "$current"
+              version="$major.$((minor + 1)).0"
+            fi
+
+            tmp=$(mktemp)
+            jq --arg v "$version" '.version = $v' se5/RemoveUnicodeCharacters/plugin.json > "$tmp"
+            mv "$tmp" se5/RemoveUnicodeCharacters/plugin.json
+
+            git config user.name  "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add se5/RemoveUnicodeCharacters/plugin.json
+            git commit -m "Bump RemoveUnicodeCharacters to $version [skip ci]"
+
+            # Retry-with-rebase: if a concurrent release dispatched for a different
+            # plugin won the push first, pull --rebase and try again.
+            attempts=0
+            while ! git push 2>/tmp/push.err; do
+              attempts=$((attempts + 1))
+              if [ "$attempts" -ge 5 ]; then
+                echo "Failed to push after $attempts attempts:" >&2
+                cat /tmp/push.err >&2
+                exit 1
+              fi
+              echo "Push rejected (attempt $attempts), pulling --rebase and retrying..."
+              git pull --rebase --no-edit
+            done
+            ref=$(git rev-parse HEAD)
+
+            IFS=. read -r major minor patch <<< "$version"
+            tag="se5-remove-unicode-characters-v$major.$minor"
+          fi
+
+          echo "version=$version"  >> "$GITHUB_OUTPUT"
+          echo "tag=$tag"          >> "$GITHUB_OUTPUT"
+          echo "ref=$ref"          >> "$GITHUB_OUTPUT"
+          echo "release=$release_flag" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - rid: win-x64
+            os: windows
+            exe: RemoveUnicodeCharacters.exe
+          - rid: win-arm64
+            os: windows
+            exe: RemoveUnicodeCharacters.exe
+          - rid: linux-x64
+            os: linux
+            exe: RemoveUnicodeCharacters
+          - rid: linux-arm64
+            os: linux
+            exe: RemoveUnicodeCharacters
+          - rid: osx-x64
+            os: macos
+            exe: RemoveUnicodeCharacters
+          - rid: osx-arm64
+            os: macos
+            exe: RemoveUnicodeCharacters
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.ref }}
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish self-contained (${{ matrix.rid }})
+        working-directory: se5/RemoveUnicodeCharacters
+        run: |
+          dotnet publish RemoveUnicodeCharacters.csproj \
+            -c Release \
+            -r ${{ matrix.rid }} \
+            --self-contained true \
+            -p:DebugType=None \
+            -p:DebugSymbols=false \
+            -o staging/RemoveUnicodeCharacters
+
+      - name: Rewrite plugin.json for ${{ matrix.os }}
+        working-directory: se5/RemoveUnicodeCharacters
+        run: |
+          jq '
+            del(.runtime, .entry) |
+            .executables = { "${{ matrix.os }}": "${{ matrix.exe }}" }
+          ' plugin.json > staging/RemoveUnicodeCharacters/plugin.json
+
+      - name: Package zip
+        working-directory: se5/RemoveUnicodeCharacters/staging
+        run: zip -r "$GITHUB_WORKSPACE/RemoveUnicodeCharacters-${{ matrix.rid }}.zip" RemoveUnicodeCharacters
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RemoveUnicodeCharacters-${{ matrix.rid }}
+          path: RemoveUnicodeCharacters-${{ matrix.rid }}.zip
+
+  release:
+    name: Publish GitHub Release
+    needs: [prepare, build]
+    if: needs.prepare.outputs.release == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all zips
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          pattern: RemoveUnicodeCharacters-*
+          merge-multiple: true
+
+      - name: Create release and upload zips
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ needs.prepare.outputs.tag }}" dist/RemoveUnicodeCharacters-*.zip \
+            --repo "${{ github.repository }}" \
+            --target "${{ needs.prepare.outputs.ref }}" \
+            --title "RemoveUnicodeCharacters v${{ needs.prepare.outputs.version }}" \
+            --notes "Self-contained RemoveUnicodeCharacters plugin builds for win/linux/osx (x64 + arm64)."
