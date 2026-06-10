@@ -1,0 +1,17 @@
+{
+  "apiVersion": 1,
+  "name": "AI Translate (OpenSubtitles)",
+  "description": "Translate subtitles using the AI OpenSubtitles translation API. Supports auto-detection, multiple engines, and language selection.",
+  "version": "0.1.0",
+  "author": "AI OpenSubtitles",
+  "url": "https://ai.opensubtitles.com",
+  "menu": "Translate",
+  "shortcut": "Control+Shift+T",
+  "minSeVersion": "5.0.0",
+  "icon": "icon.png",
+  "executables": {
+    "windows": "se-ai-translator.exe",
+    "linux": "se-ai-translator",
+    "macos": "se-ai-translator"
+  }
+}
