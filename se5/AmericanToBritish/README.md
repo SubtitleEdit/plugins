@@ -1,7 +1,7 @@
 # American to British (Subtitle Edit 5 plugin)
 
 Converts American English spellings to British English in the subtitle, using a
-bundled word list (~1000 pairs). Shows a checkable preview of every proposed
+bundled word list (~1850 pairs). Shows a checkable preview of every proposed
 change so you can review and toggle individual conversions before applying.
 
 First Subtitle Edit 5 plugin built on top of the shared
