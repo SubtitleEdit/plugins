@@ -16,13 +16,6 @@ namespace SubtitleEdit.Plugins.RemoveUnicodeCharacters;
 
 public partial class MainWindow : Window
 {
-    /// <summary>Built-in default replacements (used when the user has no persisted setting for a character).</summary>
-    private static readonly Dictionary<char, string> DefaultReplacements = new()
-    {
-        ['♪'] = "#",
-        ['♫'] = "#",
-    };
-
     private readonly PluginRequest _request;
     private readonly List<SrtBlock> _blocks;
     private readonly Dictionary<string, string> _persistedReplacements;
@@ -125,7 +118,7 @@ public partial class MainWindow : Window
         {
             return persisted;
         }
-        return DefaultReplacements.TryGetValue(c, out var builtIn) ? builtIn : string.Empty;
+        return UnicodeDefaults.Map.TryGetValue(c, out var builtIn) ? builtIn : string.Empty;
     }
 
     private void UpdateUiForRows()
