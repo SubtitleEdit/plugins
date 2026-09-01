@@ -81,6 +81,15 @@ public sealed class EnglishVariantConverter
                 continue;
             }
 
+            // only="UsToBr" / only="BrToUs" restricts a pair to one direction. Used for
+            // vocabulary pairs whose "source" word is also standard in the target dialect
+            // (car, film, flat, lift...) - converting those would corrupt correct text.
+            var only = element.Attribute("only")?.Value;
+            if (only != null && !only.Equals(_direction.ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
             var (from, to) = _direction == EnglishVariantDirection.UsToBr ? (us, br) : (br, us);
 
             AddRule(from, to);

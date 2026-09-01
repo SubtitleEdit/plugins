@@ -14,7 +14,7 @@
   <Word us="analogs" br="analogues" />
   <Word us="analyze" br="analyse" />
   <Word us="analyzed" br="analysed" />
-  <Word us="analyzes" br="analyses" />
+  <Word us="analyzes" br="analyses" only="UsToBr" />
   <Word us="analyzing" br="analysing" />
   <Word us="anemia" br="anaemia" />
   <Word us="anemic" br="anaemic" />
@@ -61,8 +61,8 @@
   <Word us="armory" br="armoury" />
   <Word us="artifact" br="artefact" />
   <Word us="artifacts" br="artefacts" />
-  <Word us="automobile" br="car" />
-  <Word us="automobiles" br="cars" />
+  <Word us="automobile" br="car" only="UsToBr" />
+  <Word us="automobiles" br="cars" only="UsToBr" />
   <Word us="ax" br="axe" />
   <Word us="backpedaled" br="backpedalled" />
   <Word us="backpedaling" br="backpedalling" />
@@ -246,8 +246,8 @@
   <Word us="dishonored" br="dishonoured" />
   <Word us="dishonoring" br="dishonouring" />
   <Word us="dishonors" br="dishonours" />
-  <Word us="disk" br="disc" />
-  <Word us="disks" br="discs" />
+  <Word us="disk" br="disc" only="UsToBr" />
+  <Word us="disks" br="discs" only="UsToBr" />
   <Word us="disorganization" br="disorganisation" />
   <Word us="disorganizations" br="disorganisations" />
   <Word us="disorganize" br="disorganise" />
@@ -401,7 +401,7 @@
   <Word us="gamboling" br="gambolling" />
   <Word us="garbage can" br="dustbin" />
   <Word us="garbage cans" br="dustbins" />
-  <Word us="gasses" br="gases" />
+  <Word us="gasses" br="gases" only="UsToBr" />
   <Word us="glamor" br="glamour" />
   <Word us="gluing" br="glueing" />
   <Word us="goiter" br="goitre" />
@@ -548,7 +548,6 @@
   <Word us="louver" br="louvre" />
   <Word us="louvered" br="louvred" />
   <Word us="louvers" br="louvres" />
-  <Word us="luggage" br="baggage" />
   <Word us="luster" br="lustre" />
   <Word us="mailman" br="postman" />
   <Word us="mailmen" br="postmen" />
@@ -621,12 +620,12 @@
   <Word us="molting" br="moulting" />
   <Word us="molts" br="moults" />
   <Word us="mom" br="mum" />
-  <Word us="mommy" br="mummy" />
+  <Word us="mommy" br="mummy" only="UsToBr" />
   <Word us="moms" br="mums" />
   <Word us="monolog" br="monologue" />
   <Word us="monologs" br="monologues" />
-  <Word us="movie" br="film" />
-  <Word us="movies" br="films" />
+  <Word us="movie" br="film" only="UsToBr" />
+  <Word us="movies" br="films" only="UsToBr" />
   <Word us="multicolored" br="multicoloured" />
   <Word us="mustache" br="moustache" />
   <Word us="mustached" br="moustached" />
@@ -688,7 +687,7 @@
   <Word us="paralleled" br="parallelled" />
   <Word us="paralyze" br="paralyse" />
   <Word us="paralyzed" br="paralysed" />
-  <Word us="paralyzes" br="paralyses" />
+  <Word us="paralyzes" br="paralyses" only="UsToBr" />
   <Word us="paralyzing" br="paralysing" />
   <Word us="parceled" br="parcelled" />
   <Word us="parceling" br="parcelling" />
@@ -757,9 +756,8 @@
   <Word us="prologs" br="prologues" />
   <Word us="psychoanalyze" br="psychoanalyse" />
   <Word us="psychoanalyzed" br="psychoanalysed" />
-  <Word us="psychoanalyzes" br="psychoanalyses" />
+  <Word us="psychoanalyzes" br="psychoanalyses" only="UsToBr" />
   <Word us="psychoanalyzing" br="psychoanalysing" />
-  <Word us="pulled up" br="drew up" />
   <Word us="pummeled" br="pummelled" />
   <Word us="pummeling" br="pummelling" />
   <Word us="quarreled" br="quarrelled" />
@@ -878,8 +876,8 @@
   <Word us="smoldering" br="smouldering" />
   <Word us="smolderingly" br="smoulderingly" />
   <Word us="smolders" br="smoulders" />
-  <Word us="sneaker" br="trainer" />
-  <Word us="sneakers" br="trainers" />
+  <Word us="sneaker" br="trainer" only="UsToBr" />
+  <Word us="sneakers" br="trainers" only="UsToBr" />
   <Word us="sniveled" br="snivelled" />
   <Word us="sniveler" br="sniveller" />
   <Word us="snivelers" br="snivellers" />
@@ -1231,14 +1229,14 @@
   <!-- Additions: unambiguous vocabulary -->
   <Word us="truck" br="lorry" />
   <Word us="trucks" br="lorries" />
-  <Word us="elevator" br="lift" />
-  <Word us="elevators" br="lifts" />
-  <Word us="apartment" br="flat" />
-  <Word us="apartments" br="flats" />
-  <Word us="sidewalk" br="pavement" />
-  <Word us="sidewalks" br="pavements" />
-  <Word us="flashlight" br="torch" />
-  <Word us="flashlights" br="torches" />
+  <Word us="elevator" br="lift" only="UsToBr" />
+  <Word us="elevators" br="lifts" only="UsToBr" />
+  <Word us="apartment" br="flat" only="UsToBr" />
+  <Word us="apartments" br="flats" only="UsToBr" />
+  <Word us="sidewalk" br="pavement" only="UsToBr" />
+  <Word us="sidewalks" br="pavements" only="UsToBr" />
+  <Word us="flashlight" br="torch" only="UsToBr" />
+  <Word us="flashlights" br="torches" only="UsToBr" />
   <Word us="gasoline" br="petrol" />
   <Word us="eggplant" br="aubergine" />
   <Word us="eggplants" br="aubergines" />
