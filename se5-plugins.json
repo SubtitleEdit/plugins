@@ -101,6 +101,23 @@
         "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-remove-unicode-characters-v1.1/RemoveUnicodeCharacters-osx-x64.zip",
         "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-remove-unicode-characters-v1.1/RemoveUnicodeCharacters-osx-arm64.zip"
       }
+    },
+    {
+      "name": "Google Cloud Speech-to-Text",
+      "description": "Transcribes the open video with Google Cloud Speech-to-Text v2. Uses word level timings, so cues land on measured speech and silence stays empty. Needs a Google Cloud service account key.",
+      "version": "1.0.0",
+      "author": "muaz978",
+      "url": "https://github.com/muaz978/subtitleedit-gcloud-stt-plugin",
+      "date": "2026-09-05",
+      "minSeVersion": "5.0.0",
+      "downloads": {
+        "win-x64":     "https://github.com/muaz978/subtitleedit-gcloud-stt-plugin/releases/download/v1.0.0/GoogleCloudSpeechToText-win-x64.zip",
+        "win-arm64":   "https://github.com/muaz978/subtitleedit-gcloud-stt-plugin/releases/download/v1.0.0/GoogleCloudSpeechToText-win-arm64.zip",
+        "linux-x64":   "https://github.com/muaz978/subtitleedit-gcloud-stt-plugin/releases/download/v1.0.0/GoogleCloudSpeechToText-linux-x64.zip",
+        "linux-arm64": "https://github.com/muaz978/subtitleedit-gcloud-stt-plugin/releases/download/v1.0.0/GoogleCloudSpeechToText-linux-arm64.zip",
+        "osx-x64":     "https://github.com/muaz978/subtitleedit-gcloud-stt-plugin/releases/download/v1.0.0/GoogleCloudSpeechToText-osx-x64.zip",
+        "osx-arm64":   "https://github.com/muaz978/subtitleedit-gcloud-stt-plugin/releases/download/v1.0.0/GoogleCloudSpeechToText-osx-arm64.zip"
+      }
     }
   ]
 }
