@@ -101,6 +101,21 @@
         "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-remove-unicode-characters-v1.1/RemoveUnicodeCharacters-osx-x64.zip",
         "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-remove-unicode-characters-v1.1/RemoveUnicodeCharacters-osx-arm64.zip"
       }
+    },
+    {
+      "name": "AI Translate (OpenSubtitles)",
+      "description": "Translate subtitles using the AI OpenSubtitles translation API. Supports auto-detection, multiple engines, and language selection.",
+      "version": "0.2.2",
+      "author": "AI OpenSubtitles",
+      "url": "https://github.com/iceman1010/se5-ai-translator",
+      "date": "2026-06-10",
+      "minSeVersion": "5.0.0",
+      "downloads": {
+        "win-x64":     "https://github.com/iceman1010/se5-ai-translator/releases/download/v0.2.2/se-ai-translator-windows-x86_64.zip",
+        "linux-x64":   "https://github.com/iceman1010/se5-ai-translator/releases/download/v0.2.2/se-ai-translator-linux-x86_64.tar.gz",
+        "osx-x64":     "https://github.com/iceman1010/se5-ai-translator/releases/download/v0.2.2/se-ai-translator-macos-x86_64.tar.gz",
+        "osx-arm64":   "https://github.com/iceman1010/se5-ai-translator/releases/download/v0.2.2/se-ai-translator-macos-aarch64.tar.gz"
+      }
     }
   ]
 }
