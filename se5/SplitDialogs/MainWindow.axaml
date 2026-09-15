@@ -1,0 +1,130 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="using:SubtitleEdit.Plugins.SplitDialogs"
+        x:Class="SubtitleEdit.Plugins.SplitDialogs.MainWindow"
+        mc:Ignorable="d"
+        Title="Split dialogs"
+        Width="900" Height="640"
+        MinWidth="640" MinHeight="420"
+        WindowStartupLocation="CenterScreen">
+    <DockPanel Margin="20">
+
+        <Grid DockPanel.Dock="Bottom"
+              ColumnDefinitions="*,Auto,Auto"
+              Margin="0,14,0,0">
+            <TextBlock Grid.Column="0"
+                       x:Name="SummaryLabel"
+                       VerticalAlignment="Center"
+                       TextWrapping="Wrap"
+                       Opacity="0.75" />
+            <Button Grid.Column="1"
+                    Content="Cancel"
+                    Click="OnCancel"
+                    MinWidth="100"
+                    Margin="8,0,8,0" />
+            <Button Grid.Column="2"
+                    x:Name="ApplyButton"
+                    Content="Apply"
+                    Click="OnApply"
+                    MinWidth="100"
+                    Classes="accent"
+                    IsDefault="True" />
+        </Grid>
+
+        <TextBlock DockPanel.Dock="Top"
+                   FontSize="18"
+                   FontWeight="SemiBold"
+                   Text="Split dialogs" />
+
+        <TextBlock DockPanel.Dock="Top"
+                   x:Name="SubtitleLabel"
+                   Margin="0,4,0,12"
+                   Opacity="0.7"
+                   TextWrapping="Wrap" />
+
+        <WrapPanel DockPanel.Dock="Top"
+                   Orientation="Horizontal"
+                   Margin="0,0,0,10">
+            <CheckBox x:Name="RequireSentenceEndingCheckBox"
+                      Content="Only split where the line before the dash ends a sentence"
+                      Margin="0,0,24,6" />
+            <StackPanel Orientation="Horizontal"
+                        Spacing="8"
+                        Margin="0,0,0,6">
+                <TextBlock Text="Gap between lines (ms)"
+                           VerticalAlignment="Center" />
+                <NumericUpDown x:Name="GapInput"
+                               Minimum="0"
+                               Maximum="2000"
+                               Increment="1"
+                               FormatString="0"
+                               Width="130" />
+            </StackPanel>
+        </WrapPanel>
+
+        <StackPanel Orientation="Horizontal"
+                    DockPanel.Dock="Top"
+                    Spacing="10"
+                    Margin="0,0,0,8">
+            <Button Content="Select all" Click="OnSelectAll" />
+            <Button Content="Select none" Click="OnSelectNone" />
+        </StackPanel>
+
+        <TextBlock DockPanel.Dock="Top"
+                   x:Name="NoDialogsLabel"
+                   FontSize="14"
+                   Margin="0,30,0,0"
+                   HorizontalAlignment="Center"
+                   TextWrapping="Wrap"
+                   Opacity="0.65"
+                   IsVisible="False" />
+
+        <Border DockPanel.Dock="Top"
+                x:Name="HeaderBorder"
+                BorderBrush="#22808080"
+                BorderThickness="1,1,1,0"
+                CornerRadius="4,4,0,0"
+                Padding="4,6"
+                IsVisible="False">
+            <Grid ColumnDefinitions="32,52,*,*">
+                <TextBlock Grid.Column="1" Text="#"      FontWeight="SemiBold" Opacity="0.7" />
+                <TextBlock Grid.Column="2" Text="Before" FontWeight="SemiBold" Opacity="0.7" Margin="0,0,12,0" />
+                <TextBlock Grid.Column="3" Text="After"  FontWeight="SemiBold" Opacity="0.7" />
+            </Grid>
+        </Border>
+
+        <Border x:Name="ListBorder"
+                BorderBrush="#22808080"
+                BorderThickness="1"
+                CornerRadius="0,0,4,4"
+                Padding="0">
+            <ListBox x:Name="DialogsList"
+                     Background="Transparent"
+                     SelectionMode="Single">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="local:DialogRow">
+                        <Grid ColumnDefinitions="32,52,*,*" Margin="0,6">
+                            <CheckBox Grid.Column="0"
+                                      IsChecked="{Binding Include, Mode=TwoWay}"
+                                      VerticalAlignment="Top" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding LineNumber}"
+                                       Margin="0,6,0,0"
+                                       Opacity="0.8" />
+                            <TextBlock Grid.Column="2"
+                                       Text="{Binding BeforeText}"
+                                       Margin="0,6,12,0"
+                                       TextWrapping="Wrap" />
+                            <TextBlock Grid.Column="3"
+                                       Text="{Binding AfterText}"
+                                       Margin="0,6,0,0"
+                                       TextWrapping="Wrap" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+    </DockPanel>
+</Window>
