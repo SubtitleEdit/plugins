@@ -14,10 +14,14 @@ public sealed class SrtBlock
 
 public static class SubRipParser
 {
+    // Subtitle Edit writes more than two hour digits past 99 hours and a leading '-' for negative times.
     private static readonly Regex TimeLine = new(
-        @"^(\d{1,2}):(\d{2}):(\d{2})[,.](\d{3})\s*-->\s*(\d{1,2}):(\d{2}):(\d{2})[,.](\d{3})",
+        @"^\s*(-?)(\d+):(\d{1,2}):(\d{1,2})[,.](\d{1,3})\s*-->\s*(-?)(\d+):(\d{1,2}):(\d{1,2})[,.](\d{1,3})",
         RegexOptions.Compiled);
 
+    // Line based rather than split on blank lines: Subtitle Edit writes a line with no text as
+    // "N / time / blank / blank", which a blank-line split drops along with the line after it -
+    // and every dropped line deletes it from the user's subtitle and shifts SelectedIndices below it.
     public static List<SrtBlock> Parse(string srt)
     {
         var result = new List<SrtBlock>();
@@ -26,29 +30,52 @@ public static class SubRipParser
             return result;
         }
 
-        var normalized = srt.Replace("\r\n", "\n").Trim('\n');
-        var rawBlocks = Regex.Split(normalized, @"\n[ \t]*\n");
-        foreach (var raw in rawBlocks)
+        var lines = srt.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
+        SrtBlock? current = null;
+        var text = new List<string>();
+
+        for (var i = 0; i < lines.Length; i++)
         {
-            var lines = raw.Split('\n');
-            if (lines.Length < 3)
+            // A block starts at a number followed by a time code line - at the start or after a blank line.
+            if (i + 1 < lines.Length &&
+                (current == null || lines[i - 1].Trim().Length == 0) &&
+                long.TryParse(lines[i].Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out _))
             {
-                continue;
+                var timeMatch = TimeLine.Match(lines[i + 1]);
+                if (timeMatch.Success)
+                {
+                    Flush();
+                    current = new SrtBlock { StartMs = ToMs(timeMatch, 1), EndMs = ToMs(timeMatch, 6) };
+                    i++;
+                    continue;
+                }
             }
 
-            var timeMatch = TimeLine.Match(lines[1]);
-            if (!timeMatch.Success)
+            if (current != null)
             {
-                continue;
+                text.Add(lines[i]);
             }
-
-            var startMs = ToMs(timeMatch, 1);
-            var endMs = ToMs(timeMatch, 5);
-            var text = string.Join("\n", lines, 2, lines.Length - 2);
-            result.Add(new SrtBlock { StartMs = startMs, EndMs = endMs, Text = text });
         }
 
+        Flush();
         return result;
+
+        void Flush()
+        {
+            if (current == null)
+            {
+                return;
+            }
+
+            while (text.Count > 0 && text[^1].Trim().Length == 0)
+            {
+                text.RemoveAt(text.Count - 1);
+            }
+
+            current.Text = string.Join("\n", text);
+            result.Add(current);
+            text.Clear();
+        }
     }
 
     public static string Serialize(IList<SrtBlock> blocks)
@@ -64,13 +91,15 @@ public static class SubRipParser
         return sb.ToString().Replace("\n", "\r\n");
     }
 
+    // firstGroup is the sign group, followed by hours, minutes, seconds and milliseconds.
     private static long ToMs(Match m, int firstGroup)
     {
-        var h = int.Parse(m.Groups[firstGroup].Value, CultureInfo.InvariantCulture);
-        var mn = int.Parse(m.Groups[firstGroup + 1].Value, CultureInfo.InvariantCulture);
-        var s = int.Parse(m.Groups[firstGroup + 2].Value, CultureInfo.InvariantCulture);
-        var ms = int.Parse(m.Groups[firstGroup + 3].Value, CultureInfo.InvariantCulture);
-        return ((h * 60L + mn) * 60 + s) * 1000 + ms;
+        var h = long.Parse(m.Groups[firstGroup + 1].Value, CultureInfo.InvariantCulture);
+        var mn = long.Parse(m.Groups[firstGroup + 2].Value, CultureInfo.InvariantCulture);
+        var s = long.Parse(m.Groups[firstGroup + 3].Value, CultureInfo.InvariantCulture);
+        var ms = long.Parse(m.Groups[firstGroup + 4].Value.PadRight(3, '0'), CultureInfo.InvariantCulture);
+        var total = ((h * 60 + mn) * 60 + s) * 1000 + ms;
+        return m.Groups[firstGroup].Length > 0 ? -total : total;
     }
 
     private static string FormatTime(long ms)

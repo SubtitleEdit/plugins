@@ -44,30 +44,39 @@ if (request is null || string.IsNullOrEmpty(request.ResponseFilePath))
 var srt = request.Subtitle.SubRip;
 var selected = new HashSet<int>(request.SelectedIndices);
 
+// A SubRip block is: number line, timecode line, then text lines up to the next block. Walk the lines
+// rather than splitting on blank lines - a line whose text contains a blank line would split in two
+// and shift every SelectedIndices entry below it.
+var timeCodeLine = new Regex(@"^\s*-?\d+:\d{1,2}:\d{1,2}[,.]\d{1,3}\s*-->");
+var lines = srt.Replace("\r\n", "\n").Split('\n');
+var index = -1;
+var lastChangedIndex = -1;
 var count = 0;
-var blocks = Regex.Split(srt.Replace("\r\n", "\n").Trim('\n'), @"\n[ \t]*\n");
-for (var i = 0; i < blocks.Length; i++)
+for (var i = 0; i < lines.Length; i++)
 {
+    // A block starts at a number followed by a timecode line - at the start or after a blank line.
+    if (i + 1 < lines.Length &&
+        (index < 0 || lines[i - 1].Trim().Length == 0) &&
+        lines[i].Trim() is { Length: > 0 } number && number.All(char.IsAsciiDigit) &&
+        timeCodeLine.IsMatch(lines[i + 1]))
+    {
+        index++;
+        i++;
+        continue;
+    }
+
     // An empty SelectedIndices means "apply to every line".
-    if (selected.Count > 0 && !selected.Contains(i))
+    if (index < 0 || lines[i].Trim().Length == 0 || (selected.Count > 0 && !selected.Contains(index)))
     {
         continue;
     }
 
-    // A SubRip block is: number line, timecode line, then one or more text lines.
-    var lines = blocks[i].Split('\n');
-    if (lines.Length < 3)
+    lines[i] = HaxorTranslator.Translate(lines[i]);
+    if (lastChangedIndex != index)
     {
-        continue;
+        lastChangedIndex = index;
+        count++;
     }
-
-    for (var t = 2; t < lines.Length; t++)
-    {
-        lines[t] = HaxorTranslator.Translate(lines[t]);
-    }
-
-    blocks[i] = string.Join('\n', lines);
-    count++;
 }
 
 var response = new PluginResponse
@@ -78,7 +87,7 @@ var response = new PluginResponse
     Subtitle = new PluginSubtitle
     {
         Format = "SubRip",
-        Native = (string.Join("\n\n", blocks) + "\n").Replace("\n", "\r\n"),
+        Native = string.Join("\r\n", lines),
     },
 };
 
