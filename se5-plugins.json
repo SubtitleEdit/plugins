@@ -3,103 +3,103 @@
     {
       "name": "Word censor",
       "description": "Censors offensive words with one of three modes: grawlix masking (#@!?$%&), custom replacement text (e.g. [censored]), or swapping with a random alternative word. Optionally highlights censored words in red.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": "Subtitle Edit",
       "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/WordCensor",
-      "date": "2026-05-24",
+      "date": "2026-09-15",
       "minSeVersion": "5.0.0",
       "downloads": {
-        "win-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-word-censor-v1.1/WordCensor-win-x64.zip",
-        "win-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-word-censor-v1.1/WordCensor-win-arm64.zip",
-        "linux-x64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-word-censor-v1.1/WordCensor-linux-x64.zip",
-        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-word-censor-v1.1/WordCensor-linux-arm64.zip",
-        "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-word-censor-v1.1/WordCensor-osx-x64.zip",
-        "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-word-censor-v1.1/WordCensor-osx-arm64.zip"
+        "win-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-word-censor-v1.2/WordCensor-win-x64.zip",
+        "win-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-word-censor-v1.2/WordCensor-win-arm64.zip",
+        "linux-x64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-word-censor-v1.2/WordCensor-linux-x64.zip",
+        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-word-censor-v1.2/WordCensor-linux-arm64.zip",
+        "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-word-censor-v1.2/WordCensor-osx-x64.zip",
+        "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-word-censor-v1.2/WordCensor-osx-arm64.zip"
       }
     },
     {
       "name": "British to American",
       "description": "Converts British English spellings to American English in the subtitle. Shows a checkable preview of every proposed change.",
-      "version": "1.3.0",
+      "version": "1.4.0",
       "author": "Subtitle Edit",
       "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/BritishToAmerican",
-      "date": "2026-09-01",
+      "date": "2026-09-15",
       "minSeVersion": "5.0.0",
       "downloads": {
-        "win-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.3/BritishToAmerican-win-x64.zip",
-        "win-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.3/BritishToAmerican-win-arm64.zip",
-        "linux-x64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.3/BritishToAmerican-linux-x64.zip",
-        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.3/BritishToAmerican-linux-arm64.zip",
-        "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.3/BritishToAmerican-osx-x64.zip",
-        "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.3/BritishToAmerican-osx-arm64.zip"
+        "win-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.4/BritishToAmerican-win-x64.zip",
+        "win-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.4/BritishToAmerican-win-arm64.zip",
+        "linux-x64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.4/BritishToAmerican-linux-x64.zip",
+        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.4/BritishToAmerican-linux-arm64.zip",
+        "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.4/BritishToAmerican-osx-x64.zip",
+        "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.4/BritishToAmerican-osx-arm64.zip"
       }
     },
     {
       "name": "American to British",
       "description": "Converts American English spellings to British English in the subtitle. Shows a checkable preview of every proposed change.",
-      "version": "1.3.0",
+      "version": "1.4.0",
       "author": "Subtitle Edit",
       "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/AmericanToBritish",
-      "date": "2026-09-01",
+      "date": "2026-09-15",
       "minSeVersion": "5.0.0",
       "downloads": {
-        "win-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.3/AmericanToBritish-win-x64.zip",
-        "win-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.3/AmericanToBritish-win-arm64.zip",
-        "linux-x64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.3/AmericanToBritish-linux-x64.zip",
-        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.3/AmericanToBritish-linux-arm64.zip",
-        "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.3/AmericanToBritish-osx-x64.zip",
-        "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.3/AmericanToBritish-osx-arm64.zip"
+        "win-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.4/AmericanToBritish-win-x64.zip",
+        "win-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.4/AmericanToBritish-win-arm64.zip",
+        "linux-x64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.4/AmericanToBritish-linux-x64.zip",
+        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.4/AmericanToBritish-linux-arm64.zip",
+        "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.4/AmericanToBritish-osx-x64.zip",
+        "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.4/AmericanToBritish-osx-arm64.zip"
       }
     },
     {
       "name": "Typewriter effect",
       "description": "Splits each subtitle line into short timed parts that progressively reveal the text, character by character.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": "Subtitle Edit",
       "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/TypewriterEffect",
-      "date": "2026-05-24",
+      "date": "2026-09-15",
       "minSeVersion": "5.0.0",
       "downloads": {
-        "win-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-typewriter-v1.1/TypewriterEffect-win-x64.zip",
-        "win-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-typewriter-v1.1/TypewriterEffect-win-arm64.zip",
-        "linux-x64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-typewriter-v1.1/TypewriterEffect-linux-x64.zip",
-        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-typewriter-v1.1/TypewriterEffect-linux-arm64.zip",
-        "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-typewriter-v1.1/TypewriterEffect-osx-x64.zip",
-        "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-typewriter-v1.1/TypewriterEffect-osx-arm64.zip"
+        "win-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-typewriter-v1.2/TypewriterEffect-win-x64.zip",
+        "win-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-typewriter-v1.2/TypewriterEffect-win-arm64.zip",
+        "linux-x64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-typewriter-v1.2/TypewriterEffect-linux-x64.zip",
+        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-typewriter-v1.2/TypewriterEffect-linux-arm64.zip",
+        "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-typewriter-v1.2/TypewriterEffect-osx-x64.zip",
+        "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-typewriter-v1.2/TypewriterEffect-osx-arm64.zip"
       }
     },
     {
       "name": "Haxor",
       "description": "Translates the text of the selected lines (or all lines) to haxor.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": "Subtitle Edit",
       "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/Haxor",
-      "date": "2026-05-24",
+      "date": "2026-09-15",
       "minSeVersion": "5.0.0",
       "downloads": {
-        "win-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-haxor-v1.1/Haxor-win-x64.zip",
-        "win-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-haxor-v1.1/Haxor-win-arm64.zip",
-        "linux-x64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-haxor-v1.1/Haxor-linux-x64.zip",
-        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-haxor-v1.1/Haxor-linux-arm64.zip",
-        "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-haxor-v1.1/Haxor-osx-x64.zip",
-        "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-haxor-v1.1/Haxor-osx-arm64.zip"
+        "win-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-haxor-v1.2/Haxor-win-x64.zip",
+        "win-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-haxor-v1.2/Haxor-win-arm64.zip",
+        "linux-x64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-haxor-v1.2/Haxor-linux-x64.zip",
+        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-haxor-v1.2/Haxor-linux-arm64.zip",
+        "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-haxor-v1.2/Haxor-osx-x64.zip",
+        "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-haxor-v1.2/Haxor-osx-arm64.zip"
       }
     },
     {
       "name": "Remove Unicode characters",
       "description": "Detects non-ANSI characters in the subtitle and lets you remove or replace each one. Shows a checkable preview with the count and line numbers per character.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": "Subtitle Edit",
       "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/RemoveUnicodeCharacters",
-      "date": "2026-05-26",
+      "date": "2026-09-15",
       "minSeVersion": "5.0.0",
       "downloads": {
-        "win-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-remove-unicode-characters-v1.1/RemoveUnicodeCharacters-win-x64.zip",
-        "win-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-remove-unicode-characters-v1.1/RemoveUnicodeCharacters-win-arm64.zip",
-        "linux-x64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-remove-unicode-characters-v1.1/RemoveUnicodeCharacters-linux-x64.zip",
-        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-remove-unicode-characters-v1.1/RemoveUnicodeCharacters-linux-arm64.zip",
-        "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-remove-unicode-characters-v1.1/RemoveUnicodeCharacters-osx-x64.zip",
-        "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-remove-unicode-characters-v1.1/RemoveUnicodeCharacters-osx-arm64.zip"
+        "win-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-remove-unicode-characters-v1.2/RemoveUnicodeCharacters-win-x64.zip",
+        "win-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-remove-unicode-characters-v1.2/RemoveUnicodeCharacters-win-arm64.zip",
+        "linux-x64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-remove-unicode-characters-v1.2/RemoveUnicodeCharacters-linux-x64.zip",
+        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-remove-unicode-characters-v1.2/RemoveUnicodeCharacters-linux-arm64.zip",
+        "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-remove-unicode-characters-v1.2/RemoveUnicodeCharacters-osx-x64.zip",
+        "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-remove-unicode-characters-v1.2/RemoveUnicodeCharacters-osx-arm64.zip"
       }
     },
     {
