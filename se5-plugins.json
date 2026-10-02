@@ -36,19 +36,19 @@
     },
     {
       "name": "American to British",
-      "description": "Converts American English spellings to British English in the subtitle. Shows a checkable preview of every proposed change.",
-      "version": "1.4.0",
+      "description": "Converts American English spellings to British English in the subtitle. Shows a checkable preview of every proposed change. Supports a local word list for your own words and ignored built-in ones.",
+      "version": "1.5.0",
       "author": "Subtitle Edit",
       "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/AmericanToBritish",
-      "date": "2026-09-15",
+      "date": "2026-10-02",
       "minSeVersion": "5.0.0",
       "downloads": {
-        "win-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.4/AmericanToBritish-win-x64.zip",
-        "win-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.4/AmericanToBritish-win-arm64.zip",
-        "linux-x64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.4/AmericanToBritish-linux-x64.zip",
-        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.4/AmericanToBritish-linux-arm64.zip",
-        "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.4/AmericanToBritish-osx-x64.zip",
-        "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.4/AmericanToBritish-osx-arm64.zip"
+        "win-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.5/AmericanToBritish-win-x64.zip",
+        "win-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.5/AmericanToBritish-win-arm64.zip",
+        "linux-x64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.5/AmericanToBritish-linux-x64.zip",
+        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.5/AmericanToBritish-linux-arm64.zip",
+        "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.5/AmericanToBritish-osx-x64.zip",
+        "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-american-to-british-v1.5/AmericanToBritish-osx-arm64.zip"
       }
     },
     {
