@@ -15,6 +15,7 @@ public partial class MainWindow : Window
     private readonly PluginRequest _request;
     private readonly List<SrtBlock> _blocks;
     private readonly ObservableCollection<ChangeProposal> _proposals = new();
+    private readonly string _wordListPath = LocalWordList.GetDefaultPath("AmericanToBritish.xml");
 
     private TextBlock _summaryLabel = null!;
     private TextBlock _subtitleLabel = null!;
@@ -30,30 +31,50 @@ public partial class MainWindow : Window
         InitializeComponent();
 
         _blocks = SubRipParser.Parse(request.Subtitle.SubRip);
-        BuildProposals();
-
         _changesList.ItemsSource = _proposals;
+        RefreshProposals();
+    }
 
-        var scope = request.SelectedIndices.Count > 0
-            ? $"the {request.SelectedIndices.Count} selected line(s)"
+    private void RefreshProposals()
+    {
+        foreach (var proposal in _proposals)
+        {
+            proposal.PropertyChanged -= OnProposalChanged;
+        }
+        _proposals.Clear();
+
+        var scope = _request.SelectedIndices.Count > 0
+            ? $"the {_request.SelectedIndices.Count} selected line(s)"
             : "all lines";
         _subtitleLabel.Text = $"Convert American to British English spellings in {scope}.";
 
-        if (_proposals.Count == 0)
+        LocalWordList? localWordList = null;
+        try
         {
-            _noChangesLabel.IsVisible = true;
-            _changesList.IsVisible = false;
+            localWordList = LocalWordList.Load(_wordListPath);
+        }
+        catch (Exception ex)
+        {
+            _subtitleLabel.Text += $" Local word list ignored - could not read {_wordListPath}: {ex.Message}";
+        }
+
+        BuildProposals(localWordList);
+
+        var hasChanges = _proposals.Count > 0;
+        _noChangesLabel.IsVisible = !hasChanges;
+        _changesList.IsVisible = hasChanges;
+        if (!hasChanges)
+        {
             _applyButton.IsEnabled = false;
             _summaryLabel.Text = string.Empty;
+            return;
         }
-        else
+
+        foreach (var proposal in _proposals)
         {
-            foreach (var proposal in _proposals)
-            {
-                proposal.PropertyChanged += OnProposalChanged;
-            }
-            UpdateSummary();
+            proposal.PropertyChanged += OnProposalChanged;
         }
+        UpdateSummary();
     }
 
     private void InitializeComponent()
@@ -72,9 +93,9 @@ public partial class MainWindow : Window
         this.BringToForeground();
     }
 
-    private void BuildProposals()
+    private void BuildProposals(LocalWordList? localWordList)
     {
-        var converter = new EnglishVariantConverter(EnglishVariantDirection.UsToBr);
+        var converter = new EnglishVariantConverter(EnglishVariantDirection.UsToBr, localWordList);
         var selected = new HashSet<int>(_request.SelectedIndices);
         var applyToAll = selected.Count == 0;
 
@@ -121,6 +142,26 @@ public partial class MainWindow : Window
         foreach (var proposal in _proposals)
         {
             proposal.Include = false;
+        }
+    }
+
+    private async void OnEditWordList(object? sender, RoutedEventArgs e)
+    {
+        var list = new LocalWordList();
+        string? loadError = null;
+        try
+        {
+            list = LocalWordList.Load(_wordListPath);
+        }
+        catch (Exception ex)
+        {
+            loadError = $"Could not read the existing file ({ex.Message}). Clicking OK replaces it with the list below.";
+        }
+
+        var saved = await new WordListWindow(_wordListPath, list, loadError).ShowDialog<bool>(this);
+        if (saved)
+        {
+            RefreshProposals();
         }
     }
 

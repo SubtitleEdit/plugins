@@ -13,9 +13,9 @@ public enum EnglishVariantDirection
 
 /// <summary>
 /// Converts between American and British English using the bundled WordList.xml
-/// (~1850 pairs). Each pair becomes three case-aware regexes: lowercase,
-/// UPPERCASE, and Titlecase, all matched as whole words. Picks direction via
-/// <see cref="EnglishVariantDirection"/>.
+/// (~1850 pairs), optionally extended/filtered by a <see cref="LocalWordList"/>.
+/// Each pair becomes three case-aware regexes: lowercase, UPPERCASE, and Titlecase,
+/// all matched as whole words. Picks direction via <see cref="EnglishVariantDirection"/>.
 /// </summary>
 public sealed class EnglishVariantConverter
 {
@@ -29,10 +29,30 @@ public sealed class EnglishVariantConverter
 
     private readonly EnglishVariantDirection _direction;
 
-    public EnglishVariantConverter(EnglishVariantDirection direction)
+    public EnglishVariantConverter(EnglishVariantDirection direction, LocalWordList? localWordList = null)
     {
         _direction = direction;
-        LoadBuiltInWordList();
+
+        var ignored = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (localWordList != null)
+        {
+            // Local pairs first so a user phrase wins over a built-in word inside it, and a
+            // local pair for a built-in word replaces the built-in one.
+            foreach (var (us, br) in localWordList.Words)
+            {
+                if (ignored.Add(us))
+                {
+                    AddPair(us, br);
+                }
+            }
+
+            foreach (var us in localWordList.Ignored)
+            {
+                ignored.Add(us);
+            }
+        }
+
+        LoadBuiltInWordList(ignored);
     }
 
     public int RuleCount => _rules.Count;
@@ -60,7 +80,7 @@ public sealed class EnglishVariantConverter
         return !string.Equals(text, converted, StringComparison.Ordinal);
     }
 
-    private void LoadBuiltInWordList()
+    private void LoadBuiltInWordList(HashSet<string> ignored)
     {
         using var stream = typeof(EnglishVariantConverter).Assembly
             .GetManifestResourceStream("SubtitleEdit.Plugins.Shared.WordList.xml")
@@ -90,12 +110,22 @@ public sealed class EnglishVariantConverter
                 continue;
             }
 
-            var (from, to) = _direction == EnglishVariantDirection.UsToBr ? (us, br) : (br, us);
+            if (ignored.Contains(us!))
+            {
+                continue;
+            }
 
-            AddRule(from, to);
-            AddRule(from.ToUpperInvariant(), to.ToUpperInvariant());
-            AddRule(char.ToUpperInvariant(from[0]) + from.Substring(1), char.ToUpperInvariant(to[0]) + to.Substring(1));
+            AddPair(us!, br!);
         }
+    }
+
+    private void AddPair(string us, string br)
+    {
+        var (from, to) = _direction == EnglishVariantDirection.UsToBr ? (us, br) : (br, us);
+
+        AddRule(from, to);
+        AddRule(from.ToUpperInvariant(), to.ToUpperInvariant());
+        AddRule(char.ToUpperInvariant(from[0]) + from.Substring(1), char.ToUpperInvariant(to[0]) + to.Substring(1));
     }
 
     private void AddRule(string from, string to)
