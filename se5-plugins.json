@@ -118,6 +118,23 @@
         "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-split-dialogs-v1.1/SplitDialogs-osx-x64.zip",
         "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-split-dialogs-v1.1/SplitDialogs-osx-arm64.zip"
       }
+    },
+    {
+      "name": "ARTE check",
+      "description": "Checks and fixes EBU STL teletext subtitles for ARTE delivery: header, blank control subtitle, 25 fps frames, durations, gaps, rows, colors and characters per row. Corrections are previewed and selectable; problems that need a manual edit are listed as alarms.",
+      "version": "1.1.0",
+      "author": "Subtitle Edit (rules by Triathlon-rally)",
+      "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/ArteCheck",
+      "date": "2026-10-04",
+      "minSeVersion": "5.0.0",
+      "downloads": {
+        "win-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-arte-check-v1.1/ArteCheck-win-x64.zip",
+        "win-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-arte-check-v1.1/ArteCheck-win-arm64.zip",
+        "linux-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-arte-check-v1.1/ArteCheck-linux-x64.zip",
+        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-arte-check-v1.1/ArteCheck-linux-arm64.zip",
+        "osx-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-arte-check-v1.1/ArteCheck-osx-x64.zip",
+        "osx-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-arte-check-v1.1/ArteCheck-osx-arm64.zip"
+      }
     }
   ]
 }
