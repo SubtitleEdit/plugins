@@ -33,6 +33,10 @@ public sealed class PluginRequest
     public PluginThemeColors? ThemeColors { get; set; }
 
     public string SeVersion { get; set; } = string.Empty;
+
+    /// <summary>Read-only snapshot of the user's subtitle rules. Null on older SE versions.</summary>
+    public PluginRules? Rules { get; set; }
+
     public JsonElement? Settings { get; set; }
 
     /// <summary>
@@ -59,8 +63,69 @@ public sealed class PluginSubtitle
 {
     public string Format { get; set; } = string.Empty;
     public string FileName { get; set; } = string.Empty;
+
+    /// <summary>The subtitle in its own format. Empty for binary formats (EBU STL, PAC, ...).</summary>
     public string Native { get; set; } = string.Empty;
+
     public string SubRip { get; set; } = string.Empty;
+
+    /// <summary>
+    /// In-memory header: the EBU STL GSI block (1024 characters), ASSA [Script Info]/styles, ...
+    /// Null on older SE versions. In a response, null keeps SE's current header.
+    /// </summary>
+    public string? Header { get; set; }
+
+    /// <summary>
+    /// The lines exactly as SE holds them. Null on older SE versions. In a response, non-empty
+    /// paragraphs win over <see cref="Native"/>: SE applies them as-is and keeps its format.
+    /// </summary>
+    public List<PluginParagraph>? Paragraphs { get; set; }
+}
+
+/// <summary>One subtitle line with every field SE keeps (not only what survives SubRip).</summary>
+public sealed class PluginParagraph
+{
+    public double StartMs { get; set; }
+    public double EndMs { get; set; }
+    public string Text { get; set; } = string.Empty;
+    public string? Style { get; set; }
+    public string? Actor { get; set; }
+    public string? Language { get; set; }
+    public string? Region { get; set; }
+    public string? Effect { get; set; }
+    public string? Extra { get; set; }
+    public string? MarginL { get; set; }
+    public string? MarginR { get; set; }
+
+    /// <summary>For EBU STL / DVB Teletext: the teletext row (vertical position) the line starts on.</summary>
+    public string? MarginV { get; set; }
+
+    public int Layer { get; set; }
+    public bool IsComment { get; set; }
+    public bool Forced { get; set; }
+    public bool NewSection { get; set; }
+    public string? Bookmark { get; set; }
+
+    public PluginParagraph Clone() => (PluginParagraph)MemberwiseClone();
+}
+
+/// <summary>Read-only snapshot of the user's Subtitle Edit rules.</summary>
+public sealed class PluginRules
+{
+    public int SubtitleMinimumDisplayMilliseconds { get; set; }
+    public int SubtitleMaximumDisplayMilliseconds { get; set; }
+    public double SubtitleMaximumCharactersPerSeconds { get; set; }
+    public double SubtitleOptimalCharactersPerSeconds { get; set; }
+    public int SubtitleLineMaximumLength { get; set; }
+    public int MaxNumberOfLines { get; set; }
+    public int MinimumMillisecondsBetweenLines { get; set; }
+    public int MinimumFramesBetweenLines { get; set; }
+    public bool UseFrameMode { get; set; }
+    public bool EbuStlTeletextUseBox { get; set; }
+    public bool EbuStlTeletextUseDoubleHeight { get; set; }
+
+    /// <summary>Paragraph times are video-relative; the grid and the saved file show time + this offset.</summary>
+    public long VideoOffsetMs { get; set; }
 }
 
 public sealed class PluginResponse
