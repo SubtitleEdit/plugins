@@ -1,0 +1,446 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="https://github.com/projektanker/icons.avalonia"
+        xmlns:sys="using:System"
+        xmlns:local="using:SubtitleEdit.Plugins.ArteCheck"
+        x:Class="SubtitleEdit.Plugins.ArteCheck.MainWindow"
+        x:DataType="local:MainViewModel"
+        mc:Ignorable="d"
+        Title="ARTE check"
+        Width="1220" Height="800"
+        MinWidth="900" MinHeight="560"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="AccentOrange" Color="#F26B21" />
+        <SolidColorBrush x:Key="FixBrush" Color="#2FA36B" />
+        <SolidColorBrush x:Key="FixTint" Color="#1F2FA36B" />
+        <SolidColorBrush x:Key="AlarmBrush" Color="#E5484D" />
+        <SolidColorBrush x:Key="AlarmTint" Color="#1FE5484D" />
+        <SolidColorBrush x:Key="CardBrush" Color="#0C808080" />
+        <SolidColorBrush x:Key="CardBorder" Color="#26808080" />
+        <SolidColorBrush x:Key="MutedBrush" Color="#99808080" />
+        <FontFamily x:Key="MonoFont">Cascadia Mono, Consolas, Menlo, DejaVu Sans Mono, monospace</FontFamily>
+    </Window.Resources>
+
+    <Window.Styles>
+        <Style Selector="TextBlock.muted">
+            <Setter Property="Opacity" Value="0.65" />
+        </Style>
+        <Style Selector="TextBlock.section">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="LetterSpacing" Value="1" />
+            <Setter Property="Opacity" Value="0.7" />
+        </Style>
+        <Style Selector="TextBlock.label">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Opacity" Value="0.8" />
+            <Setter Property="Margin" Value="0,0,0,4" />
+        </Style>
+        <Style Selector="Border.card">
+            <Setter Property="Background" Value="{StaticResource CardBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource CardBorder}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="10" />
+        </Style>
+        <Style Selector="Border.chip">
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="Padding" Value="10,5" />
+        </Style>
+        <Style Selector="Border.badge">
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="7,2" />
+            <Setter Property="Background" Value="{StaticResource CardBorder}" />
+        </Style>
+        <Style Selector="ToggleButton.filter">
+            <Setter Property="CornerRadius" Value="16" />
+            <Setter Property="Padding" Value="12,5" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="{StaticResource CardBorder}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        <Style Selector="Button.icon">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Padding" Value="8,5" />
+        </Style>
+        <Style Selector="Expander">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>
+        <Style Selector="Border.teletext">
+            <Setter Property="Background" Value="#FF0B0B0B" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="12,10" />
+            <Setter Property="Width" Value="350" />
+            <Setter Property="ClipToBounds" Value="True" />
+            <Setter Property="BorderBrush" Value="#33FFFFFF" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        <Style Selector="Border.teletext.after">
+            <Setter Property="BorderBrush" Value="{StaticResource FixBrush}" />
+        </Style>
+        <Style Selector="TextBlock.teletext">
+            <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="LineHeight" Value="21" />
+            <Setter Property="TextWrapping" Value="NoWrap" />
+        </Style>
+        <Style Selector="NumericUpDown">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+        </Style>
+    </Window.Styles>
+
+    <DockPanel>
+
+        <!-- Header -->
+        <Border DockPanel.Dock="Top" Padding="24,18,24,16" BorderBrush="{StaticResource CardBorder}" BorderThickness="0,0,0,1">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <Border Width="46" Height="46" CornerRadius="12" Background="{StaticResource AccentOrange}" VerticalAlignment="Center">
+                    <i:Icon Value="mdi-television-classic" FontSize="26" Foreground="White" />
+                </Border>
+                <StackPanel Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Center" Spacing="2">
+                    <TextBlock Text="ARTE check" FontSize="20" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding SubtitleInfo}" Classes="muted" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <Border Classes="chip" Background="{StaticResource FixTint}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <i:Icon Value="mdi-wrench-outline" Foreground="{StaticResource FixBrush}" FontSize="15" />
+                            <TextBlock FontWeight="SemiBold" Foreground="{StaticResource FixBrush}">
+                                <Run Text="{Binding FixCount}" /><Run Text=" corrections" />
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+                    <Border Classes="chip" Background="{StaticResource AlarmTint}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <i:Icon Value="mdi-alert-octagon-outline" Foreground="{StaticResource AlarmBrush}" FontSize="15" />
+                            <TextBlock FontWeight="SemiBold" Foreground="{StaticResource AlarmBrush}">
+                                <Run Text="{Binding AlarmCount}" /><Run Text=" alarms" />
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Footer -->
+        <Border DockPanel.Dock="Bottom" Padding="24,14" BorderBrush="{StaticResource CardBorder}" BorderThickness="0,1,0,0">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <i:Icon Value="mdi-information-outline" FontSize="16" Opacity="0.6" />
+                    <TextBlock Text="{Binding StatusText}" Classes="muted" VerticalAlignment="Center" />
+                    <Border Classes="badge" IsVisible="{Binding HasApplied}" VerticalAlignment="Center">
+                        <TextBlock FontSize="11"><Run Text="{Binding AppliedCount}" /><Run Text=" applied so far" /></TextBlock>
+                    </Border>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                    <Button Command="{Binding UndoCommand}" IsEnabled="{Binding CanUndo}" ToolTip.Tip="Undo the last applied pass">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <i:Icon Value="mdi-undo" FontSize="16" />
+                            <TextBlock Text="Undo" />
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding ApplySelectedCommand}" ToolTip.Tip="Apply the selected corrections and check again">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <i:Icon Value="mdi-auto-fix" FontSize="16" />
+                            <TextBlock Text="Apply and re-check" />
+                        </StackPanel>
+                    </Button>
+                    <Button Click="OnCancel" MinWidth="96">
+                        <TextBlock Text="Cancel" HorizontalAlignment="Center" />
+                    </Button>
+                    <Button Click="OnOk" Classes="accent" MinWidth="110" IsDefault="True">
+                        <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
+                            <i:Icon Value="mdi-check" FontSize="16" />
+                            <TextBlock Text="OK" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Settings sidebar -->
+        <Border DockPanel.Dock="Left" Width="300" BorderBrush="{StaticResource CardBorder}" BorderThickness="0,0,1,0">
+            <ScrollViewer>
+                <StackPanel Margin="20,18,24,18" Spacing="22">
+
+                    <StackPanel Spacing="10">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <i:Icon Value="mdi-truck-delivery-outline" FontSize="16" Opacity="0.7" />
+                            <TextBlock Text="DELIVERY" Classes="section" />
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock Text="Profile" Classes="label" />
+                            <ComboBox ItemsSource="{Binding Profiles}" SelectedItem="{Binding SelectedProfile}" HorizontalAlignment="Stretch">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="local:ArteProfile">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                                            <TextBlock Text="{Binding Description}" FontSize="11" Classes="muted" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock Text="Timed for (converted to 25 fps)" Classes="label" />
+                            <ComboBox ItemsSource="{Binding FrameRates}" SelectedItem="{Binding SelectedFrameRate}" HorizontalAlignment="Stretch">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="sys:Double">
+                                        <TextBlock Text="{Binding StringFormat='{}{0:0.###} fps'}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Spacing="6">
+                            <CheckBox IsChecked="{Binding ShiftToStartTimeCode}" Content="Move programme start to" />
+                            <TextBox Text="{Binding TargetStartTimeCode}" FontFamily="{StaticResource MonoFont}"
+                                     IsEnabled="{Binding ShiftToStartTimeCode}" Watermark="HH:MM:SS:FF" />
+                            <TextBlock Text="Use HH:MM:SS:FF (25 fps)" FontSize="11" Foreground="{StaticResource AlarmBrush}"
+                                       IsVisible="{Binding !IsTargetStartTimeCodeValid}" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Spacing="10">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <i:Icon Value="mdi-tune-variant" FontSize="16" Opacity="0.7" />
+                                <TextBlock Text="LIMITS" Classes="section" />
+                            </StackPanel>
+                            <Border Grid.Column="1" Classes="badge">
+                                <TextBlock Text="{Binding PresetLabel}" FontSize="11" />
+                            </Border>
+                        </Grid>
+                        <Grid ColumnDefinitions="*,10,*" RowDefinitions="Auto,10,Auto">
+                            <StackPanel>
+                                <TextBlock Text="Characters / row" Classes="label" />
+                                <NumericUpDown Value="{Binding TeletextMaxCells}" Minimum="10" Maximum="40" Increment="1" FormatString="0" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Min. gap (frames)" Classes="label" />
+                                <NumericUpDown Value="{Binding MinimumGapFrames}" Minimum="0" Maximum="50" Increment="1" FormatString="0" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="2">
+                                <TextBlock Text="Reading tolerance %" Classes="label" />
+                                <NumericUpDown Value="{Binding ReadingTolerancePercent}" Minimum="0" Maximum="100" Increment="1" FormatString="0.#" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="2" Grid.Column="2" IsEnabled="{Binding AcceptShortDurations}">
+                                <TextBlock Text="Short min. (frames)" Classes="label" />
+                                <NumericUpDown Value="{Binding ShortMinimumFrames}" Minimum="1" Maximum="250" Increment="1" FormatString="0" />
+                            </StackPanel>
+                        </Grid>
+                        <ToggleSwitch IsChecked="{Binding AcceptShortDurations}" OnContent="Accept short durations" OffContent="Accept short durations" />
+                        <Button Command="{Binding ApplyPresetCommand}" HorizontalAlignment="Stretch" IsEnabled="{Binding !IsPreset}">
+                            <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
+                                <i:Icon Value="mdi-restore" FontSize="16" />
+                                <TextBlock Text="Reset to ARTE preset" />
+                            </StackPanel>
+                        </Button>
+                        <TextBlock TextWrapping="Wrap" FontSize="11" Classes="muted"
+                                   Text="37 visible characters (the 40-cell row includes control codes), 5-frame gaps, 15% reading tolerance. Durations and CPS come from Subtitle Edit's settings." />
+                    </StackPanel>
+
+                    <StackPanel Spacing="6">
+                        <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,4">
+                            <i:Icon Value="mdi-format-list-checks" FontSize="16" Opacity="0.7" />
+                            <TextBlock Text="CHECKS" Classes="section" />
+                        </StackPanel>
+                        <ItemsControl ItemsSource="{Binding Checks}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="local:CheckItem">
+                                    <CheckBox IsChecked="{Binding IsEnabled}" Margin="0,1" ToolTip.Tip="{Binding Description}">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <i:Icon Value="{Binding Icon}" FontSize="15" Opacity="0.75" />
+                                            <TextBlock Text="{Binding Name}" />
+                                        </StackPanel>
+                                    </CheckBox>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- Findings -->
+        <DockPanel Margin="20,16,20,0">
+            <Border DockPanel.Dock="Top" Classes="card" Padding="12,10" Margin="0,0,0,12"
+                    Background="#1FF2A33A" BorderBrush="#66F2A33A" IsVisible="{Binding ShowFormatWarning}">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <i:Icon Value="mdi-information-outline" FontSize="18" Foreground="#F2A33A" />
+                    <TextBlock Text="{Binding FormatWarning}" TextWrapping="Wrap" VerticalAlignment="Center" MaxWidth="760" />
+                </StackPanel>
+            </Border>
+
+            <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,12" IsVisible="{Binding HasFindings}">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <ToggleButton Classes="filter" IsChecked="{Binding ShowAll}">
+                        <TextBlock Text="All" />
+                    </ToggleButton>
+                    <ToggleButton Classes="filter" IsChecked="{Binding ShowFixes}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <i:Icon Value="mdi-wrench-outline" FontSize="14" Foreground="{StaticResource FixBrush}" />
+                            <TextBlock Text="Corrections" />
+                        </StackPanel>
+                    </ToggleButton>
+                    <ToggleButton Classes="filter" IsChecked="{Binding ShowAlarms}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <i:Icon Value="mdi-alert-octagon-outline" FontSize="14" Foreground="{StaticResource AlarmBrush}" />
+                            <TextBlock Text="Alarms" />
+                        </StackPanel>
+                    </ToggleButton>
+                </StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="2">
+                    <Button Classes="icon" Command="{Binding SelectAllCommand}" ToolTip.Tip="Select every correction">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <i:Icon Value="mdi-checkbox-multiple-marked-outline" FontSize="16" />
+                            <TextBlock Text="Select all" />
+                        </StackPanel>
+                    </Button>
+                    <Button Classes="icon" Command="{Binding SelectNoneCommand}" ToolTip.Tip="Clear the selection">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <i:Icon Value="mdi-checkbox-multiple-blank-outline" FontSize="16" />
+                            <TextBlock Text="None" />
+                        </StackPanel>
+                    </Button>
+                    <Button Classes="icon" Command="{Binding ExpandAllCommand}" ToolTip.Tip="Expand all groups">
+                        <i:Icon Value="mdi-unfold-more-horizontal" FontSize="16" />
+                    </Button>
+                    <Button Classes="icon" Command="{Binding CollapseAllCommand}" ToolTip.Tip="Collapse all groups">
+                        <i:Icon Value="mdi-unfold-less-horizontal" FontSize="16" />
+                    </Button>
+                    <Button Classes="icon" Click="OnSaveReport" ToolTip.Tip="Save the findings as a text report">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <i:Icon Value="mdi-file-document-outline" FontSize="16" />
+                            <TextBlock Text="Report" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- Empty state -->
+            <StackPanel DockPanel.Dock="Top" IsVisible="{Binding IsClean}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Margin="0,110,0,0" Spacing="10">
+                <Border Width="84" Height="84" CornerRadius="42" Background="{StaticResource FixTint}" HorizontalAlignment="Center">
+                    <i:Icon Value="mdi-check-decagram-outline" FontSize="46" Foreground="{StaticResource FixBrush}" />
+                </Border>
+                <TextBlock Text="Ready for ARTE" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                <TextBlock Text="The subtitle passes every enabled check." Classes="muted" HorizontalAlignment="Center" />
+            </StackPanel>
+
+            <ScrollViewer IsVisible="{Binding HasFindings}" Padding="0,0,8,16">
+                <ItemsControl ItemsSource="{Binding Groups}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Spacing="10" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:FixGroup">
+                            <Expander IsExpanded="{Binding IsExpanded}" CornerRadius="10">
+                                <Expander.Header>
+                                    <Grid ColumnDefinitions="Auto,*,Auto">
+                                        <Border Width="30" Height="30" CornerRadius="8" Background="{StaticResource CardBorder}">
+                                            <i:Icon Value="{Binding Icon}" FontSize="17" />
+                                        </Border>
+                                        <TextBlock Grid.Column="1" Text="{Binding Name}" FontWeight="SemiBold" FontSize="14"
+                                                   VerticalAlignment="Center" Margin="12,0,0,0" />
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                                            <Border Classes="chip" Padding="8,2" Background="{StaticResource FixTint}" IsVisible="{Binding HasFixes}">
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <i:Icon Value="mdi-wrench-outline" FontSize="12" Foreground="{StaticResource FixBrush}" />
+                                                    <TextBlock Text="{Binding FixCount}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource FixBrush}" />
+                                                </StackPanel>
+                                            </Border>
+                                            <Border Classes="chip" Padding="8,2" Background="{StaticResource AlarmTint}" IsVisible="{Binding HasAlarms}">
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <i:Icon Value="mdi-alert-octagon-outline" FontSize="12" Foreground="{StaticResource AlarmBrush}" />
+                                                    <TextBlock Text="{Binding AlarmCount}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource AlarmBrush}" />
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
+                                    </Grid>
+                                </Expander.Header>
+
+                                <StackPanel Spacing="8">
+                                    <StackPanel Orientation="Horizontal" Spacing="4" IsVisible="{Binding HasFixes}">
+                                        <Button Classes="icon" FontSize="12" Command="{Binding SelectAllCommand}" Content="Select all in group" />
+                                        <Button Classes="icon" FontSize="12" Command="{Binding SelectNoneCommand}" Content="None" />
+                                    </StackPanel>
+                                    <ItemsControl ItemsSource="{Binding Items}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Spacing="8" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="local:ArteFix">
+                                                <Border Classes="card" ClipToBounds="True">
+                                                    <Grid ColumnDefinitions="4,Auto,*">
+                                                        <Border Background="{StaticResource FixBrush}" IsVisible="{Binding CanBeFixed}" />
+                                                        <Border Background="{StaticResource AlarmBrush}" IsVisible="{Binding IsAlarm}" />
+                                                        <Panel Grid.Column="1" Width="44" Margin="6,12,0,0" VerticalAlignment="Top">
+                                                            <CheckBox IsChecked="{Binding Apply}" IsVisible="{Binding CanBeFixed}"
+                                                                      HorizontalAlignment="Center" ToolTip.Tip="Apply this correction" />
+                                                            <i:Icon Value="mdi-alert-octagon-outline" FontSize="20" Foreground="{StaticResource AlarmBrush}"
+                                                                    IsVisible="{Binding IsAlarm}" HorizontalAlignment="Center" Margin="0,4,0,0"
+                                                                    ToolTip.Tip="Needs a manual edit" />
+                                                        </Panel>
+                                                        <StackPanel Grid.Column="2" Margin="4,12,14,12" Spacing="8">
+                                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                                <Border Classes="badge">
+                                                                    <TextBlock FontSize="11" FontWeight="SemiBold" Text="{Binding IndexDisplay}" />
+                                                                </Border>
+                                                                <TextBlock Text="{Binding TimeRange}" FontFamily="{StaticResource MonoFont}" FontSize="12"
+                                                                           Classes="muted" VerticalAlignment="Center" IsVisible="{Binding HasTimeRange}" />
+                                                            </StackPanel>
+                                                            <TextBlock Text="{Binding Reason}" TextWrapping="Wrap" />
+
+                                                            <!-- Text changes: teletext preview, one 40-cell teletext row wide -->
+                                                            <WrapPanel IsVisible="{Binding IsTextChange}" Orientation="Horizontal">
+                                                                <StackPanel Spacing="4" Margin="0,0,0,6">
+                                                                    <TextBlock Text="BEFORE" Classes="section" FontSize="10" />
+                                                                    <Border Classes="teletext">
+                                                                        <local:TeletextPreview Markup="{Binding Before}" Classes="teletext" />
+                                                                    </Border>
+                                                                </StackPanel>
+                                                                <i:Icon Value="mdi-arrow-right" FontSize="18" Opacity="0.5" Margin="12,18,12,0"
+                                                                        VerticalAlignment="Center" IsVisible="{Binding HasAfter}" />
+                                                                <StackPanel Spacing="4" Margin="0,0,0,6" IsVisible="{Binding HasAfter}">
+                                                                    <TextBlock Text="AFTER" Classes="section" FontSize="10" />
+                                                                    <Border Classes="teletext after">
+                                                                        <local:TeletextPreview Markup="{Binding After}" Classes="teletext" />
+                                                                    </Border>
+                                                                </StackPanel>
+                                                            </WrapPanel>
+
+                                                            <!-- Time codes, header values, ... -->
+                                                            <Grid ColumnDefinitions="*,Auto,*" IsVisible="{Binding IsPlainChange}">
+                                                                <Border Background="{StaticResource AlarmTint}" CornerRadius="6" Padding="10,8">
+                                                                    <SelectableTextBlock Text="{Binding Before}" FontFamily="{StaticResource MonoFont}" FontSize="12" TextWrapping="Wrap" />
+                                                                </Border>
+                                                                <i:Icon Grid.Column="1" Value="mdi-arrow-right" FontSize="18" Opacity="0.5" Margin="10,0"
+                                                                        VerticalAlignment="Center" IsVisible="{Binding HasAfter}" />
+                                                                <Border Grid.Column="2" Background="{StaticResource FixTint}" CornerRadius="6" Padding="10,8"
+                                                                        IsVisible="{Binding HasAfter}">
+                                                                    <SelectableTextBlock Text="{Binding After}" FontFamily="{StaticResource MonoFont}" FontSize="12" TextWrapping="Wrap" />
+                                                                </Border>
+                                                            </Grid>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Expander>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </DockPanel>
+    </DockPanel>
+</Window>
