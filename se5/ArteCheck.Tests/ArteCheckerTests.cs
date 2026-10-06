@@ -113,22 +113,21 @@ public class ArteCheckerTests
     }
 
     [Fact]
-    public void Colors_NormalSubtitlesBecomeYellowEverywhere()
+    public void Colors_OtherColorsDoNotOutvoteUncoloredSubtitles()
     {
         var source = new[] { P(Hour10, Hour10 + 3000, "<font color=\"#00ffff\">Hallo</font>"), P(Hour10 + 4000, Hour10 + 7000, "Welt") };
         var fixes = ArteChecker.Analyze(source, ArteHeader(), Options(ArteCheckType.TeletextColors));
-        Assert.Equal(2, fixes.Count);
-        Assert.All(fixes, f => Assert.StartsWith("<font color=\"Yellow\">", f.After));
+        var fix = Assert.Single(fixes);
+        Assert.Equal("Hallo", fix.After);
     }
 
     [Fact]
-    public void Colors_SdhKeepsTheNearestTeletextColor()
+    public void Colors_SdhKeepsStandardTeletextColorExactly()
     {
         var options = Options(ArteCheckType.TeletextColors);
         options.Profile = ArteProfile.All.Single(p => p.Code == "HG-DEU");
         var source = new[] { P(Hour10, Hour10 + 3000, "<font color=\"#00ffff\">Hallo</font>") };
-        var fix = Assert.Single(ArteChecker.Analyze(source, ArteHeader(), options), f => f.Group == ArteChecker.GroupColors);
-        Assert.Equal("<font color=\"Cyan\">Hallo</font>", fix.After);
+        Assert.DoesNotContain(ArteChecker.Analyze(source, ArteHeader(), options), f => f.Group == ArteChecker.GroupColors);
     }
 
     [Fact]

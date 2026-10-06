@@ -51,6 +51,68 @@ public static partial class TeletextText
 
     public static Regex ColorAttribute => ColorAttributeRegex();
 
+    // Only visible runs vote; mixed, unsupported and non-yellow foregrounds do not.
+    // With nearest, a non-standard color counts as the teletext color it maps to.
+    public static string EffectiveForeground(string text, bool nearest = false)
+    {
+        var colors = new HashSet<string>();
+        var stack = new Stack<string?>();
+        string? current = null;
+        var position = 0;
+        void Read(int end)
+        {
+            if (!IsBlank(text[position..end]))
+                colors.Add(current == null ? "None" :
+                    IsStandardForeground(current) || nearest ? NearestTeletextColor(current) ?? "Other" : "Other");
+        }
+        foreach (Match token in TokenRegex().Matches(text))
+        {
+            Read(token.Index);
+            position = token.Index + token.Length;
+            if (!token.Groups[2].Value.Equals("font", StringComparison.OrdinalIgnoreCase)) continue;
+            if (token.Groups[1].Value == "/") current = stack.Count > 0 ? stack.Pop() : null;
+            else
+            {
+                stack.Push(current);
+                var color = ColorAttribute.Match(token.Value);
+                if (color.Success) current = ColorValue(color);
+            }
+        }
+        Read(text.Length);
+        return colors.Count == 1 ? colors.Single() : "Other";
+    }
+
+    public static bool IsStandardForeground(string color) => new[]
+    {
+        "Black", "Red", "Green", "Yellow", "Blue", "Magenta", "Cyan", "White",
+        "000000", "ff0000", "00ff00", "ffff00", "0000ff", "ff00ff", "00ffff", "ffffff"
+    }.Contains(color.TrimStart('#'), StringComparer.OrdinalIgnoreCase);
+
+    public static string ColorValue(Match color) => color.Groups["quoted"].Success ? color.Groups["quoted"].Value :
+        color.Groups["single"].Success ? color.Groups["single"].Value : color.Groups["bare"].Value;
+
+    public static string WithoutForeground(string text)
+    {
+        var removed = new Stack<bool>();
+        return TokenRegex().Replace(text, token =>
+        {
+            if (!token.Groups[2].Value.Equals("font", StringComparison.OrdinalIgnoreCase)) return token.Value;
+            if (token.Groups[1].Value == "/") return removed.Count > 0 && removed.Pop() ? "" : token.Value;
+            var attribute = ColorAttribute.Match(token.Groups[3].Value);
+            if (!attribute.Success) { removed.Push(false); return token.Value; }
+            var attributes = ColorAttribute.Replace(token.Groups[3].Value, "");
+            var remove = string.IsNullOrWhiteSpace(attributes);
+            removed.Push(remove);
+            return remove ? "" : "<" + token.Groups[2].Value + attributes + ">";
+        });
+    }
+
+    public static string WithYellow(string text)
+    {
+        var prefix = Regex.Match(text, @"^(?:\{\\an[1-9]\})+");
+        return prefix.Value + "<font color=\"Yellow\">" + text[prefix.Length..] + "</font>";
+    }
+
     public static string Words(string text) => Regex.Replace(RemoveTags(text), @"\s+", " ").Trim();
 
     /// <summary>
