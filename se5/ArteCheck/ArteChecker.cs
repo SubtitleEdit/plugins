@@ -307,11 +307,41 @@ public sealed class ArteChecker
                 continue;
             }
 
-            var desiredEnd = tooShort
-                ? RoundToFrame(p.StartMs + (_options.AcceptShortDurations ? _options.ShortMinimumFrames * FrameMs : required))
-                : RoundToFrame(p.StartMs + maximumMs);
-            var nextStart = i + 1 < subtitle.Count ? subtitle[i + 1].StartMs - MinimumGapMs : double.PositiveInfinity;
-            var canFix = desiredEnd > p.StartMs && desiredEnd <= nextStart && (!tooLong || desiredEnd >= required + p.StartMs);
+            var desiredEnd = RoundToFrame(p.StartMs + maximumMs);
+            double? proposedStart = null;
+            bool canFix;
+            if (tooShort)
+            {
+                // Keep the existing minimum policy; place the complete target on one side only.
+                var targetFrames = (long)Math.Ceiling((_options.AcceptShortDurations
+                    ? _options.ShortMinimumFrames * FrameMs : required) / FrameMs);
+                var startFrame = (long)Math.Ceiling(p.StartMs / FrameMs);
+                var endFrame = (long)Math.Floor(p.EndMs / FrameMs);
+                var desiredEndFrame = startFrame + targetFrames;
+                var latestEndFrame = i + 1 < subtitle.Count
+                    ? (long)Math.Floor(subtitle[i + 1].StartMs / FrameMs) - _options.MinimumGapFrames
+                    : long.MaxValue;
+                desiredEnd = desiredEndFrame * FrameMs;
+                canFix = desiredEnd > p.StartMs && desiredEndFrame <= latestEndFrame;
+                if (!canFix)
+                {
+                    var desiredStartFrame = endFrame - targetFrames;
+                    var earliestStartFrame = i > 0
+                        ? Math.Max(0L, (long)Math.Ceiling(subtitle[i - 1].EndMs / FrameMs) + _options.MinimumGapFrames)
+                        : 0L;
+                    if (desiredStartFrame >= earliestStartFrame)
+                    {
+                        proposedStart = desiredStartFrame * FrameMs;
+                        canFix = true;
+                    }
+                }
+            }
+            else
+            {
+                // Maximum-duration shortening retains its existing behavior.
+                var nextStart = i + 1 < subtitle.Count ? subtitle[i + 1].StartMs - MinimumGapMs : double.PositiveInfinity;
+                canFix = desiredEnd > p.StartMs && desiredEnd <= nextStart && desiredEnd >= required + p.StartMs;
+            }
             var issue = tooShort
                 ? _options.AcceptShortDurations
                     ? $"Shown for {FormatDuration(duration)}, below the {_options.ShortMinimumFrames}-frame short minimum."
@@ -319,11 +349,13 @@ public sealed class ArteChecker
                       $"({_options.ReadingDurationTolerancePercent:0.#}% under the {FormatDuration(required)} reading time)."
                 : $"Shown for {FormatDuration(duration)}, above the maximum of {FormatDuration(maximumMs)}.";
             Add(new ArteFix(GroupDuration, canFix, i + 1, FormatDuration(duration),
-                canFix ? FormatDuration(desiredEnd - p.StartMs) : string.Empty,
-                canFix ? issue + " Optional: move the out time." : issue + " No room to move the out time - edit manually.",
+                canFix ? FormatDuration(proposedStart.HasValue ? p.EndMs - proposedStart.Value : desiredEnd - p.StartMs) : string.Empty,
+                canFix ? issue + (proposedStart.HasValue ? " Optional: move the in time." : " Optional: move the out time.")
+                    : issue + (tooShort ? " No room to move the out or in time - edit manually." : " No room to move the out time - edit manually."),
                 ArteFixKind.DisplayDuration, applyByDefault: false)
             {
-                ProposedEndMs = canFix ? desiredEnd : null,
+                ProposedStartMs = proposedStart,
+                ProposedEndMs = canFix && !proposedStart.HasValue ? desiredEnd : null,
             });
         }
     }
@@ -400,7 +432,7 @@ public sealed class ArteChecker
                 continue;
             }
 
-            if (hasRow && ((lineCount == 1 && currentRow == BottomRow) || (lineCount == 2 && currentRow == BottomRow - 1)))
+            if (hasRow && ((lineCount == 1 && currentRow == BottomRow) || (lineCount == 2 && currentRow > expectedRow)))
             {
                 Add(new ArteFix(GroupPosition, true, i + 1, currentRow.ToString(), expectedRow.ToString(),
                     $"Double height: {lineCount} line(s) must start on row {expectedRow} to stay on the page.",
@@ -432,6 +464,7 @@ public sealed class ArteChecker
                 return match.Value;
             }
 
+            if (isSdh && TeletextText.IsStandardForeground(color)) return match.Value;
             return "color=\"" + (isSdh ? teletext : "Yellow") + "\"";
         });
         hasUnsupported = unsupported;
@@ -442,27 +475,42 @@ public sealed class ArteChecker
     {
         var isSdh = _options.Profile.IsSdh;
 
-        // A normal (non-SDH) file that uses color at all must use yellow for every subtitle;
-        // an uncolored file stays uncolored.
-        var yellowEverywhere = !isSdh && subtitle.Any(p => TeletextText.HasFontColor(p.Text));
+        var relevant = subtitle.Where(p => !TeletextText.IsBlank(p.Text)).ToList();
+        var yellowCount = relevant.Count(p => TeletextText.EffectiveForeground(p.Text) == "Yellow");
+        var plainCount = relevant.Count(p => TeletextText.EffectiveForeground(p.Text) == "None");
+        var wantYellow = !isSdh && yellowCount > plainCount;
+        // Prove the excess against the same foreground-free text, before layout analysis.
+        if (wantYellow && relevant.Any(p =>
+        {
+            var plain = TeletextText.WithoutForeground(p.Text);
+            return TeletextText.Fits(plain, _options.TeletextMaxCells) &&
+                !TeletextText.Fits(TeletextText.WithYellow(plain), _options.TeletextMaxCells);
+        })) wantYellow = false;
+
         for (var i = 0; i < subtitle.Count; i++)
         {
             var text = subtitle[i].Text;
-            var withoutBox = isSdh ? text : TeletextText.RemoveBox(text);
-            var normalized = NormalizeColors(withoutBox, isSdh, out var unsupported);
-            if (yellowEverywhere && !string.IsNullOrWhiteSpace(text))
+            if (TeletextText.IsBlank(text)) continue;
+            string normalized;
+            bool unsupported;
+            if (isSdh)
             {
-                normalized = System.Text.RegularExpressions.Regex.Replace(normalized,
-                    @"<font\b[^>]*\bcolor\s*=[^>]*>(?<text>.*?)</font\s*>", "${text}",
-                    System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Singleline);
-                normalized = "<font color=\"Yellow\">" + normalized + "</font>";
+                normalized = NormalizeColors(text, true, out unsupported);
+            }
+            else
+            {
+                var effective = TeletextText.EffectiveForeground(text);
+                unsupported = TeletextText.ColorAttribute.Matches(text).Any(m =>
+                    TeletextText.NearestTeletextColor(TeletextText.ColorValue(m)) == null);
+                normalized = effective == (wantYellow ? "Yellow" : "None") || unsupported
+                    ? text : wantYellow ? TeletextText.WithYellow(TeletextText.WithoutForeground(text))
+                    : TeletextText.WithoutForeground(text);
             }
 
             if (normalized != text)
             {
                 Add(new ArteFix(GroupColors, true, i + 1, text, normalized,
                     isSdh ? "Map the colors to the eight teletext colors." :
-                    TeletextText.HasBox(text) ? "Boxing is for SDH only; normal subtitles are yellow or uncolored." :
                     "Normal subtitles are either all yellow or uncolored.",
                     ArteFixKind.TeletextColor));
             }
@@ -522,13 +570,13 @@ public sealed class ArteChecker
             return;
         }
 
-        if (!AddSplitProposal(p, index, reason))
+        if (!AddSplitProposal(p, index, reason, isDialog ? lines : null))
         {
             Add(new ArteFix(GroupLayout, false, index, p.Text, string.Empty, reason + " No automatic split fits - edit manually."));
         }
     }
 
-    private bool AddSplitProposal(PluginParagraph p, int index, string reason)
+    private bool AddSplitProposal(PluginParagraph p, int index, string reason, string[]? speakerLines = null)
     {
         bool Alarm(string message)
         {
@@ -541,7 +589,31 @@ public sealed class ArteChecker
             return Alarm("Colored text is not split automatically - edit manually.");
         }
 
-        var texts = TeletextText.SplitToFit(TeletextText.RemoveItalic(p.Text), _options.TeletextMaxCells);
+        // Do not cut other formatting scopes across the preserved speaker boundary.
+        if (speakerLines != null && System.Text.RegularExpressions.Regex.IsMatch(TeletextText.RemoveItalic(p.Text), @"<[^>]*>"))
+        {
+            return Alarm("Formatted text is not split automatically - edit manually.");
+        }
+
+        List<string>? texts;
+        if (speakerLines != null)
+        {
+            texts = new List<string>();
+            foreach (var line in speakerLines)
+            {
+                var wrapped = TeletextText.Rebalance(TeletextText.RemoveItalic(line), _options.TeletextMaxCells);
+                if (wrapped == null)
+                {
+                    return false;
+                }
+
+                texts.Add(wrapped);
+            }
+        }
+        else
+        {
+            texts = TeletextText.SplitToFit(TeletextText.RemoveItalic(p.Text), _options.TeletextMaxCells);
+        }
         if (texts == null)
         {
             return false;
@@ -758,7 +830,8 @@ public sealed class ArteChecker
                     p.EndMs = fix.ProposedEndMs!.Value;
                     break;
                 case ArteFixKind.DisplayDuration:
-                    p.EndMs = fix.ProposedEndMs!.Value;
+                    if (fix.ProposedStartMs.HasValue) p.StartMs = fix.ProposedStartMs.Value;
+                    if (fix.ProposedEndMs.HasValue) p.EndMs = fix.ProposedEndMs.Value;
                     break;
                 case ArteFixKind.MinimumGap:
                     p.EndMs = fix.ProposedEndMs!.Value;
