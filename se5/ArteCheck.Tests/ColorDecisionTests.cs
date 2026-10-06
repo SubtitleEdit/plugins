@@ -11,14 +11,13 @@ public class ColorDecisionTests
     [InlineData("<font color='Yellow'>Text</font>")]
     [InlineData("{\\an1}<font color=\"Yellow\"><i>Text</i></font>")]
     [InlineData("{\\an2}<font color=\"#ffff00\">Text\nZeile</font>")]
-    [InlineData("<box><font color=\"Yellow\"><b>Text</b></font></box>")]
     public void YellowNoOp(string text)
     {
         var rows=Rows(text); var o=Options(); var fixes=Colors(rows,o); Assert.Empty(fixes);
         Assert.Equal(text,Assert.Single(ArteChecker.Apply(rows,null,fixes,o).Paragraphs).Text);
     }
     [Theory]
-    [InlineData("Text")][InlineData("{\\an1}<i>Text</i>")][InlineData("{\\an2}Text")][InlineData("<box>Text</box>")]
+    [InlineData("Text")][InlineData("{\\an1}<i>Text</i>")][InlineData("{\\an2}Text")]
     public void PlainNoOp(string text)
     {
         var rows=Rows(text); var o=Options(); var fixes=Colors(rows,o); Assert.Empty(fixes);
@@ -45,8 +44,30 @@ public class ColorDecisionTests
     }
     [Fact] public void RemoveYellowKeepsStructure()
     {
-        var rows=Rows("{\\an1}"+Y("<box><i>A\nB</i></box>"),"C","D");
-        Assert.Equal("{\\an1}<box><i>A\nB</i></box>",Assert.Single(Colors(rows,Options())).After);
+        var rows=Rows("{\\an1}"+Y("<u><i>A\nB</i></u>"),"C","D");
+        Assert.Equal("{\\an1}<u><i>A\nB</i></u>",Assert.Single(Colors(rows,Options())).After);
+    }
+    [Theory]
+    [InlineData("<box>Text</box>","Text")]
+    [InlineData("{\\an1}<box><i>Text</i></box>","{\\an1}<i>Text</i>")]
+    [InlineData("<box><font color=\"Yellow\"><b>Text</b></font></box>","<font color=\"Yellow\"><b>Text</b></font>")]
+    public void NormalSubtitlesLoseOnlyTheBox(string text,string expected)
+    {
+        var fix=Assert.Single(Colors(Rows(text),Options())); Assert.Equal(expected,fix.After);
+        Assert.Contains("Boxing is for SDH only",fix.Reason);
+    }
+    [Fact] public void NearYellowVotesYellowAndIsNormalized()
+    {
+        var rows=Rows("<font color=\"#fefe00\">A</font>","<font color=\"#f0f010\">B</font>","C"); var o=Options();
+        var fixes=Colors(rows,o); Assert.Equal(3,fixes.Count);
+        var applied=ArteChecker.Apply(rows,null,fixes,o).Paragraphs.ToArray();
+        Assert.Equal(new[]{Y("A"),Y("B"),Y("C")},applied.Select(p=>p.Text));
+        Assert.Empty(Colors(applied,o));
+    }
+    [Fact] public void SdhKeepsBox()
+    {
+        var o=Options(); o.Profile=ArteProfile.All.First(p=>p.IsSdh);
+        Assert.Empty(Colors(Rows("<box>Text</box>","<box><font color='Red'>A</font></box>"),o));
     }
     [Fact] public void OtherColorsDoNotVote()
     {

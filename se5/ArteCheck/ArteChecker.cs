@@ -476,8 +476,9 @@ public sealed class ArteChecker
         var isSdh = _options.Profile.IsSdh;
 
         var relevant = subtitle.Where(p => !TeletextText.IsBlank(p.Text)).ToList();
-        var yellowCount = relevant.Count(p => TeletextText.EffectiveForeground(p.Text) == "Yellow");
-        var plainCount = relevant.Count(p => TeletextText.EffectiveForeground(p.Text) == "None");
+        // Near-yellow votes as yellow (it is written as yellow) but is still normalized below.
+        var yellowCount = relevant.Count(p => TeletextText.EffectiveForeground(p.Text, nearest: true) == "Yellow");
+        var plainCount = relevant.Count(p => TeletextText.EffectiveForeground(p.Text, nearest: true) == "None");
         var wantYellow = !isSdh && yellowCount > plainCount;
         // Prove the excess against the same foreground-free text, before layout analysis.
         if (wantYellow && relevant.Any(p =>
@@ -499,18 +500,21 @@ public sealed class ArteChecker
             }
             else
             {
-                var effective = TeletextText.EffectiveForeground(text);
-                unsupported = TeletextText.ColorAttribute.Matches(text).Any(m =>
+                // Boxing is for SDH only; removing it is separate from the color decision.
+                var withoutBox = TeletextText.RemoveBox(text);
+                var effective = TeletextText.EffectiveForeground(withoutBox);
+                unsupported = TeletextText.ColorAttribute.Matches(withoutBox).Any(m =>
                     TeletextText.NearestTeletextColor(TeletextText.ColorValue(m)) == null);
                 normalized = effective == (wantYellow ? "Yellow" : "None") || unsupported
-                    ? text : wantYellow ? TeletextText.WithYellow(TeletextText.WithoutForeground(text))
-                    : TeletextText.WithoutForeground(text);
+                    ? withoutBox : wantYellow ? TeletextText.WithYellow(TeletextText.WithoutForeground(withoutBox))
+                    : TeletextText.WithoutForeground(withoutBox);
             }
 
             if (normalized != text)
             {
                 Add(new ArteFix(GroupColors, true, i + 1, text, normalized,
                     isSdh ? "Map the colors to the eight teletext colors." :
+                    TeletextText.HasBox(text) ? "Boxing is for SDH only; normal subtitles are yellow or uncolored." :
                     "Normal subtitles are either all yellow or uncolored.",
                     ArteFixKind.TeletextColor));
             }

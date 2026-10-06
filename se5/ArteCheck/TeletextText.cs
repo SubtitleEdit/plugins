@@ -52,7 +52,8 @@ public static partial class TeletextText
     public static Regex ColorAttribute => ColorAttributeRegex();
 
     // Only visible runs vote; mixed, unsupported and non-yellow foregrounds do not.
-    public static string EffectiveForeground(string text)
+    // With nearest, a non-standard color counts as the teletext color it maps to.
+    public static string EffectiveForeground(string text, bool nearest = false)
     {
         var colors = new HashSet<string>();
         var stack = new Stack<string?>();
@@ -61,7 +62,8 @@ public static partial class TeletextText
         void Read(int end)
         {
             if (!IsBlank(text[position..end]))
-                colors.Add(current == null ? "None" : IsStandardForeground(current) ? NearestTeletextColor(current)! : "Other");
+                colors.Add(current == null ? "None" :
+                    IsStandardForeground(current) || nearest ? NearestTeletextColor(current) ?? "Other" : "Other");
         }
         foreach (Match token in TokenRegex().Matches(text))
         {
