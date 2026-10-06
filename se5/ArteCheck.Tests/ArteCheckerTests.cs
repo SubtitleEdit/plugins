@@ -92,8 +92,18 @@ public class ArteCheckerTests
         var fix = Assert.Single(ArteChecker.Analyze(source, ArteHeader(), Options(ArteCheckType.MinimumGaps)));
         Assert.True(fix.CanBeFixed);
         var result = ArteChecker.Apply(source, ArteHeader(), new[] { fix }, Options());
-        Assert.Equal(Hour10 + 4000 - 2 * 40, result.Paragraphs[0].EndMs);
-        Assert.Equal(Hour10 + 4000 + 3 * 40, result.Paragraphs[1].StartMs);
+        Assert.Equal(Hour10 + 4000 - 3 * 40, result.Paragraphs[0].EndMs);
+        Assert.Equal(Hour10 + 4000 + 2 * 40, result.Paragraphs[1].StartMs);
+    }
+
+    [Fact]
+    public void MinimumGap_OneMissingFrameComesOffThePreviousOutTime()
+    {
+        var source = new[] { P(Hour10, Hour10 + 4000, "Eins"), P(Hour10 + 4000 + 4 * 40, Hour10 + 8000, "Zwei") };
+        var fix = Assert.Single(ArteChecker.Analyze(source, ArteHeader(), Options(ArteCheckType.MinimumGaps)));
+        var result = ArteChecker.Apply(source, ArteHeader(), new[] { fix }, Options());
+        Assert.Equal(Hour10 + 4000 - 40, result.Paragraphs[0].EndMs);
+        Assert.Equal(Hour10 + 4000 + 4 * 40, result.Paragraphs[1].StartMs);
     }
 
     [Fact]

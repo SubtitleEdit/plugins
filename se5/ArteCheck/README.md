@@ -21,7 +21,7 @@ Needs a Subtitle Edit build whose plugin contract includes `subtitle.header` and
 | Teletext row | Double height: one line on row 22, two lines on row 20. Moves a whole file down one row if it sits one row too high. Rows higher up the screen are left alone. |
 | Teletext colors | Normal subtitles are all yellow or uncolored, with no boxing. SDH colors map to the eight teletext colors. |
 | No italics, unneeded spaces | Teletext has no italics; leading and trailing spaces use cells. |
-| Minimum gaps | Shares the missing frames between the previous out time and the next in time, without going under the minimum durations. |
+| Minimum gaps | Shares the missing frames between the previous out time and the next in time (an odd frame comes off the previous out time), without going under the minimum durations. |
 
 ## UI
 

@@ -767,8 +767,9 @@ public sealed class ArteChecker
                 continue;
             }
 
-            // Share the missing frames: half from the previous out time, half from the next in time.
-            var previousShift = Math.Min(previousCapacity, missing / 2);
+            // Share the missing frames between the previous out time and the next in time; an odd
+            // frame comes off the previous out time, so a 4-frame gap keeps the next in time.
+            var previousShift = Math.Min(previousCapacity, (missing + 1) / 2);
             var currentShift = Math.Min(currentCapacity, missing - previousShift);
             var remaining = missing - previousShift - currentShift;
             var addPrevious = Math.Min(previousCapacity - previousShift, remaining);
