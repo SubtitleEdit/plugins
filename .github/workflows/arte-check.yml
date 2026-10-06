@@ -7,13 +7,13 @@ on:
       - 'se5/ArteCheck/**'
       - 'se5/ArteCheck.Tests/**'
       - 'se5/Plugin-Shared/**'
-      - '.github/workflows/split-dialogs.yml'
+      - '.github/workflows/arte-check.yml'
   pull_request:
     paths:
       - 'se5/ArteCheck/**'
       - 'se5/ArteCheck.Tests/**'
       - 'se5/Plugin-Shared/**'
-      - '.github/workflows/split-dialogs.yml'
+      - '.github/workflows/arte-check.yml'
   workflow_dispatch:
     inputs:
       release:
