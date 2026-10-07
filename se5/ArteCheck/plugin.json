@@ -2,7 +2,7 @@
   "apiVersion": 1,
   "name": "ARTE check",
   "description": "Checks and fixes EBU STL teletext subtitles for ARTE delivery: header, blank control subtitle, 25 fps frames, durations, gaps, rows, colors and characters per row. Corrections are previewed and selectable; problems that need a manual edit are listed as alarms.",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "author": "Subtitle Edit (rules by Triathlon-rally)",
   "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/ArteCheck",
   "menu": "Tools",
