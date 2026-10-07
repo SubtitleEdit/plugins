@@ -1,0 +1,27 @@
+<Solution>
+  <Folder Name="/.Solution Items/">
+    <File Path="..\.gitignore" />
+    <File Path="..\LICENSE.txt" />
+    <File Path="..\README.md" />
+    <File Path="..\se5-plugins.json" />
+  </Folder>
+  <Folder Name="/.Solution Items/github-workflows/">
+    <File Path="..\.github\workflows\american-to-british.yml" />
+    <File Path="..\.github\workflows\british-to-american.yml" />
+    <File Path="..\.github\workflows\haxor.yml" />
+    <File Path="..\.github\workflows\remove-unicode-characters.yml" />
+    <File Path="..\.github\workflows\typewriter.yml" />
+    <File Path="..\.github\workflows\word-censor.yml" />
+  </Folder>
+  <Folder Name="/Plugins/">
+    <Project Path="AmericanToBritish\AmericanToBritish.csproj" />
+    <Project Path="BritishToAmerican\BritishToAmerican.csproj" />
+    <Project Path="Haxor\Haxor.csproj" />
+    <Project Path="RemoveUnicodeCharacters\RemoveUnicodeCharacters.csproj" />
+    <Project Path="TypewriterEffect\TypewriterEffect.csproj" />
+    <Project Path="WordCensor\WordCensor.csproj" />
+  </Folder>
+  <Folder Name="/Shared/">
+    <Project Path="Plugin-Shared\Plugin-Shared.csproj" />
+  </Folder>
+</Solution>
