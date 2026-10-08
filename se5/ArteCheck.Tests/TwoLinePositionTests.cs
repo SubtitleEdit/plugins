@@ -41,4 +41,20 @@ public class TwoLinePositionTests
         var f=Assert.Single(ArteChecker.Analyze(new[]{P("A\nB","19",0)},null,Options()),f=>f.Kind==ArteFixKind.TeletextLinePosition);
         Assert.Equal("20",f.After);Assert.Contains("whole file",f.Reason);
     }
+    [Fact] public void Mnr11HeaderMovesBottomRowsTo23RowPage()
+    {
+        var header=GsiHeader.CreateDefault();header.MaxRows="11";
+        var rows=new[]{P("Eins","11",0),P("Eins\nZwei","10",4000),P("Titel","1",8000),P("Mitte","6",12000)};var o=Options();
+        var fixes=ArteChecker.Analyze(rows,header.ToString(),o);
+        Assert.Equal("23",GsiHeader.Parse(Assert.Single(fixes,f=>f.Kind==ArteFixKind.Header).ProposedHeader!).MaxRows);
+        var positions=fixes.Where(f=>f.Kind==ArteFixKind.TeletextLinePosition).ToArray();
+        Assert.Equal(new[]{1,2},positions.Select(f=>f.Index));
+        var result=ArteChecker.Apply(rows,header.ToString(),fixes,o);
+        Assert.Equal(new[]{"22","20","1","6"},result.Paragraphs.Select(p=>p.MarginV));
+    }
+    [Fact] public void Mnr23HeaderKeepsRow11()
+    {
+        var rows=new[]{P("Anker","22",0),P("Eins","11",4000)};
+        Assert.DoesNotContain(ArteChecker.Analyze(rows,GsiHeader.CreateDefault().ToString(),Options()),f=>f.Kind==ArteFixKind.TeletextLinePosition);
+    }
 }
