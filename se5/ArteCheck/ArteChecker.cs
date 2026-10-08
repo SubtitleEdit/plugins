@@ -281,10 +281,15 @@ public sealed class ArteChecker
         return Math.Max(_options.MinimumDurationMs, reading);
     }
 
+    /// <summary>
+    /// The shortest duration accepted, on whole frames - the limit the message shows (FormatDuration
+    /// rounds to frames) must be the one the check uses: 25 frames - 15% = 21.25 shows as 21 frames,
+    /// so 21 frames passes and 20 is reported (same as Triathlon-rally's web checker).
+    /// </summary>
     private double AcceptedMinimumDurationMs(string text) =>
         _options.AcceptShortDurations
             ? _options.ShortMinimumFrames * FrameMs
-            : RequiredDurationMs(text) * Math.Max(0, 1.0 - _options.ReadingDurationTolerancePercent / 100.0);
+            : RoundToFrame(RequiredDurationMs(text) * Math.Max(0, 1.0 - _options.ReadingDurationTolerancePercent / 100.0));
 
     private void AnalyzeDisplayDurations(List<PluginParagraph> subtitle)
     {
