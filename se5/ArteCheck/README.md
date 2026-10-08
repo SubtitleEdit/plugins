@@ -18,7 +18,7 @@ Needs a Subtitle Edit build whose plugin contract includes `subtitle.header` and
 | Frame-accurate time codes | Rounds in and out times to whole 25 fps frames. |
 | Display duration | Checks reading time (Subtitle Edit's minimum duration and max CPS, minus the reading tolerance), plus the maximum duration. Corrections are offered but not pre-selected. |
 | Maximum two lines / characters per row | Rebalances the line break, or splits the subtitle into several inside the original time range. Each color change uses a teletext cell. |
-| Teletext row | Double height: one line on row 22, two lines on row 20. Moves a whole file down one row if it sits one row too high. Rows higher up the screen are left alone. |
+| Teletext row | Double height: one line on row 22, two lines on row 20. Moves a whole file down one row if it sits one row too high. When the header had MNR 11, bottom subtitles (one line on 11, two lines on 10) move to 22 and 20. Rows higher up the screen are left alone. |
 | Teletext colors | Normal subtitles are all yellow or uncolored, with no boxing. SDH colors map to the eight teletext colors. |
 | No italics, unneeded spaces | Teletext has no italics; leading and trailing spaces use cells. |
 | Minimum gaps | Shares the missing frames between the previous out time and the next in time (an odd frame comes off the previous out time), without going under the minimum durations. |

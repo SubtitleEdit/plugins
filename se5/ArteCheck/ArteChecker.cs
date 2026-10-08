@@ -25,6 +25,7 @@ public sealed class ArteChecker
 
     private readonly ArteOptions _options;
     private readonly List<ArteFix> _fixes = new();
+    private int? _sourceMaxRows;
 
     private ArteChecker(ArteOptions options) => _options = options;
 
@@ -162,6 +163,11 @@ public sealed class ArteChecker
         var hasStlHeader = GsiHeader.IsStlHeader(headerText);
         var header = hasStlHeader ? GsiHeader.Parse(headerText!) : GsiHeader.CreateDefault();
         var original = header.Clone();
+        if (hasStlHeader && int.TryParse(original.MaxRows, out var sourceRows) && sourceRows > 1 && sourceRows < BottomRow)
+        {
+            _sourceMaxRows = sourceRows;
+        }
+
         header.CodePage = "850";
         header.DiskFormatCode = "STL25.01";
         header.DisplayStandardCode = "2";
@@ -381,11 +387,28 @@ public sealed class ArteChecker
     {
         // Double height: the stored row is the first physical row, so one line belongs on 22 (22+23)
         // and two lines on 20 (20+21, 22+23).
+        // A header with fewer rows (e.g. MNR 11) becomes MNR 23, so subtitles on the bottom of the
+        // small page (one line on 11, two lines on 10) move to the bottom of the teletext page.
+        var bottomOfSourcePage = new HashSet<int>();
+        if (_sourceMaxRows is { } sourceRows)
+        {
+            for (var i = 0; i < subtitle.Count; i++)
+            {
+                var p = subtitle[i];
+                var lines = TeletextText.LineCount(p.Text);
+                if (!string.IsNullOrWhiteSpace(p.Text) && lines <= 2 && int.TryParse(p.MarginV, out var row) && row + lines - 1 >= sourceRows)
+                {
+                    bottomOfSourcePage.Add(i);
+                }
+            }
+        }
+
         var correctBottom = 0;
         var oneRowHigh = 0;
-        foreach (var p in subtitle)
+        for (var i = 0; i < subtitle.Count; i++)
         {
-            if (string.IsNullOrWhiteSpace(p.Text) || !int.TryParse(p.MarginV, out var row))
+            var p = subtitle[i];
+            if (string.IsNullOrWhiteSpace(p.Text) || !int.TryParse(p.MarginV, out var row) || bottomOfSourcePage.Contains(i))
             {
                 continue;
             }
@@ -430,6 +453,18 @@ public sealed class ArteChecker
 
             var expectedRow = lineCount == 1 ? 22 : 20;
             var hasRow = int.TryParse(p.MarginV, out var currentRow);
+            if (bottomOfSourcePage.Contains(i))
+            {
+                if (currentRow != expectedRow)
+                {
+                    Add(new ArteFix(GroupPosition, true, i + 1, currentRow.ToString(), expectedRow.ToString(),
+                        $"Header had {_sourceMaxRows} rows (now 23) - move the bottom subtitle to row {expectedRow}.",
+                        ArteFixKind.TeletextLinePosition));
+                }
+
+                continue;
+            }
+
             if (shiftWholeFile && hasRow)
             {
                 Add(new ArteFix(GroupPosition, true, i + 1, currentRow.ToString(), (currentRow + 1).ToString(),
