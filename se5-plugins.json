@@ -169,6 +169,23 @@
         "osx-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-italic-each-line-v1.1/ItalicEachLine-osx-x64.zip",
         "osx-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-italic-each-line-v1.1/ItalicEachLine-osx-arm64.zip"
       }
+    },
+    {
+      "name": "Transliterate",
+      "description": "Converts subtitle text between scripts: Serbian, Montenegrin, Macedonian and Uzbek Cyrillic ↔ Latin, and Russian, Ukrainian, Belarusian, Bulgarian, Kazakh, Greek and Korean to Latin. Detects the language, keeps tags, URLs and chosen words, and shows a checkable preview.",
+      "version": "1.1.0",
+      "author": "Subtitle Edit",
+      "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/Transliterate",
+      "date": "2026-10-08",
+      "minSeVersion": "5.0.0",
+      "downloads": {
+        "win-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-transliterate-v1.1/Transliterate-win-x64.zip",
+        "win-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-transliterate-v1.1/Transliterate-win-arm64.zip",
+        "linux-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-transliterate-v1.1/Transliterate-linux-x64.zip",
+        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-transliterate-v1.1/Transliterate-linux-arm64.zip",
+        "osx-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-transliterate-v1.1/Transliterate-osx-x64.zip",
+        "osx-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-transliterate-v1.1/Transliterate-osx-arm64.zip"
+      }
     }
   ]
 }
