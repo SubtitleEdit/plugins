@@ -23,6 +23,7 @@ index [`se5-plugins.json`](se5-plugins.json).
 | [Persian Subtitle Fixes](se5/PersianErrors) | Fixes common errors in Persian (Farsi) subtitles - 1,500+ rules in 12 groups. |
 | [Remove Unicode characters](se5/RemoveUnicodeCharacters) | Finds non-ANSI characters and lets you remove or replace each one. |
 | [Split dialogs](se5/SplitDialogs) | Splits dialog lines ("- Hi!" / "- Hello.") into one subtitle per speaker. |
+| [Transliterate](se5/Transliterate) | Converts between scripts: Serbian, Montenegrin, Macedonian, Uzbek Cyrillic ↔ Latin; Russian, Ukrainian, Belarusian, Bulgarian, Kazakh, Greek, Korean → Latin. |
 | [Typewriter effect](se5/TypewriterEffect) | Reveals the text character by character in short timed parts. |
 | [Word censor](se5/WordCensor) | Censors offensive words (grawlix, custom text, or a random replacement). |
 
