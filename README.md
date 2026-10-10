@@ -15,6 +15,7 @@ index [`se5-plugins.json`](se5-plugins.json).
 
 | Plugin | Description |
 |---|---|
+| [ASSA tag check](se5/AssaTagCheck) | Finds and fixes broken ASSA override tags and tidies tags that do nothing (`</i><i>`, `{\i0}{\i1}`, ...). |
 | [ARTE check](se5/ArteCheck) | Checks and fixes EBU STL teletext subtitles for ARTE delivery. |
 | [American to British](se5/AmericanToBritish) | Converts American English spellings to British English. |
 | [British to American](se5/BritishToAmerican) | Converts British English spellings to American English. |
