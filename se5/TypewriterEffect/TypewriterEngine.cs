@@ -145,8 +145,11 @@ public static class TypewriterEngine
                 text += tag + p.Text[i];
                 tag = string.Empty;
 
+                // Each step ends where the next one starts: a gap, even 1 ms, shows no text for
+                // that moment, so the line flickers (and a full-frame Blu-ray sup image lets the
+                // video show through).
                 var startMs = p.StartMs + (long)(index * stepMs);
-                var endMs = p.StartMs + (long)((index + 1) * stepMs) - 1;
+                var endMs = p.StartMs + (long)((index + 1) * stepMs);
                 if (endMs < startMs)
                 {
                     endMs = startMs;
@@ -165,7 +168,7 @@ public static class TypewriterEngine
 
         if (endDelayMs > 0 && result.Count > 0)
         {
-            var startMs = p.StartMs + workDurationMs;
+            var startMs = result[^1].EndMs;
             result.Add(new SrtBlock { StartMs = startMs, EndMs = p.EndMs, Text = p.Text });
         }
         else if (result.Count > 0)
