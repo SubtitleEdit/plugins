@@ -20,18 +20,18 @@
     {
       "name": "British to American",
       "description": "Converts British English spellings to American English in the subtitle. Shows a checkable preview of every proposed change.",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "author": "Subtitle Edit",
       "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/BritishToAmerican",
-      "date": "2026-09-15",
+      "date": "2026-10-12",
       "minSeVersion": "5.0.0",
       "downloads": {
-        "win-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.4/BritishToAmerican-win-x64.zip",
-        "win-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.4/BritishToAmerican-win-arm64.zip",
-        "linux-x64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.4/BritishToAmerican-linux-x64.zip",
-        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.4/BritishToAmerican-linux-arm64.zip",
-        "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.4/BritishToAmerican-osx-x64.zip",
-        "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.4/BritishToAmerican-osx-arm64.zip"
+        "win-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.5/BritishToAmerican-win-x64.zip",
+        "win-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.5/BritishToAmerican-win-arm64.zip",
+        "linux-x64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.5/BritishToAmerican-linux-x64.zip",
+        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.5/BritishToAmerican-linux-arm64.zip",
+        "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.5/BritishToAmerican-osx-x64.zip",
+        "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-british-to-american-v1.5/BritishToAmerican-osx-arm64.zip"
       }
     },
     {
