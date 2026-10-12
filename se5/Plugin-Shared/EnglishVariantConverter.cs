@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
@@ -16,6 +18,8 @@ public enum EnglishVariantDirection
 /// (~1850 pairs), optionally extended/filtered by a <see cref="LocalWordList"/>.
 /// Each pair becomes three case-aware regexes: lowercase, UPPERCASE, and Titlecase,
 /// all matched as whole words. Picks direction via <see cref="EnglishVariantDirection"/>.
+/// Keep phrases (built-in &lt;Keep text="..."/&gt; plus the local list's ignored entries) are left
+/// untouched, e.g. the Spanish "por favor" must not become "por favour".
 /// </summary>
 public sealed class EnglishVariantConverter
 {
@@ -28,6 +32,13 @@ public sealed class EnglishVariantConverter
     private readonly Dictionary<string, List<int>> _rulesByFirstWord = new(StringComparer.Ordinal);
 
     private readonly EnglishVariantDirection _direction;
+
+    private readonly List<string> _keepPhrases = new();
+    private Regex? _keepRegex;
+
+    /// <summary>Private use area chars stand in for kept phrases while the rules run.</summary>
+    private const char PlaceholderFirst = '\uE000';
+    private const char PlaceholderLast = '\uF8FF';
 
     public EnglishVariantConverter(EnglishVariantDirection direction, LocalWordList? localWordList = null)
     {
@@ -49,10 +60,21 @@ public sealed class EnglishVariantConverter
             foreach (var us in localWordList.Ignored)
             {
                 ignored.Add(us);
+                _keepPhrases.Add(us);
             }
         }
 
         LoadBuiltInWordList(ignored);
+
+        if (_keepPhrases.Count > 0)
+        {
+            // Longest first so the longer of two overlapping phrases wins.
+            var alternatives = _keepPhrases
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderByDescending(p => p.Length)
+                .Select(p => Regex.Escape(p).Replace("\\ ", "\\s+"));
+            _keepRegex = new Regex("\\b(?:" + string.Join("|", alternatives) + ")\\b", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+        }
     }
 
     public int RuleCount => _rules.Count;
@@ -64,6 +86,8 @@ public sealed class EnglishVariantConverter
             return text;
         }
 
+        var kept = MaskKeepPhrases(ref text);
+
         var candidates = CollectCandidateRules(text);
         foreach (var index in candidates)
         {
@@ -71,7 +95,71 @@ public sealed class EnglishVariantConverter
             text = pattern.Replace(text, replacement);
         }
 
+        text = UnmaskKeepPhrases(text, kept);
         return RevertFontColorAttribute(text);
+    }
+
+    /// <summary>
+    /// Replaces each kept phrase with one private use char (not a word char, so no rule can
+    /// match it or across it). Skipped for text that already contains such chars.
+    /// </summary>
+    private List<string>? MaskKeepPhrases(ref string text)
+    {
+        if (_keepRegex == null || ContainsPlaceholderChar(text))
+        {
+            return null;
+        }
+
+        var kept = new List<string>();
+        text = _keepRegex.Replace(text, m =>
+        {
+            if (kept.Count > PlaceholderLast - PlaceholderFirst)
+            {
+                return m.Value;
+            }
+
+            kept.Add(m.Value);
+            return ((char)(PlaceholderFirst + kept.Count - 1)).ToString();
+        });
+
+        return kept.Count > 0 ? kept : null;
+    }
+
+    private static string UnmaskKeepPhrases(string text, List<string>? kept)
+    {
+        if (kept == null)
+        {
+            return text;
+        }
+
+        var sb = new StringBuilder(text.Length + 16);
+        foreach (var c in text)
+        {
+            var index = c - PlaceholderFirst;
+            if (index >= 0 && index < kept.Count)
+            {
+                sb.Append(kept[index]);
+            }
+            else
+            {
+                sb.Append(c);
+            }
+        }
+
+        return sb.ToString();
+    }
+
+    private static bool ContainsPlaceholderChar(string text)
+    {
+        foreach (var c in text)
+        {
+            if (c >= PlaceholderFirst && c <= PlaceholderLast)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public bool TryConvert(string text, out string converted)
@@ -90,6 +178,15 @@ public sealed class EnglishVariantConverter
         if (xml.Root?.Name != "Words")
         {
             return;
+        }
+
+        foreach (var element in xml.Root.Elements("Keep"))
+        {
+            var keep = element.Attribute("text")?.Value.Trim();
+            if (!string.IsNullOrEmpty(keep))
+            {
+                _keepPhrases.Add(keep!);
+            }
         }
 
         foreach (var element in xml.Root.Elements("Word"))

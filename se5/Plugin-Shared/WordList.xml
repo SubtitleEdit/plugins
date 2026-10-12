@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Words>
+  <!-- Keep: phrases that are never converted (foreign words that look like American spellings). -->
+  <Keep text="por favor" />
+  <Keep text="faz favor" />
   <Word us="accouterment" br="accoutrement" />
   <Word us="accouterments" br="accoutrements" />
   <Word us="aerogram" br="aerogramme" />
