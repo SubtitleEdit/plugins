@@ -94,13 +94,13 @@
                                Opacity="0.7"
                                TextWrapping="Wrap"
                                Margin="0,0,0,8"
-                               Text="American words from the built-in list that should never be converted." />
+                               Text="American words from the built-in list that should never be converted, or whole phrases to leave untouched (e.g. &quot;por favor&quot;)." />
                     <Grid DockPanel.Dock="Bottom"
                           ColumnDefinitions="*,Auto,Auto"
                           Margin="0,8,0,0">
                         <TextBox Grid.Column="0"
                                  x:Name="IgnoreBox"
-                                 Watermark="American word"
+                                 Watermark="American word or phrase"
                                  Margin="0,0,6,0" />
                         <Button Grid.Column="1"
                                 Content="Add"

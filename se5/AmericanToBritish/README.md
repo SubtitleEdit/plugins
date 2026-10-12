@@ -20,7 +20,9 @@ and format as the Subtitle Edit 4 plugin, so an existing list keeps working:
 ```
 
 A `Word` with the same American spelling as a built-in pair replaces it; `Ignore`
-turns a built-in pair off.
+turns a built-in pair off. An `Ignore` can also be a phrase, which is then left
+untouched wherever it occurs (`<Ignore us="por favor" />` keeps "favor" there while
+it is still converted elsewhere). A few such phrases are built in, e.g. "por favor".
 
 First Subtitle Edit 5 plugin built on top of the shared
 [`Plugin-Shared`](../Plugin-Shared/) library — Avalonia app boot, theme passing,
