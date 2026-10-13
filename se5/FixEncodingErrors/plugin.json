@@ -1,0 +1,12 @@
+{
+  "apiVersion": 1,
+  "name": "Fix encoding errors",
+  "description": "Repairs UTF-8 text that was read with the wrong code page (\"mojibake\"): rÃ©sumÃ© → résumé, donâ€™t → don’t. Also handles text lowercased afterwards (rã©sumã©). Common in subtitles extracted from MKV files. Shows a checkable before/after preview.",
+  "version": "1.0.0",
+  "author": "Subtitle Edit",
+  "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/FixEncodingErrors",
+  "menu": "Tools",
+  "minSeVersion": "5.0.0",
+  "runtime": "dotnet",
+  "entry": "FixEncodingErrors.dll"
+}
