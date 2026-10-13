@@ -1,6 +1,23 @@
 {
   "plugins": [
     {
+      "name": "Fix encoding errors",
+      "description": "Repairs UTF-8 text that was read with the wrong code page (\"mojibake\"): rÃ©sumÃ© → résumé, donâ€™t → don’t. Also handles text lowercased afterwards (rã©sumã©). Common in subtitles extracted from MKV files. Shows a checkable before/after preview.",
+      "version": "1.1.0",
+      "author": "Subtitle Edit",
+      "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/FixEncodingErrors",
+      "date": "2026-10-13",
+      "minSeVersion": "5.0.0",
+      "downloads": {
+        "win-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-fix-encoding-errors-v1.1/FixEncodingErrors-win-x64.zip",
+        "win-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-fix-encoding-errors-v1.1/FixEncodingErrors-win-arm64.zip",
+        "linux-x64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-fix-encoding-errors-v1.1/FixEncodingErrors-linux-x64.zip",
+        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-fix-encoding-errors-v1.1/FixEncodingErrors-linux-arm64.zip",
+        "osx-x64":     "https://github.com/SubtitleEdit/plugins/releases/download/se5-fix-encoding-errors-v1.1/FixEncodingErrors-osx-x64.zip",
+        "osx-arm64":   "https://github.com/SubtitleEdit/plugins/releases/download/se5-fix-encoding-errors-v1.1/FixEncodingErrors-osx-arm64.zip"
+      }
+    },
+    {
       "name": "Word censor",
       "description": "Censors offensive words with one of three modes: grawlix masking (#@!?$%&), custom replacement text (e.g. [censored]), or swapping with a random alternative word. Optionally highlights censored words in red.",
       "version": "1.2.0",
