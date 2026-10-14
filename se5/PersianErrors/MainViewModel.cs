@@ -17,10 +17,13 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly string[] _originalTexts;
     private readonly string[] _texts;
     private readonly long _videoOffsetMs;
+    private readonly bool _isConfigure;
+    private readonly bool _isBatch;
     private readonly Stack<string[]> _undo = new();
     private List<FixItem> _fixes = new();
     private CancellationTokenSource? _analysisCancellation;
     private bool _suspendAnalysis;
+    private bool _savedSelectedLinesOnly;
 
     [ObservableProperty] private bool _isBusy;
     [ObservableProperty] private double _progress;
@@ -36,6 +39,8 @@ public sealed partial class MainViewModel : ObservableObject
     public MainViewModel(PluginRequest request)
     {
         _request = request;
+        _isConfigure = request.RequestType == PluginRequestType.Configure;
+        _isBatch = request.RequestType == PluginRequestType.Batch;
         _videoOffsetMs = request.Rules?.VideoOffsetMs ?? 0;
         _legacyRequest = request.Subtitle.Paragraphs == null;
         _paragraphs = _legacyRequest
@@ -55,6 +60,7 @@ public sealed partial class MainViewModel : ObservableObject
                 if (e.PropertyName == nameof(GroupOption.IsEnabled))
                 {
                     OnPropertyChanged(nameof(EnabledGroupCount));
+                    OnPropertyChanged(nameof(StatusText));
                     Analyze();
                 }
             };
@@ -77,11 +83,20 @@ public sealed partial class MainViewModel : ObservableObject
     {
         get
         {
+            if (_isConfigure)
+            {
+                return "Settings for Batch convert";
+            }
+
             var name = string.IsNullOrEmpty(_request.Subtitle.FileName) ? "Untitled" : Path.GetFileName(_request.Subtitle.FileName);
             var format = string.IsNullOrEmpty(_request.Subtitle.Format) ? string.Empty : $"  ·  {_request.Subtitle.Format}";
             return $"{name}{format}  ·  {_paragraphs.Count:N0} lines";
         }
     }
+
+    /// <summary>Opened from Batch convert's Configure button: only the groups matter, there is no subtitle.</summary>
+    public bool IsConfigure => _isConfigure;
+    public bool IsNotConfigure => !_isConfigure;
 
     public int EnabledGroupCount => Groups.Count(g => g.IsEnabled);
     public int TotalRuleCount => Groups.Sum(g => g.Group.Rules.Count);
@@ -90,7 +105,7 @@ public sealed partial class MainViewModel : ObservableObject
     public bool AllLines { get => !SelectedLinesOnly; set => SelectedLinesOnly = !value; }
     public bool HasFixes => FixCount > 0;
     public bool HasVisibleFixes => VisibleFixes.Count > 0;
-    public bool IsClean => !IsBusy && FixCount == 0;
+    public bool IsClean => !IsBusy && FixCount == 0 && !_isConfigure;
     public bool IsFilteredEmpty => !IsBusy && FixCount > 0 && VisibleFixes.Count == 0;
     public bool HasChanges => ChangedLineCount > 0;
     public bool CanApply => !IsBusy && SelectedCount > 0;
@@ -103,6 +118,11 @@ public sealed partial class MainViewModel : ObservableObject
     {
         get
         {
+            if (_isConfigure)
+            {
+                return EnabledGroupCount == 1 ? "1 group used for every file in Batch convert" : $"{EnabledGroupCount:N0} groups used for every file in Batch convert";
+            }
+
             if (IsBusy)
             {
                 return $"Checking {LinesInScope:N0} lines against {Groups.Where(g => g.IsEnabled).Sum(g => g.Group.Rules.Count):N0} rules...";
@@ -152,7 +172,7 @@ public sealed partial class MainViewModel : ObservableObject
 
     private async void Analyze()
     {
-        if (_suspendAnalysis)
+        if (_suspendAnalysis || _isConfigure || _isBatch)
         {
             return;
         }
@@ -339,9 +359,42 @@ public sealed partial class MainViewModel : ObservableObject
     private void UpdateChangedLineCount() =>
         ChangedLineCount = _texts.Where((t, i) => !string.Equals(t, _originalTexts[i], StringComparison.Ordinal)).Count();
 
+    /// <summary>
+    /// A "batch" request (Batch convert): run the saved enabled groups over every line, without UI,
+    /// and keep every fix - what OK does with the default selection. No fixes is "ok" without a subtitle.
+    /// </summary>
+    public PluginResponse BuildBatchResponse()
+    {
+        var groups = Groups.Where(g => g.IsEnabled).Select(g => g.Group).ToList();
+        foreach (var fix in PersianFixer.FindFixes(_texts, Enumerable.Range(0, _texts.Length), groups))
+        {
+            _texts[fix.Index] = fix.After;
+        }
+
+        UpdateChangedLineCount();
+        if (ChangedLineCount == 0)
+        {
+            return new PluginResponse { Status = PluginStatus.Ok, Message = "Persian Subtitle Fixes: nothing to fix." };
+        }
+
+        var response = BuildResponse();
+        response.Settings = null;
+        response.SettingsVersion = null;
+        return response;
+    }
+
+    /// <summary>A "configure" request: hand back the settings only, for the next Batch convert run.</summary>
+    public PluginResponse BuildConfigureResponse() =>
+        new() { Status = PluginStatus.Ok, Settings = BuildSettings(), SettingsVersion = SettingsVersion };
+
     /// <summary>The response for OK: applies what is still selected, then hands the lines back.</summary>
     public PluginResponse BuildResponse()
     {
+        if (_isConfigure)
+        {
+            return BuildConfigureResponse();
+        }
+
         if (!IsBusy)
         {
             ApplySelected();
@@ -400,7 +453,8 @@ public sealed partial class MainViewModel : ObservableObject
         {
             ["disabledGroups"] = Groups.Where(g => !g.IsEnabled).Select(g => g.Name).ToArray(),
             ["showHidden"] = ShowHidden,
-            ["selectedLinesOnly"] = SelectedLinesOnly,
+            // Configure has no selection: keep the scope the window remembered.
+            ["selectedLinesOnly"] = _isConfigure ? _savedSelectedLinesOnly : SelectedLinesOnly,
         };
         return JsonSerializer.SerializeToElement(payload);
     }
@@ -428,7 +482,8 @@ public sealed partial class MainViewModel : ObservableObject
 
         if (settings.TryGetProperty("selectedLinesOnly", out var selectedOnly) && selectedOnly.ValueKind is JsonValueKind.True or JsonValueKind.False)
         {
-            SelectedLinesOnly = selectedOnly.GetBoolean() && HasSelectedLines;
+            _savedSelectedLinesOnly = selectedOnly.GetBoolean();
+            SelectedLinesOnly = _savedSelectedLinesOnly && HasSelectedLines;
         }
     }
 
