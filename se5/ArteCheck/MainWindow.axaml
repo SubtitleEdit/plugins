@@ -105,7 +105,7 @@
                     <TextBlock Text="ARTE check" FontSize="20" FontWeight="SemiBold" />
                     <TextBlock Text="{Binding SubtitleInfo}" Classes="muted" />
                 </StackPanel>
-                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" IsVisible="{Binding IsNotConfigure}">
                     <Border Classes="chip" Background="{StaticResource FixTint}">
                         <StackPanel Orientation="Horizontal" Spacing="6">
                             <i:Icon Value="mdi-wrench-outline" Foreground="{StaticResource FixBrush}" FontSize="15" />
@@ -137,13 +137,13 @@
                     </Border>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
-                    <Button Command="{Binding UndoCommand}" IsEnabled="{Binding CanUndo}" ToolTip.Tip="Undo the last applied pass">
+                    <Button Command="{Binding UndoCommand}" IsEnabled="{Binding CanUndo}" IsVisible="{Binding IsNotConfigure}" ToolTip.Tip="Undo the last applied pass">
                         <StackPanel Orientation="Horizontal" Spacing="6">
                             <i:Icon Value="mdi-undo" FontSize="16" />
                             <TextBlock Text="Undo" />
                         </StackPanel>
                     </Button>
-                    <Button Command="{Binding ApplySelectedCommand}" ToolTip.Tip="Apply the selected corrections and check again">
+                    <Button Command="{Binding ApplySelectedCommand}" IsVisible="{Binding IsNotConfigure}" ToolTip.Tip="Apply the selected corrections and check again">
                         <StackPanel Orientation="Horizontal" Spacing="6">
                             <i:Icon Value="mdi-auto-fix" FontSize="16" />
                             <TextBlock Text="Apply and re-check" />
@@ -320,6 +320,17 @@
                     </Button>
                 </StackPanel>
             </Grid>
+
+            <!-- Configure (Batch convert) -->
+            <StackPanel DockPanel.Dock="Top" IsVisible="{Binding IsConfigure}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Margin="0,110,0,0" Spacing="10" MaxWidth="520">
+                <Border Width="84" Height="84" CornerRadius="42" Background="{StaticResource FixTint}" HorizontalAlignment="Center">
+                    <i:Icon Value="mdi-cog-outline" FontSize="46" Foreground="{StaticResource FixBrush}" />
+                </Border>
+                <TextBlock Text="Batch convert settings" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                <TextBlock Classes="muted" TextWrapping="Wrap" TextAlignment="Center"
+                           Text="Set the options on the left and click OK. Batch convert then applies every correction to each file without showing this window; alarms are counted but need a manual edit." />
+            </StackPanel>
 
             <!-- Empty state -->
             <StackPanel DockPanel.Dock="Top" IsVisible="{Binding IsClean}" HorizontalAlignment="Center" VerticalAlignment="Center"

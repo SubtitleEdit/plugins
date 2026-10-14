@@ -24,6 +24,8 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly PluginRequest _request;
     private readonly bool _isEbu;
     private readonly bool _legacyRequest;
+    private readonly bool _isConfigure;
+    private readonly bool _isBatch;
     private readonly long _videoOffsetMs;
     private readonly Stack<(List<PluginParagraph> Paragraphs, string? Header, double FrameRate, int Applied)> _undo = new();
     private readonly Dictionary<string, bool> _expandedGroups = new();
@@ -54,6 +56,8 @@ public sealed partial class MainViewModel : ObservableObject
     public MainViewModel(PluginRequest request)
     {
         _request = request;
+        _isConfigure = request.RequestType == PluginRequestType.Configure;
+        _isBatch = request.RequestType == PluginRequestType.Batch;
         _isEbu = string.Equals(request.Subtitle.Format, EbuFormatName, StringComparison.OrdinalIgnoreCase);
         _videoOffsetMs = request.Rules?.VideoOffsetMs ?? 0;
         _legacyRequest = request.Subtitle.Paragraphs == null;
@@ -100,23 +104,32 @@ public sealed partial class MainViewModel : ObservableObject
     public IReadOnlyList<CheckItem> Checks { get; }
     public ObservableCollection<FixGroup> Groups { get; } = new();
 
+    /// <summary>Opened from Batch convert's Configure button: only the settings matter, there is no subtitle.</summary>
+    public bool IsConfigure => _isConfigure;
+    public bool IsNotConfigure => !_isConfigure;
+
     public string SubtitleInfo
     {
         get
         {
+            if (_isConfigure)
+            {
+                return "Settings for Batch convert";
+            }
+
             var name = string.IsNullOrEmpty(_request.Subtitle.FileName) ? "Untitled" : Path.GetFileName(_request.Subtitle.FileName);
             var format = string.IsNullOrEmpty(_request.Subtitle.Format) ? string.Empty : $"  ·  {_request.Subtitle.Format}";
             return $"{name}{format}  ·  {_paragraphs.Count} subtitles";
         }
     }
 
-    public bool ShowFormatWarning => !_isEbu;
+    public bool ShowFormatWarning => !_isEbu && !_isConfigure;
     public string FormatWarning => _legacyRequest
         ? "This Subtitle Edit version only sends SubRip to plugins, so teletext rows and the EBU header are not checked. Update Subtitle Edit for the full check."
         : $"The subtitle is {(_request.Subtitle.Format is { Length: > 0 } f ? f : "not EBU STL")}. Header and teletext row checks need EBU STL - save as EBU STL for delivery.";
 
-    public bool HasFindings => FixCount + AlarmCount > 0;
-    public bool IsClean => !HasFindings;
+    public bool HasFindings => FixCount + AlarmCount > 0 && !_isConfigure;
+    public bool IsClean => !HasFindings && !_isConfigure;
     public bool ShowAll { get => Filter == FindingFilter.All; set { if (value) Filter = FindingFilter.All; } }
     public bool ShowFixes { get => Filter == FindingFilter.Fixes; set { if (value) Filter = FindingFilter.Fixes; } }
     public bool ShowAlarms { get => Filter == FindingFilter.Alarms; set { if (value) Filter = FindingFilter.Alarms; } }
@@ -396,12 +409,22 @@ public sealed partial class MainViewModel : ObservableObject
     /// <summary>The response for OK: applies what is still selected, then hands the working copy back.</summary>
     public PluginResponse BuildResponse()
     {
+        if (_isConfigure)
+        {
+            return BuildConfigureResponse();
+        }
+
         ApplyPending();
         if (AppliedCount == 0)
         {
             return new PluginResponse { Status = PluginStatus.Cancelled, Settings = BuildSettings(), SettingsVersion = SettingsVersion };
         }
 
+        return BuildOkResponse();
+    }
+
+    private PluginResponse BuildOkResponse()
+    {
         var paragraphs = _paragraphs.Select(p =>
         {
             var copy = p.Clone();
@@ -439,6 +462,39 @@ public sealed partial class MainViewModel : ObservableObject
         };
     }
 
+    /// <summary>
+    /// A "batch" request (Batch convert): apply every correction, re-checking until nothing is
+    /// left to fix (fixes can enable further fixes), and return the result without any UI.
+    /// </summary>
+    public PluginResponse BuildBatchResponse()
+    {
+        for (var pass = 0; pass < MaxBatchPasses && ApplyPending(); pass++)
+        {
+            Analyze();
+        }
+
+        if (AppliedCount == 0)
+        {
+            return new PluginResponse
+            {
+                Status = PluginStatus.Ok,
+                Message = AlarmCount > 0 ? $"ARTE check: no corrections, {AlarmCount} alarm(s)." : "ARTE check: no issues found.",
+            };
+        }
+
+        var response = BuildOkResponse();
+        response.Message = AlarmCount > 0
+            ? $"ARTE check: {AppliedCount} correction(s) applied, {AlarmCount} alarm(s) need a manual edit."
+            : response.Message;
+        return response;
+    }
+
+    private const int MaxBatchPasses = 5;
+
+    /// <summary>A "configure" request: hand back the settings only, for the next Batch convert run.</summary>
+    public PluginResponse BuildConfigureResponse() =>
+        new() { Status = PluginStatus.Ok, Settings = BuildSettings(), SettingsVersion = SettingsVersion };
+
     public PluginResponse BuildCancelResponse() =>
         new() { Status = PluginStatus.Cancelled, Settings = BuildSettings(), SettingsVersion = SettingsVersion };
 
@@ -453,14 +509,59 @@ public sealed partial class MainViewModel : ObservableObject
             ["shortMinimumFrames"] = (int)(ShortMinimumFrames ?? ArteOptions.PresetShortMinimumFrames),
             ["disabledChecks"] = Checks.Where(c => !c.IsEnabled).Select(c => c.Type.ToString()).ToArray(),
         };
+
+        // "Timed for" and the start time code describe one file, so a normal run never stores
+        // them - but Batch convert has no window to ask in, so Configure saves them for batch runs.
+        // A normal run keeps whatever Configure saved.
+        if (_isConfigure)
+        {
+            payload[BatchFrameRateKey] = SelectedFrameRate;
+            payload[BatchShiftToStartTimeCodeKey] = ShiftToStartTimeCode;
+            payload[BatchTargetStartTimeCodeKey] = TargetStartTimeCode;
+        }
+        else if (_request.SettingsVersion == SettingsVersion && _request.Settings is { ValueKind: JsonValueKind.Object } stored)
+        {
+            foreach (var key in new[] { BatchFrameRateKey, BatchShiftToStartTimeCodeKey, BatchTargetStartTimeCodeKey })
+            {
+                if (stored.TryGetProperty(key, out var value))
+                {
+                    payload[key] = value.Clone();
+                }
+            }
+        }
+
         return JsonSerializer.SerializeToElement(payload);
     }
+
+    private const string BatchFrameRateKey = "batchFrameRate";
+    private const string BatchShiftToStartTimeCodeKey = "batchShiftToStartTimeCode";
+    private const string BatchTargetStartTimeCodeKey = "batchTargetStartTimeCode";
 
     private void LoadSettings()
     {
         if (_request.SettingsVersion != SettingsVersion || _request.Settings is not { ValueKind: JsonValueKind.Object } settings)
         {
             return;
+        }
+
+        if (_isConfigure || _isBatch)
+        {
+            if (settings.TryGetProperty(BatchFrameRateKey, out var frameRate) && frameRate.TryGetDouble(out var fps) &&
+                FrameRates.Any(f => Math.Abs(f - fps) < 0.001))
+            {
+                SelectedFrameRate = fps;
+            }
+
+            if (settings.TryGetProperty(BatchShiftToStartTimeCodeKey, out var shift) && shift.ValueKind is JsonValueKind.True or JsonValueKind.False)
+            {
+                ShiftToStartTimeCode = shift.GetBoolean();
+            }
+
+            if (settings.TryGetProperty(BatchTargetStartTimeCodeKey, out var target) && target.GetString() is { } tc &&
+                ArteChecker.TryParseTimeCode(tc, out _))
+            {
+                TargetStartTimeCode = tc;
+            }
         }
 
         if (settings.TryGetProperty("teletextMaxCells", out var cells) && cells.TryGetInt32(out var c) && c is >= 10 and <= 40)
