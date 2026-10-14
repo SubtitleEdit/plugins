@@ -32,6 +32,14 @@ Needs a Subtitle Edit build whose plugin contract includes `subtitle.header` and
 
 The limits and enabled checks are remembered between runs. Durations, CPS and double height come from Subtitle Edit's settings (`request.rules`).
 
+## Batch convert
+
+ARTE check supports Subtitle Edit's **Batch convert** (Tools → Batch convert → Run plugin; needs a Subtitle Edit version with plugin batch support).
+
+- **Configure...** opens this window without a subtitle. Set the profile, limits, checks, *Timed for* frame rate and programme start, then click OK. The frame rate and programme start are saved for batch runs only — a normal run still asks per file.
+- During the batch each file is checked and **every correction is applied**, re-checking until nothing is left to fix (up to five passes). Alarms are not fixed; the status message counts them.
+- Header and teletext row checks need EBU STL input, as in the window.
+
 ## Build
 
 See `.github/workflows/arte-check.yml`. Tests are in `../ArteCheck.Tests`:
