@@ -4,6 +4,10 @@ Translates subtitle text to "haxor" — lower-cases it and swaps a few letters f
 look-alikes (`a→4`, `e→3`, `o→0`, `s→$`, `i→!`, `c→©`, `h→H`, `k→K`, `n→ñ`, `y→¥`).
 If lines are selected in the grid only those are changed, otherwise every line is.
 
+It also works in **Batch convert** (Tools → Batch convert → Run plugin): `"batch": true` in
+`plugin.json` opts in, a `batch` request translates every line, and a `configure` request is
+answered with `ok` and no settings, since Haxor has none.
+
 This is a reference plugin for the Subtitle Edit 5 plugin system. It shows the whole
 contract: read the request JSON, transform the subtitle, write the response JSON.
 See [docs/plugin.md](https://github.com/SubtitleEdit/subtitleedit/blob/main/docs/plugin.md)

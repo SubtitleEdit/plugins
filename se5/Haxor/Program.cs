@@ -8,6 +8,10 @@ using SubtitleEdit.Plugins.Haxor;
 //   2. transform the subtitle,
 //   3. write the response file (path is given in the request),
 //   4. exit with code 0.
+//
+// With "batch": true in plugin.json, Subtitle Edit's Batch convert can run it too. It then sends
+// requestType "batch" (no UI, all lines - Haxor never shows UI anyway) and "configure" (show your
+// settings and return them without a subtitle - Haxor has none).
 
 if (args.Length < 1)
 {
@@ -38,6 +42,13 @@ if (request is null || string.IsNullOrEmpty(request.ResponseFilePath))
 {
     Console.Error.WriteLine("Invalid request.");
     return 1;
+}
+
+if (request.RequestType == "configure")
+{
+    var configureResponse = new PluginResponse { Status = "ok", Message = "Haxor has no settings." };
+    File.WriteAllText(request.ResponseFilePath, JsonSerializer.Serialize(configureResponse, jsonOptions));
+    return 0;
 }
 
 // Work on the SubRip representation - it is always provided in the request.
