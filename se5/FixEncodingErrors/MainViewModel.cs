@@ -16,6 +16,7 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly List<PluginParagraph> _paragraphs;
     private readonly long _videoOffsetMs;
     private readonly SourceEncoding _detected;
+    private readonly bool _isConfigure;
     private bool _loading;
 
     [ObservableProperty] private SourceEncoding _selectedEncoding;
@@ -25,6 +26,7 @@ public sealed partial class MainViewModel : ObservableObject
     public MainViewModel(PluginRequest request)
     {
         _request = request;
+        _isConfigure = request.RequestType == PluginRequestType.Configure;
         _videoOffsetMs = request.Rules?.VideoOffsetMs ?? 0;
         _legacyRequest = request.Subtitle.Paragraphs == null;
         _paragraphs = _legacyRequest
@@ -34,7 +36,7 @@ public sealed partial class MainViewModel : ObservableObject
         SelectedIndices = request.SelectedIndices.Where(i => i >= 0 && i < _paragraphs.Count).Distinct().Order().ToList();
 
         var detected = EncodingFixer.Detect(_paragraphs.Select(p => p.Text ?? string.Empty));
-        AutoEncoding = new SourceEncoding(0, "Auto-detect - " + detected.Name);
+        AutoEncoding = new SourceEncoding(0, _isConfigure ? "Auto-detect (per file)" : "Auto-detect - " + detected.Name);
         _detected = detected;
         EncodingOptions = new[] { AutoEncoding }.Concat(EncodingFixer.Encodings).ToList();
         _selectedEncoding = AutoEncoding;
@@ -57,22 +59,33 @@ public sealed partial class MainViewModel : ObservableObject
     {
         get
         {
+            if (_isConfigure)
+            {
+                return "Settings for Batch convert";
+            }
+
             var name = string.IsNullOrEmpty(_request.Subtitle.FileName) ? "Untitled" : Path.GetFileName(_request.Subtitle.FileName);
             var format = string.IsNullOrEmpty(_request.Subtitle.Format) ? string.Empty : $"  ·  {_request.Subtitle.Format}";
             return $"{name}{format}  ·  {_paragraphs.Count:N0} lines";
         }
     }
 
+    /// <summary>Opened from Batch convert's Configure button: only the code page matters, there is no subtitle.</summary>
+    public bool IsConfigure => _isConfigure;
+    public bool IsNotConfigure => !_isConfigure;
+
     public bool HasSelectedLines => SelectedIndices.Count > 0;
     public string SelectedLinesText => SelectedIndices.Count == 1 ? "Selected line (1)" : $"Selected lines ({SelectedIndices.Count:N0})";
     public bool AllLines { get => !SelectedLinesOnly; set => SelectedLinesOnly = !value; }
     public int ChangeCount => Changes.Count;
     public bool HasChanges => Changes.Count > 0;
-    public bool IsClean => Changes.Count == 0;
-    public bool CanApply => SelectedCount > 0;
+    public bool IsClean => Changes.Count == 0 && !_isConfigure;
+    public bool CanApply => SelectedCount > 0 || _isConfigure;
     public string CleanText => $"No broken characters found for {EffectiveEncoding.Name}.";
 
-    public string StatusText => Changes.Count == 0
+    public string StatusText => _isConfigure
+        ? "Used for every file in Batch convert"
+        : Changes.Count == 0
         ? $"{LinesInScope:N0} lines checked"
         : $"{SelectedCount:N0} of {Changes.Count:N0} lines selected";
 
@@ -154,9 +167,35 @@ public sealed partial class MainViewModel : ObservableObject
         }
     }
 
+    /// <summary>
+    /// A "batch" request (Batch convert): fix every line with the saved code page (auto-detect
+    /// per file by default), without UI. No changes is "ok" without a subtitle.
+    /// </summary>
+    public PluginResponse BuildBatchResponse()
+    {
+        if (Changes.Count == 0)
+        {
+            return new PluginResponse { Status = PluginStatus.Ok, Message = "Fix encoding errors: nothing to fix." };
+        }
+
+        var response = BuildResponse();
+        response.Settings = null;
+        response.SettingsVersion = null;
+        return response;
+    }
+
+    /// <summary>A "configure" request: hand back the settings only, for the next Batch convert run.</summary>
+    public PluginResponse BuildConfigureResponse() =>
+        new() { Status = PluginStatus.Ok, Settings = BuildSettings(), SettingsVersion = SettingsVersion };
+
     /// <summary>The response for OK: the selected lines, fixed.</summary>
     public PluginResponse BuildResponse()
     {
+        if (_isConfigure)
+        {
+            return BuildConfigureResponse();
+        }
+
         var selected = Changes.Where(c => c.IsSelected).ToList();
         if (selected.Count == 0)
         {

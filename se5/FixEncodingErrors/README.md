@@ -66,6 +66,13 @@ Works on the lines exactly as Subtitle Edit holds them, so styles, actors and
 other fields of formats like ASSA are kept (falls back to SubRip on older SE
 versions).
 
+## Batch convert
+
+Fix encoding errors supports Subtitle Edit's **Batch convert** (Tools → Batch convert → Run plugin; needs a Subtitle Edit version with plugin batch support).
+
+- **Configure...** opens the window without a subtitle to pick the code page. *Auto-detect* (the default) checks each file on its own.
+- During the batch every broken line is fixed without showing the window. Files with nothing to fix are left as they are. The same false-fix guards apply as in the window.
+
 ## Build
 
 See `.github/workflows/fix-encoding-errors.yml`.
