@@ -372,7 +372,7 @@
             </StackPanel>
 
             <!-- Toolbar -->
-            <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,12">
+            <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,12" IsVisible="{Binding IsNotConfigure}">
                 <Border Classes="segmented" ToolTip.Tip="Which lines to convert">
                     <StackPanel Orientation="Horizontal" Spacing="2">
                         <RadioButton GroupName="scope" IsChecked="{Binding AllLines}">
@@ -410,6 +410,17 @@
                     </Button>
                 </StackPanel>
             </Grid>
+
+            <!-- Configure (Batch convert) -->
+            <StackPanel DockPanel.Dock="Top" IsVisible="{Binding IsConfigure}" HorizontalAlignment="Center"
+                        Margin="0,30,0,0" Spacing="10" MaxWidth="520">
+                <Border Width="88" Height="88" CornerRadius="44" Background="{StaticResource AccentTint}" HorizontalAlignment="Center">
+                    <i:Icon Value="mdi-cog-outline" FontSize="48" Foreground="{StaticResource AccentBrush}" />
+                </Border>
+                <TextBlock Text="Batch convert settings" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                <TextBlock Classes="muted" TextWrapping="Wrap" TextAlignment="Center"
+                           Text="Pick the language, direction and system above and click OK. Batch convert then converts every line in each file without showing this window. The direction is used for every file, the language is detected per file just as when this window opens on a subtitle. Files already in the target script are skipped, and Latin → Cyrillic only runs on files with letters like đ, ć, č, š, ž or ʻ, so English files are left alone." />
+            </StackPanel>
 
             <!-- Empty state -->
             <StackPanel DockPanel.Dock="Top" IsVisible="{Binding IsClean}" HorizontalAlignment="Center"
