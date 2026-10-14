@@ -15,24 +15,52 @@ public partial class MainWindow : Window
     private readonly PluginRequest _request;
     private readonly List<SrtBlock> _blocks;
     private readonly ObservableCollection<ChangeProposal> _proposals = new();
-    private readonly string _wordListPath = LocalWordList.GetDefaultPath("AmericanToBritish.xml");
+    private readonly string _wordListPath = LocalWordList.GetDefaultPath(BatchMode.WordListFileName);
+    private readonly bool _isConfigure;
 
     private TextBlock _summaryLabel = null!;
     private TextBlock _subtitleLabel = null!;
     private TextBlock _noChangesLabel = null!;
     private ListBox _changesList = null!;
     private Button _applyButton = null!;
+    private Control _selectButtons = null!;
+    private Control _configurePanel = null!;
+    private Control _changesBorder = null!;
 
     public MainWindow() : this(new PluginRequest()) { }
 
     public MainWindow(PluginRequest request)
     {
         _request = request;
+        _isConfigure = request.RequestType == PluginRequestType.Configure;
         InitializeComponent();
 
         _blocks = SubRipParser.Parse(request.Subtitle.SubRip);
         _changesList.ItemsSource = _proposals;
+        if (_isConfigure)
+        {
+            ShowConfigure();
+            return;
+        }
+
         RefreshProposals();
+    }
+
+    /// <summary>
+    /// Opened from Batch convert's Configure button: there is no subtitle, only the local word list
+    /// (gear button) can be edited. OK just closes - the word list is saved to its own file.
+    /// </summary>
+    private void ShowConfigure()
+    {
+        Title = "American to British - Batch convert settings";
+        _selectButtons.IsVisible = false;
+        _changesBorder.IsVisible = false;
+        _noChangesLabel.IsVisible = false;
+        _configurePanel.IsVisible = true;
+        _subtitleLabel.Text = "Settings for Batch convert.";
+        _summaryLabel.Text = "Used for every file in Batch convert";
+        _applyButton.Content = "OK";
+        _applyButton.IsEnabled = true;
     }
 
     private void RefreshProposals()
@@ -85,6 +113,9 @@ public partial class MainWindow : Window
         _noChangesLabel = this.FindControl<TextBlock>("NoChangesLabel")!;
         _changesList = this.FindControl<ListBox>("ChangesList")!;
         _applyButton = this.FindControl<Button>("ApplyButton")!;
+        _selectButtons = this.FindControl<Control>("SelectButtons")!;
+        _configurePanel = this.FindControl<Control>("ConfigurePanel")!;
+        _changesBorder = this.FindControl<Control>("ChangesBorder")!;
     }
 
     protected override void OnOpened(EventArgs e)
@@ -159,7 +190,7 @@ public partial class MainWindow : Window
         }
 
         var saved = await new WordListWindow(_wordListPath, list, loadError).ShowDialog<bool>(this);
-        if (saved)
+        if (saved && !_isConfigure)
         {
             RefreshProposals();
         }
@@ -173,6 +204,13 @@ public partial class MainWindow : Window
 
     private void OnApply(object? sender, RoutedEventArgs e)
     {
+        if (_isConfigure)
+        {
+            App.Response = BatchMode.BuildConfigureResponse();
+            Close();
+            return;
+        }
+
         try
         {
             var changesByLine = _proposals
@@ -186,25 +224,7 @@ public partial class MainWindow : Window
                 return;
             }
 
-            for (var i = 0; i < _blocks.Count; i++)
-            {
-                if (changesByLine.TryGetValue(i, out var newText))
-                {
-                    _blocks[i].Text = newText;
-                }
-            }
-
-            App.Response = new PluginResponse
-            {
-                Status = PluginStatus.Ok,
-                Message = $"Converted {changesByLine.Count} line(s) to British English.",
-                UndoDescription = "American to British",
-                Subtitle = new PluginSubtitle
-                {
-                    Format = "SubRip",
-                    Native = SubRipParser.Serialize(_blocks),
-                },
-            };
+            App.Response = BatchMode.BuildOkResponse(_blocks, changesByLine);
         }
         catch (Exception ex)
         {

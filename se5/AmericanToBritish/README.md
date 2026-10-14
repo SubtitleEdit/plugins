@@ -24,6 +24,13 @@ turns a built-in pair off. An `Ignore` can also be a phrase, which is then left
 untouched wherever it occurs (`<Ignore us="por favor" />` keeps "favor" there while
 it is still converted elsewhere). A few such phrases are built in, e.g. "por favor".
 
+## Batch convert
+
+American to British supports Subtitle Edit's **Batch convert** (Tools → Batch convert → Run plugin; needs a Subtitle Edit version with plugin batch support).
+
+- **Configure...** opens the window without a subtitle. The only setting is the local word list (gear button); it is saved to its own file, so OK returns no settings.
+- During the batch every line is converted with the bundled word list plus the local word list, without showing the window - the same as clicking Apply with all proposed changes checked (the window's default). Files with nothing to convert are left as they are. If the local word list can not be read, the file fails with an error instead of being converted without it.
+
 First Subtitle Edit 5 plugin built on top of the shared
 [`Plugin-Shared`](../Plugin-Shared/) library — Avalonia app boot, theme passing,
 SRT parsing, and the JSON contract all come from there. The plugin code itself
