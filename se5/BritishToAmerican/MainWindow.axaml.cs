@@ -15,19 +15,38 @@ public partial class MainWindow : Window
     private readonly PluginRequest _request;
     private readonly List<SrtBlock> _blocks;
     private readonly ObservableCollection<ChangeProposal> _proposals = new();
+    private readonly bool _isConfigure;
 
     private TextBlock _summaryLabel = null!;
     private TextBlock _subtitleLabel = null!;
     private TextBlock _noChangesLabel = null!;
     private ListBox _changesList = null!;
     private Button _applyButton = null!;
+    private Control _selectButtons = null!;
+    private Control _changesBorder = null!;
+    private Control _configurePanel = null!;
 
     public MainWindow() : this(new PluginRequest()) { }
 
     public MainWindow(PluginRequest request)
     {
         _request = request;
+        _isConfigure = request.RequestType == PluginRequestType.Configure;
         InitializeComponent();
+
+        if (_isConfigure)
+        {
+            // Opened from Batch convert's Configure button: no subtitle, and nothing to configure.
+            _blocks = new List<SrtBlock>();
+            _subtitleLabel.Text = "Settings for Batch convert.";
+            _selectButtons.IsVisible = false;
+            _changesBorder.IsVisible = false;
+            _configurePanel.IsVisible = true;
+            _applyButton.Content = "OK";
+            _applyButton.IsEnabled = true;
+            _summaryLabel.Text = string.Empty;
+            return;
+        }
 
         _blocks = SubRipParser.Parse(request.Subtitle.SubRip);
         BuildProposals();
@@ -64,6 +83,9 @@ public partial class MainWindow : Window
         _noChangesLabel = this.FindControl<TextBlock>("NoChangesLabel")!;
         _changesList = this.FindControl<ListBox>("ChangesList")!;
         _applyButton = this.FindControl<Button>("ApplyButton")!;
+        _selectButtons = this.FindControl<Control>("SelectButtons")!;
+        _changesBorder = this.FindControl<Control>("ChangesBorder")!;
+        _configurePanel = this.FindControl<Control>("ConfigurePanel")!;
     }
 
     protected override void OnOpened(EventArgs e)
@@ -74,21 +96,9 @@ public partial class MainWindow : Window
 
     private void BuildProposals()
     {
-        var converter = new EnglishVariantConverter(EnglishVariantDirection.BrToUs);
-        var selected = new HashSet<int>(_request.SelectedIndices);
-        var applyToAll = selected.Count == 0;
-
-        for (var i = 0; i < _blocks.Count; i++)
+        foreach (var proposal in Conversion.FindChanges(_blocks, _request.SelectedIndices))
         {
-            if (!applyToAll && !selected.Contains(i))
-            {
-                continue;
-            }
-
-            if (converter.TryConvert(_blocks[i].Text, out var converted))
-            {
-                _proposals.Add(new ChangeProposal(i, _blocks[i].Text, converted));
-            }
+            _proposals.Add(proposal);
         }
     }
 
@@ -132,38 +142,24 @@ public partial class MainWindow : Window
 
     private void OnApply(object? sender, RoutedEventArgs e)
     {
+        if (_isConfigure)
+        {
+            App.Response = Conversion.BuildConfigureResponse();
+            Close();
+            return;
+        }
+
         try
         {
-            var changesByLine = _proposals
-                .Where(p => p.Include)
-                .ToDictionary(p => p.LineIndex, p => p.ConvertedText);
-
-            if (changesByLine.Count == 0)
+            var response = Conversion.Apply(_blocks, _proposals);
+            if (response == null)
             {
                 App.Response = new PluginResponse { Status = PluginStatus.Cancelled };
                 Close();
                 return;
             }
 
-            for (var i = 0; i < _blocks.Count; i++)
-            {
-                if (changesByLine.TryGetValue(i, out var newText))
-                {
-                    _blocks[i].Text = newText;
-                }
-            }
-
-            App.Response = new PluginResponse
-            {
-                Status = PluginStatus.Ok,
-                Message = $"Converted {changesByLine.Count} line(s) to American English.",
-                UndoDescription = "British to American",
-                Subtitle = new PluginSubtitle
-                {
-                    Format = "SubRip",
-                    Native = SubRipParser.Serialize(_blocks),
-                },
-            };
+            App.Response = response;
         }
         catch (Exception ex)
         {
