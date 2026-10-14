@@ -51,6 +51,13 @@ Works on the lines exactly as Subtitle Edit holds them, so styles, actors and
 other fields of formats like ASSA are kept (falls back to SubRip on older SE
 versions).
 
+## Batch convert
+
+Italic each line supports Subtitle Edit's **Batch convert** (Tools → Batch convert → Run plugin; needs a Subtitle Edit version with plugin batch support).
+
+- **Configure...** opens the window without a subtitle to pick the direction (*One tag per subtitle* or *Italic on each line*).
+- During the batch every line of each file is converted to that direction without showing the window. Files with nothing to change are left as they are.
+
 ## Build
 
 See `.github/workflows/italic-each-line.yml`.

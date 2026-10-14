@@ -227,7 +227,7 @@
                                 <TextBlock Text="One tag per subtitle" FontWeight="SemiBold" FontSize="15" />
                                 <i:Icon Grid.Column="1" Classes="check" Value="mdi-check-circle" FontSize="18" Foreground="{StaticResource AccentBrush}" />
                             </Grid>
-                            <TextBlock Text="{Binding OneTagCountText}" Classes="muted" FontSize="12" />
+                            <TextBlock Text="{Binding OneTagCountText}" Classes="muted" FontSize="12" IsVisible="{Binding IsNotConfigure}" />
                         </StackPanel>
                         <Border Grid.Row="1" Grid.ColumnSpan="2" Classes="example" Margin="0,12,0,0">
                             <TextBlock Classes="code">
@@ -248,7 +248,7 @@
                                 <TextBlock Text="Italic on each line" FontWeight="SemiBold" FontSize="15" />
                                 <i:Icon Grid.Column="1" Classes="check" Value="mdi-check-circle" FontSize="18" Foreground="{StaticResource AccentBrush}" />
                             </Grid>
-                            <TextBlock Text="{Binding EachLineCountText}" Classes="muted" FontSize="12" />
+                            <TextBlock Text="{Binding EachLineCountText}" Classes="muted" FontSize="12" IsVisible="{Binding IsNotConfigure}" />
                         </StackPanel>
                         <Border Grid.Row="1" Grid.ColumnSpan="2" Classes="example" Margin="0,12,0,0">
                             <TextBlock Classes="code">
@@ -261,7 +261,7 @@
             </Grid>
 
             <!-- Toolbar -->
-            <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,Auto,*,Auto" Margin="0,0,0,12">
+            <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,Auto,*,Auto" Margin="0,0,0,12" IsVisible="{Binding IsNotConfigure}">
                 <Border Classes="segmented" ToolTip.Tip="Which lines to convert">
                     <StackPanel Orientation="Horizontal" Spacing="2">
                         <RadioButton GroupName="scope" IsChecked="{Binding AllLines}">
@@ -315,6 +315,17 @@
                     </Button>
                 </StackPanel>
             </Grid>
+
+            <!-- Configure (Batch convert) -->
+            <StackPanel DockPanel.Dock="Top" IsVisible="{Binding IsConfigure}" HorizontalAlignment="Center"
+                        Margin="0,40,0,0" Spacing="10" MaxWidth="520">
+                <Border Width="88" Height="88" CornerRadius="44" Background="{StaticResource FixTint}" HorizontalAlignment="Center">
+                    <i:Icon Value="mdi-cog-outline" FontSize="48" Foreground="{StaticResource FixBrush}" />
+                </Border>
+                <TextBlock Text="Batch convert settings" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                <TextBlock Classes="muted" TextWrapping="Wrap" TextAlignment="Center"
+                           Text="Pick the direction above and click OK. Batch convert then converts every line in each file without showing this window." />
+            </StackPanel>
 
             <!-- Empty state -->
             <StackPanel DockPanel.Dock="Top" IsVisible="{Binding IsClean}" HorizontalAlignment="Center"
