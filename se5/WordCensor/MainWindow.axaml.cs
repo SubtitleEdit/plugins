@@ -7,15 +7,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text.Json;
 
 namespace SubtitleEdit.Plugins.WordCensor;
 
 public partial class MainWindow : Window
 {
-    private const string DefaultReplacement = "[censored]";
-
     private readonly PluginRequest _request;
+    private readonly bool _isConfigure;
     private readonly List<SrtBlock> _blocks;
     private readonly WordCensorEngine _engine;
     private readonly ObservableCollection<ChangeProposal> _proposals = new();
@@ -30,21 +28,25 @@ public partial class MainWindow : Window
     private RadioButton _replacementRadio = null!;
     private RadioButton _alternativeRadio = null!;
     private TextBox _replacementBox = null!;
+    private Control _selectionControls = null!;
+    private Control _changesBorder = null!;
+    private Control _configurePanel = null!;
 
     public MainWindow() : this(new PluginRequest()) { }
 
     public MainWindow(PluginRequest request)
     {
         _request = request;
+        _isConfigure = request.RequestType == PluginRequestType.Configure;
         InitializeComponent();
 
         _engine = new WordCensorEngine();
         _blocks = SubRipParser.Parse(request.Subtitle.SubRip);
 
-        var (mode, replacement, colorRed) = LoadSettings(request.Settings);
-        SetMode(mode);
-        _replacementBox.Text = replacement;
-        _colorRedCheck.IsChecked = colorRed;
+        var saved = CensorSettings.Load(request.Settings);
+        SetMode(saved.Mode);
+        _replacementBox.Text = saved.Replacement;
+        _colorRedCheck.IsChecked = saved.ColorRed;
 
         _grawlixRadio.IsCheckedChanged += (_, _) => OnModeOrOptionChanged();
         _replacementRadio.IsCheckedChanged += (_, _) => OnModeOrOptionChanged();
@@ -65,7 +67,18 @@ public partial class MainWindow : Window
         var scope = request.SelectedIndices.Count > 0
             ? $"the {request.SelectedIndices.Count} selected line(s)"
             : "all lines";
-        _subtitleLabel.Text = $"Replace offensive words in {scope}. Pick a style below.";
+        _subtitleLabel.Text = _isConfigure
+            ? "Settings for Batch convert. Pick a style below."
+            : $"Replace offensive words in {scope}. Pick a style below.";
+
+        if (_isConfigure)
+        {
+            // Opened from Batch convert's Configure button: no subtitle, settings only.
+            _selectionControls.IsVisible = false;
+            _changesBorder.IsVisible = false;
+            _configurePanel.IsVisible = true;
+            _applyButton.Content = "OK";
+        }
 
         UpdateUiForProposals();
     }
@@ -83,6 +96,9 @@ public partial class MainWindow : Window
         _replacementRadio = this.FindControl<RadioButton>("ReplacementModeRadio")!;
         _alternativeRadio = this.FindControl<RadioButton>("AlternativeModeRadio")!;
         _replacementBox = this.FindControl<TextBox>("ReplacementBox")!;
+        _selectionControls = this.FindControl<Control>("SelectionControls")!;
+        _changesBorder = this.FindControl<Control>("ChangesBorder")!;
+        _configurePanel = this.FindControl<Control>("ConfigurePanel")!;
     }
 
     protected override void OnOpened(EventArgs e)
@@ -94,7 +110,7 @@ public partial class MainWindow : Window
     private CensorOptions BuildOptions() => new()
     {
         Mode = CurrentMode(),
-        Replacement = string.IsNullOrEmpty(_replacementBox.Text) ? DefaultReplacement : _replacementBox.Text,
+        Replacement = string.IsNullOrEmpty(_replacementBox.Text) ? CensorSettings.DefaultReplacement : _replacementBox.Text,
         ColorRed = _colorRedCheck.IsChecked == true,
     };
 
@@ -158,6 +174,14 @@ public partial class MainWindow : Window
 
     private void UpdateUiForProposals()
     {
+        if (_isConfigure)
+        {
+            _noChangesLabel.IsVisible = false;
+            _applyButton.IsEnabled = true;
+            _summaryLabel.Text = "Used for every file in Batch convert";
+            return;
+        }
+
         if (_proposals.Count == 0)
         {
             _noChangesLabel.IsVisible = true;
@@ -213,6 +237,18 @@ public partial class MainWindow : Window
 
     private void OnApply(object? sender, RoutedEventArgs e)
     {
+        if (_isConfigure)
+        {
+            App.Response = new PluginResponse
+            {
+                Status = PluginStatus.Ok,
+                Settings = CensorSettings.Build(BuildOptions()),
+                SettingsVersion = CensorSettings.SettingsVersion,
+            };
+            Close();
+            return;
+        }
+
         try
         {
             var changesByLine = _proposals
@@ -244,7 +280,7 @@ public partial class MainWindow : Window
                     Format = "SubRip",
                     Native = SubRipParser.Serialize(_blocks),
                 },
-                Settings = BuildSettings(BuildOptions()),
+                Settings = CensorSettings.Build(BuildOptions()),
             };
         }
         catch (Exception ex)
@@ -253,52 +289,5 @@ public partial class MainWindow : Window
         }
 
         Close();
-    }
-
-    private static (CensorMode mode, string replacement, bool colorRed) LoadSettings(JsonElement? settings)
-    {
-        var mode = CensorMode.Grawlix;
-        var replacement = DefaultReplacement;
-        var colorRed = false;
-
-        if (settings is null || settings.Value.ValueKind != JsonValueKind.Object)
-        {
-            return (mode, replacement, colorRed);
-        }
-
-        var root = settings.Value;
-
-        if (root.TryGetProperty("mode", out var modeProp) && modeProp.ValueKind == JsonValueKind.String &&
-            Enum.TryParse<CensorMode>(modeProp.GetString(), ignoreCase: true, out var parsed))
-        {
-            mode = parsed;
-        }
-        if (root.TryGetProperty("replacement", out var rep) && rep.ValueKind == JsonValueKind.String)
-        {
-            var s = rep.GetString();
-            if (!string.IsNullOrEmpty(s))
-            {
-                replacement = s;
-            }
-        }
-        if (root.TryGetProperty("colorRed", out var cr) && cr.ValueKind == JsonValueKind.True)
-        {
-            colorRed = true;
-        }
-
-        return (mode, replacement, colorRed);
-    }
-
-    private static JsonElement BuildSettings(CensorOptions options)
-    {
-        var dto = new
-        {
-            mode = options.Mode.ToString(),
-            replacement = options.Replacement,
-            colorRed = options.ColorRed,
-        };
-        var json = JsonSerializer.Serialize(dto);
-        using var doc = JsonDocument.Parse(json);
-        return doc.RootElement.Clone();
     }
 }
