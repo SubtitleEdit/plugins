@@ -64,12 +64,31 @@
             </StackPanel>
         </WrapPanel>
 
-        <StackPanel Orientation="Horizontal"
+        <StackPanel x:Name="SelectButtonsPanel"
+                    Orientation="Horizontal"
                     DockPanel.Dock="Top"
                     Spacing="10"
                     Margin="0,0,0,8">
             <Button Content="Select all" Click="OnSelectAll" />
             <Button Content="Select none" Click="OnSelectNone" />
+        </StackPanel>
+
+        <!-- Configure (Batch convert) -->
+        <StackPanel DockPanel.Dock="Top"
+                    x:Name="ConfigurePanel"
+                    IsVisible="False"
+                    HorizontalAlignment="Center"
+                    Margin="0,40,0,0"
+                    Spacing="10"
+                    MaxWidth="520">
+            <TextBlock Text="Batch convert settings"
+                       FontSize="16"
+                       FontWeight="SemiBold"
+                       HorizontalAlignment="Center" />
+            <TextBlock TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       Opacity="0.7"
+                       Text="Set the options above and click OK. Batch convert then splits every dialog line in each file without showing this window - the same as clicking Apply here with all lines checked." />
         </StackPanel>
 
         <TextBlock DockPanel.Dock="Top"

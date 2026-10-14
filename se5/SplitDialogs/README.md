@@ -56,6 +56,13 @@ A preview with one row per dialog line: checkbox, line number, the line before
 and registers a "Split dialogs" undo entry. The two options are remembered
 between runs.
 
+## Batch convert
+
+Split dialogs supports Subtitle Edit's **Batch convert** (Tools → Batch convert → Run plugin; needs a Subtitle Edit version with plugin batch support).
+
+- **Configure...** opens the window without a subtitle to set the two options (*Only split where the line before the dash ends a sentence* and *Gap between lines (ms)*). They are the same remembered options as in a normal run.
+- During the batch every dialog line in each file is split without showing the window - the same as clicking *Apply* with every row checked (the window's default). Files without dialog lines are left as they are.
+
 ## Build
 
 See `.github/workflows/split-dialogs.yml`.

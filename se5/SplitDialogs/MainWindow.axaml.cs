@@ -5,17 +5,13 @@ using SubtitleEdit.Plugins.Shared;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Text.Json;
 
 namespace SubtitleEdit.Plugins.SplitDialogs;
 
 public partial class MainWindow : Window
 {
-    private const int SettingsVersion = 1;
-    private const bool DefaultRequireSentenceEnding = true;
-    private const int DefaultGapMs = 24; // Subtitle Edit's default "minimum gap between lines"
-
     private readonly PluginRequest _request;
+    private readonly bool _isConfigure;
     private readonly CueDocument _document;
     private readonly ObservableCollection<DialogRow> _rows = new();
     private readonly HashSet<int> _excludedCues = new();
@@ -30,12 +26,15 @@ public partial class MainWindow : Window
     private Border _listBorder = null!;
     private ListBox _dialogsList = null!;
     private Button _applyButton = null!;
+    private StackPanel _selectButtonsPanel = null!;
+    private StackPanel _configurePanel = null!;
 
     public MainWindow() : this(new PluginRequest()) { }
 
     public MainWindow(PluginRequest request)
     {
         _request = request;
+        _isConfigure = request.RequestType == PluginRequestType.Configure;
         InitializeComponent();
 
         _document = CueDocument.Create(request.Subtitle);
@@ -44,9 +43,24 @@ public partial class MainWindow : Window
             : "all lines";
         _subtitleLabel.Text = $"Dialog lines found in {_scope}. Each checked line becomes one subtitle per speaker, without the dash, and its time is shared out by text length.";
 
-        var (requireSentenceEnding, gapMs) = LoadSettings(request);
-        _requireSentenceEndingCheckBox.IsChecked = requireSentenceEnding;
-        _gapInput.Value = gapMs;
+        var settings = SplitSettings.Load(request);
+        _requireSentenceEndingCheckBox.IsChecked = settings.RequireSentenceEnding;
+        _gapInput.Value = settings.GapMs;
+
+        if (_isConfigure)
+        {
+            // Opened from Batch convert's Configure button: no subtitle, only the two options.
+            _subtitleLabel.Text = "Settings for Batch convert.";
+            _selectButtonsPanel.IsVisible = false;
+            _headerBorder.IsVisible = false;
+            _listBorder.IsVisible = false;
+            _configurePanel.IsVisible = true;
+            _summaryLabel.Text = "Used for every file in Batch convert";
+            _applyButton.Content = "OK";
+            _applyButton.IsEnabled = true;
+            return;
+        }
+
         _requireSentenceEndingCheckBox.IsCheckedChanged += (_, _) => BuildRows();
         _gapInput.ValueChanged += (_, _) => UpdateParts();
 
@@ -66,6 +80,8 @@ public partial class MainWindow : Window
         _listBorder = this.FindControl<Border>("ListBorder")!;
         _dialogsList = this.FindControl<ListBox>("DialogsList")!;
         _applyButton = this.FindControl<Button>("ApplyButton")!;
+        _selectButtonsPanel = this.FindControl<StackPanel>("SelectButtonsPanel")!;
+        _configurePanel = this.FindControl<StackPanel>("ConfigurePanel")!;
     }
 
     protected override void OnOpened(EventArgs e)
@@ -74,7 +90,7 @@ public partial class MainWindow : Window
         this.BringToForeground();
     }
 
-    private int GapMs => (int)(_gapInput.Value ?? DefaultGapMs);
+    private int GapMs => (int)(_gapInput.Value ?? SplitSettings.DefaultGapMs);
 
     private void BuildRows()
     {
@@ -175,6 +191,13 @@ public partial class MainWindow : Window
 
     private void OnApply(object? sender, RoutedEventArgs e)
     {
+        if (_isConfigure)
+        {
+            App.Response = BatchMode.BuildConfigureResponse(CurrentSettings);
+            Close();
+            return;
+        }
+
         try
         {
             var included = _rows.Where(r => r.Include).ToList();
@@ -197,8 +220,8 @@ public partial class MainWindow : Window
                     Format = _document.FormatName,
                     Native = _document.Build(splits),
                 },
-                Settings = BuildSettings(),
-                SettingsVersion = SettingsVersion,
+                Settings = CurrentSettings.ToJson(),
+                SettingsVersion = SplitSettings.Version,
             };
         }
         catch (Exception ex)
@@ -209,37 +232,5 @@ public partial class MainWindow : Window
         Close();
     }
 
-    private JsonElement BuildSettings()
-    {
-        var payload = new
-        {
-            requireSentenceEnding = _requireSentenceEndingCheckBox.IsChecked == true,
-            gapMs = GapMs,
-        };
-        return JsonSerializer.SerializeToElement(payload);
-    }
-
-    private static (bool RequireSentenceEnding, int GapMs) LoadSettings(PluginRequest request)
-    {
-        var requireSentenceEnding = DefaultRequireSentenceEnding;
-        var gapMs = DefaultGapMs;
-        var settings = request.Settings;
-        if (request.SettingsVersion != SettingsVersion || settings is not { ValueKind: JsonValueKind.Object })
-        {
-            return (requireSentenceEnding, gapMs);
-        }
-
-        if (settings.Value.TryGetProperty("requireSentenceEnding", out var require) &&
-            require.ValueKind is JsonValueKind.True or JsonValueKind.False)
-        {
-            requireSentenceEnding = require.GetBoolean();
-        }
-
-        if (settings.Value.TryGetProperty("gapMs", out var gap) && gap.TryGetInt32(out var value) && value is >= 0 and <= 2000)
-        {
-            gapMs = value;
-        }
-
-        return (requireSentenceEnding, gapMs);
-    }
+    private SplitSettings CurrentSettings => new(_requireSentenceEndingCheckBox.IsChecked == true, GapMs);
 }

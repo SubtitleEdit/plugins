@@ -5,11 +5,13 @@ on:
     branches: [main]
     paths:
       - 'se5/SplitDialogs/**'
+      - 'se5/SplitDialogs.Tests/**'
       - 'se5/Plugin-Shared/**'
       - '.github/workflows/split-dialogs.yml'
   pull_request:
     paths:
       - 'se5/SplitDialogs/**'
+      - 'se5/SplitDialogs.Tests/**'
       - 'se5/Plugin-Shared/**'
       - '.github/workflows/split-dialogs.yml'
   workflow_dispatch:
@@ -90,8 +92,22 @@ jobs:
           echo "ref=$ref"          >> "$GITHUB_OUTPUT"
           echo "release=$release_flag" >> "$GITHUB_OUTPUT"
 
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Test
+        run: dotnet test se5/SplitDialogs.Tests/SplitDialogs.Tests.csproj -c Release
+
   build:
-    needs: prepare
+    needs: [prepare, test]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
