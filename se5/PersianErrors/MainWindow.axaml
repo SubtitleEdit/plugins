@@ -146,7 +146,7 @@
                     </StackPanel>
                     <TextBlock Text="{Binding SubtitleInfo}" Classes="muted" />
                 </StackPanel>
-                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" IsVisible="{Binding IsNotConfigure}">
                     <Border Classes="chip" Background="{StaticResource CardBorder}" IsVisible="{Binding IsBusy}">
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <ProgressBar Value="{Binding Progress}" Width="90" MinWidth="90" VerticalAlignment="Center" />
@@ -181,13 +181,14 @@
                     <TextBlock Text="{Binding StatusText}" Classes="muted" VerticalAlignment="Center" />
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
-                    <Button Command="{Binding UndoCommand}" IsEnabled="{Binding CanUndo}" ToolTip.Tip="Undo the last applied pass">
+                    <Button Command="{Binding UndoCommand}" IsEnabled="{Binding CanUndo}" ToolTip.Tip="Undo the last applied pass"
+                            IsVisible="{Binding IsNotConfigure}">
                         <StackPanel Orientation="Horizontal" Spacing="6">
                             <i:Icon Value="mdi-undo" FontSize="16" />
                             <TextBlock Text="Undo" />
                         </StackPanel>
                     </Button>
-                    <Button Command="{Binding ApplyAndRecheckCommand}" IsEnabled="{Binding CanApply}"
+                    <Button Command="{Binding ApplyAndRecheckCommand}" IsEnabled="{Binding CanApply}" IsVisible="{Binding IsNotConfigure}"
                             ToolTip.Tip="Apply the selected fixes and check again - one fix can open the way for another">
                         <StackPanel Orientation="Horizontal" Spacing="6">
                             <i:Icon Value="mdi-auto-fix" FontSize="16" />
@@ -281,7 +282,7 @@
                         </ItemsControl>
                     </StackPanel>
 
-                    <StackPanel Spacing="8" Margin="4,0,0,0">
+                    <StackPanel Spacing="8" Margin="4,0,0,0" IsVisible="{Binding IsNotConfigure}">
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <i:Icon Value="mdi-target" FontSize="16" Opacity="0.7" />
                             <TextBlock Text="CHECK" Classes="section" />
@@ -291,7 +292,7 @@
                                      IsEnabled="{Binding HasSelectedLines}" />
                     </StackPanel>
 
-                    <StackPanel Spacing="8" Margin="4,0,0,0">
+                    <StackPanel Spacing="8" Margin="4,0,0,0" IsVisible="{Binding IsNotConfigure}">
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <i:Icon Value="mdi-eye-outline" FontSize="16" Opacity="0.7" />
                             <TextBlock Text="DISPLAY" Classes="section" />
@@ -388,6 +389,17 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+
+            <!-- Configure (Batch convert) -->
+            <StackPanel DockPanel.Dock="Top" IsVisible="{Binding IsConfigure}" HorizontalAlignment="Center"
+                        Margin="0,120,0,0" Spacing="10" MaxWidth="520">
+                <Border Width="88" Height="88" CornerRadius="44" Background="{StaticResource FixTint}" HorizontalAlignment="Center">
+                    <i:Icon Value="mdi-cog-outline" FontSize="48" Foreground="{StaticResource FixBrush}" />
+                </Border>
+                <TextBlock Text="Batch convert settings" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                <TextBlock Classes="muted" TextWrapping="Wrap" TextAlignment="Center"
+                           Text="Turn the fix groups on or off in the sidebar and click OK. Batch convert then applies every fix of the enabled groups to all lines of each file without showing this window." />
+            </StackPanel>
 
             <!-- Empty states -->
             <StackPanel DockPanel.Dock="Top" IsVisible="{Binding IsClean}" HorizontalAlignment="Center"

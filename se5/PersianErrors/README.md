@@ -47,6 +47,17 @@ The groups run in this order, so a later group sees the output of an earlier one
 
 The enabled groups, the display option and the scope are remembered between runs.
 
+## Batch convert
+
+Persian Subtitle Fixes supports Subtitle Edit's **Batch convert** (Tools → Batch convert → Run
+plugin; needs a Subtitle Edit version with plugin batch support).
+
+- **Configure...** opens this window without a subtitle. Turn the fix groups on or off and click
+  OK. The groups are the same setting a normal run remembers.
+- During the batch each file is checked against the enabled groups and **every fix is applied**
+  to all lines, like OK with the default selection (one pass, no re-check). A file with nothing
+  to fix is left unchanged.
+
 ## Differences from the Subtitle Edit 3/4 plugin
 
 - Every subtitle format is kept. The plugin changes only the text of each line (`subtitle.paragraphs`),
