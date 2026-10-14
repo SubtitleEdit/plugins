@@ -31,6 +31,26 @@ Toolbar buttons:
   reports the count to the SE status bar, and registers a "Remove Unicode
   characters" undo entry.
 
+## Batch convert
+
+Remove Unicode characters supports Subtitle Edit's **Batch convert** (Tools → Batch
+convert → Run plugin; needs a Subtitle Edit version with plugin batch support).
+
+The window decides per character, which a batch run cannot ask, so a batch run only
+touches the characters in a **batch list**; every other character is left alone.
+
+- **Configure...** opens the window without a subtitle and shows the batch list.
+  Add characters by pasting them or typing codes such as `U+200B`, set the
+  replacement (blank = remove), and uncheck rows to drop them. *Also remove every
+  other non-ANSI character* makes the batch remove everything above code point
+  255 that is not in the list (the SE4-style "remove all").
+- Until the batch list has been configured it holds the defaults (`♪`, `♫` → `#`)
+  plus every non-blank replacement you typed in the window. Blank window entries
+  are not used, because they are also saved for rows you left unchecked.
+- During the batch every line of each file is processed without showing the
+  window; files with nothing to change are left as they are. A normal run keeps
+  the batch list but does not use it.
+
 ## Build
 
 See `.github/workflows/remove-unicode-characters.yml`.
