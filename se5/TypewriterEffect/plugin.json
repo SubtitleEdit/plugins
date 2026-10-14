@@ -7,6 +7,7 @@
   "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/TypewriterEffect",
   "menu": "Tools",
   "minSeVersion": "5.0.0",
+  "batch": true,
   "runtime": "dotnet",
   "entry": "TypewriterEffect.dll"
 }

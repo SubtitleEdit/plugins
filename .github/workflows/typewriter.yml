@@ -5,10 +5,12 @@ on:
     branches: [main]
     paths:
       - 'se5/TypewriterEffect/**'
+      - 'se5/TypewriterEffect.Tests/**'
       - '.github/workflows/typewriter.yml'
   pull_request:
     paths:
       - 'se5/TypewriterEffect/**'
+      - 'se5/TypewriterEffect.Tests/**'
       - '.github/workflows/typewriter.yml'
   workflow_dispatch:
     inputs:
@@ -88,8 +90,22 @@ jobs:
           echo "ref=$ref"          >> "$GITHUB_OUTPUT"
           echo "release=$release_flag" >> "$GITHUB_OUTPUT"
 
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Test
+        run: dotnet test se5/TypewriterEffect.Tests/TypewriterEffect.Tests.csproj -c Release
+
   build:
-    needs: prepare
+    needs: [prepare, test]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

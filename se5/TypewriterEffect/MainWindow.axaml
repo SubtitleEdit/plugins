@@ -30,6 +30,20 @@
                        FontWeight="SemiBold"
                        Text="Typewriter effect" />
 
+            <Border x:Name="BatchSettingsPanel"
+                    IsVisible="False"
+                    Padding="12"
+                    CornerRadius="6"
+                    BorderThickness="1"
+                    BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+                <StackPanel Spacing="4">
+                    <TextBlock FontWeight="SemiBold" Text="Batch convert settings" />
+                    <TextBlock Opacity="0.8"
+                               TextWrapping="Wrap"
+                               Text="Set the end delay and click OK. Batch convert then applies the typewriter effect to every line in each file without showing this window." />
+                </StackPanel>
+            </Border>
+
             <TextBlock x:Name="InfoLabel"
                        Opacity="0.8"
                        TextWrapping="Wrap" />
