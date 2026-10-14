@@ -6,5 +6,5 @@ namespace SubtitleEdit.Plugins.AmericanToBritish;
 public static class Program
 {
     [STAThread]
-    public static int Main(string[] args) => PluginBootstrap.Run<App>(args);
+    public static int Main(string[] args) => PluginBootstrap.Run<App>(args, BatchMode.BuildBatchResponse);
 }

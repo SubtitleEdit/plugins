@@ -33,7 +33,7 @@
         </Grid>
 
         <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,4">
-            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="10">
+            <StackPanel Grid.Column="0" x:Name="SelectButtons" Orientation="Horizontal" Spacing="10">
                 <Button Content="Select all" Click="OnSelectAll" />
                 <Button Content="Select none" Click="OnSelectNone" />
             </StackPanel>
@@ -66,7 +66,26 @@
                    Text="No American-to-British conversions found in the selected lines."
                    IsVisible="False" />
 
-        <Border BorderBrush="#22808080"
+        <!-- Configure (Batch convert) -->
+        <StackPanel DockPanel.Dock="Top"
+                    x:Name="ConfigurePanel"
+                    IsVisible="False"
+                    HorizontalAlignment="Center"
+                    Margin="0,40,0,0"
+                    Spacing="10"
+                    MaxWidth="520">
+            <TextBlock Text="Batch convert settings"
+                       FontSize="16"
+                       FontWeight="SemiBold"
+                       HorizontalAlignment="Center" />
+            <TextBlock Opacity="0.7"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       Text="Batch convert converts every American spelling found in each file, using the bundled word list plus your local word list, without showing this window. Use the gear button above to edit the local word list, then click OK." />
+        </StackPanel>
+
+        <Border x:Name="ChangesBorder"
+                BorderBrush="#22808080"
                 BorderThickness="1"
                 CornerRadius="4"
                 Padding="0">
