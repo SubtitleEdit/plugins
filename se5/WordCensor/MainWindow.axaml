@@ -90,6 +90,7 @@
 
         <!-- Selection controls -->
         <Grid DockPanel.Dock="Top"
+              x:Name="SelectionControls"
               ColumnDefinitions="Auto,Auto,*"
               Margin="0,12,0,4">
             <Button Grid.Column="0"
@@ -103,6 +104,24 @@
                     Margin="8,0,0,0" />
         </Grid>
 
+        <!-- Configure (Batch convert) -->
+        <StackPanel DockPanel.Dock="Top"
+                    x:Name="ConfigurePanel"
+                    IsVisible="False"
+                    HorizontalAlignment="Center"
+                    Margin="0,40,0,0"
+                    Spacing="8"
+                    MaxWidth="520">
+            <TextBlock Text="Batch convert settings"
+                       FontSize="16"
+                       FontWeight="SemiBold"
+                       HorizontalAlignment="Center" />
+            <TextBlock Opacity="0.7"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       Text="Pick a style above and click OK. Batch convert then censors every offensive word in each file without showing this window." />
+        </StackPanel>
+
         <TextBlock DockPanel.Dock="Top"
                    x:Name="NoChangesLabel"
                    FontSize="14"
@@ -112,7 +131,8 @@
                    Text="No offensive words found in the selected lines."
                    IsVisible="False" />
 
-        <Border BorderBrush="#22808080"
+        <Border x:Name="ChangesBorder"
+                BorderBrush="#22808080"
                 BorderThickness="1"
                 CornerRadius="4"
                 Padding="0"

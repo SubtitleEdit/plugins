@@ -21,6 +21,14 @@ A preview window similar to *American to British*:
   *Cancel*, and an accent-styled *Apply* (disabled when nothing is checked).
 - The "color red" preference is persisted via the plugin Settings round-trip.
 
+## Batch convert
+
+Word censor supports Subtitle Edit's **Batch convert** (Tools → Batch convert → Run plugin; needs a Subtitle Edit version with plugin batch support).
+
+- **Configure...** opens the window without a subtitle to pick the style (grawlix, replacement text or random alternative word) and the red highlight.
+- During the batch every offensive word in every line is censored without showing the window, like clicking *Apply* with all lines checked. Files without offensive words are left as they are.
+- Grawlix characters and alternative words are still picked at random, but seeded from the file's text, so converting the same file with the same settings gives the same result.
+
 ## Build
 
 See `.github/workflows/word-censor.yml`.
