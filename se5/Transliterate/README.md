@@ -50,6 +50,14 @@ Works on the lines exactly as Subtitle Edit holds them, so styles, actors and
 other fields of formats like ASSA are kept (falls back to SubRip on older SE
 versions).
 
+## Batch convert
+
+Transliterate supports Subtitle Edit's **Batch convert** (Tools → Batch convert → Run plugin; needs a Subtitle Edit version with plugin batch support).
+
+- **Configure...** opens the window without a subtitle to pick the language, direction, system and *Keep in Latin* words.
+- During the batch every line is converted without showing the window. The configured direction is used for every file; the language is detected per file just as when the window opens (e.g. a Greek file uses Greek even if Serbian was configured; plain Cyrillic without telltale letters uses the configured language).
+- Files already in the target script are left as they are. Latin → Cyrillic only runs on files with letters like đ, ć, č, š, ž or ʻ, so English or other Latin files are never converted to Cyrillic.
+
 ## Build
 
 See `.github/workflows/transliterate.yml`.
