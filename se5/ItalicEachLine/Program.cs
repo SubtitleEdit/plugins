@@ -11,6 +11,6 @@ public static class Program
     public static int Main(string[] args)
     {
         IconProvider.Current.Register<MaterialDesignIconProvider>();
-        return PluginBootstrap.Run<App>(args);
+        return PluginBootstrap.Run<App>(args, request => new MainViewModel(request).BuildBatchResponse());
     }
 }

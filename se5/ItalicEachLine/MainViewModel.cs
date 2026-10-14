@@ -15,6 +15,7 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly bool _legacyRequest;
     private readonly List<PluginParagraph> _paragraphs;
     private readonly long _videoOffsetMs;
+    private readonly bool _isConfigure;
     private bool _loading;
 
     [ObservableProperty] private ItalicMode _mode = ItalicMode.EachLine;
@@ -27,6 +28,7 @@ public sealed partial class MainViewModel : ObservableObject
     public MainViewModel(PluginRequest request)
     {
         _request = request;
+        _isConfigure = request.RequestType == PluginRequestType.Configure;
         _videoOffsetMs = request.Rules?.VideoOffsetMs ?? 0;
         _legacyRequest = request.Subtitle.Paragraphs == null;
         _paragraphs = _legacyRequest
@@ -48,6 +50,11 @@ public sealed partial class MainViewModel : ObservableObject
     {
         get
         {
+            if (_isConfigure)
+            {
+                return "Settings for Batch convert";
+            }
+
             var name = string.IsNullOrEmpty(_request.Subtitle.FileName) ? "Untitled" : Path.GetFileName(_request.Subtitle.FileName);
             var format = string.IsNullOrEmpty(_request.Subtitle.Format) ? string.Empty : $"  ·  {_request.Subtitle.Format}";
             return $"{name}{format}  ·  {_paragraphs.Count:N0} lines";
@@ -84,13 +91,17 @@ public sealed partial class MainViewModel : ObservableObject
         set => ShowRendered = !value;
     }
 
+    /// <summary>Opened from Batch convert's Configure button: only the direction matters, there is no subtitle.</summary>
+    public bool IsConfigure => _isConfigure;
+    public bool IsNotConfigure => !_isConfigure;
+
     public bool HasSelectedLines => SelectedIndices.Count > 0;
     public string SelectedLinesText => SelectedIndices.Count == 1 ? "Selected line (1)" : $"Selected lines ({SelectedIndices.Count:N0})";
     public bool AllLines { get => !SelectedLinesOnly; set => SelectedLinesOnly = !value; }
     public int ChangeCount => Changes.Count;
     public bool HasChanges => Changes.Count > 0;
-    public bool IsClean => Changes.Count == 0;
-    public bool CanApply => SelectedCount > 0;
+    public bool IsClean => Changes.Count == 0 && !_isConfigure;
+    public bool CanApply => SelectedCount > 0 || _isConfigure;
     public string OneTagCountText => CountText(OneTagCount);
     public string EachLineCountText => CountText(EachLineCount);
 
@@ -98,7 +109,9 @@ public sealed partial class MainViewModel : ObservableObject
         ? "Every italic line already has its own tags."
         : "No italic lines to join into one tag.";
 
-    public string StatusText => Changes.Count == 0
+    public string StatusText => _isConfigure
+        ? "Used for every file in Batch convert"
+        : Changes.Count == 0
         ? $"{LinesInScope:N0} lines checked"
         : $"{SelectedCount:N0} of {Changes.Count:N0} lines selected";
 
@@ -190,9 +203,35 @@ public sealed partial class MainViewModel : ObservableObject
         }
     }
 
+    /// <summary>
+    /// A "batch" request (Batch convert): convert every line to the saved direction, without UI.
+    /// No changes is "ok" without a subtitle.
+    /// </summary>
+    public PluginResponse BuildBatchResponse()
+    {
+        if (Changes.Count == 0)
+        {
+            return new PluginResponse { Status = PluginStatus.Ok, Message = "Italic each line: nothing to change." };
+        }
+
+        var response = BuildResponse();
+        response.Settings = null;
+        response.SettingsVersion = null;
+        return response;
+    }
+
+    /// <summary>A "configure" request: hand back the settings only, for the next Batch convert run.</summary>
+    public PluginResponse BuildConfigureResponse() =>
+        new() { Status = PluginStatus.Ok, Settings = BuildSettings(), SettingsVersion = SettingsVersion };
+
     /// <summary>The response for OK: the selected lines with their new tags.</summary>
     public PluginResponse BuildResponse()
     {
+        if (_isConfigure)
+        {
+            return BuildConfigureResponse();
+        }
+
         var selected = Changes.Where(c => c.IsSelected).ToList();
         if (selected.Count == 0)
         {
@@ -256,6 +295,14 @@ public sealed partial class MainViewModel : ObservableObject
             ["showRendered"] = ShowRendered,
             ["selectedLinesOnly"] = SelectedLinesOnly,
         };
+
+        // Configure has no lines selected, so keep the scope a normal run saved.
+        if (_isConfigure && _request.SettingsVersion == SettingsVersion && _request.Settings is { ValueKind: JsonValueKind.Object } stored
+            && stored.TryGetProperty("selectedLinesOnly", out var selectedOnly) && selectedOnly.ValueKind is JsonValueKind.True or JsonValueKind.False)
+        {
+            payload["selectedLinesOnly"] = selectedOnly.GetBoolean();
+        }
+
         return JsonSerializer.SerializeToElement(payload);
     }
 
