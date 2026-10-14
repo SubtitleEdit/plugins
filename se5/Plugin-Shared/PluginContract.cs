@@ -146,6 +146,22 @@ public sealed class PluginResponse
     public string? UndoDescription { get; set; }
 }
 
+/// <summary>
+/// <see cref="PluginRequest.RequestType"/> values. "batch" and "configure" come from Subtitle Edit's
+/// Batch convert and are only sent to plugins with <c>"batch": true</c> in plugin.json.
+/// </summary>
+public static class PluginRequestType
+{
+    /// <summary>From the Plugins menu - the plugin may show its window.</summary>
+    public const string Run = "run";
+
+    /// <summary>Once per file in Batch convert - no UI, saved settings, all lines.</summary>
+    public const string Batch = "batch";
+
+    /// <summary>From Batch convert's Configure button - show settings only, return them without a subtitle.</summary>
+    public const string Configure = "configure";
+}
+
 public static class PluginStatus
 {
     public const string Ok = "ok";

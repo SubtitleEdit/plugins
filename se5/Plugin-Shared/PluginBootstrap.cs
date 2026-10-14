@@ -9,7 +9,8 @@ namespace SubtitleEdit.Plugins.Shared;
 /// <summary>
 /// Entry-point glue for an SE5 plugin: parse the request JSON from the first
 /// command-line argument, start Avalonia, write the response JSON when the
-/// app exits, return 0.
+/// app exits, return 0. A "batch" request (Subtitle Edit's Batch convert) is handed to the
+/// plugin's batch handler instead, without starting any UI.
 /// </summary>
 public static class PluginBootstrap
 {
@@ -21,7 +22,12 @@ public static class PluginBootstrap
         WriteIndented = true,
     };
 
-    public static int Run<TApp>(string[] args) where TApp : Application, new()
+    /// <param name="batchHandler">
+    /// Handles a "batch" request headless: apply saved settings to all lines and return the
+    /// response. Plugins that pass it should set <c>"batch": true</c> in plugin.json and also
+    /// handle a "configure" request in their window (settings only, no subtitle in the response).
+    /// </param>
+    public static int Run<TApp>(string[] args, Func<PluginRequest, PluginResponse>? batchHandler = null) where TApp : Application, new()
     {
         if (args.Length < 1)
         {
@@ -44,6 +50,23 @@ public static class PluginBootstrap
         {
             Console.Error.WriteLine("Invalid request.");
             return 1;
+        }
+
+        if (request.RequestType == PluginRequestType.Batch)
+        {
+            PluginResponse batchResponse;
+            try
+            {
+                batchResponse = batchHandler?.Invoke(request)
+                    ?? new PluginResponse { Status = PluginStatus.Error, Message = "This plugin does not support batch convert." };
+            }
+            catch (Exception exception)
+            {
+                batchResponse = new PluginResponse { Status = PluginStatus.Error, Message = exception.Message };
+            }
+
+            File.WriteAllText(request.ResponseFilePath, JsonSerializer.Serialize(batchResponse, JsonOpts));
+            return 0;
         }
 
         PluginApp.PendingRequest = request;
