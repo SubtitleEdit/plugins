@@ -9,6 +9,13 @@ Ported from the SE4 *Effect → Typewriter…* dialog, repackaged as a standalon
 Avalonia 11 desktop app that communicates with Subtitle Edit through the
 [SE5 plugin JSON contract](https://github.com/SubtitleEdit/subtitleedit/blob/main/docs/plugin.md).
 
+## Batch convert
+
+Typewriter effect supports Subtitle Edit's **Batch convert** (Tools → Batch convert → Run plugin; needs a Subtitle Edit version with plugin batch support).
+
+- **Configure...** opens the window without a subtitle to set the end delay (0.5 s by default).
+- During the batch every line is split with the saved end delay, without showing the window. Lines of 500 ms or less are left as they are, as in the window; files with nothing to change are left untouched.
+
 ## Files
 
 | File | Purpose |
@@ -19,6 +26,7 @@ Avalonia 11 desktop app that communicates with Subtitle Edit through the
 | `App.axaml(.cs)` | Avalonia application. Picks `Dark` or `Light` theme variant based on `request.theme`. |
 | `MainWindow.axaml(.cs)` | The settings dialog (end-delay numeric input + OK/Cancel). |
 | `SubRipParser.cs` | Minimal SRT parser/serializer. |
+| `TypewriterResponses.cs` | Builds the run / batch / configure responses. |
 | `TypewriterEngine.cs` | Generates the exploded paragraphs from the original ones. |
 
 ## Build (local)

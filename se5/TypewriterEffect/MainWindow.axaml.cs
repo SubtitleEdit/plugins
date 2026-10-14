@@ -2,8 +2,6 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using System;
-using System.Globalization;
-using System.Text.Json;
 
 namespace SubtitleEdit.Plugins.TypewriterEffect;
 
@@ -12,6 +10,7 @@ public partial class MainWindow : Window
     private readonly PluginRequest _request;
     private TextBlock _infoLabel = null!;
     private NumericUpDown _endDelayInput = null!;
+    private Control _batchSettingsPanel = null!;
 
     // Parameterless constructor only exists for the XAML designer.
     public MainWindow() : this(new PluginRequest()) { }
@@ -21,12 +20,21 @@ public partial class MainWindow : Window
         _request = request;
         InitializeComponent();
 
-        var selectedCount = request.SelectedIndices.Count;
-        _infoLabel.Text = selectedCount > 0
-            ? $"Each of the {selectedCount} selected line(s) will be split into several short lines that progressively reveal the text."
-            : "Every line will be split into several short lines that progressively reveal the text.";
+        if (TypewriterResponses.IsConfigure(request))
+        {
+            // Opened from Batch convert's Configure button: there is no subtitle, only the setting.
+            _infoLabel.IsVisible = false;
+            _batchSettingsPanel.IsVisible = true;
+        }
+        else
+        {
+            var selectedCount = request.SelectedIndices.Count;
+            _infoLabel.Text = selectedCount > 0
+                ? $"Each of the {selectedCount} selected line(s) will be split into several short lines that progressively reveal the text."
+                : "Every line will be split into several short lines that progressively reveal the text.";
+        }
 
-        _endDelayInput.Value = (decimal)LoadEndDelaySetting(request.Settings, defaultValue: 0.5);
+        _endDelayInput.Value = (decimal)TypewriterResponses.LoadEndDelaySetting(request.Settings, TypewriterResponses.DefaultEndDelay);
     }
 
     private void InitializeComponent()
@@ -34,6 +42,7 @@ public partial class MainWindow : Window
         AvaloniaXamlLoader.Load(this);
         _infoLabel = this.FindControl<TextBlock>("InfoLabel")!;
         _endDelayInput = this.FindControl<NumericUpDown>("EndDelayInput")!;
+        _batchSettingsPanel = this.FindControl<Control>("BatchSettingsPanel")!;
     }
 
     protected override void OnOpened(EventArgs e)
@@ -58,55 +67,9 @@ public partial class MainWindow : Window
     private void OnOk(object? sender, RoutedEventArgs e)
     {
         var endDelaySec = (double)(_endDelayInput.Value ?? 0m);
-
-        try
-        {
-            var blocks = SubRipParser.Parse(_request.Subtitle.SubRip);
-            var selected = new HashSet<int>(_request.SelectedIndices);
-            var (resultBlocks, changed) = TypewriterEngine.Apply(blocks, selected, endDelaySec);
-
-            App.Response = new PluginResponse
-            {
-                Status = "ok",
-                Message = changed == 0
-                    ? "No lines changed."
-                    : $"Typewriter applied to {changed} line(s).",
-                UndoDescription = "Typewriter effect",
-                Subtitle = new PluginSubtitle
-                {
-                    Format = "SubRip",
-                    Native = SubRipParser.Serialize(resultBlocks),
-                },
-                Settings = BuildSettings(endDelaySec),
-            };
-        }
-        catch (Exception ex)
-        {
-            App.Response = new PluginResponse { Status = "error", Message = ex.Message };
-        }
-
+        App.Response = TypewriterResponses.IsConfigure(_request)
+            ? TypewriterResponses.BuildConfigureResponse(endDelaySec)
+            : TypewriterResponses.BuildRunResponse(_request, endDelaySec);
         Close();
-    }
-
-    private static double LoadEndDelaySetting(JsonElement? settings, double defaultValue)
-    {
-        if (settings is null || settings.Value.ValueKind != JsonValueKind.Object)
-        {
-            return defaultValue;
-        }
-        if (settings.Value.TryGetProperty("endDelay", out var value) &&
-            value.ValueKind == JsonValueKind.Number &&
-            value.TryGetDouble(out var parsed))
-        {
-            return parsed;
-        }
-        return defaultValue;
-    }
-
-    private static JsonElement BuildSettings(double endDelay)
-    {
-        var json = $"{{\"endDelay\":{endDelay.ToString("0.###", CultureInfo.InvariantCulture)}}}";
-        using var doc = JsonDocument.Parse(json);
-        return doc.RootElement.Clone();
     }
 }

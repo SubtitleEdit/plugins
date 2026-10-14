@@ -47,6 +47,14 @@ public static class Program
             return 1;
         }
 
+        // Batch convert: no UI, every line, saved settings (see TypewriterResponses).
+        if (TypewriterResponses.IsBatch(request))
+        {
+            var batchResponse = TypewriterResponses.BuildBatchResponse(request);
+            File.WriteAllText(request.ResponseFilePath, JsonSerializer.Serialize(batchResponse, JsonOpts));
+            return 0;
+        }
+
         App.PendingRequest = request;
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(Array.Empty<string>());
 
