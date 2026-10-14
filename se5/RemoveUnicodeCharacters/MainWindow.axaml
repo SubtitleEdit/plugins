@@ -55,6 +55,31 @@
                    Opacity="0.7"
                    TextWrapping="Wrap" />
 
+        <!-- Configure (Batch convert) -->
+        <Border DockPanel.Dock="Top"
+                x:Name="ConfigurePanel"
+                IsVisible="False"
+                BorderBrush="#22808080"
+                BorderThickness="1"
+                CornerRadius="4"
+                Padding="12,10"
+                Margin="0,0,0,12">
+            <StackPanel Spacing="8">
+                <TextBlock Text="Batch convert settings" FontWeight="SemiBold" />
+                <TextBlock TextWrapping="Wrap" Opacity="0.75"
+                           Text="Batch convert replaces only the checked characters below, in every line of each file, without showing this window. Other non-ANSI characters are kept unless you tick the option below. Leave a replacement blank to remove that character." />
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBox Grid.Column="0"
+                             x:Name="AddCharsBox"
+                             Watermark="Paste characters or type codes like U+200B"
+                             Margin="0,0,8,0" />
+                    <Button Grid.Column="1" Content="Add" Click="OnAddCharacters" MinWidth="80" />
+                </Grid>
+                <CheckBox x:Name="RemoveOthersCheckBox"
+                          Content="Also remove every other non-ANSI character (code point above 255)" />
+            </StackPanel>
+        </Border>
+
         <TextBlock DockPanel.Dock="Top"
                    x:Name="NoCharsLabel"
                    FontSize="14"
@@ -74,9 +99,9 @@
             <Grid ColumnDefinitions="32,92,46,60,200,*">
                 <TextBlock Grid.Column="1" Text="Code"     FontWeight="SemiBold" Opacity="0.7" />
                 <TextBlock Grid.Column="2" Text="Char"     FontWeight="SemiBold" Opacity="0.7" />
-                <TextBlock Grid.Column="3" Text="Count"    FontWeight="SemiBold" Opacity="0.7" />
+                <TextBlock Grid.Column="3" x:Name="CountHeader" Text="Count"    FontWeight="SemiBold" Opacity="0.7" />
                 <TextBlock Grid.Column="4" Text="Replace with" FontWeight="SemiBold" Opacity="0.7" Margin="6,0,0,0" />
-                <TextBlock Grid.Column="5" Text="Lines"    FontWeight="SemiBold" Opacity="0.7" Margin="6,0,0,0" />
+                <TextBlock Grid.Column="5" x:Name="LinesHeader" Text="Lines"    FontWeight="SemiBold" Opacity="0.7" Margin="6,0,0,0" />
             </Grid>
         </Border>
 
@@ -104,6 +129,7 @@
                                        VerticalAlignment="Center" />
                             <TextBlock Grid.Column="3"
                                        Text="{Binding Count}"
+                                       IsVisible="{Binding HasOccurrences}"
                                        VerticalAlignment="Center"
                                        Opacity="0.8" />
                             <TextBox Grid.Column="4"
@@ -113,6 +139,7 @@
                                      Watermark="(remove)" />
                             <TextBlock Grid.Column="5"
                                        Text="{Binding LinesText}"
+                                       IsVisible="{Binding HasOccurrences}"
                                        VerticalAlignment="Center"
                                        TextWrapping="Wrap"
                                        Opacity="0.7"

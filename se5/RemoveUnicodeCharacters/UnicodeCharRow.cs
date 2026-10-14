@@ -25,6 +25,9 @@ public partial class UnicodeCharRow : ObservableObject
 
     public IReadOnlyList<int> LineIndices { get; }
 
+    /// <summary>False for a batch-list row in the Configure window (no subtitle, so no count or lines).</summary>
+    public bool HasOccurrences => LineIndices.Count > 0;
+
     public UnicodeCharRow(char character, int count, IEnumerable<int> lineIndices, string replacement)
     {
         Character = character;
