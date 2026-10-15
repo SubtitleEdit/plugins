@@ -165,7 +165,7 @@
                     </StackPanel>
                     <TextBlock Text="{Binding SubtitleInfo}" Classes="muted" />
                 </StackPanel>
-                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" IsVisible="{Binding IsNotConfigure}">
                     <Border Classes="stat" Classes.empty="{Binding !HasErrors}" Background="{StaticResource ErrorTint}" BorderBrush="{StaticResource ErrorTint}"
                             ToolTip.Tip="Lines with broken tags">
                         <StackPanel Orientation="Horizontal" Spacing="8">
@@ -214,7 +214,8 @@
                     <Button Click="OnOk" Classes="accent" MinWidth="130" IsDefault="True" IsEnabled="{Binding CanApply}">
                         <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
                             <i:Icon Value="mdi-auto-fix" FontSize="16" />
-                            <TextBlock Text="Fix selected" />
+                            <TextBlock Text="Fix selected" IsVisible="{Binding IsNotConfigure}" />
+                            <TextBlock Text="OK" IsVisible="{Binding IsConfigure}" />
                         </StackPanel>
                     </Button>
                 </StackPanel>
@@ -322,7 +323,7 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
-                    <StackPanel Spacing="8" Margin="6,0,0,0">
+                    <StackPanel Spacing="8" Margin="6,0,0,0" IsVisible="{Binding IsNotConfigure}">
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <i:Icon Value="mdi-target" FontSize="16" Opacity="0.7" />
                             <TextBlock Text="CHECK" Classes="section" Opacity="0.7" />
@@ -417,6 +418,16 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+
+            <!-- Configure (Batch convert) -->
+            <StackPanel DockPanel.Dock="Top" IsVisible="{Binding IsConfigure}" HorizontalAlignment="Center" Margin="0,110,0,0" Spacing="10" MaxWidth="520">
+                <Border Width="92" Height="92" CornerRadius="46" Background="{StaticResource AccentTint}" HorizontalAlignment="Center">
+                    <i:Icon Value="mdi-cog-outline" FontSize="50" Foreground="{StaticResource AccentBrush}" />
+                </Border>
+                <TextBlock Text="Batch convert settings" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                <TextBlock Classes="muted" TextWrapping="Wrap" TextAlignment="Center"
+                           Text="Turn rules on or off in the sidebar and click OK. Batch convert then fixes every fixable line in each file without showing this window. Problems that need a manual edit are only counted." />
+            </StackPanel>
 
             <!-- Empty states -->
             <StackPanel DockPanel.Dock="Top" IsVisible="{Binding IsClean}" HorizontalAlignment="Center" Margin="0,110,0,0" Spacing="10">
