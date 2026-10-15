@@ -59,6 +59,14 @@ and lines with `\t(...)` animations or `\p` drawings are left alone.
   layer, margins and the other fields are kept.
 - Turned-off rules and the scope (all / selected lines) are remembered.
 
+## Batch convert
+
+ASSA tag check supports Subtitle Edit's **Batch convert** (Tools → Batch convert → Run plugin; needs a Subtitle Edit version with plugin batch support).
+
+- **Configure...** opens the window without a subtitle to turn rules on or off.
+- During the batch every fixable line is fixed with those rules, without showing the window - the same as clicking *Fix selected* with the default selection. Lines that need a manual edit are counted in the status message, and style/font warnings are not reported.
+- Files with nothing to fix are left as they are.
+
 ## Build
 
 See `.github/workflows/assa-tag-check.yml`.

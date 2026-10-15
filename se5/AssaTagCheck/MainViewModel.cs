@@ -17,6 +17,7 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly AssaScript _script;
     private readonly Func<string, bool> _isFontInstalled;
     private readonly long _videoOffsetMs;
+    private readonly bool _isConfigure;
     private List<LineItem> _lines = new();
     private bool _suspend;
 
@@ -32,6 +33,7 @@ public sealed partial class MainViewModel : ObservableObject
     public MainViewModel(PluginRequest request, Func<string, bool>? isFontInstalled = null)
     {
         _request = request;
+        _isConfigure = request.RequestType == PluginRequestType.Configure;
         _isFontInstalled = isFontInstalled ?? (_ => true);
         _videoOffsetMs = request.Rules?.VideoOffsetMs ?? 0;
         _legacyRequest = request.Subtitle.Paragraphs == null;
@@ -73,10 +75,19 @@ public sealed partial class MainViewModel : ObservableObject
     public ObservableCollection<ScriptIssue> ScriptIssues { get; } = new();
     public IReadOnlyList<int> SelectedIndices { get; }
 
+    /// <summary>Opened from Batch convert's Configure button: only the rules matter, there is no subtitle.</summary>
+    public bool IsConfigure => _isConfigure;
+    public bool IsNotConfigure => !_isConfigure;
+
     public string SubtitleInfo
     {
         get
         {
+            if (_isConfigure)
+            {
+                return "Settings for Batch convert";
+            }
+
             var name = string.IsNullOrEmpty(_request.Subtitle.FileName) ? "Untitled" : Path.GetFileName(_request.Subtitle.FileName);
             var format = string.IsNullOrEmpty(_request.Subtitle.Format) ? string.Empty : $"  ·  {_request.Subtitle.Format}";
             var resolution = _script.PlayResX is { } x && _script.PlayResY is { } y ? $"  ·  {x}x{y}" : string.Empty;
@@ -86,7 +97,7 @@ public sealed partial class MainViewModel : ObservableObject
     }
 
     public bool IsAssa => _request.Subtitle.Format.Contains("Sub Station Alpha", StringComparison.OrdinalIgnoreCase) || _script.HasStyles;
-    public bool IsNotAssa => !IsAssa;
+    public bool IsNotAssa => !IsAssa && !_isConfigure;
     public string NotAssaText => $"This subtitle is {(_request.Subtitle.Format.Length > 0 ? _request.Subtitle.Format : "not ASSA")} - tags are checked, style and font checks need an .ass file.";
 
     public bool HasSelectedLines => SelectedIndices.Count > 0;
@@ -96,9 +107,9 @@ public sealed partial class MainViewModel : ObservableObject
     public bool HasLines => _lines.Count > 0;
     public bool HasVisibleLines => VisibleLines.Count > 0;
     public bool HasScriptIssues => ScriptIssues.Count > 0;
-    public bool IsClean => _lines.Count == 0;
+    public bool IsClean => _lines.Count == 0 && !_isConfigure;
     public bool IsFilteredEmpty => _lines.Count > 0 && VisibleLines.Count == 0;
-    public bool CanApply => SelectedCount > 0;
+    public bool CanApply => SelectedCount > 0 || _isConfigure;
     public bool HasErrors => ErrorCount > 0;
     public bool HasWarnings => WarningCount > 0;
     public bool HasTidy => TidyCount > 0;
@@ -109,7 +120,9 @@ public sealed partial class MainViewModel : ObservableObject
         ? "Turn on one or more rules in the sidebar."
         : $"{LinesInScope:N0} lines checked against {EnabledRuleCount} rules - nothing to fix.";
 
-    public string StatusText => _lines.Count == 0
+    public string StatusText => _isConfigure
+        ? $"{EnabledRuleCount} rules on - used for every file in Batch convert"
+        : _lines.Count == 0
         ? $"{LinesInScope:N0} lines checked"
         : $"{SelectedCount:N0} of {FixableCount:N0} fixable lines selected  ·  {_lines.Count - FixableCount:N0} to check by hand";
 
@@ -322,9 +335,45 @@ public sealed partial class MainViewModel : ObservableObject
         }
     }
 
+    /// <summary>
+    /// A "batch" request (Batch convert): fix every fixable line with the saved rules, without UI -
+    /// what OK does with the default selection. Lines that need a manual edit are only counted.
+    /// </summary>
+    public PluginResponse BuildBatchResponse()
+    {
+        var manual = _lines.Count(l => !l.IsFixable);
+        if (!_lines.Any(l => l.IsFixable))
+        {
+            return new PluginResponse
+            {
+                Status = PluginStatus.Ok,
+                Message = manual > 0 ? $"ASSA tag check: nothing to fix, {manual:N0} line(s) to check by hand." : "ASSA tag check: all tags look good.",
+            };
+        }
+
+        var response = BuildResponse();
+        if (manual > 0)
+        {
+            response.Message += $" {manual:N0} line(s) to check by hand.";
+        }
+
+        response.Settings = null;
+        response.SettingsVersion = null;
+        return response;
+    }
+
+    /// <summary>A "configure" request: hand back the rules only, for the next Batch convert run.</summary>
+    public PluginResponse BuildConfigureResponse() =>
+        new() { Status = PluginStatus.Ok, Settings = BuildSettings(), SettingsVersion = SettingsVersion };
+
     /// <summary>The response for OK: the selected lines with their fixed tags and styles.</summary>
     public PluginResponse BuildResponse()
     {
+        if (_isConfigure)
+        {
+            return BuildConfigureResponse();
+        }
+
         var selected = _lines.Where(l => l.IsSelected && l.IsFixable).ToList();
         if (selected.Count == 0)
         {
@@ -370,10 +419,16 @@ public sealed partial class MainViewModel : ObservableObject
         var payload = new Dictionary<string, object>
         {
             ["disabledRules"] = Rules.Where(r => !r.IsEnabled).Select(r => r.Rule.ToString()).ToList(),
-            ["selectedLinesOnly"] = SelectedLinesOnly,
+            // Configure has no selection - keep what the last normal run saved.
+            ["selectedLinesOnly"] = _isConfigure ? StoredSelectedLinesOnly() : SelectedLinesOnly,
         };
         return JsonSerializer.SerializeToElement(payload);
     }
+
+    private bool StoredSelectedLinesOnly() =>
+        _request.SettingsVersion == SettingsVersion &&
+        _request.Settings is { ValueKind: JsonValueKind.Object } settings &&
+        settings.TryGetProperty("selectedLinesOnly", out var value) && value.ValueKind == JsonValueKind.True;
 
     private void LoadSettings()
     {
