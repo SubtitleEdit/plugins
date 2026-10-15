@@ -2,7 +2,7 @@
   "apiVersion": 1,
   "name": "ASSA tag check",
   "description": "Finds and fixes broken ASSA override tags (unclosed braces, missing parentheses, HTML colors, unknown or mistyped tags), warns about undefined styles, duplicate \\pos/\\an, too long fades and missing fonts, and tidies tags that do nothing - like </i><i>, {\\i0}{\\i1} or a color set twice. Checkable before/after preview.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "Subtitle Edit",
   "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/AssaTagCheck",
   "menu": "Assa",
