@@ -1,6 +1,23 @@
 {
   "plugins": [
     {
+      "name": "ASSA tag check",
+      "description": "Finds and fixes broken ASSA override tags (unclosed braces, missing parentheses, HTML colors, unknown or mistyped tags), warns about undefined styles, duplicate \\pos/\\an, too long fades and missing fonts, and tidies tags that do nothing - like </i><i>, {\\i0}{\\i1} or a color set twice. Checkable before/after preview.",
+      "version": "1.1.0",
+      "author": "Subtitle Edit",
+      "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/AssaTagCheck",
+      "date": "2026-10-15",
+      "minSeVersion": "5.0.0",
+      "downloads": {
+        "win-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-assa-tag-check-v1.1/AssaTagCheck-win-x64.zip",
+        "win-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-assa-tag-check-v1.1/AssaTagCheck-win-arm64.zip",
+        "linux-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-assa-tag-check-v1.1/AssaTagCheck-linux-x64.zip",
+        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-assa-tag-check-v1.1/AssaTagCheck-linux-arm64.zip",
+        "osx-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-assa-tag-check-v1.1/AssaTagCheck-osx-x64.zip",
+        "osx-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-assa-tag-check-v1.1/AssaTagCheck-osx-arm64.zip"
+      }
+    },
+    {
       "name": "Fix encoding errors",
       "description": "Repairs UTF-8 text that was read with the wrong code page (\"mojibake\"): rÃ©sumÃ© → résumé, donâ€™t → don’t. Also handles text lowercased afterwards (rã©sumã©). Common in subtitles extracted from MKV files. Shows a checkable before/after preview.",
       "version": "1.2.0",
