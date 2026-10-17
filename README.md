@@ -21,6 +21,7 @@ index [`se5-plugins.json`](se5-plugins.json).
 | [British to American](se5/BritishToAmerican) | Converts British English spellings to American English. |
 | [Fix encoding errors](se5/FixEncodingErrors) | Repairs UTF-8 text read with the wrong code page: rÃ©sumÃ© → résumé, donâ€™t → don’t. |
 | [Haxor](se5/Haxor) | Translates text to "haxor" - the minimal reference plugin. |
+| [Hearing impaired colorer](se5/HIColorer) | Colors narrators, moods and music lines with font tags, or removes font colors. |
 | [Hearing impaired to uppercase](se5/HI2UC) | Changes the case of moods in ( ) / [ ] and speaker labels: (laughs) John: Hi. → (LAUGHS) JOHN: Hi. |
 | [Italic each line](se5/ItalicEachLine) | Switches italic tags between one tag per subtitle and a tag on each line. |
 | [Lines unbreaker](se5/LinesUnbreaker) | Joins short multi-line subtitles into one line when the result fits. |
