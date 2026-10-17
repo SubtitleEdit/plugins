@@ -1,0 +1,13 @@
+{
+  "apiVersion": 1,
+  "name": "Hearing impaired to uppercase",
+  "description": "Changes the case of hearing-impaired text: sounds and moods in ( ) or [ ] and speaker labels before a colon - (laughs) John: Hi. → (LAUGHS) JOHN: Hi. Uppercase, title, sentence, lower or toggle case. Shows a checkable before/after preview.",
+  "version": "1.0.0",
+  "author": "ivandrofly",
+  "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/HI2UC",
+  "menu": "Tools",
+  "minSeVersion": "5.0.0",
+  "batch": true,
+  "runtime": "dotnet",
+  "entry": "HI2UC.dll"
+}

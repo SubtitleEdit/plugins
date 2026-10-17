@@ -21,10 +21,14 @@ index [`se5-plugins.json`](se5-plugins.json).
 | [British to American](se5/BritishToAmerican) | Converts British English spellings to American English. |
 | [Fix encoding errors](se5/FixEncodingErrors) | Repairs UTF-8 text read with the wrong code page: rÃ©sumÃ© → résumé, donâ€™t → don’t. |
 | [Haxor](se5/Haxor) | Translates text to "haxor" - the minimal reference plugin. |
+| [Hearing impaired colorer](se5/HIColorer) | Colors narrators, moods and music lines with font tags, or removes font colors. |
+| [Hearing impaired to uppercase](se5/HI2UC) | Changes the case of moods in ( ) / [ ] and speaker labels: (laughs) John: Hi. → (LAUGHS) JOHN: Hi. |
 | [Italic each line](se5/ItalicEachLine) | Switches italic tags between one tag per subtitle and a tag on each line. |
+| [Lines unbreaker](se5/LinesUnbreaker) | Joins short multi-line subtitles into one line when the result fits. |
 | [Persian Subtitle Fixes](se5/PersianErrors) | Fixes common errors in Persian (Farsi) subtitles - 1,500+ rules in 12 groups. |
 | [Remove Unicode characters](se5/RemoveUnicodeCharacters) | Finds non-ANSI characters and lets you remove or replace each one. |
 | [Split dialogs](se5/SplitDialogs) | Splits dialog lines ("- Hi!" / "- Hello.") into one subtitle per speaker. |
+| [Tight hyphen](se5/TightHyphen) | Removes the space after a dialog dash: "- Hi!" → "-Hi!". |
 | [Transliterate](se5/Transliterate) | Converts between scripts: Serbian, Montenegrin, Macedonian, Uzbek Cyrillic ↔ Latin; Russian, Ukrainian, Belarusian, Bulgarian, Kazakh, Greek, Korean → Latin. |
 | [Typewriter effect](se5/TypewriterEffect) | Reveals the text character by character in short timed parts. |
 | [Word censor](se5/WordCensor) | Censors offensive words (grawlix, custom text, or a random replacement). |

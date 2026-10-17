@@ -1,0 +1,13 @@
+{
+  "apiVersion": 1,
+  "name": "Tight hyphen",
+  "description": "Removes the space after a dialog dash at the start of a line: \"- Hi!\" becomes \"-Hi!\". Works after tags like <i> and ASSA override tags, and leaves \"- 5\" alone. Shows a checkable before/after preview.",
+  "version": "1.0.0",
+  "author": "ivandrofly",
+  "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/TightHyphen",
+  "menu": "Tools",
+  "minSeVersion": "5.0.0",
+  "batch": true,
+  "runtime": "dotnet",
+  "entry": "TightHyphen.dll"
+}
