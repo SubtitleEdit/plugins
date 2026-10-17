@@ -1,4 +1,5 @@
-using SubtitleEdit.Plugins.HI2UC;
+using SubtitleEdit.Plugins.HI2UC.Logic;
+using SubtitleEdit.Plugins.HI2UC.Logic.Strategies;
 
 namespace HI2UC.Tests;
 

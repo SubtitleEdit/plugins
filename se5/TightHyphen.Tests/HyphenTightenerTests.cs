@@ -1,4 +1,4 @@
-using SubtitleEdit.Plugins.TightHyphen;
+using SubtitleEdit.Plugins.TightHyphen.Logic;
 
 namespace TightHyphen.Tests;
 

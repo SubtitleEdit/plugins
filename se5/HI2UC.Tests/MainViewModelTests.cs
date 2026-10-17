@@ -1,4 +1,5 @@
-using SubtitleEdit.Plugins.HI2UC;
+using SubtitleEdit.Plugins.HI2UC.Logic;
+using SubtitleEdit.Plugins.HI2UC.ViewModels;
 using SubtitleEdit.Plugins.Shared;
 using System.Text.Json;
 

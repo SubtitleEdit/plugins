@@ -1,4 +1,4 @@
-using SubtitleEdit.Plugins.HIColorer;
+using SubtitleEdit.Plugins.HIColorer.Logic;
 
 namespace HIColorer.Tests;
 

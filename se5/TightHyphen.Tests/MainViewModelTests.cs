@@ -1,5 +1,5 @@
 using SubtitleEdit.Plugins.Shared;
-using SubtitleEdit.Plugins.TightHyphen;
+using SubtitleEdit.Plugins.TightHyphen.ViewModels;
 using System.Text.Json;
 
 namespace TightHyphen.Tests;

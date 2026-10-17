@@ -1,6 +1,7 @@
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.MaterialDesign;
 using SubtitleEdit.Plugins.Shared;
+using SubtitleEdit.Plugins.TightHyphen.ViewModels;
 using System;
 
 namespace SubtitleEdit.Plugins.TightHyphen;

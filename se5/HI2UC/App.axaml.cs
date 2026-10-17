@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using SubtitleEdit.Plugins.HI2UC.Views;
 using SubtitleEdit.Plugins.Shared;
 
 namespace SubtitleEdit.Plugins.HI2UC;

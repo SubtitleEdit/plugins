@@ -1,5 +1,6 @@
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.MaterialDesign;
+using SubtitleEdit.Plugins.HI2UC.ViewModels;
 using SubtitleEdit.Plugins.Shared;
 using System;
 

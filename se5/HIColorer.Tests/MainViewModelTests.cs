@@ -1,5 +1,6 @@
 using Avalonia.Media;
-using SubtitleEdit.Plugins.HIColorer;
+using SubtitleEdit.Plugins.HIColorer.Logic;
+using SubtitleEdit.Plugins.HIColorer.ViewModels;
 using SubtitleEdit.Plugins.Shared;
 using System.Text.Json;
 

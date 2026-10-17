@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using SubtitleEdit.Plugins.Shared;
+using SubtitleEdit.Plugins.TightHyphen.Views;
 
 namespace SubtitleEdit.Plugins.TightHyphen;
 

@@ -1,4 +1,4 @@
-using SubtitleEdit.Plugins.LinesUnbreaker;
+using SubtitleEdit.Plugins.LinesUnbreaker.Logic;
 
 namespace LinesUnbreaker.Tests;
 

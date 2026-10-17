@@ -1,4 +1,4 @@
-using SubtitleEdit.Plugins.LinesUnbreaker;
+using SubtitleEdit.Plugins.LinesUnbreaker.ViewModels;
 using SubtitleEdit.Plugins.Shared;
 using System.Text.Json;
 
