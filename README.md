@@ -23,6 +23,7 @@ index [`se5-plugins.json`](se5-plugins.json).
 | [Haxor](se5/Haxor) | Translates text to "haxor" - the minimal reference plugin. |
 | [Hearing impaired to uppercase](se5/HI2UC) | Changes the case of moods in ( ) / [ ] and speaker labels: (laughs) John: Hi. → (LAUGHS) JOHN: Hi. |
 | [Italic each line](se5/ItalicEachLine) | Switches italic tags between one tag per subtitle and a tag on each line. |
+| [Lines unbreaker](se5/LinesUnbreaker) | Joins short multi-line subtitles into one line when the result fits. |
 | [Persian Subtitle Fixes](se5/PersianErrors) | Fixes common errors in Persian (Farsi) subtitles - 1,500+ rules in 12 groups. |
 | [Remove Unicode characters](se5/RemoveUnicodeCharacters) | Finds non-ANSI characters and lets you remove or replace each one. |
 | [Split dialogs](se5/SplitDialogs) | Splits dialog lines ("- Hi!" / "- Hello.") into one subtitle per speaker. |
