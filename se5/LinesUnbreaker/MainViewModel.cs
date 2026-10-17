@@ -80,6 +80,7 @@ public sealed partial class MainViewModel : ObservableObject
     public bool HasChanges => Changes.Count > 0;
     public bool IsClean => Changes.Count == 0 && !_isConfigure;
     public bool CanApply => SelectedCount > 0 || _isConfigure;
+
     /// <summary><see cref="MaxLength"/> for the NumericUpDown, which works with decimals.</summary>
     public decimal? MaxLengthValue
     {
