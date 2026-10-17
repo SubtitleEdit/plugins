@@ -1,6 +1,74 @@
 {
   "plugins": [
     {
+      "name": "Hearing impaired to uppercase",
+      "description": "Changes the case of hearing-impaired text: sounds and moods in ( ) or [ ] and speaker labels before a colon - (laughs) John: Hi. → (LAUGHS) JOHN: Hi. Uppercase, title, sentence, lower or toggle case. Shows a checkable before/after preview.",
+      "version": "1.1.0",
+      "author": "ivandrofly",
+      "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/HI2UC",
+      "date": "2026-10-17",
+      "minSeVersion": "5.0.0",
+      "downloads": {
+        "win-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-hi2uc-v1.1/HI2UC-win-x64.zip",
+        "win-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-hi2uc-v1.1/HI2UC-win-arm64.zip",
+        "linux-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-hi2uc-v1.1/HI2UC-linux-x64.zip",
+        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-hi2uc-v1.1/HI2UC-linux-arm64.zip",
+        "osx-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-hi2uc-v1.1/HI2UC-osx-x64.zip",
+        "osx-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-hi2uc-v1.1/HI2UC-osx-arm64.zip"
+      }
+    },
+    {
+      "name": "Lines unbreaker",
+      "description": "Joins subtitles with two or more short lines into one line when the result fits within a maximum length (tags not counted). Can skip dialogs, moods and narrators. Shows a checkable before/after preview.",
+      "version": "1.1.0",
+      "author": "ivandrofly",
+      "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/LinesUnbreaker",
+      "date": "2026-10-17",
+      "minSeVersion": "5.0.0",
+      "downloads": {
+        "win-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-lines-unbreaker-v1.1/LinesUnbreaker-win-x64.zip",
+        "win-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-lines-unbreaker-v1.1/LinesUnbreaker-win-arm64.zip",
+        "linux-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-lines-unbreaker-v1.1/LinesUnbreaker-linux-x64.zip",
+        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-lines-unbreaker-v1.1/LinesUnbreaker-linux-arm64.zip",
+        "osx-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-lines-unbreaker-v1.1/LinesUnbreaker-osx-x64.zip",
+        "osx-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-lines-unbreaker-v1.1/LinesUnbreaker-osx-arm64.zip"
+      }
+    },
+    {
+      "name": "Tight hyphen",
+      "description": "Removes the space after a dialog dash at the start of a line: \"- Hi!\" becomes \"-Hi!\". Works after tags like <i> and ASSA override tags, and leaves \"- 5\" alone. Shows a checkable before/after preview.",
+      "version": "1.1.0",
+      "author": "ivandrofly",
+      "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/TightHyphen",
+      "date": "2026-10-17",
+      "minSeVersion": "5.0.0",
+      "downloads": {
+        "win-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-tight-hyphen-v1.1/TightHyphen-win-x64.zip",
+        "win-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-tight-hyphen-v1.1/TightHyphen-win-arm64.zip",
+        "linux-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-tight-hyphen-v1.1/TightHyphen-linux-x64.zip",
+        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-tight-hyphen-v1.1/TightHyphen-linux-arm64.zip",
+        "osx-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-tight-hyphen-v1.1/TightHyphen-osx-x64.zip",
+        "osx-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-tight-hyphen-v1.1/TightHyphen-osx-arm64.zip"
+      }
+    },
+    {
+      "name": "Hearing impaired colorer",
+      "description": "Colors hearing-impaired text with <font> tags: narrator labels (JOHN:), moods in ( ) or [ ], and music lines (♪). Pick a color for each, or remove all font colors. Shows a checkable before/after preview with the colors.",
+      "version": "1.1.0",
+      "author": "ivandrofly",
+      "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/HIColorer",
+      "date": "2026-10-17",
+      "minSeVersion": "5.0.0",
+      "downloads": {
+        "win-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-hi-colorer-v1.1/HIColorer-win-x64.zip",
+        "win-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-hi-colorer-v1.1/HIColorer-win-arm64.zip",
+        "linux-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-hi-colorer-v1.1/HIColorer-linux-x64.zip",
+        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-hi-colorer-v1.1/HIColorer-linux-arm64.zip",
+        "osx-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-hi-colorer-v1.1/HIColorer-osx-x64.zip",
+        "osx-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-hi-colorer-v1.1/HIColorer-osx-arm64.zip"
+      }
+    },
+    {
       "name": "ASSA tag check",
       "description": "Finds and fixes broken ASSA override tags (unclosed braces, missing parentheses, HTML colors, unknown or mistyped tags), warns about undefined styles, duplicate \\pos/\\an, too long fades and missing fonts, and tidies tags that do nothing - like </i><i>, {\\i0}{\\i1} or a color set twice. Checkable before/after preview.",
       "version": "1.1.0",
