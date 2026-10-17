@@ -10,6 +10,7 @@
     <File Path="../.github/workflows/british-to-american.yml" />
     <File Path="../.github/workflows/fix-encoding-errors.yml" />
     <File Path="../.github/workflows/haxor.yml" />
+    <File Path="../.github/workflows/hi2uc.yml" />
     <File Path="../.github/workflows/italic-each-line.yml" />
     <File Path="../.github/workflows/persian-errors.yml" />
     <File Path="../.github/workflows/remove-unicode-characters.yml" />
@@ -25,6 +26,7 @@
     <Project Path="BritishToAmerican/BritishToAmerican.csproj" />
     <Project Path="FixEncodingErrors/FixEncodingErrors.csproj" />
     <Project Path="Haxor/Haxor.csproj" />
+    <Project Path="HI2UC/HI2UC.csproj" />
     <Project Path="ItalicEachLine/ItalicEachLine.csproj" />
     <Project Path="PersianErrors/PersianErrors.csproj" />
     <Project Path="RemoveUnicodeCharacters/RemoveUnicodeCharacters.csproj" />
@@ -42,6 +44,7 @@
     <Project Path="AssaTagCheck.Tests/AssaTagCheck.Tests.csproj" />
     <Project Path="BritishToAmerican.Tests/BritishToAmerican.Tests.csproj" />
     <Project Path="FixEncodingErrors.Tests/FixEncodingErrors.Tests.csproj" />
+    <Project Path="HI2UC.Tests/HI2UC.Tests.csproj" />
     <Project Path="ItalicEachLine.Tests/ItalicEachLine.Tests.csproj" />
     <Project Path="PersianErrors.Tests/PersianErrors.Tests.csproj" />
     <Project Path="RemoveUnicodeCharacters.Tests/RemoveUnicodeCharacters.Tests.csproj" />
