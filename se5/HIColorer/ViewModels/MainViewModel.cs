@@ -20,19 +20,29 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly bool _isConfigure;
     private bool _loading;
 
-    [ObservableProperty] private ColorMode _mode = ColorMode.Color;
-    [ObservableProperty] private bool _narrator = true;
-    [ObservableProperty] private Color _narratorColor = Color.Parse(ColorOptions.DefaultNarratorColor);
-    [ObservableProperty] private bool _moods = true;
-    [ObservableProperty] private Color _moodsColor = Color.Parse(ColorOptions.DefaultMoodsColor);
-    [ObservableProperty] private bool _music = true;
-    [ObservableProperty] private Color _musicColor = Color.Parse(ColorOptions.DefaultMusicColor);
-    [ObservableProperty] private bool _showRendered = true;
-    [ObservableProperty] private bool _selectedLinesOnly;
-    [ObservableProperty] private int _selectedCount;
+    [ObservableProperty] public partial ColorMode Mode { get; set; }
+    [ObservableProperty] public partial bool Narrator { get; set; }
+    [ObservableProperty] public partial Color NarratorColor { get; set; }
+    [ObservableProperty] public partial bool Moods { get; set; }
+    [ObservableProperty] public partial Color MoodsColor { get; set; }
+    [ObservableProperty] public partial bool Music { get; set; }
+    [ObservableProperty] public partial Color MusicColor { get; set; }
+    [ObservableProperty] public partial bool ShowRendered { get; set; }
+    [ObservableProperty] public partial bool SelectedLinesOnly { get; set; }
+    [ObservableProperty] public partial int SelectedCount { get; set; }
 
     public MainViewModel(PluginRequest request)
     {
+        // Property changes during setup must not analyze yet.
+        _loading = true;
+        Narrator = true;
+        NarratorColor = Color.Parse(ColorOptions.DefaultNarratorColor);
+        Moods = true;
+        MoodsColor = Color.Parse(ColorOptions.DefaultMoodsColor);
+        Music = true;
+        MusicColor = Color.Parse(ColorOptions.DefaultMusicColor);
+        ShowRendered = true;
+
         _request = request;
         _isConfigure = request.RequestType == PluginRequestType.Configure;
         _videoOffsetMs = request.Rules?.VideoOffsetMs ?? 0;
@@ -43,7 +53,6 @@ public sealed partial class MainViewModel : ObservableObject
             : request.Subtitle.Paragraphs!.Select(p => p.Clone()).ToList();
         SelectedIndices = request.SelectedIndices.Where(i => i >= 0 && i < _paragraphs.Count).Distinct().Order().ToList();
 
-        _loading = true;
         LoadSettings();
         _loading = false;
         Analyze();

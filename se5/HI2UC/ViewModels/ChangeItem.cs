@@ -6,10 +6,11 @@ namespace SubtitleEdit.Plugins.HI2UC.ViewModels;
 /// <summary>One subtitle line whose hearing-impaired text changes case.</summary>
 public sealed partial class ChangeItem : ObservableObject
 {
-    [ObservableProperty] private bool _isSelected = true;
+    [ObservableProperty] public partial bool IsSelected { get; set; }
 
     public ChangeItem(int index, string before, string after, string timeRange, string comment, bool isWarning)
     {
+        IsSelected = true;
         Index = index;
         Before = before;
         After = after;

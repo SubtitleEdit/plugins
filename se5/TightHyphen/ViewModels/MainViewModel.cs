@@ -19,11 +19,14 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly bool _isConfigure;
     private bool _loading;
 
-    [ObservableProperty] private bool _selectedLinesOnly;
-    [ObservableProperty] private int _selectedCount;
+    [ObservableProperty] public partial bool SelectedLinesOnly { get; set; }
+    [ObservableProperty] public partial int SelectedCount { get; set; }
 
     public MainViewModel(PluginRequest request)
     {
+        // Property changes during setup must not analyze yet.
+        _loading = true;
+
         _request = request;
         _isConfigure = request.RequestType == PluginRequestType.Configure;
         _videoOffsetMs = request.Rules?.VideoOffsetMs ?? 0;
@@ -34,7 +37,6 @@ public sealed partial class MainViewModel : ObservableObject
             : request.Subtitle.Paragraphs!.Select(p => p.Clone()).ToList();
         SelectedIndices = request.SelectedIndices.Where(i => i >= 0 && i < _paragraphs.Count).Distinct().Order().ToList();
 
-        _loading = true;
         LoadSettings();
         _loading = false;
         Analyze();

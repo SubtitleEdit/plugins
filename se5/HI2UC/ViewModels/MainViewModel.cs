@@ -20,14 +20,19 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly bool _isConfigure;
     private bool _loading;
 
-    [ObservableProperty] private StyleOption _selectedStyle;
-    [ObservableProperty] private bool _moods = true;
-    [ObservableProperty] private bool _narrator = true;
-    [ObservableProperty] private bool _selectedLinesOnly;
-    [ObservableProperty] private int _selectedCount;
+    [ObservableProperty] public partial StyleOption SelectedStyle { get; set; }
+    [ObservableProperty] public partial bool Moods { get; set; }
+    [ObservableProperty] public partial bool Narrator { get; set; }
+    [ObservableProperty] public partial bool SelectedLinesOnly { get; set; }
+    [ObservableProperty] public partial int SelectedCount { get; set; }
 
     public MainViewModel(PluginRequest request)
     {
+        // Property changes during setup must not analyze yet.
+        _loading = true;
+        Moods = true;
+        Narrator = true;
+
         _request = request;
         _isConfigure = request.RequestType == PluginRequestType.Configure;
         _videoOffsetMs = request.Rules?.VideoOffsetMs ?? 0;
@@ -43,9 +48,8 @@ public sealed partial class MainViewModel : ObservableObject
             var strategy = CasingStrategies.Create(style);
             return new StyleOption(style, strategy.Name, strategy.Example);
         }).ToList();
-        _selectedStyle = StyleOptions[0];
+        SelectedStyle = StyleOptions[0];
 
-        _loading = true;
         LoadSettings();
         _loading = false;
         Analyze();

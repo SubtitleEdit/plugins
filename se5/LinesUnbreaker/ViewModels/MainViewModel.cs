@@ -19,15 +19,21 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly bool _isConfigure;
     private bool _loading;
 
-    [ObservableProperty] private int _maxLength = UnbreakOptions.DefaultMaxLength;
-    [ObservableProperty] private bool _skipDialogs = true;
-    [ObservableProperty] private bool _skipMoods;
-    [ObservableProperty] private bool _skipNarrator = true;
-    [ObservableProperty] private bool _selectedLinesOnly;
-    [ObservableProperty] private int _selectedCount;
+    [ObservableProperty] public partial int MaxLength { get; set; }
+    [ObservableProperty] public partial bool SkipDialogs { get; set; }
+    [ObservableProperty] public partial bool SkipMoods { get; set; }
+    [ObservableProperty] public partial bool SkipNarrator { get; set; }
+    [ObservableProperty] public partial bool SelectedLinesOnly { get; set; }
+    [ObservableProperty] public partial int SelectedCount { get; set; }
 
     public MainViewModel(PluginRequest request)
     {
+        // Property changes during setup must not analyze yet.
+        _loading = true;
+        MaxLength = UnbreakOptions.DefaultMaxLength;
+        SkipDialogs = true;
+        SkipNarrator = true;
+
         _request = request;
         _isConfigure = request.RequestType == PluginRequestType.Configure;
         _videoOffsetMs = request.Rules?.VideoOffsetMs ?? 0;
@@ -41,10 +47,9 @@ public sealed partial class MainViewModel : ObservableObject
         // Default to Subtitle Edit's "single line max. length".
         if (request.Rules is { SubtitleLineMaximumLength: > 0 } rules)
         {
-            _maxLength = rules.SubtitleLineMaximumLength;
+            MaxLength = rules.SubtitleLineMaximumLength;
         }
 
-        _loading = true;
         LoadSettings();
         _loading = false;
         Analyze();
