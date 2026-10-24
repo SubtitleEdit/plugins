@@ -681,7 +681,7 @@
   <Word us="paneling" br="panelling" />
   <Word us="panelist" br="panellist" />
   <Word us="panelists" br="panellists" />
-  <Word us="pants" br="trousers" />
+  <!--<Word us="pants" br="trousers" /> can also be a verb -->
   <Word us="paralleled" br="parallelled" />
   <Word us="paralyze" br="paralyse" />
   <Word us="paralyzed" br="paralysed" />
