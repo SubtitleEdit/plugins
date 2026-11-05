@@ -25,7 +25,7 @@ public abstract class PluginApp : Application
 
         if (PendingRequest is not null)
         {
-            RequestedThemeVariant = ResolveThemeVariant(PendingRequest.Theme);
+            RequestedThemeVariant = ResolveThemeVariant(PendingRequest);
             PluginThemeStyles.Apply(PendingRequest.ThemeColors);
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -36,6 +36,16 @@ public abstract class PluginApp : Application
 
         base.OnFrameworkInitializationCompleted();
     }
+
+    /// <summary>
+    /// Dark or light controls to match Subtitle Edit. <see cref="PluginThemeColors.IsDark"/> wins:
+    /// it is true for every dark theme (Nord, Cinema, ...) and for "System" on a dark OS, which the
+    /// theme name alone does not tell. Older SE versions send no colors, so the name is the fallback.
+    /// </summary>
+    public static ThemeVariant ResolveThemeVariant(PluginRequest request) =>
+        request.ThemeColors is { } colors
+            ? colors.IsDark ? ThemeVariant.Dark : ThemeVariant.Light
+            : ResolveThemeVariant(request.Theme);
 
     /// <summary>Map the SE theme string ("Dark" / "Light" / "System" / ...) to an Avalonia <see cref="ThemeVariant"/>.</summary>
     public static ThemeVariant ResolveThemeVariant(string? seThemeName)

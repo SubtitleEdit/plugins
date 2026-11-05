@@ -21,9 +21,12 @@ public partial class App : Application
 
         if (PendingRequest is not null)
         {
-            RequestedThemeVariant = string.Equals(PendingRequest.Theme, "Dark", System.StringComparison.OrdinalIgnoreCase)
-                ? ThemeVariant.Dark
-                : ThemeVariant.Light;
+            // IsDark covers every dark theme and "System" on a dark OS; older SE versions only send the name.
+            RequestedThemeVariant = PendingRequest.ThemeColors is { } colors
+                ? colors.IsDark ? ThemeVariant.Dark : ThemeVariant.Light
+                : string.Equals(PendingRequest.Theme, "Dark", System.StringComparison.OrdinalIgnoreCase)
+                    ? ThemeVariant.Dark
+                    : ThemeVariant.Light;
 
             PluginThemeStyles.Apply(PendingRequest.ThemeColors);
 
