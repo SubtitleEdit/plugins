@@ -442,6 +442,18 @@ These rules change Portuguese constructions, rather than merely adding review wa
   are not blanket replacements. Fato(s) de treino/mergulho are protected from the
   unrelated Brazilian *fato* → *facto* spelling conversion, including on reruns.
 
+- **Spoken information requests:** English *Gimme / Give it to me* with a recent
+  short Portuguese topic cue about news, details, truth or an explanation turns
+  an isolated *Dê-me* into *Diga-me* (informal *Dá-me* → *Diz-me*). An explicit
+  English information object (*Give me the bad news*) also supplies this evidence.
+  In that guarded construction, *Só sei* with *I just know* becomes *Simplesmente
+  sei*. Dialogue lines, punctuation and formal/informal address are retained.
+  Complete objects such as *Dê-me as más notícias*, literal handovers, missing
+  English, questions, negation and repeated ambiguous requests are not rewritten.
+  Cross-cue context uses the existing five-second adjacency limit. This requires
+  **Colloquial** and **Vocabulary** and can be disabled as `spoken-information`.
+  Timing alignment can merge two English cues into one Portuguese dialogue cue;
+  no MiniLM or generative model is required for this correction.
 - **Shared-residence paraphrases:** when the English explicitly says *We live on
   the same floor*, *Você é meu vizinho de andar* becomes *Vivemos no mesmo andar*.
   The `shared-residence` stage supports matching floor/building/street/block/

@@ -771,6 +771,10 @@ public sealed class PortugueseConverter
         }
         Track("reflexive-clitics", "Reflexives and clitic allomorphs");
 
+        if (_options.Colloquial && _options.Vocabulary)
+            s = ConversionConstructions.SpokenInformation(s, previousText, reference);
+        Track("spoken-information", "English-confirmed figurative give me requests about information");
+
         if (_options.Colloquial) s = ConversionConstructions.NaturalWordOrder(s);
         Track("natural-word-order", "Habitual sempre after lexical verbs and recoverable progressive subjects");
 

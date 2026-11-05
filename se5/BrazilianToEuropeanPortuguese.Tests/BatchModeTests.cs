@@ -29,6 +29,38 @@ public sealed class BatchModeTests : IDisposable
         SubRipParser.Parse(response.Subtitle!.Native).Select(b => b.Text).ToList();
 
     [Fact]
+    public void Batch_SpokenInformationUsesAdjacentNewsAndKeepsDialogueAndTimings()
+    {
+        var source = new List<SrtBlock>
+        {
+            new() { StartMs = 17126, EndMs = 18792, Text = "Más notícias." },
+            new() { StartMs = 18792, EndMs = 20887, Text = "-Como sabe?\n-Só sei. Dê-me." },
+        };
+        var english = new List<SrtBlock>
+        {
+            new() { StartMs = 17251, EndMs = 18752, Text = "Bad news." },
+            new() { StartMs = 18786, EndMs = 19653, Text = "How do you know?" },
+            new() { StartMs = 19687, EndMs = 20821, Text = "I just know. Gimme." },
+        };
+        var request = Request();
+        request.Subtitle.SubRip = SubRipParser.Serialize(source);
+        request.Subtitle.FileName = Path.Combine(_folder, "Show.S01E01.pt-br.srt");
+        File.WriteAllText(Path.Combine(_folder, "Show.S01E01.en.srt"), SubRipParser.Serialize(english));
+        request.SettingsVersion = ConversionOptions.Version;
+        request.Settings = new ConversionOptions(Address: AddressMode.Formal).ToJson();
+        var response = BatchMode.BuildBatchResponse(request, WordListPath, new EmbeddingSettings(CheckMeaning: false));
+        Assert.Equal(new[] { "Más notícias.", "-Como sabe?\n-Simplesmente sei. Diga-me." }, Texts(response));
+        Assert.Equal(source.Select(b => (b.StartMs, b.EndMs)),
+            SubRipParser.Parse(response.Subtitle!.Native).Select(b => (b.StartMs, b.EndMs)));
+        var aligned = ReferenceAligner.AlignByTiming(source, english);
+        source[1].StartMs = 26000;
+        source[1].EndMs = 28000;
+        var distant = SubtitleConversion.Convert(source, new ConversionOptions(Address: AddressMode.Formal),
+            english: aligned.Texts);
+        Assert.DoesNotContain(distant[1].Rules, r => r.Id == "spoken-information");
+    }
+
+    [Fact]
     public void Batch_EnglishSportswearPreservesCueTimingAndReferenceSwitch()
     {
         var request = EpisodeRequest("Tira a fantasia.", true, "Ditch the leotard.");

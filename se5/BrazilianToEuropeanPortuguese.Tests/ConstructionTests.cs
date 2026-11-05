@@ -9,6 +9,68 @@ public sealed class ConstructionTests
     private static readonly PortugueseConverter Converter = new();
 
     [Theory]
+    [InlineData("-Como sabe?\n-Só sei. Dê-me.", "Más notícias.", "How do you know? I just know. Gimme.",
+        "-Como sabe?\n-Simplesmente sei. Diga-me.")]
+    [InlineData("Dê-me.", "Tenho novidades.", "Give it to me.", "Diga-me.")]
+    [InlineData("Dá-me!", "Os detalhes?", "Give it to me straight!", "Diz-me!")]
+    [InlineData("Deem-me.", "A verdade.", "Give it to me.", "Digam-me.")]
+    [InlineData("Dai-me.", "Uma explicação.", "Gimme.", "Dizei-me.")]
+    [InlineData("Dê-me.", null, "Give me the bad news.", "Diga-me.")]
+    [InlineData("Dê-me.", null, "Give me the details.", "Diga-me.")]
+    [InlineData("DÊ-ME.", "MÁS NOTÍCIAS.", "Gimme.", "DIGA-ME.")]
+    [InlineData("<i>Só sei. Dê-me.</i>", "Más notícias.", "I just know. Gimme.",
+        "<i>Simplesmente sei. Diga-me.</i>")]
+    public void FigurativeGiveMeMeansTellMeInInformationContext(string source, string? previous, string english, string expected)
+    {
+        var reference = ReferenceHint.FromText(english)! with { FormalAddress = true };
+        var trace = new List<RuleChange>();
+        Assert.Equal(expected, Converter.Convert(source, previous, reference, trace));
+        Assert.Equal(expected, Converter.Convert(expected, previous, reference));
+        Assert.Contains(trace, r => r.Id == "spoken-information");
+        foreach (var options in new[] { new ConversionOptions(Colloquial: false),
+            new ConversionOptions(Vocabulary: false), new ConversionOptions(DisabledRules: "spoken-information") })
+        {
+            var disabledTrace = new List<RuleChange>();
+            new PortugueseConverter(options).Convert(source, previous, reference, disabledTrace);
+            Assert.DoesNotContain(disabledTrace, r => r.Id == "spoken-information");
+        }
+    }
+
+    [Fact]
+    public void SpokenInformationFollowsExplicitInformalAddress()
+    {
+        var reference = ReferenceHint.FromText("I just know. Gimme.")! with { ForceInformal = true };
+        Assert.Equal("Simplesmente sei. Diz-me.", Converter.Convert("Só sei. Dê-me.", "Más notícias.", reference));
+    }
+
+    [Theory]
+    [InlineData("Dê-me.", null, "Gimme.")]
+    [InlineData("Dê-me.", "Más notícias.", null)]
+    [InlineData("Dê-me.", "A arma.", "Gimme.")]
+    [InlineData("Dê-me.", "Más notícias.", "Give me the gun.")]
+    [InlineData("Dê-me.", "Más notícias.", "Don't give it to me.")]
+    [InlineData("Dê-me.", "Más notícias.", "Did you give it to me?")]
+    [InlineData("Dê-me.", "Más notícias.", "He said give it to me.")]
+    [InlineData("Dê-me as más notícias.", "Más notícias.", "Give me the bad news.")]
+    [InlineData("Dê-me o jornal.", "Más notícias.", "Gimme.")]
+    [InlineData("Não dê-me.", "Más notícias.", "Gimme.")]
+    [InlineData("Se ele disser dê-me.", "Más notícias.", "Gimme.")]
+    [InlineData("Dê-me. Dê-me.", "Más notícias.", "Gimme.")]
+    [InlineData("Dê-me uma explicação.", "A verdade.", "Give me the explanation.")]
+    [InlineData("Só sei.", "Más notícias.", "I just know.")]
+    [InlineData("Dê-me.", "O jornal tem más notícias.", "Gimme.")]
+    public void SpokenInformationPreservesLiteralCompleteAndUnconfirmedRequests(string source, string? previous, string? english)
+    {
+        var reference = ReferenceHint.FromText(english);
+        Assert.Equal(source, ConversionConstructions.SpokenInformation(source, previous, reference));
+        var trace = new List<RuleChange>();
+        var converted = Converter.Convert(source, previous, reference, trace);
+        Assert.Equal(new PortugueseConverter(new ConversionOptions(DisabledRules: "spoken-information"))
+            .Convert(source, previous, reference), converted);
+        Assert.DoesNotContain(trace, r => r.Id == "spoken-information");
+    }
+
+    [Theory]
     [InlineData("Você é meu vizinho de andar.", "Hey, we live on the same floor.", "Vivemos no mesmo andar.")]
     [InlineData("És meu vizinho de andar.", "We live on the same floor.", "Vivemos no mesmo andar.")]
     [InlineData("Tu és o meu vizinho do mesmo andar.", "We live on the same floor.", "Vivemos no mesmo andar.")]
