@@ -76,6 +76,40 @@ internal static class ConversionConstructions
     public static string PhysicalDescriptions(string text) => PersonMeasurement.Replace(text, m =>
         m.Value[..^m.Groups["pre"].Length] + CaseHelper.MatchCase(m.Groups["pre"].Value, "com"));
 
+    private static readonly Regex InformationTopic = new(
+        @"^(?:(?:tenho|temos|há|são|e|quais\s+são)\s+)?(?:(?:o|a|os|as|um|uma|uns|umas|ess[ea]s?|est[ea]s?)\s+)?" +
+        @"(?:(?:boas?|más?|últimas?|novas?)\s+)?(?:notícias|novidades|informações|detalhes|verdade|explicação)" +
+        @"\s*[.!?…]?$", Ci);
+    private static readonly Regex GiveInformationReference = new(
+        @"(?:^|[.!?]\s+)(?<request>gimme|give\s+(?:it\s+to\s+me|me))" +
+        @"(?<explicit>\s+(?:the\s+)?(?:(?:good|bad)\s+)?(?:news|details|truth|information|explanation|update))?" +
+        @"(?:\s+straight)?[.!…]?$", Ci);
+    private static readonly Regex BareGiveMe = new(
+        @"(?<head>(?:^|[.!?…]\s*|\n)[\uE000-\uF8FF \t]*(?:[-–—]\s*)?)" +
+        @"(?<verb>dê|dá|deem|dai)-me(?=[.!…](?:\s|[\uE000-\uF8FF]|$)|\s*[\uE000-\uF8FF]*$)", Ci);
+    private static readonly Regex JustKnow = new(
+        @"(?<![\p{L}\p{M}])(?<just>só)(?<gap>\s+)sei(?=\s*[.!…]\s*(?:diga|diz|digam|dizei)-me\b)", Ci);
+
+    public static string SpokenInformation(string text, string? previous, ReferenceHint? reference)
+    {
+        var english = reference?.EnglishText;
+        if (english == null) return text;
+        var request = GiveInformationReference.Match(english);
+        if (!request.Success || !request.Groups["explicit"].Success &&
+            !InformationTopic.IsMatch(ReferenceAligner.Clean(previous ?? ""))) return text;
+        if (BareGiveMe.Matches(text).Count != 1) return text;
+        text = BareGiveMe.Replace(text, m => m.Groups["head"].Value + CaseHelper.MatchCase(m.Groups["verb"].Value,
+            m.Groups["verb"].Value.ToLowerInvariant() switch
+            {
+                "dê" => "diga", "dá" => "diz", "deem" => "digam", _ => "dizei",
+            }) + (CaseHelper.IsAllUpper(m.Groups["verb"].Value) ? "-ME" : "-me"));
+        if (Regex.IsMatch(english, @"(?:^|[.!?]\s+)i\s+just\s+know[.!…]\s+", Ci))
+            text = JustKnow.Replace(text, m =>
+                CaseHelper.MatchCase(m.Groups["just"].Value, "simplesmente") + m.Groups["gap"].Value +
+                (CaseHelper.IsAllUpper(m.Value) ? "SEI" : "sei"));
+        return text;
+    }
+
     private static readonly Regex SharedResidenceReference = new(
         @"^(?:(?:hey|hi|hello|well)[,!]?\s+)?we\s+(?<verb>live|lived)\s+" +
         @"(?:on|in)\s+the\s+same\s+(?<place>floor|building|street|block|neighbou?rhood)[.!…]?$", Ci);
