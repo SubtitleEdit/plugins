@@ -3,18 +3,18 @@
     {
       "name": "Brazilian to European Portuguese",
       "description": "Converts Brazilian Portuguese (pt-BR) to European Portuguese (pt-PT), with complement-aware vocabulary, personal infinitives, guarded clause agreement and idioms, optional conversational style, dialogue controls and grammar review. Shows a checkable preview of changes and their rule stages.",
-      "version": "1.3.0",
+      "version": "1.4.0",
       "author": "Subtitle Edit",
       "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/BrazilianToEuropeanPortuguese",
       "date": "2026-11-05",
       "minSeVersion": "5.0.0",
       "downloads": {
-        "win-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-brazilian-to-european-portuguese-v1.3/BrazilianToEuropeanPortuguese-win-x64.zip",
-        "win-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-brazilian-to-european-portuguese-v1.3/BrazilianToEuropeanPortuguese-win-arm64.zip",
-        "linux-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-brazilian-to-european-portuguese-v1.3/BrazilianToEuropeanPortuguese-linux-x64.zip",
-        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-brazilian-to-european-portuguese-v1.3/BrazilianToEuropeanPortuguese-linux-arm64.zip",
-        "osx-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-brazilian-to-european-portuguese-v1.3/BrazilianToEuropeanPortuguese-osx-x64.zip",
-        "osx-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-brazilian-to-european-portuguese-v1.3/BrazilianToEuropeanPortuguese-osx-arm64.zip"
+        "win-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-brazilian-to-european-portuguese-v1.4/BrazilianToEuropeanPortuguese-win-x64.zip",
+        "win-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-brazilian-to-european-portuguese-v1.4/BrazilianToEuropeanPortuguese-win-arm64.zip",
+        "linux-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-brazilian-to-european-portuguese-v1.4/BrazilianToEuropeanPortuguese-linux-x64.zip",
+        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-brazilian-to-european-portuguese-v1.4/BrazilianToEuropeanPortuguese-linux-arm64.zip",
+        "osx-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-brazilian-to-european-portuguese-v1.4/BrazilianToEuropeanPortuguese-osx-x64.zip",
+        "osx-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-brazilian-to-european-portuguese-v1.4/BrazilianToEuropeanPortuguese-osx-arm64.zip"
       }
     },
     {
