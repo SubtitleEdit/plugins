@@ -1,6 +1,23 @@
 {
   "plugins": [
     {
+      "name": "French typography",
+      "description": "French punctuation spacing: a no-break space before ; : ! ? (only : for Canada) and inside « », \"text\" to « text » and ... to …. Leaves times, web addresses and tags alone. Shows a checkable before/after preview, in French when Subtitle Edit runs in French.",
+      "version": "1.1.0",
+      "author": "Subtitle Edit",
+      "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/FrenchTypography",
+      "date": "2026-11-05",
+      "minSeVersion": "5.0.0",
+      "downloads": {
+        "win-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-french-typography-v1.1/FrenchTypography-win-x64.zip",
+        "win-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-french-typography-v1.1/FrenchTypography-win-arm64.zip",
+        "linux-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-french-typography-v1.1/FrenchTypography-linux-x64.zip",
+        "linux-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-french-typography-v1.1/FrenchTypography-linux-arm64.zip",
+        "osx-x64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-french-typography-v1.1/FrenchTypography-osx-x64.zip",
+        "osx-arm64": "https://github.com/SubtitleEdit/plugins/releases/download/se5-french-typography-v1.1/FrenchTypography-osx-arm64.zip"
+      }
+    },
+    {
       "name": "Hearing impaired to uppercase",
       "description": "Changes the case of hearing-impaired text: sounds and moods in ( ) or [ ] and speaker labels before a colon - (laughs) John: Hi. → (LAUGHS) JOHN: Hi. Uppercase, title, sentence, lower or toggle case. Shows a checkable before/after preview.",
       "version": "1.1.0",
