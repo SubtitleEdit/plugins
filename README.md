@@ -19,6 +19,7 @@ index [`se5-plugins.json`](se5-plugins.json).
 | [ARTE check](se5/ArteCheck) | Checks and fixes EBU STL teletext subtitles for ARTE delivery. |
 | [American to British](se5/AmericanToBritish) | Converts American English spellings to British English. |
 | [British to American](se5/BritishToAmerican) | Converts British English spellings to American English. |
+| [Brazilian to European Portuguese](se5/BrazilianToEuropeanPortuguese) | Converts Brazilian Portuguese (pt-BR) to European Portuguese (pt-PT) with a checkable preview of each change. |
 | [Fix encoding errors](se5/FixEncodingErrors) | Repairs UTF-8 text read with the wrong code page: rÃ©sumÃ© → résumé, donâ€™t → don’t. |
 | [French typography](se5/FrenchTypography) | French punctuation spacing: no-break space before ; : ! ? and inside « », "text" → « text », ... → …. France or Canada rules. |
 | [Haxor](se5/Haxor) | Translates text to "haxor" - the minimal reference plugin. |
