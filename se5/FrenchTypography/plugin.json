@@ -1,0 +1,13 @@
+{
+  "apiVersion": 1,
+  "name": "French typography",
+  "description": "French punctuation spacing: a no-break space before ; : ! ? (only : for Canada) and inside « », \"text\" to « text » and ... to …. Leaves times, web addresses and tags alone. Shows a checkable before/after preview, in French when Subtitle Edit runs in French.",
+  "version": "1.0.0",
+  "author": "Subtitle Edit",
+  "url": "https://github.com/SubtitleEdit/plugins/tree/main/se5/FrenchTypography",
+  "menu": "Tools",
+  "minSeVersion": "5.0.0",
+  "batch": true,
+  "runtime": "dotnet",
+  "entry": "FrenchTypography.dll"
+}

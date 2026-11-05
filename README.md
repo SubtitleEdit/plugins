@@ -20,6 +20,7 @@ index [`se5-plugins.json`](se5-plugins.json).
 | [American to British](se5/AmericanToBritish) | Converts American English spellings to British English. |
 | [British to American](se5/BritishToAmerican) | Converts British English spellings to American English. |
 | [Fix encoding errors](se5/FixEncodingErrors) | Repairs UTF-8 text read with the wrong code page: rÃ©sumÃ© → résumé, donâ€™t → don’t. |
+| [French typography](se5/FrenchTypography) | French punctuation spacing: no-break space before ; : ! ? and inside « », "text" → « text », ... → …. France or Canada rules. |
 | [Haxor](se5/Haxor) | Translates text to "haxor" - the minimal reference plugin. |
 | [Hearing impaired colorer](se5/HIColorer) | Colors narrators, moods and music lines with font tags, or removes font colors. |
 | [Hearing impaired to uppercase](se5/HI2UC) | Changes the case of moods in ( ) / [ ] and speaker labels: (laughs) John: Hi. → (LAUGHS) JOHN: Hi. |
