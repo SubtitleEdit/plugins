@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>BrazilianToEuropeanPortuguese</AssemblyName>
+    <RootNamespace>SubtitleEdit.Plugins.BrazilianToEuropeanPortuguese</RootNamespace>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Plugin-Shared\Plugin-Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="PortugueseWordList.xml" LogicalName="PortugueseWordList.xml" />
+    <EmbeddedResource Include="Dictionaries/*.tar.gz" LogicalName="BrazilianToEuropeanPortuguese.Dictionaries.%(Filename)%(Extension)" />
+    <Content Include="Dictionaries/*.tar.gz" CopyToOutputDirectory="PreserveNewest" />
+    <PackageReference Include="WeCantSpell.Hunspell" Version="7.0.1" GeneratePathProperty="true" />
+    <Content Include="$(PkgWeCantSpell_Hunspell)/license.txt" Link="Dictionaries/Hunspell-license.txt"
+             CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- Subtitle Edit only lists the plugin when plugin.json is next to the executable. -->
+  <ItemGroup>
+    <None Include="plugin.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <None Include="README.md" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="BrazilianToEuropeanPortuguese.Tests" />
+  </ItemGroup>
+
+</Project>

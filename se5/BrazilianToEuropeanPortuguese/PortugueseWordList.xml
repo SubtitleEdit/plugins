@@ -1,0 +1,1343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Built-in pt-BR → pt-PT word list (European Portuguese spelling follows the 1990 Orthographic Agreement as used in Portugal).
+
+  <Word br="..." pt="..." />   whole word or phrase, matched case-insensitively, case of the original is kept.
+    type="spelling"             belongs to the "Spelling" group (default is "vocabulary").
+    g="f" / g="m"               the pt word has a different gender (f = becomes feminine, m = becomes masculine);
+                                a preceding article/determiner (o, um, do, no, meu, este...) and a few common
+                                adjectives right after it (todo, novo, inteiro...) are changed to agree.
+    det="m" / det="f"           only convert when preceded by a determiner of that gender ("o time", "a grama").
+    pl="..."                    pt form used after a plural determiner (for invariable BR plurals: "os ônibus").
+  <Prefix br="..." pt="..." />  every word starting with br gets that start replaced (contat* → contact*).
+  <Keep text="..." />           word or phrase that is never changed.
+  <Verb br="..." pt="..." />    regular verb: every tense, person, gerund, participle and hyphenated form is generated
+                                (botar → meter: botei → meti, bote → meta, bota-me → mete-me, botá-lo → metê-lo).
+    after="a|b"                 only when followed by one of these words (regex alternation).
+    notAfter="a|b"              not when followed by one of these words.
+    skip="f1 f2"                generated forms that are never changed.
+    noun="f1 f2"                forms that are also nouns: only converted after a pronoun, "não" or at the start of a
+                                sentence (tu botas, ela posta, Cheque isso), never in "botas de trabalho", "mil postes".
+                                <Word> entries and the user's own word list win over generated forms; forms right
+                                after a determiner (a bota, o pulo) are treated as nouns and kept.
+-->
+<Words>
+  <Word br="retrato falado" pt="retrato-robô" />
+  <Word br="retratos falados" pt="retratos-robô" />
+  <Word br="trabalho de meio período" pt="trabalho a tempo parcial" />
+  <Word br="emprego de meio período" pt="emprego a tempo parcial" />
+  <Word br="trabalho de tempo integral" pt="trabalho a tempo inteiro" />
+  <Word br="emprego de tempo integral" pt="emprego a tempo inteiro" />
+  <!-- Reviewed base equivalences from the larger study guide. -->
+  <Word br="varal de roupa" pt="estendal de roupa" />
+  <Word br="varais de roupa" pt="estendais de roupa" />
+  <Word br="pregador de roupa" pt="mola da roupa" g="f" />
+  <Word br="pregadores de roupa" pt="molas da roupa" g="f" />
+  <Word br="marcha à ré" pt="marcha-atrás" />
+  <Word br="internação" pt="internamento" g="m" />
+  <Word br="internações" pt="internamentos" g="m" />
+  <Word br="exame de sangue" pt="análise ao sangue" g="f" />
+  <Word br="exames de sangue" pt="análises ao sangue" g="f" />
+  <Word br="coleta de sangue" pt="colheita de sangue" />
+  <Word br="coletas de sangue" pt="colheitas de sangue" />
+  <Word br="efeito colateral" pt="efeito secundário" />
+  <Word br="efeitos colaterais" pt="efeitos secundários" />
+  <Word br="clareamento dental" pt="branqueamento dentário" />
+  <Word br="shampoo" pt="champô" />
+  <Word br="shampoos" pt="champôs" />
+  <Word br="desodorante" pt="desodorizante" />
+  <Word br="desodorantes" pt="desodorizantes" />
+  <Word br="demaquilante" pt="desmaquilhante" />
+  <Word br="demaquilantes" pt="desmaquilhantes" />
+  <Word br="cílios postiços" pt="pestanas postiças" g="f" />
+  <Word br="máscara de cílios" pt="máscara de pestanas" />
+  <Word br="pochete" pt="bolsa de cintura" />
+  <Word br="pochetes" pt="bolsas de cintura" />
+  <Word br="cortador de grama" pt="corta-relva" />
+  <Word br="cortadores de grama" pt="corta-relvas" />
+  <Word br="carrapato" pt="carraça" g="f" />
+  <Word br="carrapatos" pt="carraças" g="f" />
+  <Word br="pernilongo" pt="mosquito" />
+  <Word br="pernilongos" pt="mosquitos" />
+  <Word br="salsinha" pt="salsa" />
+  <Word br="papel-toalha" pt="papel de cozinha" />
+  <Word br="papel alumínio" pt="papel de alumínio" />
+  <Word br="filme plástico" pt="película aderente" g="f" />
+  <Word br="mixer de mão" pt="varinha mágica" g="f" />
+  <Word br="secadora de roupa" pt="máquina de secar roupa" />
+  <Word br="secadoras de roupa" pt="máquinas de secar roupa" />
+  <Word br="pendrive" pt="pen USB" g="f" />
+  <Word br="pendrives" pt="pens USB" g="f" />
+  <Word br="roteador" pt="router" />
+  <Word br="roteadores" pt="routers" />
+  <Word br="arquivo SRT" pt="ficheiro SRT" />
+  <Word br="arquivos SRT" pt="ficheiros SRT" />
+  <Word br="roteirista" pt="argumentista" />
+  <Word br="roteiristas" pt="argumentistas" />
+  <Word br="pré-estreia" pt="ante-estreia" />
+  <Word br="pré-estreias" pt="ante-estreias" />
+  <Word br="doutorado" pt="doutoramento" det="m" />
+  <Word br="doutorados" pt="doutoramentos" det="m" />
+  <Word br="volta às aulas" pt="regresso às aulas" g="m" />
+  <Word br="kitnet" pt="estúdio" g="m" />
+  <Word br="kitnets" pt="estúdios" g="m" />
+  <Word br="com frete grátis" pt="com portes grátis" />
+  <Word br="contracheque" pt="recibo de vencimento" />
+  <Word br="contracheques" pt="recibos de vencimento" />
+  <Word br="interfone" pt="intercomunicador" />
+  <Word br="interfones" pt="intercomunicadores" />
+  <Word br="plugue" pt="ficha" g="f" />
+  <Word br="plugues" pt="fichas" g="f" />
+  <Word br="esmerilhadeira" pt="rebarbadora" />
+  <Word br="esmerilhadeiras" pt="rebarbadoras" />
+  <Word br="lixadeira" pt="lixadora" />
+  <Word br="lixadeiras" pt="lixadoras" />
+  <Word br="parafusadeira" pt="aparafusadora" />
+  <Word br="parafusadeiras" pt="aparafusadoras" />
+  <Word br="chave catraca" pt="chave de roquete" />
+  <Word br="chaves catraca" pt="chaves de roquete" />
+  <Word br="massa corrida" pt="massa de barramento" />
+  <Word br="calha de chuva" pt="caleira" />
+  <Word br="calhas de chuva" pt="caleiras" />
+  <Word br="zoneamento" pt="zonamento" />
+  <Word br="zoneamentos" pt="zonamentos" />
+  <Word br="laudo técnico" pt="relatório técnico" />
+  <Word br="laudos técnicos" pt="relatórios técnicos" />
+  <Word br="memorial descritivo" pt="memória descritiva" g="f" />
+  <Word br="memoriais descritivos" pt="memórias descritivas" g="f" />
+  <Word br="chupeta" pt="chucha" />
+  <Word br="chupetas" pt="chuchas" />
+  <Word br="babador" pt="babete" />
+  <Word br="babadores" pt="babetes" />
+  <Word br="lenço umedecido" pt="toalhete húmido" />
+  <Word br="lenços umedecidos" pt="toalhetes húmidos" />
+  <Word br="prontuário médico" pt="processo clínico" />
+  <Word br="prontuários médicos" pt="processos clínicos" />
+  <Word br="consulta de retorno" pt="consulta de seguimento" />
+  <Word br="consultas de retorno" pt="consultas de seguimento" />
+  <Word br="superdosagem" pt="sobredosagem" />
+  <Word br="superdosagens" pt="sobredosagens" />
+  <Word br="triglicerídeos" pt="triglicéridos" />
+  <Word br="superdotação" pt="sobredotação" />
+  <Word br="avaliação somativa" pt="avaliação sumativa" />
+  <Word br="avaliações somativas" pt="avaliações sumativas" />
+  <Word br="evasão escolar" pt="abandono escolar" g="m" />
+  <Word br="centroavante" pt="ponta de lança" />
+  <Word br="centroavantes" pt="pontas de lança" />
+  <Word br="oitavas de final" pt="oitavos de final" g="m" />
+  <Word br="quartas de final" pt="quartos de final" g="m" />
+  <Word br="semifinal" pt="meia-final" />
+  <Word br="semifinais" pt="meias-finais" />
+  <Word br="jogo de ida" pt="jogo da primeira mão" />
+  <Word br="jogos de ida" pt="jogos da primeira mão" />
+  <Word br="jogo de volta" pt="jogo da segunda mão" />
+  <Word br="jogos de volta" pt="jogos da segunda mão" />
+  <Word br="banco de reservas" pt="banco de suplentes" />
+  <Word br="bancos de reservas" pt="bancos de suplentes" />
+  <Word br="pré-temporada" pt="pré-época" />
+  <Word br="pré-temporadas" pt="pré-épocas" />
+  <Word br="handebol" pt="andebol" />
+  <Word br="bicicleta ergométrica" pt="bicicleta estática" />
+  <Word br="bicicletas ergométricas" pt="bicicletas estáticas" />
+  <Word br="carboidrato" pt="hidrato de carbono" />
+  <Word br="carboidratos" pt="hidratos de carbono" />
+  <Word br="alho-poró" pt="alho-francês" />
+  <Word br="alhos-porós" pt="alhos-franceses" />
+  <Word br="brócolis" pt="brócolos" />
+  <Word br="açúcar mascavo" pt="açúcar mascavado" />
+  <Word br="fermento biológico" pt="fermento de padeiro" />
+  <Word br="fermento químico" pt="fermento em pó" />
+  <Word br="cupom de desconto" pt="cupão de desconto" />
+  <Word br="cupons de desconto" pt="cupões de desconto" />
+  <Word br="marca-texto" pt="marcador fluorescente" />
+  <Word br="marca-textos" pt="marcadores fluorescentes" />
+  <Word br="canetinha" pt="caneta de feltro" />
+  <Word br="canetinhas" pt="canetas de feltro" />
+  <Word br="giz de cera" pt="lápis de cera" />
+  <!-- Reviewed vocabulary/verb workbook: specific senses, not a literal import. -->
+  <Word br="sacola" pt="saco" g="m" />
+  <Word br="sacolas" pt="sacos" g="m" />
+  <Word br="shorts" pt="calções" />
+  <Word br="aipim" pt="mandioca" g="f" />
+  <Word br="misto-quente" pt="tosta mista" g="f" />
+  <Word br="mistos-quentes" pt="tostas mistas" g="f" />
+  <Word br="chave de fenda" pt="chave de fendas" />
+  <Word br="chaves de fenda" pt="chaves de fendas" />
+  <Word br="arruela" pt="anilha" />
+  <Word br="arruelas" pt="anilhas" />
+  <Word br="furadeira" pt="berbequim" g="m" />
+  <Word br="furadeiras" pt="berbequins" g="m" />
+  <Word br="embreagem" pt="embraiagem" />
+  <Word br="embreagens" pt="embraiagens" />
+  <Word br="porca borboleta" pt="porca de orelhas" />
+  <Word br="porcas borboleta" pt="porcas de orelhas" />
+  <Word br="porcas borboletas" pt="porcas de orelhas" />
+  <Word br="torque de aperto" pt="binário de aperto" />
+  <Word br="torques de aperto" pt="binários de aperto" />
+  <Verb br="rosquear" pt="enroscar" />
+  <Verb br="parafusar" pt="aparafusar" />
+  <Verb br="desparafusar" pt="desaparafusar" />
+  <Verb br="desengraxar" pt="desengordurar" />
+  <Verb br="destravar" pt="desbloquear" />
+  <Verb br="afrouxar" pt="desapertar" after="(?:(?:o|a|os|as|um|uma|uns|umas|este|esta|estes|estas|esse|essa|esses|essas)\s+)?(?:parafusos?|porcas?|tampas?|cintos?|cintos?\s+de\s+segurança)" />
+  <Verb br="engraxar" pt="lubrificar" after="(?:(?:o|a|os|as|um|uma|uns|umas|este|esta|estes|estas|esse|essa|esses|essas)\s+)?(?:peças?|mecanismos?|engrenagens?|eixos?|rolamentos?)" />
+  <!-- ===================== Brazilian slang ===================== -->
+  <Word br="doideira" pt="loucura" />
+  <Word br="doideiras" pt="loucuras" />
+  <Word br="vambora" pt="vamos embora" />
+  <Word br="breja" pt="cerveja" />
+  <Word br="brejas" pt="cervejas" />
+  <Word br="bufunfa" pt="massa" />
+  <Word br="busão" pt="autocarro" />
+  <Word br="busões" pt="autocarros" />
+  <Word br="flanelinha" pt="arrumador de carros" det="m" />
+  <Word br="flanelinhas" pt="arrumadores de carros" det="m" />
+  <Word br="fita adesiva" pt="fita-cola" />
+  <Word br="fitas adesivas" pt="fitas-cola" />
+  <Word br="mensalidade da faculdade" pt="propina" />
+  <Word br="mensalidades da faculdade" pt="propinas" />
+  <Word br="sunga" pt="slip de banho" g="m" />
+  <!-- Specialist sportswear: qualified senses, not blanket changes to collants or uniforms. -->
+  <Word br="leotard" pt="maillot" g="m" />
+  <Word br="leotards" pt="maillots" g="m" />
+  <Word br="maiô de ginástica" pt="maillot de ginástica" g="m" />
+  <Word br="maiôs de ginástica" pt="maillots de ginástica" g="m" />
+  <Word br="maiô de balé" pt="maillot de ballet" g="m" />
+  <Word br="maiôs de balé" pt="maillots de ballet" g="m" />
+  <Word br="camisa polo" pt="polo" g="m" />
+  <Word br="camisas polo" pt="polos" g="m" />
+  <Word br="camiseta polo" pt="polo" g="m" />
+  <Word br="camisetas polo" pt="polos" g="m" />
+  <Word br="camisa de golfe" pt="polo de golfe" g="m" />
+  <Word br="camisas de golfe" pt="polos de golfe" g="m" />
+  <Word br="calças de hipismo" pt="calças de equitação" />
+  <Word br="botas de hipismo" pt="botas de equitação" />
+  <Word br="capacete de hipismo" pt="toque de equitação" />
+  <Word br="capacetes de hipismo" pt="toques de equitação" />
+  <Word br="casaca de hipismo" pt="casaca de equitação" />
+  <Word br="casacas de hipismo" pt="casacas de equitação" />
+  <Word br="camisa de ciclismo" pt="camisola de ciclismo" />
+  <Word br="camisas de ciclismo" pt="camisolas de ciclismo" />
+  <Word br="bermudas de ciclismo" pt="calções de ciclismo" g="m" />
+  <Word br="macacão de mergulho" pt="fato de mergulho" />
+  <Word br="macacões de mergulho" pt="fatos de mergulho" />
+  <Word br="sutiã esportivo" pt="soutien desportivo" />
+  <Word br="sutiãs esportivos" pt="soutiens desportivos" />
+  <Word br="sungas" pt="slips de banho" g="m" />
+  <Word br="meias-calças" pt="collants" g="m" />
+  <Verb br="paquerar" pt="engatar" />
+  <Word br="holerite" pt="recibo de vencimento" />
+  <Word br="holerites" pt="recibos de vencimento" />
+  <Word br="trem-bala" pt="comboio de alta velocidade" />
+  <Word br="trens-bala" pt="comboios de alta velocidade" />
+  <Word br="trens-balas" pt="comboios de alta velocidade" />
+  <Word br="suco de caixinha" pt="sumo de pacote" />
+  <Word br="sucos de caixinha" pt="sumos de pacote" />
+  <Word br="suco de mamão" pt="sumo de papaia" />
+  <Word br="sucos de mamão" pt="sumos de papaia" />
+  <Word br="computador de mesa" pt="computador de secretária" />
+  <Word br="computadores de mesa" pt="computadores de secretária" />
+  <Word br="mensagem inbox" pt="mensagem privada" />
+  <Word br="mensagens inbox" pt="mensagens privadas" />
+  <Word br="captura de tela" pt="captura de ecrã" />
+  <Word br="capturas de tela" pt="capturas de ecrã" />
+  <Word br="pão francês" pt="papo-seco" />
+  <Word br="pães franceses" pt="papos-secos" />
+  <Word br="escanteio" pt="canto" det="m" />
+  <Word br="escanteios" pt="cantos" />
+  <Word br="zagueiro" pt="defesa-central" />
+  <Word br="zagueiros" pt="defesas-centrais" />
+  <Word br="zagueira" pt="defesa-central" />
+  <Word br="zagueiras" pt="defesas-centrais" />
+  <Word br="mexerica" pt="tangerina" det="f" />
+  <Word br="mexericas" pt="tangerinas" det="f" />
+  <Word br="dedo-duro" pt="bufo" />
+  <Word br="dedos-duros" pt="bufos" />
+  <Word br="caguete" pt="bufo" />
+  <Word br="caguetes" pt="bufos" />
+  <Word br="cagueta" pt="bufo" g="m" />
+  <Word br="caguetas" pt="bufos" g="m" />
+  <Word br="X-9" pt="bufo" />
+  <Word br="encrenca" pt="sarilho" g="m" />
+  <Word br="caçamba de lixo" pt="contentor do lixo" g="m" />
+  <Word br="caçambas de lixo" pt="contentores do lixo" g="m" />
+  <Word br="ficha criminal" pt="registo criminal" g="m" />
+  <Word br="fichas criminais" pt="registos criminais" g="m" />
+  <Word br="encrencas" pt="sarilhos" g="m" />
+  <Word br="encrencado" pt="metido em sarilhos" />
+  <Word br="encrencada" pt="metida em sarilhos" />
+  <Word br="encrencados" pt="metidos em sarilhos" />
+  <Word br="treco" pt="coisa" g="f" />
+  <Word br="trecos" pt="coisas" g="f" />
+  <Word br="pilantra" pt="vigarista" />
+  <Word br="pilantras" pt="vigaristas" />
+  <Word br="cafajeste" pt="canalha" />
+  <Word br="cafajestes" pt="canalhas" />
+  <Word br="camburão" pt="carrinha da polícia" g="f" />
+  <Word br="camburões" pt="carrinhas da polícia" g="f" />
+  <Word br="porre" pt="bebedeira" g="f" />
+  <Word br="de porre" pt="bêbedo" />
+  <Word br="que porre" pt="que seca" />
+  <Word br="pivete" pt="miúdo" />
+  <Word br="pivetes" pt="miúdos" />
+  <Word br="molecada" pt="miudagem" />
+  <Word br="pirralho" pt="fedelho" />
+  <Word br="pirralha" pt="fedelha" />
+  <Word br="pirralhos" pt="fedelhos" />
+  <Word br="rango" pt="comida" g="f" />
+  <Word br="trampo" pt="trabalho" />
+  <Word br="de sacanagem" pt="a gozar" />
+  <Word br="sacanagem" pt="sacanice" />
+  <Word br="fajuto" pt="rasca" />
+  <Word br="fajuta" pt="rasca" />
+  <Word br="fajutos" pt="rascas" />
+  <Word br="fajutas" pt="rascas" />
+  <Word br="grana preta" pt="balúrdio" g="m" />
+  <Word br="uma bronca" pt="um raspanete" />
+  <Word br="levar bronca" pt="levar um raspanete" />
+  <Word br="levou bronca" pt="levou um raspanete" />
+  <Word br="está grampeado" pt="está sob escuta" />
+  <Word br="estar grampeado" pt="estar sob escuta" />
+  <Word br="estava grampeado" pt="estava sob escuta" />
+  <Word br="foi grampeado" pt="foi posto sob escuta" />
+  <Word br="estão grampeados" pt="estão sob escuta" />
+  <Word br="telefone grampeado" pt="telefone sob escuta" />
+  <Word br="telefones grampeados" pt="telefones sob escuta" />
+
+  <!-- ===================== Corpus audit (PT-BR vs PT-PT subtitle pairs) ===================== -->
+  <Word br="Srta." pt="Mna." />
+  <Word br="senhorita" pt="menina" />
+  <Word br="senhoritas" pt="meninas" />
+  <Word br="oba" pt="boa" />
+  <Word br="oiê" pt="olá" />
+  <Word br="eca" pt="que nojo" />
+  <Word br="amigão" pt="amigalhaço" />
+  <Word br="vazamento" pt="fuga" g="f" />
+  <Word br="vazamentos" pt="fugas" g="f" />
+  <Word br="remédio" pt="medicamento" det="m" />
+  <Word br="remédios" pt="medicamentos" det="m" />
+  <Word br="pote" pt="frasco" />
+  <Word br="potes" pt="frascos" />
+  <Word br="pouquinho" pt="bocadinho" />
+  <Word br="pouquinhos" pt="bocadinhos" />
+  <Word br="baita" pt="grande" />
+  <Word br="baitas" pt="grandes" />
+  <Word br="treinamento" pt="treino" />
+  <Word br="treinamentos" pt="treinos" />
+  <Word br="rastro" pt="rasto" />
+  <Word br="rastros" pt="rastos" />
+  <Word br="experimento" pt="experiência" g="f" />
+  <Word br="experimentos" pt="experiências" g="f" />
+  <Word br="pia" pt="lava-loiça" g="m" />
+  <Word br="diretoria" pt="direção" />
+  <Word br="linguiça" pt="chouriço" g="m" />
+  <Word br="linguiças" pt="chouriços" g="m" />
+  <Word br="chapado" pt="pedrado" />
+  <Word br="chapada" pt="pedrada" />
+  <Word br="chapados" pt="pedrados" />
+  <Word br="chapadas" pt="pedradas" />
+  <Word br="zoeira" pt="galhofa" />
+  <Word br="burrice" pt="estupidez" />
+  <Word br="burrices" pt="estupidezes" />
+  <Word br="lógico que" pt="claro que" />
+  <Word br="é lógico" pt="é claro" />
+  <Word br="vó" pt="avó" />
+  <Word br="vô" pt="avô" />
+  <Word br="surra" pt="tareia" />
+  <Word br="surras" pt="tareias" />
+  <Word br="sujeira" pt="sujidade" />
+  <Word br="sujeiras" pt="sujidades" />
+  <Word br="picape" pt="carrinha" />
+  <Word br="picapes" pt="carrinhas" />
+  <Word br="estresse" pt="stress" g="m" />
+  <Word br="espaguete" pt="esparguete" />
+  <Word br="bufê" pt="bufete" />
+  <Word br="bufês" pt="bufetes" />
+  <Word br="rapidinho" pt="num instante" />
+  <Word br="briga" pt="zanga" det="f" />
+  <Word br="brigas" pt="zangas" det="f" />
+  <Word br="confiável" pt="fiável" />
+  <Word br="confiáveis" pt="fiáveis" />
+  <Word br="placa do carro" pt="matrícula do carro" />
+  <Word br="número da placa" pt="número da matrícula" />
+  <Word br="sem placa" pt="sem matrícula" />
+  <Word br="contador" pt="contabilista" det="m" />
+  <Word br="contadora" pt="contabilista" det="f" />
+  <Word br="calça jeans" pt="calças de ganga" />
+  <Word br="a calça" pt="as calças" />
+  <Word br="da calça" pt="das calças" />
+  <Word br="na calça" pt="nas calças" />
+  <Word br="uma calça" pt="umas calças" />
+  <Word br="amei" pt="adorei" />
+  <Word br="fracassado" pt="falhado" />
+  <Word br="fracassada" pt="falhada" />
+  <Word br="fracassados" pt="falhados" />
+  <Word br="fracassadas" pt="falhadas" />
+  <Word br="bonitão" pt="giraço" />
+  <Word br="tolice" pt="disparate" g="m" />
+  <Word br="tolices" pt="disparates" g="m" />
+  <Word br="centavo" pt="cêntimo" />
+  <Word br="centavos" pt="cêntimos" />
+  <Word br="tempinho" pt="bocado" g="m" />
+  <Word br="nadinha" pt="nada" />
+  <Word br="pode crer" pt="podes crer" />
+  <Word br="cebolinha" pt="cebolinho" g="m" />
+  <Word br="on-line" pt="online" />
+  <Word br="cuzão" pt="cabrão" />
+  <Word br="cuzões" pt="cabrões" />
+  <Word br="colocar" pt="pôr" />
+  <Word br="coloco" pt="ponho" />
+  <Word br="colocas" pt="pões" />
+  <Word br="coloca" pt="põe" />
+  <Word br="colocamos" pt="pomos" />
+  <Word br="colocam" pt="põem" />
+  <Word br="coloquei" pt="pus" />
+  <Word br="colocaste" pt="puseste" />
+  <Word br="colocou" pt="pôs" />
+  <Word br="colocaram" pt="puseram" />
+  <Word br="colocava" pt="punha" />
+  <Word br="colocavam" pt="punham" />
+  <Word br="colocarei" pt="porei" />
+  <Word br="colocará" pt="porá" />
+  <Word br="colocaremos" pt="poremos" />
+  <Word br="colocaria" pt="poria" />
+  <Word br="coloque" pt="ponha" />
+  <Word br="coloques" pt="ponhas" />
+  <Word br="coloquem" pt="ponham" />
+  <Word br="colocasse" pt="pusesse" />
+  <Word br="colocassem" pt="pusessem" />
+  <Word br="colocares" pt="pores" />
+  <Word br="colocarem" pt="porem" />
+  <Word br="colocando" pt="pondo" />
+  <Word br="colocado" pt="posto" />
+  <Word br="colocada" pt="posta" />
+  <Word br="colocados" pt="postos" />
+  <Word br="colocadas" pt="postas" />
+  <Word br="colocá-lo" pt="pô-lo" />
+  <Word br="colocá-la" pt="pô-la" />
+  <Word br="colocá-los" pt="pô-los" />
+  <Word br="colocá-las" pt="pô-las" />
+  <Word br="coloca-o" pt="põe-no" />
+  <Word br="coloca-a" pt="põe-na" />
+  <Word br="coloque-o" pt="ponha-o" />
+  <Word br="coloque-a" pt="ponha-a" />
+  <Word br="coloque-os" pt="ponha-os" />
+  <Word br="coloque-as" pt="ponha-as" />
+  <Word br="coloque-me" pt="ponha-me" />
+  <Word br="coloca-me" pt="põe-me" />
+  <Word br="gerenciar" pt="gerir" />
+  <Word br="gerencio" pt="giro" />
+  <Word br="gerencia" pt="gere" />
+  <Word br="gerenciamos" pt="gerimos" />
+  <Word br="gerenciam" pt="gerem" />
+  <Word br="gerenciei" pt="geri" />
+  <Word br="gerenciou" pt="geriu" />
+  <Word br="gerenciava" pt="geria" />
+  <Word br="gerenciando" pt="gerindo" />
+  <Word br="gerenciado" pt="gerido" />
+  <Word br="gerenciada" pt="gerida" />
+  <Word br="gerenciamento" pt="gestão" g="f" />
+
+  <!-- ===================== Verbs (all forms generated) ===================== -->
+  <Verb br="botar" pt="meter" notAfter="fogo|para\s+tocar|pra\s+tocar|os\s+pingos" noun="botas bote botes" />
+  <Verb br="xingar" pt="insultar" />
+  <Verb br="checar" pt="verificar" noun="cheque cheques" />
+  <Verb br="deletar" pt="apagar" />
+  <Verb br="entender" pt="perceber" skip="entendido entendida entendidos entendidas" />
+  <Verb br="morar" pt="viver" skip="morada moradas" />
+  <Verb br="sequestrar" pt="raptar" />
+  <Verb br="estuprar" pt="violar" />
+  <Verb br="comemorar" pt="celebrar" />
+  <Verb br="flagrar" pt="apanhar" noun="flagra flagras" />
+  <Verb br="estressar" pt="stressar" skip="estresse estresses" />
+  <Verb br="surtar" pt="enlouquecer" skip="surto surtos" />
+  <Verb br="brigar" pt="discutir" noun="briga brigas" skip="brigado brigada brigados brigadas" />
+  <Verb br="consertar" pt="arranjar" />
+  <Verb br="fracassar" pt="falhar" skip="fracassado fracassada fracassados fracassadas fracasso fracassos" />
+  <Verb br="quebrar" pt="partir" noun="quebra quebras" skip="quebrado quebrada quebrados quebradas" notAfter="(?:a|as|uma|essa|esta|minha|tua|sua)\s+(?:promessa|promessas|regra|regras|lei|leis)|o\s+gelo|o\s+recorde|o\s+silêncio|o\s+acordo|a\s+palavra|a\s+cara|o\s+galho|o\s+protocolo|o\s+código|o\s+feitiço|a\s+maldição|o\s+ciclo|a\s+banca|o\s+banco" />
+  <Verb br="vazar" pt="divulgar" after="o|a|os|as|isso|isto|tudo|esse|essa|este|esta|um|uma|informação|informações|fotos|vídeo|vídeos|documentos" />
+  <Verb br="cadastrar" pt="registar" />
+  <Verb br="aterrissar" pt="aterrar" />
+  <Verb br="brecar" pt="travar" />
+  <Verb br="pular" pt="saltar" noun="pulo pulos" />
+  <Verb br="bagunçar" pt="desarrumar" />
+  <Verb br="xerocar" pt="fotocopiar" />
+  <Verb br="grudar" pt="colar" noun="grude grudes" />
+  <Verb br="fofocar" pt="coscuvilhar" />
+  <Verb br="dedurar" pt="denunciar" />
+  <Verb br="esquentar" pt="aquecer" notAfter="a\s+cabeça|com\s+isso" />
+  <Verb br="trombar" pt="esbarrar" noun="tromba trombas" />
+  <Verb br="zoar" pt="gozar" skip="zoo" />
+  <Verb br="postar" pt="publicar" noun="posta postas poste postes" skip="posto postos" />
+  <Verb br="jogar" pt="deitar" after="(?:(?:isso|isto|aquilo|tudo|ele|ela|eles|elas|(?:o|a|os|as|esse|essa|esses|essas|este|esta|estes|estas|meu|minha|meus|minhas|seu|sua|seus|suas|teu|tua|teus|tuas)\s+\p{L}+)\s+)?(?:fora|pra\s+fora|no\s+lixo|ao\s+lixo|para\s+o\s+lixo|pro\s+lixo)" />
+  <Verb br="arrumar" pt="arranjar" after="emprego|trabalho|dinheiro|namorado|namorada|tempo|confusão|problema|problemas|briga|brigas|encrenca|encrencas|advogado|desculpa|desculpas|um\s+emprego|um\s+trabalho|um\s+namorado|uma\s+namorada|um\s+advogado|uma\s+desculpa|um\s+jeito|uma\s+maneira|uma\s+forma|um\s+lugar|uma\s+briga|uma\s+confusão|uma\s+encrenca|um\s+problema|sarna\s+para\s+se\s+coçar" />
+
+  <Keep text="aposento" />
+  <Keep text="fato de treino" />
+  <Keep text="fatos de treino" />
+  <Keep text="fato de mergulho" />
+  <Keep text="fatos de mergulho" />
+  <Keep text="aposentos" />
+  <Keep text="cachorro-quente" />
+  <Keep text="cachorros-quentes" />
+  <Keep text="Ministério da Fazenda" />
+
+  <!-- ===================== Spelling ===================== -->
+  <Word type="spelling" br="fato" pt="facto" />
+  <Word type="spelling" br="fatos" pt="factos" />
+  <Word type="spelling" br="tato" pt="tacto" />
+  <Word type="spelling" br="intato" pt="intacto" />
+  <Word type="spelling" br="intata" pt="intacta" />
+  <Word type="spelling" br="seção" pt="secção" />
+  <Word type="spelling" br="seções" pt="secções" />
+  <Word type="spelling" br="receptor" pt="recetor" />
+  <Word type="spelling" br="receptores" pt="recetores" />
+  <Word type="spelling" br="receptivo" pt="recetivo" />
+  <Word type="spelling" br="receptiva" pt="recetiva" />
+  <Word type="spelling" br="ruptura" pt="rutura" />
+  <Word type="spelling" br="rupturas" pt="ruturas" />
+  <Word type="spelling" br="caráter" pt="carácter" />
+  <Word type="spelling" br="úmido" pt="húmido" />
+  <Word type="spelling" br="úmida" pt="húmida" />
+  <Word type="spelling" br="úmidos" pt="húmidos" />
+  <Word type="spelling" br="úmidas" pt="húmidas" />
+  <Word type="spelling" br="súdito" pt="súbdito" />
+  <Word type="spelling" br="súditos" pt="súbditos" />
+  <Word type="spelling" br="conosco" pt="connosco" />
+  <Word type="spelling" br="quatorze" pt="catorze" />
+  <Word type="spelling" br="dezesseis" pt="dezasseis" />
+  <Word type="spelling" br="dezessete" pt="dezassete" />
+  <Word type="spelling" br="dezenove" pt="dezanove" />
+  <Word type="spelling" br="estória" pt="história" />
+  <Word type="spelling" br="estórias" pt="histórias" />
+  <Word type="spelling" br="câmera" pt="câmara" />
+  <Word type="spelling" br="câmeras" pt="câmaras" />
+  <Word type="spelling" br="câncer" pt="cancro" />
+  <Word type="spelling" br="bebê" pt="bebé" />
+  <Word type="spelling" br="bebês" pt="bebés" />
+  <Word type="spelling" br="nenê" pt="bebé" />
+  <Word type="spelling" br="neném" pt="bebé" />
+  <Word type="spelling" br="purê" pt="puré" />
+  <Word type="spelling" br="comitê" pt="comité" />
+  <Word type="spelling" br="comitês" pt="comités" />
+  <Word type="spelling" br="caratê" pt="karaté" />
+  <Word type="spelling" br="judô" pt="judo" />
+  <Word type="spelling" br="crochê" pt="croché" />
+  <Word type="spelling" br="clichê" pt="cliché" />
+  <Word type="spelling" br="clichês" pt="clichés" />
+  <Word type="spelling" br="bidê" pt="bidé" />
+  <Word type="spelling" br="matinê" pt="matiné" />
+  <Word type="spelling" br="canapê" pt="canapé" />
+  <Word type="spelling" br="canapês" pt="canapés" />
+  <Word type="spelling" br="buquê" pt="bouquet" />
+  <Word type="spelling" br="cupê" pt="coupé" />
+  <Word type="spelling" br="suflê" pt="soufflé" />
+  <Word type="spelling" br="glacê" pt="glacé" />
+  <Word type="spelling" br="pôquer" pt="póquer" />
+  <Word type="spelling" br="pênalti" pt="penálti" />
+  <Word type="spelling" br="pênaltis" pt="penáltis" />
+  <Word type="spelling" br="vôlei" pt="vólei" />
+  <Word type="spelling" br="xampu" pt="champô" />
+  <Word type="spelling" br="xampus" pt="champôs" />
+  <Word type="spelling" br="maquiagem" pt="maquilhagem" />
+  <Word type="spelling" br="maquiar" pt="maquilhar" />
+  <Word type="spelling" br="maquiado" pt="maquilhado" />
+  <Word type="spelling" br="maquiada" pt="maquilhada" />
+  <Word type="spelling" br="maquiador" pt="maquilhador" />
+  <Word type="spelling" br="maquiadora" pt="maquilhadora" />
+  <Word type="spelling" br="bêbado" pt="bêbedo" />
+  <Word type="spelling" br="bêbada" pt="bêbeda" />
+  <Word type="spelling" br="bêbados" pt="bêbedos" />
+  <Word type="spelling" br="bêbadas" pt="bêbedas" />
+  <Word type="spelling" br="anticoncepcional" pt="contracetivo" />
+  <Word type="spelling" br="anticoncepcionais" pt="contracetivos" />
+  <Word type="spelling" br="planejo" pt="planeio" />
+  <Word type="spelling" br="planejas" pt="planeias" />
+  <Word type="spelling" br="planeja" pt="planeia" />
+  <Word type="spelling" br="planejam" pt="planeiam" />
+  <Word type="spelling" br="planeje" pt="planeie" />
+  <Word type="spelling" br="planejes" pt="planeies" />
+  <Word type="spelling" br="planejem" pt="planeiem" />
+  <Word type="spelling" br="AIDS" pt="SIDA" />
+  <Word type="spelling" br="DNA" pt="ADN" />
+  <Word type="spelling" br="Moscou" pt="Moscovo" />
+  <Word type="spelling" br="Irã" pt="Irão" />
+  <Word type="spelling" br="Teerã" pt="Teerão" />
+  <Word type="spelling" br="Vietnã" pt="Vietname" />
+  <Word type="spelling" br="Cingapura" pt="Singapura" />
+  <Word type="spelling" br="Nova York" pt="Nova Iorque" />
+  <Word type="spelling" br="Groenlândia" pt="Gronelândia" />
+  <Word type="spelling" br="Zimbábue" pt="Zimbabué" />
+  <Word type="spelling" br="Bahrein" pt="Barém" />
+  <Word type="spelling" br="Havaí" pt="Havai" />
+  <Word type="spelling" br="Benin" pt="Benim" />
+  <Word type="spelling" br="Mianmar" pt="Myanmar" />
+  <Word type="spelling" br="Mônaco" pt="Mónaco" />
+  <Word type="spelling" br="República Tcheca" pt="República Checa" />
+  <Word type="spelling" br="Tchecoslováquia" pt="Checoslováquia" />
+  <Word type="spelling" br="tcheco" pt="checo" />
+  <Word type="spelling" br="tcheca" pt="checa" />
+  <Word type="spelling" br="tchecos" pt="checos" />
+  <Word type="spelling" br="tchecas" pt="checas" />
+
+  <Prefix type="spelling" br="contat" pt="contact" />
+  <Prefix type="spelling" br="registr" pt="regist" />
+  <Prefix type="spelling" br="cadastr" pt="regist" />
+  <Prefix type="spelling" br="recepç" pt="receç" />
+  <Prefix type="spelling" br="recepcion" pt="rececion" />
+  <Prefix type="spelling" br="percepç" pt="perceç" />
+  <Prefix type="spelling" br="percept" pt="percet" />
+  <Prefix type="spelling" br="concepç" pt="conceç" />
+  <Prefix type="spelling" br="decepç" pt="deceç" />
+  <Prefix type="spelling" br="decepcion" pt="dececion" />
+  <Prefix type="spelling" br="excepcion" pt="excecion" />
+  <Prefix type="spelling" br="aspect" pt="aspet" />
+  <Prefix type="spelling" br="espectador" pt="espetador" />
+  <Prefix type="spelling" br="detect" pt="detet" />
+  <Prefix type="spelling" br="umid" pt="humid" />
+  <Prefix type="spelling" br="sutil" pt="subtil" />
+  <Prefix type="spelling" br="indeniz" pt="indemniz" />
+  <Prefix type="spelling" br="anisti" pt="amnisti" />
+  <Prefix type="spelling" br="assovi" pt="assobi" />
+  <Prefix type="spelling" br="planej" pt="plane" />
+  <Prefix type="spelling" br="aterriss" pt="aterr" />
+  <Prefix type="spelling" br="decol" pt="descol" />
+
+  <!-- ===================== Vocabulary ===================== -->
+  <!-- transport -->
+  <Word br="ônibus" pt="autocarro" pl="autocarros" />
+  <Word br="ponto de ônibus" pt="paragem de autocarro" g="f" />
+  <Word br="parada de ônibus" pt="paragem de autocarro" />
+  <Word br="próxima parada" pt="próxima paragem" />
+  <Word br="última parada" pt="última paragem" />
+  <Word br="parada cardíaca" pt="paragem cardíaca" />
+  <Word br="trem" pt="comboio" />
+  <Word br="trens" pt="comboios" />
+  <Word br="estação de trem" pt="estação de comboios" />
+  <Word br="metrô" pt="metro" />
+  <Word br="bonde" pt="elétrico" />
+  <Word br="bondes" pt="elétricos" />
+  <Word br="caminhão" pt="camião" />
+  <Word br="caminhões" pt="camiões" />
+  <Word br="caminhoneiro" pt="camionista" />
+  <Word br="caminhoneiros" pt="camionistas" />
+  <Word br="caminhonete" pt="carrinha" />
+  <Word br="caminhonetes" pt="carrinhas" />
+  <Word br="van" pt="carrinha" det="f" />
+  <Word br="vans" pt="carrinhas" det="f" />
+  <Word br="carona" pt="boleia" />
+  <Word br="caronas" pt="boleias" />
+  <Word br="pedágio" pt="portagem" g="f" />
+  <Word br="pedágios" pt="portagens" g="f" />
+  <Word br="faixa de pedestres" pt="passadeira" />
+  <Word br="pedestre" pt="peão" />
+  <Word br="pedestres" pt="peões" />
+  <Word br="carteira de motorista" pt="carta de condução" />
+  <Word br="carteira de habilitação" pt="carta de condução" />
+  <Word br="porta-malas" pt="bagageira" g="f" />
+  <Word br="freio" pt="travão" />
+  <Word br="freios" pt="travões" />
+  <Word br="frear" pt="travar" />
+  <Word br="freou" pt="travou" />
+  <Word br="freei" pt="travei" />
+  <Word br="freia" pt="trava" />
+  <Word br="freie" pt="trave" />
+  <Word br="freando" pt="travando" />
+  <Word br="freada" pt="travagem" />
+  <Word br="aeromoça" pt="hospedeira de bordo" />
+  <Word br="aeromoças" pt="hospedeiras de bordo" />
+  <Word br="comissária de bordo" pt="hospedeira de bordo" />
+  <Word br="rodovia" pt="autoestrada" />
+  <Word br="rodovias" pt="autoestradas" />
+  <Word br="posto de gasolina" pt="bomba de gasolina" g="f" />
+  <Word br="guincho" pt="reboque" />
+  <Word br="guidão" pt="guiador" />
+  <Word br="patinete" pt="trotinete" g="f" />
+  <Word br="patinetes" pt="trotinetes" g="f" />
+
+  <!-- technology -->
+  <Word br="celular" pt="telemóvel" />
+  <Word br="celulares" pt="telemóveis" />
+  <Word br="telefone celular" pt="telemóvel" />
+  <Word br="tela" pt="ecrã" g="m" />
+  <Word br="telas" pt="ecrãs" g="m" />
+  <Word br="usuário" pt="utilizador" />
+  <Word br="usuária" pt="utilizadora" />
+  <Word br="usuários" pt="utilizadores" />
+  <Word br="usuárias" pt="utilizadoras" />
+  <Word br="senha" pt="palavra-passe" />
+  <Word br="senhas" pt="palavras-passe" />
+  <Word br="aplicativo" pt="aplicação" g="f" />
+  <Word br="aplicativos" pt="aplicações" g="f" />
+  <Word br="notebook" pt="portátil" />
+  <Word br="controle remoto" pt="comando" />
+  <Word br="controle" pt="controlo" det="m" />
+  <Word br="controles" pt="controlos" det="m" />
+  <Word br="secretária eletrônica" pt="atendedor de chamadas" g="m" />
+  <Word br="caixa eletrônico" pt="multibanco" />
+  <Word br="deletar" pt="apagar" />
+  <Word br="deletou" pt="apagou" />
+  <Word br="deletei" pt="apaguei" />
+  <Word br="deletado" pt="apagado" />
+  <Word br="deletada" pt="apagada" />
+  <Word br="deletados" pt="apagados" />
+  <Word br="deletadas" pt="apagadas" />
+
+  <!-- house -->
+  <Word br="banheiro" pt="casa de banho" g="f" />
+  <Word br="banheiros" pt="casas de banho" g="f" />
+  <Word br="vaso sanitário" pt="sanita" g="f" />
+  <Word br="vasos sanitários" pt="sanitas" g="f" />
+  <Word br="água sanitária" pt="lixívia" />
+  <Word br="isopor" pt="esferovite" />
+  <Word br="pasta de dente" pt="pasta de dentes" />
+  <Word br="escovas de dente" pt="escovas de dentes" />
+  <Word br="papel higiênico" pt="papel higiénico" />
+  <Word br="pia da cozinha" pt="lava-loiça da cozinha" g="m" />
+  <Word br="pia do banheiro" pt="lavatório da casa de banho" g="m" />
+  <Word br="tampa do vaso sanitário" pt="tampa da sanita" />
+  <Word br="assento do vaso sanitário" pt="assento da sanita" />
+  <Word br="dar descarga" pt="puxar o autoclismo" />
+  <Word br="deu descarga" pt="puxou o autoclismo" />
+  <Word br="máquina de lavar louça" pt="máquina de lavar loiça" />
+  <Word br="máquina de lavar louças" pt="máquina de lavar loiça" />
+  <Word br="lava-louças" pt="máquina de lavar loiça" />
+  <Word br="abridor de latas" pt="abre-latas" />
+  <Word br="abridor de garrafas" pt="abre-garrafas" />
+  <Word br="grampeadores" pt="agrafadores" />
+  <Word br="grampos de papel" pt="agrafos" />
+  <Word br="grampos de cabelo" pt="ganchos de cabelo" />
+  <Word br="botijão de gás" pt="botija de gás" g="f" />
+  <Word br="botijões de gás" pt="botijas de gás" g="f" />
+  <Word br="cômoda" pt="cómoda" type="spelling" />
+  <Word br="cômodas" pt="cómodas" type="spelling" />
+  <Word br="geladeira" pt="frigorífico" g="m" />
+  <Word br="geladeiras" pt="frigoríficos" g="m" />
+  <Word br="freezer" pt="congelador" />
+  <Word br="térreo" pt="rés-do-chão" />
+  <Word br="gramado" pt="relvado" />
+  <Word br="gramados" pt="relvados" />
+  <Word br="grama" pt="relva" det="f" />
+  <Word br="fazenda" pt="quinta" />
+  <Word br="fazendas" pt="quintas" />
+  <Word br="Ministério da Fazenda" pt="Ministério das Finanças" />
+  <Word br="aluguel" pt="aluguer" />
+  <Word br="aluguéis" pt="alugueres" />
+  <Word br="creme dental" pt="pasta de dentes" g="f" />
+  <Word br="escova de dente" pt="escova de dentes" />
+  <Word br="durex" pt="fita-cola" g="f" />
+  <Word br="grampeador" pt="agrafador" />
+  <Word br="camisinha" pt="preservativo" g="m" />
+  <Word br="camisinhas" pt="preservativos" g="m" />
+
+  <!-- family, people -->
+  <Word br="mamadeira" pt="biberão" g="m" />
+  <Word br="mamadeiras" pt="biberões" g="m" />
+  <Word br="babá" pt="ama" />
+  <Word br="babás" pt="amas" />
+  <Word br="Papai Noel" pt="Pai Natal" />
+  <Word br="papai" pt="pai" />
+  <Word br="mamãe" pt="mãe" />
+  <Word br="vovô" pt="avô" />
+  <Word br="vovó" pt="avó" />
+  <Word br="moça" pt="rapariga" />
+  <Word br="moças" pt="raparigas" />
+  <Word br="moço" pt="rapaz" />
+  <Word br="moços" pt="rapazes" />
+  <Word br="cara" pt="tipo" det="m" />
+  <Word br="caras" pt="tipos" det="m" />
+  <Word br="garoto" pt="miúdo" />
+  <Word br="garota" pt="miúda" />
+  <Word br="garotos" pt="miúdos" />
+  <Word br="garotas" pt="miúdas" />
+  <Word br="garotinho" pt="miudinho" />
+  <Word br="garotinha" pt="miudinha" />
+  <Word br="moleque" pt="miúdo" />
+  <Word br="moleques" pt="miúdos" />
+  <Word br="galera" pt="malta" />
+  <Word br="sobrenome" pt="apelido" />
+  <Word br="sobrenomes" pt="apelidos" />
+  <Word br="apelido" pt="alcunha" g="f" />
+  <Word br="apelidos" pt="alcunhas" g="f" />
+  <Word br="torcedor" pt="adepto" />
+  <Word br="torcedora" pt="adepta" />
+  <Word br="torcedores" pt="adeptos" />
+  <Word br="garçom" pt="empregado de mesa" />
+  <Word br="garçons" pt="empregados de mesa" />
+  <Word br="garçonete" pt="empregada de mesa" />
+  <Word br="garçonetes" pt="empregadas de mesa" />
+  <Word br="açougueiro" pt="talhante" />
+  <Word br="açougueiros" pt="talhantes" />
+  <Word br="estuprador" pt="violador" />
+  <Word br="estupradores" pt="violadores" />
+  <Word br="estupro" pt="violação" g="f" />
+  <Word br="estupros" pt="violações" g="f" />
+  <Word br="ganhador" pt="vencedor" />
+  <Word br="ganhadora" pt="vencedora" />
+  <Word br="corregedor" pt="inspetor" />
+  <Word br="corregedora" pt="inspetora" />
+  <Word br="corregedores" pt="inspetores" />
+  <Word br="corregedoras" pt="inspetoras" />
+  <Word br="ganhadores" pt="vencedores" />
+  <Word br="ganhadoras" pt="vencedoras" />
+  <Word br="torcedoras" pt="adeptas" />
+  <Word br="pesquisador" pt="investigador" />
+  <Word br="pesquisadora" pt="investigadora" />
+  <Word br="pesquisadores" pt="investigadores" />
+  <Word br="pesquisadoras" pt="investigadoras" />
+  <Word br="promotor" pt="procurador" />
+  <Word br="promotora" pt="procuradora" />
+  <Word br="promotores" pt="procuradores" />
+  <Word br="promotoras" pt="procuradoras" />
+  <Word br="promotoria" pt="procuradoria" />
+  <Word br="faxineira" pt="empregada de limpeza" />
+  <Word br="faxineiras" pt="empregadas de limpeza" />
+  <Word br="faxineiro" pt="empregado de limpeza" />
+  <Word br="faxineiros" pt="empregados de limpeza" />
+  <Word br="diarista" pt="mulher a dias" />
+  <Word br="diaristas" pt="mulheres a dias" />
+  <Word br="camelô" pt="vendedor ambulante" />
+  <Word br="camelôs" pt="vendedores ambulantes" />
+  <Word br="calouro" pt="caloiro" />
+  <Word br="caloura" pt="caloira" />
+  <Word br="calouros" pt="caloiros" />
+  <Word br="calouras" pt="caloiras" />
+  <Word br="motoboy" pt="estafeta" />
+  <Word br="motoboys" pt="estafetas" />
+  <Word br="corretor de imóveis" pt="agente imobiliário" />
+  <Word br="corretora de imóveis" pt="agente imobiliária" />
+  <Word br="corretores de imóveis" pt="agentes imobiliários" />
+  <Word br="batedor de carteira" pt="carteirista" />
+  <Word br="batedor de carteiras" pt="carteirista" />
+  <Word br="batedores de carteira" pt="carteiristas" />
+  <Word br="batedores de carteiras" pt="carteiristas" />
+  <Word br="trombadinha" pt="carteirista" />
+  <Word br="trombadinhas" pt="carteiristas" />
+  <Word br="cafetão" pt="chulo" />
+  <Word br="cafetões" pt="chulos" />
+  <Word br="mauricinho" pt="betinho" />
+  <Word br="mauricinhos" pt="betinhos" />
+  <Word br="patricinha" pt="betinha" />
+  <Word br="patricinhas" pt="betinhas" />
+  <Word br="fofoqueiras" pt="coscuvilheiras" />
+  <Word br="guri" pt="miúdo" />
+  <Word br="guris" pt="miúdos" />
+  <Word br="guria" pt="miúda" />
+  <Word br="gurias" pt="miúdas" />
+  <Word br="marmanjo" pt="matulão" />
+  <Word br="marmanjos" pt="matulões" />
+  <Word br="que cara de pau" pt="que descaramento" />
+  <Word br="policial" pt="polícia" det="m" />
+  <Word br="policiais" pt="polícias" det="m" />
+  <Word br="prefeito" pt="presidente da câmara" />
+  <Word br="prefeita" pt="presidente da câmara" />
+  <Word br="prefeitura" pt="câmara municipal" />
+
+  <!-- food and drink -->
+  <Word br="café da manhã" pt="pequeno-almoço" />
+  <Word br="suco" pt="sumo" />
+  <Word br="sucos" pt="sumos" />
+  <Word br="sorvete" pt="gelado" />
+  <Word br="sorvetes" pt="gelados" />
+  <Word br="sorveteria" pt="geladaria" />
+  <Word br="picolé" pt="gelado" />
+  <Word br="picolés" pt="gelados" />
+  <Word br="abacaxi" pt="ananás" />
+  <Word br="abacaxis" pt="ananases" />
+  <Word br="xícara" pt="chávena" />
+  <Word br="xícaras" pt="chávenas" />
+  <Word br="cardápio" pt="ementa" g="f" />
+  <Word br="cardápios" pt="ementas" g="f" />
+  <Word br="açougue" pt="talho" />
+  <Word br="açougues" pt="talhos" />
+  <Word br="lanchonete" pt="snack-bar" g="m" />
+  <Word br="lanchonetes" pt="snack-bares" g="m" />
+  <Word br="chope" pt="imperial" g="f" />
+  <Word br="chopes" pt="imperiais" g="f" />
+  <Word br="chiclete" pt="pastilha elástica" g="f" />
+  <Word br="chicletes" pt="pastilhas elásticas" g="f" />
+  <Word br="pirulito" pt="chupa-chupa" />
+  <Word br="pirulitos" pt="chupa-chupas" />
+  <Word br="biscoito" pt="bolacha" g="f" />
+  <Word br="biscoitos" pt="bolachas" g="f" />
+  <Word br="presunto" pt="fiambre" />
+  <Word br="sanduíche" pt="sandes" g="f" />
+  <Word br="sanduíches" pt="sandes" g="f" />
+  <Word br="pimentão" pt="pimento" />
+  <Word br="pimentões" pt="pimentos" />
+  <Word br="leite desnatado" pt="leite magro" />
+  <Word br="maconha" pt="erva" />
+
+  <!-- clothes -->
+  <Word br="camiseta" pt="t-shirt" />
+  <Word br="camisetas" pt="t-shirts" />
+  <Word br="suéter" pt="camisola" g="f" />
+  <Word br="suéteres" pt="camisolas" g="f" />
+  <Word br="jaqueta" pt="casaco" g="m" />
+  <Word br="jaquetas" pt="casacos" g="m" />
+  <Word br="sutiã" pt="soutien" />
+  <Word br="sutiãs" pt="soutiens" />
+  <Word br="fones de ouvido" pt="auscultadores" />
+  <Word br="fone de ouvido" pt="auscultador" />
+  <Word br="maiô" pt="fato de banho" />
+  <Word br="maiôs" pt="fatos de banho" />
+  <Word br="calcinha" pt="cueca" />
+  <Word br="calcinhas" pt="cuecas" />
+  <Word br="cueca boxer" pt="boxers" />
+  <Word br="cadarço" pt="atacador" />
+  <Word br="cadarços" pt="atacadores" />
+  <Word br="zíper" pt="fecho-éclair" />
+  <Word br="zíperes" pt="fechos-éclair" />
+  <Word br="camisola de dormir" pt="camisa de dormir" />
+  <Word br="esmalte de unhas" pt="verniz das unhas" />
+  <Word br="removedor de esmalte" pt="removedor de verniz" />
+  <Word br="terno e gravata" pt="fato e gravata" />
+  <Word br="terno preto" pt="fato preto" />
+  <Word br="terno azul" pt="fato azul" />
+
+  <!-- sport, leisure, media -->
+  <Word br="esporte" pt="desporto" />
+  <Word br="esportes" pt="desportos" />
+  <Prefix br="esportiv" pt="desportiv" />
+  <Prefix br="esportist" pt="desportist" />
+  <Word br="goleiro" pt="guarda-redes" />
+  <Word br="goleiros" pt="guarda-redes" />
+  <Word br="gol" pt="golo" />
+  <Word br="gols" pt="golos" />
+  <Word br="time" pt="equipa" det="m" g="f" />
+  <Word br="times" pt="equipas" det="m" g="f" />
+  <Word br="equipe" pt="equipa" />
+  <Word br="equipes" pt="equipas" />
+  <Word br="ingresso" pt="bilhete" />
+  <Word br="ingressos" pt="bilhetes" />
+  <Word br="bilheteria" pt="bilheteira" />
+  <Word br="história em quadrinhos" pt="banda desenhada" g="f" />
+  <Word br="histórias em quadrinhos" pt="bandas desenhadas" g="f" />
+  <Word br="revista em quadrinhos" pt="revista de banda desenhada" />
+  <Word br="revistas em quadrinhos" pt="revistas de banda desenhada" />
+  <Word br="dublagem" pt="dobragem" />
+  <Word br="dublagens" pt="dobragens" />
+  <Word br="dublador" pt="ator de dobragem" />
+  <Word br="dubladora" pt="atriz de dobragem" />
+  <Word br="dubladores" pt="atores de dobragem" />
+  <Word br="dubladoras" pt="atrizes de dobragem" />
+  <Word br="pebolim" pt="matraquilhos" />
+  <Word br="mesa de pebolim" pt="mesa de matraquilhos" />
+  <Word br="academia de ginástica" pt="ginásio" />
+  <Word br="academia de musculação" pt="ginásio" />
+  <Word br="pular corda" pt="saltar à corda" />
+  <Word br="bilheterias" pt="bilheteiras" />
+  <Word br="boate" pt="discoteca" />
+  <Word br="boates" pt="discotecas" />
+  <Word br="shopping center" pt="centro comercial" />
+  <Word br="shopping" pt="centro comercial" />
+  <Word br="shoppings" pt="centros comerciais" />
+  <Word br="vitrine" pt="montra" />
+  <Word br="vitrines" pt="montras" />
+  <Word br="seriado" pt="série" g="f" />
+  <Word br="seriados" pt="séries" g="f" />
+  <Word br="novela" pt="telenovela" />
+  <Word br="novelas" pt="telenovelas" />
+  <Word br="comercial" pt="anúncio" det="m" />
+  <Word br="comerciais" pt="anúncios" det="m" />
+
+  <!-- school, admin, health, money -->
+  <Word br="ensino médio" pt="ensino secundário" />
+  <Word br="ensino fundamental" pt="ensino básico" />
+  <Word br="apostila" pt="sebenta" />
+  <Word br="apostilas" pt="sebentas" />
+  <Word br="carteira de identidade" pt="cartão de cidadão" g="m" />
+  <Word br="CPF" pt="NIF" />
+  <Word br="nota fiscal" pt="fatura" />
+  <Word br="plano de saúde" pt="seguro de saúde" />
+  <Word br="UTI" pt="UCI" />
+  <Word br="delegacia" pt="esquadra" />
+  <Word br="delegacias" pt="esquadras" />
+  <Word br="presídio" pt="prisão" g="f" />
+  <Word br="presídios" pt="prisões" g="f" />
+  <Word br="aposentadoria" pt="reforma" />
+  <Prefix br="aposent" pt="reform" />
+  <Prefix br="machuqu" pt="mago" />
+  <Prefix br="machuc" pt="mago" />
+  <Word br="um bilhão" pt="mil milhões" />
+  <Word br="bilhão" pt="mil milhões" />
+  <Word br="bilhões" pt="mil milhões" />
+  <Word br="trilhão" pt="bilião" />
+  <Word br="trilhões" pt="biliões" />
+  <Word br="grana" pt="massa" />
+
+  <!-- everyday words and expressions -->
+  <Word br="bunda" pt="rabo" g="m" />
+  <Word br="bundas" pt="rabos" g="m" />
+  <Word br="cachorro" pt="cão" />
+  <Word br="cachorros" pt="cães" />
+  <Word br="cachorra" pt="cadela" />
+  <Word br="cachorrinho" pt="cãozinho" />
+  <Word br="cachorrinhos" pt="cãezinhos" />
+  <Word br="bacana" pt="fixe" />
+  <Word br="bacanas" pt="fixes" />
+  <Word br="que legal" pt="que fixe" />
+  <Word br="muito legal" pt="muito fixe" />
+  <Word br="tão legal" pt="tão fixe" />
+  <Word br="super legal" pt="super fixe" />
+  <Word br="bobo" pt="tolo" />
+  <Word br="boba" pt="tola" />
+  <Word br="bobos" pt="tolos" />
+  <Word br="bobas" pt="tolas" />
+  <Word br="bobagem" pt="tolice" />
+  <Word br="bobagens" pt="tolices" />
+  <Word br="besteira" pt="asneira" />
+  <Word br="besteiras" pt="asneiras" />
+  <Word br="que saco" pt="que seca" />
+  <Word br="xingar" pt="insultar" />
+  <Word br="xingou" pt="insultou" />
+  <Word br="xinguei" pt="insultei" />
+  <Word br="xinga" pt="insulta" />
+  <Word br="xingam" pt="insultam" />
+  <Word br="xingue" pt="insulte" />
+  <Word br="xingando" pt="insultando" />
+  <Word br="xingado" pt="insultado" />
+  <Word br="xingada" pt="insultada" />
+  <Word br="xingaram" pt="insultaram" />
+  <Word br="síndico" pt="encarregado do edifício" />
+  <Word br="síndicos" pt="encarregados do edifício" />
+  <Word br="síndica" pt="encarregada do edifício" />
+  <Word br="mouse" pt="rato" det="m" />
+  <Word br="moletom" pt="camisola" g="f" />
+  <Word br="moletons" pt="camisolas" g="f" />
+  <Word br="bagunça" pt="confusão" />
+  <Word br="bagunças" pt="confusões" />
+  <Word br="bagunçado" pt="desarrumado" />
+  <Word br="bagunçada" pt="desarrumada" />
+  <Word br="bagunçados" pt="desarrumados" />
+  <Word br="bagunçadas" pt="desarrumadas" />
+  <Word br="encanador" pt="canalizador" />
+  <Word br="encanadores" pt="canalizadores" />
+  <Word br="terno" pt="fato" det="m" />
+  <Word br="ternos" pt="fatos" det="m" />
+  <Word br="fofoca" pt="mexerico" g="m" />
+  <Word br="fofocas" pt="mexericos" g="m" />
+  <Word br="fofoqueiro" pt="coscuvilheiro" />
+  <Word br="fofoqueira" pt="coscuvilheira" />
+  <Word br="fofoqueiros" pt="coscuvilheiros" />
+  <Word br="cocô" pt="cocó" type="spelling" />
+  <Word br="chuveiro" pt="duche" />
+  <Word br="chuveiros" pt="duches" />
+  <Word br="gari" pt="varredor" />
+  <Word br="garis" pt="varredores" />
+  <Word br="lixeira" pt="caixote do lixo" g="m" />
+  <Word br="lixeiras" pt="caixotes do lixo" g="m" />
+  <Word br="pegadinha" pt="partida" />
+  <Word br="pegadinhas" pt="partidas" />
+  <Word br="puxa-saco" pt="lambe-botas" />
+  <Word br="puxa-sacos" pt="lambe-botas" />
+  <Word br="babaca" pt="parvo" />
+  <Word br="babacas" pt="parvos" />
+  <Word br="maneiro" pt="fixe" />
+  <Word br="entendo" pt="percebo" />
+  <Word br="entendes" pt="percebes" />
+  <Word br="entende" pt="percebe" />
+  <Word br="entendemos" pt="percebemos" />
+  <Word br="entendem" pt="percebem" />
+  <Word br="entendi" pt="percebi" />
+  <Word br="entendeste" pt="percebeste" />
+  <Word br="entendeu" pt="percebeu" />
+  <Word br="entenderam" pt="perceberam" />
+  <Word br="entendia" pt="percebia" />
+  <Word br="entendias" pt="percebias" />
+  <Word br="entendiam" pt="percebiam" />
+  <Word br="entender" pt="perceber" />
+  <Word br="entenderes" pt="perceberes" />
+  <Word br="entenderem" pt="perceberem" />
+  <Word br="entendendo" pt="percebendo" />
+  <Word br="entenda" pt="perceba" />
+  <Word br="entendas" pt="percebas" />
+  <Word br="entendam" pt="percebam" />
+  <Word br="saquei" pt="percebi" />
+  <Word br="sacaste" pt="percebeste" />
+  <Word br="moro" pt="vivo" />
+  <Word br="moras" pt="vives" />
+  <Word br="mora" pt="vive" />
+  <Word br="moramos" pt="vivemos" />
+  <Word br="moram" pt="vivem" />
+  <Word br="morei" pt="vivi" />
+  <Word br="moraste" pt="viveste" />
+  <Word br="morou" pt="viveu" />
+  <Word br="moraram" pt="viveram" />
+  <Word br="morava" pt="vivia" />
+  <Word br="moravas" pt="vivias" />
+  <Word br="morávamos" pt="vivíamos" />
+  <Word br="moravam" pt="viviam" />
+  <Word br="morar" pt="viver" />
+  <Word br="morares" pt="viveres" />
+  <Word br="morarmos" pt="vivermos" />
+  <Word br="morarem" pt="viverem" />
+  <Word br="morando" pt="vivendo" />
+  <Word br="morasse" pt="vivesse" />
+  <Word br="moraria" pt="viveria" />
+  <Word br="morará" pt="viverá" />
+  <Word br="morarei" pt="viverei" />
+  <Word br="converso" pt="falo" />
+  <Word br="conversas" pt="falas" />
+  <Word br="conversamos" pt="falamos" />
+  <Word br="conversam" pt="falam" />
+  <Word br="conversei" pt="falei" />
+  <Word br="conversaste" pt="falaste" />
+  <Word br="conversou" pt="falou" />
+  <Word br="conversaram" pt="falaram" />
+  <Word br="conversava" pt="falava" />
+  <Word br="conversavam" pt="falavam" />
+  <Word br="conversar" pt="falar" />
+  <Word br="conversarmos" pt="falarmos" />
+  <Word br="conversando" pt="falando" />
+  <Word br="deveria" pt="devia" />
+  <Word br="deverias" pt="devias" />
+  <Word br="deveríamos" pt="devíamos" />
+  <Word br="deveriam" pt="deviam" />
+  <Word br="rolou" pt="aconteceu" />
+  <Word br="rolar" pt="acontecer" />
+  <Word br="rolando" pt="acontecendo" />
+  <Word br="rolaram" pt="aconteceram" />
+  <Word br="transar" pt="fazer sexo" />
+  <Word br="transei" pt="fiz sexo" />
+  <Word br="transou" pt="fez sexo" />
+  <Word br="transamos" pt="fizemos sexo" />
+  <Word br="transaram" pt="fizeram sexo" />
+  <Word br="transando" pt="fazendo sexo" />
+  <Word br="transaste" pt="fizeste sexo" />
+  <Word br="esposa" pt="mulher" />
+  <Word br="esposas" pt="mulheres" />
+  <Word br="caraca" pt="caramba" />
+  <Word br="eita" pt="caramba" />
+  <Word br="xixi" pt="chichi" />
+  <Word br="apê" pt="apartamento" />
+  <Word br="apês" pt="apartamentos" />
+  <Word br="infarto" pt="enfarte" />
+  <Word br="infartos" pt="enfartes" />
+  <Word br="pizza" pt="piza" />
+  <Word br="pizzas" pt="pizas" />
+  <Word br="checagem" pt="verificação" />
+  <Word br="entrevista coletiva" pt="conferência de imprensa" />
+  <Word br="entrevistas coletivas" pt="conferências de imprensa" />
+  <Word br="enquete" pt="sondagem" />
+  <Word br="enquetes" pt="sondagens" />
+  <Word br="mídia" pt="comunicação social" />
+  <Word br="louça" pt="loiça" />
+  <Word br="louças" pt="loiças" />
+  <Word br="senso de humor" pt="sentido de humor" />
+  <Word br="senso de responsabilidade" pt="sentido de responsabilidade" />
+  <Word br="band-aid" pt="penso" />
+  <Word br="band-aids" pt="pensos" />
+  <Word br="embaixo" pt="em baixo" />
+  <Word br="brega" pt="foleiro" />
+  <Word br="bregas" pt="foleiros" />
+  <Word br="cafona" pt="foleiro" />
+  <Word br="cafonas" pt="foleiros" />
+  <Word br="lance" pt="cena" g="f" />
+  <Word br="lances" pt="cenas" g="f" />
+  <Word br="papo" pt="conversa" g="f" />
+  <Word br="papos" pt="conversas" g="f" />
+  <Word br="papo furado" pt="conversa fiada" g="f" />
+  <Word br="chance" pt="hipótese" />
+  <Word br="chances" pt="hipóteses" />
+  <Word br="lava-louça" pt="máquina de lavar loiça" />
+  <Word br="estepe" pt="pneu sobresselente" g="m" />
+  <Word br="prédio" pt="edifício" />
+  <Word br="prédios" pt="edifícios" />
+  <Word br="furgão" pt="carrinha" g="f" />
+  <Word br="furgões" pt="carrinhas" g="f" />
+  <Word br="porão" pt="cave" g="f" />
+  <Word br="porões" pt="caves" g="f" />
+  <Word br="endereço" pt="morada" g="f" />
+  <Word br="endereços" pt="moradas" g="f" />
+  <Word br="recado" pt="mensagem" g="f" />
+  <Word br="recados" pt="mensagens" g="f" />
+  <Word br="laptop" pt="portátil" />
+  <Word br="laptops" pt="portáteis" />
+  <Word br="checar" pt="verificar" />
+  <Word br="checou" pt="verificou" />
+  <Word br="checaram" pt="verificaram" />
+  <Word br="chequei" pt="verifiquei" />
+  <Word br="checando" pt="verificando" />
+  <Word br="checado" pt="verificado" />
+  <Word br="checada" pt="verificada" />
+  <Word br="chequem" pt="verifiquem" />
+  <Word br="conexão" pt="ligação" />
+  <Word br="conexões" pt="ligações" />
+  <Word br="liberado" pt="autorizado" />
+  <Word br="liberada" pt="autorizada" />
+  <Word br="liberados" pt="autorizados" />
+  <Word br="comemorar" pt="celebrar" />
+  <Word br="comemorando" pt="celebrando" />
+  <Word br="comemorou" pt="celebrou" />
+  <Word br="comemoramos" pt="celebramos" />
+  <Word br="comemorei" pt="celebrei" />
+  <Word br="comemoração" pt="celebração" />
+  <Word br="sumiu" pt="desapareceu" />
+  <Word br="sumir" pt="desaparecer" />
+  <Word br="contêiner" pt="contentor" />
+  <Word br="contêineres" pt="contentores" />
+  <Word br="esfriar" pt="arrefecer" />
+  <Word br="esfriando" pt="a arrefecer" />
+  <Word br="esfriou" pt="arrefeceu" />
+  <Word br="esfriam" pt="arrefecem" />
+  <Word br="esfriava" pt="arrefecia" />
+  <Word br="esfriavam" pt="arrefeciam" />
+  <Word br="sumiram" pt="desapareceram" />
+  <Word br="sumido" pt="desaparecido" />
+  <Word br="sumida" pt="desaparecida" />
+  <Word br="sumindo" pt="desaparecendo" />
+  <Word br="sequestro" pt="rapto" />
+  <Word br="sequestros" pt="raptos" />
+  <Word br="sequestrador" pt="raptor" />
+  <Word br="sequestradores" pt="raptores" />
+  <Word br="sequestrado" pt="raptado" />
+  <Word br="sequestrada" pt="raptada" />
+  <Word br="força-tarefa" pt="equipa especial" g="f" />
+  <Word br="abaixa" pt="baixa" />
+  <Word br="abaixem" pt="baixem" />
+  <Word br="abaixe" pt="baixe" />
+  <Word br="abaixar" pt="baixar" />
+  <Word br="cacete" pt="porra" />
+  <Word br="bosta" pt="merda" />
+  <Word br="cagada" pt="asneira" />
+  <Word br="cagadas" pt="asneiras" />
+  <Word br="saudade" pt="saudades" />
+  <Word br="enxergar" pt="ver" />
+  <Word br="enxergo" pt="vejo" />
+  <Word br="enxerga" pt="vê" />
+  <Word br="enxergam" pt="veem" />
+  <Word br="enxergou" pt="viu" />
+  <Word br="enxerguei" pt="vi" />
+  <Word br="enxergarem" pt="verem" />
+  <Word br="enxergando" pt="vendo" />
+  <Word br="relacionamento" pt="relação" g="f" />
+  <Word br="relacionamentos" pt="relações" g="f" />
+
+  <!-- Additional everyday equivalents; ambiguous words use specific phrases. -->
+  <Word br="acostamento" pt="berma" g="f" />
+  <Word br="acostamentos" pt="bermas" g="f" />
+  <Word br="rotatória" pt="rotunda" />
+  <Word br="rotatórias" pt="rotundas" />
+  <Word br="conversível" pt="descapotável" />
+  <Word br="conversíveis" pt="descapotáveis" />
+  <Word br="faixa de pedestre" pt="passadeira" />
+  <Word br="sinal de trânsito" pt="semáforo" />
+  <Word br="placa de matrícula" pt="chapa de matrícula" />
+  <Word br="carteira de habilitações" pt="carta de condução" />
+  <Word br="ônibus escolar" pt="autocarro escolar" pl="autocarros escolares" />
+  <Word br="misto quente" pt="tosta mista" g="f" />
+  <Word br="mistos quentes" pt="tostas mistas" g="f" />
+  <Word br="boteco" pt="tasca" g="f" />
+  <Word br="botecos" pt="tascas" g="f" />
+  <Word br="caqui" pt="dióspiro" det="m" />
+  <Word br="caquis" pt="dióspiros" det="m" />
+  <Word br="berinjela" pt="beringela" />
+  <Word br="berinjelas" pt="beringelas" />
+  <Word br="abobrinha grelhada" pt="curgete grelhada" />
+  <Word br="abobrinhas grelhadas" pt="curgetes grelhadas" />
+  <Word br="abobrinha recheada" pt="curgete recheada" />
+  <Word br="açúcar de confeiteiro" pt="açúcar em pó" />
+  <Word br="farinha de rosca" pt="pão ralado" g="m" />
+  <Word br="leite integral" pt="leite gordo" />
+  <Word br="leite semidesnatado" pt="leite meio-gordo" />
+  <Word br="bala de goma" pt="goma" />
+  <Word br="balas de goma" pt="gomas" />
+  <Word br="bala de menta" pt="rebuçado de menta" g="m" />
+  <Word br="balas de menta" pt="rebuçados de menta" g="m" />
+  <Word br="bala de hortelã" pt="rebuçado de hortelã" g="m" />
+  <Word br="canudo de plástico" pt="palhinha de plástico" g="f" />
+  <Word br="canudos de plástico" pt="palhinhas de plástico" g="f" />
+  <Word br="canudo de papel" pt="palhinha de papel" g="f" />
+  <Word br="resfriado" pt="constipação" det="m" g="f" />
+  <Word br="resfriados" pt="constipações" det="m" g="f" />
+  <Word br="pronto-socorro" pt="serviço de urgência" />
+  <Word br="sala de emergência" pt="sala de urgência" />
+  <Word br="salas de emergência" pt="salas de urgência" />
+  <Word br="absorvente higiênico" pt="penso higiénico" />
+  <Word br="absorventes higiênicos" pt="pensos higiénicos" />
+  <Word br="esparadrapo" pt="adesivo" />
+  <Word br="esparadrapos" pt="adesivos" />
+  <Word br="bandeide" pt="penso rápido" />
+  <Word br="bandeides" pt="pensos rápidos" />
+  <!-- Words still left by the rules, found by comparing the output with real PT-PT subtitles. -->
+  <Word br="merecimento" pt="mérito" />
+  <Word br="merecimentos" pt="méritos" />
+  <Word br="sem-teto" pt="sem-abrigo" />
+  <Word br="premiê" pt="primeiro-ministro" />
+  <Word br="trilha sonora" pt="banda sonora" />
+  <Word br="trilhas sonoras" pt="bandas sonoras" />
+  <Word br="fazer trilha" pt="fazer caminhadas" />
+  <Word br="trilha" pt="trilho" g="m" />
+  <Word br="trilhas" pt="trilhos" g="m" />
+  <Word br="milk-shake" pt="batido" />
+  <Word br="milk-shakes" pt="batidos" />
+  <Word br="show" pt="espetáculo" det="m" />
+  <Word br="shows" pt="espetáculos" det="m" />
+  <Word br="hilário" pt="hilariante" />
+  <Word br="hilária" pt="hilariante" />
+  <Word br="hilários" pt="hilariantes" />
+  <Word br="hilárias" pt="hilariantes" />
+  <Word br="jogar uma pelada" pt="jogar uma futebolada" />
+  <Word br="jogar pelada" pt="jogar à bola" />
+  <Word br="pelado" pt="nu" />
+  <Word br="pelada" pt="nua" />
+  <Word br="pelados" pt="nus" />
+  <Word br="peladas" pt="nuas" />
+  <Word br="boliche" pt="bowling" />
+  <Word br="drinque" pt="bebida" g="f" />
+  <Word br="drinques" pt="bebidas" g="f" />
+  <Word br="torta de" pt="tarte de" />
+  <Word br="tortas de" pt="tartes de" />
+  <Word br="torta" pt="tarte" det="f" />
+  <Word br="tortas" pt="tartes" det="f" />
+  <Word br="moleza" pt="canja" />
+  <Word br="coquetel" pt="cocktail" />
+  <Word br="coquetéis" pt="cocktails" />
+  <Word br="covarde" pt="cobarde" />
+  <Word br="covardes" pt="cobardes" />
+  <Word br="covardia" pt="cobardia" />
+  <Word br="covardias" pt="cobardias" />
+  <Word br="covardemente" pt="cobardemente" />
+  <Word br="vestiário" pt="balneário" />
+  <Word br="vestiários" pt="balneários" />
+  <Word br="lavanderia" pt="lavandaria" />
+  <Word br="lavanderias" pt="lavandarias" />
+  <Word br="galpão" pt="armazém" />
+  <Word br="galpões" pt="armazéns" />
+  <Word br="estoque" pt="stock" />
+  <Word br="estoques" pt="stocks" />
+  <Word br="duto" pt="conduta" g="f" />
+  <Word br="dutos" pt="condutas" g="f" />
+  <Word br="coceira" pt="comichão" />
+  <Word br="coceiras" pt="comichões" />
+  <Word br="cafeteria" pt="cafetaria" />
+  <Word br="cafeterias" pt="cafetarias" />
+  <Word br="barbante" pt="cordel" />
+  <Word br="barbantes" pt="cordéis" />
+  <Word br="linguajar" pt="linguagem" g="f" />
+  <Word br="loteria" pt="lotaria" />
+  <Word br="loterias" pt="lotarias" />
+  <Word br="propina" pt="suborno" g="m" />
+  <Word br="propinas" pt="subornos" g="m" />
+  <Word br="pichação" pt="grafíti" g="m" />
+  <Word br="pichações" pt="grafítis" g="m" />
+  <Word br="travesseiro" pt="almofada" g="f" />
+  <Word br="travesseiros" pt="almofadas" g="f" />
+  <Word br="abajur" pt="candeeiro" />
+  <Word br="abajures" pt="candeeiros" />
+  <Word br="edredom" pt="edredão" />
+  <Word br="edredons" pt="edredões" />
+  <Word br="liquidificador" pt="liquidificadora" g="f" />
+  <Word br="liquidificadores" pt="liquidificadoras" g="f" />
+  <Word br="xingamento" pt="insulto" />
+  <Word br="xingamentos" pt="insultos" />
+  <Word br="bronca" pt="raspanete" det="f" g="m" />
+  <Word br="broncas" pt="raspanetes" det="f" g="m" />
+  <Word br="dar a descarga" pt="puxar o autoclismo" />
+  <Word br="dê descarga" pt="puxa o autoclismo" />
+  <Word br="que time" pt="que equipa" />
+  <Verb br="compartilhar" pt="partilhar" />
+  <Verb br="malhar" pt="treinar" skip="malhado malhada malhados malhadas" />
+  <Verb br="conferir" pt="verificar" skip="confere conferem conferia conferiam conferido conferida conferidos conferidas" />
+</Words>

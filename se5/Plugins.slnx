@@ -8,6 +8,7 @@
     <File Path="../.github/workflows/arte-check.yml" />
     <File Path="../.github/workflows/assa-tag-check.yml" />
     <File Path="../.github/workflows/british-to-american.yml" />
+    <File Path="../.github/workflows/brazilian-to-european-portuguese.yml" />
     <File Path="../.github/workflows/fix-encoding-errors.yml" />
     <File Path="../.github/workflows/haxor.yml" />
     <File Path="../.github/workflows/hi-colorer.yml" />
@@ -28,6 +29,7 @@
     <Project Path="ArteCheck/ArteCheck.csproj" />
     <Project Path="AssaTagCheck/AssaTagCheck.csproj" />
     <Project Path="BritishToAmerican/BritishToAmerican.csproj" />
+    <Project Path="BrazilianToEuropeanPortuguese/BrazilianToEuropeanPortuguese.csproj" />
     <Project Path="FixEncodingErrors/FixEncodingErrors.csproj" />
     <Project Path="Haxor/Haxor.csproj" />
     <Project Path="HI2UC/HI2UC.csproj" />
@@ -51,6 +53,7 @@
     <Project Path="ArteCheck.Tests/ArteCheck.Tests.csproj" />
     <Project Path="AssaTagCheck.Tests/AssaTagCheck.Tests.csproj" />
     <Project Path="BritishToAmerican.Tests/BritishToAmerican.Tests.csproj" />
+    <Project Path="BrazilianToEuropeanPortuguese.Tests/BrazilianToEuropeanPortuguese.Tests.csproj" />
     <Project Path="FixEncodingErrors.Tests/FixEncodingErrors.Tests.csproj" />
     <Project Path="HI2UC.Tests/HI2UC.Tests.csproj" />
     <Project Path="HIColorer.Tests/HIColorer.Tests.csproj" />
