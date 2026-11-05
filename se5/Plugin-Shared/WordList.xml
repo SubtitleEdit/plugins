@@ -262,12 +262,12 @@
   <Word us="donut" br="doughnut" />
   <Word us="donuts" br="doughnuts" />
   <Word us="draft beer" br="draught beer" />
-  <Word us="draft" br="draught" />
+  <Word us="draft" br="draught" only="BrToUs" />
   <Word us="draftboard" br="draughtboard" />
   <Word us="draftboards" br="draughtboards" />
   <Word us="draftier" br="draughtier" />
   <Word us="draftiest" br="draughtiest" />
-  <Word us="drafts" br="draughts" />
+  <Word us="drafts" br="draughts" only="BrToUs" />
   <Word us="draftsman" br="draughtsman" />
   <Word us="draftsmanship" br="draughtsmanship" />
   <Word us="draftsmen" br="draughtsmen" />
@@ -506,10 +506,10 @@
   <Word us="imperiling" br="imperilling" />
   <Word us="initialed" br="initialled" />
   <Word us="initialing" br="initialling" />
-  <Word us="install" br="instal" />
+  <Word us="install" br="instal" only="BrToUs" />
   <Word us="installment" br="instalment" />
   <Word us="installments" br="instalments" />
-  <Word us="installs" br="instals" />
+  <Word us="installs" br="instals" only="BrToUs" />
   <Word us="instill" br="instil" />
   <Word us="instills" br="instils" />
   <Word us="jeweled" br="jewelled" />
@@ -545,7 +545,7 @@
   <Word us="libeling" br="libelling" />
   <Word us="libelous" br="libellous" />
   <Word us="libelously" br="libellously" />
-  <Word us="license" br="licence" />
+  <Word us="license" br="licence" only="BrToUs" />
   <Word us="liter" br="litre" />
   <Word us="liters" br="litres" />
   <Word us="louver" br="louvre" />
@@ -577,8 +577,8 @@
   <Word us="meagerly" br="meagrely" />
   <Word us="meagerness" br="meagreness" />
   <Word us="mementos" br="mementoes" />
-  <Word us="meter" br="metre" />
-  <Word us="meters" br="metres" />
+  <Word us="meter" br="metre" only="BrToUs" />
+  <Word us="meters" br="metres" only="BrToUs" />
   <Word us="micrometer" br="micrometre" />
   <Word us="micrometers" br="micrometres" />
   <Word us="milliliter" br="millilitre" />
@@ -686,7 +686,7 @@
   <Word us="paneling" br="panelling" />
   <Word us="panelist" br="panellist" />
   <Word us="panelists" br="panellists" />
-  <Word us="pants" br="trousers" />
+  <Word us="pants" br="trousers" only="BrToUs" />
   <Word us="paralleled" br="parallelled" />
   <Word us="paralyze" br="paralyse" />
   <Word us="paralyzed" br="paralysed" />
@@ -745,16 +745,16 @@
   <Word us="popularizers" br="popularisers" />
   <Word us="popularizes" br="popularises" />
   <Word us="popularizing" br="popularising" />
-  <Word us="practice" br="practise" />
+  <Word us="practice" br="practise" only="BrToUs" />
   <Word us="practiced" br="practised" />
   <Word us="practicer" br="practiser" />
   <Word us="practicers" br="practisers" />
-  <Word us="practices" br="practises" />
+  <Word us="practices" br="practises" only="BrToUs" />
   <Word us="practicing" br="practising" />
   <Word us="pretense" br="pretence" />
   <Word us="pretenses" br="pretences" />
-  <Word us="program" br="programme" />
-  <Word us="programs" br="programmes" />
+  <Word us="program" br="programme" only="BrToUs" />
+  <Word us="programs" br="programmes" only="BrToUs" />
   <Word us="prolog" br="prologue" />
   <Word us="prologs" br="prologues" />
   <Word us="psychoanalyze" br="psychoanalyse" />
@@ -934,8 +934,8 @@
   <Word us="theatergoers" br="theatregoers" />
   <Word us="theaterland" br="theatreland" />
   <Word us="theaters" br="theatres" />
-  <Word us="tire" br="tyre" />
-  <Word us="tires" br="tyres" />
+  <Word us="tire" br="tyre" only="BrToUs" />
+  <Word us="tires" br="tyres" only="BrToUs" />
   <Word us="toweled" br="towelled" />
   <Word us="toweling" br="towelling" />
   <Word us="towelings" br="towellings" />
