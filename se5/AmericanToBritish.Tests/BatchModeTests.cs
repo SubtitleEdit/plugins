@@ -39,6 +39,16 @@ public sealed class BatchModeTests : IDisposable
     }
 
     [Fact]
+    public void Batch_LeavesWordsWithAnotherMeaningAlone()
+    {
+        // pants/tire/draft/practice... are also verbs or nouns that British English spells the same (issue #16366)
+        var texts = new[] { "She pants heavily.", "I never tire of it.", "The first draft.", "Doctor's practice.", "A computer program.", "Install it.", "A parking meter.", "Licence or license." };
+        var response = BatchMode.BuildBatchResponse(Request(texts.Append("color").ToArray()), WordListPath);
+
+        Assert.Equal(texts.Append("colour"), Texts(response));
+    }
+
+    [Fact]
     public void Batch_KeepsTimings()
     {
         var response = BatchMode.BuildBatchResponse(Request("Plain", "color"), WordListPath);
