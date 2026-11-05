@@ -1,0 +1,366 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="https://github.com/projektanker/icons.avalonia"
+        xmlns:vm="using:SubtitleEdit.Plugins.FrenchTypography.ViewModels"
+        xmlns:controls="using:SubtitleEdit.Plugins.FrenchTypography.Controls"
+        x:Class="SubtitleEdit.Plugins.FrenchTypography.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        mc:Ignorable="d"
+        Title="{Binding T.Title}"
+        Width="1080" Height="780"
+        MinWidth="820" MinHeight="560"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <LinearGradientBrush x:Key="BrandGradient" StartPoint="0%,0%" EndPoint="100%,100%">
+            <GradientStop Offset="0" Color="#2563EB" />
+            <GradientStop Offset="1" Color="#E11D48" />
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="AccentBrush" Color="#2563EB" />
+        <SolidColorBrush x:Key="AccentTint" Color="#1F2563EB" />
+        <SolidColorBrush x:Key="AccentBorder" Color="#992563EB" />
+        <SolidColorBrush x:Key="FixBrush" Color="#2FA36B" />
+        <SolidColorBrush x:Key="FixTint" Color="#1F2FA36B" />
+        <SolidColorBrush x:Key="RemovedTint" Color="#14E5484D" />
+        <SolidColorBrush x:Key="RemovedBorder" Color="#40E5484D" />
+        <SolidColorBrush x:Key="AddedTint" Color="#142FA36B" />
+        <SolidColorBrush x:Key="AddedBorder" Color="#402FA36B" />
+        <SolidColorBrush x:Key="CardBrush" Color="#0C808080" />
+        <SolidColorBrush x:Key="CardBorder" Color="#26808080" />
+        <SolidColorBrush x:Key="HoverBrush" Color="#14808080" />
+        <FontFamily x:Key="MonoFont">Cascadia Mono, Consolas, Menlo, DejaVu Sans Mono, monospace</FontFamily>
+    </Window.Resources>
+
+    <Window.Styles>
+        <Style Selector="TextBlock.muted">
+            <Setter Property="Opacity" Value="0.65" />
+        </Style>
+        <Style Selector="TextBlock.warning">
+            <Setter Property="Foreground" Value="#D97706" />
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+        <Style Selector="TextBlock.section">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="LetterSpacing" Value="1" />
+            <Setter Property="Opacity" Value="0.7" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="TextBlock.code">
+            <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+            <Setter Property="FontSize" Value="12" />
+        </Style>
+        <Style Selector="Run.tag">
+            <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style Selector="Border.chip">
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="Padding" Value="10,5" />
+        </Style>
+        <Style Selector="Border.badge">
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="7,2" />
+            <Setter Property="Background" Value="{StaticResource CardBorder}" />
+        </Style>
+        <Style Selector="Border.tile">
+            <Setter Property="Width" Value="40" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Background" Value="{StaticResource CardBorder}" />
+        </Style>
+
+        <!-- Mode cards -->
+        <Style Selector="Border.mode">
+            <Setter Property="Background" Value="{StaticResource CardBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource CardBorder}" />
+            <Setter Property="BorderThickness" Value="1.5" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="Padding" Value="16,14" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style Selector="Border.mode:pointerover">
+            <Setter Property="Background" Value="{StaticResource HoverBrush}" />
+        </Style>
+        <Style Selector="Border.mode.selected">
+            <Setter Property="Background" Value="{StaticResource AccentTint}" />
+            <Setter Property="BorderBrush" Value="{StaticResource AccentBorder}" />
+        </Style>
+        <Style Selector="Border.mode.selected Border.tile">
+            <Setter Property="Background" Value="{StaticResource BrandGradient}" />
+        </Style>
+        <Style Selector="Border.mode Border.tile i|Icon">
+            <Setter Property="Opacity" Value="0.75" />
+        </Style>
+        <Style Selector="Border.mode.selected Border.tile i|Icon">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+        <Style Selector="Border.mode i|Icon.check">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="Border.mode.selected i|Icon.check">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="Border.example">
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="Background" Value="{StaticResource CardBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource CardBorder}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <!-- Segmented buttons -->
+        <Style Selector="Border.segmented">
+            <Setter Property="Background" Value="{StaticResource CardBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource CardBorder}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="9" />
+            <Setter Property="Padding" Value="3" />
+        </Style>
+        <Style Selector="Border.segmented RadioButton">
+            <Setter Property="Theme" Value="{DynamicResource {x:Type ToggleButton}}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="7" />
+            <Setter Property="Padding" Value="11,5" />
+        </Style>
+
+        <Style Selector="Button.icon">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Padding" Value="8,5" />
+        </Style>
+
+        <!-- Change list -->
+        <Style Selector="ListBox.changes">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="ListBox.changes ListBoxItem">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0,0,0,10" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>
+        <Style Selector="ListBox.changes ListBoxItem /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="ListBox.changes ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="ListBox.changes ListBoxItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="Border.change">
+            <Setter Property="Background" Value="{StaticResource CardBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource CardBorder}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="ClipToBounds" Value="True" />
+        </Style>
+        <Style Selector="Border.change.off">
+            <Setter Property="Opacity" Value="0.5" />
+        </Style>
+        <Style Selector="Border.textbox">
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="12,9" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+    </Window.Styles>
+
+    <DockPanel>
+
+        <!-- Header -->
+        <Border DockPanel.Dock="Top" Padding="24,18,24,16" BorderBrush="{StaticResource CardBorder}" BorderThickness="0,0,0,1">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <Border Width="48" Height="48" CornerRadius="13" Background="{StaticResource BrandGradient}" VerticalAlignment="Center">
+                    <i:Icon Value="mdi-format-quote-open" FontSize="28" Foreground="White" />
+                </Border>
+                <StackPanel Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Center" Spacing="2">
+                    <TextBlock Text="{Binding T.Title}" FontSize="20" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding SubtitleInfo}" Classes="muted" />
+                </StackPanel>
+                <Border Grid.Column="2" Classes="chip" VerticalAlignment="Center"
+                        Background="{StaticResource FixTint}" IsVisible="{Binding HasChanges}">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <i:Icon Value="mdi-auto-fix" Foreground="{StaticResource FixBrush}" FontSize="15" />
+                        <TextBlock FontWeight="SemiBold" Foreground="{StaticResource FixBrush}" Text="{Binding ChangeCountText}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Footer -->
+        <Border DockPanel.Dock="Bottom" Padding="24,14" BorderBrush="{StaticResource CardBorder}" BorderThickness="0,1,0,0">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <i:Icon Value="mdi-information-outline" FontSize="16" Opacity="0.6" />
+                    <TextBlock Text="{Binding StatusText}" Classes="muted" VerticalAlignment="Center" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                    <Button Click="OnCancel" MinWidth="96">
+                        <TextBlock Text="{Binding T.Cancel}" HorizontalAlignment="Center" />
+                    </Button>
+                    <Button Click="OnOk" Classes="accent" MinWidth="110" IsDefault="True" IsEnabled="{Binding CanApply}">
+                        <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
+                            <i:Icon Value="mdi-check" FontSize="16" />
+                            <TextBlock Text="{Binding T.Ok}" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <DockPanel Margin="24,18,24,0">
+
+            <!-- About -->
+            <Border DockPanel.Dock="Top" Classes="mode" Cursor="Arrow" Margin="0,0,0,18">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Border Classes="tile" Background="{StaticResource BrandGradient}" VerticalAlignment="Top">
+                        <i:Icon Value="mdi-format-quote-open" FontSize="21" Foreground="White" Opacity="1" />
+                    </Border>
+                    <StackPanel Grid.Column="1" Margin="12,0,16,0" VerticalAlignment="Center" Spacing="8">
+                        <TextBlock Text="{Binding T.AboutHeading}" FontWeight="SemiBold" FontSize="15" />
+                        <TextBlock Classes="muted" FontSize="12" TextWrapping="Wrap" Text="{Binding T.AboutText}" />
+                        <TextBlock Classes="muted" FontSize="12" Text="{Binding T.Legend}" />
+                    </StackPanel>
+                    <Border Grid.Column="2" Classes="example" VerticalAlignment="Center">
+                        <StackPanel Spacing="4">
+                            <TextBlock Classes="code"><Run Text="Quoi? Il a dit &quot;non&quot;!" /></TextBlock>
+                            <i:Icon Value="mdi-arrow-down" FontSize="14" Opacity="0.5" HorizontalAlignment="Center" />
+                            <TextBlock Classes="code"><Run Text="Quoi·? Il a dit «·non·»·!" /></TextBlock>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- Options -->
+            <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,14" Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,22,6">
+                    <TextBlock Classes="section" Text="{Binding T.Variant}" />
+                    <Border Classes="segmented">
+                        <StackPanel Orientation="Horizontal" Spacing="2">
+                            <RadioButton GroupName="variant" IsChecked="{Binding IsFrance}" ToolTip.Tip="{Binding T.FranceTip}">
+                                <TextBlock Text="{Binding T.France}" />
+                            </RadioButton>
+                            <RadioButton GroupName="variant" IsChecked="{Binding IsCanada}" ToolTip.Tip="{Binding T.CanadaTip}">
+                                <TextBlock Text="{Binding T.Canada}" />
+                            </RadioButton>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,22,6">
+                    <TextBlock Classes="section" Text="{Binding T.Space}" />
+                    <Border Classes="segmented">
+                        <StackPanel Orientation="Horizontal" Spacing="2">
+                            <RadioButton GroupName="space" IsChecked="{Binding IsNoBreakSpace}" ToolTip.Tip="{Binding T.NoBreakSpaceTip}">
+                                <TextBlock Text="{Binding T.NoBreakSpace}" />
+                            </RadioButton>
+                            <RadioButton GroupName="space" IsChecked="{Binding IsNarrowSpace}" ToolTip.Tip="{Binding T.NarrowSpaceTip}">
+                                <TextBlock Text="{Binding T.NarrowSpace}" />
+                            </RadioButton>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+                <CheckBox IsChecked="{Binding ConvertQuotes}" ToolTip.Tip="{Binding T.QuotesTip}" Margin="0,0,18,6">
+                    <TextBlock Text="{Binding T.Quotes}" />
+                </CheckBox>
+                <CheckBox IsChecked="{Binding ConvertEllipsis}" ToolTip.Tip="{Binding T.EllipsisTip}" Margin="0,0,0,6">
+                    <TextBlock Text="{Binding T.Ellipsis}" />
+                </CheckBox>
+            </WrapPanel>
+            <!-- Toolbar -->
+            <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,Auto,*,Auto" Margin="0,0,0,12" IsVisible="{Binding IsNotConfigure}">
+                <Border Classes="segmented" ToolTip.Tip="{Binding T.ScopeTip}">
+                    <StackPanel Orientation="Horizontal" Spacing="2">
+                        <RadioButton GroupName="scope" IsChecked="{Binding AllLines}">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <i:Icon Value="mdi-text-box-multiple-outline" FontSize="15" />
+                                <TextBlock Text="{Binding T.AllLines}" />
+                            </StackPanel>
+                        </RadioButton>
+                        <RadioButton GroupName="scope" IsChecked="{Binding SelectedLinesOnly}" IsEnabled="{Binding HasSelectedLines}">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <i:Icon Value="mdi-target" FontSize="15" />
+                                <TextBlock Text="{Binding SelectedLinesText}" />
+                            </StackPanel>
+                        </RadioButton>
+                    </StackPanel>
+                </Border>
+                <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="2" IsVisible="{Binding HasChanges}">
+                    <Button Classes="icon" Command="{Binding SelectAllCommand}" ToolTip.Tip="{Binding T.SelectAllTip}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <i:Icon Value="mdi-checkbox-multiple-marked-outline" FontSize="16" />
+                            <TextBlock Text="{Binding T.SelectAll}" />
+                        </StackPanel>
+                    </Button>
+                    <Button Classes="icon" Command="{Binding SelectNoneCommand}" ToolTip.Tip="{Binding T.SelectNoneTip}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <i:Icon Value="mdi-checkbox-multiple-blank-outline" FontSize="16" />
+                            <TextBlock Text="{Binding T.SelectNone}" />
+                        </StackPanel>
+                    </Button>
+                    <Button Classes="icon" Command="{Binding InvertSelectionCommand}" ToolTip.Tip="{Binding T.InvertTip}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <i:Icon Value="mdi-select-inverse" FontSize="16" />
+                            <TextBlock Text="{Binding T.Invert}" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- Configure (Batch convert) -->
+            <StackPanel DockPanel.Dock="Top" IsVisible="{Binding IsConfigure}" HorizontalAlignment="Center"
+                        Margin="0,30,0,0" Spacing="10" MaxWidth="520">
+                <Border Width="88" Height="88" CornerRadius="44" Background="{StaticResource FixTint}" HorizontalAlignment="Center">
+                    <i:Icon Value="mdi-cog-outline" FontSize="48" Foreground="{StaticResource FixBrush}" />
+                </Border>
+                <TextBlock Text="{Binding T.ConfigureHeading}" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                <TextBlock Classes="muted" TextWrapping="Wrap" TextAlignment="Center" Text="{Binding T.ConfigureText}" />
+            </StackPanel>
+
+            <!-- Empty state -->
+            <StackPanel DockPanel.Dock="Top" IsVisible="{Binding IsClean}" HorizontalAlignment="Center"
+                        Margin="0,70,0,0" Spacing="10">
+                <Border Width="88" Height="88" CornerRadius="44" Background="{StaticResource FixTint}" HorizontalAlignment="Center">
+                    <i:Icon Value="mdi-check-decagram-outline" FontSize="48" Foreground="{StaticResource FixBrush}" />
+                </Border>
+                <TextBlock Text="{Binding T.NothingToChange}" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                <TextBlock Text="{Binding T.CleanText}" Classes="muted" HorizontalAlignment="Center" />
+            </StackPanel>
+
+            <!-- Changes -->
+            <ListBox Classes="changes" ItemsSource="{Binding Changes}" IsVisible="{Binding HasChanges}" Padding="0,0,8,6">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ChangeItem">
+                        <Border Classes="change" Classes.off="{Binding !IsSelected}">
+                            <Grid ColumnDefinitions="4,Auto,*">
+                                <Border Background="{StaticResource BrandGradient}" />
+                                <CheckBox Grid.Column="1" IsChecked="{Binding IsSelected}" VerticalAlignment="Top" Margin="12,10,0,0"
+                                          ToolTip.Tip="{Binding $parent[ListBox].((vm:MainViewModel)DataContext).T.ChangeLineTip}" />
+                                <StackPanel Grid.Column="2" Margin="6,12,14,12" Spacing="9">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Classes="badge" VerticalAlignment="Center">
+                                            <TextBlock FontSize="11" FontWeight="SemiBold" Text="{Binding Number}" />
+                                        </Border>
+                                        <TextBlock Text="{Binding TimeRange}" FontFamily="{StaticResource MonoFont}" FontSize="12"
+                                                   Classes="muted" VerticalAlignment="Center" Margin="10,0,0,0" />
+                                    </StackPanel>
+                                    <Grid ColumnDefinitions="*,Auto,*">
+                                        <Border Classes="textbox" Background="{StaticResource RemovedTint}" BorderBrush="{StaticResource RemovedBorder}">
+                                            <controls:SubtitleTextBlock Segments="{Binding BeforeSegments}" FontSize="15" TextWrapping="Wrap" />
+                                        </Border>
+                                        <i:Icon Grid.Column="1" Value="mdi-arrow-right" FontSize="18" Opacity="0.45" Margin="10,0" VerticalAlignment="Center" />
+                                        <Border Grid.Column="2" Classes="textbox" Background="{StaticResource AddedTint}" BorderBrush="{StaticResource AddedBorder}">
+                                            <controls:SubtitleTextBlock Segments="{Binding AfterSegments}" FontSize="15" TextWrapping="Wrap" />
+                                        </Border>
+                                    </Grid>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
+    </DockPanel>
+</Window>

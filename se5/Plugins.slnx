@@ -17,6 +17,7 @@
     <File Path="../.github/workflows/persian-errors.yml" />
     <File Path="../.github/workflows/remove-unicode-characters.yml" />
     <File Path="../.github/workflows/split-dialogs.yml" />
+    <File Path="../.github/workflows/french-typography.yml" />
     <File Path="../.github/workflows/tight-hyphen.yml" />
     <File Path="../.github/workflows/transliterate.yml" />
     <File Path="../.github/workflows/typewriter.yml" />
@@ -36,6 +37,7 @@
     <Project Path="PersianErrors/PersianErrors.csproj" />
     <Project Path="RemoveUnicodeCharacters/RemoveUnicodeCharacters.csproj" />
     <Project Path="SplitDialogs/SplitDialogs.csproj" />
+    <Project Path="FrenchTypography/FrenchTypography.csproj" />
     <Project Path="TightHyphen/TightHyphen.csproj" />
     <Project Path="Transliterate/Transliterate.csproj" />
     <Project Path="TypewriterEffect/TypewriterEffect.csproj" />
@@ -57,6 +59,7 @@
     <Project Path="PersianErrors.Tests/PersianErrors.Tests.csproj" />
     <Project Path="RemoveUnicodeCharacters.Tests/RemoveUnicodeCharacters.Tests.csproj" />
     <Project Path="SplitDialogs.Tests/SplitDialogs.Tests.csproj" />
+    <Project Path="FrenchTypography.Tests/FrenchTypography.Tests.csproj" />
     <Project Path="TightHyphen.Tests/TightHyphen.Tests.csproj" />
     <Project Path="Transliterate.Tests/Transliterate.Tests.csproj" />
     <Project Path="TypewriterEffect.Tests/TypewriterEffect.Tests.csproj" />
