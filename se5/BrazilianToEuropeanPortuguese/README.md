@@ -531,16 +531,16 @@ Further guarded rules: *dá com os ombros* → *abana os ombros*; *kit estupro* 
 *levar pro pessoal* → *levar para o lado pessoal*; *pensar de ir* → *pensar em ir*; *de topless* → *em topless*;
 movement verbs with a place (*vou na padaria* → *vou à padaria*, not *foi no sábado*); and a giving/telling verb
 with an object and *para + pronoun* (*mostrar a casa para ele* → *mostrar-lhe a casa*, not *levar o carro para ele*).
-A review of Blue Bloods S08 added: *Policial Kevin* → *Agente Kevin*, *Obrigado, policial* → *agente*;
+A subtitle review added: *Policial João* → *Agente João*, *Obrigado, policial* → *agente*;
 *continuaremos procurando* → *a procurar*; *$ 200* → *200 dólares*; *Time 2* → *Equipa 2*; *dar ré* → *marcha-atrás*;
 *jogou uma garrafa na rua* → *atirou*; *jogar a toalha* → *atirar a toalha ao chão*; stand-alone *Cara.* → *Pá.*;
 and *cara do FedEx* → *tipo do FedEx*. *Sinto muito* is left as is (it is also normal in PT-PT).
-A second S08 pass added: unaccented *Ta/Esta* before a gerund (*Ta brincando?* → *Estás a brincar?*); *pegar leve* → *ir com calma*;
+A further review added: unaccented *Ta/Esta* before a gerund (*Ta brincando?* → *Estás a brincar?*); *pegar leve* → *ir com calma*;
 plural *caras* → *tipos* (*Caras,* → *Rapazes,*); *ao invés da/do* → *em vez da/do*; and *Agora/Hoje/Aqui/Ontem/Depois me…* →
 *Agora arrependo-me*, *Hoje sinto-me*. *Pegar fogo* is left as is (it is also used in PT-PT).
-A third S08 pass added: the article after a cue-initial *Nossa* + noun and after a gerund (*Nossa foto…* → *A nossa foto…*,
+A subsequent review added: the article after a cue-initial *Nossa* + noun and after a gerund (*Nossa foto…* → *A nossa foto…*,
 *ocupando nossa cadeira* → *ocupando a nossa cadeira*; exclamations such as *Nossa, que lindo!* are untouched);
-*A policial Janko* → *A agente Janko* (also *O policial Olivet* → *O agente Olivet*); *sabia sobre isso* → *sabia disto*;
+*A policial Maria* → *A agente Maria* (also *O policial João* → *O agente João*); *sabia sobre isso* → *sabia disto*;
 informal *Mande entrar.* → *Mando-o entrar.* (formal address keeps *Mande-o entrar*); and *melhor policial / fosses policial / disfarçado de policial* → *polícia*.
 A bare *policial* as the person involved (*envolvendo / baleado por / matou / atacou / contra policial*) → *um agente* / *agentes*.
 With an English reference that says *officer* (not *cop*), a person called *policial/polícia* is always *agente* (*The officer arrived* → *O agente chegou*); *a polícia* as the force is untouched.
