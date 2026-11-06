@@ -22,7 +22,7 @@ public partial class MainWindow : Window
     private readonly PluginRequest _request;
     private readonly List<SrtBlock> _blocks;
     private readonly ObservableCollection<ChangeProposal> _proposals = new();
-    private readonly string _wordListPath = PortugueseLocalWordList.GetDefaultPath();
+    private readonly string _wordListPath;
     private readonly bool _isConfigure;
     private bool _loadingOptions = true;
     private bool _dictionaryBusy;
@@ -79,8 +79,11 @@ public partial class MainWindow : Window
 
     public MainWindow() : this(new PluginRequest()) { }
 
-    public MainWindow(PluginRequest request)
+    public MainWindow(PluginRequest request) : this(request, PortugueseLocalWordList.GetDefaultPath()) { }
+
+    internal MainWindow(PluginRequest request, string wordListPath)
     {
+        _wordListPath = wordListPath;
         _request = request;
         _isConfigure = request.RequestType == PluginRequestType.Configure;
         InitializeComponent();
@@ -175,6 +178,13 @@ public partial class MainWindow : Window
         Avalonia.Automation.AutomationProperties.SetName(button, action);
         this.FindControl<PathIcon>("SettingsToggleIcon")!.Data = Avalonia.Media.Geometry.Parse(
             panel.IsVisible ? "M 2,11 L 8,5 L 14,11" : "M 2,5 L 8,11 L 14,5");
+    }
+
+    private async void OnContributeVocabulary(object? sender, RoutedEventArgs e)
+    {
+        var editor = new ContributionsWindow(_wordListPath);
+        await editor.ShowDialog(this);
+        if (editor.LocalWordListSaved && !_isConfigure) RefreshProposals();
     }
 
     private async void OnCheckDictionary(object? sender, RoutedEventArgs e) => await UpdateDictionary(false);
@@ -539,26 +549,6 @@ public partial class MainWindow : Window
         foreach (var proposal in _proposals)
         {
             proposal.Include = false;
-        }
-    }
-
-    private async void OnEditWordList(object? sender, RoutedEventArgs e)
-    {
-        var list = new PortugueseLocalWordList();
-        string? loadError = null;
-        try
-        {
-            list = PortugueseLocalWordList.Load(_wordListPath);
-        }
-        catch (Exception ex)
-        {
-            loadError = $"Could not read the existing file ({ex.Message}). Clicking OK replaces it with the list below.";
-        }
-
-        var saved = await new WordListWindow(_wordListPath, list, loadError).ShowDialog<bool>(this);
-        if (saved && !_isConfigure)
-        {
-            RefreshProposals();
         }
     }
 

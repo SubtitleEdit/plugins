@@ -1,16 +1,32 @@
 # Brazilian to European Portuguese (Subtitle Edit 5 plugin)
 
-Version **1.2.5** adds reviewed workbook vocabulary and verb constructions,
-English-confirmed specialist sportswear and shared-residence expressions,
-guarded physical descriptions, finding-type visibility filters, and clearer
-warning-only rows with the original PT-BR text always visible.
+[Português europeu](README.pt-PT.md) | English
+
+## Latest changes
+
+- One **Contribute vocabulary / Local word list** window with three separate tabs.
+- Contribution CSVs for words and expressions, with optional examples and context;
+  suggestions do not change conversion rules or upload automatically.
+- Custom and ignore CSV import/export, validated merging, protected local saves
+  and unsaved-work prompts.
+- Saved custom and ignored entries apply to **all subsequent subtitle files**,
+  including **Batch convert**, until edited or removed; they are not per-file rules.
+- A complete [European Portuguese guide](README.pt-PT.md), included in published packages.
+- English-confirmed information requests such as *Dê-me* → *Diga-me* in a news context.
+
+Earlier updates include reviewed workbook vocabulary and verb constructions,
+English-confirmed sportswear and shared-residence expressions, physical descriptions,
+finding filters, and original PT-BR text visible on warning-only rows.
+
+The standalone source build is **1.4.1**. Official Subtitle Edit package versions
+are assigned by the upstream release workflow and may differ.
 
 Converts Brazilian Portuguese (pt-BR) subtitles to natural European Portuguese (pt-PT):
 spelling, vocabulary and grammar. Like *American to British*, it shows a checkable
 preview of every changed line, so you can review and untick individual changes before
 applying them.
 
-Use the arrow immediately to the left of the word-list gear to collapse or expand
+Use the arrow immediately to the left of **Contribute vocabulary / Local word list** to collapse or expand
 the settings area (including reference/model controls) while reviewing subtitles.
 Select all/none and Apply remain available. Collapsing does not rerun conversion,
 clear model results, or discard manual edits and checked/unchecked proposals.
@@ -931,6 +947,31 @@ its field when the row wraps. Batch configuration uses the full panel width.
 
 **Review tools** adds:
 
+- **Contribute vocabulary / Local word list:** one button opens three tabs:
+  **Contribute vocabulary**, **Custom word list**, and **Ignore word list**.
+  The contribution tab is for words, expressions and idioms to share for review;
+  the other two tabs manage active personal conversion settings (see below).
+  In the contribution tab, **PT-BR** and **PT-PT**
+  are required; both usage examples and description/context/exceptions/source are
+  optional. Use **Add entry** for a new meaning, or select a row and use **Update
+  selected**. Repeated terms and identical BR/PT terms are allowed. **New entry**
+  clears the form; **Remove selected** removes a row.
+  **Save CSV as...** saves all entries (including a valid unfinished form entry)
+  to a user-chosen file. Saving an empty list creates a reusable header template.
+  **Open CSV...** loads an existing file for editing; invalid files leave the
+  current entries intact. Closing/opening/clearing prompts before discarding
+  unsaved work. Saving is local only: it neither uploads data nor changes the
+  conversion dictionary. Share the saved file with the maintainer for review.
+  Avoid personal information and use short examples you have permission to share.
+
+  CSV format: UTF-8 with BOM, semicolon delimiter, header
+  `pt-BR;Example pt-BR;pt-PT;Example pt-PT;Description`.
+  Quotes, semicolons and multiline examples are escaped. Excel/LibreOffice can
+  edit this format (choose UTF-8 and semicolon when importing); retain all five
+  headers/columns when saving. Formula-like cells receive a protective leading
+  apostrophe, removed on reopening in the plugin; existing leading apostrophes
+  are escaped similarly to preserve round trips.
+
 - **Finding filters:** toggle **Rule-based changes**, **MiniLM warnings**,
   **Gervásio choices**, **Other review warnings** and **Manual edits** to show or
   hide matching rows. All five are on when the plugin opens. A row matching
@@ -974,8 +1015,39 @@ integration.
 
 ## Local word list
 
-The gear button opens the local word list. There you can add your own conversions (words
-or phrases) or switch off built-in ones. It is saved as
+Open **Contribute vocabulary / Local word list** and choose **Custom word list**
+to add or edit personal replacements, or **Ignore word list** to protect words
+and whole expressions from conversion. The former gear button has been removed.
+These two tabs affect conversion **only after Save local word lists**; the
+contribution tab never activates rules. Saving local lists saves both active tabs
+without closing the window; when you close it, the subtitle preview refreshes.
+Saved entries persist across **all subsequent SRT files and Batch convert jobs**
+using this plugin installation, until you edit or remove them. They are not
+limited to the currently open subtitle.
+Closing prompts before discarding unsaved entries or drafts in any tab.
+
+Use **Add / replace** (custom words) or **Add** (ignored words) for a new entry,
+**Update selected** to edit the selected entry, **Clear form** to discard a draft,
+and **Remove selected** to delete an entry. Add/update or clear unfinished local
+drafts before importing, exporting or saving.
+
+Both active tabs support **Import CSV...** and **Export CSV...**:
+- Custom CSV header: `pt-BR;pt-PT`; both terms are required.
+- Ignore CSV header: `pt-BR`; one required word or expression per record.
+- Files use semicolon delimiters and UTF-8; exports include a BOM and protect
+  formula-like cells using the same reversible apostrophe convention as contributions.
+- Imports merge, preserving unrelated entries. Matching PT-BR terms are compared
+  without case sensitivity; the last imported custom replacement wins.
+  A custom replacement removes its matching ignore entry; an ignore removes its
+  matching custom replacement. Identical custom BR/PT terms must use the ignore tab.
+- The entire CSV is validated before any entries are changed. Malformed files
+  leave the current lists intact. A five-column contribution CSV is not accepted
+  as an active list: review suggestions and put approved entries in the dedicated format.
+- Importing or exporting does not save active settings. Use **Save local word lists**
+  to activate them. An unreadable existing XML list blocks saving to protect it;
+  repair that file before saving.
+
+The existing XML storage format and conversion engine are unchanged. The list is saved as
 `Plugins/BrazilianToEuropeanPortuguese.xml` in the Subtitle Edit data folder:
 
 ```xml
@@ -1183,7 +1255,8 @@ cached results; run checks again to obtain results for the current selection.
 Supports Subtitle Edit's **Batch convert** (Tools → Batch convert → Run plugin).
 
 - **Configure...** opens the window without a subtitle, where you choose the rule groups (and can edit the
-  local word list with the gear button). OK returns the choice to Subtitle Edit as the plugin settings.
+  local word list through **Contribute vocabulary / Local word list**).
+  Save active local entries in that editor; OK returns the rule choices to Subtitle Edit as the plugin settings.
 - During the batch, every line is converted with those settings and the local word list, without
   showing the window. Files with nothing to convert are left as they are. If the local word list
   can't be read, the file fails with an error rather than being converted without it.
