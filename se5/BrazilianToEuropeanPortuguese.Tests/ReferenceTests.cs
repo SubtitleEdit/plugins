@@ -577,6 +577,239 @@ public sealed class ReferenceTests(ITestOutputHelper output)
                 filterWindow.FindControl<ToggleButton>(name)!.IsChecked == true));
             filterWindow.Close();
 
+            var contributionsOwner = new MainWindow(new PluginRequest());
+            contributionsOwner.Show();
+            contributionsOwner.FindControl<Button>("ContributeVocabularyButton")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            var contributions = Assert.IsType<ContributionsWindow>(Assert.Single(contributionsOwner.OwnedWindows));
+            Assert.Equal("Contribute vocabulary / Local word list",
+                contributionsOwner.FindControl<Button>("ContributeVocabularyButton")!.Content);
+            Assert.Equal(new[] { "Contribute vocabulary", "Custom word list", "Ignore word list" },
+                contributions.FindControl<TabControl>("VocabularyTabs")!.Items.OfType<TabItem>().Select(t => t.Header));
+            void ContributionClick(string name)
+            {
+                contributions.FindControl<Button>(name)!.RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+                Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            }
+            void ContributionText(string name, string text)
+            {
+                contributions.FindControl<TextBox>(name)!.Text = text;
+                Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            }
+            ContributionClick("AddContributionButton");
+            Assert.Contains("required", contributions.FindControl<TextBlock>("ContributionError")!.Text);
+            ContributionText("ContributionBrazilian", "teste");
+            ContributionText("ContributionEuropean", "ensaio");
+            ContributionText("ContributionBrazilianExample", "um; \"teste\"\nna prática");
+            ContributionClick("AddContributionButton");
+            var contributionList = contributions.FindControl<ListBox>("ContributionsList")!;
+            Assert.Single(contributionList.Items);
+            Assert.Equal("", contributions.FindControl<TextBox>("ContributionBrazilian")!.Text);
+            contributionList.SelectedIndex = 0;
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.Equal("ensaio", contributions.FindControl<TextBox>("ContributionEuropean")!.Text);
+            ContributionText("ContributionEuropean", "verificação");
+            ContributionClick("UpdateContributionButton");
+            Assert.Equal("verificação", Assert.IsType<VocabularyContribution>(Assert.Single(contributionList.Items)).European);
+            ContributionText("ContributionBrazilian", "teste");
+            ContributionText("ContributionEuropean", "outro sentido");
+            var csv = contributions.ExportCsv();
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.Equal(2, VocabularyContributions.Parse(csv).Count);
+            Assert.Throws<FormatException>(() => contributions.LoadCsv("invalid"));
+            Assert.Equal(2, contributionList.Items.Count);
+            contributions.LoadCsv(csv);
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.Equal(2, contributionList.Items.Count);
+            Assert.DoesNotContain("Unsaved", contributions.FindControl<TextBlock>("ContributionStatus")!.Text);
+            contributionList.SelectedIndex = 0;
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            ContributionText("ContributionEuropean", "");
+            Assert.Throws<FormatException>(() => contributions.ExportCsv());
+            Assert.Equal(2, contributionList.Items.Count);
+            contributionList.SelectedIndex = 1;
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.Equal(0, contributionList.SelectedIndex);
+            Assert.Equal("", contributions.FindControl<TextBox>("ContributionEuropean")!.Text);
+            ContributionText("ContributionEuropean", "verificação revista");
+            ContributionClick("UpdateContributionButton");
+            Assert.Equal("verificação revista", Assert.IsType<VocabularyContribution>(contributionList.Items[0]).European);
+            contributionList.SelectedIndex = 0;
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            ContributionClick("RemoveEntryButton");
+            Assert.Single(contributionList.Items);
+            contributions.Close();
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.True(contributions.IsVisible);
+            var discardDialog = Assert.Single(contributions.OwnedWindows);
+            Assert.Single(discardDialog.GetVisualDescendants().OfType<Button>(), b => Equals(b.Content, "Keep editing"))
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.True(contributions.IsVisible);
+            contributions.Close();
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            discardDialog = Assert.Single(contributions.OwnedWindows);
+            Assert.Single(discardDialog.GetVisualDescendants().OfType<Button>(), b => Equals(b.Content, "Discard"))
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.False(contributions.IsVisible);
+            contributionsOwner.Close();
+
+            var localPath = Path.Combine(data, "local-vocabulary.xml");
+            var seedList = new PortugueseLocalWordList();
+            seedList.Words.Add(("teste", "ensaio"));
+            seedList.Ignored.Add("preservar");
+            seedList.Save(localPath);
+            var localEditor = new ContributionsWindow(localPath);
+            localEditor.Show();
+            var tabs = localEditor.FindControl<TabControl>("VocabularyTabs")!;
+            var wordsList = localEditor.FindControl<ListBox>("WordsList")!;
+            var ignoredList = localEditor.FindControl<ListBox>("IgnoredList")!;
+            void LocalClick(string name)
+            {
+                localEditor.FindControl<Button>(name)!.RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+                Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            }
+            void LocalText(string name, string text)
+            {
+                localEditor.FindControl<TextBox>(name)!.Text = text;
+                Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            }
+            localEditor.LoadCsv(csv);
+            Assert.Equal(("teste", "ensaio"), Assert.Single(PortugueseLocalWordList.Load(localPath).Words));
+            Assert.False(localEditor.LocalWordListSaved);
+            tabs.SelectedIndex = 1;
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.Contains(wordsList, localEditor.GetVisualDescendants());
+            Assert.DoesNotContain(ignoredList, localEditor.GetVisualDescendants());
+            LocalClick("AddWordButton");
+            Assert.Contains("required", localEditor.FindControl<TextBlock>("LocalErrorWords")!.Text);
+            localEditor.ImportLocalCsv("pt-BR;pt-PT\nteste;verificação\nexpressão;primeiro sentido\nexpressão;último sentido\n", false);
+            Assert.Equal(2, wordsList.Items.Count);
+            Assert.Contains(new WordPair("expressão", "último sentido"), wordsList.Items.OfType<WordPair>());
+            var beforeInvalidImport = localEditor.ExportLocalCsv(false);
+            Assert.Throws<FormatException>(() => localEditor.ImportLocalCsv("pt-BR;pt-PT\nválido;correto\ninválido;\n", false));
+            Assert.Equal(beforeInvalidImport, localEditor.ExportLocalCsv(false));
+            wordsList.SelectedIndex = 0;
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            LocalText("PortugueseBox", "revisão");
+            wordsList.SelectedIndex = 1;
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.Equal(0, wordsList.SelectedIndex);
+            Assert.Equal("revisão", localEditor.FindControl<TextBox>("PortugueseBox")!.Text);
+            Assert.Throws<FormatException>(() => localEditor.SaveLocalWords());
+            LocalClick("UpdateWordButton");
+            Assert.Contains(new WordPair("teste", "revisão"), wordsList.Items.OfType<WordPair>());
+            tabs.SelectedIndex = 2;
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.Contains(ignoredList, localEditor.GetVisualDescendants());
+            LocalClick("AddIgnoredButton");
+            Assert.Contains("Enter", localEditor.FindControl<TextBlock>("LocalErrorIgnored")!.Text);
+            LocalText("IgnoreBox", "teste");
+            LocalClick("AddIgnoredButton");
+            Assert.DoesNotContain(wordsList.Items.OfType<WordPair>(), w => w.Brazilian == "teste");
+            localEditor.ImportLocalCsv("pt-BR\nexpressão\nTá Bom Bar\n", true);
+            Assert.Empty(wordsList.Items);
+            Assert.Equal(4, ignoredList.Items.Count);
+            Assert.Equal(2, VocabularyContributions.Parse(localEditor.ExportCsv()).Count);
+            LocalClick("SaveLocalIgnoredButton");
+            var savedLocal = PortugueseLocalWordList.Load(localPath);
+            Assert.True(localEditor.LocalWordListSaved);
+            Assert.Equal(4, savedLocal.Ignored.Count);
+            Assert.Equal("teste", new PortugueseConverter(ConversionOptions.Default, savedLocal).Convert("teste"));
+            localEditor.ImportLocalCsv("pt-BR;pt-PT\nteste;ensaio\n", false);
+            Assert.DoesNotContain("teste", ignoredList.Items.OfType<string>());
+            tabs.SelectedIndex = 1;
+            LocalClick("SaveLocalWordsButton");
+            savedLocal = PortugueseLocalWordList.Load(localPath);
+            Assert.Equal(("teste", "ensaio"), Assert.Single(savedLocal.Words));
+            Assert.Equal("ensaio", new PortugueseConverter(ConversionOptions.Default, savedLocal).Convert("teste"));
+            Assert.Equal(3, savedLocal.Ignored.Count);
+            wordsList.SelectedIndex = 0;
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            LocalText("BrazilianBox", "teste revisto");
+            LocalClick("UpdateWordButton");
+            Assert.Equal("teste revisto", Assert.IsType<WordPair>(Assert.Single(wordsList.Items)).Brazilian);
+            wordsList.SelectedIndex = 0;
+            LocalClick("RemoveWordButton");
+            Assert.Empty(wordsList.Items);
+            LocalText("BrazilianBox", "teste");
+            LocalText("PortugueseBox", "ensaio");
+            LocalText("IgnoreBox", "rascunho paralelo");
+            LocalClick("AddWordButton");
+            Assert.Equal("rascunho paralelo", localEditor.FindControl<TextBox>("IgnoreBox")!.Text);
+            LocalClick("AddIgnoredButton");
+            tabs.SelectedIndex = 2;
+            ignoredList.SelectedItem = "rascunho paralelo";
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            LocalText("IgnoreBox", "expressão protegida");
+            LocalClick("UpdateIgnoredButton");
+            Assert.DoesNotContain("rascunho paralelo", ignoredList.Items.OfType<string>());
+            Assert.Contains("expressão protegida", ignoredList.Items.OfType<string>());
+            ignoredList.SelectedItem = "expressão protegida";
+            LocalClick("RemoveIgnoredButton");
+            Assert.Equal(3, ignoredList.Items.Count);
+            LocalClick("SaveLocalIgnoredButton");
+            Assert.Empty(Directory.GetFiles(data, "local-vocabulary.xml.*.tmp"));
+            localEditor.Close();
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.False(localEditor.IsVisible);
+            var reopenedEditor = new ContributionsWindow(localPath);
+            reopenedEditor.Show();
+            Assert.Single(reopenedEditor.FindControl<ListBox>("WordsList")!.Items);
+            Assert.Equal(3, reopenedEditor.FindControl<ListBox>("IgnoredList")!.Items.Count);
+            reopenedEditor.FindControl<TabControl>("VocabularyTabs")!.SelectedIndex = 2;
+            reopenedEditor.FindControl<TextBox>("IgnoreBox")!.Text = "unsaved draft";
+            reopenedEditor.Close();
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.True(reopenedEditor.IsVisible);
+            var localDiscard = Assert.Single(reopenedEditor.OwnedWindows);
+            Assert.Single(localDiscard.GetVisualDescendants().OfType<Button>(), b => Equals(b.Content, "Discard"))
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.False(reopenedEditor.IsVisible);
+            Assert.DoesNotContain("unsaved draft", PortugueseLocalWordList.Load(localPath).Ignored);
+            var damagedPath = Path.Combine(data, "damaged-vocabulary.xml");
+            File.WriteAllText(damagedPath, "<not valid");
+            var damagedEditor = new ContributionsWindow(damagedPath);
+            Assert.Contains("Saving is disabled", damagedEditor.FindControl<TextBlock>("LocalErrorWords")!.Text);
+            Assert.Throws<IOException>(() => damagedEditor.SaveLocalWords());
+            Assert.Equal("<not valid", File.ReadAllText(damagedPath));
+            damagedEditor.Close();
+
+            var refreshPath = Path.Combine(data, "refresh-vocabulary.xml");
+            var refreshOwner = new MainWindow(new PluginRequest
+            {
+                Subtitle = new PluginSubtitle { Format = "SubRip", SubRip = "1\n00:00:01,000 --> 00:00:04,000\nteste\n" },
+            }, refreshPath);
+            refreshOwner.Show();
+            Assert.Empty(refreshOwner.Proposals);
+            refreshOwner.FindControl<Button>("ContributeVocabularyButton")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            var refreshEditor = Assert.IsType<ContributionsWindow>(Assert.Single(refreshOwner.OwnedWindows));
+            refreshEditor.ImportLocalCsv("pt-BR;pt-PT\nteste;ensaio\n", false);
+            refreshEditor.SaveLocalWords();
+            refreshEditor.Close();
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.Equal("ensaio", Assert.Single(refreshOwner.Proposals).ConvertedText);
+            refreshOwner.Close();
+            var batchConfig = new MainWindow(new PluginRequest { RequestType = PluginRequestType.Configure }, refreshPath);
+            batchConfig.Show();
+            batchConfig.FindControl<Button>("ContributeVocabularyButton")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            var configEditor = Assert.IsType<ContributionsWindow>(Assert.Single(batchConfig.OwnedWindows));
+            configEditor.ImportLocalCsv("pt-BR\nteste\n", true);
+            configEditor.SaveLocalWords();
+            configEditor.Close();
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.Empty(batchConfig.Proposals);
+            Assert.Empty(PortugueseLocalWordList.Load(refreshPath).Words);
+            Assert.Equal("teste", Assert.Single(PortugueseLocalWordList.Load(refreshPath).Ignored));
+            batchConfig.Close();
+
             var screenshotWindow = new MainWindow(new PluginRequest
             {
                 SettingsVersion = ConversionOptions.Version,

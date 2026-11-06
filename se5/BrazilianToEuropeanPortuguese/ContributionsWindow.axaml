@@ -1,0 +1,134 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="using:SubtitleEdit.Plugins.BrazilianToEuropeanPortuguese"
+        x:Class="SubtitleEdit.Plugins.BrazilianToEuropeanPortuguese.ContributionsWindow"
+        Title="Contribute vocabulary / Local word list" Width="950" Height="780" MinWidth="740" MinHeight="680"
+        WindowStartupLocation="CenterOwner">
+    <TabControl x:Name="VocabularyTabs" Margin="16">
+    <TabItem Header="Contribute vocabulary">
+    <DockPanel Margin="0,10,0,0">
+        <StackPanel DockPanel.Dock="Top" Spacing="6">
+            <TextBlock Text="Contribute vocabulary, expressions and idioms" FontSize="18" FontWeight="SemiBold" />
+            <TextBlock Text="PT-BR and PT-PT are required. Examples and description are optional. One meaning per entry; repeated terms are allowed."
+                       TextWrapping="Wrap" />
+            <TextBlock Text="Suggestions only: saving does not change conversion rules or upload anything. Avoid personal information; use short examples you have permission to share."
+                       TextWrapping="Wrap" Opacity="0.75" />
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,6">
+                <Button x:Name="OpenCsvButton" Content="Open CSV..." Click="OnOpen" />
+                <Button x:Name="SaveCsvButton" Content="Save CSV as..." Click="OnSave" />
+                <Button x:Name="NewEntryButton" Content="New entry" Click="OnNew" />
+                <Button x:Name="RemoveEntryButton" Content="Remove selected" Click="OnRemove" />
+            </StackPanel>
+            <TextBlock x:Name="ContributionStatus" TextWrapping="Wrap" />
+            <TextBlock x:Name="ContributionError" Foreground="#E0A030" TextWrapping="Wrap" />
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Bottom" Spacing="5" Margin="0,10,0,0">
+            <Grid ColumnDefinitions="*,*">
+                <StackPanel Grid.Column="0" Spacing="4" Margin="0,0,12,0">
+                    <TextBlock Text="PT-BR word / expression *" />
+                    <TextBox x:Name="ContributionBrazilian" />
+                    <TextBlock Text="Example of usage in PT-BR (optional)" />
+                    <TextBox x:Name="ContributionBrazilianExample" AcceptsReturn="True" TextWrapping="Wrap" Height="65" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Spacing="4">
+                    <TextBlock Text="PT-PT word / expression *" />
+                    <TextBox x:Name="ContributionEuropean" />
+                    <TextBlock Text="Example of usage in PT-PT (optional)" />
+                    <TextBox x:Name="ContributionEuropeanExample" AcceptsReturn="True" TextWrapping="Wrap" Height="65" />
+                </StackPanel>
+            </Grid>
+            <TextBlock Text="Description / context / exceptions / source (optional)" />
+            <TextBox x:Name="ContributionDescription" AcceptsReturn="True" TextWrapping="Wrap" Height="60" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button x:Name="AddContributionButton" Content="Add entry" Click="OnAdd" />
+                <Button x:Name="UpdateContributionButton" Content="Update selected" Click="OnUpdate" />
+                <Button Content="Close" Click="OnClose" />
+            </StackPanel>
+        </StackPanel>
+        <ListBox x:Name="ContributionsList" Margin="0,8" SelectionChanged="OnSelectionChanged">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="local:VocabularyContribution">
+                    <Grid ColumnDefinitions="*,*" Margin="4">
+                        <TextBlock Grid.Column="0" Text="{Binding Brazilian}" TextWrapping="Wrap" Margin="0,0,12,0" />
+                        <TextBlock Grid.Column="1" Text="{Binding European}" TextWrapping="Wrap" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+    </TabItem>
+    <TabItem Header="Custom word list">
+        <DockPanel Margin="0,10,0,0">
+            <StackPanel DockPanel.Dock="Top" Spacing="8">
+                <TextBlock Text="Active personal replacements: saved entries affect conversion locally, without changing the built-in engine. Words and expressions are allowed; original case is preserved."
+                           TextWrapping="Wrap" />
+                <TextBlock Text="CSV: pt-BR;pt-PT. Import merges entries; the last matching PT-BR entry wins and removes its ignore entry. Review before saving."
+                           TextWrapping="Wrap" Opacity="0.75" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button x:Name="ImportWordsButton" Content="Import CSV..." Click="OnImportWords" />
+                    <Button x:Name="ExportWordsButton" Content="Export CSV..." Click="OnExportWords" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel DockPanel.Dock="Bottom" Spacing="8" Margin="0,10,0,0">
+                <TextBlock x:Name="LocalErrorWords" TextWrapping="Wrap" Foreground="#E0A030" />
+                <TextBlock x:Name="LocalStatusWords" TextWrapping="Wrap" />
+                <Grid ColumnDefinitions="*,*">
+                    <TextBox x:Name="BrazilianBox" Watermark="Brazilian (pt-BR)" Margin="0,0,8,0" />
+                    <TextBox Grid.Column="1" x:Name="PortugueseBox" Watermark="European (pt-PT)" />
+                </Grid>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button x:Name="AddWordButton" Content="Add / replace" Click="OnAddWord" />
+                    <Button x:Name="UpdateWordButton" Content="Update selected" Click="OnUpdateWord" />
+                    <Button x:Name="NewWordButton" Content="Clear form" Click="OnClearWord" />
+                    <Button x:Name="RemoveWordButton" Content="Remove selected" Click="OnRemoveWord" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button x:Name="SaveLocalWordsButton" Content="Save local word lists" Click="OnSaveLocalWords" />
+                    <Button Content="Close" Click="OnClose" />
+                </StackPanel>
+            </StackPanel>
+            <ListBox x:Name="WordsList" Margin="0,10" SelectionMode="Single">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="local:WordPair">
+                        <Grid ColumnDefinitions="*,Auto,*">
+                            <TextBlock Text="{Binding Brazilian}" TextWrapping="Wrap" />
+                            <TextBlock Grid.Column="1" Text="→" Margin="10,0" />
+                            <TextBlock Grid.Column="2" Text="{Binding European}" TextWrapping="Wrap" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
+    </TabItem>
+    <TabItem Header="Ignore word list">
+        <DockPanel Margin="0,10,0,0">
+            <StackPanel DockPanel.Dock="Top" Spacing="8">
+                <TextBlock Text="Active personal exclusions: saved words and whole expressions are left untouched during conversion. Adding an ignored term removes its matching custom replacement."
+                           TextWrapping="Wrap" />
+                <TextBlock Text="CSV: one pt-BR column. Import merges entries without removing unrelated words. Changes take effect only after Save local word lists."
+                           TextWrapping="Wrap" Opacity="0.75" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button x:Name="ImportIgnoredButton" Content="Import CSV..." Click="OnImportIgnored" />
+                    <Button x:Name="ExportIgnoredButton" Content="Export CSV..." Click="OnExportIgnored" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel DockPanel.Dock="Bottom" Spacing="8" Margin="0,10,0,0">
+                <TextBlock x:Name="LocalErrorIgnored" TextWrapping="Wrap" Foreground="#E0A030" />
+                <TextBlock x:Name="LocalStatusIgnored" TextWrapping="Wrap" />
+                <TextBox x:Name="IgnoreBox" Watermark="Word or expression to leave unchanged" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button x:Name="AddIgnoredButton" Content="Add" Click="OnAddIgnored" />
+                    <Button x:Name="UpdateIgnoredButton" Content="Update selected" Click="OnUpdateIgnored" />
+                    <Button x:Name="NewIgnoredButton" Content="Clear form" Click="OnClearIgnored" />
+                    <Button x:Name="RemoveIgnoredButton" Content="Remove selected" Click="OnRemoveIgnored" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button x:Name="SaveLocalIgnoredButton" Content="Save local word lists" Click="OnSaveLocalWords" />
+                    <Button Content="Close" Click="OnClose" />
+                </StackPanel>
+            </StackPanel>
+            <ListBox x:Name="IgnoredList" Margin="0,10" SelectionMode="Single" />
+        </DockPanel>
+    </TabItem>
+    </TabControl>
+</Window>
