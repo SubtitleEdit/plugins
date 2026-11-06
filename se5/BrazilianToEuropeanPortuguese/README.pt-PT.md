@@ -591,22 +591,22 @@ com um local (*vou na padaria* → *vou à padaria*, mas não *foi no sábado*);
 verbos de dar/dizer com um objeto e *para + pronome* (*mostrar a casa para ele*
 → *mostrar-lhe a casa*, mas não *levar o carro para ele*).
 
-Uma revisão de Blue Bloods S08 acrescentou: *Policial Kevin* → *Agente Kevin*,
+Uma revisão de legendas acrescentou: *Policial João* → *Agente João*,
 *Obrigado, policial* → *agente*; *continuaremos procurando* → *a procurar*;
 *$ 200* → *200 dólares*; *Time 2* → *Equipa 2*; *dar ré* → *marcha-atrás*;
 *jogou uma garrafa na rua* → *atirou*; *jogar a toalha* → *atirar a toalha ao
 chão*; *Cara.* isolado → *Pá.*; e *cara do FedEx* → *tipo do FedEx*.
 Mantém-se *Sinto muito*, também normal em PT-PT.
-Uma segunda revisão de S08 acrescentou: *Ta/Esta* sem acento antes de um gerúndio
+Uma revisão adicional acrescentou: *Ta/Esta* sem acento antes de um gerúndio
 (*Ta brincando?* → *Estás a brincar?*); *pegar leve* → *ir com calma*;
 *caras* no plural → *tipos* (*Caras,* → *Rapazes,*); *ao invés da/do* →
 *em vez da/do*; e *Agora/Hoje/Aqui/Ontem/Depois me…* → *Agora arrependo-me*,
 *Hoje sinto-me*. Mantém-se *Pegar fogo*, que também se usa em PT-PT.
-Uma terceira revisão de S08 acrescentou: o artigo depois de *Nossa* + nome no
+Uma revisão posterior acrescentou: o artigo depois de *Nossa* + nome no
 início da legenda e depois de um gerúndio (*Nossa foto…* → *A nossa foto…*,
 *ocupando nossa cadeira* → *ocupando a nossa cadeira*; não se alteram
-exclamações como *Nossa, que lindo!*); *A policial Janko* → *A agente Janko*
-(também *O policial Olivet* → *O agente Olivet*); *sabia sobre isso* →
+exclamações como *Nossa, que lindo!*); *A policial Maria* → *A agente Maria*
+(também *O policial João* → *O agente João*); *sabia sobre isso* →
 *sabia disto*; o informal *Mande entrar.* → *Mando-o entrar.* (no tratamento
 formal, mantém-se *Mande-o entrar*); e *melhor policial / fosses policial /
 disfarçado de policial* → *polícia*.
