@@ -33,9 +33,13 @@ internal static class PortugueseOrthography
         ("crêem", "creem"), ("dêem", "deem"),
     };
     private static readonly Regex Word = new(@"[\p{L}\p{M}]+");
+    private static readonly Regex FinalInterrogativeQue = new(
+        @"(?<![\p{L}\p{M}-])que(?![\p{L}\p{M}-])(?=[\s\uE000-\uF8FF]*\?)",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
     internal static string Apply(string text, bool postAgreement)
     {
+        text = FinalInterrogativeQue.Replace(text, match => CaseHelper.MatchCase(match.Value, "quê"));
         var dictionary = NaturaDictionary.Load(postAgreement);
         return Word.Replace(text, match =>
         {

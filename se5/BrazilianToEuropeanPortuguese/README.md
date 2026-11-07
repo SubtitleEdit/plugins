@@ -18,8 +18,13 @@ Earlier updates include reviewed workbook vocabulary and verb constructions,
 English-confirmed sportswear and shared-residence expressions, physical descriptions,
 finding filters, and original PT-BR text visible on warning-only rows.
 
-The standalone source build is **1.4.1**. Official Subtitle Edit package versions
+The standalone source build is **1.4.2**. Official Subtitle Edit package versions
 are assigned by the upstream release workflow and may differ.
+
+Version **1.4.2** improves contextual agreement and formal address, reference-confirmed
+objects and vocabulary senses, natural dialogue constructions and interrogative
+accentuation. It adds regression coverage for these interactions while preserving
+subtitle cue timings and user-controlled rule options.
 
 Converts Brazilian Portuguese (pt-BR) subtitles to natural European Portuguese (pt-PT):
 spelling, vocabulary and grammar. Like *American to British*, it shows a checkable
@@ -313,6 +318,12 @@ The **Orthography** selector chooses **Post-1990 agreement (AO90)** (default) or
 **Pre-1990 agreement**. It is saved with the other options, including for Batch convert.
 Existing saved settings continue to use post-agreement spelling. Switching off
 **Spelling** also switches off agreement conversion.
+
+With **Spelling** enabled, interrogative *que* immediately before a question
+mark receives its tonic accent: *Baseada em que?* → *Baseada em quê?*,
+*De que?* → *De quê?*. This applies in both orthographies, preserves casing
+and subtitle markup, and leaves *Que queres?* and *em que ideia?* unchanged.
+No English reference or MiniLM score is needed for this accentuation rule.
 
 Reviewed spelling stems are checked against the selected European Portuguese
 dictionary before a change is proposed. For example:
@@ -896,6 +907,160 @@ The conversion is rule- and dictionary-based, so **always review the preview**.
 
 ## Dialogue context, grammar review and layout
 
+Short action questions can ask what the **speaker** should do, rather than
+give an instruction. With **You → tu** and **Colloquial** enabled, an explicit
+English *Should I call …?*, or a bare *Call …?* immediately following an
+English *if you …* cue ending in an ellipsis, supports *Ligue para João?* →
+*Ligo para o João?*. The latter requires adjacent cues within 1.5 seconds.
+Other supported actions include asking, telling, waiting, going and helping.
+With **Pronouns** enabled, telephone questions add articles for reviewed
+personal names; unknown names keep their original article choice. Genuine
+commands/questions and formal address are not changed by this rule
+(`action-questions`). The reviewed masculine reading of the unisex name
+*Jamie* is limited to these telephone questions.
+
+Replies beginning *Não.* or *Sim.* no longer hide an English-confirmed **you**
+subject. *Não. Disse que iria me ajudar* can become *Não. Disseste que me ias
+ajudar* when English says *you said you were going to help me*; *would help*
+keeps the conditional *me irias ajudar*. Modal clitics after *que* use the
+existing proclisis rule. A named title in an identifying apposition such as
+*É a minha amiga, Sra. Silva* does not establish formal address for nearby
+cues; genuine vocatives and direct address remain formal.
+
+With **Vocabulary** enabled, reference-confirmed journey stops use
+*paragem/paragens*: *É uma pequena parada* → *É uma pequena paragem*.
+The `travel-stops` stage runs before colloquial *parada* → *coisa* handling,
+so the stopping sense is not lost. Unknown senses, stationary adjectives and
+military parades are not blanket replacements; existing medical vocabulary
+continues to use its own rules.
+
+Reference-confirmed constructions also cover standalone happening questions
+(*O que está havendo?* → *O que se está a passar?*), informal *espera até*
+with personal infinitives (*Espera até ver* → *Espera até veres*), and
+acquisition beneficiaries (*Alugamos por ti* → *Alugamos para ti*).
+The beneficiary rule distinguishes *for you* from *instead of/on behalf of you*.
+With **WordOrder** enabled, English modal-plus-*always* supports
+*sempre pode ajudar* → *pode sempre ajudar*, including other modal persons.
+With **Vocabulary** and **Colloquial** enabled, explanatory English *the thing is*
+supports *O negócio é que…* → *A questão é que…*; literal business/object senses
+and unconfirmed introductions stay unchanged. A split introduction such as
+*O negócio é* becomes *A questão é*, leaving the following cue's *que* intact.
+
+Reference-confirmed informal subordinate verbs accept intervening negatives
+and adverbs: *que não tem* → *que não tens*, *que ainda pode* → *que ainda podes*.
+Repeated English *you're* subjects also confirm coordinated agreement after
+reply prefixes: *Certo, você é adulto e é o diretor* →
+*Certo, és adulto e és o diretor*. Copular titles such as *é o diretor* describe
+a role rather than establish formal address; genuine title vocatives remain formal.
+
+With **Pronouns** enabled, English-confirmed family subjects receive definite
+articles: *Mãe e tio Pedro* → *A Mãe e o tio Pedro*, *Pai está acordado* →
+*O Pai está acordado*. Existing capitalization is preserved; this rule does
+not impose capital letters on ordinary family nouns. Vocatives such as *Mãe!*
+or *Mãe, ajuda!* remain article-free.
+With **Pronouns** and informal **YouToTu** enabled, reviewed English past
+actions with object *you* distinguish it from a third-person Portuguese
+clitic: *o encontraram e o levaram* → *encontraram-te e levaram-te* for
+*found you and got you to the hospital*. Verb tense and subject number remain
+unchanged. The rule covers finding, seeing, helping, calling, transporting,
+rescuing and saving, with negative/subordinate triggers retaining proclisis.
+Formal address, ambiguous mixed objects and missing references are protected.
+English *brought you* can also select *trazer* with **Vocabulary** enabled;
+*got/took you to* retains *levar*. Whether the destination is the speaker's
+current location requires scene knowledge: edit to *trouxeram-te* when appropriate,
+rather than automatically changing every *levar*.
+
+Conversational recall uses the reflexive construction in *Tudo o que lembro*
+→ *Tudo o que me lembro*, including other recognized persons and split
+subtitle lines. Direct reminder uses such as *o que lembro ao João* remain
+unchanged. With **Colloquial**, **Pronouns** and **Vocabulary** enabled,
+English-confirmed departure slang *mandando-se daqui* becomes *saindo daqui*;
+finite forms such as *mandou-se daqui* become *saiu daqui*. Literal sending
+is preserved. Standalone departure commands with **Colloquial** and
+**Pronouns** use *Vá-se / Vai-te / Vão-se*, preserving formal/informal
+agreement; narrative *ele vai embora* and inclusive *vamos embora* stay unchanged.
+English-confirmed coordinated topic questions can put the subject first:
+*Sobre o que você e João discutiram?* →
+*Você e o João discutiram sobre o quê?* in formal address. Informal address
+retains *tu*. Name articles use the reviewed name genders, not capitalization alone.
+English *Are you sure…?* supports *Tem/Tens a certeza de que…*.
+In *want me to…*, a recoverable embedded *eu* can be omitted without changing
+its first-person verb: *Tem a certeza de que não quer que desembale aquilo?*.
+Ellipsis vocatives such as *-Detetive…* establish formal register even when
+another speaker's line follows in the same cue; existing timing, speaker,
+informal-boundary and title-apposition guards remain.
+
+With **Vocabulary** enabled, English *responded to the scene/club/incident*
+selects emergency-response *responder* rather than *atender*, across supported
+verb forms: *quando atenderam no clube* → *quando responderam no clube*.
+Telephone answering and replies to letters are not included.
+English *went into arrest* or explicit *cardiac arrest* selects the medical
+sense: *teve uma parada* → *teve uma paragem cardíaca*. Explicit
+*cardiorespiratory arrest* uses *paragem cardiorrespiratória*. Journey stops,
+police arrests and unconfirmed bare *parada* do not trigger this expansion.
+The aligned medical phrase is sufficient; earlier deaths alone are not used
+to infer the diagnosis. MiniLM compares individual cue meanings and flags
+possible mismatches; its similarity score cannot guarantee recognition of
+an implicit diagnosis and it does not generate a correction.
+
+With **Vocabulary** and **Colloquial** enabled, reference-confirmed
+*slow day/morning/afternoon/night/week/month* repairs an adverb incorrectly
+used as an adjective: *dia devagar* → *dia lento*, *manhã devagar* →
+*manhã lenta*, including plurals. This repairs a source translation error,
+not a general PT-BR/PT-PT difference. Valid adverbial uses such as
+*o dia passou devagar* and cases without a matching reference are preserved.
+
+Informal address also covers shared predicates, not just the first verb:
+*Você é péssimo pescando, odeia golfe* → *És péssimo a pescar, odeias golfe*.
+Known verb forms share the subject across commas and *e/mas/ou* when the
+English reference confirms repeated **you** subjects. Without a reference,
+the rule is limited to copular heads; named subjects, pronouns and subordinate
+clauses block propagation. It does not infer a subject for unrelated cues.
+An English-confirmed *if you … you …* clause can repair omitted subjects in
+*se dissesse que iria sair* → *se dissesses que irias sair*, without changing a
+different person's verb elsewhere in the sentence. This works within an
+individual cue, including a sentence continuation, without enabling sentence
+context. Both repairs respect formal address and the `address` rule switch.
+
+Reference-confirmed dropped subjects also work after introductory adverbs:
+*Bem, talvez precise do trabalho* → *Bem, talvez precises do trabalho*.
+Conditional and temporal heads use the same verb tools, including irregular
+forms: *E se precisar de ajuda* → *E se precisares de ajuda*, *Quando tiver
+tempo* → *Quando tiveres tempo*. These changes require an aligned English
+**you** subject and informal address; unknown or explicitly different subjects
+stay unchanged. *O trabalho não precisa de mim* keeps **precisa**, because the
+subject is the job, not the person being addressed.
+
+With **You → tu**, **Pronouns** and **Colloquial** enabled, an explicit informal
+subject plus an untriggered direct-object conditional uses a spoken infinitive
+construction: *Você a deixaria* → *Irias deixá-la*, *Você o faria* →
+*Irias fazê-lo*. Regular and supported irregular transitive verbs use the
+shared clitic allomorph helper. Negative/subordinate proclisis and other clitic
+types keep their existing treatment; this is not a blanket replacement of
+conditionals or a change of tense.
+
+With **Pronouns** enabled, complements of *pensar* use the normal spoken PT-PT
+article before reviewed, capitalized personal names: *pensar em Maria* →
+*pensar na Maria*, *penso em João* → *penso no João*. The rule covers conjugated
+forms, infinitives, participles and coordinated complements, preserving line
+breaks. It does not guess gender from spelling: unknown names, places and
+generic complements such as *pensar em alguém*, *pensar em pessoas* and
+*pensar em sair* remain unchanged. It does not change other verbs' complements.
+The rule ID is `personal-name-complements`.
+
+Linked infinitives after *mas*, as well as *e*, *ou*, *depois* and *a*, use
+the shared pronoun-placement rule: *mas me derrubar* → *mas derrubar-me*,
+*mas te proteger* → *mas proteger-te*, *a se vestir* → *a vestir-se*.
+This is not a verb-specific replacement: regular, irregular and personal
+infinitives use the existing verb tools and dictionary validation, including
+*pôr/compor*. Negation and intervening attracting words are not removed
+(*mas não me derrubar* stays). The **Pronoun placement** option controls it.
+Ambiguous *e/ou/mas se + infinitive* is not treated as a reflexive clitic:
+conditional **se** stays before the verb, even without a reference or with
+address conversion disabled. For example, *E se precisar* never becomes
+*E precisar-se*. Clear reflexives after *a/depois* retain the shared placement
+rule; an ambiguous coordinated reflexive may need manual review.
+
 **Dialogue context and subtitle layout** exposes the same settings in preview and
 Batch convert:
 
@@ -1126,6 +1291,12 @@ names differ after the episode code (`Show.S01E01.720p.pt-br.srt` and
   *esse/essa/nesse/dessa...* become *isto/disto/nisto*, *este/esta/neste/desta...* (*I got this
   one.* → *Eu cuido disto*; *this morning* → *esta manhã*). *Por isso* and the verb *desse*
   (from *dar*) are kept. Without a reference, *isso/esse* are never changed.
+- Referential English *that* also supports *isto/disto/nisto* →
+  *isso/disso/nisso*: *Sim, isto funcionaria?* → *Sim, isso funcionaria?*
+  for *Yeah, would that work?*. This direction uses reviewed pronoun
+  constructions, not conjunction *that* or noun determiners, and is suppressed
+  when the English cue also contains *this/these/those*. Without a reference,
+  no distal reading is inferred.
 - **Lines to review:** when the English says *you/your* but the line still has *você* or
   *seu/sua*, it is listed with an orange note (*Keep it if formal; change to tu/teu if informal*).
   Nothing is changed automatically; edit the line directly in the plugin if needed,

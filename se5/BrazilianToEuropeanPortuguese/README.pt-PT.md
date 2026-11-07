@@ -22,9 +22,15 @@ partir de folhas de cálculo, vestuário desportivo e expressões de residência
 confirmados pelo inglês, descrições físicas, filtros de resultados e o texto
 original em PT-BR visível nas linhas que contêm apenas avisos.
 
-A compilação do repositório autónomo é a **1.4.1**. As versões oficiais dos
+A compilação do repositório autónomo é a **1.4.2**. As versões oficiais dos
 pacotes do Subtitle Edit são atribuídas pelo fluxo de lançamento do projeto
 principal e podem ser diferentes.
+
+A versão **1.4.2** melhora a concordância contextual e o tratamento formal,
+os complementos e sentidos de vocabulário confirmados pela referência, as
+construções naturais de diálogo e a acentuação interrogativa. Acrescenta testes
+de regressão destas interações, preservando os tempos das legendas e as opções
+de regras controladas pelo utilizador.
 
 Converte legendas de português do Brasil (pt-BR) para português europeu (pt-PT),
 adaptando a ortografia, o vocabulário e a gramática. Tal como o plugin *American to
@@ -343,6 +349,12 @@ ortografia anterior ao acordo. A escolha é guardada com as outras opções,
 incluindo para **Batch convert**. As definições já guardadas continuam a usar a
 ortografia pós-acordo. Desativar **Spelling** também desativa a conversão entre
 ortografias.
+
+Com **Spelling** ativado, o *que* interrogativo imediatamente antes do ponto
+de interrogação recebe acento tónico: *Baseada em que?* → *Baseada em quê?*,
+*De que?* → *De quê?*. A regra aplica-se nas duas ortografias, preserva
+maiúsculas e marcação das legendas e mantém *Que queres?* e *em que ideia?*.
+Esta regra de acentuação não exige referência inglesa nem pontuação do MiniLM.
 
 Os radicais ortográficos revistos são verificados no dicionário de português
 europeu selecionado antes de se propor uma alteração. Por exemplo:
@@ -1092,6 +1104,177 @@ pré-visualização**.
 
 ## Contexto do diálogo, revisão gramatical e disposição das linhas
 
+Uma pergunta curta sobre uma ação pode perguntar o que **a própria pessoa**
+deve fazer, em vez de dar uma instrução. Com **You → tu** e **Colloquial**
+ativados, uma pergunta inglesa explícita como *Should I call …?*, ou
+*Call …?* logo após uma fala inglesa com *if you …* terminada em reticências,
+permite *Ligue para João?* → *Ligo para o João?*. Neste segundo caso, as
+falas têm de ser adjacentes e estar separadas por, no máximo, 1,5 segundos.
+As ações reconhecidas também incluem perguntar, dizer, esperar, ir e ajudar.
+Com **Pronouns** ativado, as perguntas sobre telefonar acrescentam artigos
+antes de nomes de pessoas revistos; os nomes desconhecidos mantêm a escolha
+de artigo original. Esta regra (`action-questions`) não altera ordens ou
+perguntas genuínas nem o tratamento formal. A leitura masculina revista do
+nome unissexo *Jamie* limita-se a estas perguntas sobre telefonar.
+
+As respostas iniciadas por *Não.* ou *Sim.* deixam de ocultar um sujeito
+**you** confirmado pela referência inglesa. *Não. Disse que iria me ajudar*
+pode passar a *Não. Disseste que me ias ajudar* quando o inglês diz
+*you said you were going to help me*; *would help* mantém o condicional
+*me irias ajudar*. Os pronomes com verbos modais após *que* usam a regra
+existente de próclise. Um nome com título num aposto identificativo, como
+*É a minha amiga, Sra. Silva*, não impõe tratamento formal às falas próximas;
+os vocativos genuínos e o tratamento direto continuam a ser formais.
+
+Com **Vocabulary** ativado, as paragens durante um percurso confirmadas pela
+referência usam *paragem/paragens*: *É uma pequena parada* →
+*É uma pequena paragem*. A etapa `travel-stops` ocorre antes do tratamento
+coloquial *parada* → *coisa*, para não perder o sentido de paragem.
+Os sentidos desconhecidos, os adjetivos que indicam imobilidade e as paradas
+militares não são substituídos indiscriminadamente; o vocabulário médico
+existente continua a usar as suas próprias regras.
+
+As construções confirmadas pela referência também abrangem perguntas
+independentes sobre acontecimentos (*O que está havendo?* →
+*O que se está a passar?*), *espera até* informal com infinitivo pessoal
+(*Espera até ver* → *Espera até veres*) e destinatários de aquisições
+(*Alugamos por ti* → *Alugamos para ti*). Esta última regra distingue
+*for you* de *instead of/on behalf of you*.
+Com **WordOrder** ativado, um verbo modal seguido de *always* na referência
+permite *sempre pode ajudar* → *pode sempre ajudar*, também noutras pessoas.
+Com **Vocabulary** e **Colloquial** ativados, a introdução explicativa inglesa
+*the thing is* permite *O negócio é que…* → *A questão é que…*. Os sentidos
+literais de negócio ou objeto e as introduções sem confirmação são preservados.
+Se a introdução terminar em *O negócio é*, passa a *A questão é*, mantendo
+o *que* da legenda seguinte.
+
+Os verbos subordinados informais confirmados pela referência aceitam negativas
+e advérbios intermédios: *que não tem* → *que não tens*, *que ainda pode* →
+*que ainda podes*. Sujeitos *you're* repetidos também confirmam a concordância
+coordenada após introduções de resposta: *Certo, você é adulto e é o diretor* →
+*Certo, és adulto e és o diretor*. Títulos predicativos como *é o diretor*
+descrevem uma função, sem impor tratamento formal; os verdadeiros vocativos
+com títulos continuam a ser formais.
+
+Com **Pronouns** ativado, os sujeitos familiares confirmados pelo inglês
+recebem artigo definido: *Mãe e tio Pedro* → *A Mãe e o tio Pedro*,
+*Pai está acordado* → *O Pai está acordado*. Preservam-se as maiúsculas
+existentes; a regra não impõe maiúsculas nos nomes de parentesco comuns.
+Os vocativos *Mãe!* e *Mãe, ajuda!* continuam sem artigo.
+Com **Pronouns** e **YouToTu** informal ativados, ações inglesas no passado
+com complemento *you* distinguem-no de um clítico português de terceira pessoa:
+*o encontraram e o levaram* → *encontraram-te e levaram-te* quando a referência
+diz *found you and got you to the hospital*. Mantêm-se o tempo verbal e o
+número do sujeito. A regra abrange encontrar, ver, ajudar, chamar, transportar,
+resgatar e salvar; negativas e subordinadas mantêm a próclise.
+O tratamento formal, complementos mistos ambíguos e casos sem referência
+são preservados. *Brought you* também pode selecionar *trazer*, com
+**Vocabulary** ativado; *got/took you to* mantém *levar*.
+Saber se o destino coincide com o local atual do falante exige conhecimento
+da cena: nesses casos, edite para *trouxeram-te*, em vez de substituir
+automaticamente todos os usos de *levar*.
+
+A recordação em registo conversacional usa a construção reflexa em
+*Tudo o que lembro* → *Tudo o que me lembro*, também noutras pessoas
+reconhecidas e em legendas repartidas por linhas. Mantêm-se usos de lembrar
+algo a alguém, como *o que lembro ao João*. Com **Colloquial**, **Pronouns**
+e **Vocabulary** ativados, a referência inglesa que confirma uma saída
+permite *mandando-se daqui* → *saindo daqui* e *mandou-se daqui* →
+*saiu daqui*. Mantêm-se os sentidos literais de enviar.
+Ordens de saída independentes, com **Colloquial** e **Pronouns** ativados,
+usam *Vá-se / Vai-te / Vão-se*, preservando o tratamento formal ou informal;
+mantêm-se *ele vai embora* narrativo e *vamos embora* inclusivo.
+Perguntas sobre um assunto com sujeito coordenado, confirmadas pelo inglês,
+podem colocar o sujeito primeiro: *Sobre o que você e João discutiram?* →
+*Você e o João discutiram sobre o quê?* no tratamento formal.
+No informal mantém-se *tu*. Os artigos dos nomes usam géneros revistos,
+não apenas a presença de maiúscula.
+*Are you sure…?* permite *Tem/Tens a certeza de que…*.
+Em *want me to…*, pode omitir-se o *eu* subordinado recuperável, sem mudar
+a pessoa verbal: *Tem a certeza de que não quer que desembale aquilo?*.
+Vocativos com reticências, como *-Detetive…*, estabelecem tratamento formal
+mesmo com uma segunda fala na mesma legenda; mantêm-se os limites temporais,
+as mudanças de falante, as fronteiras informais e as proteções das aposições.
+
+Com **Vocabulary** ativado, *responded to the scene/club/incident* na referência
+seleciona *responder* no sentido de responder a uma ocorrência, em vez de
+*atender*, nas formas verbais reconhecidas: *quando atenderam no clube* →
+*quando responderam no clube*. Atender o telefone ou responder a cartas
+não faz parte desta regra.
+*Went into arrest* ou *cardiac arrest* na referência seleciona o sentido
+médico: *teve uma parada* → *teve uma paragem cardíaca*.
+*Cardiorespiratory arrest* explícito usa *paragem cardiorrespiratória*.
+As paragens de percurso, as detenções policiais e *parada* sem confirmação
+não desencadeiam esta expansão. A expressão médica alinhada é suficiente;
+a menção anterior a mortes não serve, por si só, para deduzir o diagnóstico.
+O MiniLM compara o sentido de cada legenda e assinala possíveis divergências;
+a pontuação de semelhança não garante o reconhecimento de um diagnóstico
+implícito e não gera uma correção.
+
+Com **Vocabulary** e **Colloquial** ativados, *slow day/morning/afternoon/night/
+week/month* confirmado pela referência corrige o advérbio usado indevidamente
+como adjetivo: *dia devagar* → *dia lento*, *manhã devagar* → *manhã lenta*,
+também no plural. Trata-se de corrigir um erro da tradução de origem, não
+de uma diferença geral entre PT-BR e PT-PT. Mantêm-se usos adverbiais válidos
+como *o dia passou devagar* e casos sem referência correspondente.
+
+O tratamento informal também abrange predicados com sujeito partilhado, não
+apenas o primeiro verbo: *Você é péssimo pescando, odeia golfe* →
+*És péssimo a pescar, odeias golfe*. As formas verbais reconhecidas partilham
+o sujeito após vírgulas e *e/mas/ou* quando a referência inglesa confirma
+sujeitos **you** repetidos. Sem referência, a regra limita-se a verbos de
+ligação no início; nomes próprios, pronomes e orações subordinadas impedem
+a propagação. Não deduz o sujeito de falas independentes.
+Uma oração inglesa com *if you … you …* pode corrigir sujeitos omitidos em
+*se dissesse que iria sair* → *se dissesses que irias sair*, sem alterar o
+verbo de outra pessoa na mesma frase. Funciona numa fala individual, incluindo
+a continuação de uma frase, sem ativar o contexto entre falas. Ambas as
+correções respeitam o tratamento formal e o interruptor da regra `address`.
+
+Os sujeitos omitidos confirmados pela referência também são reconhecidos após
+advérbios introdutórios: *Bem, talvez precise do trabalho* →
+*Bem, talvez precises do trabalho*. As orações condicionais e temporais usam
+as mesmas ferramentas verbais, incluindo formas irregulares:
+*E se precisar de ajuda* → *E se precisares de ajuda*, *Quando tiver tempo* →
+*Quando tiveres tempo*. Estas alterações exigem um sujeito **you** na referência
+inglesa alinhada e tratamento informal; sujeitos desconhecidos ou explicitamente
+diferentes ficam inalterados. *O trabalho não precisa de mim* mantém
+**precisa**, porque o sujeito é o trabalho, não a pessoa a quem se fala.
+
+Com **You → tu**, **Pronouns** e **Colloquial** ativados, um sujeito informal
+explícito com um pronome de complemento direto antes de um condicional, sem
+elementos que exijam próclise, usa uma construção falada com infinitivo:
+*Você a deixaria* → *Irias deixá-la*, *Você o faria* → *Irias fazê-lo*.
+Os verbos transitivos regulares e irregulares reconhecidos usam a ferramenta
+partilhada de junção dos pronomes. A próclise negativa ou subordinada e os
+outros tipos de pronome mantêm o tratamento existente; não é uma substituição
+indiscriminada dos condicionais nem uma mudança de tempo verbal.
+
+Com **Pronouns** ativado, os complementos de *pensar* usam o artigo habitual
+no PT-PT falado antes de nomes próprios de pessoas revistos e escritos com
+inicial maiúscula: *pensar em Maria* → *pensar na Maria*, *penso em João* →
+*penso no João*. A regra abrange formas conjugadas, infinitivos, particípios
+e complementos coordenados, preservando as quebras de linha. Não deduz o
+género pela grafia: nomes desconhecidos, lugares e complementos genéricos
+como *pensar em alguém*, *pensar em pessoas* e *pensar em sair* ficam
+inalterados. Não altera os complementos de outros verbos.
+O identificador da regra é `personal-name-complements`.
+
+Os infinitivos ligados por *mas*, tal como por *e*, *ou*, *depois* e *a*,
+usam a regra partilhada de colocação dos pronomes:
+*mas me derrubar* → *mas derrubar-me*, *mas te proteger* → *mas proteger-te*,
+*a se vestir* → *a vestir-se*. Não é uma substituição específica de um verbo:
+os infinitivos regulares, irregulares e pessoais usam as ferramentas verbais
+existentes e a validação pelo dicionário, incluindo *pôr/compor*.
+Não se removem a negação nem palavras intercaladas que atraem o pronome
+(*mas não me derrubar* mantém-se). A opção **Pronoun placement** controla a regra.
+As construções ambíguas *e/ou/mas se + infinitivo* não são tratadas como pronomes
+reflexos: a conjunção condicional **se** mantém-se antes do verbo, mesmo sem
+referência ou com a conversão do tratamento desativada. Por exemplo,
+*E se precisar* nunca passa a *E precisar-se*. Os reflexos claros após
+*a/depois* mantêm a regra partilhada de colocação; um reflexo coordenado
+ambíguo pode precisar de revisão manual.
+
 **Dialogue context and subtitle layout** disponibiliza as mesmas definições
 na pré-visualização e em **Batch convert**:
 
@@ -1382,6 +1565,12 @@ local models (optional)** e use **Browse…** para o escolher:
   e *este/esta/neste/desta...* (*I got this one.* → *Eu cuido disto*;
   *this morning* → *esta manhã*). Mantêm-se *Por isso* e o verbo *desse*
   (de *dar*). Sem referência, *isso/esse* nunca são alterados.
+- O pronome referencial inglês *that* também permite *isto/disto/nisto* →
+  *isso/disso/nisso*: *Sim, isto funcionaria?* → *Sim, isso funcionaria?*
+  quando a referência diz *Yeah, would that work?*. Esta direção usa
+  construções pronominais reconhecidas, não a conjunção *that* nem
+  determinantes de nomes, e fica desativada se a mesma legenda inglesa
+  também contiver *this/these/those*. Sem referência, não se deduz esta leitura.
 - **Linhas a rever:** quando o inglês diz *you/your*, mas a legenda ainda
   contém *você* ou *seu/sua*, esta é listada com uma nota laranja:
   manter no tratamento formal; mudar para *tu/teu* no informal.

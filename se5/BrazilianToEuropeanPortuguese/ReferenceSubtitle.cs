@@ -17,6 +17,9 @@ public sealed record ReferenceHint(bool SecondPerson, bool SecondPossessive, boo
     public bool InclusiveContinuation { get; init; }
     public bool CatchUpLater { get; init; }
     internal bool RepeatedYouSubject { get; init; }
+    internal bool RepeatedConditionalYouSubject { get; init; }
+    internal bool ConditionalYouSubject { get; init; }
+    internal bool SelfActionQuestion { get; init; }
     internal bool SecondPersonWhatSubject { get; init; }
     internal string? EnglishText { get; init; }
 
@@ -24,6 +27,14 @@ public sealed record ReferenceHint(bool SecondPerson, bool SecondPossessive, boo
         IReadOnlyList<string?>? speakers = null)
     {
         var hint = FromText(english?[index]);
+        if (hint != null && index > 0 && english != null &&
+            InitialConditionalYouSubject.IsMatch(ReferenceAligner.Clean(english[index - 1] ?? "")) &&
+            source[index].StartMs >= source[index - 1].StartMs &&
+            source[index].StartMs - source[index - 1].EndMs <= 1500 &&
+            Regex.IsMatch(source[index - 1].Text, @"(?:\.\.\.|…)\s*$") &&
+            Regex.IsMatch(hint.EnglishText ?? "", @"^(?:call|phone|ring|ask|tell|wait|leave|go|come|help|take|do)\b[^.!;]*\?$",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+            hint = hint with { SelfActionQuestion = true };
         if (index > 0 && source[index].StartMs >= source[index - 1].StartMs &&
             source[index].StartMs - source[index - 1].EndMs <= 5000 &&
             !DialogueRegister.DifferentSpeaker(source[index - 1].Text, source[index].Text) &&
@@ -118,10 +129,22 @@ public sealed record ReferenceHint(bool SecondPerson, bool SecondPossessive, boo
         .OrderByDescending(word => word.Length)
         .Select(Regex.Escape));
     private static readonly Regex InitialYouSubject = new(
-        @"^\s*(?:(?:well|so|then|but|and|now|hey|look|listen|okay|ok|all\s+right)\b[,!?;:]?\s*)?(?:you\b|you['’](?:re|ll|ve|d)\b|y['’]all\b)",
+        @"^\s*(?:(?:no|yes)\s*[.,!]\s*)?" +
+        @"(?:(?:well|so|then|but|and|now|hey|look|listen|okay|ok|all\s+right)\b[,!?;:]?\s*)?" +
+        @"(?:(?:maybe|perhaps|probably|surely|certainly)\s+){0,2}(?:you\b|you['’](?:re|ll|ve|d)\b|y['’]all\b)",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    private static readonly Regex InitialConditionalYouSubject = new(
+        @"^\s*(?:(?:well|so|then|but|and|or)\b[,!?;:]?\s*)?" +
+        @"(?:(?:(?:what|even|only)\s+)?if|when|whenever|unless|as\s+soon\s+as)\s+" +
+        @"you(?=\s+(?!(?:and|or|all|both|guys)\b)\p{L})",
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     private static readonly Regex YouSubject = new(
         @"(?<![\p{L}\p{M}])(?:you|y['’]all)\s+(?:(?:never|ever|always|already|just|really|still|only|also|actually)\s+){0,3}(?:" + SubjectVerbs + @"|\p{L}+(?:ed|ing))\b",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    private static readonly Regex ConditionalYouSubjects = new(
+        @"\bif\s+you\b(?:(?!\b(?:he|she|they|we|I|it)\b)[^.!?;]){1,100}\b" +
+        @"you(?:['’](?:re|ll|ve|d)\b|\s+(?:(?:never|always|just|really|still|only|also)\s+){0,3}" +
+        @"(?:" + SubjectVerbs + @"|\p{L}+ed)\b)",
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     private static readonly Regex NeverAny = new(
         @"\bnever\s+(?:\p{L}+\s+){1,3}any\s+(?!more\b|longer\b)\p{L}+", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
@@ -172,6 +195,8 @@ public sealed record ReferenceHint(bool SecondPerson, bool SecondPossessive, boo
         return new ReferenceHint(second, secondOwn, third, thirdOwn)
         {
             EnglishText = clean,
+            RepeatedConditionalYouSubject = ConditionalYouSubjects.Matches(clean).Count == 1,
+            ConditionalYouSubject = InitialConditionalYouSubject.IsMatch(clean),
             RepeatedYouSubject = Regex.IsMatch(clean,
                 @"\byou\s+(?:think|believe|know|hope|said|thought|knew|realized|realised|discovered)\s+(?:that\s+)?you\b",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant),
@@ -197,7 +222,7 @@ internal static class DialogueRegister
     private const RegexOptions Ci = RegexOptions.IgnoreCase | RegexOptions.CultureInvariant;
     private const string Name = @"(?:\s+(?-i:\p{Lu})[\p{L}\p{M}'’-]*){0,3}";
     private const string Start = @"(?:^|[,!?;:\n]\s*|(?<![\p{L}\p{M}])[-–—]\s*)\s*(?:(?:bem|certo|sim|não|well|okay|yes|no)\s*,?\s+)?";
-    private const string End = @"(?=\s*(?:[,!?…]|\.{1,3}\s*$|$))";
+    private const string End = @"(?=\s*(?:[,!?…]|\.\.\.(?=\s|$)|\.(?=\s*$)|$))";
     private static readonly Regex PortugueseAddress = new(
         Start + @"(?:(?:sr|sra|srta|senhor|senhora)\.?\s+)?(?:" +
         PortugueseConverter.YouToTuRules.FormalTitles + @")\.?" + Name + End, Ci);
@@ -208,6 +233,26 @@ internal static class DialogueRegister
         Name + End, Ci);
     private static readonly Regex Informal = new(
         @"(?<![\p{L}\p{M}])(?:tu|teus?|tuas?|ti|contigo)(?![\p{L}\p{M}])", Ci);
+    private static readonly Regex NamedTitle = new(
+        @"\b(?:Sr|Sra|Srta|Dr|Dra|Mr|Mrs|Ms|senhor|senhora|doutor|doutora|Doctor|Detective|detetive)\.?\s+" +
+        @"(?-i:\p{Lu}[\p{Ll}\p{M}'’-]+)", Ci);
+    private static readonly Regex PersonApposition = new(
+        @"(?:\b(?:é|era|foi|são|eram|is|was|are|were)|['’]s)\s+[^.!?;]{0,60}\b" +
+        @"(?:amig[oa]s?|vizinh[oa]s?|colegas?|irmã[oa]s?|mãe|pai|esposa|marido|" +
+        @"friend|neighbou?r|colleague|brother|sister|mother|father|wife|husband)" +
+        @"[^.!?;,]{0,40},\s*$", Ci);
+
+    private static readonly Regex DirectAddressTail = new(
+        @"^\s*,\s*(?:(?:você|o\s+senhor|a\s+senhora)\s+)?" +
+        @"(?:pode|poderia|quer|sabe|diga|faça|venha|you|can\s+you|could\s+you|would\s+you|will\s+you)\b", Ci);
+
+    private static bool HasAddress(string text, Regex pattern) => pattern.Matches(text).Cast<Match>().Any(m =>
+    {
+        if (!NamedTitle.IsMatch(m.Value) || DirectAddressTail.IsMatch(text[(m.Index + m.Length)..])) return true;
+        var comma = m.Value.IndexOf(',');
+        var before = text[..(m.Index + (comma >= 0 ? comma + 1 : 0))];
+        return !PersonApposition.IsMatch(before);
+    });
 
     internal static bool IsFormal(IReadOnlyList<SrtBlock> source, int index, IReadOnlyList<string?>? english = null,
         IReadOnlyList<string?>? speakers = null)
@@ -239,8 +284,8 @@ internal static class DialogueRegister
         }
         return false;
 
-        bool Address(int i) => PortugueseAddress.IsMatch(Plain(source[i].Text)) ||
-                               english != null && EnglishAddress.IsMatch(Plain(english[i] ?? string.Empty));
+        bool Address(int i) => HasAddress(Plain(source[i].Text), PortugueseAddress) ||
+                               english != null && HasAddress(Plain(english[i] ?? string.Empty), EnglishAddress);
     }
 
     private static string Plain(string text) => Regex.Replace(text, @"<[^<>]*>|\{[^{}]*\}", " ");
@@ -258,7 +303,7 @@ internal static class DialogueRegister
         Regex.Match(Plain(text), @"^\s*(?<name>[\p{Lu}][\p{Lu}\d _'-]{1,35}):").Groups["name"].Value;
 
     internal static bool ConflictingAddress(string text) =>
-        PortugueseAddress.IsMatch(Plain(text)) && Informal.IsMatch(Plain(text));
+        HasAddress(Plain(text), PortugueseAddress) && Informal.IsMatch(Plain(text));
 }
 
 public sealed record TimeMap(double Scale, double OffsetMs)
