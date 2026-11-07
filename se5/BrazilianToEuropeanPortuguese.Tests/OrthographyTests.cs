@@ -14,6 +14,43 @@ namespace BrazilianToEuropeanPortuguese.Tests;
 public sealed class OrthographyTests
 {
     [Theory]
+    [InlineData("Baseada em que?", "Baseada em quê?")]
+    [InlineData("Estão a falar de que?", "Estão a falar de quê?")]
+    [InlineData("Para que?", "Para quê?")]
+    [InlineData("Com que?", "Com quê?")]
+    [InlineData("O que?", "O quê?")]
+    [InlineData("Que?", "Quê?")]
+    [InlineData("BASEADA EM QUE?", "BASEADA EM QUÊ?")]
+    [InlineData("Baseada em\nque?", "Baseada em\nquê?")]
+    [InlineData("<i>Baseada em que?</i>", "<i>Baseada em quê?</i>")]
+    [InlineData("Baseada em <i>que</i>?", "Baseada em <i>quê</i>?")]
+    [InlineData("-Baseada em que?\n-Nada.", "-Baseada em quê?\n-Nada.")]
+    [InlineData("Baseada em que ideia?", "Baseada em que ideia?")]
+    [InlineData("Que queres?", "Que queres?")]
+    [InlineData("Penso que sim.", "Penso que sim.")]
+    [InlineData("Baseada em quê?", "Baseada em quê?")]
+    public void FinalInterrogativeQueIsAccentedInBothOrthographies(string source, string expected)
+    {
+        foreach (var postAgreement in new[] { true, false })
+        {
+            var converter = new PortugueseConverter(new ConversionOptions(PostAgreement: postAgreement));
+            Assert.Equal(expected, converter.Convert(source));
+            Assert.Equal(expected, converter.Convert(expected));
+        }
+    }
+
+    [Fact]
+    public void InterrogativeAccentRespectsSpellingOptionsAndIgnoredPhrases()
+    {
+        const string source = "Baseada em que?";
+        Assert.Equal(source, new PortugueseConverter(new ConversionOptions(Spelling: false)).Convert(source));
+        Assert.Equal(source, new PortugueseConverter(new ConversionOptions(DisabledRules: "orthography")).Convert(source));
+        var list = new PortugueseLocalWordList();
+        list.Ignored.Add("Baseada em que");
+        Assert.Equal(source, new PortugueseConverter(localWordList: list).Convert(source));
+    }
+
+    [Theory]
     [InlineData("A ação do diretor.", "A acção do director.")]
     [InlineData("Os atores e as atrizes.", "Os actores e as actrizes.")]
     [InlineData("Um projeto ativo.", "Um projecto activo.")]

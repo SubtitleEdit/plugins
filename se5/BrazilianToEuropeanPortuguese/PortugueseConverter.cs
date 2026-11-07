@@ -661,8 +661,27 @@ public sealed class PortugueseConverter
         Track("construction-vocabulary", "Complement-qualified vocabulary senses");
         if (_options.YouToTu) s = ConversionConstructions.PersonalInfinitives(s, informalConstructions);
         Track("personal-infinitives", "Explicit-subject personal infinitives");
+        if (_options.Pronouns) s = ConversionConstructions.FamilySubjects(s, reference);
+        Track("family-subjects", "Reference-confirmed family subjects with definite articles");
+        if (_options.Pronouns && informalConstructions)
+            s = ConversionConstructions.ReferenceObjectClitics(s, reference, _options.Vocabulary);
+        Track("reference-object-clitics", "Reference-confirmed informal past direct objects");
         if (informalConstructions) s = ConversionConstructions.Clauses(s, reference);
         Track("subject-continuity", "Controlled and reference-confirmed clause subjects");
+        if (_options.Colloquial && _options.Progressive && _options.Pronouns)
+            s = ConversionConstructions.HappeningQuestions(s, reference);
+        Track("happening-questions", "Impersonal questions about ongoing events");
+        if (_options.YouToTu && reference is not { FormalAddress: true } && !YouToTuRules.IsFormal(s))
+            s = ConversionConstructions.WaitUntil(s, reference);
+        Track("wait-until", "Reference-confirmed personal infinitives after esperar até");
+        if (_options.Vocabulary) s = ConversionConstructions.AcquisitionBeneficiaries(s, reference);
+        Track("acquisition-beneficiaries", "Para for reference-confirmed beneficiaries rather than substitution");
+        if (_options.Vocabulary && _options.Colloquial) s = ConversionConstructions.ExplanatoryIntroductions(s, reference);
+        Track("explanatory-introductions", "Reference-confirmed explanatory thing is constructions");
+        if (_options.Vocabulary) s = ConversionConstructions.EmergencyConstructions(s, reference);
+        Track("emergency-constructions", "Reference-confirmed incident response and medical arrest");
+        if (_options.Vocabulary) s = ConversionConstructions.TravelStops(s, reference);
+        Track("travel-stops", "Reference-confirmed stopping places and brief journey stops");
         if (_options.Colloquial && _options.Vocabulary) s = ConversionConstructions.Idioms(s, reference);
         Track("reference-idioms", "Brazilian expressions and English-confirmed literal idioms");
 
@@ -671,7 +690,7 @@ public sealed class PortugueseConverter
 
         if (_options.YouToTu)
         {
-            s = YouToTuRules.Apply(s, previousText, reference);
+            s = YouToTuRules.Apply(s, previousText, reference, _options.Pronouns && _options.Colloquial);
         }
         Track("address", "Address, conjugation and possessives");
 
@@ -739,6 +758,11 @@ public sealed class PortugueseConverter
         {
             s = NearDemonstrative.Replace(s, m => CaseHelper.MatchCase(m.Value, NearDemonstratives[m.Value]));
         }
+        else if (ReferentialThat.IsMatch(reference?.EnglishText ?? "") &&
+                 !Regex.IsMatch(reference?.EnglishText ?? "", @"\b(?:this|these|those)\b", Ci))
+        {
+            s = DistalDemonstrative.Replace(s, m => CaseHelper.MatchCase(m.Value, DistalDemonstratives[m.Value]));
+        }
         Track("reference-clitics", "Future-subjunctive clitics and reference demonstratives");
 
         if (_options.Progressive && _wordRegex != null)
@@ -771,15 +795,24 @@ public sealed class PortugueseConverter
         }
         Track("reflexive-clitics", "Reflexives and clitic allomorphs");
 
+        if (_options.YouToTu && _options.Colloquial && reference is not { FormalAddress: true } &&
+            reference is not { IgnorePreviousAddress: true })
+            s = ConversionConstructions.ActionQuestions(s, previousText, reference, _options.Pronouns);
+        Track("action-questions", "Reference-confirmed self-directed action questions");
+
         if (_options.Colloquial && _options.Vocabulary)
             s = ConversionConstructions.SpokenInformation(s, previousText, reference);
         Track("spoken-information", "English-confirmed figurative give me requests about information");
 
-        if (_options.Colloquial) s = ConversionConstructions.NaturalWordOrder(s);
+        if (_options.Colloquial) s = ConversionConstructions.NaturalWordOrder(s, reference);
         Track("natural-word-order", "Habitual sempre after lexical verbs and recoverable progressive subjects");
+        if (_options.Colloquial && _options.Pronouns) s = ConversionConstructions.NaturalDialogue(s, reference, _options.Vocabulary);
+        Track("natural-dialogue", "Departure commands and reference-confirmed departure slang and certainty questions");
 
         if (_options.Colloquial) s = ConversionConstructions.PhysicalDescriptions(s);
         Track("physical-descriptions", "Com in person height and weight descriptions");
+        if (_options.Pronouns) s = ConversionConstructions.PersonalNameComplements(s);
+        Track("personal-name-complements", "Definite articles in pensar em complements with reviewed personal names");
 
         if (_options.Vocabulary && _options.Pronouns) s = ConversionConstructions.Complaints(s, informalConstructions);
         Track("construction-vocabulary", "Complement-qualified vocabulary senses");
@@ -878,6 +911,21 @@ public sealed class PortugueseConverter
 
     private static readonly Regex NearDemonstrative = new(
         NotWordBefore + @"(?<!\bpor\s)(?:" + string.Join("|", NearDemonstratives.Keys.OrderByDescending(k => k.Length)) + ")" + NotWordAfter, Ci);
+
+    private static readonly Dictionary<string, string> DistalDemonstratives = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["isto"] = "isso", ["disto"] = "disso", ["nisto"] = "nisso",
+    };
+    private static readonly Regex DistalDemonstrative = new(
+        NotWordBefore + @"(?:isto|disto|nisto)" + NotWordAfter, Ci);
+    private static readonly Regex ReferentialThat = new(
+        @"\b(?:(?:would|will|could|can|does|did|should|might)\s+that\s+" +
+        @"(?:work|help|change|matter|mean|make|be|have|do|happen|affect|cost|take|sound|seem)\b|" +
+        @"what(?:['’]s|\s+(?:is|does|did))\s+that(?=\s+(?:got|have|has|mean|do)\b|\s*[,;.!?]|$)|" +
+        @"that(?:['’]s|\s+(?:is|was|has|had|will|would|could|can|does|did|should|might|works?|worked|sounds?|seems?))\b|" +
+        @"(?:with|about|of|for|on|at|to|from)\s+that(?=\s*[,;.!?]|$)|" +
+        @"(?:do|does|did|doing|done|try|tried|mean|means|meant|said|say|saying|know|knew|believe)\s+that(?=\s*[,;.!?]|$))",
+        Ci);
 
     // "pegar o ônibus/trem/táxi" → "apanhar o autocarro/comboio/táxi" ("pegar" alone means "to hold/grab" in Portugal).
     private static readonly Regex CatchTransport = new(
@@ -2513,7 +2561,7 @@ public sealed class PortugueseConverter
     {
         private const string You = "você";
         private const string Adverbs = "não|nunca|jamais|também|já|ainda|sempre|só|realmente|simplesmente|provavelmente|certamente|nem|apenas|agora|quase";
-        private const string ProclisisTriggers = "não|nunca|jamais|também|já|ainda|sempre|só|nem|apenas|quase|talvez|que|quem|ninguém|alguém|tudo|todos";
+        internal const string ProclisisTriggers = "não|nunca|jamais|também|já|ainda|sempre|só|nem|apenas|quase|talvez|que|quem|ninguém|alguém|tudo|todos";
 
         private static readonly Regex Contigo = new(NotWordBefore + @"com\s+você" + NotWordAfter, Ci);
         private static readonly Regex Preposition = new(NotWordBefore + @"(?<p>para|pra|de|a|por|sem|em|sobre|até|contra|perante|entre\s+mim\s+e)\s+você" + NotWordAfter, Ci);
@@ -2653,14 +2701,20 @@ public sealed class PortugueseConverter
             @"prefeita|madame|mademoiselle|mister|monsieur|sir|lady|lorde|milorde|vossa|(?:vice-)?cônsul";
 
         private static readonly Regex FormalAddress = new(NotWordBefore + "(?:" + FormalTitles + ")" + NotWordAfter, Ci);
+        private static readonly Regex CopularTitlePredicate = new(
+            NotWordBefore + @"(?:é|és|são|somos|era|eras|eram|foi|foste|seria|serias)\s+" +
+            @"(?:o|a|um|uma)\s+(?:" + FormalTitles + ")" + NotWordAfter, Ci);
 
         private static readonly Regex FormalSubjectYou = new(
             @"(?<sub>" + NotWordBefore + @"(?:que|se|quando|porque|onde|como|quem|enquanto|embora|caso|talvez|quanto|qual|até\s+que|antes\s+que|depois\s+que)\s+)?" +
             NotWordBefore + @"(?<you>você)(?<adv>(?:\s+(?:" + Adverbs + @")" + NotWordAfter + @"){0,2})\s+(?:(?<cl>se|me|nos|o|a|os|as|lhe)\s+)?(?<v>\p{L}+)" + NotWordAfter + @"(?!-)", Ci);
 
-        public static bool IsFormal(string s) => FormalAddress.IsMatch(s);
+        public static bool IsFormal(string s) => FormalAddress.IsMatch(
+            ExplicitAddressee.IsMatch(s) || Regex.IsMatch(s, NotWordBefore + @"(?:és|eras|foste|serias)" + NotWordAfter, Ci)
+                ? CopularTitlePredicate.Replace(s, "") : s);
 
-        public static string Apply(string s, string? previousText = null, ReferenceHint? reference = null)
+        public static string Apply(string s, string? previousText = null, ReferenceHint? reference = null,
+            bool conversationalObjectConditional = false)
         {
             var explicitAddressee = ExplicitAddressee.IsMatch(s);
             // "Está bem?" next to "Is he okay?": the dropped subject is not "você".
@@ -2670,6 +2724,7 @@ public sealed class PortugueseConverter
                 return ApplyFormal(s);
             }
 
+            s = ConversionConstructions.InformalPredicates(s, reference);
             s = LookAtYou.Replace(s, ReplaceLookAtYou);
             s = YouInfinitive.Replace(s, m =>
             {
@@ -2721,7 +2776,7 @@ public sealed class PortugueseConverter
             s = CommandYou.Replace(s, m => m.Groups["pre"].Value + m.Groups["v"].Value + " " + CaseHelper.MatchCase(m.Groups["you"].Value, "tu"));
             s = StartCommandYou.Replace(s, m => m.Groups["pre"].Value + m.Groups["v"].Value + " " + CaseHelper.MatchCase(m.Groups["you"].Value, "tu"));
             s = ObjectYou.Replace(s, ReplaceObject);
-            s = SubjectYou.Replace(s, ReplaceSubject);
+            s = SubjectYou.Replace(s, m => ReplaceSubject(m, conversationalObjectConditional));
             s = WaitingForYou.Replace(s, m =>
                 m.Groups["aux"].Value + m.Groups["place"].Value + m.Groups["sp"].Value +
                 (CaseHelper.IsAllUpper(m.Value) ? "À TUA ESPERA" : "à tua espera"));
@@ -2749,6 +2804,10 @@ public sealed class PortugueseConverter
                     s = ReferenceSubordinateVerb.Replace(s, m => ReplaceReferenceSubordinateVerb(m, reference));
                     s = ReferenceCausalVerb.Replace(s, ReplaceReferenceSecondPersonVerb);
                 }
+                if (reference.ConditionalYouSubject)
+                    s = ReferenceConditionalVerb.Replace(s, ReplaceReferenceSecondPersonVerb);
+                if (reference.RepeatedYouSubject)
+                    s = ConversionConstructions.ReportedPastIntention(s, reference);
             }
             s = FamilyCongratulations.Replace(s, m => m.Groups["pre"].Value +
                 (CaseHelper.IsAllUpper(m.Value) ? "ÀS" : "às") + m.Groups["sp"].Value +
@@ -2758,10 +2817,20 @@ public sealed class PortugueseConverter
         }
 
         private static readonly Regex ReferenceSubjectVerb = new(
-            @"(?<pre>^[\s""“«'\uE000-\uF8FF]*(?:(?:então|bem|ora|bom|pois|mas|e|agora)\s+)?)(?<v>\p{L}+)(?=\s)", Ci);
+            @"(?<pre>^[\s""“«'\uE000-\uF8FF]*(?:(?:não|sim)\s*[.!]\s*)?" +
+            @"(?:(?:então|bem|ora|bom|pois|mas|e|agora)[,;]?\s+)?" +
+            @"(?:(?:talvez|provavelmente|certamente|possivelmente|não|nunca|já|ainda|só|apenas|também)\s+){0,3})" +
+            @"(?<v>\p{L}+)" + NotWordAfter + @"(?=\s|[.!?…]|$|[\uE000-\uF8FF])(?!-)", Ci);
+
+        private static readonly Regex ReferenceConditionalVerb = new(
+            @"(?<pre>^[\s""“«'\uE000-\uF8FF]*(?:(?:e|mas|ou|então|bem)[,;]?\s+)?" +
+            @"(?:se|quando|sempre\s+que|a\s+menos\s+que|assim\s+que)\s+" +
+            @"(?:(?:não|nunca|já|ainda|sempre|só|alguma\s+vez|também)\s+){0,3})" +
+            @"(?<v>\p{L}+)" + NotWordAfter + @"(?!-)", Ci);
 
         private static readonly Regex ReferenceSubordinateVerb = new(
-            @"(?<pre>(?<![\p{L}\p{M}])que\s+)(?<v>\p{L}+)(?![\p{L}\p{M}-])", Ci);
+            @"(?<pre>(?<![\p{L}\p{M}])que\s+(?:(?:não|nunca|já|ainda|sempre|também|só|apenas)\s+){0,3})" +
+            @"(?<v>\p{L}+)(?![\p{L}\p{M}-])", Ci);
 
         private static readonly Regex ImpersonalWhatVerb = new(
             @"^(?:acontece|aconteceu|acontecia|acontecerá|aconteceria|aconteça|acontecesse)$", Ci);
@@ -2771,6 +2840,15 @@ public sealed class PortugueseConverter
 
         private static string ReplaceReferenceSubordinateVerb(Match m, ReferenceHint reference)
         {
+            var prefix = m.Result("$`");
+            if (Regex.IsMatch(prefix, @"\b(?:quer|queres|queria|querias|querem|quiser)\s*$", Ci) &&
+                Regex.IsMatch(reference.EnglishText ?? "", @"\bwant(?:ed|s)?\s+me\s+to\b", Ci))
+                return m.Value;
+            if (Regex.IsMatch(m.Groups["pre"].Value, @"\b(?:não|nunca|já|ainda|sempre|também|só|apenas)\b", Ci) &&
+                !Regex.IsMatch(prefix, @"^[\s""“«'\uE000-\uF8FF-]*$|\b" +
+                    @"(?:sei|sabes|sabe|sabemos|disse|dizes|diz|digo|dizer|acho|achas|acha|penso|pensas|pensa|" +
+                    @"creio|acredito|certeza|claro|óbvio)\s*$", Ci))
+                return m.Value;
             // In "quem achas que vê", "quem" is the embedded subject, not the addressee.
             if (ConversionConstructions.KeepsExtractedQuestionSubject(m.Result("$`") + m.Groups["pre"].Value, reference))
                 return m.Value;
@@ -2780,7 +2858,7 @@ public sealed class PortugueseConverter
                 var after = m.Result("$'");
                 var impersonal = ImpersonalWhatVerb.IsMatch(verb) ||
                     verb.Equals("está", StringComparison.OrdinalIgnoreCase) &&
-                    Regex.IsMatch(after, @"^\s+(?:a\s+acontecer|acontecendo)\b", Ci);
+                    Regex.IsMatch(after, @"^\s+(?:a\s+(?:acontecer|haver)|acontecendo|havendo)\b", Ci);
                 var copular = CopularWhatVerb.IsMatch(verb) &&
                     (!reference.SecondPersonWhatSubject || Regex.IsMatch(after, @"^\s+(?:isso|isto|aquilo)\b", Ci));
                 if (impersonal || copular) return m.Value;
@@ -3087,7 +3165,7 @@ public sealed class PortugueseConverter
         /// "você tem" → "tens": European Portuguese normally drops the subject pronoun, the verb ending
         /// already says who it is ("Você não se lembra?" → "Não te lembras?").
         /// </summary>
-        private static string ReplaceSubject(Match m)
+        private static string ReplaceSubject(Match m, bool conversationalObjectConditional)
         {
             var verb = m.Groups["v"].Value;
             var explicitTu = m.Groups["you"].Value.Equals("tu", StringComparison.OrdinalIgnoreCase);
@@ -3128,7 +3206,18 @@ public sealed class PortugueseConverter
                     ? CaseHelper.MatchCase(clitic, "te")
                     : clitic;
                 var proclisis = m.Groups["sub"].Success || Regex.IsMatch(adv, @"(?:^|\s)(?:" + ProclisisTriggers + @")(?:$|\s)", Ci) || PortugueseVerbs.IsFutureOrConditional(verb);
-                result = proclisis
+                var conditionalObject = conversationalObjectConditional && !m.Groups["sub"].Success &&
+                    adv.Length == 0 && cl.ToLowerInvariant() is "o" or "a" or "os" or "as" &&
+                    PortugueseVerbs.TrySplitFuture(second, out _, out var ending, true) &&
+                    ending.Equals("ias", StringComparison.OrdinalIgnoreCase);
+                result = conditionalObject
+                    ? "irias " + PortugueseVerbs.AttachEnclitic(
+                        second[..^3].ToLowerInvariant() switch
+                        {
+                            "dir" => "dizer", "far" => "fazer", "trar" => "trazer",
+                            var infinitive => infinitive,
+                        }, cl)
+                    : proclisis
                     ? (adv.Length > 0 ? adv + " " : string.Empty) + cl + " " + second
                     : (adv.Length > 0 ? adv + " " : string.Empty) + PortugueseVerbs.AttachEnclitic(second, cl);
             }
@@ -3521,7 +3610,22 @@ public sealed class PortugueseConverter
 
         // "obriga-os a te verem" / "dopar-te e depois te afogar" → "a verem-te" / "depois afogar-te".
         private static readonly Regex LinkedInfinitiveClitic = new(
-            NotWordBefore + @"(?<l>a|e\s+depois|depois|e|ou)\s+(?<cl>me|te|nos|lhe|lhes)\s+(?<v>\p{Ll}+(?:ar|er|ir|arem|erem|irem|ares|eres|ires|armos|ermos|irmos))" + NotWordAfter + @"(?!-)", Ci);
+            NotWordBefore + @"(?<l>a|e\s+depois|depois|e|ou|mas)\s+(?<cl>me|te|se|nos|vos|lhe|lhes)\s+" +
+            @"(?<v>(?:[\p{L}\p{M}]+(?:ar|er|ir|or|ôr)|pôr)(?:em|es|mos)?)" + NotWordAfter + @"(?!-)", Ci);
+
+        private static string ReplaceLinkedInfinitive(Match m)
+        {
+            var verb = m.Groups["v"].Value;
+            var infinitive = Regex.Replace(verb.ToLowerInvariant(), @"(?:em|es|mos)$", "");
+            // At a coordinated clause start, "se" can be a conditional conjunction, not a clitic.
+            if (m.Groups["cl"].Value.Equals("se", StringComparison.OrdinalIgnoreCase) &&
+                m.Groups["l"].Value.ToLowerInvariant() is "e" or "ou" or "mas")
+                return m.Value;
+            if (!PortugueseVerbs.IsInfinitive(infinitive) ||
+                (!PortugueseVerbs.IsKnownInfinitive(infinitive) && !NaturaDictionary.Load(true).Check(infinitive)))
+                return m.Value;
+            return m.Groups["l"].Value + " " + PortugueseVerbs.AttachEnclitic(verb, m.Groups["cl"].Value);
+        }
 
         // "Eu vi ele" / "Mata ela!" → "Eu vi-o" / "Mata-a!"  ("não vi ele" → "não o vi")
         private static readonly Regex ObjectPronoun = new(
@@ -3530,7 +3634,8 @@ public sealed class PortugueseConverter
 
         private static readonly HashSet<string> Modals = new(StringComparer.OrdinalIgnoreCase)
         {
-            "vou", "vais", "vai", "vamos", "vão", "ia", "ias", "íamos", "iam", "fui", "foi", "quero", "queres", "quer",
+            "vou", "vais", "vai", "vamos", "vão", "ia", "ias", "íamos", "iam", "iria", "irias", "iríamos", "iriam",
+            "fui", "foi", "quero", "queres", "quer",
             "queremos", "querem", "queria", "querias", "queríamos", "queriam", "posso", "podes", "pode", "podemos",
             "podem", "podia", "podias", "podíamos", "podiam", "poderia", "poderias", "poderíamos", "poderiam",
             "preciso", "precisas", "precisa", "precisamos", "precisam", "precisava", "devo", "deves", "deve", "devemos",
@@ -3938,13 +4043,7 @@ public sealed class PortugueseConverter
             s = CommaClitic.Replace(s, m => ReplaceLeading(m, capitalize: false));
             s = SubjectClitic.Replace(s, ReplaceSubject);
             s = ModalClitic.Replace(s, ReplaceModal);
-            s = LinkedInfinitiveClitic.Replace(s, m =>
-            {
-                var v = m.Groups["v"].Value;
-                return PortugueseVerbs.IsInfinitive(v) || Regex.IsMatch(v, @"(?:ar|er|ir)(?:em|es|mos)$", RegexOptions.IgnoreCase)
-                    ? m.Groups["l"].Value + " " + PortugueseVerbs.AttachEnclitic(v, m.Groups["cl"].Value)
-                    : m.Value;
-            });
+            s = LinkedInfinitiveClitic.Replace(s, ReplaceLinkedInfinitive);
             s = NounSubjectClitic.Replace(s, ReplaceNounSubject);
             s = AdverbClitic.Replace(s, m =>
             {
@@ -4174,7 +4273,7 @@ public sealed class PortugueseConverter
         private static readonly Regex InfinitiveProclisis = new(
             @"(?<pre>(?<![\p{L}\p{M}])que\s+)" +
             @"(?:(?<subject>eu|tu|ele|ela|nós|vocês|eles|elas)(?<subjectSpace>\s+))?" +
-            @"(?<aux>vou|vais|vai|vamos|vão|ia|ias|íamos|iam|irei|irás|irá|iremos|irão|estou|estás|está|estamos|estão|estava|estavas|estávamos|estavam|" +
+            @"(?<aux>vou|vais|vai|vamos|vão|ia|ias|íamos|iam|iria|irias|iríamos|iriam|irei|irás|irá|iremos|irão|estou|estás|está|estamos|estão|estava|estavas|estávamos|estavam|" +
             @"posso|podes|pode|podemos|podem|podia|podias|podíamos|podiam|quero|queres|quer|queremos|querem|queria|querias|queríamos|queriam|" +
             @"devo|deves|deve|devemos|devem|devia|devias|devíamos|deviam)(?<auxSpace>\s+)(?<verb>\p{L}+)-(?<cl>me|te|se|nos|vos|lhe|lhes)(?![\p{L}\p{M}-])", Ci);
 
@@ -4591,7 +4690,7 @@ public sealed class PortugueseConverter
         private static readonly Regex Verb = new(
             NotWordBefore + @"(?<se>se\s+)?(?<v>" + string.Join("|", BuildForms().Keys.OrderByDescending(k => k.Length)) + @")" + NotWordAfter + @"(?!-)" +
             @"(?=(?<de>\s+(?:de|do|da|dos|das|disso|disto|daquilo|daquele|daquela|daqueles|daquelas|dele|dela|deles|delas|desse|dessa|" +
-            @"desses|dessas|deste|desta|destes|destas|dum|duma|dumas|duns|ti|mim|nós)" + NotWordAfter + @")|(?<end>\s*(?:[.!?…,]|$)))",
+            @"desses|dessas|deste|desta|destes|destas|dum|duma|dumas|duns|ti|mim|nós)" + NotWordAfter + @")|(?<end>\s*(?:[.!?…,]|$))|(?<relative>\s+(?:é|era|são|eram)\b))",
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Multiline);
 
         private static readonly Regex ClauseTail = new(@"(?:[^.!?…;\n]|\n(?![-–—]))*$", RegexOptions.CultureInvariant);
@@ -4638,11 +4737,15 @@ public sealed class PortugueseConverter
             if (comma < 0 && Titles.Contains(previous ?? string.Empty)) formal = true;
             // "não se lembra" already has it; only a Brazilian "Se lembra..." at the start is moved.
             if (m.Groups["se"].Success && !bareStart) return m.Value;
+            if (m.Groups["relative"].Success && (esquecer || !Regex.IsMatch(clause,
+                @"\b(?:tudo\s+o\s+que|(?:a\s+)?(?:única\s+)?coisa\s+que)\s*$", Ci))) return m.Value;
 
             if (m.Groups["end"].Success)
             {
                 // At the end of the clause the object may be before it ("o que esqueci", "tudo o que lembro").
-                if (words.Any(w => w.Equals("que", StringComparison.OrdinalIgnoreCase) || w.Equals("quê", StringComparison.OrdinalIgnoreCase) ||
+                var relativeRecall = !esquecer && Regex.IsMatch(clause,
+                    @"\b(?:tudo\s+o\s+que|(?:a\s+)?(?:única\s+)?coisa\s+que)\s*$", Ci);
+                if (!relativeRecall && words.Any(w => w.Equals("que", StringComparison.OrdinalIgnoreCase) || w.Equals("quê", StringComparison.OrdinalIgnoreCase) ||
                                    w.Equals("qual", StringComparison.OrdinalIgnoreCase))) return m.Value;
                 // "Esquece!" / "Esquece isso" (forget it) is fine in Portugal; only past and negative forms take the pronoun at the end.
                 if (esquecer && !Preterite.Contains(lower) && !(previous?.Equals("não", StringComparison.OrdinalIgnoreCase) ?? false)) return m.Value;

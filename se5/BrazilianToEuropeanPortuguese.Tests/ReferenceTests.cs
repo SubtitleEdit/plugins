@@ -371,12 +371,21 @@ public sealed class ReferenceTests(ITestOutputHelper output)
     [Theory]
     [InlineData("Precisamos falar com\nseu marido. Ele está em casa?", "We need to talk to your husband. Is he home?")]
     [InlineData("Agora, seu irmão Tiago,", "Now, your brother Tiago,")]
-    [InlineData("Mamãe tá brava com ele\npor quê ficou ao seu lado.", "Mom's mad at him because he took your side.")]
     [InlineData("Você está bem?", "Are you okay?")]
     [InlineData("Não fala assim.", "Don't talk like that.")]
     [InlineData("Se afaste!", "Step aside!")]
     public void SecondPersonOrNeutralReferenceChangesNothing(string text, string english) =>
         Assert.Equal(Converter.Convert(text), Converter.Convert(text, null, ReferenceHint.FromText(english)));
+
+    [Fact]
+    public void FamilySubjectArticleDoesNotOverrideThirdPersonPossessive()
+    {
+        const string source = "Mamãe tá brava com ele\npor quê ficou ao seu lado.";
+        const string expected = "Mãe está zangada com ele\npor quê ficou ao seu lado.";
+        Assert.Equal(expected, Converter.Convert(source));
+        Assert.Equal("A " + expected, Converter.Convert(source, null,
+            ReferenceHint.FromText("Mom's mad at him because he took your side.")));
+    }
 
     [Fact]
     public void ParsesVulkanDevicesAndSkipsSoftwareRenderers()
