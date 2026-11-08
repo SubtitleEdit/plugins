@@ -827,7 +827,7 @@ public sealed class ConverterTests
     [InlineData("Se afaste.", "Afasta-te.")]
     [InlineData("Se afastem da porta!", "Afastem-se da porta!")]
     [InlineData("Se aproxime.", "Aproxima-te.")]
-    [InlineData("Se sente.", "Sente-se.")]
+    [InlineData("Se sente.", "Senta-te.")]
     [InlineData("Se levante!", "Levanta-te!")]
     [InlineData("Se prepare para sair.", "Prepara-te para sair.")]
     [InlineData("Se proteja.", "Protege-te.")]
@@ -841,7 +841,7 @@ public sealed class ConverterTests
     [InlineData("Talvez se afaste.", "Talvez se afaste.")]
     [InlineData("Se afaste o perigo, ficamos aqui.", "Se afaste o perigo, ficamos aqui.")]
     [InlineData("Se afaste ele, esperamos.", "Se afaste ele, esperamos.")]
-    [InlineData("Se sente dor, fale.", "Se sente dor, fale.")]
+    [InlineData("Se sente dor, fale.", "Se sentes dor, fala.")]
     [InlineData("Se sente dor.", "Se sente dor.")]
     public void ReflexiveImperativePlacement(string br, string pt) => AssertConverts(br, pt);
 
@@ -1665,6 +1665,20 @@ public sealed class VerbVocabularyTests
         Assert.Equal("Vou pôr aqui. Botei ali.", converter.Convert("Vou botar aqui. Botei ali."));
     }
 
+    [Theory]
+    [InlineData("Brigas são como uma caixa de chocolates.")]
+    [InlineData("BRIGAS SÃO COMO UMA CAIXA DE CHOCOLATES.")]
+    public void BuiltInNounEntriesDoNotLeaveUnmappedVerbMatches(string text) =>
+        Assert.Equal(text, Converter.Convert(text));
+
+    [Fact]
+    public void LocalNounEntryWinsOverGeneratedHomograph()
+    {
+        var local = new PortugueseLocalWordList();
+        local.Words.Add(("bota", "calçado"));
+        Assert.Equal("Calçado aqui.", new PortugueseConverter(ConversionOptions.Default, local).Convert("Bota aqui."));
+    }
+
     [Fact]
     public void ConjugatorKeepsTheConsonantSound()
     {
@@ -1872,6 +1886,10 @@ public sealed class SlangTests
     [InlineData("Digo, a justiça ir atrás desse\ncara, por causa do porte.", "Digo, a justiça ir atrás desse\ntipo, por causa do porte.")]
     [InlineData("- Oi.\nCara, que susto.", "- Olá.\nMeu, que susto.")]
     [InlineData("Ele é um cara legal.", "Ele é um tipo fixe.")]
+    [InlineData("desobedece uma ordem legal.", "desobedece uma ordem legal.")]
+    [InlineData("As ordens legais são válidas.", "As ordens legais são válidas.")]
+    [InlineData("UMA ORDEM LEGAL.", "UMA ORDEM LEGAL.")]
+    [InlineData("É legal dar ordens.", "É fixe dar ordens.")]
     public void BrazilianSlangBecomesEuropean(string text, string expected) => Assert.Equal(expected, Converter.Convert(text));
 
     [Theory]

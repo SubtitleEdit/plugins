@@ -27,6 +27,14 @@
   <Word br="trabalho de meio período" pt="trabalho a tempo parcial" />
   <Word br="emprego de meio período" pt="emprego a tempo parcial" />
   <Word br="trabalho de tempo integral" pt="trabalho a tempo inteiro" />
+  <Word br="não esquente a cabeça" pt="não te preocupes" />
+  <Word br="nem esquente a cabeça" pt="não te preocupes" />
+  <Word br="chispa daqui" pt="desaparece daqui" />
+  <Word br="chispem daqui" pt="desapareçam daqui" />
+  <Word br="canção de ninar" pt="canção de embalar" />
+  <Word br="canções de ninar" pt="canções de embalar" />
+  <Word br="na marra" pt="à força" />
+  <Word br="água encanada" pt="água canalizada" />
   <Word br="emprego de tempo integral" pt="emprego a tempo inteiro" />
   <!-- Reviewed base equivalences from the larger study guide. -->
   <Word br="varal de roupa" pt="estendal de roupa" />
@@ -356,6 +364,8 @@
   <Word br="rapidinho" pt="num instante" />
   <Word br="briga" pt="zanga" det="f" />
   <Word br="brigas" pt="zangas" det="f" />
+  <Word br="bate-boca" pt="discussão" det="m" g="f" />
+  <Word br="bate-bocas" pt="discussões" det="m" g="f" />
   <Word br="confiável" pt="fiável" />
   <Word br="confiáveis" pt="fiáveis" />
   <Word br="placa do carro" pt="matrícula do carro" />
@@ -452,6 +462,9 @@
   <Verb br="estressar" pt="stressar" skip="estresse estresses" />
   <Verb br="surtar" pt="enlouquecer" skip="surto surtos" />
   <Verb br="brigar" pt="discutir" noun="briga brigas" skip="brigado brigada brigados brigadas" />
+  <Verb br="monitorar" pt="monitorizar" noun="monitora monitoras" />
+  <Verb br="parabenizar" pt="felicitar" />
+  <Verb br="grampear" pt="agrafar" after="(?:(?:o|a|os|as|um|uma|uns|umas|este|esta|estes|estas|esse|essa|esses|essas)\s+)?(?:papéis|papel|folhas?|documentos?|páginas?|relatórios?)" />
   <Verb br="consertar" pt="arranjar" />
   <Verb br="fracassar" pt="falhar" skip="fracassado fracassada fracassados fracassadas fracasso fracassos" />
   <Verb br="quebrar" pt="partir" noun="quebra quebras" skip="quebrado quebrada quebrados quebradas" notAfter="(?:a|as|uma|essa|esta|minha|tua|sua)\s+(?:promessa|promessas|regra|regras|lei|leis)|o\s+gelo|o\s+recorde|o\s+silêncio|o\s+acordo|a\s+palavra|a\s+cara|o\s+galho|o\s+protocolo|o\s+código|o\s+feitiço|a\s+maldição|o\s+ciclo|a\s+banca|o\s+banco" />
@@ -465,7 +478,7 @@
   <Verb br="grudar" pt="colar" noun="grude grudes" />
   <Verb br="fofocar" pt="coscuvilhar" />
   <Verb br="dedurar" pt="denunciar" />
-  <Verb br="esquentar" pt="aquecer" notAfter="a\s+cabeça|com\s+isso" />
+  <Verb br="esquentar" pt="aquecer" notAfter="a\s+cabeça|com\s+isso" skip="esquentado esquentada esquentados esquentadas" />
   <Verb br="trombar" pt="esbarrar" noun="tromba trombas" />
   <Verb br="zoar" pt="gozar" skip="zoo" />
   <Verb br="postar" pt="publicar" noun="posta postas poste postes" skip="posto postos" />

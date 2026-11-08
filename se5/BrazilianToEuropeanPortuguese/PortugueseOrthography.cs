@@ -33,12 +33,27 @@ internal static class PortugueseOrthography
         ("crêem", "creem"), ("dêem", "deem"),
     };
     private static readonly Regex Word = new(@"[\p{L}\p{M}]+");
+    private static readonly Regex Midnight = new(
+        @"(?<![\p{L}\p{M}-])(?<half>meia)(?<gap>\s+)noite(?![\p{L}\p{M}-])",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    // "domingo a noite" / "amanhã a tarde" → "à noite": a time-of-day adverbial after a day takes the crase.
+    private static readonly Regex DayPartCrase = new(
+        @"(?<![\p{L}\p{M}-])(?<day>hoje|ontem|amanhã|anteontem|domingo|sábado|(?:segunda|terça|quarta|quinta|sexta)(?:-feira)?)(?<gap>\s+)a(?=\s+(?:noite|tarde|manhã)(?![\p{L}\p{M}-])(?!\s+(?:toda|inteira)(?![\p{L}\p{M}-])))",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    // "Vemos-nos" → "Vemo-nos": the first-person plural drops its final -s before the enclitic "nos".
+    private static readonly Regex FirstPluralNos = new(
+        @"(?<![\p{L}\p{M}-])(?<stem>\p{L}{2,}mo)s(?<cl>-nos)(?![\p{L}\p{M}-])", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     private static readonly Regex FinalInterrogativeQue = new(
         @"(?<![\p{L}\p{M}-])que(?![\p{L}\p{M}-])(?=[\s\uE000-\uF8FF]*\?)",
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
     internal static string Apply(string text, bool postAgreement)
     {
+        text = Midnight.Replace(text, match => match.Groups["half"].Value + "-" +
+            (CaseHelper.IsAllUpper(match.Value) ? "NOITE" : "noite"));
+        text = DayPartCrase.Replace(text, match => match.Groups["day"].Value + match.Groups["gap"].Value +
+            (CaseHelper.IsAllUpper(match.Groups["day"].Value) ? "À" : "à"));
+        text = FirstPluralNos.Replace(text, match => match.Groups["stem"].Value + match.Groups["cl"].Value);
         text = FinalInterrogativeQue.Replace(text, match => CaseHelper.MatchCase(match.Value, "quê"));
         var dictionary = NaturaDictionary.Load(postAgreement);
         return Word.Replace(text, match =>

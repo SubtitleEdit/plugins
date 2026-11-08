@@ -14,6 +14,30 @@ namespace BrazilianToEuropeanPortuguese.Tests;
 public sealed class OrthographyTests
 {
     [Theory]
+    [InlineData("depois da meia noite.", "depois da meia-noite.")]
+    [InlineData("Meia noite de domingo.", "Meia-noite de domingo.")]
+    [InlineData("À MEIA NOITE.", "À MEIA-NOITE.")]
+    [InlineData("<i>meia noite</i>", "<i>meia-noite</i>")]
+    [InlineData("meia-noite", "meia-noite")]
+    [InlineData("meia noite inteira", "meia-noite inteira")]
+    public void MidnightIsHyphenatedInBothOrthographies(string source, string expected)
+    {
+        foreach (var postAgreement in new[] { false, true })
+            Assert.Equal(expected, new PortugueseConverter(new ConversionOptions(PostAgreement: postAgreement)).Convert(source));
+    }
+
+    [Fact]
+    public void MidnightSpellingRespectsOptionsAndIgnoredText()
+    {
+        const string source = "meia noite";
+        Assert.Equal(source, new PortugueseConverter(new ConversionOptions(Spelling: false)).Convert(source));
+        Assert.Equal(source, new PortugueseConverter(new ConversionOptions(DisabledRules: "orthography")).Convert(source));
+        var list = new PortugueseLocalWordList();
+        list.Ignored.Add(source);
+        Assert.Equal(source, new PortugueseConverter(localWordList: list).Convert(source));
+    }
+
+    [Theory]
     [InlineData("Baseada em que?", "Baseada em quê?")]
     [InlineData("Estão a falar de que?", "Estão a falar de quê?")]
     [InlineData("Para que?", "Para quê?")]

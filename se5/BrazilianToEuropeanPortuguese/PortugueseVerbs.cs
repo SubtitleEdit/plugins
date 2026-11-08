@@ -56,7 +56,7 @@ internal static class PortugueseVerbs
         "detestar", "encontrar", "enganar", "esperar", "escutar", "evitar", "ignorar", "incomodar", "julgar", "levar",
         "machucar", "magoar", "matar", "mudar", "mostrar", "olhar", "pegar", "perdoar", "preocupar", "procurar",
         "proteger", "provar", "puxar", "roubar", "salvar", "segurar", "soltar", "trancar", "tratar", "vigiar", "visitar",
-        "conhecer", "convencer", "defender", "devolver", "entender", "escolher", "esconder", "esquecer", "prender",
+        "bater", "conhecer", "convencer", "defender", "devolver", "entender", "escolher", "esconder", "esquecer", "prender",
         "receber", "reconhecer", "surpreender", "abrir", "assistir", "corrigir", "dividir", "fechar", "empurrar",
         "guardar", "limpar", "lavar", "trocar", "ver", "fazer", "trazer", "pôr", "ouvir", "seguir", "perder",
         "querer", "amar", "odiar", "achar", "ligar", "imaginar", "curtir", "apoiar", "respeitar", "admirar", "acompanhar",
@@ -74,6 +74,15 @@ internal static class PortugueseVerbs
         "estragar", "examinar", "humilhar", "identificar", "interromper", "irritar", "libertar", "localizar", "mencionar",
         "molestar", "odiar", "operar", "perseguir", "persuadir", "picar", "prender", "processar", "proibir", "raptar",
         "receber", "salvar", "seduzir", "sufocar", "torturar", "transferir", "vestir", "acalmar", "alimentar", "amaldiçoar",
+    };
+
+    // Add personal-object coverage without promoting new ambiguous forms to subject-agreement candidates.
+    private static readonly HashSet<string> AdditionalObjectInfinitives = new(StringComparer.Ordinal)
+    {
+        "aguentar", "atingir", "considerar", "contactar", "fichar", "honrar", "liberar", "livrar", "recusar", "surrar",
+        "felicitar", "monitorar", "monitorizar", "parabenizar", "merecer", "constranger", "ferrar", "estudar", "stressar",
+        "estressar", "espantar", "jogar", "confundir", "fritar", "aturar", "arrebentar", "preparar", "envergonhar",
+        "perturbar", "sustentar", "assombrar", "abraçar",
     };
 
     // Present-tense "tu" forms that are more often plural nouns ("as chamas", "as provas").
@@ -150,6 +159,10 @@ internal static class PortugueseVerbs
         "quero", "quer", "queremos", "querem", "quis", "quiseram", "queria", "querer", "queira", "queiram", "quisesse", "quisessem", "ter",
         "odeio", "odeia", "odiamos", "odeiam", "odiei", "odiou", "odiar",
         "mantenho", "mantém", "mantemos", "mantêm", "mantive", "manteve", "mantivemos", "mantiveram", "mantinha", "mantenha", "manter", "mantiveste", "manténs",
+        "façam", "vendo", "visse", "vissem", "fazendo", "fizesse", "fizessem", "trazendo", "trouxesse", "trouxessem", "tragam",
+        "pondo", "ouvindo", "seguindo", "perdendo", "querendo", "odiando", "odiasse", "odiassem",
+        "incluo", "inclui", "incluímos", "incluem", "incluí", "incluiu", "incluíram", "incluía", "inclua", "incluam", "incluir", "incluindo", "incluísse",
+        "tenho", "temos", "tive", "tivemos",
         "traio", "trai", "traímos", "traem", "traí", "traiu", "traíram", "traía", "traia", "trair", "traíste", "trais",
         "viste", "vês", "vias", "fizeste", "fazes", "fazias", "trouxeste", "trazes", "puseste", "pões", "ouviste", "ouves",
         "seguiste", "segues", "perdeste", "perdes", "quiseste", "queres", "querias", "odiaste", "odeias",
@@ -282,11 +295,30 @@ internal static class PortugueseVerbs
             all.UnionWith(forms.ObjectForms);
             if (TransitiveInfinitives.Contains(verb))
             {
-                transitive.UnionWith(forms.ObjectForms);
-                // "Viste ele?" / "Se deixarem ela" → "Viste-o?" / "Se a deixarem": a "tu" verb cannot have "ele" as its subject.
-                transitive.UnionWith(forms.ThirdToSecond.Select(f => f.Second).Where(f => !SecondPersonNouns.Contains(f)));
-                transitive.Add(verb + "em");
+                AddObjectForms(verb, forms);
             }
+        }
+
+        foreach (var verb in AdditionalObjectInfinitives)
+            AddObjectForms(verb, Conjugate(verb));
+
+        void AddObjectForms(string verb, VerbForms forms)
+        {
+            transitive.UnionWith(forms.ObjectForms);
+            // "Viste ele?" / "Se deixarem ela" → "Viste-o?" / "Se a deixarem".
+            transitive.UnionWith(forms.ThirdToSecond.Select(f => f.Second).Where(f => !SecondPersonNouns.Contains(f)));
+            transitive.Add(verb + "em");
+            // "evitando você", "que usassem você": gerund and imperfect subjunctive objects.
+            var stem = verb[..^2];
+            var vowel = verb[^2] == 'a' ? "a" : verb[^2] == 'e' ? "e" : "i";
+            // "esperando você" keeps its dedicated "à tua espera" rule.
+            if (verb != "esperar")
+            {
+                transitive.Add(stem + vowel + "ndo");
+            }
+
+            transitive.Add(stem + vowel + "sse");
+            transitive.Add(stem + vowel + "ssem");
         }
 
         foreach (var (third, second) in IrregularThirdToSecond)
@@ -482,8 +514,14 @@ internal static class PortugueseVerbs
             if (w.Length > ending.Length + 2 && w.EndsWith(ending, StringComparison.Ordinal))
             {
                 var root = w[..^ending.Length];
-                if (root.EndsWith("ar") || root.EndsWith("er") || root.EndsWith("ir") || root.EndsWith("or") ||
-                    root is "dir" or "far" or "trar")
+                if (root is "dir" or "far" or "trar" || Infinitives.Contains(root))
+                {
+                    return true;
+                }
+
+                // "tirei", "adorei", "queria": regular preterite/imperfect forms whose stem merely ends like an infinitive.
+                if ((root.EndsWith("ar") || root.EndsWith("er") || root.EndsWith("ir") || root.EndsWith("or")) &&
+                    !AllForms.Contains(w) && !TransitiveForms.Contains(w))
                 {
                     return true;
                 }
@@ -502,7 +540,7 @@ internal static class PortugueseVerbs
 
     // Only real infinitives: "queriam" (imperfect of querer) must not split into "quer" + "iam".
     private static readonly HashSet<string> Infinitives = new(
-        RegularAr.Concat(RegularEr).Concat(RegularIr).Concat(TransitiveInfinitives).Concat(ExtraMesoclisisInfinitives)
+        RegularAr.Concat(RegularEr).Concat(RegularIr).Concat(TransitiveInfinitives).Concat(AdditionalObjectInfinitives).Concat(ExtraMesoclisisInfinitives)
             .Concat(new[] { "ter", "ver", "ser", "pôr", "por", "vir", "ir", "sair", "cair", "trair", "ouvir", "pedir", "sentir", "dormir", "seguir",
                 "tornar", "queixar", "esquecer" }),
         StringComparer.Ordinal);
@@ -611,7 +649,7 @@ internal static class PortugueseVerbs
 
             var root = w[..^e.Length];
             var known = root is "dir" or "far" or "trar" ||
-                        TransitiveInfinitives.Contains(root) || ExtraMesoclisisInfinitives.Contains(root) ||
+                        TransitiveInfinitives.Contains(root) || AdditionalObjectInfinitives.Contains(root) || ExtraMesoclisisInfinitives.Contains(root) ||
                         (!requireTransitive && Infinitives.Contains(root));
             if (!known)
             {

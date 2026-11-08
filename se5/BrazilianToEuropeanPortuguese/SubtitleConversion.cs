@@ -8,16 +8,16 @@ public static class SubtitleConversion
 {
     public static IReadOnlyList<CueConversion> Convert(IReadOnlyList<SrtBlock> blocks, ConversionOptions options,
         PortugueseLocalWordList? words = null, IReadOnlyList<string?>? english = null, ISet<int>? selected = null,
-        IReadOnlyList<string?>? speakers = null)
+        IReadOnlyList<string?>? speakers = null, ISet<string>? unresolvedNameArticles = null)
     {
-        var converter = new PortugueseConverter(options, words);
+        var converter = new PortugueseConverter(options, words, unresolvedNameArticles);
         var result = new CueConversion[blocks.Count];
         for (var i = 0; i < blocks.Count; i++)
         {
             var hint = Hint(blocks, i, english, options.Address, speakers);
             var rules = new List<RuleChange>();
             var conflict = options.Address == AddressMode.Automatic && DialogueRegister.ConflictingAddress(blocks[i].Text);
-            var cueConverter = conflict ? new PortugueseConverter(options with { YouToTu = false }, words) : converter;
+            var cueConverter = conflict ? new PortugueseConverter(options with { YouToTu = false }, words, unresolvedNameArticles) : converter;
             var text = selected is { Count: > 0 } && !selected.Contains(i)
                 ? blocks[i].Text
                 : cueConverter.Convert(blocks[i].Text, Previous(blocks, i), hint, rules);
