@@ -24,7 +24,9 @@ public sealed record ConversionOptions(
     int CharactersPerSecond = 20,
     string DisabledRules = "",
     bool Conversational = false,
-    bool LayoutWarnings = false)
+    bool LayoutWarnings = false,
+    string NameArticles = "",
+    bool AskNameArticles = true)
 {
     public const int Version = 1;
 
@@ -50,6 +52,8 @@ public sealed record ConversionOptions(
         disabledRules = DisabledRules,
         conversational = Conversational,
         layoutWarnings = LayoutWarnings,
+        nameArticles = NameArticles,
+        askNameArticles = AskNameArticles,
     });
 
     public static ConversionOptions Load(PluginRequest request)
@@ -79,7 +83,9 @@ public sealed record ConversionOptions(
             ReadNumber(json, "charactersPerSecond", 20, 5, 60),
             ReadDisabledRules(json),
             ReadOptIn(json, "conversational"),
-            ReadOptIn(json, "layoutWarnings"));
+            ReadOptIn(json, "layoutWarnings"),
+            ReadNameArticles(json),
+            !json.TryGetProperty("askNameArticles", out _) || ReadOptIn(json, "askNameArticles"));
     }
 
     public bool RuleEnabled(string id) => DisabledRules.Length == 0 || !DisabledRules.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
@@ -101,6 +107,16 @@ public sealed record ConversionOptions(
         if (!json.TryGetProperty("disabledRules", out var value)) return "";
         if (value.ValueKind == JsonValueKind.String) return value.GetString()!;
         throw new InvalidDataException("Invalid disabledRules in plugin settings (expected a string).");
+    }
+
+    private static string ReadNameArticles(JsonElement json)
+    {
+        if (!json.TryGetProperty("nameArticles", out var value)) return "";
+        if (value.ValueKind != JsonValueKind.String)
+            throw new InvalidDataException("Invalid nameArticles in plugin settings (expected a string).");
+        var text = value.GetString()!;
+        _ = new PersonalNameArticles(text);
+        return text;
     }
 
     private static AddressMode ReadAddress(JsonElement json)

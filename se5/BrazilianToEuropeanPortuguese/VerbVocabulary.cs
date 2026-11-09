@@ -81,6 +81,8 @@ internal static class VerbConjugator
     // Keep the consonant sound when the ending changes: xingar → xingue, checar → cheque, começar → comece, aquecer → aqueço, fugir → fujo.
     private static string Spell(string stem, string ending, bool ar)
     {
+        if (ar && stem.EndsWith('e') && ending is "o" or "as" or "a" or "am" or "e" or "es" or "em")
+            return stem + "i" + ending;
         var first = ending.Length > 0 ? ending[0] : ' ';
         if (ar && first is 'e' or 'é' or 'ê')
         {
@@ -116,7 +118,8 @@ internal sealed class VerbVocabulary
         @"meu|minha|meus|minhas|teu|tua|teus|tuas|seu|sua|seus|suas|nosso|nossa|nossos|nossas|esse|essa|esses|essas|este|esta|estes|estas|" +
         @"aquele|aquela|desse|dessa|deste|desta|nesse|nessa|neste|nesta|de|par\s+de|outro|outra|cada|qualquer)\s+)";
 
-    private readonly List<(Regex Regex, Dictionary<string, string> Map, string CliticInfinitive)> _rules = new();
+    private readonly List<(Regex Regex, Dictionary<string, string> Map, string CliticInfinitive,
+        Dictionary<string, string>? CombatMap)> _rules = new();
 
     // Forms that are also nouns (botas, bote, posta) only convert right after a subject, a clitic or "não".
     private const string PronounBefore =
@@ -152,14 +155,13 @@ internal sealed class VerbVocabulary
                 map.Remove(form);
             }
 
-            var nounLike = entry.Nouns.Where(map.ContainsKey).ToList();
-
             // Word-list entries (built-in <Word> or the user's own list) win over generated forms.
             foreach (var form in map.Keys.Where(isTaken).ToList())
             {
                 map.Remove(form);
             }
 
+            var nounLike = entry.Nouns.Where(map.ContainsKey).ToList();
             var cliticInfinitive = VerbConjugator.CliticInfinitive(entry.Br);
             var context = (entry.After is { Length: > 0 } after ? @"(?=\s+(?:" + after + ")" + NotWordAfter + ")" : string.Empty) +
                 (entry.NotAfter is { Length: > 0 } notAfter ? @"(?!\s+(?:" + notAfter + ")" + NotWordAfter + ")" : string.Empty);
@@ -187,18 +189,32 @@ internal sealed class VerbVocabulary
             }
 
             var pattern = "(?:" + string.Join("|", parts) + ")" + @"(?<cl>-" + Clitic + FutureTail + ")?" + NotWordAfter + context;
-            _rules.Add((new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), map, ptCliticInfinitive));
+            Dictionary<string, string>? combatMap = null;
+            if (entry.Br == "brigar" && VerbConjugator.TryConjugate("lutar", out var combat))
+                combatMap = br.Select((form, i) => (form, target: combat[i]))
+                    .Where(pair => map.ContainsKey(pair.form))
+                    .GroupBy(pair => pair.form, StringComparer.OrdinalIgnoreCase)
+                    .Where(group => group.Select(pair => pair.target).Distinct().Count() == 1)
+                    .ToDictionary(group => group.Key, group => group.First().target, StringComparer.OrdinalIgnoreCase);
+            _rules.Add((new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), map, ptCliticInfinitive, combatMap));
         }
     }
 
-    public string Apply(string s)
+    public string Apply(string s, ReferenceHint? reference = null)
     {
-        foreach (var (regex, map, cliticInfinitive) in _rules)
+        foreach (var (regex, map, cliticInfinitive, combatMap) in _rules)
         {
             // "curti-lo" (clitic infinitive) and "curti" (preterite) are the same letters for -ir verbs.
-            s = regex.Replace(s, m => (m.Groups["ci"].Success
-                ? CaseHelper.MatchCase(m.Groups["ci"].Value, cliticInfinitive)
-                : CaseHelper.MatchCase(m.Groups["f"].Value, map[m.Groups["f"].Value])) + m.Groups["cl"].Value);
+            s = regex.Replace(s, m =>
+            {
+                var word = m.Groups["ci"].Success ? m.Groups["ci"] : m.Groups["f"];
+                if (combatMap != null && ConflictVocabulary.IsNominalVerbMatch(s, word)) return m.Value;
+                var target = m.Groups["ci"].Success ? cliticInfinitive : map[word.Value];
+                if (combatMap != null && ConflictVocabulary.VerbInfinitive(s, m, reference, "discutir") == "lutar")
+                    target = m.Groups["ci"].Success ? VerbConjugator.CliticInfinitive("lutar") :
+                        combatMap.TryGetValue(word.Value, out var combat) ? combat : target;
+                return CaseHelper.MatchCase(word.Value, target) + m.Groups["cl"].Value;
+            });
         }
 
         return s;

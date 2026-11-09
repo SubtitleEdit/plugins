@@ -31,6 +31,24 @@
     <None Include="README.pt-PT.md" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <!-- A self-contained publish has no "dotnet" host: point plugin.json at the native executable,
+       as the release workflow does, so Subtitle Edit works where .NET is not installed (e.g. Docker). -->
+  <Target Name="WriteSelfContainedPluginManifest" AfterTargets="Publish"
+          Condition="'$(SelfContained)' == 'true' and '$(RuntimeIdentifier)' != ''">
+    <PropertyGroup>
+      <_PluginOs Condition="$(RuntimeIdentifier.StartsWith('win'))">windows</_PluginOs>
+      <_PluginOs Condition="$(RuntimeIdentifier.StartsWith('linux'))">linux</_PluginOs>
+      <_PluginOs Condition="$(RuntimeIdentifier.StartsWith('osx'))">macos</_PluginOs>
+      <_PluginExe>$(AssemblyName)</_PluginExe>
+      <_PluginExe Condition="'$(_PluginOs)' == 'windows'">$(AssemblyName).exe</_PluginExe>
+      <_PluginManifest>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)/plugin.json'))</_PluginManifest>
+      <_PluginManifest>$([System.Text.RegularExpressions.Regex]::Replace($(_PluginManifest), '"runtime":\s*"dotnet",\s*"entry":\s*"[^"]*"', '"executables": { "$(_PluginOs)": "$(_PluginExe)" }'))</_PluginManifest>
+    </PropertyGroup>
+    <Error Condition="'$(_PluginOs)' == '' or !$(_PluginManifest.Contains('&quot;executables&quot;'))"
+           Text="Could not write a self-contained plugin.json for $(RuntimeIdentifier)." />
+    <WriteLinesToFile File="$(PublishDir)plugin.json" Lines="$([MSBuild]::Escape($(_PluginManifest)))" Overwrite="true" />
+  </Target>
+
   <ItemGroup>
     <InternalsVisibleTo Include="BrazilianToEuropeanPortuguese.Tests" />
   </ItemGroup>

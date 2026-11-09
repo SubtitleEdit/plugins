@@ -420,6 +420,184 @@ These rules change Portuguese constructions, rather than merely adding review wa
   tanning leather, claiming an inheritance and descriptions of attractive people
   are not indiscriminately changed. The existing progressive treatment remains
   active before the complaint vocabulary conversion.
+- **Brazilian slang ferrar:** harmful informal uses become *lixar*, retaining
+  tense and person: *Ferrei tudo* → *Lixei tudo*, *Ela ferrou o negócio* →
+  *Ela lixou o negócio*, *Estou ferrado* → *Estou lixado*. Reviewed abstract
+  objects, personal clitics and English *screw up/over* evidence qualify the
+  conversion. Literal shoeing, branding, gripping, biting, nautical uses,
+  *ferrar no sono* and unresolved bare forms are not blanket replacements.
+  This uses **Vocabulary** and `construction-vocabulary`, respecting an
+  ignored/custom *ferrar* entry. [Priberam ferrar](https://dicionario.priberam.org/pt-pt/ferrar)
+  labels the harmful sense Brazilian; [lixar](https://dicionario.priberam.org/pt-pt/lixar)
+  includes both *prejudicar/tramar* and *estragar*. *Lixar* preserves the informal
+  register rather than automatically substituting neutral *estragar*.
+- **Conflict vocabulary by meaning:** *briga/brigas* no longer always mean
+  *zanga/zangas*. Physical or purposeful struggle evidence selects *luta/lutas*:
+  *A briga estourou* + *Fighting broke out* → *A luta estourou*.
+  Reviewed local complements work without English (*briga de rua*, *briga a
+  socos*, *briga pelo título*, *briga contra o câncer*). Verbal arguments use
+  *discussão/discussões*, brawls/physically qualified scuffles use *rixa/rixas*, and disputes use
+  *disputa/disputas*; *domestic dispute* is treated as a verbal disagreement,
+  not automatically physical combat. The related *bate-boca/bate-bocas* uses
+  *discussão/discussões* with article/adjective agreement; English-confirmed
+  conversational/noise readings can instead use *conversa* or *algazarra*.
+  *Brigar* uses the existing tense/person tables: physically qualified
+  *brigou/brigaram/brigando* → *lutou/lutaram/lutando*, while verbal or
+  unresolved uses retain *discutir*. Bare English *fight/fought* does not prove
+  physical combat, and *fight like an old married couple* stays verbal.
+  An unqualified *scuffle* with an institution does not turn *brigar* into *lutar*.
+  Clause-count correspondence scopes references when available; mixed evidence,
+  noun/verb homographs and already-European *luta/zanga* are protected.
+  These rules use **Vocabulary**, `word-list` and `verb-vocabulary`, respecting
+  ignored/custom entries. No model or new setting is required.
+  Sense distinctions were checked against Priberam's European Portuguese entries
+  for [briga](https://dicionario.priberam.org/pt-pt/briga),
+  [luta](https://dicionario.priberam.org/pt-pt/luta),
+  [zanga](https://dicionario.priberam.org/pt-pt/zanga),
+  [rixa](https://dicionario.priberam.org/pt-pt/rixa) and
+  [bate-boca](https://dicionario.priberam.org/pt-pt/bate-boca).
+- **Reviewed personal objects and verb senses:** *Seu pai bateu você* →
+  *O teu pai bateu-te*, while *Bateu em você* → *Bateu em ti* keeps its
+  preposition. Personal-object support also covers *atingir, surrar, aguentar,
+  considerar, contactar, fichar, honrar, liberar, livrar* and *recusar*, using
+  the existing clitic placement and future/conditional rules. Additional
+  object-only entries do not expand subject-agreement tables: commands such as
+  *Aguenta firme* and *Considere isto…* must not become statements.
+  *Monitorar* → *monitorizar* and *parabenizar* → *felicitar* use generated
+  inflections; the noun *monitora* and equipment *monitores* are protected.
+  Paper-qualified *grampear* uses *agrafar*. Telephone-qualified *grampear* uses
+  *pôr sob escuta*; places need English surveillance evidence, and video contexts
+  are not treated as telephone taps. English-confirmed intercepted conversations
+  use *intercetar*. English-confirmed stalling maps *embromar* to *ganhar tempo*,
+  but chatter and stalled engines do not activate that rule. Sleep-confirmed
+  *cochilar* uses *dormitar*, not its figurative missed-opportunity sense.
+  Contextual senses use **Vocabulary** and `reviewed-verb-senses`; generated
+  mappings use `verb-vocabulary`, respecting ignored/custom entries.
+  Nominal *uma honra* and *um cochilo* are not conjugated as verbs.
+  Stalling with an explicit non-personal direct object uses *protelar*, not
+  the intransitive phrase *ganhar tempo*.
+  Dictionaries confirm possible senses, not which sense every subtitle intended:
+  see Priberam's [bater](https://dicionario.priberam.org/pt-pt/bater),
+  [grampear](https://dicionario.priberam.org/pt-pt/grampear),
+  [monitorizar](https://dicionario.priberam.org/pt-pt/monitorizar),
+  [embromar](https://dicionario.priberam.org/pt-pt/embromar) and
+  [cochilar](https://dicionario.priberam.org/pt-pt/cochilar), and Ciberdúvidas on
+  [both constructions of contactar](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/a-sintaxe-de-contactar/30060).
+- **Object pronouns across tenses and compound verbs:** past and imperfect
+  forms whose stem merely resembles an infinitive (*tirei, adorei, queria*) are
+  no longer mistaken for futures, so *Adorei ele* → *Adorei-o* and *Ela queria
+  você* → *Ela queria-te*. Gerunds and imperfect subjunctives take objects
+  (*Não estou evitando você* → *Não estou a evitar-te*, *deixou que usassem
+  você* → *deixou que te usassem*), and enclitic gerunds after nouns or pronouns
+  use *a* + infinitive (*eu mandando ele embora* → *eu a mandá-lo embora*).
+  Conditionals use proclisis after negation, subordinators and *alguém/ninguém*
+  (*porque alguém mataria ele* → *porque alguém o mataria*) and otherwise
+  mesoclisis (*Eu aceitaria ela* → *Eu aceitá-la-ia*). In compound tenses the
+  pronoun goes with *ter*: *Espero que tenha visto ele* → *Espero que o tenha
+  visto*, *Queria ter encontrado você* → *Queria ter-te encontrado*, *Eu teria
+  matado ele* → *Eu tê-lo-ia matado*. *Você* before a non-causative infinitive
+  stays its subject (*esperei você me pedir* → *esperei pedires-me*), while
+  causative and perception verbs take the clitic (*Não ouço você fazer* →
+  *Não te ouço fazer*). Safeguards: post-verbal imperative subjects (*Escolhe
+  você* → *Escolhe tu*), *Tem ele aqui?*, inverted question subjects (*O que
+  tinha feito ele?*), intransitive participles (*tinha ido*), *Foda-se* and
+  following gerunds or personal infinitives are left alone.
+  *Deixar que te* + impersonal subjunctive becomes reflexive *deixar-se* +
+  infinitive: *Você deixou que usassem você* → *Deixaste-te usar*, *Não deixe
+  que usem você* → *Não te deixes usar*; with a dropped subject *deixou* becomes
+  *te deixaste* only when the English says *let yourself*, so *Ele deixou que te
+  usassem* stays. After causatives with a clitic the infinitive is uninflected:
+  *Você deixou eles usarem você* → *Deixaste-os usar-te*.
+  A preposition followed by the infinitive's own subject attracts the clitic:
+  *Para eles usarem você* → *Para eles te usarem*, *Antes de eles encontrarem
+  você* → *Antes de eles te encontrarem*, *Para o Jack ver você* → *Para o Jack
+  te ver*; the infinitive ending must agree with that subject.
+  When the subject is dropped, the personal ending identifies it and the
+  clitic is still attracted: *Para você usar ele* / *Para você usá-lo* →
+  *Para o usares*, *Para a gente ajudar você* → *Para te ajudarmos*. An
+  explicit *tu*/*nós* subject is kept (*Para tu o usares*), since it may be
+  contrastive.
+- After a transitive verb, *você também* is the object: *Nunca vi você também*
+  → *Nunca te vi também* (subject uses such as *Você também* → *Tu também* are
+  unchanged).
+- *Prestar/dar atenção em* takes *a* in European Portuguese: *atenção nisto* →
+  *atenção a isto*, *em sua conversa* → *à sua conversa*, and a coordinated
+  *tanto quanto na…* follows. With an English *those/that* reference, *nestes*
+  becomes *a esses*.
+- Slang *faturar* (to score drugs) becomes *comprar* before a drug noun or when
+  the English reference says *buy/score some*; invoicing and earning senses
+  (*faturou milhões*, *faturar o cliente*) are kept.
+- *Talvez* before the verb takes the subjunctive, with the pronoun before the
+  verb: *talvez ele esqueceu-se de* → *talvez ele se tenha esquecido de*,
+  *talvez é* → *talvez seja*, *talvez podemos* → *talvez possamos*. *Talvez* after
+  the verb, *talvez há dois anos* ("ago") and nouns (*talvez marcas de agulha*)
+  are kept.
+- Drug *faturar* also becomes *comprar* when the English uses "score" on its
+  own (*How much you looking to score?*). Sports *faturar* becomes *marcar*
+  (*faturou dois gols* → *marcou dois golos*, or English *scored a goal*).
+- Match periods use Portuguese names: *no segundo tempo* → *na segunda parte*,
+  *2º tempo* → *2ª parte* (with agreement: *pela segunda parte seguida*). With
+  English *quarter*, *terceiro período/tempo* → *terceiro quarto*; with sports
+  *overtime*, *a prorrogação* → *o prolongamento*. School terms, verb tenses and
+  contract extensions are kept.
+- *Errado* used as an adverb becomes *mal*: *deu errado* → *correu mal*, *vai
+  dar tudo errado* → *vai correr tudo mal*, *percebeste errado* → *percebeste
+  mal*, *fiz tudo errado* → *fiz tudo mal*. Nouns keep the adjective (*o número
+  errado*). *O que deu errado* keeps its impersonal subject (*o que correu mal*).
+- Reflexive *esquecer/lembrar* in compound tenses take the pronoun: *tinha
+  esquecido de* → *tinha-me esquecido de* / *se tinha esquecido de* (proclisis
+  after *não*, *que*, *talvez*…; *ter-se-ia* in the conditional).
+- *Veja você mesmo* → *Vê por ti mesmo*; *Faça você mesmo* stays *Faz tu mesmo*.
+- A pronoun after a word that attracts it moves before the verb: *Não disse-lhe*
+  → *Não lhe disse*, *o que a Linda disse-lhe* → *o que a Linda lhe disse*,
+  *Quando o Frank viu-me* → *Quando o Frank me viu*. Commands keep it after the
+  verb (*Só lembra-te de mim*).
+- For *nós + o/a/os/as + -ar verb*, the direct object moves after the verb:
+  *Nós o viramos* → *Nós viramo-lo*. When an aligned English reference clearly
+  identifies a simple past action, the European past-tense accent is added:
+  *We flipped him* → *Nós virámo-lo*. Without that evidence the unaccented
+  form is kept, since Brazilian *viramos* can be present or past.
+- In *prestar/dar atenção*, an aligned *attention to those/that* selects
+  *a esses/esse* even when another sentence mentions *this/these*; it can also
+  correct an existing *a estes/este*. Without such evidence, the source
+  demonstrative is preserved.
+- Causative *fazer/deixar vocês esperarem* → *fazer-vos esperar* (*que vos fazem
+  sentir*). Brazilian short participles after *ter*: *ter pego/chego/trago* →
+  *ter pegado/chegado/trazido*. Existential *Tinha muita gente* → *Havia muita
+  gente*. More forms of *ter certeza* → *ter a certeza* (*Tenham a certeza*,
+  *Terei a certeza*) and *o único jeito* → *a única forma*.
+- An *onde* clause giving the purpose of a command takes the subjunctive:
+  *Mãos onde podemos vê-las!* → *Mãos onde possamos vê-las!*, *Põe as mãos onde
+  eu posso ver* → *onde eu possa ver*. Indirect questions and factual places
+  (*Sabes onde posso…*, *uma cama onde posso dormir*) keep the indicative. The
+  source typo *Coloque-as mãos* is read as *Coloque as mãos*.
+- Questions where the English asks *you* use *tu*: *Onde estava?* → *Onde
+  estavas?*, *Como me achou?* → *Como me achaste?*, *O que me diz?* → *O que me
+  dizes?*, *De que merda está falando?* → *De que merda estás a falar?*. Third-person
+  English (*Where is he?*) and arrival verbs before a subject (*Quando chega o
+  comboio*) are kept. Formal commands become *tu* commands without turning them
+  into statements (*Tenha modos* → *Tem modos*, not *Tens modos*).
+- Subordinate clauses confirmed by English *you* use *tu*: *a última/próxima vez
+  que precisar* → *que precisares*, *para que aprenda* → *para que aprendas*.
+  Time expressions (*mês/ano/semana que vem*), noun exclamations (*Que sorte!*,
+  *Que drama é esse?*) and bare infinitives (*Não que estar certo…*) are kept.
+- Reflexive infinitives follow their subject: *Adoras abrir-se* → *Adoras
+  abrir-te*, *Não fiques a achar-se* → *Não fiques a achar-te*. After causative or
+  perception verbs, the reflexive goes after the infinitive or is dropped when the
+  object is already a person: *deixa os outros se aproximarem* → *deixa os outros
+  aproximarem-se*, *mandou-nos se sentar* → *mandou-nos sentar*, *se faz-te se
+  sentir* → *se te faz sentir*.
+- *Achar/considerar/julgar você* + predicate → *acho-te chique*, *Não te acho
+  bonita*, *Sempre te achei muito inteligente*. *Que conversa é esse?* agrees with
+  the new noun (*Que conversa é essa?*) but not with a *de* complement (*Que cara de
+  rabo é essa?*). The idiom *Que X é essa?* keeps *essa* unless the English
+  literally says *is this*. A verb after a pronoun is not treated as an adjective
+  with *demais* (*quando eu me aproximava demais*).
+- **Additional regional vocabulary:** *chispa daqui* → *desaparece daqui*,
+  *canção de ninar* → *canção de embalar*, *na marra* → *à força*, *água
+  encanada* → *água canalizada* and *não/nem esquente a cabeça* → *não te
+  preocupes*. Temperament *esquentado/a* (hot-headed) is no longer turned into
+  *aquecido/a*.
 - **Personal infinitives:** explicit subjects after *para, sem, antes de, depois de,
   apesar de, em vez de…* and supported evaluative phrases now allow intervening
   negation/adverbs/clitics: *É melhor você não contar* → *É melhor não contares*,
@@ -819,13 +997,32 @@ Rules found by comparing the output against real PT-PT subtitles:
   keeps *você* as the subject: *Então manda você.* → *Então manda tu.*
 - After *que/se/quando/porque…* + a short subject the pronoun stays before the verb: *que minha mãe traiu ele*
   → *que a minha mãe o traiu*, *se o meu pai me visse*, *quando a polícia achar ele* → *quando a polícia o achar*.
+- A short clause-initial noun subject also supports direct-object *o/a/os/as*:
+  *A família a registrou* → *A família registou-a*, *Maria a viu* → *Maria viu-a*.
+  The rule requires a known finite verb or a dictionary-validated regular past form;
+  articles before nouns, ambiguous noun/verb homographs, subordinate attractors and
+  future/conditional forms are preserved. It respects the Pronouns option and stage.
+  Noun-subject reflexive *se* is supported too: *A revolta se espalhou* →
+  *A revolta espalhou-se*, *A família se reuniu* → *A família reuniu-se*.
+  Conditional/reporting *se* (*Pergunta se conhece…*), clitic-attracting contexts
+  and coordinated informal commands retain their existing behavior.
 - *Olha (só) você* → *Olha (só) para ti*, also with a gerund: *Olha só você fazendo uma entrada* → *Olha só
   para ti a fazer uma entrada*. A short command at the start of a sentence keeps *você* as its subject:
   *Manda você.* → *Manda tu.* (*Incomoda você?* → *Incomoda-te?*).
-- *para* + pronoun after verbs of telling, asking, calling, showing, paying or lying becomes the indirect-object
+- Neutral *a/para* + pronoun after reviewed verbs of telling, asking, calling, showing, paying or lying becomes the indirect-object
   pronoun: *Liga para ela* → *Liga-lhe*, *Não liguei para eles* → *Não lhes liguei*, *Ligarei para ela* →
   *Ligar-lhe-ei*, *Está mentindo para mim* → *Está a mentir-me*, *Pedi para ele sair* → *Pedi-lhe para sair*.
   *Liga você para ela.* → *Liga-lhe.*, but the question keeps the stressed subject: *Ligas tu para ela?*.
+  The same recipient rule handles *Não contou a ela?* → *Não lhe contou?*,
+  *Contei a elas* → *Contei-lhes*, *Dei a ela tudo* → *Dei-lhe tudo* and
+  intervening reviewed direct objects: *Não contou isso a ela* → *Não lhe contou isso*.
+  It reuses clitic placement across supported tenses, infinitives, negative and
+  subordinate contexts; recipient number selects *lhe/lhes*. Stressed pronouns
+  remain valid for emphasis or contrast, so *a ela mesma*, *apenas a ela*,
+  coordinated recipients and existing clitic doubling are preserved.
+  This uses **Pronouns** and `pronouns`, without requiring an English reference.
+  See Ciberdúvidas on [indirect-object substitution](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/a-identificacao-do-complemento-indireto-na-frase-prestam-atencao-a-tudo/35496)
+  and [proclisis after negation](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/proclise-em-portugal-e-no-brasil/15214).
   *olhar/levar/falar/dar para…*, nouns (*uma pergunta para ela*), *isso conta para ele* and *liguei para ele
   saber* are kept. *Só/Apenas* + command also takes the *tu* form: *Só me ligue* → *Só me liga*.
 - Negative commands remain in the *tu* subjunctive even when a *teu/tua* possessive appears later:
@@ -834,6 +1031,54 @@ Rules found by comparing the output against real PT-PT subtitles:
   likewise, an unambiguous subjectless clause after *que* can use the reference's *you*: *Sabe que fui…* →
   *Sabes que fui…*, *Então soube que chegou…* → *Então soube que chegaste…*. A third-person English reference
   keeps the third-person form, and ambiguous subjectless clauses without a reference are left unchanged.
+  Opening adverbs use the same reviewed list as explicit *você* agreement:
+  *Realmente gosta dele* → *Realmente gostas dele*, *Sempre gosta dele* →
+  *Sempre gostas dele*, and *Simplesmente gosta dele* → *Simplesmente gostas dele*,
+  when aligned English identifies *you* as the subject. Up to three supported
+  opening adverbs are retained; explicit other subjects, formal address and
+  nominal/impersonal uses still block informal agreement.
+  Initial omitted-subject agreement does not pluralize nouns such as *Certeza?* or alter standalone
+  apologies. English discourse *you know,* is not evidence that the following Portuguese predicate
+  addresses *tu*; conflicting sentences and non-copular English questions also preserve ambiguous copulas.
+  Relative bridges preserve their antecedent: *alguém que você acha que é calmo* →
+  *alguém que achas que é calmo*, not *que és*. Explicit *você* in the embedded clause
+  still converts normally.
+  A bounded structural-analysis layer now gates reference-guided omitted-subject
+  agreement and shared/controlled predicates. It tracks punctuation/dialogue
+  boundaries, subordinate links, verb-form candidates and local subject ownership;
+  dictionary-validated candidates retain ambiguity rather than being treated as
+  guaranteed verbs. Reviewed noun/adjective combinations (*Ajuda financeira.*),
+  impersonal copulas (*É necessário sair.*), infinitival complements (*Não tens
+  o que fazer*) and relative antecedents are protected from inappropriate *tu*
+  agreement. Conditional forms remain eligible (*Se mentir* → *Se mentires*
+  with a matching reference).
+  English *what/which* clauses are compared in order only when their counts
+  match the Portuguese *o que* clauses; mixed subject evidence is not a veto.
+  Existing agreement/address options still apply, and analysis is built lazily
+  for candidate rule matches. This is a conservative veto layer, not a complete
+  parser, general noun/adjective tagger or cross-cue subject resolver. Its typed
+  block reasons are internal; they do not add new UI review warnings.
+  Short replies aligned with a trailing English *It does.*
+  do not inherit *you* from the preceding sentence. Initial progressive commands
+  (*Continue fazendo* → *Continua a fazer*) stay imperative on subsequent passes.
+  With **Progressive**, **Pronouns** and informal address enabled, English-confirmed
+  *kept you waiting* complements use *Espero não te ter deixado à espera* or
+  *Tenho-te deixado à espera* (`waiting-complements`); absent references and formal
+  address are preserved. Existing progressive rules also cover noun + adverb +
+  gerund (*a música ainda tocando* → *a música ainda a tocar*) and locative
+  complements. Comma-separated *tirando fotos/fotografias* after a locative is
+  supported; other comma-separated adjuncts remain unchanged.
+  Spelling hyphenates *meia-noite* in both orthographies, respecting spelling
+  options, ignored text and the `orthography` stage switch.
+  English-confirmed close spatial positions use *mesmo*, not temporal *logo*:
+  *Logo atrás de você* + *Right behind you* → *Estou mesmo atrás de ti*.
+  Existing subjects and tenses are preserved (*Estamos logo atrás de você* →
+  *Estamos mesmo atrás de ti*); the same rule covers *à frente* and *ao lado*.
+  An omitted first-person present is restored only for a matching English
+  *I'm...* or a standalone *Right/Just behind you* construction.
+  Temporal/future, conflicting-object and multiple-position references are
+  preserved. This requires **Colloquial** and `spatial-position`; address uses
+  the existing controls (*atrás de si* in formal dialogue).
   Verb agreement uses the existing irregular table and dictionary-validated regular inflections, not a closed
   list of verbs. In a *que* clause with an auxiliary, dative clitics move before the auxiliary:
   *que vou facilitar para você* → *que te vou facilitar*.
@@ -916,8 +1161,8 @@ Other supported actions include asking, telling, waiting, going and helping.
 With **Pronouns** enabled, telephone questions add articles for reviewed
 personal names; unknown names keep their original article choice. Genuine
 commands/questions and formal address are not changed by this rule
-(`action-questions`). The reviewed masculine reading of the unisex name
-*Jamie* is limited to these telephone questions.
+(`action-questions`). Unisex names (*Jamie*, *Alex*…) get no automatic article
+unless the user chooses one in the personal-name popup or editable list.
 
 Replies beginning *Não.* or *Sim.* no longer hide an English-confirmed **you**
 subject. *Não. Disse que iria me ajudar* can become *Não. Disseste que me ias
@@ -1009,6 +1254,11 @@ used as an adjective: *dia devagar* → *dia lento*, *manhã devagar* →
 *manhã lenta*, including plurals. This repairs a source translation error,
 not a general PT-BR/PT-PT difference. Valid adverbial uses such as
 *o dia passou devagar* and cases without a matching reference are preserved.
+
+With **Vocabulary** enabled, quantifiers also identify police personnel nouns:
+*muito mais policiais* → *muito mais polícias*, including *menos* and numeric
+counts. Adjectival phrases such as *mais operações policiais* remain unchanged.
+English *officers* retains the existing *agentes* selection.
 
 Informal address also covers shared predicates, not just the first verb:
 *Você é péssimo pescando, odeia golfe* → *És péssimo a pescar, odeias golfe*.
@@ -1239,6 +1489,10 @@ Forms that are also nouns are kept (*as botas*, *um pulo*, *mil postes*, *o cheq
 other meanings (*jogar futebol*, *arrumar o quarto*, *botar fogo*, *esquentar a cabeça*,
 *Entendido*). A local `Word` or `Ignore` for the infinitive (e.g. `<Word br="botar" pt="pôr" />`)
 switches off all generated forms of that verb.
+Individual word-list forms also take priority over generated homographs, including
+noun-like forms; removed mappings cannot remain in the generated matching rules.
+Law-related vocabulary preserves *ordem legal / ordens legais*, rather than treating
+*legal* as slang for *fixe*.
 
 The built-in list is [`PortugueseWordList.xml`](PortugueseWordList.xml). Its format is described
 at the top of the file. A `<Verb br="botar" pt="meter" />` entry there generates all forms of a
@@ -1421,6 +1675,26 @@ cached results; run checks again to obtain results for the current selection.
     from `mradermacher/gervasio-8b-portuguese-ptpt-decoder-GGUF` at a pinned commit, checks
     its SHA-256 and saves the model card next to it.
 
+## Automatic personal-name questions (preview only)
+
+In a normal plugin run, **Ask about unknown personal name articles (preview only)**
+is enabled by default. After the English reference is loaded, a popup asks about
+an unresolved capitalized name only when an enabled, supported construction needs
+an article: *pensar em Jamie*, an English-confirmed self-directed telephone question,
+or the supported *you and [name]* word-order construction. It does not scan every
+name in the file, ask about unselected cues, or assume a word is a person.
+Lowercase dictionary words are excluded from automatic questions; names that also
+have an ordinary-word reading can still be configured manually in the list.
+
+Choose **Use o**, **Use a**, or **No article / not a person**. The choice updates
+the preview and the editable list, and is reused for every occurrence. **Not now**
+(or closing the popup) skips that name for the current preview without saving a
+choice. **Apply** saves choices through Subtitle Edit, even if only settings changed
+and the subtitle remains unchanged; cancelling the plugin does not save them.
+Untick the checkbox to disable automatic questions. Saved choices still apply.
+Batch convert and its Configure window never show automatic name questions.
+The popup uses the existing Avalonia UI and adds no runtime, model or service.
+
 ## Batch convert
 
 Supports Subtitle Edit's **Batch convert** (Tools → Batch convert → Run plugin).
@@ -1428,6 +1702,14 @@ Supports Subtitle Edit's **Batch convert** (Tools → Batch convert → Run plug
 - **Configure...** opens the window without a subtitle, where you choose the rule groups (and can edit the
   local word list through **Contribute vocabulary / Local word list**).
   Save active local entries in that editor; OK returns the rule choices to Subtitle Edit as the plugin settings.
+- **Personal name articles…** lets you enter one single-word name per line, such as `Jamie = o`,
+  `Alex = a`, or `Maria = none` (leave without an added article). Entries override the built-in
+  name choices; remove a line to restore the default. Select **Use list**, then **OK** in Configure
+  to save it in Subtitle Edit's plugin settings for subsequent batches. The same spelling gets the
+  same choice in every file, so review the list when characters differ between productions.
+  The list applies only to the existing supported name constructions, not every name in subtitles;
+  it does not replace articles already present. The editor is also available in the preview window;
+  preview settings are returned when changes are applied.
 - During the batch, every line is converted with those settings and the local word list, without
   showing the window. Files with nothing to convert are left as they are. If the local word list
   can't be read, the file fails with an error rather than being converted without it.

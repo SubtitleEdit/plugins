@@ -131,7 +131,7 @@ public sealed record ReferenceHint(bool SecondPerson, bool SecondPossessive, boo
     private static readonly Regex InitialYouSubject = new(
         @"^\s*(?:(?:no|yes)\s*[.,!]\s*)?" +
         @"(?:(?:well|so|then|but|and|now|hey|look|listen|okay|ok|all\s+right)\b[,!?;:]?\s*)?" +
-        @"(?:(?:maybe|perhaps|probably|surely|certainly)\s+){0,2}(?:you\b|you['’](?:re|ll|ve|d)\b|y['’]all\b)",
+        @"(?:(?:maybe|perhaps|probably|surely|certainly|at\s+least)\s+){0,2}(?:you\b|you['’](?:re|ll|ve|d)\b|y['’]all\b)",
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     private static readonly Regex InitialConditionalYouSubject = new(
         @"^\s*(?:(?:well|so|then|but|and|or)\b[,!?;:]?\s*)?" +
@@ -140,6 +140,11 @@ public sealed record ReferenceHint(bool SecondPerson, bool SecondPossessive, boo
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     private static readonly Regex YouSubject = new(
         @"(?<![\p{L}\p{M}])(?:you|y['’]all)\s+(?:(?:never|ever|always|already|just|really|still|only|also|actually)\s+){0,3}(?:" + SubjectVerbs + @"|\p{L}+(?:ed|ing))\b",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    // "Why did you decide to help us?": the inverted "you" of a wh-question is the subject.
+    private static readonly Regex InvertedYouSubject = new(
+        @"\b(?:how|where|why|what|when)\s+(?:the\s+(?:hell|heck|fuck)\s+)?(?:did|do|does|were|are|have|had|will|would|can|could|should|must|shall)(?:n['’]t)?\s+you\s+(?:(?:not|never|ever|always|already|just|really|still|even)\s+){0,2}" +
+        @"(?!(?:guys|all|two|both|people|two|lot|and|or|there|here)\b)\p{L}",
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     private static readonly Regex ConditionalYouSubjects = new(
         @"\bif\s+you\b(?:(?!\b(?:he|she|they|we|I|it)\b)[^.!?;]){1,100}\b" +
@@ -190,8 +195,10 @@ public sealed record ReferenceHint(bool SecondPerson, bool SecondPossessive, boo
             else if (Third.Contains(stem)) third = true;
         }
 
-        var startsWithSecondPersonSubject = InitialYouSubject.IsMatch(clean);
-        var secondPersonSubject = startsWithSecondPersonSubject || YouSubject.IsMatch(clean);
+        var subjectText = Regex.Replace(clean, @"^\s*you\s+know\s*,\s*", "",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        var startsWithSecondPersonSubject = InitialYouSubject.IsMatch(subjectText);
+        var secondPersonSubject = startsWithSecondPersonSubject || YouSubject.IsMatch(subjectText) || InvertedYouSubject.IsMatch(subjectText);
         return new ReferenceHint(second, secondOwn, third, thirdOwn)
         {
             EnglishText = clean,

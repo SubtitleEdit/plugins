@@ -30,7 +30,8 @@ public sealed class DialogueReplyTests
 
     [Theory]
     [InlineData("Ligue para João?", "Call John?", "Ligo para o João?")]
-    [InlineData("Ligue para Jamie?", "Call Jamie?", "Ligo para o Jamie?")]
+    [InlineData("Ligue para Kevin?", "Call Kevin?", "Ligo para o Kevin?")]
+    [InlineData("Ligue para Jamie?", "Call Jamie?", "Ligo para Jamie?")]
     [InlineData("Telefone para Maria?", "Phone Maria?", "Telefono para a Maria?")]
     [InlineData("Pergunte ao João?", "Ask John?", "Pergunto ao João?")]
     [InlineData("Espere aqui?", "Wait here?", "Espero aqui?")]

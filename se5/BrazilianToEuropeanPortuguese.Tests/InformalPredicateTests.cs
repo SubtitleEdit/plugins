@@ -6,6 +6,34 @@ namespace BrazilianToEuropeanPortuguese.Tests;
 public sealed class InformalPredicateTests
 {
     [Theory]
+    [InlineData("Desculpa.", "You took my seat. I'm sorry.", "Desculpa.")]
+    [InlineData("Certeza?", "You sure?", "Certeza?")]
+    [InlineData("Não faz sentido.", "You know, it just doesn't make sense.", "Não faz sentido.")]
+    [InlineData("Não está certo, cara.", "You know, it's not right, bro.", "Não está certo, meu.")]
+    [InlineData("Não é assustador.", "You're starting to scare me. That's not scary.", "Não é assustador.")]
+    [InlineData("Não é catastrófico?", "You consider that catastrophic?", "Não é catastrófico?")]
+    [InlineData("Não é egoísta.", "You're not selfish.", "Não és egoísta.")]
+    [InlineData("Não abriu.", "You never opened it.", "Não abriste.")]
+    [InlineData("Sabe.", "You know.", "Sabes.")]
+    [InlineData("Será adulto.", "You'll be an adult.", "Serás adulto.")]
+    [InlineData("Seria adulto.", "You'd be an adult.", "Serias adulto.")]
+    [InlineData("Não faz sentido.", "You know, that doesn't make sense.", "Não faz sentido.")]
+    [InlineData("Anda dizendo que sou corrupto.", "You're telling people I'm corrupt. I'm not your friend.",
+        "Andas a dizer que sou corrupto.")]
+    [InlineData("Roubou a minha frase.", "You stole my line. I'm sorry.", "Roubaste a minha frase.")]
+    [InlineData("É adulto.", "You are an adult. I agree.", "És adulto.")]
+    [InlineData("É policial?", "You a cop?", "És polícia?")]
+    [InlineData("Acho que precisa de ajuda.", "You know, John needs help.", "Acho que precisa de ajuda.")]
+    [InlineData("Sei que precisa de ajuda.", "You know, you need help.", "Sei que precisas de ajuda.")]
+    public void ReferenceHeadsDoNotInventNominalOrImpersonalSubjects(string source, string english, string expected)
+    {
+        var converter = new PortugueseConverter();
+        var reference = ReferenceHint.FromText(english);
+        Assert.Equal(expected, converter.Convert(source, reference: reference));
+        Assert.Equal(expected, converter.Convert(expected, reference: reference));
+    }
+
+    [Theory]
     [InlineData("no que Maria diria se\ncontasse que iria parar.",
         "what Maria would say if you told her you were gonna quit.",
         "no que Maria diria se\ncontasses que irias parar.")]

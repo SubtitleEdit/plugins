@@ -819,6 +819,149 @@ public sealed class ReferenceTests(ITestOutputHelper output)
             Assert.Equal("teste", Assert.Single(PortugueseLocalWordList.Load(refreshPath).Ignored));
             batchConfig.Close();
 
+            var namesConfig = new MainWindow(new PluginRequest { RequestType = PluginRequestType.Configure }, refreshPath);
+            namesConfig.Show();
+            namesConfig.FindControl<Button>("EditNameArticlesButton")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            var namesEditor = Assert.IsType<NameArticlesWindow>(Assert.Single(namesConfig.OwnedWindows));
+            namesEditor.Editor.Text = "Jamie = invalid";
+            namesEditor.SaveButton.RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Assert.Contains("article must be", namesEditor.Error.Text);
+            namesEditor.Editor.Text = "Jamie = a";
+            namesEditor.SaveButton.RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            namesConfig.FindControl<Button>("ApplyButton")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            var namesResponse = App.Response!;
+            var storedNames = ConversionOptions.Load(new PluginRequest
+            {
+                Settings = namesResponse.Settings,
+                SettingsVersion = namesResponse.SettingsVersion,
+            });
+            Assert.Equal("Jamie = a", storedNames.NameArticles);
+            var namesPreview = new MainWindow(new PluginRequest
+            {
+                Settings = namesResponse.Settings,
+                SettingsVersion = namesResponse.SettingsVersion,
+                Subtitle = new PluginSubtitle { Format = "SubRip", SubRip = "1\n00:00:01,000 --> 00:00:04,000\npensar em Jamie.\n" },
+            }, refreshPath);
+            Assert.Equal("pensar na Jamie.", Assert.Single(namesPreview.Proposals).ConvertedText);
+            namesPreview.Show();
+            namesPreview.FindControl<Button>("EditNameArticlesButton")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            var previewNamesEditor = Assert.IsType<NameArticlesWindow>(Assert.Single(namesPreview.OwnedWindows));
+            previewNamesEditor.Editor.Text = "Jamie = o";
+            previewNamesEditor.SaveButton.RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.Equal("pensar no Jamie.", Assert.Single(namesPreview.Proposals).ConvertedText);
+            namesPreview.Close();
+
+            var automaticNames = new MainWindow(new PluginRequest
+            {
+                Subtitle = new PluginSubtitle { Format = "SubRip", SubRip =
+                    "1\n00:00:01,000 --> 00:00:04,000\npensar em Jamie e em Alex.\n" },
+            }, refreshPath);
+            automaticNames.Show();
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            var firstQuestion = Assert.IsType<NameArticleQuestionWindow>(Assert.Single(automaticNames.OwnedWindows));
+            Assert.Equal("Jamie", firstQuestion.PersonalName);
+            firstQuestion.MasculineButton.RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            var secondQuestion = Assert.IsType<NameArticleQuestionWindow>(Assert.Single(automaticNames.OwnedWindows));
+            Assert.Equal("Alex", secondQuestion.PersonalName);
+            secondQuestion.FeminineButton.RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.Empty(automaticNames.OwnedWindows);
+            Assert.Equal("pensar no Jamie e na Alex.", Assert.Single(automaticNames.Proposals).ConvertedText);
+            automaticNames.FindControl<Button>("ApplyButton")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Assert.Contains("Jamie = o", App.Response!.Settings!.Value.GetProperty("nameArticles").GetString());
+            Assert.Contains("Alex = a", App.Response.Settings!.Value.GetProperty("nameArticles").GetString());
+
+            var noArticleNames = new MainWindow(new PluginRequest
+            {
+                Subtitle = new PluginSubtitle { Format = "SubRip", SubRip =
+                    "1\n00:00:01,000 --> 00:00:04,000\npensar em Jamie.\n" },
+            }, refreshPath);
+            noArticleNames.Show();
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            var noArticleQuestion = Assert.IsType<NameArticleQuestionWindow>(Assert.Single(noArticleNames.OwnedWindows));
+            noArticleQuestion.NoArticleButton.RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.Empty(noArticleNames.Proposals);
+            Assert.True(noArticleNames.FindControl<Button>("ApplyButton")!.IsEnabled);
+            noArticleNames.FindControl<Button>("ApplyButton")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            var noArticleResponse = App.Response!;
+            Assert.Equal(PluginStatus.Ok, noArticleResponse.Status);
+            Assert.Null(noArticleResponse.Subtitle);
+            Assert.Equal("Jamie = none", noArticleResponse.Settings!.Value.GetProperty("nameArticles").GetString());
+
+            var savedNoArticleNames = new MainWindow(new PluginRequest
+            {
+                Settings = noArticleResponse.Settings, SettingsVersion = noArticleResponse.SettingsVersion,
+                Subtitle = new PluginSubtitle { Format = "SubRip", SubRip =
+                    "1\n00:00:01,000 --> 00:00:04,000\npensar em Jamie.\n" },
+            }, refreshPath);
+            savedNoArticleNames.Show();
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.Empty(savedNoArticleNames.OwnedWindows);
+            savedNoArticleNames.Close();
+
+            var skippedNames = new MainWindow(new PluginRequest
+            {
+                Subtitle = new PluginSubtitle { Format = "SubRip", SubRip =
+                    "1\n00:00:01,000 --> 00:00:04,000\npensar em Jamie.\n" },
+            }, refreshPath);
+            skippedNames.Show();
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            var skipQuestion = Assert.IsType<NameArticleQuestionWindow>(Assert.Single(skippedNames.OwnedWindows));
+            skipQuestion.SkipButton.RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            skippedNames.FindControl<CheckBox>("PronounsCheck")!.IsChecked = false;
+            skippedNames.FindControl<CheckBox>("PronounsCheck")!.IsChecked = true;
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.Empty(skippedNames.OwnedWindows);
+            skippedNames.Close();
+
+            var optedOutNames = new MainWindow(new PluginRequest
+            {
+                SettingsVersion = ConversionOptions.Version,
+                Settings = new ConversionOptions(AskNameArticles: false).ToJson(),
+                Subtitle = new PluginSubtitle { Format = "SubRip", SubRip =
+                    "1\n00:00:01,000 --> 00:00:04,000\npensar em Jamie.\n" },
+            }, refreshPath);
+            optedOutNames.Show();
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.Empty(optedOutNames.OwnedWindows);
+            optedOutNames.FindControl<CheckBox>("AskNameArticlesCheck")!.IsChecked = true;
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.IsType<NameArticleQuestionWindow>(Assert.Single(optedOutNames.OwnedWindows));
+            optedOutNames.Close();
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+
+            var telephoneEnglish = Path.Combine(data, "name-question.en.srt");
+            File.WriteAllText(telephoneEnglish,
+                "1\n00:00:01,000 --> 00:00:04,000\nShould I call Jamie?\n");
+            var telephoneNames = new MainWindow(new PluginRequest
+            {
+                Subtitle = new PluginSubtitle
+                {
+                    Format = "SubRip", FileName = Path.Combine(data, "name-question.pt-br.srt"),
+                    SubRip = "1\n00:00:01,000 --> 00:00:04,000\nLigue para Jamie?\n",
+                },
+            }, refreshPath);
+            telephoneNames.Show();
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            var telephoneQuestion = Assert.IsType<NameArticleQuestionWindow>(Assert.Single(telephoneNames.OwnedWindows));
+            Assert.Equal("Jamie", telephoneQuestion.PersonalName);
+            telephoneQuestion.MasculineButton.RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.Equal("Ligo para o Jamie?", Assert.Single(telephoneNames.Proposals).ConvertedText);
+            telephoneNames.Close();
+
             var screenshotWindow = new MainWindow(new PluginRequest
             {
                 SettingsVersion = ConversionOptions.Version,
@@ -1289,9 +1432,9 @@ public sealed class FutureSubjunctiveCliticTests
     [InlineData("Tudo termina mais rápido\nse você pegá-lo.", "Tudo termina mais rápido\nse o apanhares.")]
     [InlineData("Se você vê-la, me liga.", "Se a vires, liga-me.")]
     [InlineData("Se o senhor vê-la, avise.", "Se o senhor a vir, avise.")]
-    [InlineData("Quando ele fazê-lo, avise.", "Quando ele o fizer, avise.")]
+    [InlineData("Quando ele fazê-lo, avise.", "Quando ele o fizer, avisa.")]
     [InlineData("Assim que vocês encontrá-los, voltem.", "Assim que vocês os encontrarem, voltem.")]
-    [InlineData("Se pegá-lo, ligue.", "Se o apanhar, ligue.")]
+    [InlineData("Se pegá-lo, ligue.", "Se o apanhares, liga.")]
     [InlineData("Mas se dizê-lo, acabou.", "Mas se o disser, acabou.")]
     [InlineData("Não sei se fazê-lo.", "Não sei se fazê-lo.")]
     [InlineData("Sei quando apanhá-lo.", "Sei quando apanhá-lo.")]

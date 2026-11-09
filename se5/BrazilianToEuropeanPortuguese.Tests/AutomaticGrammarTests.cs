@@ -49,7 +49,7 @@ public sealed class AutomaticGrammarTests
     [InlineData("É difícil dizer que foi pelo o que aconteceu.", "É difícil dizer que foi pelo que aconteceu.")]
     [InlineData("Tenho um ideia melhor.", "Tenho uma ideia melhor.")]
     [InlineData("Faz todo sentido.", "Faz todo o sentido.")]
-    [InlineData("Dei a ela todo dinheiro.", "Dei a ela todo o dinheiro.")]
+    [InlineData("Dei a ela todo dinheiro.", "Dei-lhe todo o dinheiro.")]
     public void RepeatedMissedEpisodeFamiliesBecomeSelectableChanges(string source, string expected) => Converts(source, expected);
 
     [Theory]

@@ -75,6 +75,14 @@ public partial class MainWindow : Window
     private ComboBox _disableRuleChoice = null!;
     private readonly HashSet<string> _disabledForFile = new(StringComparer.Ordinal);
     private string _savedDisabledRules = "";
+    private string _nameArticles = "";
+    private CheckBox _askNameArticlesCheck = null!;
+    private ConversionOptions _initialOptions = ConversionOptions.Default;
+    private readonly HashSet<string> _unresolvedNames = new(StringComparer.OrdinalIgnoreCase);
+    private readonly HashSet<string> _deferredNames = new(StringComparer.OrdinalIgnoreCase);
+    private bool _readyForNameQuestions;
+    private bool _askingNames;
+    private bool _closed;
     private bool _syncingSentence;
 
     public MainWindow() : this(new PluginRequest()) { }
@@ -87,7 +95,8 @@ public partial class MainWindow : Window
         _request = request;
         _isConfigure = request.RequestType == PluginRequestType.Configure;
         InitializeComponent();
-        LoadOptions(ConversionOptions.Load(request));
+        _initialOptions = ConversionOptions.Load(request);
+        LoadOptions(_initialOptions);
 
         _blocks = SubRipParser.Parse(request.Subtitle.SubRip);
         _changesList.ItemsSource = _proposals;
@@ -119,7 +128,12 @@ public partial class MainWindow : Window
         (int)(_charactersPerSecond.Value ?? 20),
         string.Join(",", new[] { _savedDisabledRules }.Concat(_disabledForFile).Where(s => s.Length > 0)),
         _conversationalCheck.IsChecked == true,
-        _layoutWarningsCheck.IsChecked == true);
+        _layoutWarningsCheck.IsChecked == true,
+        _nameArticles,
+        _askNameArticlesCheck.IsChecked == true);
+
+    private bool NameSettingsChanged => _nameArticles != _initialOptions.NameArticles ||
+        (_askNameArticlesCheck.IsChecked == true) != _initialOptions.AskNameArticles;
 
     private ConversionOptions SavedOptions => Options with { DisabledRules = _savedDisabledRules };
 
@@ -147,6 +161,8 @@ public partial class MainWindow : Window
         _maxLines.Value = options.MaxLines;
         _charactersPerSecond.Value = options.CharactersPerSecond;
         _savedDisabledRules = options.DisabledRules;
+        _nameArticles = options.NameArticles;
+        _askNameArticlesCheck.IsChecked = options.AskNameArticles;
         _loadingOptions = false;
 
         foreach (var check in OptionChecks)
@@ -185,6 +201,46 @@ public partial class MainWindow : Window
         var editor = new ContributionsWindow(_wordListPath);
         await editor.ShowDialog(this);
         if (editor.LocalWordListSaved && !_isConfigure) RefreshProposals();
+    }
+
+    private async void OnEditNameArticles(object? sender, RoutedEventArgs e)
+    {
+        var editor = new NameArticlesWindow(_nameArticles);
+        if (await editor.ShowDialog<bool>(this))
+        {
+            _nameArticles = editor.Value;
+            if (!_isConfigure) RefreshProposals();
+        }
+    }
+
+    private async Task AskUnknownNameArticles()
+    {
+        if (!_readyForNameQuestions || _closed || _isConfigure || _askingNames ||
+            _askNameArticlesCheck.IsChecked != true) return;
+        _askingNames = true;
+        try
+        {
+            while (!_closed && _askNameArticlesCheck.IsChecked == true)
+            {
+                var name = _unresolvedNames.FirstOrDefault(n => !_deferredNames.Contains(n));
+                if (name == null) break;
+                var question = new NameArticleQuestionWindow(name);
+                var article = await question.ShowDialog<string?>(this);
+                if (_closed) break;
+                if (article == null)
+                {
+                    _deferredNames.Add(name);
+                    continue;
+                }
+                _nameArticles = _nameArticles.TrimEnd() + (_nameArticles.Trim().Length == 0 ? "" : "\n") +
+                    name + " = " + article;
+                RefreshProposals();
+            }
+        }
+        finally
+        {
+            _askingNames = false;
+        }
     }
 
     private async void OnCheckDictionary(object? sender, RoutedEventArgs e) => await UpdateDictionary(false);
@@ -240,6 +296,7 @@ public partial class MainWindow : Window
 
     private void RefreshProposals()
     {
+        _unresolvedNames.Clear();
         foreach (var proposal in _proposals)
         {
             proposal.PropertyChanged -= OnProposalChanged;
@@ -270,6 +327,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or FormatException)
         {
+            _unresolvedNames.Clear();
             _proposals.Clear();
             _dictionaryStatus.Text = $"Could not load the Natura dictionary: {ex.Message}. Conversion stopped.";
             _changesBorder.IsVisible = false;
@@ -278,12 +336,14 @@ public partial class MainWindow : Window
         }
 
         var hasChanges = _proposals.Count > 0;
+        if (_readyForNameQuestions && !_askingNames && !_closed)
+            Avalonia.Threading.Dispatcher.UIThread.Post(async () => await AskUnknownNameArticles());
         _noChangesLabel.IsVisible = !hasChanges;
         _changesBorder.IsVisible = hasChanges;
         if (!hasChanges)
         {
-            _applyButton.IsEnabled = false;
-            _summaryLabel.Text = string.Empty;
+            _applyButton.IsEnabled = NameSettingsChanged;
+            _summaryLabel.Text = NameSettingsChanged ? "Apply to save personal name settings; subtitle unchanged." : string.Empty;
             return;
         }
 
@@ -312,6 +372,7 @@ public partial class MainWindow : Window
         _pronounsCheck = this.FindControl<CheckBox>("PronounsCheck")!;
         _colloquialCheck = this.FindControl<CheckBox>("ColloquialCheck")!;
         _youToTuCheck = this.FindControl<CheckBox>("YouToTuCheck")!;
+        _askNameArticlesCheck = this.FindControl<CheckBox>("AskNameArticlesCheck")!;
         _orthographyChoice = this.FindControl<ComboBox>("OrthographyChoice")!;
         _validateSpellingCheck = this.FindControl<CheckBox>("ValidateSpellingCheck")!;
         _dictionaryStatus = this.FindControl<TextBlock>("DictionaryStatus")!;
@@ -364,7 +425,10 @@ public partial class MainWindow : Window
         this.BringToForeground();
         if (_isConfigure) return;
         await FindReferenceAutomatically();
-        if (ChecksReady) await RunChecks();
+        if (_closed) return;
+        _readyForNameQuestions = true;
+        await AskUnknownNameArticles();
+        if (!_closed && ChecksReady) await RunChecks();
     }
 
     /// <summary>Loads "Name.en.srt" / "Name.English.srt" next to the subtitle or video, like Sub_sync.</summary>
@@ -402,7 +466,8 @@ public partial class MainWindow : Window
         var applyToAll = selected.Count == 0;
         var speakers = SubtitleConversion.Speakers(_request, _blocks, out var speakerNote);
         if (speakerNote != null) _subtitleLabel.Text += " " + speakerNote;
-        var conversions = SubtitleConversion.Convert(_blocks, Options, localWordList, _alignment?.Texts, selected, speakers);
+        var conversions = SubtitleConversion.Convert(_blocks, Options, localWordList, _alignment?.Texts, selected, speakers,
+            _askNameArticlesCheck.IsChecked == true ? _unresolvedNames : null);
         var convertedLines = new Dictionary<int, string>();
         _checkLines.Clear();
 
@@ -513,7 +578,7 @@ public partial class MainWindow : Window
         var review = _proposals.Count(p => p.HasReview);
         _summaryLabel.Text = $"{selected} of {total} change(s) selected." + (review > 0 ? $" {review} to review." : string.Empty) +
             $" Showing {_proposals.Count(p => p.VisibleInReview)} of {_proposals.Count} row(s).";
-        _applyButton.IsEnabled = selected > 0;
+        _applyButton.IsEnabled = selected > 0 || NameSettingsChanged;
     }
 
     private void OnFindingFilterChanged(object? sender, RoutedEventArgs e)
@@ -690,7 +755,7 @@ public partial class MainWindow : Window
     private void UpdateSummaryOrEmpty()
     {
         if (_proposals.Count > 0) UpdateSummary();
-        else _applyButton.IsEnabled = false;
+        else _applyButton.IsEnabled = NameSettingsChanged;
     }
 
     private void OnCancelReference(object? sender, RoutedEventArgs e) => _referenceCancel?.Cancel();
@@ -850,6 +915,7 @@ public partial class MainWindow : Window
 
     protected override void OnClosed(EventArgs e)
     {
+        _closed = true;
         _referenceCancel?.Cancel();
         EmbeddingRuntime.KillAll();
         base.OnClosed(e);
@@ -878,7 +944,8 @@ public partial class MainWindow : Window
 
             if (changesByLine.Count == 0)
             {
-                App.Response = new PluginResponse { Status = PluginStatus.Cancelled };
+                App.Response = NameSettingsChanged ? BatchMode.BuildConfigureResponse(SavedOptions) :
+                    new PluginResponse { Status = PluginStatus.Cancelled };
                 Close();
                 return;
             }

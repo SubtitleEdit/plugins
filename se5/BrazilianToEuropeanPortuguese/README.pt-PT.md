@@ -431,6 +431,18 @@ funcionalidade.
 Estas regras alteram construções portuguesas, em vez de se limitarem a
 acrescentar avisos de revisão:
 
+- **Ferrar no sentido informal brasileiro:** usos prejudiciais passam a
+  *lixar*, mantendo o tempo e a pessoa: *Ferrei tudo* → *Lixei tudo*,
+  *Ela ferrou o negócio* → *Ela lixou o negócio*, *Estou ferrado* →
+  *Estou lixado*. A conversão exige complementos abstratos revistos, clíticos
+  pessoais ou a confirmação inglesa de *screw up/over*. Preservam-se os usos
+  literais de ferrar cavalos, marcar gado, agarrar, morder e os sentidos náuticos,
+  *ferrar no sono* e formas isoladas ambíguas. Usa **Vocabulary** e
+  `construction-vocabulary`, respeitando uma entrada local/ignorada de *ferrar*.
+  O [Priberam: ferrar](https://dicionario.priberam.org/pt-pt/ferrar) identifica
+  este sentido como brasileiro; [lixar](https://dicionario.priberam.org/pt-pt/lixar)
+  inclui *prejudicar/tramar* e *estragar*. Mantém-se o registo informal de
+  *lixar*, em vez de impor a alternativa neutra *estragar*.
 - **Regência verbal:** no sentido de recordar, *o que/isso/isto/aquilo* e
   complementos de memória revistos (*nome, data, número, morada…*) recebem *de*
   e o pronome reflexo adequado: *Você lembra o que aconteceu?* → *Lembras-te do
@@ -462,6 +474,184 @@ acrescentar avisos de revisão:
   não se alteram indiscriminadamente virar uma esquina, curtir couro, reclamar
   uma herança ou descrever pessoas atraentes. O tratamento existente das
   construções progressivas continua ativo antes da conversão de *reclamar*.
+- **Vocabulário de conflito em função do sentido:** *briga/brigas* já não
+  correspondem sempre a *zanga/zangas*. Indícios de confronto físico ou de luta
+  por um objetivo selecionam *luta/lutas*: *A briga estourou* com *Fighting broke
+  out* → *A luta estourou*. Complementos locais revistos funcionam sem inglês
+  (*briga de rua*, *briga a socos*, *briga pelo título*, *briga contra o câncer*).
+  Discussões verbais usam *discussão/discussões*, *brawl/scuffle* com indícios
+  físicos usa *rixa/rixas*
+  e disputas usam *disputa/disputas*; *domestic dispute* indica um desentendimento
+  verbal, não automaticamente combate físico. A expressão *bate-boca/bate-bocas*
+  passa a *discussão/discussões*, com concordância dos artigos e adjetivos;
+  sentidos de conversa ou ruído confirmados pelo inglês podem usar *conversa*
+  ou *algazarra*.
+  *Brigar* usa as tabelas existentes de tempo e pessoa: com indícios físicos,
+  *brigou/brigaram/brigando* → *lutou/lutaram/lutando*; nos sentidos verbais ou
+  não resolvidos, mantém-se *discutir*. O inglês isolado *fight/fought* não
+  confirma confronto físico, e *fight like an old married couple* mantém o
+  sentido verbal. Um *scuffle* não qualificado com uma instituição não transforma
+  *brigar* em *lutar*. A correspondência do número de orações delimita a referência
+  quando possível; protegem-se indícios contraditórios, homógrafos entre nome e
+  verbo e os termos já europeus *luta/zanga*. Usam-se **Vocabulary**, `word-list`
+  e `verb-vocabulary`, respeitando entradas ignoradas e personalizadas. Não
+  exige modelo nem nova opção.
+  Os sentidos foram verificados nas entradas europeias do Priberam para
+  [briga](https://dicionario.priberam.org/pt-pt/briga),
+  [luta](https://dicionario.priberam.org/pt-pt/luta),
+  [zanga](https://dicionario.priberam.org/pt-pt/zanga),
+  [rixa](https://dicionario.priberam.org/pt-pt/rixa) e
+  [bate-boca](https://dicionario.priberam.org/pt-pt/bate-boca).
+- **Complementos pessoais e sentidos verbais revistos:** *Seu pai bateu você*
+  passa a *O teu pai bateu-te*, mas *Bateu em você* passa a *Bateu em ti*,
+  preservando a preposição. Os complementos pessoais abrangem também *atingir,
+  surrar, aguentar, considerar, contactar, fichar, honrar, liberar, livrar* e
+  *recusar*, com a colocação pronominal e o tratamento do futuro/condicional já
+  existentes. As entradas adicionais apenas para complementos não alargam as
+  tabelas de concordância do sujeito: ordens como *Aguenta firme* e
+  *Considere isto…* não devem transformar-se em afirmações.
+  *Monitorar* passa a *monitorizar* e *parabenizar* a *felicitar*, com flexões
+  geradas; protegem-se o nome *monitora* e o equipamento *monitores*.
+  *Grampear* com objetos de papel usa *agrafar*. Com telefones usa *pôr sob
+  escuta*; locais exigem indícios ingleses de vigilância, e contextos de vídeo
+  não são tratados como escutas telefónicas. Conversas intercetadas confirmadas
+  pelo inglês usam *intercetar*. *Embromar* com sentido confirmado de adiar usa
+  *ganhar tempo*, mas conversar e motores que param não ativam essa regra.
+  *Cochilar* com sono confirmado usa *dormitar*, sem alterar o sentido figurado
+  de perder uma oportunidade. Os sentidos contextuais usam **Vocabulary** e
+  `reviewed-verb-senses`; as flexões geradas usam `verb-vocabulary`, respeitando
+  entradas ignoradas/personalizadas.
+  Os nomes em *uma honra* e *um cochilo* não são conjugados como verbos.
+  Com complemento direto explícito não pessoal, o sentido de adiar usa
+  *protelar*, não a expressão intransitiva *ganhar tempo*.
+  Os dicionários confirmam sentidos possíveis, não o sentido pretendido em
+  todas as legendas: ver Priberam,
+  [bater](https://dicionario.priberam.org/pt-pt/bater),
+  [grampear](https://dicionario.priberam.org/pt-pt/grampear),
+  [monitorizar](https://dicionario.priberam.org/pt-pt/monitorizar),
+  [embromar](https://dicionario.priberam.org/pt-pt/embromar) e
+  [cochilar](https://dicionario.priberam.org/pt-pt/cochilar), e Ciberdúvidas sobre
+  [as duas construções de contactar](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/a-sintaxe-de-contactar/30060).
+- **Pronomes complemento em vários tempos e tempos compostos:** formas do
+  pretérito e do imperfeito cujo radical apenas se parece com um infinitivo
+  (*tirei, adorei, queria*) já não são tomadas por futuros: *Adorei ele* passa
+  a *Adorei-o* e *Ela queria você* a *Ela queria-te*. Gerúndios e o pretérito
+  imperfeito do conjuntivo aceitam complementos (*Não estou evitando você* →
+  *Não estou a evitar-te*, *deixou que usassem você* → *deixou que te
+  usassem*), e gerúndios com pronome enclítico depois de nomes ou pronomes usam
+  *a* + infinitivo (*eu mandando ele embora* → *eu a mandá-lo embora*). O
+  condicional usa próclise depois de negação, conjunções subordinativas e
+  *alguém/ninguém* (*porque alguém mataria ele* → *porque alguém o mataria*) e,
+  nos outros casos, mesóclise (*Eu aceitaria ela* → *Eu aceitá-la-ia*). Nos
+  tempos compostos o pronome acompanha *ter*: *Espero que tenha visto ele* →
+  *Espero que o tenha visto*, *Queria ter encontrado você* → *Queria ter-te
+  encontrado*, *Eu teria matado ele* → *Eu tê-lo-ia matado*. *Você* antes de um
+  infinitivo não causativo continua a ser o sujeito (*esperei você me pedir* →
+  *esperei pedires-me*), mas verbos causativos e de perceção recebem o pronome
+  (*Não ouço você fazer* → *Não te ouço fazer*). Salvaguardas: sujeitos
+  pós-verbais de imperativos (*Escolhe você* → *Escolhe tu*), *Tem ele aqui?*,
+  sujeitos invertidos em perguntas (*O que tinha feito ele?*), particípios
+  intransitivos (*tinha ido*), *Foda-se* e gerúndios ou infinitivos pessoais a
+  seguir mantêm-se.
+  *Deixar que te* + conjuntivo impessoal passa a *deixar-se* reflexo +
+  infinitivo: *Você deixou que usassem você* → *Deixaste-te usar*, *Não deixe
+  que usem você* → *Não te deixes usar*; com sujeito omitido, *deixou* só passa a
+  *te deixaste* quando o inglês diz *let yourself*, pelo que *Ele deixou que te
+  usassem* se mantém. Depois de causativos com pronome, o infinitivo não se
+  flexiona: *Você deixou eles usarem você* → *Deixaste-os usar-te*.
+  Uma preposição seguida do sujeito próprio do infinitivo atrai o pronome:
+  *Para eles usarem você* → *Para eles te usarem*, *Antes de eles encontrarem
+  você* → *Antes de eles te encontrarem*, *Para o Jack ver você* → *Para o Jack
+  te ver*; a terminação do infinitivo tem de concordar com esse sujeito.
+  Quando o sujeito é omitido, a terminação pessoal identifica-o e o pronome
+  continua a ser atraído: *Para você usar ele* / *Para você usá-lo* →
+  *Para o usares*, *Para a gente ajudar você* → *Para te ajudarmos*. Um
+  sujeito explícito *tu*/*nós* mantém-se (*Para tu o usares*), porque pode
+  ser contrastivo.
+- Depois de um verbo transitivo, *você também* é complemento: *Nunca vi você
+  também* → *Nunca te vi também* (usos como sujeito, *Você também* → *Tu
+  também*, mantêm-se).
+- *Prestar/dar atenção em* passa a *a* no português europeu: *atenção nisto* →
+  *atenção a isto*, *em sua conversa* → *à sua conversa*, e um *tanto quanto
+  na…* coordenado acompanha. Com uma referência inglesa *those/that*, *nestes*
+  passa a *a esses*.
+- O calão *faturar* (arranjar droga) passa a *comprar* antes de um nome de droga
+  ou quando a referência inglesa diz *buy/score some*; os sentidos de faturação
+  e ganhos (*faturou milhões*, *faturar o cliente*) mantêm-se.
+- *Talvez* antes do verbo pede o conjuntivo, com o pronome antes do verbo:
+  *talvez ele esqueceu-se de* → *talvez ele se tenha esquecido de*, *talvez é* →
+  *talvez seja*, *talvez podemos* → *talvez possamos*. *Talvez* depois do verbo,
+  *talvez há dois anos* e nomes (*talvez marcas de agulha*) mantêm-se.
+- O *faturar* de droga passa também a *comprar* quando o inglês usa "score"
+  sozinho (*How much you looking to score?*). No desporto, *faturar* passa a
+  *marcar* (*faturou dois gols* → *marcou dois golos*, ou inglês *scored a goal*).
+- As partes do jogo usam os nomes portugueses: *no segundo tempo* → *na segunda
+  parte*, *2º tempo* → *2ª parte* (com concordância: *pela segunda parte
+  seguida*). Com o inglês *quarter*, *terceiro período/tempo* → *terceiro
+  quarto*; com *overtime* desportivo, *a prorrogação* → *o prolongamento*.
+  Períodos escolares, tempos verbais e prorrogações de prazo mantêm-se.
+- *Errado* usado como advérbio passa a *mal*: *deu errado* → *correu mal*, *vai
+  dar tudo errado* → *vai correr tudo mal*, *percebeste errado* → *percebeste
+  mal*, *fiz tudo errado* → *fiz tudo mal*. Os nomes mantêm o adjetivo (*o
+  número errado*). *O que deu errado* mantém o sujeito impessoal (*o que correu
+  mal*).
+- *Esquecer/lembrar* reflexos nos tempos compostos levam o pronome: *tinha
+  esquecido de* → *tinha-me esquecido de* / *se tinha esquecido de* (próclise
+  depois de *não*, *que*, *talvez*…; *ter-se-ia* no condicional).
+- *Veja você mesmo* → *Vê por ti mesmo*; *Faça você mesmo* fica *Faz tu mesmo*.
+- Um pronome depois de uma palavra que o atrai passa para antes do verbo: *Não
+  disse-lhe* → *Não lhe disse*, *o que a Linda disse-lhe* → *o que a Linda lhe
+  disse*, *Quando o Frank viu-me* → *Quando o Frank me viu*. As ordens mantêm-no
+  depois do verbo (*Só lembra-te de mim*).
+- Causativo *fazer/deixar vocês esperarem* → *fazer-vos esperar* (*que vos fazem
+  sentir*). Particípios curtos brasileiros depois de *ter*: *ter
+  pego/chego/trago* → *ter pegado/chegado/trazido*. *Tinha muita gente*
+  existencial → *Havia muita gente*. Mais formas de *ter certeza* → *ter a
+  certeza* (*Tenham a certeza*, *Terei a certeza*) e *o único jeito* → *a única
+  forma*.
+- Uma oração com *onde* que indica a finalidade de uma ordem pede o conjuntivo:
+  *Mãos onde podemos vê-las!* → *Mãos onde possamos vê-las!*, *Põe as mãos onde
+  eu posso ver* → *onde eu possa ver*. Perguntas indiretas e lugares factuais
+  (*Sabes onde posso…*, *uma cama onde posso dormir*) mantêm o indicativo. A
+  gralha *Coloque-as mãos* é lida como *Coloque as mãos*.
+- Em *nós + o/a/os/as + verbo em -ar*, o complemento direto passa para depois
+  do verbo: *Nós o viramos* → *Nós viramo-lo*. Quando a referência inglesa
+  alinhada identifica claramente uma ação passada, acrescenta-se o acento do
+  pretérito europeu: *We flipped him* → *Nós virámo-lo*. Sem essa evidência
+  mantém-se a forma sem acento, pois *viramos* no Brasil pode ser presente ou
+  passado.
+- Em *prestar/dar atenção*, a referência alinhada *attention to those/that*
+  seleciona *a esses/esse*, mesmo que outra frase contenha *this/these*; também
+  pode corrigir um *a estes/este* já existente. Sem essa evidência, mantém-se
+  o demonstrativo original.
+- Perguntas em que o inglês se dirige a *you* usam *tu*: *Onde estava?* → *Onde
+  estavas?*, *Como me achou?* → *Como me achaste?*, *O que me diz?* → *O que me
+  dizes?*, *De que merda está falando?* → *De que merda estás a falar?*. Inglês na
+  terceira pessoa (*Where is he?*) e verbos de chegada antes do sujeito (*Quando
+  chega o comboio*) mantêm-se. Ordens formais passam a ordens com *tu* sem se
+  tornarem afirmações (*Tenha modos* → *Tem modos*, não *Tens modos*).
+- Orações subordinadas confirmadas pelo *you* inglês usam *tu*: *a última/próxima
+  vez que precisar* → *que precisares*, *para que aprenda* → *para que aprendas*.
+  Expressões de tempo (*mês/ano/semana que vem*), exclamações com nome (*Que
+  sorte!*, *Que drama é esse?*) e infinitivos simples (*Não que estar certo…*)
+  mantêm-se.
+- Infinitivos reflexos seguem o sujeito: *Adoras abrir-se* → *Adoras abrir-te*,
+  *Não fiques a achar-se* → *Não fiques a achar-te*. Depois de verbos causativos ou
+  de perceção, o reflexo passa para depois do infinitivo ou cai quando o objeto já
+  é uma pessoa: *deixa os outros se aproximarem* → *deixa os outros
+  aproximarem-se*, *mandou-nos se sentar* → *mandou-nos sentar*, *se faz-te se
+  sentir* → *se te faz sentir*.
+- *Achar/considerar/julgar você* + predicativo → *acho-te chique*, *Não te acho
+  bonita*, *Sempre te achei muito inteligente*. *Que conversa é esse?* concorda com
+  o novo nome (*Que conversa é essa?*), mas não com um complemento com *de* (*Que
+  cara de rabo é essa?*). A expressão *Que X é essa?* mantém *essa*, salvo quando o
+  inglês diz literalmente *is this*. Um verbo depois de um pronome não é tratado
+  como adjetivo com *demais* (*quando eu me aproximava demais*).
+- **Vocabulário regional adicional:** *chispa daqui* → *desaparece daqui*,
+  *canção de ninar* → *canção de embalar*, *na marra* → *à força*, *água
+  encanada* → *água canalizada* e *não/nem esquente a cabeça* → *não te
+  preocupes*. *Esquentado/a* no sentido de temperamento já não passa a
+  *aquecido/a*.
 - **Infinitivo pessoal:** os sujeitos explícitos depois de *para, sem, antes de,
   depois de, apesar de, em vez de…* e as expressões de avaliação reconhecidas
   permitem agora negações, advérbios ou pronomes átonos intercalados:
@@ -974,15 +1164,39 @@ Regras encontradas ao comparar o resultado com legendas reais em PT-PT:
   antes do verbo: *que minha mãe traiu ele* → *que a minha mãe o traiu*,
   *se o meu pai me visse*, *quando a polícia achar ele* →
   *quando a polícia o achar*.
+- Um sujeito nominal curto no início da oração também permite os pronomes de
+  complemento direto *o/a/os/as*: *A família a registrou* →
+  *A família registou-a*, *Maria a viu* → *Maria viu-a*.
+  Exige-se um verbo finito conhecido ou uma forma regular do passado validada pelo
+  dicionário. Mantêm-se artigos antes de nomes, formas ambíguas entre nome e verbo,
+  contextos subordinados que atraem o pronome e formas futuras ou condicionais.
+  A regra respeita a opção Pronouns e a respetiva etapa.
+  Também abrange o reflexivo *se* após sujeito nominal:
+  *A revolta se espalhou* → *A revolta espalhou-se*,
+  *A família se reuniu* → *A família reuniu-se*.
+  Mantém-se o comportamento existente de *se* condicional ou interrogativo
+  (*Pergunta se conhece…*), dos contextos que atraem o pronome e das ordens
+  informais coordenadas.
 - *Olha (só) você* → *Olha (só) para ti*, também com gerúndio:
   *Olha só você fazendo uma entrada* → *Olha só para ti a fazer uma entrada*.
   Uma ordem curta no início de uma frase mantém *você* como sujeito:
   *Manda você.* → *Manda tu.* (*Incomoda você?* → *Incomoda-te?*).
-- *para + pronome* depois de verbos de dizer, pedir, telefonar, mostrar,
+- *a/para + pronome*, com destinatário neutro, depois de verbos revistos de dizer, pedir, telefonar, mostrar,
   pagar ou mentir passa a pronome de complemento indireto:
   *Liga para ela* → *Liga-lhe*, *Não liguei para eles* → *Não lhes liguei*,
   *Ligarei para ela* → *Ligar-lhe-ei*, *Está mentindo para mim* →
   *Está a mentir-me*, *Pedi para ele sair* → *Pedi-lhe para sair*.
+  A mesma regra abrange *Não contou a ela?* → *Não lhe contou?*,
+  *Contei a elas* → *Contei-lhes*, *Dei a ela tudo* → *Dei-lhe tudo* e
+  complementos diretos revistos intercalados:
+  *Não contou isso a ela* → *Não lhe contou isso*. Reutiliza a colocação dos
+  clíticos nos tempos suportados, infinitivos, frases negativas e subordinadas;
+  o número do destinatário determina *lhe/lhes*. O pronome tónico continua
+  válido para ênfase ou contraste: preservam-se *a ela mesma*, *apenas a ela*,
+  destinatários coordenados e a duplicação com um clítico já presente.
+  Usa **Pronouns** e `pronouns`, sem exigir referência inglesa.
+  Ver o Ciberdúvidas sobre [substituição do complemento indireto](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/a-identificacao-do-complemento-indireto-na-frase-prestam-atencao-a-tudo/35496)
+  e [próclise depois de negação](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/proclise-em-portugal-e-no-brasil/15214).
   *Liga você para ela.* → *Liga-lhe.*, mas a pergunta mantém o sujeito
   tónico: *Ligas tu para ela?*. Preservam-se *olhar/levar/falar/dar para…*,
   nomes (*uma pergunta para ela*), *isso conta para ele* e
@@ -998,6 +1212,62 @@ Regras encontradas ao comparar o resultado com legendas reais em PT-PT:
   *Então soube que chegou…* → *Então soube que chegaste…*.
   Uma referência inglesa na terceira pessoa mantém a terceira pessoa, e as
   orações de sujeito omitido ambíguo sem referência não são alteradas.
+  Os advérbios iniciais usam a mesma lista revista da concordância com *você*
+  explícito: *Realmente gosta dele* → *Realmente gostas dele*,
+  *Sempre gosta dele* → *Sempre gostas dele* e *Simplesmente gosta dele* →
+  *Simplesmente gostas dele*, quando o inglês alinhado identifica *you* como
+  sujeito. Mantêm-se até três advérbios iniciais suportados; sujeitos diferentes
+  explícitos, tratamento formal e usos nominais ou impessoais continuam a impedir
+  a concordância informal.
+  A concordância inicial de sujeito omitido não pluraliza nomes como *Certeza?*
+  nem altera pedidos de desculpa isolados. O marcador inglês *you know,* não
+  confirma um sujeito *tu* na oração portuguesa seguinte; frases contraditórias
+  e perguntas inglesas sem verbo copulativo também preservam cópulas ambíguas.
+  As relativas preservam o antecedente: *alguém que você acha que é calmo* →
+  *alguém que achas que é calmo*, não *que és*. O *você* explícito na oração
+  subordinada continua a ser convertido.
+  Uma camada limitada de análise estrutural condiciona agora a concordância de
+  sujeito omitido orientada pela referência e os predicados partilhados ou
+  controlados. Acompanha fronteiras de pontuação e diálogo, ligações subordinantes,
+  candidatos a formas verbais e a identificação local do sujeito; a validação
+  pelo dicionário não elimina a ambiguidade entre nome e verbo. Protege combinações
+  revistas de nome e adjetivo (*Ajuda financeira.*), cópulas impessoais
+  (*É necessário sair.*), complementos infinitivos (*Não tens o que fazer*) e
+  antecedentes relativos contra concordâncias indevidas de *tu*. As formas
+  condicionais continuam elegíveis (*Se mentir* → *Se mentires* com referência
+  correspondente).
+  As orações inglesas com *what/which* só são comparadas pela ordem quando o seu
+  número corresponde ao das orações portuguesas com *o que*; indícios de sujeitos
+  contraditórios não bloqueiam a regra existente. Mantêm-se as opções de
+  concordância e tratamento, e a análise só é criada quando existe um candidato
+  de regra. Trata-se de uma camada conservadora de veto, não de um analisador
+  sintático completo, classificador geral de nomes e adjetivos ou identificador
+  de sujeitos entre legendas. Os motivos de bloqueio são internos; não acrescentam
+  novos avisos de revisão à interface.
+  Respostas curtas alinhadas com uma
+  frase inglesa final como *It does.* não herdam o *you* da frase anterior.
+  As ordens progressivas iniciais (*Continue fazendo* → *Continua a fazer*)
+  mantêm o imperativo nas passagens seguintes.
+  Com **Progressive**, **Pronouns** e tratamento informal ativos, complementos
+  confirmados pelo inglês *kept you waiting* usam *Espero não te ter deixado
+  à espera* ou *Tenho-te deixado à espera* (`waiting-complements`); preservam-se
+  os casos sem referência e o tratamento formal. As regras progressivas também
+  abrangem nome + advérbio + gerúndio (*a música ainda tocando* →
+  *a música ainda a tocar*) e complementos locativos. Depois de um locativo,
+  admite-se *tirando fotos/fotografias* separado por vírgula; outros adjuntos
+  separados por vírgula mantêm-se.
+  A ortografia escreve *meia-noite* com hífen nos dois acordos, respeitando
+  as opções ortográficas, o texto ignorado e o controlo da etapa `orthography`.
+  As posições de proximidade confirmadas pelo inglês usam *mesmo*, não o
+  temporal *logo*: *Logo atrás de você* + *Right behind you* →
+  *Estou mesmo atrás de ti*. Preservam-se sujeitos e tempos explícitos
+  (*Estamos logo atrás de você* → *Estamos mesmo atrás de ti*); a regra
+  também abrange *à frente* e *ao lado*. A primeira pessoa do presente
+  omitida só é reposta com inglês *I'm...* correspondente ou a construção
+  isolada *Right/Just behind you*. Preservam-se referências temporais,
+  futuras, com complementos contraditórios ou várias posições. Exige
+  **Colloquial** e `spatial-position`; o tratamento usa os controlos
+  existentes (*atrás de si* em diálogo formal).
   A concordância verbal usa a tabela de irregulares existente e flexões
   regulares validadas pelo dicionário, não uma lista fechada de verbos.
   Numa oração com *que* e auxiliar, os pronomes dativos passam para antes do
@@ -1114,8 +1384,9 @@ As ações reconhecidas também incluem perguntar, dizer, esperar, ir e ajudar.
 Com **Pronouns** ativado, as perguntas sobre telefonar acrescentam artigos
 antes de nomes de pessoas revistos; os nomes desconhecidos mantêm a escolha
 de artigo original. Esta regra (`action-questions`) não altera ordens ou
-perguntas genuínas nem o tratamento formal. A leitura masculina revista do
-nome unissexo *Jamie* limita-se a estas perguntas sobre telefonar.
+perguntas genuínas nem o tratamento formal. Nomes unissexo (*Jamie*, *Alex*…)
+não recebem artigo automaticamente, salvo se o utilizador escolher um na
+pergunta sobre nomes ou na lista editável.
 
 As respostas iniciadas por *Não.* ou *Sim.* deixam de ocultar um sujeito
 **you** confirmado pela referência inglesa. *Não. Disse que iria me ajudar*
@@ -1217,6 +1488,12 @@ como adjetivo: *dia devagar* → *dia lento*, *manhã devagar* → *manhã lenta
 também no plural. Trata-se de corrigir um erro da tradução de origem, não
 de uma diferença geral entre PT-BR e PT-PT. Mantêm-se usos adverbiais válidos
 como *o dia passou devagar* e casos sem referência correspondente.
+
+Com **Vocabulary** ativado, os quantificadores também identificam nomes de
+profissionais da polícia: *muito mais policiais* → *muito mais polícias*,
+incluindo *menos* e quantidades numéricas. Expressões adjetivais como
+*mais operações policiais* mantêm-se. *Officers* na referência conserva
+a seleção existente de *agentes*.
 
 O tratamento informal também abrange predicados com sujeito partilhado, não
 apenas o primeiro verbo: *Você é péssimo pescando, odeia golfe* →
@@ -1500,6 +1777,10 @@ Mantêm-se as formas que também são nomes (*as botas*, *um pulo*, *mil postes*
 *botar fogo*, *esquentar a cabeça*, *Entendido*).
 Uma entrada local `Word` ou `Ignore` para o infinitivo, por exemplo,
 `<Word br="botar" pt="pôr" />`, desativa todas as formas geradas desse verbo.
+As entradas de formas individuais também prevalecem sobre os homógrafos gerados,
+incluindo formas que são nomes; uma correspondência removida não pode permanecer
+nas regras de reconhecimento geradas. O vocabulário jurídico preserva
+*ordem legal / ordens legais*, sem tratar *legal* como equivalente informal de *fixe*.
 
 A lista incluída é [`PortugueseWordList.xml`](PortugueseWordList.xml).
 O formato está descrito no início do ficheiro. Uma entrada
@@ -1746,6 +2027,28 @@ seleção atual.
     `mradermacher/gervasio-8b-portuguese-ptpt-decoder-GGUF` numa revisão
     fixada, verifica o SHA-256 e guarda a ficha do modelo junto deste.
 
+## Perguntas automáticas sobre nomes (apenas na pré-visualização)
+
+Numa execução normal do plugin, **Ask about unknown personal name articles (preview only)**
+está ativo por predefinição. Depois de carregar a referência inglesa, surge uma
+pergunta para um nome com inicial maiúscula ainda sem escolha, apenas quando uma
+construção ativa e suportada precisa de um artigo: *pensar em Jamie*, uma pergunta
+telefónica sobre a própria ação confirmada pelo inglês, ou a construção suportada
+de ordem de palavras *you and [name]*. Não procura todos os nomes do ficheiro,
+não pergunta sobre legendas não selecionadas nem presume que a palavra é uma pessoa.
+As palavras reconhecidas pelo dicionário em minúsculas não originam perguntas;
+os nomes que também são palavras comuns podem ser configurados manualmente na lista.
+
+Escolha **Use o**, **Use a** ou **No article / not a person**. A escolha atualiza
+a pré-visualização e a lista editável e aplica-se a todas as ocorrências.
+**Not now** (ou fechar a pergunta) ignora esse nome na pré-visualização atual,
+sem guardar uma escolha. **Apply** guarda as escolhas através do Subtitle Edit,
+mesmo quando só mudaram as definições e as legendas se mantêm; cancelar o plugin
+não as guarda. Desmarque a opção para desativar as perguntas automáticas;
+as escolhas guardadas continuam a aplicar-se. **Batch convert** e a respetiva
+janela Configure nunca mostram perguntas automáticas sobre nomes.
+A pergunta usa a interface Avalonia existente, sem novos runtimes, modelos ou serviços.
+
 ## Conversão em lote — Batch convert
 
 Compatível com **Batch convert** do Subtitle Edit
@@ -1756,6 +2059,16 @@ Compatível com **Batch convert** do Subtitle Edit
   Local word list**. Guarde as entradas locais ativas nesse editor.
   **OK** devolve a escolha ao Subtitle Edit como definições do
   plugin.
+- **Personal name articles…** permite indicar um nome de uma só palavra por linha,
+  por exemplo `Jamie = o`, `Alex = a` ou `Maria = none` (não acrescentar artigo).
+  Estas escolhas substituem as predefinidas para esses nomes; remova uma linha para
+  voltar à predefinição. Selecione **Use list** e depois **OK** em Configure para
+  guardar a lista nas definições do plugin do Subtitle Edit para os lotes seguintes.
+  A mesma grafia recebe a mesma escolha em todos os ficheiros; reveja a lista quando
+  as personagens diferem entre produções. A lista só atua nas construções de nomes
+  já suportadas, não em todos os nomes das legendas, e não substitui artigos existentes.
+  O editor também está disponível na pré-visualização; as definições são devolvidas
+  quando se aplicam alterações.
 - Durante o lote, todas as legendas são convertidas com essas definições
   e a lista local, sem mostrar a janela. Os ficheiros sem nada a converter
   mantêm-se. Se não for possível ler a lista local, o ficheiro falha com

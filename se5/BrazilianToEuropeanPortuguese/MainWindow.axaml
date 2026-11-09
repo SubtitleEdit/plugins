@@ -32,7 +32,7 @@
                     IsDefault="True" />
         </Grid>
 
-        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,4">
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto,Auto,Auto" Margin="0,0,0,4">
             <StackPanel Grid.Column="0" x:Name="SelectButtons" Spacing="6">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <Button Content="Select all" Click="OnSelectAll"
@@ -64,6 +64,12 @@
                           Data="M 2,11 L 8,5 L 14,11" />
             </Button>
             <Button Grid.Column="2"
+                    x:Name="EditNameArticlesButton"
+                    Content="Personal name articles…"
+                    Click="OnEditNameArticles"
+                    ToolTip.Tip="Choose articles for names used by supported conversion rules."
+                    Margin="0,0,8,0" />
+            <Button Grid.Column="3"
                     x:Name="ContributeVocabularyButton"
                     Content="Contribute vocabulary / Local word list"
                     Click="OnContributeVocabulary"
@@ -100,6 +106,12 @@
             <CheckBox x:Name="YouToTuCheck" Content="você → tu"
                       ToolTip.Tip="você tem → tu tens, com você → contigo, para você → para ti (unknown verbs are left alone)" />
         </WrapPanel>
+
+        <CheckBox x:Name="AskNameArticlesCheck"
+                  Content="Ask about unknown personal name articles (preview only)"
+                  IsCheckedChanged="OnOptionChanged"
+                  ToolTip.Tip="Ask once per unresolved name when a supported rule needs an article. Batch convert never asks."
+                  Margin="0,0,0,8" />
 
         <Grid DockPanel.Dock="Top" x:Name="ReviewLayoutPanels" ColumnDefinitions="340,*" Margin="0,0,0,8">
         <Expander Grid.Column="0" x:Name="ReviewTools" Header="Review tools"
