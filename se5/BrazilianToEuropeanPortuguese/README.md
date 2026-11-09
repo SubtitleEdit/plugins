@@ -1009,10 +1009,20 @@ Rules found by comparing the output against real PT-PT subtitles:
 - *Olha (só) você* → *Olha (só) para ti*, also with a gerund: *Olha só você fazendo uma entrada* → *Olha só
   para ti a fazer uma entrada*. A short command at the start of a sentence keeps *você* as its subject:
   *Manda você.* → *Manda tu.* (*Incomoda você?* → *Incomoda-te?*).
-- *para* + pronoun after verbs of telling, asking, calling, showing, paying or lying becomes the indirect-object
+- Neutral *a/para* + pronoun after reviewed verbs of telling, asking, calling, showing, paying or lying becomes the indirect-object
   pronoun: *Liga para ela* → *Liga-lhe*, *Não liguei para eles* → *Não lhes liguei*, *Ligarei para ela* →
   *Ligar-lhe-ei*, *Está mentindo para mim* → *Está a mentir-me*, *Pedi para ele sair* → *Pedi-lhe para sair*.
   *Liga você para ela.* → *Liga-lhe.*, but the question keeps the stressed subject: *Ligas tu para ela?*.
+  The same recipient rule handles *Não contou a ela?* → *Não lhe contou?*,
+  *Contei a elas* → *Contei-lhes*, *Dei a ela tudo* → *Dei-lhe tudo* and
+  intervening reviewed direct objects: *Não contou isso a ela* → *Não lhe contou isso*.
+  It reuses clitic placement across supported tenses, infinitives, negative and
+  subordinate contexts; recipient number selects *lhe/lhes*. Stressed pronouns
+  remain valid for emphasis or contrast, so *a ela mesma*, *apenas a ela*,
+  coordinated recipients and existing clitic doubling are preserved.
+  This uses **Pronouns** and `pronouns`, without requiring an English reference.
+  See Ciberdúvidas on [indirect-object substitution](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/a-identificacao-do-complemento-indireto-na-frase-prestam-atencao-a-tudo/35496)
+  and [proclisis after negation](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/proclise-em-portugal-e-no-brasil/15214).
   *olhar/levar/falar/dar para…*, nouns (*uma pergunta para ela*), *isso conta para ele* and *liguei para ele
   saber* are kept. *Só/Apenas* + command also takes the *tu* form: *Só me ligue* → *Só me liga*.
 - Negative commands remain in the *tu* subjunctive even when a *teu/tua* possessive appears later:

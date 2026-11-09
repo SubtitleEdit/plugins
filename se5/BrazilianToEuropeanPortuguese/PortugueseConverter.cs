@@ -5078,12 +5078,12 @@ public sealed class PortugueseConverter
             });
             s = ObjectPronoun.Replace(s, ReplaceObject);
             s = CausativeInfinitive.Replace(s, m => m.Groups["pre"].Value + m.Groups["inf"].Value);
-            s = DativeObjectPara.Replace(s, m =>
+            s = DativeObjectRecipient.Replace(s, m =>
             {
-                var converted = ReplaceDativePara(m);
+                var converted = ReplaceDativeRecipient(m);
                 return converted == m.Value ? m.Value : converted + " " + m.Groups["np"].Value;
             });
-            s = DativePara.Replace(s, ReplaceDativePara);
+            s = DativeRecipient.Replace(s, ReplaceDativeRecipient);
             s = InfinitiveProclisis.Replace(s, ReplaceInfinitiveProclisis);
             return s;
         }
@@ -5324,12 +5324,12 @@ public sealed class PortugueseConverter
         }
 
         private const string ArEndings =
-            "o|as|a|amos|am|e|es|em|emos|ei|aste|ou|ámos|aram|ava|avas|ávamos|avam|ar|ares|armos|arem|ará|arás|arei|aremos|arão|aria|arias|aríamos|ariam|asse|asses|assem|ando";
+            "o|as|a|amos|am|e|es|em|emos|ei|aste|ou|ámos|aram|ava|avas|ávamos|avam|ar|ares|armos|arem|ará|arás|arei|aremos|arão|aria|arias|aríamos|ariam|asse|asses|ássemos|assem|ando";
 
         private const string ErEndings =
-            "o|es|e|emos|em|a|as|am|i|este|eu|eram|ia|ias|íamos|iam|er|eres|ermos|erem|erá|erás|erei|eremos|erão|eria|erias|eríamos|eriam|esse|essem|endo";
+            "o|es|e|emos|em|a|as|am|i|este|eu|eram|ia|ias|íamos|iam|er|eres|ermos|erem|erá|erás|erei|eremos|erão|eria|erias|eríamos|eriam|esse|esses|êssemos|essem|endo";
 
-        // Verbs whose Brazilian "para + pronoun" is an indirect object in Portugal: "Liga para ela" → "Liga-lhe".
+        // Reviewed verbs with a neutral recipient: "Liga para ela" → "Liga-lhe", "Não contou a ela" → "Não lhe contou".
         internal const string DativeVerbForms =
             "(?:(?:lig|ligu|telefon|pergunt|cont|expli(?:c|qu)|mostr|mand|envi|ensin|pag|pagu|facilit)(?:" + ArEndings + ")|" +
             "(?:escrev|respond)(?:" + ErEndings + ")|" +
@@ -5337,24 +5337,37 @@ public sealed class PortugueseConverter
             "peço|pedes|pede|pedimos|pedem|peça|peças|peçam|pedi|pediste|pediu|pediram|pedia|pedias|pediam|pedir|pedires|pedirem|pedirei|pedirá|pedirás|pediremos|pedirão|pediria|pedirias|pediriam|pedisse|pedissem|pedindo|" +
             "minto|mentes|mente|mentimos|mentem|minta|mintas|mintam|menti|mentiste|mentiu|mentiram|mentia|mentias|mentiam|mentir|mentires|mentirem|mentirei|mentirá|mentirás|mentiremos|mentirão|mentiria|mentiriam|mentisse|mentindo)";
 
-        private static readonly Regex DativePara = new(
-            @"(?<trig>" + NotWordBefore + @"(?:não|nunca|jamais|também|já|ainda|só|nem|sempre|que|quem|porque|onde|quando|como|talvez)\s+)?" +
-            NotWordBefore + @"(?<v>" + DativeVerbForms + @")\s+para\s+(?<p>ele|ela|eles|elas|mim|ti|nós|você|vocês)" + NotWordAfter +
-            @"(?!\s+(?:mesm[oa]s?|própri[oa]s?|só|sozinh[oa]s?|e\s+(?:para|a|ao|à|o)|ou\s+(?:para|a|ao|à|o))" + NotWordAfter + ")", Ci);
+        private const string DativePronouns = @"ele|ela|eles|elas|mim|ti|nós|você|vocês";
+        private const string DativeTrigger =
+            @"(?<trig>" + NotWordBefore +
+            @"(?:não|nunca|jamais|também|já|ainda|só|nem|sempre|que|quem|porque|onde|quando|como|talvez|" +
+            @"se(?=\s+\p{L}*(?:[aei]sse(?:s|m)?|[áéêí]ssemos|[aei]r(?:es|mos|em)?)\b))\s+)?";
+        private const string DativeEmphasis =
+            @"(?!\s+(?:mesm[oa]s?|própri[oa]s?|só|sozinh[oa]s?)" + NotWordAfter + ")" +
+            @"(?!\s*,?\s*(?:(?:e|ou|mas|nem)(?:\s+não)?|não)\s+(?:(?:para|a|ao|à)\s+)?(?:" + DativePronouns +
+            @"|o|a|os|as|ao|à|aos|às)" + NotWordAfter + ")";
 
-        // "Vou mostrar a casa para ele" → "Vou mostrar-lhe a casa": a direct object between a giving/telling verb and "para + pronoun".
+        private static readonly Regex DativeRecipient = new(
+            DativeTrigger + NotWordBefore + @"(?<v>" + DativeVerbForms + "|" + DitransitiveVerbForms +
+            @"(?=\s+a\s))\s+(?<prep>para|a)\s+(?<p>" +
+            DativePronouns + ")" + NotWordAfter + DativeEmphasis, Ci);
+
+        // A direct object can intervene: "Vou mostrar a casa a ele" → "Vou mostrar-lhe a casa".
         private const string DitransitiveVerbForms =
             "(?:(?:mostr|mand|envi|ensin|expli(?:c|qu)|cont|entreg|emprest)(?:" + ArEndings + ")|" +
             "(?:escrev|vend|oferec|devolv)(?:" + ErEndings + ")|" +
-            "dou|dás|dá|damos|dão|dê|dês|dêem|deu|deste|demos|deram|dava|davas|davam|dar|darei|dará|daria|dando|" +
+            "dou|dás|dá|damos|dão|dê|dês|deem|dêem|dei|deu|deste|demos|deram|dava|davas|dávamos|davam|" +
+            "dar|dares|darmos|darem|darei|darás|dará|daremos|darão|daria|darias|daríamos|dariam|" +
+            "desse|desses|déssemos|dessem|der|deres|dermos|derem|dando|" +
             "digo|diz|dizem|disse|disseram|dizia|diga|dizer|direi|dirá|diria|dizendo)";
 
-        private static readonly Regex DativeObjectPara = new(
-            @"(?<trig>" + NotWordBefore + @"(?:não|nunca|jamais|também|já|ainda|só|nem|sempre|que|quem|porque|onde|quando|como|talvez)\s+)?" +
+        private static readonly Regex DativeObjectRecipient = new(
+            DativeTrigger +
             NotWordBefore + @"(?<v>" + DitransitiveVerbForms + @")\s+" +
-            @"(?<np>(?:o|a|os|as|um|uma|uns|umas|meu|minha|meus|minhas|seu|sua|seus|suas|teu|tua|teus|tuas|nosso|nossa|este|esta|esse|essa|aquele|aquela)" +
-            @"(?:\s+(?!(?:para|a|ao|à|de|e|ou|que|com|em|no|na)" + NotWordAfter + @")\p{L}+){1,2}(?:\s+d[eoa]s?\s+\p{L}+)?)" +
-            @"\s+para\s+(?<p>ele|ela|eles|elas|mim|ti|nós|você|vocês)" + NotWordAfter +
+            @"(?<np>isso|isto|aquilo|tudo|algo|nada|(?:o|a|os|as|um|uma|uns|umas|meu|minha|meus|minhas|seu|sua|seus|suas|teu|tua|teus|tuas|nosso|nossa|este|esta|esse|essa|aquele|aquela)" +
+            @"(?:\s+(?!(?:para|a|ao|à|de|e|ou|nem|mas|não|que|com|em|no|na|" + DativePronouns +
+            ")" + NotWordAfter + @")\p{L}+){1,2}(?:\s+d[eoa]s?\s+\p{L}+)?)" +
+            @"\s+(?<prep>para|a)\s+(?<p>" + DativePronouns + ")" + NotWordAfter + DativeEmphasis +
             @"(?=\s*(?:[,.;:!?…]|$)|\s+(?:hoje|ontem|amanhã|agora|depois|também|já)" + NotWordAfter + ")", Ci);
 
         // "Pedi para ele sair" → "Pedi-lhe para sair": with these the pronoun is the one asked/told/paid to do something.
@@ -5376,12 +5389,14 @@ public sealed class PortugueseConverter
             m.Groups["pre"].Value + m.Groups["subject"].Value + m.Groups["subjectSpace"].Value +
             m.Groups["cl"].Value + " " + m.Groups["aux"].Value + m.Groups["auxSpace"].Value + m.Groups["verb"].Value;
 
-        private static string ReplaceDativePara(Match m)
+        private static string ReplaceDativeRecipient(Match m)
         {
             var verb = m.Groups["v"].Value;
             var trig = m.Groups["trig"].Value;
             var before = m.Result("$`") + trig;
             var after = m.Result("$'");
+            if (CaseHelper.IsAllUpper(m.Groups["p"].Value) && !CaseHelper.IsAllUpper(verb))
+                return m.Value;
             var infinitive = PortugueseVerbs.IsInfinitive(verb);
             // "Está a mentir para mim": "a" before an infinitive is the preposition, not an article.
             if (trig.Length == 0 && ((NounBefore.IsMatch(before) && !(infinitive && Regex.IsMatch(before, @"(?<![\p{L}\p{M}])(?:a|o)\s+$", RegexOptions.IgnoreCase))) ||
@@ -5391,7 +5406,8 @@ public sealed class PortugueseConverter
             }
 
             // "Isso não conta para ele" means "it does not count for him".
-            if (Regex.IsMatch(verb, @"^cont(?:a|am)$", RegexOptions.IgnoreCase) &&
+            if (m.Groups["prep"].Value.Equals("para", StringComparison.OrdinalIgnoreCase) &&
+                Regex.IsMatch(verb, @"^cont(?:a|am)$", RegexOptions.IgnoreCase) &&
                 Regex.IsMatch(before, @"(?<![\p{L}\p{M}])(?:isso|isto|aquilo|tudo|nada|que)\s+(?:(?:não|só|também|já|ainda)\s+)?$", RegexOptions.IgnoreCase))
             {
                 return m.Value;
@@ -5401,7 +5417,8 @@ public sealed class PortugueseConverter
             var next = Regex.Match(after, @"^\s+(?:(?:me|te|se|nos|vos|lhe|lhes|o|os|as)\s+)?(?<w>\p{L}+)", RegexOptions.IgnoreCase).Groups["w"].Value;
             var infinitiveNext = next.Length > 0 &&
                 (PortugueseVerbs.IsInfinitive(next) || Regex.IsMatch(next, @"(?:arem|erem|irem)$", RegexOptions.IgnoreCase));
-            if (infinitiveNext && !RequestVerb.IsMatch(verb))
+            if (infinitiveNext && (!m.Groups["prep"].Value.Equals("para", StringComparison.OrdinalIgnoreCase) ||
+                !RequestVerb.IsMatch(verb)))
             {
                 return m.Value;
             }

@@ -1181,11 +1181,22 @@ Regras encontradas ao comparar o resultado com legendas reais em PT-PT:
   *Olha só você fazendo uma entrada* → *Olha só para ti a fazer uma entrada*.
   Uma ordem curta no início de uma frase mantém *você* como sujeito:
   *Manda você.* → *Manda tu.* (*Incomoda você?* → *Incomoda-te?*).
-- *para + pronome* depois de verbos de dizer, pedir, telefonar, mostrar,
+- *a/para + pronome*, com destinatário neutro, depois de verbos revistos de dizer, pedir, telefonar, mostrar,
   pagar ou mentir passa a pronome de complemento indireto:
   *Liga para ela* → *Liga-lhe*, *Não liguei para eles* → *Não lhes liguei*,
   *Ligarei para ela* → *Ligar-lhe-ei*, *Está mentindo para mim* →
   *Está a mentir-me*, *Pedi para ele sair* → *Pedi-lhe para sair*.
+  A mesma regra abrange *Não contou a ela?* → *Não lhe contou?*,
+  *Contei a elas* → *Contei-lhes*, *Dei a ela tudo* → *Dei-lhe tudo* e
+  complementos diretos revistos intercalados:
+  *Não contou isso a ela* → *Não lhe contou isso*. Reutiliza a colocação dos
+  clíticos nos tempos suportados, infinitivos, frases negativas e subordinadas;
+  o número do destinatário determina *lhe/lhes*. O pronome tónico continua
+  válido para ênfase ou contraste: preservam-se *a ela mesma*, *apenas a ela*,
+  destinatários coordenados e a duplicação com um clítico já presente.
+  Usa **Pronouns** e `pronouns`, sem exigir referência inglesa.
+  Ver o Ciberdúvidas sobre [substituição do complemento indireto](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/a-identificacao-do-complemento-indireto-na-frase-prestam-atencao-a-tudo/35496)
+  e [próclise depois de negação](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/proclise-em-portugal-e-no-brasil/15214).
   *Liga você para ela.* → *Liga-lhe.*, mas a pergunta mantém o sujeito
   tónico: *Ligas tu para ela?*. Preservam-se *olhar/levar/falar/dar para…*,
   nomes (*uma pergunta para ela*), *isso conta para ele* e
