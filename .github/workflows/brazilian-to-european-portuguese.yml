@@ -63,25 +63,31 @@ jobs:
             jq --arg v "$version" '.version = $v' se5/BrazilianToEuropeanPortuguese/plugin.json > "$tmp"
             mv "$tmp" se5/BrazilianToEuropeanPortuguese/plugin.json
 
-            git config user.name  "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add se5/BrazilianToEuropeanPortuguese/plugin.json
-            git commit -m "Bump BrazilianToEuropeanPortuguese to $version [skip ci]"
+            # The version may already be set in plugin.json (e.g. by a contributor PR);
+            # then there is nothing to commit and the release builds the current commit.
+            if git diff --quiet -- se5/BrazilianToEuropeanPortuguese/plugin.json; then
+              echo "plugin.json already at $version, no bump commit needed"
+            else
+              git config user.name  "github-actions[bot]"
+              git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+              git add se5/BrazilianToEuropeanPortuguese/plugin.json
+              git commit -m "Bump BrazilianToEuropeanPortuguese to $version [skip ci]"
 
-            # Retry-with-rebase: if a concurrent release dispatched for a different
-            # plugin won the push first, pull --rebase and try again.
-            attempts=0
-            while ! git push 2>/tmp/push.err; do
-              attempts=$((attempts + 1))
-              if [ "$attempts" -ge 5 ]; then
-                echo "Failed to push after $attempts attempts:" >&2
-                cat /tmp/push.err >&2
-                exit 1
-              fi
-              echo "Push rejected (attempt $attempts), pulling --rebase and retrying..."
-              git pull --rebase --no-edit
-            done
-            ref=$(git rev-parse HEAD)
+              # Retry-with-rebase: if a concurrent release dispatched for a different
+              # plugin won the push first, pull --rebase and try again.
+              attempts=0
+              while ! git push 2>/tmp/push.err; do
+                attempts=$((attempts + 1))
+                if [ "$attempts" -ge 5 ]; then
+                  echo "Failed to push after $attempts attempts:" >&2
+                  cat /tmp/push.err >&2
+                  exit 1
+                fi
+                echo "Push rejected (attempt $attempts), pulling --rebase and retrying..."
+                git pull --rebase --no-edit
+              done
+              ref=$(git rev-parse HEAD)
+            fi
 
             IFS=. read -r major minor patch <<< "$version"
             tag="se5-brazilian-to-european-portuguese-v$major.$minor"
