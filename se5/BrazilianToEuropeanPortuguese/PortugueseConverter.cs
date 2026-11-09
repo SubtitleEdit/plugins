@@ -877,6 +877,8 @@ public sealed class PortugueseConverter
         Track("personal-name-complements", "Definite articles in pensar em complements with reviewed personal names");
 
         if (_options.Vocabulary && _options.Pronouns) s = ConversionConstructions.Complaints(s, informalConstructions);
+        if (_options.Vocabulary && !_blockedVocabularyVerbs.Contains("ferrar"))
+            s = ConversionConstructions.FerrarSlangVocabulary(s, reference);
         Track("construction-vocabulary", "Complement-qualified vocabulary senses");
         if (_options.Conversational) s = ConversionConstructions.Conversational(s, reference);
         Track("conversational-style", "Optional future paraphrase and noncontrastive subject omission");

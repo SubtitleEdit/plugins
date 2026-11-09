@@ -23,7 +23,7 @@ public sealed class BigCompareObjectTests
     [InlineData("Está procurando você.", "Está a procurar-te.")]
     [InlineData("Citando você, Graça:", "Citando-te, Graça:")]
     [InlineData("Eu não mereço você.", "Eu não te mereço.")]
-    [InlineData("Ele ferrou você.", "Ele ferrou-te.")]
+    [InlineData("Ele ferrou você.", "Ele lixou-te.")]
     [InlineData("Constrangi você?", "Constrangi-te?")]
     [InlineData("Porque agora eu tenho você.", "Porque agora eu tenho-te.")]
     [InlineData("Joguem ele no carro!", "Joguem-no no carro!")]

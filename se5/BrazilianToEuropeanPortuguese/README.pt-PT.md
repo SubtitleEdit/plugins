@@ -431,6 +431,18 @@ funcionalidade.
 Estas regras alteram construções portuguesas, em vez de se limitarem a
 acrescentar avisos de revisão:
 
+- **Ferrar no sentido informal brasileiro:** usos prejudiciais passam a
+  *lixar*, mantendo o tempo e a pessoa: *Ferrei tudo* → *Lixei tudo*,
+  *Ela ferrou o negócio* → *Ela lixou o negócio*, *Estou ferrado* →
+  *Estou lixado*. A conversão exige complementos abstratos revistos, clíticos
+  pessoais ou a confirmação inglesa de *screw up/over*. Preservam-se os usos
+  literais de ferrar cavalos, marcar gado, agarrar, morder e os sentidos náuticos,
+  *ferrar no sono* e formas isoladas ambíguas. Usa **Vocabulary** e
+  `construction-vocabulary`, respeitando uma entrada local/ignorada de *ferrar*.
+  O [Priberam: ferrar](https://dicionario.priberam.org/pt-pt/ferrar) identifica
+  este sentido como brasileiro; [lixar](https://dicionario.priberam.org/pt-pt/lixar)
+  inclui *prejudicar/tramar* e *estragar*. Mantém-se o registo informal de
+  *lixar*, em vez de impor a alternativa neutra *estragar*.
 - **Regência verbal:** no sentido de recordar, *o que/isso/isto/aquilo* e
   complementos de memória revistos (*nome, data, número, morada…*) recebem *de*
   e o pronome reflexo adequado: *Você lembra o que aconteceu?* → *Lembras-te do

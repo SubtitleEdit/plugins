@@ -420,6 +420,17 @@ These rules change Portuguese constructions, rather than merely adding review wa
   tanning leather, claiming an inheritance and descriptions of attractive people
   are not indiscriminately changed. The existing progressive treatment remains
   active before the complaint vocabulary conversion.
+- **Brazilian slang ferrar:** harmful informal uses become *lixar*, retaining
+  tense and person: *Ferrei tudo* → *Lixei tudo*, *Ela ferrou o negócio* →
+  *Ela lixou o negócio*, *Estou ferrado* → *Estou lixado*. Reviewed abstract
+  objects, personal clitics and English *screw up/over* evidence qualify the
+  conversion. Literal shoeing, branding, gripping, biting, nautical uses,
+  *ferrar no sono* and unresolved bare forms are not blanket replacements.
+  This uses **Vocabulary** and `construction-vocabulary`, respecting an
+  ignored/custom *ferrar* entry. [Priberam ferrar](https://dicionario.priberam.org/pt-pt/ferrar)
+  labels the harmful sense Brazilian; [lixar](https://dicionario.priberam.org/pt-pt/lixar)
+  includes both *prejudicar/tramar* and *estragar*. *Lixar* preserves the informal
+  register rather than automatically substituting neutral *estragar*.
 - **Conflict vocabulary by meaning:** *briga/brigas* no longer always mean
   *zanga/zangas*. Physical or purposeful struggle evidence selects *luta/lutas*:
   *A briga estourou* + *Fighting broke out* → *A luta estourou*.

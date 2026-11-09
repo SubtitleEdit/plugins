@@ -24,6 +24,41 @@ internal static class ConversionConstructions
     private static string FinitePattern(string infinitive) =>
         Alternatives(Forms(infinitive).Where((_, index) => index is not (34 or 35 or 36 or 37 or 38)));
 
+    private static readonly Regex FerrarSlang = new(
+        DialogueBefore + @"(?<verb>" + Alternatives(Forms("ferrar").Append("ferrá")) + @")" +
+        @"(?<clitic>-(?:me|te|se|nos|vos|lhe|lhes|o|a|os|as|lo|la|los|las))?" + After +
+        @"(?<com>\s+com\b)?", Ci);
+    private static readonly Regex EnglishScrewSlang = new(
+        @"\bscrew(?:ed|ing|s)?(?:\s+\p{L}+){0,5}\s+(?:up|over)\b|" +
+        @"\b(?:am|is|are|was|were|been|be|get|got|getting|you're|we're|they're|I'm|he's|she's)\s+(?:really\s+|totally\s+)?screwed\b", Ci);
+    private static readonly Regex FerrarLiteral = new(
+        @"\b(?:cavalos?|éguas?|potros?|gado|ferraduras?|ferro|âncoras?|velas?|toldos?|unhas?|dentes?|mordidas?|murros?|pontapés?|reprimendas?|sono|dormir|braços?|dedos?)\b", Ci);
+    private static readonly Regex FerrarSlangObject = new(
+        @"^\s+(?:tudo|isso|isto|aquilo|" +
+        @"(?:(?:o|a|os|as|meu|minha|teu|tua|seu|sua|nosso|nossa)\s+){0,2}" +
+        @"(?:planos?|negócios?|vidas?|carreiras?|relaç(?:ão|ões)|oportunidades?|hipóteses?|chances?|futuro|reputaç(?:ão|ões)|" +
+        @"casos?|investigaç(?:ão|ões)|operaç(?:ão|ões)|situaç(?:ão|ões)|coisas?))\b", Ci);
+
+    public static string FerrarSlangVocabulary(string text, ReferenceHint? reference) => FerrarSlang.Replace(text, m =>
+    {
+        var before = m.Result("$`");
+        var after = m.Result("$'");
+        var local = Regex.Match(before, @"[^.!?;]*$").Value + m.Value + Regex.Match(after, @"^[^.!?;]*").Value;
+        if (FerrarLiteral.IsMatch(local) ||
+            Regex.IsMatch(after, @"^\s+(?:a\s+(?:\p{L}+(?:ar|er|ir)|uma\s+(?:ideia|emoção))|ao\s+sentimento)\b", Ci))
+            return m.Value;
+        var personalClitic = Regex.IsMatch(m.Groups["clitic"].Value, @"^-(?:me|te|se|nos|vos)$", Ci) ||
+            Regex.IsMatch(before, @"\b(?:me|te|se|nos|vos)\s+$", Ci) ||
+            Regex.IsMatch(m.Groups["verb"].Value, @"^ferrad[oa]s?$", Ci) &&
+            Regex.IsMatch(before, @"\b(?:estou|estás|está|estamos|estão|estava|estavas|estávamos|estavam|ficou|fiquei|ficaste|ficámos|ficaram)\s+(?:(?:mesmo|completamente|totalmente|bem)\s+)?$", Ci);
+        var knownObject = FerrarSlangObject.IsMatch(after);
+        if (m.Groups["com"].Success && !knownObject) return m.Value;
+        if (!personalClitic && !knownObject &&
+            !EnglishScrewSlang.IsMatch(reference?.EnglishText ?? "")) return m.Value;
+        return CaseHelper.MatchCase(m.Groups["verb"].Value, "lix" + m.Groups["verb"].Value[4..].ToLowerInvariant()) +
+            m.Groups["clitic"].Value;
+    });
+
     private static readonly Regex HabitualAlways = new(
         @"(?<head>(?:^|[.!?;:]\s+|\n|(?<![\p{L}\p{M}-])(?:porque|que|quando|enquanto|se|mas|e)\s+)" +
         @"(?:(?:eu|tu|ele|ela|nós|vocês|eles|elas)\s+)?)" +
