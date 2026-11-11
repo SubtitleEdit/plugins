@@ -67,6 +67,9 @@ public partial class MainWindow : Window
     private CheckBox _grammarExternalServer = null!;
     private TextBox _grammarServer = null!;
     private string _lastGrammarServer = "";
+    private string _grammarDisabledRules = "";
+    private string _grammarDisabledGroups = "";
+    private readonly HashSet<string> _observedGrammarRules = new(StringComparer.Ordinal);
     private readonly List<CheckLine> _checkLines = new();
     private readonly Dictionary<CheckLine, CheckResult> _checks = new();
     private ComboBox _addressChoice = null!;
@@ -139,13 +142,17 @@ public partial class MainWindow : Window
         _grammarCheck.IsChecked == true,
         _grammarAutoFix.IsChecked == true,
         _grammarServer.Text ?? "",
-        _grammarExternalServer.IsChecked == true);
+        _grammarExternalServer.IsChecked == true,
+        _grammarDisabledRules,
+        _grammarDisabledGroups);
 
     private bool SettingsChanged => _nameArticles != _initialOptions.NameArticles ||
         (_askNameArticlesCheck.IsChecked == true) != _initialOptions.AskNameArticles ||
         Options.GrammarCheck != _initialOptions.GrammarCheck ||
         Options.GrammarAutoFix != _initialOptions.GrammarAutoFix ||
         Options.GrammarExternalServer != _initialOptions.GrammarExternalServer ||
+        Options.GrammarDisabledRules != _initialOptions.GrammarDisabledRules ||
+        Options.GrammarDisabledGroups != _initialOptions.GrammarDisabledGroups ||
         Options.GrammarServer != _initialOptions.GrammarServer;
 
     private ConversionOptions SavedOptions => Options with { DisabledRules = _savedDisabledRules };
@@ -182,6 +189,8 @@ public partial class MainWindow : Window
         _grammarExternalServer.IsChecked = options.GrammarExternalServer;
         _grammarServer.IsVisible = options.GrammarExternalServer;
         _lastGrammarServer = options.GrammarServer;
+        _grammarDisabledRules = options.GrammarDisabledRules;
+        _grammarDisabledGroups = options.GrammarDisabledGroups;
         _loadingOptions = false;
 
         foreach (var check in OptionChecks)
@@ -254,6 +263,21 @@ public partial class MainWindow : Window
         {
             _nameArticles = editor.Value;
             if (!_isConfigure) RefreshProposals();
+        }
+    }
+
+    private async void OnChooseGrammarRules(object? sender, RoutedEventArgs e)
+    {
+        _observedGrammarRules.UnionWith(GrammarRuleSelection.ObservedIds(_checks.Values.Select(c => c.Note)));
+        var editor = new GrammarRulesWindow(Options, _observedGrammarRules);
+        if (await editor.ShowDialog<bool>(this))
+        {
+            if (_grammarDisabledRules == editor.DisabledRules && _grammarDisabledGroups == editor.DisabledGroups) return;
+            _grammarDisabledRules = editor.DisabledRules;
+            _grammarDisabledGroups = editor.DisabledGroups;
+            _checks.Clear();
+            OnOptionChanged(sender, e);
+            _referenceStatus.Text = "LanguageTool rule selection changed. Run checks again to refresh findings.";
         }
     }
 
@@ -453,6 +477,7 @@ public partial class MainWindow : Window
             _embeddingCheck, _vulkanCheck, _deviceChoice, _meaningCheck, _judgeCheck,
             _grammarCheck, _grammarAutoFix, _grammarServer,
             _grammarExternalServer, this.FindControl<Button>("DownloadGrammarButton")!, this.FindControl<Button>("DownloadJavaButton")!,
+            this.FindControl<Button>("GrammarRulesButton")!,
             _askNameArticlesCheck, this.FindControl<Button>("EditNameArticlesButton")!,
             this.FindControl<Button>("ContributeVocabularyButton")!,
             this.FindControl<Button>("DisableRuleButton")!, this.FindControl<Button>("RestoreRulesButton")!,
@@ -767,6 +792,7 @@ public partial class MainWindow : Window
 
     internal void ApplyCheckResults(IReadOnlyList<CheckLine> lines, IReadOnlyDictionary<int, CheckResult> results)
     {
+        _observedGrammarRules.UnionWith(GrammarRuleSelection.ObservedIds(results.Values.Select(c => c.Note)));
         foreach (var line in lines)
             _checks[line] = results.TryGetValue(line.Index, out var result)
                 ? result : new CheckResult(line.Converted, null);

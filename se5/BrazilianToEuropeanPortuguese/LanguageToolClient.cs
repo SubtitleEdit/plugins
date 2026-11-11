@@ -3,17 +3,20 @@ using System.Text.Json;
 
 namespace SubtitleEdit.Plugins.BrazilianToEuropeanPortuguese;
 
-internal sealed record GrammarMatch(int Offset, int Length, string Rule, string Message, string[] Replacements);
+internal sealed record GrammarMatch(int Offset, int Length, string Rule, string Message, string[] Replacements,
+    string IssueType = "", string Category = "");
 
 internal sealed class LanguageToolClient : IDisposable
 {
     private readonly HttpClient _client;
     private readonly Uri _checkUri;
+    private readonly string _disabledRules;
     private readonly Dictionary<string, IReadOnlyList<GrammarMatch>> _cache = new(StringComparer.Ordinal);
 
-    internal LanguageToolClient(string server, HttpMessageHandler? handler = null)
+    internal LanguageToolClient(string server, HttpMessageHandler? handler = null, string disabledRules = "")
     {
         _checkUri = CheckUri(server);
+        _disabledRules = GrammarRuleSelection.Validate(disabledRules);
         _client = new HttpClient(handler ?? new HttpClientHandler { AllowAutoRedirect = false, UseProxy = false })
         {
             Timeout = TimeSpan.FromSeconds(15),
@@ -44,6 +47,7 @@ internal sealed class LanguageToolClient : IDisposable
         {
             ["language"] = "pt-PT",
             ["text"] = text,
+            ["disabledRules"] = _disabledRules,
         });
         HttpResponseMessage response;
         try
@@ -117,13 +121,29 @@ internal sealed class LanguageToolClient : IDisposable
                     throw new InvalidDataException("LanguageTool: invalid replacement.");
                 values.Add(value.GetString()!);
             }
-            result.Add(new GrammarMatch(start, count, id.GetString()!, message.GetString()!, values.Distinct().ToArray()));
+            var issueType = OptionalString(rule, "issueType");
+            var category = "";
+            if (rule.TryGetProperty("category", out var categoryValue))
+            {
+                if (categoryValue.ValueKind != JsonValueKind.Object)
+                    throw new InvalidDataException("LanguageTool: invalid rule category.");
+                category = OptionalString(categoryValue, "id");
+            }
+            result.Add(new GrammarMatch(start, count, id.GetString()!, message.GetString()!, values.Distinct().ToArray(), issueType, category));
         }
         return result;
     }
 
     private static bool Boundary(string text, int offset) =>
         offset == 0 || offset == text.Length || !char.IsLowSurrogate(text[offset]) || !char.IsHighSurrogate(text[offset - 1]);
+
+    private static string OptionalString(JsonElement value, string name)
+    {
+        if (!value.TryGetProperty(name, out var field)) return "";
+        if (field.ValueKind != JsonValueKind.String)
+            throw new InvalidDataException($"LanguageTool: invalid {name}.");
+        return field.GetString()!;
+    }
 
     public void Dispose() => _client.Dispose();
 }

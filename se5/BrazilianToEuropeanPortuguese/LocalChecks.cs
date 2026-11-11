@@ -233,7 +233,8 @@ internal static class LocalChecks
         {
             await using var grammarRuntime = options.GrammarExternalServer ? null :
                 await GrammarRuntime.StartAsync(progress, token);
-            using var client = new LanguageToolClient(grammarRuntime?.Server ?? options.GrammarServer);
+            using var client = new LanguageToolClient(grammarRuntime?.Server ?? options.GrammarServer,
+                disabledRules: options.GrammarDisabledRules);
             EmbeddingRuntime? runtime = null;
             try
             {

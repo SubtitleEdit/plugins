@@ -242,6 +242,9 @@
                           IsCheckedChanged="OnGrammarSettingChanged">
                     <TextBlock Text="LanguageTool pt-PT (local grammar checker)" TextWrapping="Wrap" />
                 </CheckBox>
+                <Button x:Name="GrammarRulesButton" Content="Choose LanguageTool rules..."
+                        Click="OnChooseGrammarRules"
+                        ToolTip.Tip="Choose alert groups and individual LanguageTool rules. Saved for preview and Batch convert. Run checks again after changing the selection." />
                 <WrapPanel>
                     <Button x:Name="DownloadGrammarButton" Content="Download LanguageTool pt-PT (240 MB)"
                             Click="OnDownloadGrammar" Margin="0,0,8,4"

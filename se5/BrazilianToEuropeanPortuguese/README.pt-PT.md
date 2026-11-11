@@ -29,7 +29,7 @@ partir de folhas de cálculo, vestuário desportivo e expressões de residência
 confirmados pelo inglês, descrições físicas, filtros de resultados e o texto
 original em PT-BR visível nas linhas que contêm apenas avisos.
 
-A compilação experimental do repositório autónomo é a **1.8.1**. A base anterior
+A compilação experimental do repositório autónomo é a **1.8.2**. A base anterior
 ao LanguageTool está guardada em
 [v1.7.0](https://github.com/SMAP-git/BrazilianToEuropeanPortuguese/tree/v1.7.0).
 As versões oficiais dos
@@ -52,6 +52,20 @@ No painel **Reference subtitle and local models**, agora à direita de
 1. Clique em **Download LanguageTool pt-PT (240 MB)**.
 2. Clique em **Download portable Java (40–50 MB)**.
 3. Ative **LanguageTool pt-PT (local grammar checker)** e escolha **Run checks**.
+
+Em **Choose LanguageTool rules...**, pode ativar/desativar grupos de gramática,
+ortografia, pontuação/tipografia, estilo/registo e verificações não classificadas.
+**Grammar only (fewer alerts)** mantém apenas o grupo gramatical, sem alterar as
+regras de conversão do plugin. As opções antigas mantêm todos os grupos ativos
+até escolher. Pode também desmarcar regras individuais encontradas nesta sessão,
+exclusões guardadas e alertas comuns de legendagem (nomes desconhecidos, espaços
+após travessões e a sugestão de estilo `por causa da`). Pode introduzir outros
+identificadores copiados de `LanguageTool [ID]`. A exclusão de um grupo prevalece
+sobre a seleção individual. As escolhas ficam guardadas para outros ficheiros e
+**Batch convert**; execute **Run checks** novamente após guardar. Regras excluídas
+não geram alertas nem correções automáticas. Classificações desconhecidas ficam
+em **Other / unclassified checks**. A filtragem não garante maior velocidade;
+apenas as exclusões por identificador são também enviadas ao servidor.
 
 As transferências são explícitas, de versões fixadas e verificadas por SHA-256.
 O LanguageTool **6.6** vem do sítio oficial (LGPL-2.1-ou-posterior); o Eclipse

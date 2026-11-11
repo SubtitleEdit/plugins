@@ -495,6 +495,27 @@ public sealed class ReferenceTests(ITestOutputHelper output)
             grammarWindow.ApplyCheckResults(new[] { new CheckLine(0, "Olá.", "Olá.", null, null) },
                 new Dictionary<int, CheckResult> { [0] = new("Olá.", "LanguageTool [TEST]: review only.") });
             Assert.Contains("LanguageTool", Assert.Single(grammarWindow.Proposals).ReviewNote);
+            grammarWindow.Show();
+            grammarWindow.FindControl<Button>("GrammarRulesButton")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            var grammarRules = Assert.IsType<GrammarRulesWindow>(Assert.Single(grammarWindow.OwnedWindows));
+            Assert.True(grammarRules.FindControl<CheckBox>("GrammarRule_TEST")!.IsChecked);
+            grammarRules.FindControl<Button>("GrammarOnlyPreset")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Assert.Equal("other,spelling,style,typography", grammarRules.DisabledGroups);
+            grammarRules.FindControl<CheckBox>("GrammarRule_MORFOLOGIK_RULE_PT_PT")!.IsChecked = false;
+            grammarRules.FindControl<TextBox>("ExtraGrammarDisabledRules")!.Text = "BAD ID";
+            grammarRules.FindControl<Button>("SaveGrammarRules")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Assert.Contains("Invalid LanguageTool", grammarRules.FindControl<TextBlock>("GrammarRulesError")!.Text);
+            Assert.Contains("LanguageTool", Assert.Single(grammarWindow.Proposals).ReviewNote);
+            grammarRules.FindControl<TextBox>("ExtraGrammarDisabledRules")!.Text = "";
+            grammarRules.FindControl<Button>("SaveGrammarRules")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.Empty(grammarWindow.Proposals);
+            Assert.Contains("Run checks again", grammarWindow.ChecksStatusText);
             grammarWindow.FindControl<CheckBox>("GrammarCheck")!.IsChecked = false;
             Assert.Empty(grammarWindow.Proposals);
             grammarWindow.FindControl<TextBox>("GrammarServer")!.Text = "http://127.0.0.1:8081/";
@@ -840,6 +861,36 @@ public sealed class ReferenceTests(ITestOutputHelper output)
             Assert.Empty(PortugueseLocalWordList.Load(refreshPath).Words);
             Assert.Equal("teste", Assert.Single(PortugueseLocalWordList.Load(refreshPath).Ignored));
             batchConfig.Close();
+
+            var rulesConfig = new MainWindow(new PluginRequest { RequestType = PluginRequestType.Configure }, refreshPath);
+            rulesConfig.Show();
+            rulesConfig.FindControl<Button>("GrammarRulesButton")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            var rulesEditor = Assert.IsType<GrammarRulesWindow>(Assert.Single(rulesConfig.OwnedWindows));
+            rulesEditor.FindControl<Button>("GrammarOnlyPreset")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            rulesEditor.FindControl<CheckBox>("GrammarRule_DASH_ENUMERATION_SPACE_RULE")!.IsChecked = false;
+            rulesEditor.FindControl<Button>("SaveGrammarRules")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            rulesConfig.FindControl<Button>("ApplyButton")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            var rulesResponse = App.Response!;
+            var storedRules = ConversionOptions.Load(new PluginRequest
+            {
+                Settings = rulesResponse.Settings, SettingsVersion = rulesResponse.SettingsVersion,
+            });
+            Assert.Equal("DASH_ENUMERATION_SPACE_RULE", storedRules.GrammarDisabledRules);
+            Assert.Equal("other,spelling,style,typography", storedRules.GrammarDisabledGroups);
+            var rulesReload = new GrammarRulesWindow(storedRules, Array.Empty<string>());
+            Assert.False(rulesReload.FindControl<CheckBox>("GrammarGroup_style")!.IsChecked);
+            Assert.False(rulesReload.FindControl<CheckBox>("GrammarRule_DASH_ENUMERATION_SPACE_RULE")!.IsChecked);
+            rulesReload.FindControl<Button>("AllGrammarRules")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Assert.Empty(rulesReload.DisabledRules);
+            Assert.Empty(rulesReload.DisabledGroups);
+            rulesReload.Close();
 
             var namesConfig = new MainWindow(new PluginRequest { RequestType = PluginRequestType.Configure }, refreshPath);
             namesConfig.Show();

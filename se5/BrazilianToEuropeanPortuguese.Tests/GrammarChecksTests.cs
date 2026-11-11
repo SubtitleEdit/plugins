@@ -59,6 +59,75 @@ public sealed class GrammarChecksTests
         Assert.Contains("0 allowlisted", result.Summary);
     }
 
+    [Theory]
+    [InlineData("misspelling", "TYPOS", "spelling")]
+    [InlineData("typographical", "PUNCTUATION", "typography")]
+    [InlineData("whitespace", "", "typography")]
+    [InlineData("style", "REDUNDANCY", "style")]
+    [InlineData("register", "", "style")]
+    [InlineData("grammar", "", "grammar")]
+    [InlineData("", "GRAMMAR", "grammar")]
+    [InlineData("", "", "other")]
+    [InlineData("new-server-type", "NEW_CATEGORY", "other")]
+    public async Task DisabledGroupsProduceNoAlertsOrCorrections(string issueType, string category, string group)
+    {
+        var match = Match("Eles tem razão.") with { IssueType = issueType, Category = category };
+        Assert.Equal(group, GrammarRuleSelection.Group(match));
+        var result = await Run(new[] { Line() }, Enabled with { GrammarDisabledGroups = group },
+            check: (_, _) => Task.FromResult<IReadOnlyList<GrammarMatch>>(new[] { match }),
+            embed: (_, _) => throw new Exception("Disabled checks must not embed."));
+        Assert.Empty(result.Notes);
+        Assert.Contains("0 cue(s)", result.Summary);
+        Assert.Equal("Eles tem razão.", result.Texts[0]);
+    }
+
+    [Fact]
+    public async Task IndividualExclusionsDoNotDisableOtherRules()
+    {
+        var result = await Run(new[] { Line() }, Enabled with { GrammarDisabledRules = "AGREEMENT" },
+            check: (text, _) => Task.FromResult<IReadOnlyList<GrammarMatch>>(new[]
+            {
+                Match(text), Match(text, rule: "OTHER_RULE") with { Replacements = Array.Empty<string>() },
+            }), embed: SameMeaning);
+        Assert.Equal("Eles tem razão.", result.Texts[0]);
+        Assert.Contains("[OTHER_RULE]", Assert.Single(result.Notes));
+        Assert.DoesNotContain("[AGREEMENT]", result.Notes[0]);
+    }
+
+    [Fact]
+    public async Task DisabledGroupsAlsoApplyDuringGrammarRecheck()
+    {
+        var result = await Run(new[] { Line() }, Enabled with { GrammarDisabledGroups = "style" },
+            check: (text, _) => Task.FromResult<IReadOnlyList<GrammarMatch>>(text.Contains("tem", StringComparison.Ordinal)
+                ? new[] { Match(text) with { IssueType = "grammar" } }
+                : new[] { new GrammarMatch(0, 4, "WORDINESS", "Style only.", Array.Empty<string>(), "style") }),
+            embed: SameMeaning);
+        Assert.Equal("Eles têm razão.", result.Texts[0]);
+        Assert.Contains("corrected", Assert.Single(result.Notes));
+    }
+
+    [Fact]
+    public void GrammarSelectionsRoundTripAndLegacySettingsKeepAllGroups()
+    {
+        var options = Enabled with { GrammarDisabledRules = "DASH_ENUMERATION_SPACE_RULE,MORFOLOGIK_RULE_PT_PT", GrammarDisabledGroups = "spelling,style,typography" };
+        Assert.Equal(options, ConversionOptions.Load(new PluginRequest { SettingsVersion = 1, Settings = options.ToJson() }));
+        var legacy = ConversionOptions.Load(new PluginRequest { SettingsVersion = 1, Settings = JsonSerializer.SerializeToElement(new { grammarCheck = true }) });
+        Assert.Empty(legacy.GrammarDisabledRules);
+        Assert.Empty(legacy.GrammarDisabledGroups);
+        Assert.Equal("A,B", GrammarRuleSelection.Validate("B,\nA,A"));
+        Assert.Equal(new[] { "A", "B" }, GrammarRuleSelection.ObservedIds(new[] { "LanguageTool [B]: test\nLanguageTool [A]: test", null }));
+    }
+
+    [Theory]
+    [InlineData("{\"grammarDisabledRules\":false}")]
+    [InlineData("{\"grammarDisabledRules\":\"BAD ID\"}")]
+    [InlineData("{\"grammarDisabledRules\":\"A&text=secret\"}")]
+    [InlineData("{\"grammarDisabledGroups\":\"unknown\"}")]
+    [InlineData("{\"grammarDisabledGroups\":[]}")]
+    public void InvalidGrammarSelectionsFailExplicitly(string json) =>
+        Assert.Throws<InvalidDataException>(() => ConversionOptions.Load(new PluginRequest
+        { SettingsVersion = 1, Settings = JsonSerializer.Deserialize<JsonElement>(json) }));
+
     [Fact]
     public async Task AutomaticAgreementNeedsModelAndRechecksGrammar()
     {
@@ -322,7 +391,8 @@ public sealed class GrammarChecksTests
         language = new { code = "pt-PT" },
         matches = matches.Select(m => new
         {
-            offset = m.Offset, length = m.Length, message = m.Message, rule = new { id = m.Rule },
+            offset = m.Offset, length = m.Length, message = m.Message,
+            rule = new { id = m.Rule, issueType = m.IssueType, category = new { id = m.Category } },
             replacements = m.Replacements.Select(value => new { value }),
         }),
     });
@@ -331,6 +401,23 @@ public sealed class GrammarChecksTests
     {
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>
             send(request, cancellationToken);
+    }
+
+    [Fact]
+    public async Task ClientSendsRuleExclusionsAndPreservesClassification()
+    {
+        using var client = new LanguageToolClient("http://localhost:8081/", new Handler(async (request, token) =>
+        {
+            var form = Uri.UnescapeDataString(await request.Content!.ReadAsStringAsync(token));
+            Assert.Contains("disabledRules=DASH_ENUMERATION_SPACE_RULE,MORFOLOGIK_RULE_PT_PT", form);
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(Response("Eles tem razão.", Match("Eles tem razão.") with { IssueType = "grammar", Category = "GRAMMAR" })),
+            };
+        }), "MORFOLOGIK_RULE_PT_PT,DASH_ENUMERATION_SPACE_RULE");
+        var match = Assert.Single(await client.CheckAsync("Eles tem razão.", CancellationToken.None));
+        Assert.Equal("grammar", match.IssueType);
+        Assert.Equal("GRAMMAR", match.Category);
     }
 
     [Theory]
@@ -408,8 +495,11 @@ public sealed class GrammarChecksTests
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => client.CheckAsync("text", cancel.Token));
     }
 
-    [Fact]
-    public async Task BatchUsesSelfHostedProtocolAndPreservesTimingsAndTextInReviewMode()
+    [Theory]
+    [InlineData("", "", 1)]
+    [InlineData("TEST", "", 0)]
+    [InlineData("", "style", 0)]
+    public async Task BatchUsesSelfHostedProtocolAndPreservesTimingsAndTextInReviewMode(string disabledRules, string disabledGroups, int findings)
     {
         using var listener = new TcpListener(IPAddress.Loopback, 0);
         listener.Start();
@@ -428,7 +518,8 @@ public sealed class GrammarChecksTests
             var content = new char[length];
             Assert.Equal(length, await reader.ReadBlockAsync(content.AsMemory(), limit.Token));
             Assert.Contains("language=pt-PT", new string(content));
-            var body = Encoding.UTF8.GetBytes(Response("Olá, mundo.", new GrammarMatch(0, 3, "TEST", "Test suggestion.", new[] { "Bom dia" })));
+            Assert.Contains("disabledRules=" + disabledRules, new string(content));
+            var body = Encoding.UTF8.GetBytes(Response("Olá, mundo.", new GrammarMatch(0, 3, "TEST", "Test suggestion.", new[] { "Bom dia" }, "style")));
             var header = Encoding.ASCII.GetBytes($"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {body.Length}\r\nConnection: close\r\n\r\n");
             await stream.WriteAsync(header, limit.Token);
             await stream.WriteAsync(body, limit.Token);
@@ -438,14 +529,15 @@ public sealed class GrammarChecksTests
             RequestType = PluginRequestType.Batch,
             Subtitle = new PluginSubtitle { SubRip = "1\n00:00:01,234 --> 00:00:03,456\nOlá, mundo.\n\n" },
             SettingsVersion = ConversionOptions.Version,
-            Settings = new ConversionOptions(GrammarCheck: true, GrammarServer: $"http://127.0.0.1:{port}/", GrammarExternalServer: true).ToJson(),
+            Settings = new ConversionOptions(GrammarCheck: true, GrammarServer: $"http://127.0.0.1:{port}/",
+                GrammarExternalServer: true, GrammarDisabledRules: disabledRules, GrammarDisabledGroups: disabledGroups).ToJson(),
         };
         var result = await Task.Run(() => BatchMode.BuildBatchResponse(request, Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".xml"),
             new EmbeddingSettings(CheckMeaning: false)), limit.Token);
         await server;
         Assert.Equal(PluginStatus.Ok, result.Status);
         Assert.Null(result.Subtitle);
-        Assert.Contains("1 cue(s) with findings", result.Message);
+        Assert.Contains($"{findings} cue(s) with findings", result.Message);
         Assert.Contains("0 allowlisted", result.Message);
         Assert.Equal("1\n00:00:01,234 --> 00:00:03,456\nOlá, mundo.\n\n", request.Subtitle.SubRip);
     }

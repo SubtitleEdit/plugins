@@ -30,7 +30,9 @@ public sealed record ConversionOptions(
     bool GrammarCheck = false,
     bool GrammarAutoFix = false,
     string GrammarServer = "http://127.0.0.1:8081/",
-    bool GrammarExternalServer = false)
+    bool GrammarExternalServer = false,
+    string GrammarDisabledRules = "",
+    string GrammarDisabledGroups = "")
 {
     public const int Version = 1;
 
@@ -62,6 +64,8 @@ public sealed record ConversionOptions(
         grammarAutoFix = GrammarAutoFix,
         grammarServer = GrammarServer,
         grammarExternalServer = GrammarExternalServer,
+        grammarDisabledRules = GrammarDisabledRules,
+        grammarDisabledGroups = GrammarDisabledGroups,
     });
 
     public static ConversionOptions Load(PluginRequest request)
@@ -97,11 +101,21 @@ public sealed record ConversionOptions(
             ReadOptIn(json, "grammarCheck"),
             ReadOptIn(json, "grammarAutoFix"),
             ReadGrammarServer(json),
-            ReadOptIn(json, "grammarExternalServer"));
+            ReadOptIn(json, "grammarExternalServer"),
+            ReadGrammarSelection(json, "grammarDisabledRules", false),
+            ReadGrammarSelection(json, "grammarDisabledGroups", true));
     }
 
     public bool RuleEnabled(string id) => DisabledRules.Length == 0 || !DisabledRules.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
         .Contains(id, StringComparer.Ordinal);
+
+    private static string ReadGrammarSelection(JsonElement json, string name, bool groups)
+    {
+        if (!json.TryGetProperty(name, out var value)) return "";
+        if (value.ValueKind != JsonValueKind.String)
+            throw new InvalidDataException($"Invalid {name} in plugin settings (expected a string).");
+        return GrammarRuleSelection.Validate(value.GetString()!, groups);
+    }
 
     private static bool ReadOptIn(JsonElement json, string name)
     {

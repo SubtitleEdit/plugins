@@ -32,7 +32,8 @@ internal static class GrammarChecks
                 continue;
             }
             var masked = Mask(baseline, words);
-            var matches = (await check(masked, token)).Where(m => Visible(masked, baseline, m)).ToArray();
+            var matches = (await check(masked, token))
+                .Where(m => GrammarRuleSelection.Enabled(m, options) && Visible(masked, baseline, m)).ToArray();
             if (matches.Length == 0) continue;
             flagged += group.Count;
             var english = group.Any(l => string.IsNullOrWhiteSpace(l.Reference))
@@ -54,7 +55,8 @@ internal static class GrammarChecks
                     reason = "MiniLM meaning safeguard rejected the candidate";
                 else
                 {
-                    var rechecked = (await check(Mask(candidate.Text, words), token)).ToArray();
+                    var rechecked = (await check(Mask(candidate.Text, words), token))
+                        .Where(m => GrammarRuleSelection.Enabled(m, options)).ToArray();
                     if (!ResolvedWithoutNewDiagnostics(baseline, candidate.Text, matches, rechecked, candidate.Match.Rule))
                         reason = "grammar recheck did not resolve the diagnostic without new findings";
                     else

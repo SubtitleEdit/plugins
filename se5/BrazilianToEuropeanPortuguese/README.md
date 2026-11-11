@@ -24,7 +24,7 @@ Earlier updates include reviewed workbook vocabulary and verb constructions,
 English-confirmed sportswear and shared-residence expressions, physical descriptions,
 finding filters, and original PT-BR text visible on warning-only rows.
 
-The experimental standalone source build is **1.8.1**. The pre-LanguageTool
+The experimental standalone source build is **1.8.2**. The pre-LanguageTool
 rollback baseline is [v1.7.0](https://github.com/SMAP-git/BrazilianToEuropeanPortuguese/tree/v1.7.0).
 Official Subtitle Edit package versions
 are assigned by the upstream release workflow and may differ.
@@ -44,6 +44,20 @@ model. In the **Reference subtitle and local models** panel, now to the right of
 1. Click **Download LanguageTool pt-PT (240 MB)**.
 2. Click **Download portable Java (40–50 MB)**.
 3. Enable **LanguageTool pt-PT (local grammar checker)** and choose **Run checks**.
+
+Use **Choose LanguageTool rules...** to enable/disable grammar, spelling,
+punctuation/typography, style/register and unclassified checks. **Grammar only
+(fewer alerts)** disables the other groups without changing the plugin's own
+conversion rules. Existing settings keep all groups enabled until you choose.
+The same dialog lists individual rule IDs from current-session findings, saved
+exclusions and common subtitle alerts (unknown names, dialogue-dash spacing and
+the `por causa da` style suggestion). Uncheck any rule, or enter additional IDs
+copied from `LanguageTool [ID]` findings. Group exclusions take precedence.
+Choices are saved for future files and Batch convert; **Run checks** again after
+saving. Disabled rules cannot produce alerts or automatic corrections. Unknown
+server classifications belong to **Other / unclassified checks**. This filters
+findings rather than guaranteeing a faster check; only explicit rule-ID
+exclusions are also sent to the server.
 
 Both downloads are explicit, pinned and SHA-256 verified. LanguageTool **6.6**
 comes from its official download site (LGPL-2.1-or-later); the private Eclipse
