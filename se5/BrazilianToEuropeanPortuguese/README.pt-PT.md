@@ -6,6 +6,13 @@ Português europeu | [English](README.md)
 
 ## Alterações mais recentes
 
+- Verificação experimental com **LanguageTool pt-PT local, desativada por
+  predefinição**, com sugestões para revisão e correções de concordância muito
+  delimitadas, protegidas pela referência inglesa e pelo MiniLM. Sem geração de
+  texto. O verificador e o Java portátil são descarregados pelo próprio plugin,
+  sem instalar Java no sistema nem configurar um servidor manualmente.
+- O painel de referência/modelos locais fica **à direita do diálogo/disposição**,
+  com conteúdo deslocável para deixar espaço para a pré-visualização.
 - Uma janela **Contribute vocabulary / Local word list** com três separadores distintos.
 - CSV de contribuições para palavras e expressões, com exemplos e contexto opcionais;
   as sugestões não alteram as regras de conversão nem são enviadas automaticamente.
@@ -22,7 +29,10 @@ partir de folhas de cálculo, vestuário desportivo e expressões de residência
 confirmados pelo inglês, descrições físicas, filtros de resultados e o texto
 original em PT-BR visível nas linhas que contêm apenas avisos.
 
-A compilação do repositório autónomo é a **1.4.2**. As versões oficiais dos
+A compilação experimental do repositório autónomo é a **1.8.2**. A base anterior
+ao LanguageTool está guardada em
+[v1.7.0](https://github.com/SMAP-git/BrazilianToEuropeanPortuguese/tree/v1.7.0).
+As versões oficiais dos
 pacotes do Subtitle Edit são atribuídas pelo fluxo de lançamento do projeto
 principal e podem ser diferentes.
 
@@ -31,6 +41,154 @@ os complementos e sentidos de vocabulário confirmados pela referência, as
 construções naturais de diálogo e a acentuação interrogativa. Acrescenta testes
 de regressão destas interações, preservando os tempos das legendas e as opções
 de regras controladas pelo utilizador.
+
+### Advérbios restritivos com imperativos reflexivos
+
+Com **Pronoun placement** ativo, um imperativo afirmativo reflexivo de *tu*
+reconhecido no início da oração coloca *só/apenas/somente* depois do conjunto
+verbo-clítico: *Só lembre-se quem você enfrenta* → *Lembra-te só quem enfrentas*,
+*Só prepara-te* → *Prepara-te só*. Mantém-se a ênclise sem deixar antes do verbo
+um atrator de próclise. Não se desloca indiscriminadamente *só*: os indicativos
+mantêm a próclise (*só te lembras*, *ele só se lembrou*); negação, subordinação,
+advérbios já pós-verbais e tratamento formal ambíguo não são reinterpretados como
+ordens informais. Preservam-se os complementos existentes.
+Fonte: [Ciberdúvidas: advérbios atratores de próclise](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/adverbios-que-atraem-os-pronomes-atonos-proclise/35696).
+
+### Verificação gramatical local (experimental e opcional)
+
+**Estados resultantes de lesões e possessivos entre linhas:** com **Colloquial**
+ativo, um sujeito anatómico com *foi/foram lesionado/magoado/ferido*, sem agente,
+passa a *ficou/ficaram*, preservando o termo da lesão, número, possuidor, lado e
+modificadores de gravidade reconhecidos: *a perna esquerda do meu padrinho foi
+lesionada* → *a perna esquerda do meu padrinho ficou lesionada*. É uma preferência
+de naturalidade, não uma afirmação de que todas as passivas com *ser* estão
+erradas. Preservam-se agentes/causas com *por/pelo*, ações intencionais, negação,
+orações relativas e outros predicados. Não se troca *lesionada* por *magoada*,
+que pode sugerir outra gravidade. Com **Pronoun placement**, a inserção de
+artigos possessivos respeita artigos e contrações na linha anterior:
+*do\nmeu padrinho*, nunca *do\no meu padrinho*.
+Fontes: [ficar resultativo](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/participios-passados-verbais-e-adjetivais/35876)
+e [artigos com possessivos](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/regra-para-a-posicao-dos-pronomes-possessivos/29320).
+
+O LanguageTool é o verificador gramatical e já inclui regras de **português
+europeu (`pt-PT`)**. Não precisa de escolher um modelo gramatical separado.
+O painel **Reference subtitle and local models** fica abaixo dos botões superiores
+de opções, artigos de nomes e vocabulário, ao lado dos controlos de ortografia.
+O limite direito de **Dialogue context and subtitle layout** alinha com
+**Re-download dictionary**; o painel da referência expande ao lado. As colunas
+têm deslocamento quando necessário para preservar espaço para rever legendas.
+
+Para configurar a verificação:
+
+1. Clique em **Download LanguageTool pt-PT (240 MB)**.
+2. Clique em **Download portable Java (40–50 MB)**.
+3. Ative **LanguageTool pt-PT (local grammar checker)** e escolha **Run checks**.
+
+Em **Choose LanguageTool rules...**, pode ativar/desativar grupos de gramática,
+ortografia, pontuação/tipografia, estilo/registo e verificações não classificadas.
+**Grammar only (fewer alerts)** mantém apenas o grupo gramatical, sem alterar as
+regras de conversão do plugin. As opções antigas mantêm todos os grupos ativos
+até escolher. Pode também desmarcar regras individuais encontradas nesta sessão,
+exclusões guardadas e alertas comuns de legendagem (nomes desconhecidos, espaços
+após travessões e a sugestão de estilo `por causa da`). Pode introduzir outros
+identificadores copiados de `LanguageTool [ID]`. A exclusão de um grupo prevalece
+sobre a seleção individual. As escolhas ficam guardadas para outros ficheiros e
+**Batch convert**; execute **Run checks** novamente após guardar. Regras excluídas
+não geram alertas nem correções automáticas. Classificações desconhecidas ficam
+em **Other / unclassified checks**. A filtragem não garante maior velocidade;
+apenas as exclusões por identificador são também enviadas ao servidor.
+
+As transferências são explícitas, de versões fixadas e verificadas por SHA-256.
+O LanguageTool **6.6** vem do sítio oficial (LGPL-2.1-ou-posterior); o Eclipse
+Temurin **JRE 21.0.13+9** vem dos lançamentos da Adoptium no GitHub (GPLv2 com
+Classpath Exception). As licenças permanecem nas distribuições extraídas.
+O Java é privado do plugin: não é instalado no sistema nem altera o `PATH`.
+No Windows ARM64, utiliza-se o JRE x64 por emulação; Linux/macOS têm pacotes
+nativos x64/ARM64. O ensaio real feito aqui abrange apenas Linux x64.
+
+Os componentes ficam na pasta de dados local
+`SubtitleEdit/BrazilianToEuropeanPortuguese/GrammarChecker`, dentro dos dados da
+aplicação no caso de Flatpak. Em contentores, deve persistir essa pasta de dados.
+O plugin inicia automaticamente o verificador numa porta privada de loopback,
+confirma a verificação pt-PT e termina o processo que iniciou no fim, também ao
+cancelar ou fechar a janela. Não é necessário terminal, porta fixa 8081,
+servidor Docker separado ou GPU. Depois das transferências, funciona sem rede.
+A distribuição local não inclui as regras de IA exclusivas da nuvem.
+
+A opção **Use my own server instead (advanced)** revela o endereço para quem já
+tem um servidor próprio e dispensa o arranque local. Em Docker, `127.0.0.1`
+identifica o próprio contentor; outro serviço da rede privada pode usar,
+por exemplo, `http://languagetool:8010/`. O plugin não cria contentores nem altera
+a rede. Consulte o [guia oficial](https://dev.languagetool.org/http-server).
+As opções guardadas também se aplicam a **Batch convert**.
+
+**Allow tested agreement fixes** funciona com o verificador descarregado e com
+um servidor externo. Está acima da opção avançada: não exige servidor próprio.
+As correções continuam a exigir MiniLM instalado/ativo, inglês alinhado e todas
+as verificações de segurança existentes.
+
+A ordem de processamento é:
+
+1. Alinhar a referência inglesa disponível e executar as regras de conversão.
+2. Verificar o português convertido com `language=pt-PT`, por POST `/v2/check`.
+   Com **Convert complete sentences across adjacent cues** ativo, reutilizar
+   apenas os grupos seguros já existentes: salvaguardas de interlocutor, seleção
+   e tempos, no máximo três legendas e 1200 carateres. Sem essa opção, verificar
+   cada legenda separadamente, sem juntar arbitrariamente falas vizinhas.
+3. Apresentar mensagens, identificadores das regras e até cinco sugestões em
+   notas de revisão. Estas notas não alteram o texto automaticamente; pode
+   editar a correção na pré-visualização.
+4. Só com **Allow tested agreement fixes** também ativo, admitir as trocas
+   `tem/têm` e `vem/vêm` quando discordam de `ele/ela/eles/elas` explícitos.
+   Preservar sujeito, pessoa, tempo, tratamento, maiúsculas, pontuação e espaços.
+   A referência comparável tem de começar pelo sujeito correspondente
+   `he/she/they`; o inglês `you` nunca determina o tratamento formal ou informal.
+   A conversão de concordância/tratamento tem de continuar ativa.
+5. Exigir uma única candidata elegível, sem diagnósticos sobrepostos, MiniLM
+   instalado e verificação de significado ativa, e inglês alinhado para todo o
+   grupo. Comparar a candidata com o português anterior à correção e com o
+   inglês, usando os limiares existentes. Semelhança elevada não basta para
+   autorizar uma alteração.
+6. Voltar a verificar a candidata no LanguageTool: a regra em causa tem de
+   apresentar menos ocorrências, sem novos diagnósticos. Só depois aplicar a
+   correção dentro da legenda original, sem deslocar palavras, alterar quebras
+   de linha, identificadores ou tempos. No máximo uma correção por grupo.
+
+As restantes sugestões gramaticais, lexicais, ortográficas, de tempo verbal,
+pronomes ou tratamento ficam para revisão, mesmo com semelhança elevada no
+MiniLM. Esta lista inicial não pretende corrigir toda a gramática. Citações,
+marcadores de diálogo e formatação impedem correções automáticas. A formatação,
+as expressões ignoradas e o vocabulário de saída personalizado são substituídos
+por espaços com o mesmo comprimento durante a consulta; grupos com estas
+proteções nunca são reescritos automaticamente. A opção pré-Acordo não é
+substituída por sugestões do LanguageTool.
+
+Por predefinição, só o português convertido e protegido é enviado ao processo
+local de loopback. O inglês e o português original não são enviados ao
+LanguageTool. Se escolher explicitamente outro servidor, utilize um de
+confiança. Não são suportados os serviços públicos do LanguageTool, credenciais
+no endereço ou redirecionamentos HTTP. Proteja o servidor e a rede.
+
+Cada pedido tem um limite de 15 segundos e uma resposta de tamanho limitado.
+Textos iguais são reutilizados apenas durante a execução atual. Respostas
+inválidas, incompletas ou que não sejam pt-PT provocam um erro explícito.
+A pré-visualização mantém o resultado anterior e mostra o erro; o processamento
+em lote comunica a falha e conserva a saída das regras, sem aplicar resultados
+parciais das verificações opcionais. Em lote, as ocorrências são contadas; abra
+a pré-visualização para consultar os pormenores. Os testes de protocolo usam
+respostas controladas; o teste opcional `PTPT_TEST_GRAMMAR=1` instala e executa
+as distribuições reais fixadas, verifica diagnósticos pt-PT e confirma o fim do
+processo. A proteção de significado nesse teste usa vetores determinísticos,
+não inferência real do MiniLM. A cobertura alargada, os falsos positivos e o
+desempenho com legendas completas ainda precisam de avaliação.
+
+**Desfazer / voltar atrás:** desativar **LanguageTool pt-PT** limpa os resultados
+da pré-visualização e repõe o processamento existente. Desativar apenas
+**Allow tested agreement fixes** mantém as sugestões sem alterações automáticas.
+Para alterações já aplicadas, utilize Desfazer no Subtitle Edit ou uma cópia
+das legendas. Para repor integralmente o código, utilize a versão marcada
+v1.7.0. A experiência está isolada em `feature/languagetool-ptpt`; a v1.7.0
+continua a ser a base determinística publicada.
 
 Converte legendas de português do Brasil (pt-BR) para português europeu (pt-PT),
 adaptando a ortografia, o vocabulário e a gramática. Tal como o plugin *American to
@@ -2141,9 +2299,11 @@ painel.
   para preservar o texto ao guardar e reabrir.
 
 - **Filtros de resultados:** ative ou desative **Rule-based changes**,
-  **MiniLM warnings**, **Gervásio choices**, **Other review warnings** e
+  **MiniLM warnings**, **Gervásio choices**, **Grammar warnings**, **Other review warnings** e
   **Manual edits** para mostrar ou ocultar as linhas correspondentes.
-  Os cinco estão ativos quando o plugin abre. Uma linha de vários tipos
+  **Grammar warnings** mostra os resultados do LanguageTool separadamente dos
+  restantes avisos; filtra a apresentação, não as regras executadas.
+  Os seis estão ativos quando o plugin abre. Uma linha de vários tipos
   continua visível enquanto algum dos tipos correspondentes estiver ativo.
   Os filtros mantêm-se nas atualizações de definições/resultados dos
   modelos e não descartam edições nem alteram as seleções de **Apply**.

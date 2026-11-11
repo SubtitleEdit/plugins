@@ -4,6 +4,12 @@
 
 ## Latest changes
 
+- Experimental, **off-by-default local LanguageTool pt-PT checks**, with
+  review suggestions and a narrowly allowlisted, English/MiniLM-guarded agreement pass.
+  Download the checker and its private portable Java from the plugin; no
+  generative model, system Java installation or manually configured server is needed.
+- Reference/local-model controls now sit **to the right of dialogue/layout**,
+  with scrollable contents so expanded settings do not consume the whole preview.
 - One **Contribute vocabulary / Local word list** window with three separate tabs.
 - Contribution CSVs for words and expressions, with optional examples and context;
   suggestions do not change conversion rules or upload automatically.
@@ -18,13 +24,161 @@ Earlier updates include reviewed workbook vocabulary and verb constructions,
 English-confirmed sportswear and shared-residence expressions, physical descriptions,
 finding filters, and original PT-BR text visible on warning-only rows.
 
-The standalone source build is **1.4.2**. Official Subtitle Edit package versions
+The experimental standalone source build is **1.8.2**. The pre-LanguageTool
+rollback baseline is [v1.7.0](https://github.com/SMAP-git/BrazilianToEuropeanPortuguese/tree/v1.7.0).
+Official Subtitle Edit package versions
 are assigned by the upstream release workflow and may differ.
 
 Version **1.4.2** improves contextual agreement and formal address, reference-confirmed
 objects and vocabulary senses, natural dialogue constructions and interrogative
 accentuation. It adds regression coverage for these interactions while preserving
 subtitle cue timings and user-controlled rule options.
+
+### Restrictive adverbs with reflexive commands
+
+With **Pronoun placement** enabled, a recognised clause-initial affirmative
+*tu* reflexive command places restrictive *só/apenas/somente* after the
+verb-clitic group: *Só lembre-se quem você enfrenta* → *Lembra-te só quem
+enfrentas*, *Só prepara-te* → *Prepara-te só*. This preserves enclisis without
+leaving a preverbal proclisis attractor. It is not a blanket movement of *só*:
+indicatives retain proclisis (*só te lembras*, *ele só se lembrou*), and negation,
+subordination, existing postverbal adverbs and ambiguous formal address are not
+reinterpreted as informal commands. Existing complements are preserved.
+Source: [Ciberdúvidas: adverbs attracting proclisis](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/adverbios-que-atraem-os-pronomes-atonos-proclise/35696).
+
+### Optional local grammar checking (experimental)
+
+**Injury result states and wrapped possessives:** with **Colloquial** enabled,
+an anatomical subject with agentless past *foi/foram lesionado/magoado/ferido*
+uses resultative *ficou/ficaram*, preserving the injury term, number, owner,
+side and supported severity modifiers: *a perna esquerda do meu padrinho foi
+lesionada* → *a perna esquerda do meu padrinho ficou lesionada*. This is a
+naturalness preference, not a claim that every *ser* passive is ungrammatical.
+Explicit agents/causes introduced by *por/pelo*, intentional actions, negation,
+relative clauses and non-injury predicates are not rewritten. Existing
+*lesionada* is not replaced by *magoada*, which may describe a different severity.
+With **Pronoun placement**, possessive-article insertion also respects articles
+and contractions across wrapped lines (*do\nmeu padrinho*, not *do\no meu
+padrinho*).
+Sources: [resultative ficar](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/participios-passados-verbais-e-adjetivais/35876)
+and [possessive articles](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/regra-para-a-posicao-dos-pronomes-possessivos/29320).
+
+LanguageTool is the grammar checker; its Portuguese rules include **European
+Portuguese (`pt-PT`)**. You do not need to choose or download a separate grammar
+model. The **Reference subtitle and local models** panel is below the top-right
+settings/name/vocabulary buttons, beside the orthography controls. The right edge
+of **Dialogue context and subtitle layout** aligns with **Re-download dictionary**;
+reference/model controls expand alongside them. Both columns scroll when needed
+to preserve subtitle-review space.
+
+To set up checking:
+
+1. Click **Download LanguageTool pt-PT (240 MB)**.
+2. Click **Download portable Java (40–50 MB)**.
+3. Enable **LanguageTool pt-PT (local grammar checker)** and choose **Run checks**.
+
+Use **Choose LanguageTool rules...** to enable/disable grammar, spelling,
+punctuation/typography, style/register and unclassified checks. **Grammar only
+(fewer alerts)** disables the other groups without changing the plugin's own
+conversion rules. Existing settings keep all groups enabled until you choose.
+The same dialog lists individual rule IDs from current-session findings, saved
+exclusions and common subtitle alerts (unknown names, dialogue-dash spacing and
+the `por causa da` style suggestion). Uncheck any rule, or enter additional IDs
+copied from `LanguageTool [ID]` findings. Group exclusions take precedence.
+Choices are saved for future files and Batch convert; **Run checks** again after
+saving. Disabled rules cannot produce alerts or automatic corrections. Unknown
+server classifications belong to **Other / unclassified checks**. This filters
+findings rather than guaranteeing a faster check; only explicit rule-ID
+exclusions are also sent to the server.
+
+Both downloads are explicit, pinned and SHA-256 verified. LanguageTool **6.6**
+comes from its official download site (LGPL-2.1-or-later); the private Eclipse
+Temurin **JRE 21.0.13+9** comes from Adoptium's GitHub releases (GPLv2 with
+Classpath Exception). Licences remain in the extracted distributions. The Java
+download never installs system Java or changes `PATH`. Windows ARM64 uses the
+x64 JRE through Windows emulation; Linux/macOS have native x64/ARM64 packages.
+Only Linux x64 has been exercised with the real downloaded runtime here.
+
+The plugin stores them under its local application-data
+`SubtitleEdit/BrazilianToEuropeanPortuguese/GrammarChecker` folder. This is inside
+the app's data area in Flatpak; container installations should persist that data
+folder. It starts the checker on a private loopback port automatically for each
+run, verifies pt-PT grammar checking, and stops its owned process afterwards,
+including on cancellation or window closure. No separate terminal, fixed port
+8081, Docker service or GPU is required. After downloading, checking is offline.
+The local distribution does not include LanguageTool's cloud-only AI rules.
+
+The optional **Use my own server instead (advanced)** switch reveals the server
+URL for existing self-hosted installations and bypasses managed startup. In
+Docker, `127.0.0.1` means the Subtitle Edit container; a separate service can use,
+for example, `http://languagetool:8010/` on a private shared network. No containers
+or network settings are changed. See the
+[official server guide](https://dev.languagetool.org/http-server).
+
+**Allow tested agreement fixes** works in both managed-local and external-server
+modes. It is placed above the advanced server switch; an external server is not
+required. Enabled/installed MiniLM, aligned English and all existing safety gates
+are still required before an automatic correction is accepted.
+
+The pipeline is:
+
+1. Align available English and run the existing deterministic conversion rules.
+2. Check the converted Portuguese with `language=pt-PT` using POST `/v2/check`.
+   With **Convert complete sentences across adjacent cues** enabled, reuse only
+   the existing safe sentence groups (same-speaker/selection/timing safeguards,
+   at most three cues and 1200 characters). Otherwise check individual cues.
+   Never join arbitrary neighbouring dialogue.
+3. Show diagnostic messages, rule IDs and up to five replacement suggestions
+   as review notes. These notes do not automatically edit the text; use the
+   editable preview to accept a different correction.
+4. If **Allow tested agreement fixes** is enabled separately, permit only
+   `ele/ela/eles/elas` with incompatible `tem/têm` or `vem/vêm`, retaining the
+   explicit subject, person, tense, register, case, punctuation and whitespace.
+   The English must be comparable and start with the corresponding
+   `he/she/they`; English `you` never establishes formal/informal address.
+   Agreement/address conversion must remain enabled.
+5. Require exactly one eligible candidate, no overlapping diagnostic, an
+   enabled and installed MiniLM meaning check, and aligned English for the
+   whole checked group. Compare the candidate with the pre-correction Portuguese
+   and English using the existing meaning thresholds. High similarity alone
+   never authorises a correction.
+6. Recheck the candidate with LanguageTool: the targeted rule must have fewer
+   findings, with no new diagnostic fingerprints. Only then apply the edit,
+   within its original cue, without moving words or changing line breaks,
+   cue IDs or timings. At most one correction is accepted per checked group.
+
+Other grammatical, vocabulary, spelling, tense, pronoun and register suggestions
+remain review-only, even if MiniLM prefers them. This initial allowlist does not
+claim comprehensive grammatical correction. Quoted dialogue, dialogue-marker
+lines and markup are excluded from automatic fixes. Markup, ignored phrases
+and custom output vocabulary are masked with equal-length spaces for checking;
+masked groups are never automatically rewritten. Pre-1990 spelling settings
+are not overridden by LanguageTool suggestions.
+
+The plugin sends masked converted Portuguese only to the owned loopback server
+by default; English and original Portuguese are not sent to LanguageTool.
+If you explicitly choose an external server, use one you trust. Public
+LanguageTool cloud endpoints, embedded credentials and HTTP redirects are not
+supported. Protect any remote server/network yourself.
+
+Requests have a 15-second timeout and a bounded response size. Identical texts
+are cached only for the current run. Invalid, non-pt-PT or incomplete responses
+fail explicitly. Preview keeps the preceding result and displays the failure;
+batch reports the failure and retains rule-only output, without applying
+partial optional-check results. Batch counts findings; open the preview to see
+their details. Protocol and safety tests use controlled responses; the optional
+`PTPT_TEST_GRAMMAR=1` test installs and runs the actual pinned checker and Java,
+checks real pt-PT diagnostics, and verifies shutdown. Its candidate meaning gate
+uses deterministic vectors, not real MiniLM inference. Broader rule coverage,
+false-positive rates and subtitle-corpus speed still require benchmarking.
+
+**Undo / rollback:** disabling **LanguageTool pt-PT** clears its preview results
+and restores the existing conversion pipeline; untick **Allow tested agreement
+fixes** for suggestions only. Already applied subtitle edits require Subtitle
+Edit's Undo or restoring your subtitle copy. For a full code rollback, use the
+tagged v1.7.0 source/build rather than merging or reverting unrelated changes.
+The experimental work is isolated on `feature/languagetool-ptpt`; v1.7.0 remains
+the published deterministic baseline.
 
 Converts Brazilian Portuguese (pt-BR) subtitles to natural European Portuguese (pt-PT):
 spelling, vocabulary and grammar. Like *American to British*, it shows a checkable
@@ -1849,8 +2003,10 @@ its field when the row wraps. Batch configuration uses the full panel width.
   are escaped similarly to preserve round trips.
 
 - **Finding filters:** toggle **Rule-based changes**, **MiniLM warnings**,
-  **Gervásio choices**, **Other review warnings** and **Manual edits** to show or
-  hide matching rows. All five are on when the plugin opens. A row matching
+  **Gervásio choices**, **Grammar warnings**, **Other review warnings** and **Manual edits** to show or
+  hide matching rows. Grammar warnings include LanguageTool findings, separately
+  from other review warnings. This is a display filter, not a rule selection.
+  All six are on when the plugin opens. A row matching
   several types remains visible while any matching type is on. Filters survive
   settings/model-result refreshes and do not discard edits or change Apply
   selections. The summary shows visible/total rows; switching every type off

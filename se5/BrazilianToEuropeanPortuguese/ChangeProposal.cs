@@ -11,6 +11,7 @@ public enum FindingType
     Judge = 4,
     OtherReview = 8,
     ManualEdit = 16,
+    Grammar = 32,
 }
 
 public partial class ChangeProposal : ObservableObject
@@ -66,9 +67,12 @@ public partial class ChangeProposal : ObservableObject
                 Rules.Count == 0 && (OriginalText != LanguageText || HasLayoutChange))
                 types |= FindingType.RuleBased;
             if (Rules.Any(r => r.Id == "local-judge")) types |= FindingType.Judge;
+            if (Rules.Any(r => r.Id == "languagetool")) types |= FindingType.Grammar;
             foreach (var note in ReviewNote.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
                 types |= note.StartsWith("MiniLM", StringComparison.Ordinal) ? FindingType.MiniLm :
-                    note.StartsWith("Gervásio", StringComparison.Ordinal) ? FindingType.Judge : FindingType.OtherReview;
+                    note.StartsWith("Gervásio", StringComparison.Ordinal) ? FindingType.Judge :
+                    note.StartsWith("LanguageTool", StringComparison.Ordinal) || note.StartsWith("Grammar:", StringComparison.Ordinal)
+                        ? FindingType.Grammar : FindingType.OtherReview;
             if (_edited != null) types |= FindingType.ManualEdit;
             return types == FindingType.None ? FindingType.OtherReview : types;
         }

@@ -4660,6 +4660,7 @@ public sealed class PortugueseConverter
 
         private static string AddArticle(Match m)
         {
+            if (HasPreviousArticle(m)) return m.Value;
             var noun = m.Groups["n"].Value;
             if (noun is "Deus" or "deus" || !(IsVerbish(m.Groups["w1"].Value) || (m.Groups["w2"].Success && IsVerbish(m.Groups["w2"].Value) && !IsVerbish(noun))))
             {
@@ -4696,6 +4697,7 @@ public sealed class PortugueseConverter
 
         private static string AddExclaimedArticle(Match m)
         {
+            if (HasPreviousArticle(m)) return m.Value;
             var noun = m.Groups["n"].Value;
             if (Vocatives.Contains(noun) || char.IsUpper(noun[0]) && !CaseHelper.IsAllUpper(noun))
             {
@@ -4729,6 +4731,7 @@ public sealed class PortugueseConverter
 
         private static string AddStartArticle(Match m)
         {
+            if (HasPreviousArticle(m)) return m.Value;
             // "Desculpa, tua mãe ligou": after an opening word, a family noun followed by a verb is the subject, not an address.
             var subjectAfterOpening = m.Groups["pre"].Value.TrimEnd().EndsWith(',') &&
                                       Regex.IsMatch(m.Result("$'"), @"^\s+(?:\p{Ll}+\s+)?(?:ligou|está|esteve|estava|quer|disse|chegou|veio|vem|vai|foi|é|era|tem|teve|precisa|pediu|perguntou|mandou|telefonou|morreu|saiu|ligou)" + NotWordAfter, Cs);
@@ -4740,13 +4743,6 @@ public sealed class PortugueseConverter
 
             // "Foi pessoal para nós,\nseu parvo." - name-calling closing the sentence takes no article.
             if (YouToTuRules.Insults.Contains(m.Groups["n"].Value) && Regex.IsMatch(m.Result("$'"), @"^\s*(?:[.!?…]|$)"))
-            {
-                return m.Value;
-            }
-
-            // "Além de aumentar o\nseu colesterol": the article is at the end of the previous line.
-            if (char.IsLower(m.Groups["poss"].Value[0]) &&
-                Regex.Match(m.Result("$`") + m.Groups["pre"].Value, @"(\p{L}+)\s*$").Groups[1].Value is { Length: > 0 } last && ArticleContractions.Contains(last))
             {
                 return m.Value;
             }
@@ -4792,6 +4788,10 @@ public sealed class PortugueseConverter
         {
             "o", "a", "os", "as", "no", "na", "nos", "nas", "do", "da", "dos", "das", "ao", "à", "aos", "às", "pelo", "pela", "pelos", "pelas",
         };
+
+        private static bool HasPreviousArticle(Match match) =>
+            Regex.Match(match.Result("$`") + match.Groups["pre"].Value, @"(\p{L}+)\s*$").Groups[1].Value
+                is { Length: > 0 } last && ArticleContractions.Contains(last);
 
         // "Diga a sua mãe" / "Conta a teu pai" → "Diga à sua mãe" / "Conta ao teu pai": "a" is the preposition before a person.
         private static readonly Regex DativePossessive = new(

@@ -1,4 +1,5 @@
 using System.Text;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.VisualTree;
@@ -477,6 +478,58 @@ public sealed class ReferenceTests(ITestOutputHelper output)
             var subtitle = Path.Combine(data, "episode.pt-br.srt");
             File.WriteAllText(subtitle, "");
             PluginBootstrap.BuildAvaloniaApp<App>().SetupWithoutStarting();
+            var grammarWindow = new MainWindow(new PluginRequest
+            {
+                SettingsVersion = ConversionOptions.Version,
+                Settings = new ConversionOptions(GrammarCheck: true, GrammarServer: "http://languagetool:8010/").ToJson(),
+                Subtitle = new PluginSubtitle { SubRip = "1\n00:00:01,000 --> 00:00:03,000\nOlá.\n" },
+            });
+            Assert.True(grammarWindow.FindControl<CheckBox>("GrammarCheck")!.IsChecked);
+            Assert.False(grammarWindow.FindControl<CheckBox>("GrammarAutoFix")!.IsChecked);
+            Assert.True(grammarWindow.FindControl<CheckBox>("GrammarAutoFix")!.IsVisible);
+            Assert.True(grammarWindow.FindControl<CheckBox>("GrammarAutoFix")!.IsEnabled);
+            var grammarControls = Assert.IsType<StackPanel>(grammarWindow.FindControl<CheckBox>("GrammarAutoFix")!.Parent);
+            Assert.True(grammarControls.Children.IndexOf(grammarWindow.FindControl<CheckBox>("GrammarAutoFix")!) <
+                grammarControls.Children.IndexOf(grammarWindow.FindControl<CheckBox>("GrammarExternalServer")!));
+            grammarWindow.FindControl<CheckBox>("GrammarAutoFix")!.IsChecked = true;
+            Assert.True(grammarWindow.FindControl<CheckBox>("GrammarAutoFix")!.IsChecked);
+            Assert.False(grammarWindow.FindControl<CheckBox>("GrammarExternalServer")!.IsChecked);
+            Assert.False(grammarWindow.FindControl<TextBox>("GrammarServer")!.IsVisible);
+            Assert.NotNull(grammarWindow.FindControl<Button>("DownloadGrammarButton"));
+            Assert.NotNull(grammarWindow.FindControl<Button>("DownloadJavaButton"));
+            grammarWindow.FindControl<CheckBox>("GrammarExternalServer")!.IsChecked = true;
+            Assert.True(grammarWindow.FindControl<TextBox>("GrammarServer")!.IsVisible);
+            Assert.True(grammarWindow.FindControl<CheckBox>("GrammarAutoFix")!.IsChecked);
+            Assert.True(grammarWindow.FindControl<CheckBox>("GrammarAutoFix")!.IsEnabled);
+            Assert.Equal("http://languagetool:8010/", grammarWindow.FindControl<TextBox>("GrammarServer")!.Text);
+            grammarWindow.ApplyCheckResults(new[] { new CheckLine(0, "Olá.", "Olá.", null, null) },
+                new Dictionary<int, CheckResult> { [0] = new("Olá.", "LanguageTool [TEST]: review only.") });
+            Assert.Contains("LanguageTool", Assert.Single(grammarWindow.Proposals).ReviewNote);
+            grammarWindow.Show();
+            grammarWindow.FindControl<Button>("GrammarRulesButton")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            var grammarRules = Assert.IsType<GrammarRulesWindow>(Assert.Single(grammarWindow.OwnedWindows));
+            Assert.True(grammarRules.FindControl<CheckBox>("GrammarRule_TEST")!.IsChecked);
+            grammarRules.FindControl<Button>("GrammarOnlyPreset")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Assert.Equal("other,spelling,style,typography", grammarRules.DisabledGroups);
+            grammarRules.FindControl<CheckBox>("GrammarRule_MORFOLOGIK_RULE_PT_PT")!.IsChecked = false;
+            grammarRules.FindControl<TextBox>("ExtraGrammarDisabledRules")!.Text = "BAD ID";
+            grammarRules.FindControl<Button>("SaveGrammarRules")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Assert.Contains("Invalid LanguageTool", grammarRules.FindControl<TextBlock>("GrammarRulesError")!.Text);
+            Assert.Contains("LanguageTool", Assert.Single(grammarWindow.Proposals).ReviewNote);
+            grammarRules.FindControl<TextBox>("ExtraGrammarDisabledRules")!.Text = "";
+            grammarRules.FindControl<Button>("SaveGrammarRules")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            Assert.Empty(grammarWindow.Proposals);
+            Assert.Contains("Run checks again", grammarWindow.ChecksStatusText);
+            grammarWindow.FindControl<CheckBox>("GrammarCheck")!.IsChecked = false;
+            Assert.Empty(grammarWindow.Proposals);
+            grammarWindow.FindControl<TextBox>("GrammarServer")!.Text = "http://127.0.0.1:8081/";
+            Assert.True(grammarWindow.FindControl<Button>("ApplyButton")!.IsEnabled);
             var repeatedWindow = new MainWindow(new PluginRequest
             {
                 Subtitle = new PluginSubtitle
@@ -516,7 +569,8 @@ public sealed class ReferenceTests(ITestOutputHelper output)
                     SubRip = "1\n00:00:01,000 --> 00:00:04,000\nO trem chegou.\n\n" +
                              "2\n00:00:05,000 --> 00:00:07,000\nBom dia.\n\n" +
                              "3\n00:00:08,000 --> 00:00:10,000\nBoa noite.\n\n" +
-                             "4\n00:00:11,000 --> 00:00:13,000\nAté amanhã.\n",
+                             "4\n00:00:11,000 --> 00:00:13,000\nAté amanhã.\n\n" +
+                             "5\n00:00:14,000 --> 00:00:16,000\nBom trabalho.\n",
                 },
             });
             filterWindow.ApplyCheckResults(new[]
@@ -524,17 +578,19 @@ public sealed class ReferenceTests(ITestOutputHelper output)
                 new CheckLine(1, "Bom dia.", "Bom dia.", "O comboio chegou.", null),
                 new CheckLine(2, "Boa noite.", "Boa noite.", "Bom dia.", null),
                 new CheckLine(3, "Até amanhã.", "Até amanhã.", "Boa noite.", null),
+                new CheckLine(4, "Bom trabalho.", "Bom trabalho.", "Até amanhã.", null),
             }, new Dictionary<int, CheckResult>
             {
                 [1] = new("Bom dia.", "MiniLM: check the translation."),
                 [2] = new("Boa noite!", "Gervásio chose an alternative."),
                 [3] = new("Até amanhã.", "Review this wording."),
+                [4] = new("Bom trabalho.", "LanguageTool [TEST]: grammar review."),
             });
             filterWindow.Show();
             Avalonia.Threading.Dispatcher.UIThread.RunJobs();
-            var filterNames = new[] { "RuleBasedFilter", "MiniLmFilter", "JudgeFilter", "OtherReviewFilter", "ManualEditFilter" };
+            var filterNames = new[] { "RuleBasedFilter", "MiniLmFilter", "JudgeFilter", "GrammarFilter", "OtherReviewFilter", "ManualEditFilter" };
             Assert.All(filterNames, name => Assert.True(filterWindow.FindControl<ToggleButton>(name)!.IsChecked));
-            Assert.Equal(4, filterWindow.Proposals.Count);
+            Assert.Equal(5, filterWindow.Proposals.Count);
             Assert.All(filterWindow.Proposals, p => Assert.True(p.VisibleInReview));
             void SetFilter(string name, bool enabled)
             {
@@ -545,7 +601,7 @@ public sealed class ReferenceTests(ITestOutputHelper output)
             }
             foreach (var name in filterNames) SetFilter(name, false);
             Assert.All(filterWindow.Proposals, p => Assert.False(p.VisibleInReview));
-            Assert.Contains("Showing 0 of 4", filterWindow.FindControl<TextBlock>("SummaryLabel")!.Text);
+            Assert.Contains("Showing 0 of 5", filterWindow.FindControl<TextBlock>("SummaryLabel")!.Text);
             Assert.True(filterWindow.FindControl<Button>("ApplyButton")!.IsEnabled);
             var selectionButtons = filterWindow.FindControl<Control>("SelectButtons")!.GetVisualDescendants().OfType<Button>();
             Assert.Single(selectionButtons, b => Equals(b.Content, "Select none"))
@@ -575,11 +631,14 @@ public sealed class ReferenceTests(ITestOutputHelper output)
             SetFilter("JudgeFilter", true);
             Assert.Equal(2, Assert.Single(filterWindow.Proposals, p => p.VisibleInReview).LineIndex);
             SetFilter("JudgeFilter", false);
+            SetFilter("GrammarFilter", true);
+            Assert.Equal(4, Assert.Single(filterWindow.Proposals, p => p.VisibleInReview).LineIndex);
+            SetFilter("GrammarFilter", false);
             SetFilter("OtherReviewFilter", true);
             Assert.Equal(3, Assert.Single(filterWindow.Proposals, p => p.VisibleInReview).LineIndex);
             var visibleBorders = filterWindow.FindControl<ItemsControl>("ChangesList")!.GetVisualDescendants()
                 .OfType<Border>().Where(b => b.DataContext is ChangeProposal && b.Padding == new Avalonia.Thickness(8, 6));
-            Assert.Equal(4, visibleBorders.Count());
+            Assert.Equal(5, visibleBorders.Count());
             Assert.Single(visibleBorders, b => b.IsVisible);
             filterWindow.FindControl<CheckBox>("VocabularyCheck")!.IsChecked = false;
             Assert.All(filterNames, name => Assert.Equal(name == "OtherReviewFilter",
@@ -819,6 +878,36 @@ public sealed class ReferenceTests(ITestOutputHelper output)
             Assert.Equal("teste", Assert.Single(PortugueseLocalWordList.Load(refreshPath).Ignored));
             batchConfig.Close();
 
+            var rulesConfig = new MainWindow(new PluginRequest { RequestType = PluginRequestType.Configure }, refreshPath);
+            rulesConfig.Show();
+            rulesConfig.FindControl<Button>("GrammarRulesButton")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            var rulesEditor = Assert.IsType<GrammarRulesWindow>(Assert.Single(rulesConfig.OwnedWindows));
+            rulesEditor.FindControl<Button>("GrammarOnlyPreset")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            rulesEditor.FindControl<CheckBox>("GrammarRule_DASH_ENUMERATION_SPACE_RULE")!.IsChecked = false;
+            rulesEditor.FindControl<Button>("SaveGrammarRules")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            rulesConfig.FindControl<Button>("ApplyButton")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            var rulesResponse = App.Response!;
+            var storedRules = ConversionOptions.Load(new PluginRequest
+            {
+                Settings = rulesResponse.Settings, SettingsVersion = rulesResponse.SettingsVersion,
+            });
+            Assert.Equal("DASH_ENUMERATION_SPACE_RULE", storedRules.GrammarDisabledRules);
+            Assert.Equal("other,spelling,style,typography", storedRules.GrammarDisabledGroups);
+            var rulesReload = new GrammarRulesWindow(storedRules, Array.Empty<string>());
+            Assert.False(rulesReload.FindControl<CheckBox>("GrammarGroup_style")!.IsChecked);
+            Assert.False(rulesReload.FindControl<CheckBox>("GrammarRule_DASH_ENUMERATION_SPACE_RULE")!.IsChecked);
+            rulesReload.FindControl<Button>("AllGrammarRules")!
+                .RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
+            Assert.Empty(rulesReload.DisabledRules);
+            Assert.Empty(rulesReload.DisabledGroups);
+            rulesReload.Close();
+
             var namesConfig = new MainWindow(new PluginRequest { RequestType = PluginRequestType.Configure }, refreshPath);
             namesConfig.Show();
             namesConfig.FindControl<Button>("EditNameArticlesButton")!
@@ -998,8 +1087,39 @@ public sealed class ReferenceTests(ITestOutputHelper output)
                 Avalonia.Threading.Dispatcher.UIThread.RunJobs();
             }
             LayoutScreenshot();
+            var panels = screenshotWindow.FindControl<Grid>("ReviewLayoutPanels")!;
+            var settingsColumns = screenshotWindow.FindControl<Grid>("SettingsColumns")!;
+            var layoutPanel = screenshotWindow.FindControl<Expander>("LayoutTools")!;
+            var referencePanel = screenshotWindow.FindControl<Expander>("ReferencePanel")!;
+            Assert.Same(panels, layoutPanel.Parent);
+            Assert.Same(settingsColumns, referencePanel.Parent);
+            Assert.Equal(1, Grid.GetColumn(layoutPanel));
+            Assert.Equal(1, Grid.GetColumn(referencePanel));
+            var dictionaryButton = screenshotWindow.FindControl<Button>("DictionaryDownloadButton")!;
+            var layoutOrigin = layoutPanel.TranslatePoint(default, settingsColumns)!.Value;
+            var dictionaryOrigin = dictionaryButton.TranslatePoint(default, settingsColumns)!.Value;
+            Assert.Equal(dictionaryOrigin.X + dictionaryButton.Bounds.Width,
+                layoutOrigin.X + layoutPanel.Bounds.Width, 1);
+            Assert.True(referencePanel.Bounds.X > dictionaryOrigin.X + dictionaryButton.Bounds.Width);
+            Assert.Equal(0, referencePanel.Bounds.Y, 1);
+            Assert.True(referencePanel.Bounds.Width > 200);
+            Assert.True(referencePanel.Bounds.Right <= settingsColumns.Bounds.Width + 0.1);
+            var topButton = screenshotWindow.FindControl<Button>("EditNameArticlesButton")!;
+            var referenceOrigin = referencePanel.TranslatePoint(default, screenshotContent)!.Value;
+            var buttonOrigin = topButton.TranslatePoint(default, screenshotContent)!.Value;
+            Assert.True(referenceOrigin.Y >= buttonOrigin.Y + topButton.Bounds.Height);
+            if (Environment.GetEnvironmentVariable("PTPT_UI_LAYOUT_CAPTURE") is { Length: > 0 } capture)
+            {
+                layoutPanel.IsExpanded = true;
+                LayoutScreenshot();
+                using var bitmap = new Avalonia.Media.Imaging.RenderTargetBitmap(
+                    new Avalonia.PixelSize((int)screenshotContent.Bounds.Width, (int)screenshotContent.Bounds.Height));
+                bitmap.Render(screenshotContent);
+                bitmap.Save(capture);
+            }
             var settingsHeight = settingsPanel.Bounds.Height;
             var reviewHeight = screenshotWindow.FindControl<Border>("ChangesBorder")!.Bounds.Height;
+            Assert.True(reviewHeight > 80, $"Expanded settings leave only {reviewHeight} pixels for subtitle review.");
             toggleSettings.RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
             LayoutScreenshot();
             Assert.False(settingsPanel.IsVisible);
@@ -1030,7 +1150,7 @@ public sealed class ReferenceTests(ITestOutputHelper output)
             });
             Assert.Contains("a tua foto", window.Proposals[0].ConvertedText);
             Assert.Contains("MiniLM is not installed", window.ReferenceStatusText);
-            Assert.Equal("Model: not downloaded\nllama-server: not downloaded\nGervásio: not downloaded", window.AssetStatusText);
+            Assert.Equal("Model: not downloaded\nllama-server: not downloaded\nGervásio: not downloaded\nLanguageTool pt-PT: not downloaded\nPortable Java: not downloaded", window.AssetStatusText);
             window.FindReferenceAutomatically().GetAwaiter().GetResult();
             Assert.Equal(4, window.Alignment!.Matched);
             Assert.Contains("a sua foto", window.Proposals[0].ConvertedText);
@@ -1114,9 +1234,10 @@ public sealed class ReferenceTests(ITestOutputHelper output)
             Assert.Equal("Estou pronto.", Assert.Single(styleWindow.Proposals).ConvertedText);
             styleWindow.FindControl<Expander>("ReviewTools")!.IsExpanded = true;
             styleWindow.FindControl<Expander>("LayoutTools")!.IsExpanded = true;
+            styleWindow.FindControl<Expander>("ReferencePanel")!.IsExpanded = true;
             styleWindow.Show();
             Avalonia.Threading.Dispatcher.UIThread.RunJobs();
-            foreach (var width in new[] { styleWindow.MinWidth, 1120d })
+            foreach (var width in new[] { styleWindow.MinWidth, 1120d, 1600d })
             {
                 styleWindow.Width = width;
                 var content = Assert.IsAssignableFrom<Control>(styleWindow.Content);
@@ -1127,6 +1248,15 @@ public sealed class ReferenceTests(ITestOutputHelper output)
                 var layoutTools = styleWindow.FindControl<Expander>("LayoutTools")!;
                 Assert.Same(reviewTools.Parent, layoutTools.Parent);
                 Assert.True(layoutTools.Bounds.Left >= reviewTools.Bounds.Right);
+                var columns = styleWindow.FindControl<Grid>("SettingsColumns")!;
+                var dictionary = styleWindow.FindControl<Button>("DictionaryDownloadButton")!;
+                var layoutPosition = layoutTools.TranslatePoint(default, columns)!.Value;
+                var dictionaryPosition = dictionary.TranslatePoint(default, columns)!.Value;
+                Assert.Equal(dictionaryPosition.X + dictionary.Bounds.Width, layoutPosition.X + layoutTools.Bounds.Width, 1);
+                var reference = styleWindow.FindControl<Expander>("ReferencePanel")!;
+                Assert.True(reference.Bounds.Left > layoutPosition.X + layoutTools.Bounds.Width);
+                Assert.True(reference.Bounds.Right <= columns.Bounds.Width + 0.1);
+                Assert.True(styleWindow.FindControl<Border>("ChangesBorder")!.Bounds.Height > 80);
                 foreach (var name in new[] { "LineLength", "MaxLines", "CharactersPerSecond" })
                 {
                     var numeric = styleWindow.FindControl<NumericUpDown>(name)!;
