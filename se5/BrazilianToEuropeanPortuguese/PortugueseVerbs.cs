@@ -488,6 +488,43 @@ internal static class PortugueseVerbs
 
     public static bool IsKnownVerbForm(string word) => AllForms.Contains(word.ToLowerInvariant());
 
+    private static readonly (string Ending, string InfinitiveEnding)[] FiniteEndings = new[]
+    {
+        ("ar", new[] { "ávamos", "ássemos", "áramos", "ámos", "amos", "avam", "aram", "ava", "avas", "aste", "asse", "asses", "assem", "ara", "aras", "ou", "ei", "em", "es", "am", "as", "a", "o", "e" }),
+        ("er", new[] { "íamos", "êssemos", "êramos", "emos", "iam", "eram", "ia", "ias", "este", "esse", "esses", "essem", "era", "eras", "eu", "i", "am", "as", "em", "es", "a", "e", "o" }),
+        ("ir", new[] { "íamos", "íssemos", "íramos", "imos", "iam", "iram", "ia", "ias", "iste", "isse", "isses", "issem", "ira", "iras", "iu", "i", "am", "as", "em", "es", "a", "e", "o" }),
+    }.SelectMany(group => group.Item2.Select(ending => (ending, group.Item1)))
+        .OrderByDescending(pair => pair.ending.Length).ToArray();
+
+    internal static bool IsFiniteCliticForm(string word)
+    {
+        var lower = word.ToLowerInvariant();
+        if (lower.Length < 2 || !lower.All(char.IsLetter) || GuessStopWords.Contains(lower) || IsInfinitive(lower))
+            return false;
+        if (IsKnownVerbForm(lower) || IsSecondPersonForm(lower)) return true;
+        if (Regex.IsMatch(lower, @"[ai]d[oa]s?$")) return false;
+        if (TrySplitFuture(lower, out _, out _, requireTransitive: false)) return true;
+        var dictionary = NaturaDictionary.Load(true);
+        if (!dictionary.Check(lower)) return false;
+        foreach (var (ending, infinitiveEnding) in FiniteEndings)
+        {
+            if (lower.Length <= ending.Length + 1 || !lower.EndsWith(ending, StringComparison.Ordinal)) continue;
+            var stem = lower[..^ending.Length];
+            var stems = new List<string> { stem };
+            if (stem.EndsWith("qu", StringComparison.Ordinal)) stems.Add(stem[..^2] + "c");
+            if (stem.EndsWith("gu", StringComparison.Ordinal)) stems.Add(stem[..^1]);
+            if (stem.EndsWith('c')) stems.Add(stem[..^1] + "ç");
+            if (stem.EndsWith('ç')) stems.Add(stem[..^1] + "c");
+            if (stem.EndsWith('j')) stems.Add(stem[..^1] + "g");
+            foreach (var candidate in stems.Select(s => s + infinitiveEnding))
+                if (dictionary.Check(candidate) && VerbConjugator.TryConjugate(candidate, out var forms) &&
+                    forms.Where((_, index) => index is not (0 or 31 or 32 or 33 or 34 or 35 or 36 or 37 or 38))
+                        .Contains(lower, StringComparer.Ordinal))
+                    return true;
+        }
+        return false;
+    }
+
     /// <summary>Looks like an infinitive: ends in -ar/-er/-ir/-por/-pôr and is not a common noun/adjective.</summary>
     public static bool IsInfinitive(string word)
     {
@@ -535,7 +572,7 @@ internal static class PortugueseVerbs
     private static readonly HashSet<string> ExtraMesoclisisInfinitives = new(StringComparer.Ordinal)
     {
         "manter", "dizer", "contar", "informar", "pagar", "contactar", "telefonar", "devolver", "mandar", "enviar", "dar",
-        "levar", "buscar", "ensinar", "lembrar", "agradecer", "explicar", "mostrar", "arranjar", "apanhar", "seguir",
+        "levar", "buscar", "ensinar", "lembrar", "agradecer", "explicar", "mostrar", "arranjar", "apanhar", "seguir", "mentir",
     };
 
     // Only real infinitives: "queriam" (imperfect of querer) must not split into "quer" + "iam".
@@ -650,7 +687,10 @@ internal static class PortugueseVerbs
             var root = w[..^e.Length];
             var known = root is "dir" or "far" or "trar" ||
                         TransitiveInfinitives.Contains(root) || AdditionalObjectInfinitives.Contains(root) || ExtraMesoclisisInfinitives.Contains(root) ||
-                        (!requireTransitive && Infinitives.Contains(root));
+                        (!requireTransitive && (Infinitives.Contains(root) ||
+                            !AllForms.Contains(w) && !AllForms.Contains(root) &&
+                            IsInfinitive(root) && NaturaDictionary.Load(true).Check(root) &&
+                            NaturaDictionary.Load(true).Check(w)));
             if (!known)
             {
                 continue;

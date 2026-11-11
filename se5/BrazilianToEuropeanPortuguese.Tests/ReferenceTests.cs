@@ -1398,7 +1398,7 @@ public sealed class YoungPersonTests
     [InlineData("Esses garotos são polícias.", "Those guys are cops.", "Esses rapazes são polícias.")]
     [InlineData("A garota da loja ligou.", "The girl from the shop called.", "A rapariga da loja ligou.")]
     [InlineData("O garoto tem cinco anos.", "The kid is five.", "O miúdo tem cinco anos.")]
-    [InlineData("O garoto chorou.", "The little boy cried.", "O miúdo chorou.")]
+    [InlineData("O garoto chorou.", "The little boy cried.", "O rapaz chorou.")]
     [InlineData("O garoto chorou.", "He cried.", "O miúdo chorou.")]
     public void EnglishReferenceChoosesRapazOrMiudo(string text, string english, string expected) =>
         Assert.Equal(expected, Converter.Convert(text, null, ReferenceHint.FromText(english)));

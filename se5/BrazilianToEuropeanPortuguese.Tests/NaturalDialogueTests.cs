@@ -25,7 +25,7 @@ public sealed class NaturalDialogueTests
     [InlineData("João! João.\nVá embora!", "John! John.", "João! João.\nVá-se!")]
     [InlineData("Está certo que não quer\nque eu desembale aquilo?",
         "Are you sure you don't want me to unpack that?",
-        "Tem a certeza de que não quer\nque desembale aquilo?")]
+        "Tens a certeza de que não queres\nque desembale aquilo?")]
     public void NaturalDialogueKeepsMeaningAndRegister(string source, string english, string expected)
     {
         var converter = new PortugueseConverter();

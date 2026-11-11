@@ -485,7 +485,7 @@ public partial class MainWindow : Window
             var rules = conversions[i].Rules.ToList();
             var previous = i == 0 ? null : convertedLines.TryGetValue(i - 1, out var before) ? before : _blocks[i - 1].Text;
             convertedLines[i] = text;
-            var checkLine = new CheckLine(i, _blocks[i].Text, text, previous, reference);
+            var checkLine = new CheckLine(i, _blocks[i].Text, text, previous, reference, conversions[i].MeaningSentence);
             _checkLines.Add(checkLine);
             if (_checks.TryGetValue(checkLine, out var check))
             {

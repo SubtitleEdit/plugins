@@ -431,6 +431,467 @@ These rules change Portuguese constructions, rather than merely adding review wa
   labels the harmful sense Brazilian; [lixar](https://dicionario.priberam.org/pt-pt/lixar)
   includes both *prejudicar/tramar* and *estragar*. *Lixar* preserves the informal
   register rather than automatically substituting neutral *estragar*.
+- **Physical break-in:** Brazilian *lacear* uses *ceder* when something gives
+  with use (*Elas vão lacear* → *Elas vão ceder*), *alargar* with a direct object
+  (*lacear os sapatos* → *alargar os sapatos*) and *amolecer* for reviewed
+  leather/material softening contexts. Generated forms retain tense/person,
+  participles and supported clitics. Decorating with bows/ribbons is protected.
+  Uses **Vocabulary** and `reviewed-verb-senses`, respecting local/ignored entries.
+  See Priberam for [ceder](https://dicionario.priberam.org/pt-pt/ceder),
+  [alargar](https://dicionario.priberam.org/pt-pt/alargar) and
+  [amolecer](https://dicionario.priberam.org/pt-pt/amolecer), and the Brazilian
+  [lacear senses](https://www.dicio.com.br/lacear/).
+- **Bare police personnel and doorways:** existential *há/havia/houve/haverá/
+  haveria/haja/houvesse/houver policiais* uses *polícias*, alongside existing
+  quantified personnel rules. Adjectives in *operações/carros policiais* stay
+  unchanged; English *officers* can still select *agentes*, while *cops* retains
+  *polícias*. Uses **Vocabulary**/`police-nouns`.
+  Bare plural personnel after *para/pra, com, sem, entre, perante, por, a*
+  and *em* are also covered when punctuation, a reviewed personnel
+  qualifier or a relative/coordination confirms the noun phrase:
+  *Não para policiais. Para policiais, …* → *Não para polícias. Para
+  polícias, …*. The earlier existential/quantifier rules did not cover
+  this prepositional pattern. This is a PT-PT vocabulary preference, not
+  a claim that every occurrence of *policial* is ungrammatical.
+  Sources: Priberam [polícia](https://dicionario.priberam.org/pt-pt/pol%C3%ADcia)
+  and [policial](https://dicionario.priberam.org/pt-pt/policial).
+  Possessive *na/nas minha(s), tua(s), sua(s), nossa(s), vossa(s) porta(s)*
+  becomes *à/às … porta(s)* for reviewed human-presence constructions or
+  English-confirmed *at … door*: *Porque há policiais na minha porta?* →
+  *Porque há polícias à minha porta?*. Reviewed surface uses (blood, notices,
+  keys, paint, etc.) and unresolved locations are protected. Uses
+  **Colloquial**/`construction-vocabulary`; original line breaks are retained.
+- **Polite plural requests:** *Por favor, avisar se avistarem o suspeito*
+  becomes *Por favor, avisem se avistarem o suspeito*. A reviewed request
+  infinitive uses the plural imperative when an immediately following
+  *se/quando/assim que/logo que* clause identifies the same implicit plural
+  addressees. Covers regular and reviewed irregular commands, short reviewed
+  recipient complements, negation and personal clitics.
+  Singular/ambiguous conditionals, explicit third-person conditional subjects,
+  impersonal/existential conditions and ordinary infinitive instructions
+  remain unchanged. No English reference is required; valid *avistar* is
+  retained rather than obligatorily replaced by *ver*.
+  Uses **Colloquial**, **Pronouns** and `polite-infinitive-commands`.
+  Source: [Ciberdúvidas on polite imperatives and infinitives](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/por-favor--imperativo-formal/34520).
+- **Formal dative recipients:** English-confirmed *He lied to you* selects
+  *Ele mentiu-lhe*, not *Ele mentiu para si*. The existing reviewed recipient
+  verbs also handle formal *a/para si* with their usual clitic placement:
+  *não lhe mentiu*, *mentir-lhe-á*, *escreveu-lhe*, *telefonou-lhe*.
+  Informal address still uses *te*. Unconfirmed *si*, genuine self-reference,
+  emphasis, coordination and multiple ambiguous recipients are protected.
+  Requires an aligned English recipient and **Pronouns**/`pronouns`;
+  this does not globally replace *para si*.
+- **Direct objects are not datives:** reviewed personal-object senses of
+  *respeitar, admirar, amar, odiar, apoiar, acompanhar, abraçar, cumprimentar,
+  elogiar, convidar, proteger, defender, conhecer* and *reconhecer* correct
+  Brazilian object *lhe/lhes* when a single aligned English object confirms
+  the role. *Eu lhe respeito imensamente* becomes formal *Eu respeito-o
+  imensamente* or informal *Eu respeito-te imensamente*. Explicit feminine
+  address uses *a*; English *him/her/them* preserves the third-person object
+  (unmarked plural defaults to *os*). Without gender evidence, formal *you*
+  uses the conventional masculine object, not an inferred identity.
+  Negation/subordination, enclisis and mesoclisis use the shared helpers.
+  Possessive datives (*admiro-lhe a coragem*), actual indirect objects,
+  ambiguous recipients and local exceptions are protected.
+  Uses **Pronouns**/`pronouns`; informal objects also require **YouToTu**/`address`.
+  Source: [Priberam: respeitar](https://dicionario.priberam.org/pt-pt/respeitar).
+- **Collective subjects and greetings:** address shortcuts now check the
+  subject across subtitle line breaks before changing bare questions,
+  *precisa/consegue/merece*, *sabe como* and negative commands.
+  *Toda a equipa / precisa de uma mascote* keeps third-person *precisa*:
+  the verb agrees with *equipa*, not with the object *mascote*. Reviewed
+  *todo/toda + collective noun* expressions also receive the definite
+  article (*toda equipa* → *toda a equipa*, *todo grupo* → *todo o grupo*),
+  under **Colloquial**/`collective-articles`. This is a bounded PT-PT
+  wording preference, not a rewrite of every universal quantifier.
+  Sentence punctuation and dialogue dashes still permit a new addressee.
+  Valid *ei* (greeting or call) is no longer globally replaced by *olha*,
+  independently of whether English is available; actual *olha* is retained.
+  With an aligned English *Hey/Hi/Hello, Name, how … you …?*, a reviewed
+  named greeting can use informal *como vais/estás/andas/tens estado?*.
+  Requires **YouToTu**/`address`; formal settings/titles, different names,
+  plural recipients and *como vai o trabalho?* remain protected.
+  A greeting is evidence of conversational familiarity, not proof that
+  every following cue must use *tu*, and never overrides explicit formal
+  address. Local ignored phrases remain authoritative.
+  Sources: [Ciberdúvidas: equipa agreement](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/concordancia-a-equipa-da-empresa-y-o-nosso-colega-z/37613),
+  [todo and articles](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/uso-do-artigo-definido-com-o-quantificador-todo/28407)
+  and [Priberam: ei](https://dicionario.priberam.org/pt-pt/ei).
+- **Missing recipients in dar requests:** a single aligned English
+  *give/grant me/us* request can recover omitted *-me/-nos* in a bounded
+  Portuguese imperative asking for seconds, minutes, a moment, time,
+  a break, a favour, a chance, help or attention.
+  *Rapazes, dêem um segundo, certo?* becomes
+  *Rapazes, deem-me um segundo, certo?* with post-agreement spelling,
+  or *dêem-me* with pre-agreement spelling. The plural *deem/dêem* is
+  valid for both informal and formal groups; it must not become singular
+  *dá*. Singular/plural conjugation and existing orthography options are
+  preserved; dar's *deem/dêem* spelling now follows that option even when
+  the dictionary accepts both. Uses **Pronouns**/`give-request-recipient`,
+  independently of informal address. It requires a matching object
+  category and does not invent a recipient without English or overwrite
+  existing clitics, explicit recipients, negation, subordinate clauses,
+  competing requests or local ignored phrases.
+  Source: [Ciberdúvidas: dar imperatives and clitics](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/da-ma-da-mo/25033)
+  (the article uses pre-agreement *dêem*).
+- **Detached conversational tags:** *sabe?*, *entende/percebe/compreende?*
+  and reviewed *viu/ouviu/entendeu/percebeu?* tags agree with an established
+  informal addressee (*sabes?*, *percebes?*, *ouviste?*, etc.).
+  The evidence may be in the current cue or the converted immediately
+  preceding continuation: *Ouve, isto nunca vai ficar mais fácil, / mas
+  temos de começar a caminhar, sabe?* ends in *sabes?*.
+  The clause subject *nós* still controls *temos*; the detached tag addresses
+  *tu*. Requires **YouToTu**, `address` and `discourse-tags`.
+  Previous-cue evidence requires a continuing sentence, a gap of at most
+  1.5 seconds, compatible speakers/register and no partial selection.
+  If aligned English exists, its detached *you know/understand/see…?*
+  must confirm the tag. Literal questions, named subjects, plural English
+  tags, formal settings/titles, dialogue boundaries and local ignored
+  phrases are protected. MiniLM meaning similarity alone cannot establish
+  grammatical person or guarantee a mixed-register warning.
+  Sources: [Ciberdúvidas: address and verbal agreement](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/pronomes-pessoais-brasil/19843)
+  and [discourse markers](https://ciberduvidas.iscte-iul.pt/pergunta.php?id=17970).
+- **Topic relatives and reference-confirmed conditionals:** an explicit
+  reviewed antecedent (*algo, nada, uma coisa*, or a short list of topic
+  nouns) followed by *sobre o que* and a form of *falar* can use the simpler
+  relative complement *de que*: *havia algo / sobre o que esperava falar
+  contigo* → *havia algo / de que esperava falar contigo*.
+  A narrowly checked immediate continuation can recover that antecedent
+  without enabling broader sentence rewriting (same speaker, at most
+  1.5 seconds apart, no sentence/dialogue boundary or partial selection).
+  **Colloquial**/`topic-relatives` controls this wording preference.
+  **SentenceContext**/`sentence-context` additionally enables whole-sentence
+  conversion and MiniLM review across safely joined cues.
+  It does not remove *esperava*, invent an infinitive, or
+  rewrite questions, free relatives (*falou sobre o que aconteceu*),
+  other lexical verbs, or already valid *sobre o qual* constructions.
+  A single aligned English *would* or unambiguous *'d + reviewed base verb*
+  can repair a dictionary-validated Portuguese future/conditional with an
+  explicit matching pronominal subject: *ela falarei* → *ela falaria*,
+  *eles farão* → *eles fariam*. This is `reference-conditional`, independent
+  of informal address. It preserves negation and does not infer a subject,
+  turn every future into a conditional, or resolve competing modals,
+  ambiguous *'d* past-perfect readings, or mesoclitics.
+  Without sufficient evidence, wrong future/conditional person is
+  review-only. Grammar review also checks the joined relative construction
+  when its automatic wording rule is disabled.
+  Sources: [Ciberdúvidas: relative prepositions](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/ainda-a-diferenca-entre-que-e-o-qual/28803),
+  [Ciberdúvidas: falar complements](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/dizer--falar/7465)
+  and [Ciberdúvidas: conditional tense](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/condicional-simples-e-condicional-composto/38090).
+- **Omitted subjects in questions and complement mood:** initial English
+  auxiliary questions (*Did/Have/Were/Can you…*) now confirm the omitted
+  addressee, just like *You…*. With informal address, *Já viveu…?* becomes
+  *Já viveste…?* and reviewed pronominal *Já se envolveu…* becomes
+  *Já te envolveste…*. Without an attractor, the existing placement rules
+  produce *Envolveste-te…*. Past forms reuse dictionary-backed conjugation;
+  formal settings, explicit other subjects, plural addressees and relative
+  subjects remain protected. Uses **YouToTu**/`address`; English *you* confirms
+  the subject, not a mandatory informal register.
+  Present forms after reviewed *recear, temer, desejar* and affirmative
+  *duvidar + que* use the present subjunctive: *Receio que estás preso* →
+  *Receio que estejas preso*; formal *esteja*, third-person *ele esteja*.
+  Reuses the existing mood helper and attracts attached clitics before the
+  verb. Negated hosts, nominal homographs, past/future forms and unresolved
+  subjects are not freely rewritten. Uses `complement-subjunctive`,
+  independently of the address setting; this is not a blanket rule for
+  every *que* clause. *Roubo de carro* and *roubo de carros* are both
+  possible; this rule does not invent the number of stolen vehicles.
+  Sources: [Ciberdúvidas: address agreement](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/pronomes-pessoais-brasil/19843),
+  [subjunctive complements](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/o-conjuntivo-em-subordinadas-completivas/21317)
+  and [proclisis attractors](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/os-casos-especificos-da-proclise/10650).
+- **Reflexive, reciprocal and inherent pronouns:** shared placement is not a
+  blanket verb replacement or an exhaustive lexical list. It covers existing
+  *me/te/se/nos/vos*, including quotations and lowercase subtitle fragments,
+  with dictionary-validated regular finite forms beyond the small verb tables.
+  Examples include *lavar-se, pentear-se, barbear-se, deitar-se, levantar-se,
+  sentar-se, afastar-se, aproximar-se, preparar-se, apresentar-se, lembrar-se,
+  esquecer-se, queixar-se, arrepender-se, esforçar-se, atrever-se, resignar-se,
+  reconciliar-se, preocupar-se, interessar-se, importar-se, comportar-se,
+  concentrar-se, habituar-se, adaptar-se, recusar-se, dedicar-se, enganar-se,
+  magoar-se, proteger-se, defender-se, recolher-se* and *esconder-se*.
+  *"Nos conhecemos há muito tempo"* becomes *"Conhecemo-nos há muito tempo"*:
+  the final *s* of *-mos* drops before enclitic *nos*. *Há muito tempo* is
+  valid European Portuguese; *imenso* is not forced as an intensifier.
+  Future/conditional forms use mesoclisis (*conhecer-nos-emos*); negatives
+  and subordinate attractors retain proclisis (*não nos conhecemos*,
+  *disse que nos conhecemos*). Explicit *eu/nós/vós* controllers correct
+  *quero vestir-se* → *quero vestir-me*, *podemos esquecer-se* →
+  *podemos esquecer-nos*. Existing attached pronouns are also normalized:
+  *conhecemos-nos* → *conhecemo-nos*, *não lava-se* → *não se lava*,
+  *resignarei-me* → *resignar-me-ei*. Ambiguous initial *só/apenas* commands
+  retain their existing placement. Leading *se* statements require a reviewed
+  pronominal stem and unambiguous English subject evidence; conditional *se*,
+  prepositional *nos*, passives and
+  non-reflexive meanings are not indiscriminately reinterpreted.
+  Uses **Pronouns**/`pronouns`, without inserting missing pronouns based
+  solely on a verb's presence in a list or requiring a model.
+  Sources: [Ciberdúvidas: pronominal verb types](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/verbos-pronominais-pronomes-reflexos-pronomes-inerentes/37446),
+  [Conhecemo-nos](https://portuguesaletra.com/duvidas/conhecemo-nos-ou-conhecemos-nos/).
+- **English-confirmed praise idioms:** with one matching personal English
+  predicate and one reviewed literal Portuguese candidate, *Sim, verdadeiro,
+  sim* aligned with *Yeah, he's the real deal, yeah* becomes *Sim, ele é mesmo
+  bom, sim*. Explicit *ele/ela/eles/elas* retain gender, number and present/
+  imperfect tense. *The genuine article* and *the real McCoy* select
+  *autêntico/autêntica/autênticos/autênticas*; explicit fake/impostor
+  contrasts also retain authenticity rather than inventing skill.
+  English *know one's stuff* corrects literal *conhecer/saber as suas coisas*
+  to *saber o que faz*, preserving the Portuguese person, tense and emphasis:
+  *Estes tipos conhecem mesmo suas coisas* → *Estes tipos sabem mesmo o que
+  fazem*. Possessive mismatch, belongings, multiple candidates, mismatching
+  personal subjects and unrelated/literal senses are protected.
+  Does not retranslate already natural Portuguese or insert a missing
+  English sentence; English *the real deal* about information is not praise
+  of a person. Requires **Vocabulary**, **Colloquial** and
+  `english-praise-idioms`; ignored phrases and local vocabulary choices win.
+  Sources: Cambridge [the real deal](https://dictionary.cambridge.org/dictionary/english/real-deal),
+  [the genuine article](https://dictionary.cambridge.org/dictionary/english/genuine-article)
+  and [know your stuff](https://dictionary.cambridge.org/dictionary/learner-english/know-your-stuff).
+- **Speech content:** Brazilian *falar algo/alguma coisa/nada/a verdade* uses
+  *dizer*: *falou algo?* → *disse alguma coisa?*, informal *disseste alguma
+  coisa?*. Tense/person, compound tenses and recipient clitics are preserved.
+  English-confirmed *say/tell* also covers content questions, reported
+  statements and quotations. Speaking languages, speaking with someone,
+  discussing topics and ambiguous *falamos* without tense evidence remain
+  protected. Uses **Vocabulary**/`reviewed-verb-senses`, respecting local
+  exceptions; no model is required.
+  Sources: [European Portuguese falar/dizer/contar](https://portuguesepedia.com/falar-dizer-contar/),
+  [Priberam: dizer](https://dicionario.priberam.org/pt-pt/dizer).
+- **Perfect scores:** Brazilian informal *gabaritar* → *acertar em tudo*,
+  retaining tense/person: *Na verdade, gabaritei* → *Na verdade, acertei em
+  tudo*. Reviewed exam objects get the appropriate preposition (*gabaritou o
+  exame* → *acertou em tudo no exame*); question objects use *acertou todas
+  as perguntas*. Exam passives use *resolvido sem erros*. Explicit exam
+  answer keys (*o gabarito da prova*) become *as soluções da prova*.
+  Qualification senses, physical templates, unresolved complements and local
+  exceptions remain protected. English *nailed it* alone is not treated as
+  proof of a maximum score: this rule converts the Brazilian *gabaritar*.
+  Uses **Vocabulary**/`reviewed-verb-senses`, without requiring a model.
+  Source: [Priberam: gabaritar](https://dicionario.priberam.org/pt-pt/gabaritar).
+- **Romantic partners:** aligned English *girlfriend/boyfriend* selects
+  *namorada/namorado* instead of generic *miúda/rapariga/rapaz*, covering
+  *garota/garoto*, the reviewed young-person synonyms and plurals. For example,
+  *Por favor, minha garota. Ela precisa de ajuda.* becomes *Por favor, minha
+  namorada. Ela precisa de ajuda.* No English means no inferred relationship.
+  Competing people of the same gender, mismatched numbers and multiple
+  possible referents are left unresolved rather than globally replacing nouns.
+  Local overrides/ignores and **Vocabulary**/`verb-vocabulary` are respected.
+  Source: [Priberam: namorada](https://dicionario.priberam.org/pt-pt/namorada).
+- **Reviewed dialogue:** *coletiva/colectiva de imprensa* → *conferência de
+  imprensa* (including plurals), without English; *press conference/presser*
+  also disambiguates bare *coletiva*. English depreciative *this/that broad*
+  selects *esta/essa tipa*, preserving honorific and ownership *dona*.
+  Uses **Vocabulary**/`dialogue-vocabulary`. English-confirmed *duramente
+  aprendido* → *aprendido a duras penas*, retaining gender/number; elliptical
+  *Doing business here or what?* → *Vamos fazer negócio ou quê?*. Numeric
+  quoted prices use *custa/custam* only with English *will cost you* and a
+  monetary amount; explicit future/conditional context in this cue or the
+  preceding Portuguese cue is protected. These idioms also require
+  **Colloquial**/`dialogue-idioms`. Local exceptions remain authoritative.
+  English *remind you that* restores *lembrar-te que* (formal *lembrar-lhe*);
+  English *owe* permits neutral *Deves isso a ela* → *Deves-lhe isso* while
+  preserving explicit contrast (*a ela, não a ele*).
+  Uses **Pronouns**/`dialogue-objects`, retaining the configured address.
+  English-confirmed *push/throw/kick you out* also keeps an informal object
+  consistent: *Vais deixar esta tipa pôr-te para fora?*, not *pô-lo*.
+  A standalone named summons (*Sra. Silva?*) no longer makes earlier dialogue
+  formal across a recent different untitled vocative; its own and following
+  formal dialogue remain protected. First names do not universally imply *tu*.
+  Grammar guards preserve conditional *se foi roubado*, articles after future
+  verbs (*Daremos a volta*), named subjects (*Como está o João?*) and
+  article-free *por minha causa*.
+  Embedded English contractions (*Doc says you're gonna be okay*) now supply
+  subject evidence: *Os médicos disseram que ficarás bem*. Reviewed reporting
+  clauses also distinguish the reporter (*She said*) from the addressee
+  (*you'll*), while preserving explicit third-person and relative subjects.
+  Progressive reflexives follow the agreed subject: *estás a enganar-te*,
+  not *estás a enganar-se*.
+  English-confirmed *Would/Do you mind …ing?* repairs reflexive requests:
+  *Se importa responder algumas perguntas?* → *Importas-te de responder a
+  algumas perguntas?* (formal *Importa-se de …*). Covers reviewed finite
+  forms, dictionary-validated infinitives, negation, markup and line breaks.
+  Uses **Pronouns**/`dialogue-objects`; informal agreement also requires
+  **YouToTu**/`address`. *Que engraçado* alone does not establish a register.
+  Sources: [Infopédia: coletiva](https://www.infopedia.pt/dicionarios/lingua-portuguesa/coletiva),
+  [Priberam: dona](https://dicionario.priberam.org/pt-pt/dona),
+  [Priberam: tipa](https://dicionario.priberam.org/pt-pt/tipa),
+  [Cambridge: hard-earned](https://dictionary.cambridge.org/dictionary/english-portuguese/hard-earned),
+  [Ciberdúvidas: lembrar](https://ciberduvidas.iscte-iul.pt/pergunta.php?id=3657).
+- **Following an explanation and continuing address:** English-confirmed
+  *stay with me / follow me / bear with me* in a reasoning context restores
+  the missing object in a bare *acompanhe*: *Sim, mas acompanhe, porque esse
+  é o pulo* → *Sim, mas acompanhe-me, porque este é o salto*.
+  Existing address rules retain or select *acompanha-me/acompanhe-me/
+  acompanhem-me* as appropriate; this rule does not impose a new register.
+  English *leap* uses *salto* in these reviewed reasoning constructions,
+  not a blanket substitution of every *pulo*. Physical jumps, leaps of faith,
+  complete objects and negated commands do not acquire an invented *-me*.
+  Uses **Colloquial**/`explanation-constructions`; object restoration also
+  requires **Pronouns**, and *pulo* conversion also requires **Vocabulary**.
+  Local exceptions remain authoritative.
+  The **YouToTu**/`address` stage now retains a reviewed addressee across a
+  short unfinished cue boundary: *E se você meteu na sua cabeça / que teria
+  sua vingança?* → *E se meteste na tua cabeça / que terias a tua vingança?*.
+  Covers reviewed forms of *meter na cabeça* and, with explicit English
+  second-person subject evidence, reviewed reporting/thinking predicates.
+  Works with **SentenceContext** on or off. Formal address, changed speakers,
+  dialogue dashes, gaps over 1.5 seconds, complete preceding sentences,
+  explicit third-person English subjects, postposed subjects and ambiguous
+  impersonal *se* do not inherit this agreement. Unresolved *você pensa /
+  que teria…* without English evidence is not assumed to share its subject.
+  MiniLM is a meaning-similarity check, not a grammatical agreement corrector.
+  Sources: Priberam [acompanhar](https://dicionario.priberam.org/pt-pt/acompanhar),
+  [salto](https://dicionario.priberam.org/pt-pt/salto), and
+  [Ciberdúvidas on tu as subject and verbal agreement](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/null/34507).
+- **Hypothetical reactions:** *Eu também ficaria muito zangada se fosse ele*
+  → *Eu também ficaria muito zangada se fosse comigo*. Reviewed emotional
+  reactions with conditional *ficar/estar* can express the hypothetical
+  situation happening to the person reacting: *comigo, contigo, connosco,
+  com ele/ela/eles/elas/vocês*. Supports preceding or following *se* clauses,
+  explicit matching subjects, unambiguous conditional forms and English-backed
+  omitted first-person subjects. Identity predicates, advice, changed inner
+  subjects and unresolved persons are preserved. This is a contextual stylistic
+  reformulation, not a claim that *se eu fosse ele* is invalid in PT-PT.
+  Uses **Colloquial**, **Pronouns** and `hypothetical-reactions`.
+  Independently, *se + imperfect subjunctive* after a predicate is protected
+  from the noun-subject clitic rule: *zangada se fosse* must never become
+  *zangada fosse-se*. This safeguard remains active when the stylistic rule
+  is disabled.
+  Sources: [Ciberdúvidas on legitimate hypothetical identity constructions](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/se-eu-fosse-tu-e-se-eu-fosse-a-ti/20017)
+  and [Priberam comigo](https://dicionario.priberam.org/pt-pt/comigo).
+- **Shaking vocabulary:** *chacoalhar* uses *abanar* for general shaking,
+  *agitar* for reviewed liquids/containers, *sacudir* for reviewed clothing,
+  dust and body movements, and *chocalhar* for reviewed rattling objects
+  (keys, coins, bells, rattles and bearings). Existing PT-PT *chocalhar*
+  remains unchanged; it is also valid for liquids in a container.
+  English-confirmed insulting, scolding, pestering and emotional-shock senses
+  use *insultar*, *repreender*, *incomodar* and *abalar*, rather than a physical
+  shaking verb. Reviewed passive subjects also steer clothing/container senses.
+  Covers finite forms (including vós), infinitives, gerunds, participles,
+  enclisis and mesoclisis; *sacudir* has reviewed irregular *sacodes/sacode/sacodem*.
+  *Chacoalhamos* normally uses the unaccented target; English past evidence can
+  select *abanámos/agitámos/chocalhámos*. *Chacoalhão/chacoalhões* →
+  *abanão/abanões*; nominal *uma chacoalhada* → *uma sacudidela*.
+  Uses **Vocabulary**/`shaking-vocabulary` (the nouns *chacoalhão/chacoalhões*
+  use the word list); local overrides and ignored vocabulary remain authoritative.
+  Other reviewed gaps use the existing conjugated `verb-vocabulary` stage:
+  *pentelhar* → *chatear*; *xeretar* → *bisbilhotar* only with reviewed
+  things/drawers/secrets/life/affairs/case complements; *futucar* → *remexer*
+  only with reviewed drawers/bags/pockets/things/cupboards. Unresolved
+  flattery, memories, bodily touching, wrinkling and other senses are not
+  replaced by these contextual rules. This is a bounded vocabulary review,
+  not a claim that every missing Brazilian verb has been identified.
+  Sources: Priberam [chacoalhar](https://dicionario.priberam.org/pt-pt/chacoalhar),
+  [chocalhar](https://dicionario.priberam.org/pt-pt/chocalhar),
+  [sacudir conjugation](https://dicionario.priberam.org/pt-pt/conjugar/sacudir),
+  [pentelhar](https://dicionario.priberam.org/pt-pt/pentelhar),
+  [xeretar](https://dicionario.priberam.org/pt-pt/xeretar) and
+  [futucar](https://dicionario.priberam.org/pt-pt/futucar).
+- **Waiting for people and arrival apologies:** reviewed personal complements
+  use *por*: *esperar o Jamie* → *esperar pelo Jamie*; *esperar os meus amigos*
+  → *esperar pelos meus amigos*. Covers regular forms of *esperar*, reviewed
+  family/professional nouns and capitalized names. Bare names use the saved
+  article choice, reviewed name lists or *por* with unresolved-name reporting;
+  no gender is guessed for an unknown name. Clausal *espero que…*, inanimate
+  complements and infinitival *esperar o Jamie chegar* are preserved.
+  Both *esperar alguém* and *esperar por alguém* are grammatical PT-PT;
+  this is a waiting-style preference, not a blanket grammatical correction.
+  Uses **Colloquial**, **Pronouns** and `waiting-for-people`.
+  A brief arrival apology can become *desculpem/perdoem* when the English
+  identifies the arriving speaker by name, a nearby collective says it is
+  waiting for that same person, and an intervening cue asks about them.
+  This bounded inference requires aligned English and emits a recipient-review
+  note; singular vocatives and distant scenes do not qualify. Uses
+  **Colloquial**, **Pronouns** and `arrival-group-apology`.
+  *Alguém* is grammatically singular and never establishes plural recipients
+  on its own. MiniLM checks meaning similarity, not recipient agreement, and
+  is not a generative grammar corrector.
+  Source: [Ciberdúvidas on esperar alguém / esperar por alguém](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/esperar-alguem-e-esperar-por-alguem/39183).
+- **Vehicle registration plates:** contextual *placa/placas* uses
+  *matrícula/matrículas*, not only the former fixed *placa do carro* phrase.
+  Covers reviewed vehicle complements, plate numbers, cloned/out-of-state
+  plates, English *license/licence/number/registration plate*, vehicle-qualified
+  *plates*, police lookup phrases and *registration*. A short continuation
+  can reuse vehicle context from the preceding cue. Case, number, markup and
+  line breaks are retained. Technical, medical, geological and sign/board
+  uses remain *placa*; unresolved *placa* and *sem placa* are no longer blanket
+  substitutions. Explicit *placa de matrícula* still uses *chapa de matrícula*.
+  Uses **Vocabulary**/`vehicle-plates`; local overrides and ignored phrases win.
+  Sources: Priberam [matrícula](https://dicionario.priberam.org/pt-pt/matr%C3%ADcula)
+  and [placa](https://dicionario.priberam.org/pt-pt/placa). *Placa* is also
+  dictionary-attested for vehicles; *matrícula* is the selected PT-PT output.
+- **Annoyance slang:** reviewed indefinite *um/uma/uns/umas pé(s) no saco*
+  (also hyphenated) uses *chato/chata/chatos/chatas* for people, *uma chatice*
+  for reviewed impersonal subjects and *um incómodo* when unresolved.
+  Example: *um pé no saco da polícia* → *um chato da polícia*.
+  This interprets the Brazilian phrase, not English *dick*, which may also
+  mean *detective*. No blanket English insult mapping is added.
+  Conjugated *encher/torrar (o) saco* becomes *chatear* with reviewed personal
+  clitics or *meu/teu/nosso/vosso*, stop-command constructions or English
+  annoyance evidence: *Ele me encheu o saco* → *Ele chateou-me*;
+  *Para de torrar meu saco* → *Para de me chatear*.
+  Literal sack contents, filling/roasting evidence, financial uses and
+  unresolved future/conditional placement are protected. Existing
+  *que saco* → *que seca*, *de saco cheio* → *farto* and
+  *puxa-saco* → *lambe-botas* remain available.
+  Uses **Colloquial**, **Vocabulary** and `annoyance-slang`; verbal/clitic
+  rewriting additionally requires **Pronouns**. Local overrides take priority.
+  Sources: [Priberam saco](https://dicionario.priberam.org/pt-pt/saco),
+  [chatear](https://dicionario.priberam.org/pt-pt/chatear),
+  [Brazilian phrase meaning](https://pt.wiktionary.org/wiki/p%C3%A9_no_saco)
+  and [Collins dick](https://www.collinsdictionary.com/dictionary/english/dick).
+- **Habitual clitics and family surnames:** the existing habitual word-order
+  rule now recognizes an intervening personal clitic and reviewed support
+  verbs: *Sempre me apoiam* → *Apoiam-me sempre*, *porque sempre me apoiam*
+  → *porque me apoiam sempre*. Pre-verbal *sempre* with proclisis is itself
+  grammatical; this is a stylistic normalization. Negative clauses, pauses
+  and unresolved future/conditional clitic placement are not reordered.
+  Clitic constructions with ambiguous *achar* retain pre-verbal *sempre*,
+  protecting continuing opinions such as *sempre te achei…*.
+  Uses **Colloquial**, **Pronouns** and `natural-word-order`.
+  A singular family topic may be resumed by its plural members in the next cue:
+  *A minha família… Apoiam-me sempre.* No singular agreement is forced across
+  that boundary; a direct subject retains *A minha família apoia-me sempre*.
+  Bare surnames used as plural family subjects receive *os/as*: *É como Reagan
+  são criados* → *É como os Reagan são criados*. Plural finite agreement plus
+  English plural surname/family evidence supports other predicates; without
+  English, only an unknown single-word surname with plural *ser* and
+  *criados/educados* is inferred. Existing articles, singular names, coordinated
+  names, common nouns and local `Name = none` choices are protected. Surname
+  spelling is retained rather than automatically adding an *s*.
+  Uses **Pronouns**/`family-subjects`. Sources:
+  [Ciberdúvidas on proclisis-attracting adverbs](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/null/35696)
+  and [family surname plurals](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/plural-de-apelidos-sobrenomes/32915).
+- **Nonsense, habitual clauses and intoxication:** *falar bobagens/tolices/
+  disparates/besteiras/asneiras* uses conjugated *dizer*, retaining the noun's
+  reviewed lexical equivalent (including existing *falar abobrinha* →
+  *dizer disparates*): *ele sempre fala bobagens toda vez que fica
+  doidão* → *ele diz sempre tolices quando fica pedrado*. Tense/person are
+  preserved; ambiguous *falamos* needs English tense evidence.
+  *Toda (a) vez que* normally becomes *sempre que*. A preceding affirmative
+  *sempre* in the same clause permits *quando* without repeating it; negative
+  clauses retain universal frequency with *de cada vez que*.
+  *Doidão/doidona/doidões/doidonas* in reviewed state constructions becomes
+  *pedrado/pedrada/pedrados/pedradas* only with English drug-intoxication evidence
+  or a direct Portuguese drug complement. Eccentricity, passion and literal
+  *high* readings are protected. Uses **Colloquial**/`spoken-idioms`; speech
+  vocabulary and intoxication additionally require **Vocabulary**. Existing
+  habitual word order uses `natural-word-order`. Local overrides still win.
+  Sources: [Priberam pedrado](https://dicionario.priberam.org/pt-pt/pedrado),
+  [tolice](https://dicionario.priberam.org/pt-pt/tolice) and
+  [Ciberdúvidas on habitual time clauses](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/todas-as-vezes-que/13308).
+- **Promises and secrecy:** elliptical English *Promise not to…?* identifies
+  the addressee; a subjectless Portuguese *Promete…?* request with an infinitive
+  can also use informal *Prometes…?* without a reference. Explicit other subjects,
+  contrary references and formal address are protected. With **Pronouns**,
+  promise-governed *rir* uses the idiomatic pronominal construction and the
+  governor's person: *Prometes não rir?* → *Prometes não te rir?*,
+  *Prometo não rir* → *Prometo não me rir*. Existing reflexives are not doubled.
+  Ambiguous first-/third-person forms need an explicit subject before adding a clitic.
+  Bare *rir* remains valid elsewhere ([Priberam rir](https://dicionario.priberam.org/pt-pt/rir));
+  this is not a blanket claim that every non-pronominal use is incorrect.
+  Reviewed forms of *contar/dizer para ninguém* use *a ninguém*, preserving
+  negation. Agreement uses **YouToTu**/`address`; these complement adjustments
+  use **Pronouns**/`construction-vocabulary`.
 - **Conflict vocabulary by meaning:** *briga/brigas* no longer always mean
   *zanga/zangas*. Physical or purposeful struggle evidence selects *luta/lutas*:
   *A briga estourou* + *Fighting broke out* → *A luta estourou*.
@@ -1536,11 +1997,37 @@ names differ after the episode code (`Show.S01E01.720p.pt-br.srt` and
   (*Está bem?* / *Is he okay?* stays). English *your* never forces *teu*, because it is the
   same for *tu* and the formal *o senhor* (*We need to talk to your husband* →
   *o seu marido*).
-- It also picks the right word for *garoto/garota*: English *boy/guy* → *rapaz*, *girl* →
-  *rapariga* (*I hear your boy is lead detective?* → *o seu rapaz*), while *kid/child/little*
-  keeps *miúdo/miúda* (*coffee, kid?* → *miúdo*; *little girl* → *miudinha/miúda*). Without a
-  reference, *meu/seu/teu/nosso garoto* (“my boy”) also becomes *rapaz*. Your own word list
-  entries for these words always win.
+- Explicit English *boy(s)/girl(s)* selects *rapaz(es)/rapariga(s)* for source
+  *menino/menina*, *garoto/garota*, *miúdo/miúda*, *moço/moça*, *moleque/moleca*
+  and *guri/guria*, retaining source gender, number and case. This lexical choice
+  also applies to *little boys/girls*; *little* or an unrelated *children* elsewhere
+  in the cue no longer suppresses explicit *boys/girls*. Without those English
+  nouns, existing *garoto/garota* behavior remains: *guy* can select *rapaz*,
+  *kid/child* keeps *miúdo/miúda*, and possessive *meu/seu/teu/nosso garoto*
+  can select *rapaz* without a reference. Unconfirmed *meninos/meninas* remain
+  unchanged. Local custom/ignored entries take precedence. Uses **Vocabulary**
+  and `verb-vocabulary`.
+- Figurative English *rich in/with partners/friends/companions/colleagues/allies/family*
+  resolves Portuguese *ser rico de/em* those people to *ter sorte com*:
+  *que sou rico de parceiros* → *que tenho sorte com parceiros*. This adapts a
+  metaphor about valued support, not a financial statement or a fixed idiom.
+  Supported copula forms map to the corresponding *ter* forms, preserving
+  subjects, negation, people descriptors and formatting. No English confirmation
+  means no rewrite; money, nutrients and resources are not converted to luck.
+  Uses **Vocabulary**, **Colloquial** and `reference-idioms`.
+  See Priberam's senses of [rico](https://dicionario.priberam.org/pt-pt/rico)
+  and [sorte](https://dicionario.priberam.org/pt-pt/sorte).
+- English *life's rich pageant/tapestry* confirms the resigned life-experience
+  metaphor: reviewed source phrases such as *Rica trama da vida* become
+  *O rico espetáculo da vida*. Supported definite articles and contractions
+  follow the masculine noun (*parte da rica trama da vida* →
+  *parte do rico espetáculo da vida*), without replacing the surrounding
+  clause or adding a new assertion. Literal contests, unconfirmed phrases,
+  unsupported determiners and already idiomatic alternatives are retained.
+  Uses **Vocabulary**, **Colloquial** and `reference-idioms`.
+  [Cambridge's idiom entry](https://dictionary.cambridge.org/dictionary/english/be-all-part-of-life-s-rich-tapestry-pageant)
+  confirms the difficult/unpleasant-experience reading; the Portuguese wording
+  is an adaptation, not a quoted dictionary translation.
 - When the English line says *this/these* (and not *that/those*), *isso/disso/nisso* and
   *esse/essa/nesse/dessa...* become *isto/disto/nisto*, *este/esta/neste/desta...* (*I got this
   one.* → *Eu cuido disto*; *this morning* → *esta manhã*). *Por isso* and the verb *desse*
@@ -1625,6 +2112,26 @@ cached results; run checks again to obtain results for the current selection.
   meaning despite its missing infinitive ending. Vulkan accelerates the same model, not its grammar
   detection. Grammar errors are handled by the conversion rules and the separate all-line grammar review,
   and MiniLM only flags: it cannot write a new translation. The English cue is shown next to the line.
+  The installed [MiniLM checkpoint](https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2)
+  maps text to 384-dimensional vectors; it has no correction/generation
+  interface. Changing similarity thresholds or adding context does not
+  make it a grammar corrector. Correct and incorrect person/tense or
+  PT-BR/PT-PT vocabulary variants can have similar meanings.
+  The separate Gervásio scorer can choose only the predefined alternatives
+  listed below, not arbitrary grammatical rewrites. Broader model-based
+  grammar correction would require a separately validated grammar or
+  generative model pipeline, not a MiniLM setting.
+  **Sentence-context supplementary review:** with sentence context enabled,
+  safely joined continuations (up to three cues, at most 1200 characters)
+  also receive a combined before/after meaning check. When every cue has
+  aligned English, the combined sentence is compared with that English too,
+  using the same 0.70/0.45 similarity and 0.10/0.04 drop thresholds.
+  A warning names all participating cues and appears on each; individual-cue
+  checks remain active. Speaker changes, sentence boundaries, long gaps,
+  markup, conflicting register and partial selections retain the existing
+  joining safeguards. These scores cannot certify *o que/o qual/de que*
+  choices or distinguish *falarei/falaria* reliably; deterministic grammar
+  rules and review handle those cases even without MiniLM.
   **Idiom-aware supplementary review:** the supplied
   `american_british_english_expressions_pt_PT.xlsx` (237 rows, including repeated
   expressions) was reviewed against the existing hints. Selected missing expressions

@@ -72,7 +72,7 @@ public sealed class ReferenceInitialAdverbTests
         var conversions = SubtitleConversion.Convert(blocks, ConversionOptions.Default, english: aligned.Texts);
         Assert.Equal("Realmente gostas\ndesse tipo, não?", conversions[0].Text);
         Assert.Contains(conversions[0].Rules, rule => rule.Id == "address");
-        Assert.StartsWith("Sim, verdadeiro, sim.", conversions[1].Text);
+        Assert.Equal("Sim, ele é mesmo bom, sim.\nPodes parar de falar agora?", conversions[1].Text);
         var response = BatchMode.BuildOkResponse(blocks.ToList(), conversions.Select((cue, i) => (cue, i))
             .ToDictionary(item => item.i, item => item.cue.Text), ConversionOptions.Default);
         var output = SubRipParser.Parse(response.Subtitle!.Native);

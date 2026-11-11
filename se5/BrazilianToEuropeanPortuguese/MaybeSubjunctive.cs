@@ -13,15 +13,23 @@ internal static class MaybeSubjunctive
 {
     private const RegexOptions Ci = RegexOptions.IgnoreCase | RegexOptions.CultureInvariant;
 
-    private static readonly Regex Maybe = new(
-        @"(?<pre>(?<![\p{L}\p{M}-])talvez\s+" +
+    private const string ComplementVerb =
         @"(?:(?<subj>eu|tu|ele|ela|nós|vós|eles|elas|você|vocês|" +
         @"(?:o|a|os|as)\s+(?:(?:meu|minha|meus|minhas|teu|tua|teus|tuas|seu|sua|seus|suas|nosso|nossa|nossos|nossas)\s+)?[\p{L}\p{M}]+|" +
-        @"(?-i:\p{Lu})[\p{L}\p{M}]+)\s+)?" +
+        @"(?-i:\p{Lu}[\p{Ll}\p{M}]+))\s+)?" +
         @"(?<adv>(?:(?:não|nunca|já|ainda|também|só|mesmo|realmente)\s+){0,2}))" +
         @"(?:(?<cl>me|te|se|nos|vos|lhe|lhes)\s+)?" +
         @"(?<v>[\p{L}\p{M}]+)(?:-(?<ecl>me|te|se|nos|vos|lhe|lhes|o|a|os|as))?(?![\p{L}\p{M}-])" +
-        @"(?=(?<next>\s+[\p{L}\p{M}]+)?)", Ci);
+        @"(?=(?<next>\s+[\p{L}\p{M}]+)?)";
+
+    private static readonly Regex Maybe = new(
+        @"(?<pre>(?<![\p{L}\p{M}-])talvez\s+" + ComplementVerb, Ci);
+
+    private static readonly Regex Complements = new(
+        @"(?<pre>(?<![\p{L}\p{M}-])" +
+        @"(?:receio|receias|receia|receamos|receais|receiam|temo|temes|teme|tememos|temeis|temem|" +
+        @"desejo|desejas|deseja|desejamos|desejais|desejam|duvido|duvidas|duvida|duvidamos|duvidais|duvidam)" +
+        @"\s+que\s+" + ComplementVerb, Ci);
 
     // Present and imperfect indicative of irregular verbs → subjunctive.
     private static readonly Dictionary<string, string> Irregular = new(StringComparer.OrdinalIgnoreCase)
@@ -232,6 +240,18 @@ internal static class MaybeSubjunctive
         if (s.IndexOf("talvez", StringComparison.OrdinalIgnoreCase) < 0) return s;
         return Maybe.Replace(s, m => Replace(m, s.Substring(m.Index + m.Length)));
     }
+
+    public static string ApplyComplements(string s) => Complements.Replace(s, m =>
+    {
+        // Negated doubt and nominal "o receio que..." do not license this inference.
+        if (Regex.IsMatch(m.Result("$`"),
+                @"(?<![\p{L}\p{M}])(?:não|nunca|nem|sem|o|a|os|as|um|uma|esse|essa|este|esta|meu|minha|teu|tua|seu|sua)\s+$", Ci) ||
+            !TryPresentSubjunctive(m.Groups["v"].Value, out var subjunctive) ||
+            m.Groups["cl"].Success && m.Groups["ecl"].Success)
+            return m.Value;
+        var clitic = m.Groups["cl"].Success ? m.Groups["cl"].Value : m.Groups["ecl"].Value;
+        return m.Groups["pre"].Value + (clitic.Length > 0 ? clitic + " " : string.Empty) + subjunctive;
+    });
 
     private static string Replace(Match m, string rest)
     {

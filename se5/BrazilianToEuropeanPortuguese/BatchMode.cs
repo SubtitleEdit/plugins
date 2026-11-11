@@ -54,7 +54,8 @@ public static class BatchMode
                 changesByLine[i] = converted;
             }
             checkLines.Add(new CheckLine(i, blocks[i].Text, changed ? converted : blocks[i].Text,
-                i == 0 ? null : changesByLine.TryGetValue(i - 1, out var previous) ? previous : blocks[i - 1].Text, alignment?.Texts[i]));
+                i == 0 ? null : changesByLine.TryGetValue(i - 1, out var previous) ? previous : blocks[i - 1].Text,
+                alignment?.Texts[i], conversions[i].MeaningSentence));
         }
 
         referenceNote += Judge(blocks, checkLines, changesByLine, embedding);

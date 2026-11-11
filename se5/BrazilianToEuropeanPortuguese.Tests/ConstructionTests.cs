@@ -83,7 +83,7 @@ public sealed class ConstructionTests
     [InlineData("Eras meu vizinho de andar.", "We lived on the same floor.", "Vivíamos no mesmo andar.")]
     [InlineData("VOCÊ É MEU VIZINHO DE ANDAR.", "We live on the same floor.", "VIVEMOS NO MESMO ANDAR.")]
     [InlineData("<i>Você é meu vizinho de andar.</i>", "Hey, we live on the same floor.", "<i>Vivemos no mesmo andar.</i>")]
-    [InlineData("Ei, somos vizinhos da mesma rua!", "Hey, we live on the same street!", "Olha, vivemos na mesma rua!")]
+    [InlineData("Ei, somos vizinhos da mesma rua!", "Hey, we live on the same street!", "Ei, vivemos na mesma rua!")]
     public void SharedResidenceRequiresMatchingEnglishMeaning(string source, string english, string expected)
     {
         var reference = ReferenceHint.FromText(english);

@@ -15,6 +15,20 @@ public static class SubtitleConversion
         for (var i = 0; i < blocks.Count; i++)
         {
             var hint = Hint(blocks, i, english, options.Address, speakers);
+            if (i > 0 && Continues(blocks[i - 1], blocks[i]) &&
+                converter.HasInformalTagEvidence(result[i - 1].Text) &&
+                (speakers == null || string.IsNullOrWhiteSpace(speakers[i - 1]) || string.IsNullOrWhiteSpace(speakers[i]) ||
+                 speakers[i - 1] == speakers[i]) &&
+                (selected is not { Count: > 0 } || selected.Contains(i - 1) && selected.Contains(i)) &&
+                result[i - 1].Hint is not { FormalAddress: true } && hint is not { FormalAddress: true })
+                hint = (hint ?? new ReferenceHint(false, false, false, false)) with { InformalTagContinuation = true };
+            if (i > 0 && RelativeAndModalGrammar.HasTopicContinuation(blocks[i - 1].Text, blocks[i].Text) &&
+                Continues(blocks[i - 1], blocks[i]) &&
+                (speakers == null || string.IsNullOrWhiteSpace(speakers[i - 1]) || string.IsNullOrWhiteSpace(speakers[i]) ||
+                 speakers[i - 1] == speakers[i]) &&
+                (selected is not { Count: > 0 } || selected.Contains(i - 1) && selected.Contains(i)) &&
+                (result[i - 1].Hint?.FormalAddress == true) == (hint?.FormalAddress == true))
+                hint = (hint ?? new ReferenceHint(false, false, false, false)) with { TopicRelativeContinuation = true };
             var rules = new List<RuleChange>();
             var conflict = options.Address == AddressMode.Automatic && DialogueRegister.ConflictingAddress(blocks[i].Text);
             var cueConverter = conflict ? new PortugueseConverter(options with { YouToTu = false }, words, unresolvedNameArticles) : converter;
@@ -25,6 +39,10 @@ public static class SubtitleConversion
                 english?[i] == null && rules.Any(r => r.Id is "address" or "progressive-command") &&
                 !Regex.IsMatch(blocks[i].Text, @"(?<!\p{L})(?:você|tu|senhor|senhora)\b", RegexOptions.IgnoreCase)
                     ? "Address review: subject/register inferred from context without an aligned English cue; verify the addressee." : null;
+            if (rules.Any(r => r.Id == "arrival-group-apology"))
+                note = string.Join("\n", new[] { note,
+                    "Address review: plural apology inferred from a named arrival and a nearby waiting group; verify the recipients." }
+                    .Where(n => n != null));
             result[i] = new CueConversion(text, hint, rules.Distinct().ToArray(), -1, note);
         }
 
@@ -36,7 +54,7 @@ public static class SubtitleConversion
                    (speakers == null || string.IsNullOrWhiteSpace(speakers[last]) || string.IsNullOrWhiteSpace(speakers[last + 1]) ||
                     speakers[last] == speakers[last + 1]) &&
                    (selected is not { Count: > 0 } || selected.Contains(last) && selected.Contains(last + 1)) &&
-                   result[last].Hint?.FormalAddress == result[last + 1].Hint?.FormalAddress)
+                   (result[last].Hint?.FormalAddress == true) == (result[last + 1].Hint?.FormalAddress == true))
                 last++;
             if (last == first) continue;
             if (Enumerable.Range(first, last - first + 1).Any(i => options.Address == AddressMode.Automatic &&
@@ -53,6 +71,11 @@ public static class SubtitleConversion
             }
             var reference = english == null ? null : string.Join(" ",
                 english.Skip(first).Take(last - first + 1).Where(t => t != null).Distinct());
+            var meaningSentence = new SentenceMeaning(first, last, string.Join(" ", originals),
+                english == null || english.Skip(first).Take(last - first + 1).Any(string.IsNullOrWhiteSpace)
+                    ? null : reference);
+            for (var index = first; index <= last; index++)
+                result[index] = result[index] with { MeaningSentence = meaningSentence };
             var combinedHint = reference == null ? result[first].Hint : ReferenceHint.FromText(reference);
             if (combinedHint != null)
                 combinedHint = combinedHint with
@@ -95,7 +118,7 @@ public static class SubtitleConversion
                 result[index] = new CueConversion(text, result[index].Hint,
                     result[index].Rules.Concat(changedSentence
                         ? rules.Append(new RuleChange("sentence-context", "Complete sentence across adjacent cues", "Context-sensitive")) : rules)
-                    .Distinct().ToArray(), anyChange ? first : -1, note);
+                    .Distinct().ToArray(), anyChange ? first : -1, note) { MeaningSentence = meaningSentence };
             }
             first = last;
         }
@@ -120,6 +143,17 @@ public static class SubtitleConversion
         IReadOnlyList<string?>? speakers)
     {
         var hint = ReferenceHint.FromContext(blocks, index, english, speakers);
+        if (NamedArrivalToWaitingGroup(blocks, index, english))
+            hint = (hint ?? new ReferenceHint(false, false, false, false)) with { GroupArrivalApology = true };
+        if (index > 0 && blocks[index].StartMs >= blocks[index - 1].StartMs &&
+            blocks[index].StartMs - blocks[index - 1].EndMs <= 1500 &&
+            !DialogueRegister.DifferentSpeaker(blocks[index - 1].Text, blocks[index].Text) &&
+            (speakers == null || string.IsNullOrWhiteSpace(speakers[index - 1]) || string.IsNullOrWhiteSpace(speakers[index]) ||
+             speakers[index - 1] == speakers[index]) &&
+            !Regex.IsMatch(blocks[index - 1].Text + blocks[index].Text, @"(?m)^\s*[-–—]|\p{Lu}{2,}:") &&
+            !Regex.IsMatch(english?[index] ?? "", @"\b(?:he|she|they|we|I)\b", RegexOptions.IgnoreCase) &&
+            ExplanationConstructions.HasGoverningAddressee(blocks[index - 1].Text, hint))
+            hint = (hint ?? new ReferenceHint(false, false, false, false)) with { AddresseeContinuation = true };
         if (index > 0 && (DialogueRegister.DifferentSpeaker(blocks[index - 1].Text, blocks[index].Text) ||
             speakers != null && !string.IsNullOrWhiteSpace(speakers[index - 1]) && !string.IsNullOrWhiteSpace(speakers[index]) &&
             speakers[index - 1] != speakers[index]))
@@ -130,6 +164,33 @@ public static class SubtitleConversion
             AddressMode.Informal => (hint ?? new ReferenceHint(false, false, false, false)) with { FormalAddress = false, ForceInformal = true },
             _ => hint,
         };
+    }
+
+    private static bool NamedArrivalToWaitingGroup(IReadOnlyList<SrtBlock> blocks, int index, IReadOnlyList<string?>? english)
+    {
+        const RegexOptions ci = RegexOptions.IgnoreCase | RegexOptions.CultureInvariant;
+        if (english == null || index < 2) return false;
+        var arrival = Regex.Match(english[index] ?? "",
+            @"\b(?<name>(?-i:[A-Z][A-Z'-]+)):\s*(?:hey|hi|hello)?[!. ,]*sorry[!. ]*$", ci);
+        if (!arrival.Success) return false;
+        var name = Regex.Escape(arrival.Groups["name"].Value);
+        var previous = Regex.Replace(blocks[index - 1].Text, @"<[^>]*>", "");
+        if (!Regex.IsMatch(previous, @"\balguém\s+(?:sabe|soube|ouviu|falou|teve)\b", ci)) return false;
+        for (var earlier = index - 2; earlier >= Math.Max(0, index - 3); earlier--)
+        {
+            if (blocks[index].StartMs < blocks[earlier].EndMs ||
+                blocks[index].StartMs - blocks[earlier].EndMs > 15000) continue;
+            var waiting = Regex.Replace(blocks[earlier].Text, @"<[^>]*>", "");
+            var collective = Regex.Match(waiting,
+                @"\b(?:(?:temos|tínhamos|vamos|devemos|precisamos)\s+(?:(?:de|que)\s+)?esperar|esperamos|esperávamos|esperaremos)" +
+                @"\s+(?:(?:por|pelo|pela|o|a)\s+)?" + name + @"\b", ci);
+            if (collective.Success &&
+                !Regex.IsMatch(waiting[..collective.Index], @"\b(?:não|nunca|jamais|nem)\b[^.!?]*$", ci) &&
+                Regex.IsMatch(english[earlier] ?? "", @"\bwe\s+(?:(?:have|need)\s+to\s+|(?:are|were)\s+(?:still\s+)?|" +
+                    @"(?:will|must|should)\s+)?wait(?:ing)?\b[^.!?]{0,30}\b" + name + @"\b", ci))
+                return true;
+        }
+        return false;
     }
 
     private static bool Continues(SrtBlock left, SrtBlock right) =>
