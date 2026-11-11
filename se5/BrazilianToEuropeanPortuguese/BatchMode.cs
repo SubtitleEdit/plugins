@@ -58,7 +58,7 @@ public static class BatchMode
                 alignment?.Texts[i], conversions[i].MeaningSentence));
         }
 
-        referenceNote += Judge(blocks, checkLines, changesByLine, embedding);
+        referenceNote += OptionalChecks(blocks, checkLines, changesByLine, embedding, options, localWordList);
         var review = 0;
         var grammar = 0;
         var idioms = 0;
@@ -147,15 +147,18 @@ public static class BatchMode
         }
     }
 
-    /// <summary>Gervásio's choices between fixed alternatives; review flags need the window, so they are skipped here.</summary>
-    private static string Judge(List<SrtBlock> blocks, List<CheckLine> lines, Dictionary<int, string> changesByLine, EmbeddingSettings? settings)
+    /// <summary>Optional post-rule checks. Grammar findings are counted; details are available in preview.</summary>
+    private static string OptionalChecks(List<SrtBlock> blocks, List<CheckLine> lines, Dictionary<int, string> changesByLine,
+        EmbeddingSettings? settings, ConversionOptions options, PortugueseLocalWordList words)
     {
-        settings = EmbeddingAssets.WithInstalledFiles((settings ?? EmbeddingAssets.Load()) with { CheckMeaning = false });
-        if (!LocalChecks.JudgeReady(settings)) return string.Empty;
+        settings = EmbeddingAssets.WithInstalledFiles(settings ?? EmbeddingAssets.Load());
+        var grammar = options.GrammarCheck && options.RuleEnabled("languagetool");
+        if (!grammar) settings = settings with { CheckMeaning = false };
+        if (!LocalChecks.JudgeReady(settings) && !grammar) return string.Empty;
         try
         {
             using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(60));
-            var (results, summary) = Task.Run(() => LocalChecks.RunAsync(lines, settings, new Progress<string>(_ => { }), timeout.Token))
+            var (results, summary) = Task.Run(() => LocalChecks.RunAsync(lines, settings, new Progress<string>(_ => { }), timeout.Token, options, words))
                 .GetAwaiter().GetResult();
             foreach (var (index, result) in results)
             {
@@ -164,9 +167,11 @@ public static class BatchMode
             }
             return " " + summary;
         }
-        catch (Exception ex) when (ex is not OutOfMemoryException)
+        catch (Exception ex) when (ex is IOException or System.Net.Http.HttpRequestException or InvalidOperationException or
+            UnauthorizedAccessException or System.Text.Json.JsonException or OperationCanceledException or
+            PlatformNotSupportedException or System.ComponentModel.Win32Exception)
         {
-            return $" Gervásio skipped: {ex.Message}";
+            return $" Optional checks failed; rule-only output retained: {ex.Message}";
         }
     }
 

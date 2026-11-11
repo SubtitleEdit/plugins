@@ -6,6 +6,10 @@ Português europeu | [English](README.md)
 
 ## Alterações mais recentes
 
+- Verificação experimental com **LanguageTool pt-PT autoalojado, desativada por
+  predefinição**, com sugestões para revisão e correções de concordância muito
+  delimitadas, protegidas pela referência inglesa e pelo MiniLM. Sem geração de
+  texto nem instalação automática de Java ou do LanguageTool.
 - Uma janela **Contribute vocabulary / Local word list** com três separadores distintos.
 - CSV de contribuições para palavras e expressões, com exemplos e contexto opcionais;
   as sugestões não alteram as regras de conversão nem são enviadas automaticamente.
@@ -22,7 +26,10 @@ partir de folhas de cálculo, vestuário desportivo e expressões de residência
 confirmados pelo inglês, descrições físicas, filtros de resultados e o texto
 original em PT-BR visível nas linhas que contêm apenas avisos.
 
-A compilação do repositório autónomo é a **1.4.2**. As versões oficiais dos
+A compilação experimental do repositório autónomo é a **1.8.0**. A base anterior
+ao LanguageTool está guardada em
+[v1.7.0](https://github.com/SMAP-git/BrazilianToEuropeanPortuguese/tree/v1.7.0).
+As versões oficiais dos
 pacotes do Subtitle Edit são atribuídas pelo fluxo de lançamento do projeto
 principal e podem ser diferentes.
 
@@ -31,6 +38,81 @@ os complementos e sentidos de vocabulário confirmados pela referência, as
 construções naturais de diálogo e a acentuação interrogativa. Acrescenta testes
 de regressão destas interações, preservando os tempos das legendas e as opções
 de regras controladas pelo utilizador.
+
+### Verificação gramatical autoalojada (experimental e opcional)
+
+No painel da referência inglesa e verificações adicionais, ative **LanguageTool
+pt-PT (self-hosted, off by default)**, introduza o endereço de um servidor que
+controle, por exemplo `http://127.0.0.1:8081/`, e escolha **Run checks**. As opções
+guardadas também se aplicam a **Batch convert**. O plugin não instala nem inicia
+Java ou o LanguageTool. Consulte o
+[guia oficial do servidor](https://dev.languagetool.org/http-server).
+A distribuição local não inclui as regras de IA exclusivas da nuvem.
+
+Em Docker, `127.0.0.1` identifica o próprio contentor do Subtitle Edit. Para um
+servidor noutro contentor da mesma rede privada, pode usar o nome do serviço e
+a porta configurada, por exemplo `http://languagetool:8010/`. O plugin não cria
+contentores nem altera a rede.
+
+A ordem de processamento é:
+
+1. Alinhar a referência inglesa disponível e executar as regras de conversão.
+2. Verificar o português convertido com `language=pt-PT`, por POST `/v2/check`.
+   Com **Convert complete sentences across adjacent cues** ativo, reutilizar
+   apenas os grupos seguros já existentes: salvaguardas de interlocutor, seleção
+   e tempos, no máximo três legendas e 1200 carateres. Sem essa opção, verificar
+   cada legenda separadamente, sem juntar arbitrariamente falas vizinhas.
+3. Apresentar mensagens, identificadores das regras e até cinco sugestões em
+   notas de revisão. Estas notas não alteram o texto automaticamente; pode
+   editar a correção na pré-visualização.
+4. Só com **Allow tested agreement fixes** também ativo, admitir as trocas
+   `tem/têm` e `vem/vêm` quando discordam de `ele/ela/eles/elas` explícitos.
+   Preservar sujeito, pessoa, tempo, tratamento, maiúsculas, pontuação e espaços.
+   A referência comparável tem de começar pelo sujeito correspondente
+   `he/she/they`; o inglês `you` nunca determina o tratamento formal ou informal.
+   A conversão de concordância/tratamento tem de continuar ativa.
+5. Exigir uma única candidata elegível, sem diagnósticos sobrepostos, MiniLM
+   instalado e verificação de significado ativa, e inglês alinhado para todo o
+   grupo. Comparar a candidata com o português anterior à correção e com o
+   inglês, usando os limiares existentes. Semelhança elevada não basta para
+   autorizar uma alteração.
+6. Voltar a verificar a candidata no LanguageTool: a regra em causa tem de
+   apresentar menos ocorrências, sem novos diagnósticos. Só depois aplicar a
+   correção dentro da legenda original, sem deslocar palavras, alterar quebras
+   de linha, identificadores ou tempos. No máximo uma correção por grupo.
+
+As restantes sugestões gramaticais, lexicais, ortográficas, de tempo verbal,
+pronomes ou tratamento ficam para revisão, mesmo com semelhança elevada no
+MiniLM. Esta lista inicial não pretende corrigir toda a gramática. Citações,
+marcadores de diálogo e formatação impedem correções automáticas. A formatação,
+as expressões ignoradas e o vocabulário de saída personalizado são substituídos
+por espaços com o mesmo comprimento durante a consulta; grupos com estas
+proteções nunca são reescritos automaticamente. A opção pré-Acordo não é
+substituída por sugestões do LanguageTool.
+
+Só o português convertido e protegido é enviado ao servidor configurado.
+O inglês e o português original não são enviados ao LanguageTool. Utilize um
+servidor de confiança: autoalojado não significa necessariamente local neste
+computador. Não são suportados os serviços públicos do LanguageTool, credenciais
+no endereço ou redirecionamentos HTTP. Proteja o servidor e a rede.
+
+Cada pedido tem um limite de 15 segundos e uma resposta de tamanho limitado.
+Textos iguais são reutilizados apenas durante a execução atual. Respostas
+inválidas, incompletas ou que não sejam pt-PT provocam um erro explícito.
+A pré-visualização mantém o resultado anterior e mostra o erro; o processamento
+em lote comunica a falha e conserva a saída das regras, sem aplicar resultados
+parciais das verificações opcionais. Em lote, as ocorrências são contadas; abra
+a pré-visualização para consultar os pormenores. Os testes usam respostas
+controladas, não um servidor real incluído: cobertura efetiva, falsos positivos
+e desempenho ainda precisam de avaliação com o seu servidor e as legendas.
+
+**Desfazer / voltar atrás:** desativar **LanguageTool pt-PT** limpa os resultados
+da pré-visualização e repõe o processamento existente. Desativar apenas
+**Allow tested agreement fixes** mantém as sugestões sem alterações automáticas.
+Para alterações já aplicadas, utilize Desfazer no Subtitle Edit ou uma cópia
+das legendas. Para repor integralmente o código, utilize a versão marcada
+v1.7.0. A experiência está isolada em `feature/languagetool-ptpt`; a v1.7.0
+continua a ser a base determinística publicada.
 
 Converte legendas de português do Brasil (pt-BR) para português europeu (pt-PT),
 adaptando a ortografia, o vocabulário e a gramática. Tal como o plugin *American to

@@ -114,7 +114,7 @@ internal static class JudgeAlternatives
 internal sealed record CheckLine(int Index, string Original, string Converted, string? Previous, string? Reference,
     SentenceMeaning? MeaningSentence = null);
 
-internal sealed record CheckResult(string Text, string? Note);
+internal sealed record CheckResult(string Text, string? Note, IReadOnlyList<RuleChange>? Rules = null);
 
 /// <summary>Optional checks with local models: Gervásio PT-PT choices after the rules; MiniLM meaning flags before and after the rules.</summary>
 internal static class LocalChecks
@@ -202,7 +202,8 @@ internal static class LocalChecks
     }
 
     internal static async Task<(Dictionary<int, CheckResult> Results, string Summary)> RunAsync(IReadOnlyList<CheckLine> lines,
-        EmbeddingSettings settings, IProgress<string> progress, CancellationToken token)
+        EmbeddingSettings settings, IProgress<string> progress, CancellationToken token,
+        ConversionOptions? options = null, PortugueseLocalWordList? words = null)
     {
         settings = EmbeddingAssets.WithInstalledFiles(settings);
         var texts = lines.ToDictionary(l => l.Index, l => l.Converted);
@@ -214,6 +215,7 @@ internal static class LocalChecks
         }
 
         var summary = new List<string>();
+        var rules = lines.ToDictionary(l => l.Index, _ => new List<RuleChange>());
         if (JudgeReady(settings))
         {
             var (chosen, device) = await JudgeAsync(lines, settings, texts, Note, progress, token);
@@ -224,6 +226,31 @@ internal static class LocalChecks
             summary.Add("Gervásio is not downloaded.");
         }
 
+        foreach (var line in lines.Where(l => texts[l.Index] != l.Converted))
+            rules[line.Index].Add(new RuleChange("local-judge", "Gervásio chose a fixed alternative", "Local model ranking; see review note"));
+
+        if (options is { GrammarCheck: true } && options.RuleEnabled("languagetool"))
+        {
+            using var client = new LanguageToolClient(options.GrammarServer);
+            EmbeddingRuntime? runtime = null;
+            try
+            {
+                if (options.GrammarAutoFix && MeaningReady(settings))
+                    runtime = await EmbeddingRuntime.StartAsync(settings, progress, token);
+                var previous = texts.ToDictionary(p => p.Key, p => p.Value);
+                var grammarSummary = await GrammarChecks.RunAsync(lines, options, words, texts, Note, client.CheckAsync,
+                    runtime == null ? null : runtime.EmbedAsync, progress, token);
+                summary.Add(grammarSummary);
+                foreach (var line in lines.Where(l => texts[l.Index] != previous[l.Index]))
+                    rules[line.Index].Add(new RuleChange("languagetool", "Allowlisted pt-PT agreement correction",
+                        "LanguageTool suggestion; explicit subject and English; MiniLM safeguard; grammar recheck"));
+            }
+            finally
+            {
+                if (runtime != null) await runtime.DisposeAsync();
+            }
+        }
+
         if (MeaningReady(settings))
         {
             var flagged = await MeaningAsync(lines, settings, texts, Note, progress, token);
@@ -232,7 +259,7 @@ internal static class LocalChecks
 
         var results = lines.Where(l => texts[l.Index] != l.Converted || notes.ContainsKey(l.Index))
             .ToDictionary(l => l.Index, l => new CheckResult(texts[l.Index],
-                notes.TryGetValue(l.Index, out var list) ? string.Join("\n", list) : null));
+                notes.TryGetValue(l.Index, out var list) ? string.Join("\n", list) : null, rules[l.Index]));
         return (results, string.Join(" ", summary));
     }
 

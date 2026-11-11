@@ -26,7 +26,10 @@ public sealed record ConversionOptions(
     bool Conversational = false,
     bool LayoutWarnings = false,
     string NameArticles = "",
-    bool AskNameArticles = true)
+    bool AskNameArticles = true,
+    bool GrammarCheck = false,
+    bool GrammarAutoFix = false,
+    string GrammarServer = "http://127.0.0.1:8081/")
 {
     public const int Version = 1;
 
@@ -54,6 +57,9 @@ public sealed record ConversionOptions(
         layoutWarnings = LayoutWarnings,
         nameArticles = NameArticles,
         askNameArticles = AskNameArticles,
+        grammarCheck = GrammarCheck,
+        grammarAutoFix = GrammarAutoFix,
+        grammarServer = GrammarServer,
     });
 
     public static ConversionOptions Load(PluginRequest request)
@@ -85,7 +91,10 @@ public sealed record ConversionOptions(
             ReadOptIn(json, "conversational"),
             ReadOptIn(json, "layoutWarnings"),
             ReadNameArticles(json),
-            !json.TryGetProperty("askNameArticles", out _) || ReadOptIn(json, "askNameArticles"));
+            !json.TryGetProperty("askNameArticles", out _) || ReadOptIn(json, "askNameArticles"),
+            ReadOptIn(json, "grammarCheck"),
+            ReadOptIn(json, "grammarAutoFix"),
+            ReadGrammarServer(json));
     }
 
     public bool RuleEnabled(string id) => DisabledRules.Length == 0 || !DisabledRules.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
@@ -117,6 +126,16 @@ public sealed record ConversionOptions(
         var text = value.GetString()!;
         _ = new PersonalNameArticles(text);
         return text;
+    }
+
+    private static string ReadGrammarServer(JsonElement json)
+    {
+        if (!json.TryGetProperty("grammarServer", out var value)) return Default.GrammarServer;
+        if (value.ValueKind != JsonValueKind.String)
+            throw new InvalidDataException("Invalid grammarServer in plugin settings (expected a URL string).");
+        var server = value.GetString()!;
+        _ = LanguageToolClient.CheckUri(server);
+        return server;
     }
 
     private static AddressMode ReadAddress(JsonElement json)

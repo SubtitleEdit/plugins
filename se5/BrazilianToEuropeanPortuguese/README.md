@@ -4,6 +4,9 @@
 
 ## Latest changes
 
+- Experimental, **off-by-default self-hosted LanguageTool pt-PT checks**, with
+  review suggestions and a narrowly allowlisted, English/MiniLM-guarded agreement pass.
+  No generative model or automatic Java/LanguageTool installation is added.
 - One **Contribute vocabulary / Local word list** window with three separate tabs.
 - Contribution CSVs for words and expressions, with optional examples and context;
   suggestions do not change conversion rules or upload automatically.
@@ -18,13 +21,88 @@ Earlier updates include reviewed workbook vocabulary and verb constructions,
 English-confirmed sportswear and shared-residence expressions, physical descriptions,
 finding filters, and original PT-BR text visible on warning-only rows.
 
-The standalone source build is **1.4.2**. Official Subtitle Edit package versions
+The experimental standalone source build is **1.8.0**. The pre-LanguageTool
+rollback baseline is [v1.7.0](https://github.com/SMAP-git/BrazilianToEuropeanPortuguese/tree/v1.7.0).
+Official Subtitle Edit package versions
 are assigned by the upstream release workflow and may differ.
 
 Version **1.4.2** improves contextual agreement and formal address, reference-confirmed
 objects and vocabulary senses, natural dialogue constructions and interrogative
 accentuation. It adds regression coverage for these interactions while preserving
 subtitle cue timings and user-controlled rule options.
+
+### Optional self-hosted grammar checking (experimental)
+
+In the English reference / extra-checks panel, enable **LanguageTool pt-PT
+(self-hosted, off by default)** and enter the URL of a LanguageTool server you
+manage, for example `http://127.0.0.1:8081/`. Then choose **Run checks**. Saved
+settings also apply in **Batch convert**. Nothing is downloaded or started:
+LanguageTool and its Java runtime are managed separately. See the
+[official self-hosted server guide](https://dev.languagetool.org/http-server).
+The local distribution does not include LanguageTool's cloud-only AI rules.
+
+For Docker, `127.0.0.1` means the Subtitle Edit container itself. A separate
+LanguageTool container can instead use its service name and configured port,
+for example `http://languagetool:8010/`, on a private shared network. The plugin
+does not create containers or modify network settings.
+
+The pipeline is:
+
+1. Align available English and run the existing deterministic conversion rules.
+2. Check the converted Portuguese with `language=pt-PT` using POST `/v2/check`.
+   With **Convert complete sentences across adjacent cues** enabled, reuse only
+   the existing safe sentence groups (same-speaker/selection/timing safeguards,
+   at most three cues and 1200 characters). Otherwise check individual cues.
+   Never join arbitrary neighbouring dialogue.
+3. Show diagnostic messages, rule IDs and up to five replacement suggestions
+   as review notes. These notes do not automatically edit the text; use the
+   editable preview to accept a different correction.
+4. If **Allow tested agreement fixes** is enabled separately, permit only
+   `ele/ela/eles/elas` with incompatible `tem/têm` or `vem/vêm`, retaining the
+   explicit subject, person, tense, register, case, punctuation and whitespace.
+   The English must be comparable and start with the corresponding
+   `he/she/they`; English `you` never establishes formal/informal address.
+   Agreement/address conversion must remain enabled.
+5. Require exactly one eligible candidate, no overlapping diagnostic, an
+   enabled and installed MiniLM meaning check, and aligned English for the
+   whole checked group. Compare the candidate with the pre-correction Portuguese
+   and English using the existing meaning thresholds. High similarity alone
+   never authorises a correction.
+6. Recheck the candidate with LanguageTool: the targeted rule must have fewer
+   findings, with no new diagnostic fingerprints. Only then apply the edit,
+   within its original cue, without moving words or changing line breaks,
+   cue IDs or timings. At most one correction is accepted per checked group.
+
+Other grammatical, vocabulary, spelling, tense, pronoun and register suggestions
+remain review-only, even if MiniLM prefers them. This initial allowlist does not
+claim comprehensive grammatical correction. Quoted dialogue, dialogue-marker
+lines and markup are excluded from automatic fixes. Markup, ignored phrases
+and custom output vocabulary are masked with equal-length spaces for checking;
+masked groups are never automatically rewritten. Pre-1990 spelling settings
+are not overridden by LanguageTool suggestions.
+
+The plugin sends masked converted Portuguese only to the configured server;
+English and original Portuguese are not sent to LanguageTool. Use a server you
+trust: self-hosted does not necessarily mean it runs on this computer. Public
+LanguageTool cloud endpoints, embedded credentials and HTTP redirects are not
+supported. Protect any remote server/network yourself.
+
+Requests have a 15-second timeout and a bounded response size. Identical texts
+are cached only for the current run. Invalid, non-pt-PT or incomplete responses
+fail explicitly. Preview keeps the preceding result and displays the failure;
+batch reports the failure and retains rule-only output, without applying
+partial optional-check results. Batch counts findings; open the preview to see
+their details. No real LanguageTool server is bundled with the tests: protocol
+and safety tests use controlled responses. Actual rule coverage, false-positive
+rates and speed depend on your server and still require corpus benchmarking.
+
+**Undo / rollback:** disabling **LanguageTool pt-PT** clears its preview results
+and restores the existing conversion pipeline; untick **Allow tested agreement
+fixes** for suggestions only. Already applied subtitle edits require Subtitle
+Edit's Undo or restoring your subtitle copy. For a full code rollback, use the
+tagged v1.7.0 source/build rather than merging or reverting unrelated changes.
+The experimental work is isolated on `feature/languagetool-ptpt`; v1.7.0 remains
+the published deterministic baseline.
 
 Converts Brazilian Portuguese (pt-BR) subtitles to natural European Portuguese (pt-PT):
 spelling, vocabulary and grammar. Like *American to British*, it shows a checkable

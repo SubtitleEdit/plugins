@@ -477,6 +477,22 @@ public sealed class ReferenceTests(ITestOutputHelper output)
             var subtitle = Path.Combine(data, "episode.pt-br.srt");
             File.WriteAllText(subtitle, "");
             PluginBootstrap.BuildAvaloniaApp<App>().SetupWithoutStarting();
+            var grammarWindow = new MainWindow(new PluginRequest
+            {
+                SettingsVersion = ConversionOptions.Version,
+                Settings = new ConversionOptions(GrammarCheck: true, GrammarServer: "http://languagetool:8010/").ToJson(),
+                Subtitle = new PluginSubtitle { SubRip = "1\n00:00:01,000 --> 00:00:03,000\nOlá.\n" },
+            });
+            Assert.True(grammarWindow.FindControl<CheckBox>("GrammarCheck")!.IsChecked);
+            Assert.False(grammarWindow.FindControl<CheckBox>("GrammarAutoFix")!.IsChecked);
+            Assert.Equal("http://languagetool:8010/", grammarWindow.FindControl<TextBox>("GrammarServer")!.Text);
+            grammarWindow.ApplyCheckResults(new[] { new CheckLine(0, "Olá.", "Olá.", null, null) },
+                new Dictionary<int, CheckResult> { [0] = new("Olá.", "LanguageTool [TEST]: review only.") });
+            Assert.Contains("LanguageTool", Assert.Single(grammarWindow.Proposals).ReviewNote);
+            grammarWindow.FindControl<CheckBox>("GrammarCheck")!.IsChecked = false;
+            Assert.Empty(grammarWindow.Proposals);
+            grammarWindow.FindControl<TextBox>("GrammarServer")!.Text = "http://127.0.0.1:8081/";
+            Assert.True(grammarWindow.FindControl<Button>("ApplyButton")!.IsEnabled);
             var repeatedWindow = new MainWindow(new PluginRequest
             {
                 Subtitle = new PluginSubtitle

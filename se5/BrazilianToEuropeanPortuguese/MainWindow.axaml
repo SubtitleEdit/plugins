@@ -232,6 +232,16 @@
                     <Button x:Name="ReferenceCancelButton" Content="Stop" Click="OnCancelReference" IsEnabled="False" Margin="0,0,8,4" />
                 </WrapPanel>
                 <TextBlock Text="Extra checks (local, after the rules)" FontWeight="SemiBold" Margin="0,4,0,0" />
+                <CheckBox x:Name="GrammarCheck" Content="LanguageTool pt-PT (self-hosted, off by default)"
+                          IsCheckedChanged="OnGrammarSettingChanged" />
+                <TextBox x:Name="GrammarServer" Watermark="http://127.0.0.1:8081/"
+                         TextChanged="OnGrammarServerChanged"
+                         ToolTip.Tip="Your self-hosted server URL. Text is sent to this server only. No automatic installation, cloud API or redirects." />
+                <CheckBox x:Name="GrammarAutoFix" Content="Allow tested agreement fixes (requires English and MiniLM)"
+                          IsCheckedChanged="OnGrammarSettingChanged"
+                          ToolTip.Tip="Off: suggestions only. On: only explicit ele/ela/eles/elas + tem/têm/vem/vêm, after English subject, meaning and grammar rechecks. Other findings remain review notes." />
+                <TextBlock Text="LanguageTool suggestions are review notes unless an allowlisted fix passes every safeguard. No text generation. Use Run checks after changing settings."
+                           TextWrapping="Wrap" Opacity="0.7" />
                 <WrapPanel>
                     <CheckBox x:Name="MeaningCheck" Content="Flag meaning changes (MiniLM)" Margin="0,0,16,0"
                               IsCheckedChanged="OnEmbeddingSettingChanged"
