@@ -34,6 +34,18 @@ objects and vocabulary senses, natural dialogue constructions and interrogative
 accentuation. It adds regression coverage for these interactions while preserving
 subtitle cue timings and user-controlled rule options.
 
+### Restrictive adverbs with reflexive commands
+
+With **Pronoun placement** enabled, a recognised clause-initial affirmative
+*tu* reflexive command places restrictive *só/apenas/somente* after the
+verb-clitic group: *Só lembre-se quem você enfrenta* → *Lembra-te só quem
+enfrentas*, *Só prepara-te* → *Prepara-te só*. This preserves enclisis without
+leaving a preverbal proclisis attractor. It is not a blanket movement of *só*:
+indicatives retain proclisis (*só te lembras*, *ele só se lembrou*), and negation,
+subordination, existing postverbal adverbs and ambiguous formal address are not
+reinterpreted as informal commands. Existing complements are preserved.
+Source: [Ciberdúvidas: adverbs attracting proclisis](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/adverbios-que-atraem-os-pronomes-atonos-proclise/35696).
+
 ### Optional local grammar checking (experimental)
 
 LanguageTool is the grammar checker; its Portuguese rules include **European

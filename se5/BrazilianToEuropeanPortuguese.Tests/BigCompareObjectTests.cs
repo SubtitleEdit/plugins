@@ -379,8 +379,8 @@ public sealed class BigCompareObjectTests
     [InlineData("O único jeito de resolver.", "A única forma de resolver.")]
     [InlineData("Ele tem jeito para isso.", "Ele tem jeito para isso.")]
     [InlineData("Ela nunca devia ter pego o caso.", "Ela nunca devia ter pegado no caso.")]
-    [InlineData("Só lembre-se de mim.", "Só lembra-te de mim.")]
-    [InlineData("Só lembra-te de quem enfrentas.", "Só lembra-te de quem enfrentas.")]
+    [InlineData("Só lembre-se de mim.", "Lembra-te só de mim.")]
+    [InlineData("Só lembra-te de quem enfrentas.", "Lembra-te só de quem enfrentas.")]
     [InlineData("Ele só lembrou-se de mim.", "Ele só se lembrou de mim.")]
     [InlineData("Já disse-te a verdade.", "Já te disse a verdade.")]
     public void BlueBloodsLeftoversUseEuropeanConstructions(string input, string expected)

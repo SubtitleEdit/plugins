@@ -90,7 +90,7 @@ public sealed class ReflexiveCoverageTests
     [InlineData("Certo. Te digo.", "Certo. Digo-te.")]
     [InlineData("Te dou vinte minutos.", "Dou-te vinte minutos.")]
     [InlineData("Me deram um bolo.", "Deram-me um bolo.")]
-    [InlineData("-Só cala-te um minuto.", "-Só cala-te um minuto.")]
+    [InlineData("-Só cala-te um minuto.", "-Cala-te só um minuto.")]
     [InlineData("Sem escuta,\napenas sente-se com ele.", "Sem escuta,\napenas sente-se com ele.")]
     public void SharedPlacementCoversReflexiveReciprocalAndInherentPronouns(string source, string expected)
     {

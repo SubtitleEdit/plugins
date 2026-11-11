@@ -42,6 +42,18 @@ construções naturais de diálogo e a acentuação interrogativa. Acrescenta te
 de regressão destas interações, preservando os tempos das legendas e as opções
 de regras controladas pelo utilizador.
 
+### Advérbios restritivos com imperativos reflexivos
+
+Com **Pronoun placement** ativo, um imperativo afirmativo reflexivo de *tu*
+reconhecido no início da oração coloca *só/apenas/somente* depois do conjunto
+verbo-clítico: *Só lembre-se quem você enfrenta* → *Lembra-te só quem enfrentas*,
+*Só prepara-te* → *Prepara-te só*. Mantém-se a ênclise sem deixar antes do verbo
+um atrator de próclise. Não se desloca indiscriminadamente *só*: os indicativos
+mantêm a próclise (*só te lembras*, *ele só se lembrou*); negação, subordinação,
+advérbios já pós-verbais e tratamento formal ambíguo não são reinterpretados como
+ordens informais. Preservam-se os complementos existentes.
+Fonte: [Ciberdúvidas: advérbios atratores de próclise](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/adverbios-que-atraem-os-pronomes-atonos-proclise/35696).
+
 ### Verificação gramatical local (experimental e opcional)
 
 O LanguageTool é o verificador gramatical e já inclui regras de **português
