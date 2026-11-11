@@ -675,6 +675,7 @@ public partial class MainWindow : Window
         {
             ("RuleBasedFilter", FindingType.RuleBased), ("MiniLmFilter", FindingType.MiniLm),
             ("JudgeFilter", FindingType.Judge), ("OtherReviewFilter", FindingType.OtherReview),
+            ("GrammarFilter", FindingType.Grammar),
             ("ManualEditFilter", FindingType.ManualEdit),
         })
             if (this.FindControl<ToggleButton>(name)!.IsChecked == true) enabled |= type;

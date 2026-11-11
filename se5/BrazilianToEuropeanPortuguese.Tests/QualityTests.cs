@@ -241,8 +241,14 @@ public sealed class QualityTests
         var combined = new ChangeProposal(3, "A", "B",
             reviewNote: "MiniLM: check it.\nGervásio chose an alternative.\nGrammar: check agreement.",
             rules: new[] { new RuleChange("word-list", "Vocabulary") });
-        Assert.Equal(FindingType.RuleBased | FindingType.MiniLm | FindingType.Judge | FindingType.OtherReview,
+        Assert.Equal(FindingType.RuleBased | FindingType.MiniLm | FindingType.Judge | FindingType.Grammar,
             combined.FindingTypes);
+        var grammar = new ChangeProposal(6, "A", "A", reviewNote: "LanguageTool [TEST]: check grammar.");
+        Assert.Equal(FindingType.Grammar, grammar.FindingTypes);
+        var corrected = new ChangeProposal(7, "A", "B", rules: new[] { new RuleChange("languagetool", "Grammar correction") });
+        Assert.Equal(FindingType.RuleBased | FindingType.Grammar, corrected.FindingTypes);
+        var mixed = new ChangeProposal(8, "A", "A", reviewNote: "LanguageTool [TEST]: check grammar.\nReview this wording.");
+        Assert.Equal(FindingType.Grammar | FindingType.OtherReview, mixed.FindingTypes);
         mini.ConvertedText = "Manual correction";
         Assert.Equal(FindingType.MiniLm | FindingType.ManualEdit, mini.FindingTypes);
         mini.ConvertedText = "A";

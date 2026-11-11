@@ -2268,9 +2268,11 @@ painel.
   para preservar o texto ao guardar e reabrir.
 
 - **Filtros de resultados:** ative ou desative **Rule-based changes**,
-  **MiniLM warnings**, **Gervásio choices**, **Other review warnings** e
+  **MiniLM warnings**, **Gervásio choices**, **Grammar warnings**, **Other review warnings** e
   **Manual edits** para mostrar ou ocultar as linhas correspondentes.
-  Os cinco estão ativos quando o plugin abre. Uma linha de vários tipos
+  **Grammar warnings** mostra os resultados do LanguageTool separadamente dos
+  restantes avisos; filtra a apresentação, não as regras executadas.
+  Os seis estão ativos quando o plugin abre. Uma linha de vários tipos
   continua visível enquanto algum dos tipos correspondentes estiver ativo.
   Os filtros mantêm-se nas atualizações de definições/resultados dos
   modelos e não descartam edições nem alteram as seleções de **Apply**.

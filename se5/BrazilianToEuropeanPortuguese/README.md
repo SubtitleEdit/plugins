@@ -1971,8 +1971,10 @@ its field when the row wraps. Batch configuration uses the full panel width.
   are escaped similarly to preserve round trips.
 
 - **Finding filters:** toggle **Rule-based changes**, **MiniLM warnings**,
-  **Gervásio choices**, **Other review warnings** and **Manual edits** to show or
-  hide matching rows. All five are on when the plugin opens. A row matching
+  **Gervásio choices**, **Grammar warnings**, **Other review warnings** and **Manual edits** to show or
+  hide matching rows. Grammar warnings include LanguageTool findings, separately
+  from other review warnings. This is a display filter, not a rule selection.
+  All six are on when the plugin opens. A row matching
   several types remains visible while any matching type is on. Filters survive
   settings/model-result refreshes and do not discard edits or change Apply
   selections. The summary shows visible/total rows; switching every type off

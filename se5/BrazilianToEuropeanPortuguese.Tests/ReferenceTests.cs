@@ -560,7 +560,8 @@ public sealed class ReferenceTests(ITestOutputHelper output)
                     SubRip = "1\n00:00:01,000 --> 00:00:04,000\nO trem chegou.\n\n" +
                              "2\n00:00:05,000 --> 00:00:07,000\nBom dia.\n\n" +
                              "3\n00:00:08,000 --> 00:00:10,000\nBoa noite.\n\n" +
-                             "4\n00:00:11,000 --> 00:00:13,000\nAté amanhã.\n",
+                             "4\n00:00:11,000 --> 00:00:13,000\nAté amanhã.\n\n" +
+                             "5\n00:00:14,000 --> 00:00:16,000\nBom trabalho.\n",
                 },
             });
             filterWindow.ApplyCheckResults(new[]
@@ -568,17 +569,19 @@ public sealed class ReferenceTests(ITestOutputHelper output)
                 new CheckLine(1, "Bom dia.", "Bom dia.", "O comboio chegou.", null),
                 new CheckLine(2, "Boa noite.", "Boa noite.", "Bom dia.", null),
                 new CheckLine(3, "Até amanhã.", "Até amanhã.", "Boa noite.", null),
+                new CheckLine(4, "Bom trabalho.", "Bom trabalho.", "Até amanhã.", null),
             }, new Dictionary<int, CheckResult>
             {
                 [1] = new("Bom dia.", "MiniLM: check the translation."),
                 [2] = new("Boa noite!", "Gervásio chose an alternative."),
                 [3] = new("Até amanhã.", "Review this wording."),
+                [4] = new("Bom trabalho.", "LanguageTool [TEST]: grammar review."),
             });
             filterWindow.Show();
             Avalonia.Threading.Dispatcher.UIThread.RunJobs();
-            var filterNames = new[] { "RuleBasedFilter", "MiniLmFilter", "JudgeFilter", "OtherReviewFilter", "ManualEditFilter" };
+            var filterNames = new[] { "RuleBasedFilter", "MiniLmFilter", "JudgeFilter", "GrammarFilter", "OtherReviewFilter", "ManualEditFilter" };
             Assert.All(filterNames, name => Assert.True(filterWindow.FindControl<ToggleButton>(name)!.IsChecked));
-            Assert.Equal(4, filterWindow.Proposals.Count);
+            Assert.Equal(5, filterWindow.Proposals.Count);
             Assert.All(filterWindow.Proposals, p => Assert.True(p.VisibleInReview));
             void SetFilter(string name, bool enabled)
             {
@@ -589,7 +592,7 @@ public sealed class ReferenceTests(ITestOutputHelper output)
             }
             foreach (var name in filterNames) SetFilter(name, false);
             Assert.All(filterWindow.Proposals, p => Assert.False(p.VisibleInReview));
-            Assert.Contains("Showing 0 of 4", filterWindow.FindControl<TextBlock>("SummaryLabel")!.Text);
+            Assert.Contains("Showing 0 of 5", filterWindow.FindControl<TextBlock>("SummaryLabel")!.Text);
             Assert.True(filterWindow.FindControl<Button>("ApplyButton")!.IsEnabled);
             var selectionButtons = filterWindow.FindControl<Control>("SelectButtons")!.GetVisualDescendants().OfType<Button>();
             Assert.Single(selectionButtons, b => Equals(b.Content, "Select none"))
@@ -619,11 +622,14 @@ public sealed class ReferenceTests(ITestOutputHelper output)
             SetFilter("JudgeFilter", true);
             Assert.Equal(2, Assert.Single(filterWindow.Proposals, p => p.VisibleInReview).LineIndex);
             SetFilter("JudgeFilter", false);
+            SetFilter("GrammarFilter", true);
+            Assert.Equal(4, Assert.Single(filterWindow.Proposals, p => p.VisibleInReview).LineIndex);
+            SetFilter("GrammarFilter", false);
             SetFilter("OtherReviewFilter", true);
             Assert.Equal(3, Assert.Single(filterWindow.Proposals, p => p.VisibleInReview).LineIndex);
             var visibleBorders = filterWindow.FindControl<ItemsControl>("ChangesList")!.GetVisualDescendants()
                 .OfType<Border>().Where(b => b.DataContext is ChangeProposal && b.Padding == new Avalonia.Thickness(8, 6));
-            Assert.Equal(4, visibleBorders.Count());
+            Assert.Equal(5, visibleBorders.Count());
             Assert.Single(visibleBorders, b => b.IsVisible);
             filterWindow.FindControl<CheckBox>("VocabularyCheck")!.IsChecked = false;
             Assert.All(filterNames, name => Assert.Equal(name == "OtherReviewFilter",

@@ -49,6 +49,9 @@
                                   Click="OnFindingFilterChanged" Margin="0,0,6,4" />
                     <ToggleButton x:Name="JudgeFilter" Content="Gervásio choices" IsChecked="True"
                                   Click="OnFindingFilterChanged" Margin="0,0,6,4" />
+                    <ToggleButton x:Name="GrammarFilter" Content="Grammar warnings" IsChecked="True"
+                                  Click="OnFindingFilterChanged" Margin="0,0,6,4"
+                                  ToolTip.Tip="Show LanguageTool grammar findings independently of other review warnings. Does not change which rules run or which corrections Apply includes." />
                     <ToggleButton x:Name="OtherReviewFilter" Content="Other review warnings" IsChecked="True"
                                   Click="OnFindingFilterChanged" Margin="0,0,6,4" />
                     <ToggleButton x:Name="ManualEditFilter" Content="Manual edits" IsChecked="True"
