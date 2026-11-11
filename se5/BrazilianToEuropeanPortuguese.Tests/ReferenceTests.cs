@@ -1,4 +1,5 @@
 using System.Text;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.VisualTree;
@@ -1072,15 +1073,26 @@ public sealed class ReferenceTests(ITestOutputHelper output)
             }
             LayoutScreenshot();
             var panels = screenshotWindow.FindControl<Grid>("ReviewLayoutPanels")!;
+            var settingsColumns = screenshotWindow.FindControl<Grid>("SettingsColumns")!;
             var layoutPanel = screenshotWindow.FindControl<Expander>("LayoutTools")!;
             var referencePanel = screenshotWindow.FindControl<Expander>("ReferencePanel")!;
             Assert.Same(panels, layoutPanel.Parent);
-            Assert.Same(panels, referencePanel.Parent);
+            Assert.Same(settingsColumns, referencePanel.Parent);
             Assert.Equal(1, Grid.GetColumn(layoutPanel));
-            Assert.Equal(2, Grid.GetColumn(referencePanel));
-            Assert.True(referencePanel.Bounds.X >= layoutPanel.Bounds.Right);
+            Assert.Equal(1, Grid.GetColumn(referencePanel));
+            var dictionaryButton = screenshotWindow.FindControl<Button>("DictionaryDownloadButton")!;
+            var layoutOrigin = layoutPanel.TranslatePoint(default, settingsColumns)!.Value;
+            var dictionaryOrigin = dictionaryButton.TranslatePoint(default, settingsColumns)!.Value;
+            Assert.Equal(dictionaryOrigin.X + dictionaryButton.Bounds.Width,
+                layoutOrigin.X + layoutPanel.Bounds.Width, 1);
+            Assert.True(referencePanel.Bounds.X > dictionaryOrigin.X + dictionaryButton.Bounds.Width);
+            Assert.Equal(0, referencePanel.Bounds.Y, 1);
             Assert.True(referencePanel.Bounds.Width > 200);
-            Assert.True(referencePanel.Bounds.Right <= panels.Bounds.Width + 0.1);
+            Assert.True(referencePanel.Bounds.Right <= settingsColumns.Bounds.Width + 0.1);
+            var topButton = screenshotWindow.FindControl<Button>("EditNameArticlesButton")!;
+            var referenceOrigin = referencePanel.TranslatePoint(default, screenshotContent)!.Value;
+            var buttonOrigin = topButton.TranslatePoint(default, screenshotContent)!.Value;
+            Assert.True(referenceOrigin.Y >= buttonOrigin.Y + topButton.Bounds.Height);
             if (Environment.GetEnvironmentVariable("PTPT_UI_LAYOUT_CAPTURE") is { Length: > 0 } capture)
             {
                 layoutPanel.IsExpanded = true;
@@ -1092,6 +1104,7 @@ public sealed class ReferenceTests(ITestOutputHelper output)
             }
             var settingsHeight = settingsPanel.Bounds.Height;
             var reviewHeight = screenshotWindow.FindControl<Border>("ChangesBorder")!.Bounds.Height;
+            Assert.True(reviewHeight > 80, $"Expanded settings leave only {reviewHeight} pixels for subtitle review.");
             toggleSettings.RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
             LayoutScreenshot();
             Assert.False(settingsPanel.IsVisible);
@@ -1206,9 +1219,10 @@ public sealed class ReferenceTests(ITestOutputHelper output)
             Assert.Equal("Estou pronto.", Assert.Single(styleWindow.Proposals).ConvertedText);
             styleWindow.FindControl<Expander>("ReviewTools")!.IsExpanded = true;
             styleWindow.FindControl<Expander>("LayoutTools")!.IsExpanded = true;
+            styleWindow.FindControl<Expander>("ReferencePanel")!.IsExpanded = true;
             styleWindow.Show();
             Avalonia.Threading.Dispatcher.UIThread.RunJobs();
-            foreach (var width in new[] { styleWindow.MinWidth, 1120d })
+            foreach (var width in new[] { styleWindow.MinWidth, 1120d, 1600d })
             {
                 styleWindow.Width = width;
                 var content = Assert.IsAssignableFrom<Control>(styleWindow.Content);
@@ -1219,6 +1233,15 @@ public sealed class ReferenceTests(ITestOutputHelper output)
                 var layoutTools = styleWindow.FindControl<Expander>("LayoutTools")!;
                 Assert.Same(reviewTools.Parent, layoutTools.Parent);
                 Assert.True(layoutTools.Bounds.Left >= reviewTools.Bounds.Right);
+                var columns = styleWindow.FindControl<Grid>("SettingsColumns")!;
+                var dictionary = styleWindow.FindControl<Button>("DictionaryDownloadButton")!;
+                var layoutPosition = layoutTools.TranslatePoint(default, columns)!.Value;
+                var dictionaryPosition = dictionary.TranslatePoint(default, columns)!.Value;
+                Assert.Equal(dictionaryPosition.X + dictionary.Bounds.Width, layoutPosition.X + layoutTools.Bounds.Width, 1);
+                var reference = styleWindow.FindControl<Expander>("ReferencePanel")!;
+                Assert.True(reference.Bounds.Left > layoutPosition.X + layoutTools.Bounds.Width);
+                Assert.True(reference.Bounds.Right <= columns.Bounds.Width + 0.1);
+                Assert.True(styleWindow.FindControl<Border>("ChangesBorder")!.Bounds.Height > 80);
                 foreach (var name in new[] { "LineLength", "MaxLines", "CharactersPerSecond" })
                 {
                     var numeric = styleWindow.FindControl<NumericUpDown>(name)!;

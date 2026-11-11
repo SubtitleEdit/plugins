@@ -233,8 +233,10 @@ public partial class MainWindow : Window
     private void OnWindowSizeChanged(object? sender, SizeChangedEventArgs e)
     {
         var height = Math.Clamp(e.NewSize.Height * 0.28, 140, 360);
-        foreach (var name in new[] { "LayoutContent", "ReferenceContent" })
-            if (this.FindControl<ScrollViewer>(name) is { } content) content.MaxHeight = height;
+        if (this.FindControl<ScrollViewer>("LayoutContent") is { } layout) layout.MaxHeight = height;
+        var settingsHeight = Math.Clamp(e.NewSize.Height * 0.5, 240, 480);
+        if (this.FindControl<ScrollViewer>("ConversionSettingsContent") is { } settings) settings.MaxHeight = settingsHeight;
+        if (this.FindControl<ScrollViewer>("ReferenceContent") is { } reference) reference.MaxHeight = settingsHeight - 50;
     }
 
     private void OnToggleSettings(object? sender, RoutedEventArgs e)

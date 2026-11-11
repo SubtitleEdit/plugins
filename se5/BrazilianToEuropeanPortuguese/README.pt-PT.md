@@ -46,8 +46,13 @@ de regras controladas pelo utilizador.
 
 O LanguageTool é o verificador gramatical e já inclui regras de **português
 europeu (`pt-PT`)**. Não precisa de escolher um modelo gramatical separado.
-No painel **Reference subtitle and local models**, agora à direita de
-**Dialogue context and subtitle layout**:
+O painel **Reference subtitle and local models** fica abaixo dos botões superiores
+de opções, artigos de nomes e vocabulário, ao lado dos controlos de ortografia.
+O limite direito de **Dialogue context and subtitle layout** alinha com
+**Re-download dictionary**; o painel da referência expande ao lado. As colunas
+têm deslocamento quando necessário para preservar espaço para rever legendas.
+
+Para configurar a verificação:
 
 1. Clique em **Download LanguageTool pt-PT (240 MB)**.
 2. Clique em **Download portable Java (40–50 MB)**.

@@ -79,6 +79,10 @@
         </Grid>
 
         <StackPanel DockPanel.Dock="Top" x:Name="SettingsPanel">
+        <Grid x:Name="SettingsColumns" ColumnDefinitions="55*,45*" Margin="0,0,0,8">
+        <ScrollViewer Grid.Column="0" x:Name="ConversionSettingsContent" MaxHeight="400"
+                      Margin="0,0,12,0" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel>
         <TextBlock
                    FontSize="18"
                    FontWeight="SemiBold"
@@ -114,7 +118,8 @@
                   ToolTip.Tip="Ask once per unresolved name when a supported rule needs an article. Batch convert never asks."
                   Margin="0,0,0,8" />
 
-        <WrapPanel Margin="0,0,0,8">
+        <Grid x:Name="OrthographyControls" ColumnDefinitions="*,Auto" Margin="0,0,0,8">
+        <WrapPanel Grid.Column="0">
             <TextBlock Text="Orthography:" VerticalAlignment="Center" Margin="0,0,8,0" />
             <ComboBox x:Name="OrthographyChoice" SelectedIndex="0" Margin="0,0,12,0"
                       SelectionChanged="OnOrthographyChanged">
@@ -126,14 +131,16 @@
                       ToolTip.Tip="Flag words not recognised by the selected Natura dictionary; never auto-correct them." />
             <Button x:Name="DictionaryCheckButton" Content="Check dictionary updates"
                     Click="OnCheckDictionary" Margin="8,0,8,0" />
-            <Button x:Name="DictionaryDownloadButton" Content="Re-download dictionary"
-                    Click="OnDownloadDictionary" />
         </WrapPanel>
+            <Button Grid.Column="1" x:Name="DictionaryDownloadButton" Content="Re-download dictionary"
+                    VerticalAlignment="Bottom"
+                    Click="OnDownloadDictionary" />
+        </Grid>
         <ScrollViewer MaxHeight="80" Margin="0,0,0,8">
             <TextBlock x:Name="DictionaryStatus" TextWrapping="Wrap" Opacity="0.75"
                        Text="Natura dictionaries available offline (2025-10-01)." />
         </ScrollViewer>
-        <Grid DockPanel.Dock="Top" x:Name="ReviewLayoutPanels" ColumnDefinitions="230,*,*" Margin="0,0,0,8">
+        <Grid x:Name="ReviewLayoutPanels" ColumnDefinitions="180,*">
         <Expander Grid.Column="0" x:Name="ReviewTools" Header="Review tools"
                   HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,0,12,0">
             <StackPanel Spacing="6">
@@ -149,7 +156,7 @@
             </StackPanel>
         </Expander>
         <Expander Grid.Column="1" x:Name="LayoutTools"
-                  HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,0,12,0">
+                  HorizontalAlignment="Stretch" VerticalAlignment="Top">
             <Expander.Header>
                 <TextBlock Text="Dialogue context and subtitle layout" TextWrapping="Wrap" />
             </Expander.Header>
@@ -203,13 +210,17 @@
             </ScrollViewer>
         </Expander>
 
-        <Expander Grid.Column="2" x:Name="ReferencePanel"
+        </Grid>
+        </StackPanel>
+        </ScrollViewer>
+
+        <Expander Grid.Column="1" x:Name="ReferencePanel"
                   HorizontalAlignment="Stretch" VerticalAlignment="Top"
                   ToolTip.Tip="An English subtitle of the same episode, found automatically when it is named like the subtitle or video with .en/.eng/.english. It prevents wrong changes (his/her → keeps 'o seu/a sua') and marks you/your lines that kept você/seu for review; it never adds text.">
             <Expander.Header>
                 <TextBlock Text="Reference subtitle and local models (optional)" TextWrapping="Wrap" />
             </Expander.Header>
-            <ScrollViewer x:Name="ReferenceContent" MaxHeight="220" HorizontalScrollBarVisibility="Disabled">
+            <ScrollViewer x:Name="ReferenceContent" MaxHeight="350" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Spacing="6">
                 <CheckBox x:Name="BatchReferenceCheck" IsVisible="False" IsChecked="True"
                           Content="Use the English subtitle next to each file"

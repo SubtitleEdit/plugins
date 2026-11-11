@@ -38,8 +38,13 @@ subtitle cue timings and user-controlled rule options.
 
 LanguageTool is the grammar checker; its Portuguese rules include **European
 Portuguese (`pt-PT`)**. You do not need to choose or download a separate grammar
-model. In the **Reference subtitle and local models** panel, now to the right of
-**Dialogue context and subtitle layout**:
+model. The **Reference subtitle and local models** panel is below the top-right
+settings/name/vocabulary buttons, beside the orthography controls. The right edge
+of **Dialogue context and subtitle layout** aligns with **Re-download dictionary**;
+reference/model controls expand alongside them. Both columns scroll when needed
+to preserve subtitle-review space.
+
+To set up checking:
 
 1. Click **Download LanguageTool pt-PT (240 MB)**.
 2. Click **Download portable Java (40–50 MB)**.
