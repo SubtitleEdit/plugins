@@ -48,6 +48,14 @@ internal static class AutomaticGrammar
     private static readonly Regex RequiredDe = new(
         @"(?<pre>^|[.!?]\s+)(?<subject>eu\s+|tu\s+|nós\s+|eles\s+|elas\s+)?(?<verb>gosto|gostas|gostamos|gostam|preciso|precisas|precisamos|precisam)" +
         @"\s+(?<det>o|a|os|as|um|uma|uns|umas)\s+(?!(?:pouco|bocado|bocadinho|que)\b)(?=\p{L})", Ci);
+    private static readonly Regex InjuryState = new(
+        @"(?<![\p{L}\p{M}-])(?<part>pernas?|braços?|mãos?|pés?|joelhos?|tornozelos?|ombros?|pulsos?|cotovelos?|" +
+        @"dedos?|costelas?|costas|anca|ancas|cabeça|pescoço|coluna|tendões|tendão|músculos?|ligamentos?)" +
+        @"(?<owner>(?:\s+(?:esquerd[oa]s?|direit[oa]s?))?" +
+        @"(?:\s+d(?:e|o|a|os|as)(?:\s+(?!(?:foi|foram|que|e|ou|não|nunca|já|também)\b)[\p{L}\p{M}]+){1,6})?)" +
+        @"(?<gap>\s+)(?<verb>foi|foram)(?<space>\s+)(?<degree>(?:(?:gravemente|ligeiramente|seriamente)\s+)?)" +
+        @"(?<injury>lesionad[oa]s?|magoad[oa]s?|ferid[oa]s?)" + Boundary +
+        @"(?!\s+(?:por|pel[oa]s?|de\s+propósito|intencionalmente|deliberadamente)\b)", Ci);
 
     private static Dictionary<string, string[]> BuildPluralForms()
     {
@@ -114,6 +122,17 @@ internal static class AutomaticGrammar
         }
         if (options.Colloquial)
         {
+            text = InjuryState.Replace(text, m =>
+            {
+                var part = m.Groups["part"].Value;
+                var plural = part.EndsWith("s", StringComparison.OrdinalIgnoreCase);
+                var injury = m.Groups["injury"].Value;
+                if (plural != m.Groups["verb"].Value.Equals("foram", StringComparison.OrdinalIgnoreCase) ||
+                    plural != injury.EndsWith("s", StringComparison.OrdinalIgnoreCase)) return m.Value;
+                return part + m.Groups["owner"].Value + m.Groups["gap"].Value +
+                    CaseHelper.MatchCase(m.Groups["verb"].Value, plural ? "ficaram" : "ficou") +
+                    m.Groups["space"].Value + m.Groups["degree"].Value + injury;
+            });
             text = TemporalPorHora.Replace(text, "${head} por agora");
             text = AtFront.Replace(text, "${v} à frente");
             text = ComeToMind.Replace(text, "${v} à mente");

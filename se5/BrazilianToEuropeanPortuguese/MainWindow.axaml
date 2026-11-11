@@ -267,16 +267,18 @@
                             Click="OnDownloadJava" Margin="0,0,8,4"
                             ToolTip.Tip="Eclipse Temurin JRE 21.0.13+9, GPLv2 with Classpath Exception; pinned and SHA-256 verified. Plugin-private, no system installation." />
                 </WrapPanel>
+                <CheckBox x:Name="GrammarAutoFix"
+                          IsCheckedChanged="OnGrammarSettingChanged"
+                          ToolTip.Tip="Works with the downloaded checker and an external server alike. Off: suggestions only. On: only explicit ele/ela/eles/elas + tem/têm/vem/vêm, after English subject, meaning and grammar rechecks. Other findings remain review notes.">
+                    <TextBlock Text="Allow tested agreement fixes (requires English and MiniLM)" TextWrapping="Wrap" />
+                </CheckBox>
+                <TextBlock Text="Agreement fixes work with either checker mode; your own server is not required."
+                           TextWrapping="Wrap" Opacity="0.7" />
                 <CheckBox x:Name="GrammarExternalServer" Content="Use my own server instead (advanced)"
                           IsCheckedChanged="OnGrammarSettingChanged" />
                 <TextBox x:Name="GrammarServer" Watermark="http://127.0.0.1:8081/"
                          TextChanged="OnGrammarServerChanged"
                          ToolTip.Tip="Your self-hosted server URL. Text is sent to this server only. No automatic installation, cloud API or redirects." />
-                <CheckBox x:Name="GrammarAutoFix"
-                          IsCheckedChanged="OnGrammarSettingChanged"
-                          ToolTip.Tip="Off: suggestions only. On: only explicit ele/ela/eles/elas + tem/têm/vem/vêm, after English subject, meaning and grammar rechecks. Other findings remain review notes.">
-                    <TextBlock Text="Allow tested agreement fixes (requires English and MiniLM)" TextWrapping="Wrap" />
-                </CheckBox>
                 <TextBlock Text="Download both components once; Run checks starts and stops the local checker automatically. CPU only; no text generation. Suggestions stay review-only unless all automatic-fix safeguards pass."
                            TextWrapping="Wrap" Opacity="0.7" />
                 <WrapPanel>

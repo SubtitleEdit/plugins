@@ -486,12 +486,21 @@ public sealed class ReferenceTests(ITestOutputHelper output)
             });
             Assert.True(grammarWindow.FindControl<CheckBox>("GrammarCheck")!.IsChecked);
             Assert.False(grammarWindow.FindControl<CheckBox>("GrammarAutoFix")!.IsChecked);
+            Assert.True(grammarWindow.FindControl<CheckBox>("GrammarAutoFix")!.IsVisible);
+            Assert.True(grammarWindow.FindControl<CheckBox>("GrammarAutoFix")!.IsEnabled);
+            var grammarControls = Assert.IsType<StackPanel>(grammarWindow.FindControl<CheckBox>("GrammarAutoFix")!.Parent);
+            Assert.True(grammarControls.Children.IndexOf(grammarWindow.FindControl<CheckBox>("GrammarAutoFix")!) <
+                grammarControls.Children.IndexOf(grammarWindow.FindControl<CheckBox>("GrammarExternalServer")!));
+            grammarWindow.FindControl<CheckBox>("GrammarAutoFix")!.IsChecked = true;
+            Assert.True(grammarWindow.FindControl<CheckBox>("GrammarAutoFix")!.IsChecked);
             Assert.False(grammarWindow.FindControl<CheckBox>("GrammarExternalServer")!.IsChecked);
             Assert.False(grammarWindow.FindControl<TextBox>("GrammarServer")!.IsVisible);
             Assert.NotNull(grammarWindow.FindControl<Button>("DownloadGrammarButton"));
             Assert.NotNull(grammarWindow.FindControl<Button>("DownloadJavaButton"));
             grammarWindow.FindControl<CheckBox>("GrammarExternalServer")!.IsChecked = true;
             Assert.True(grammarWindow.FindControl<TextBox>("GrammarServer")!.IsVisible);
+            Assert.True(grammarWindow.FindControl<CheckBox>("GrammarAutoFix")!.IsChecked);
+            Assert.True(grammarWindow.FindControl<CheckBox>("GrammarAutoFix")!.IsEnabled);
             Assert.Equal("http://languagetool:8010/", grammarWindow.FindControl<TextBox>("GrammarServer")!.Text);
             grammarWindow.ApplyCheckResults(new[] { new CheckLine(0, "Olá.", "Olá.", null, null) },
                 new Dictionary<int, CheckResult> { [0] = new("Olá.", "LanguageTool [TEST]: review only.") });

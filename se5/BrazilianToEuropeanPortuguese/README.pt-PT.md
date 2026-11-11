@@ -56,6 +56,20 @@ Fonte: [Ciberdúvidas: advérbios atratores de próclise](https://ciberduvidas.i
 
 ### Verificação gramatical local (experimental e opcional)
 
+**Estados resultantes de lesões e possessivos entre linhas:** com **Colloquial**
+ativo, um sujeito anatómico com *foi/foram lesionado/magoado/ferido*, sem agente,
+passa a *ficou/ficaram*, preservando o termo da lesão, número, possuidor, lado e
+modificadores de gravidade reconhecidos: *a perna esquerda do meu padrinho foi
+lesionada* → *a perna esquerda do meu padrinho ficou lesionada*. É uma preferência
+de naturalidade, não uma afirmação de que todas as passivas com *ser* estão
+erradas. Preservam-se agentes/causas com *por/pelo*, ações intencionais, negação,
+orações relativas e outros predicados. Não se troca *lesionada* por *magoada*,
+que pode sugerir outra gravidade. Com **Pronoun placement**, a inserção de
+artigos possessivos respeita artigos e contrações na linha anterior:
+*do\nmeu padrinho*, nunca *do\no meu padrinho*.
+Fontes: [ficar resultativo](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/participios-passados-verbais-e-adjetivais/35876)
+e [artigos com possessivos](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/regra-para-a-posicao-dos-pronomes-possessivos/29320).
+
 O LanguageTool é o verificador gramatical e já inclui regras de **português
 europeu (`pt-PT`)**. Não precisa de escolher um modelo gramatical separado.
 O painel **Reference subtitle and local models** fica abaixo dos botões superiores
@@ -107,6 +121,11 @@ identifica o próprio contentor; outro serviço da rede privada pode usar,
 por exemplo, `http://languagetool:8010/`. O plugin não cria contentores nem altera
 a rede. Consulte o [guia oficial](https://dev.languagetool.org/http-server).
 As opções guardadas também se aplicam a **Batch convert**.
+
+**Allow tested agreement fixes** funciona com o verificador descarregado e com
+um servidor externo. Está acima da opção avançada: não exige servidor próprio.
+As correções continuam a exigir MiniLM instalado/ativo, inglês alinhado e todas
+as verificações de segurança existentes.
 
 A ordem de processamento é:
 

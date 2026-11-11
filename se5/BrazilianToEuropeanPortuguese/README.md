@@ -48,6 +48,21 @@ Source: [Ciberdúvidas: adverbs attracting proclisis](https://ciberduvidas.iscte
 
 ### Optional local grammar checking (experimental)
 
+**Injury result states and wrapped possessives:** with **Colloquial** enabled,
+an anatomical subject with agentless past *foi/foram lesionado/magoado/ferido*
+uses resultative *ficou/ficaram*, preserving the injury term, number, owner,
+side and supported severity modifiers: *a perna esquerda do meu padrinho foi
+lesionada* → *a perna esquerda do meu padrinho ficou lesionada*. This is a
+naturalness preference, not a claim that every *ser* passive is ungrammatical.
+Explicit agents/causes introduced by *por/pelo*, intentional actions, negation,
+relative clauses and non-injury predicates are not rewritten. Existing
+*lesionada* is not replaced by *magoada*, which may describe a different severity.
+With **Pronoun placement**, possessive-article insertion also respects articles
+and contractions across wrapped lines (*do\nmeu padrinho*, not *do\no meu
+padrinho*).
+Sources: [resultative ficar](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/participios-passados-verbais-e-adjetivais/35876)
+and [possessive articles](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/regra-para-a-posicao-dos-pronomes-possessivos/29320).
+
 LanguageTool is the grammar checker; its Portuguese rules include **European
 Portuguese (`pt-PT`)**. You do not need to choose or download a separate grammar
 model. The **Reference subtitle and local models** panel is below the top-right
@@ -99,6 +114,11 @@ Docker, `127.0.0.1` means the Subtitle Edit container; a separate service can us
 for example, `http://languagetool:8010/` on a private shared network. No containers
 or network settings are changed. See the
 [official server guide](https://dev.languagetool.org/http-server).
+
+**Allow tested agreement fixes** works in both managed-local and external-server
+modes. It is placed above the advanced server switch; an external server is not
+required. Enabled/installed MiniLM, aligned English and all existing safety gates
+are still required before an automatic correction is accepted.
 
 The pipeline is:
 
