@@ -443,6 +443,493 @@ acrescentar avisos de revisão:
   este sentido como brasileiro; [lixar](https://dicionario.priberam.org/pt-pt/lixar)
   inclui *prejudicar/tramar* e *estragar*. Mantém-se o registo informal de
   *lixar*, em vez de impor a alternativa neutra *estragar*.
+- **Ceder com o uso:** o brasileiro *lacear* passa a *ceder* quando algo dá de si
+  (*Elas vão lacear* → *Elas vão ceder*), a *alargar* com complemento direto
+  (*lacear os sapatos* → *alargar os sapatos*) e a *amolecer* em contextos
+  revistos de couro/material. As formas geradas mantêm o tempo, a pessoa,
+  os particípios e os clíticos suportados. Preserva-se o sentido de enfeitar
+  com laços/fitas. Usa **Vocabulary** e `reviewed-verb-senses`, respeitando
+  entradas locais/ignoradas. Ver Priberam:
+  [ceder](https://dicionario.priberam.org/pt-pt/ceder),
+  [alargar](https://dicionario.priberam.org/pt-pt/alargar) e
+  [amolecer](https://dicionario.priberam.org/pt-pt/amolecer), e os
+  [sentidos brasileiros de lacear](https://www.dicio.com.br/lacear/).
+- **Polícias sem determinante e localização à porta:** as construções
+  existenciais *há/havia/houve/haverá/haveria/haja/houvesse/houver policiais*
+  usam *polícias*, além dos quantificadores já suportados. Preservam-se os
+  adjetivos em *operações/carros policiais*. O inglês *officers* continua a
+  permitir *agentes*, enquanto *cops* mantém *polícias*.
+  Usa **Vocabulary**/`police-nouns`.
+  Abrangem-se também nomes plurais sem determinante depois de *para/pra,
+  com, sem, entre, perante, por, a* e *em*, quando a pontuação, um
+  qualificador pessoal revisto ou uma relativa/coordenação confirmam o
+  grupo nominal: *Não para policiais. Para policiais, …* → *Não para
+  polícias. Para polícias, …*. As regras anteriores de existenciais e
+  quantificadores não abrangiam esta construção preposicional.
+  Trata-se de uma preferência vocabular PT-PT, não de afirmar que todas
+  as ocorrências de *policial* são agramaticais.
+  Fontes: Priberam [polícia](https://dicionario.priberam.org/pt-pt/pol%C3%ADcia)
+  e [policial](https://dicionario.priberam.org/pt-pt/policial).
+  A localização *na/nas minha(s), tua(s), sua(s), nossa(s), vossa(s) porta(s)*
+  passa a *à/às … porta(s)* em construções revistas de presença humana ou
+  com confirmação inglesa de *at … door*:
+  *Porque há policiais na minha porta?* → *Porque há polícias à minha porta?*.
+  Protegem-se usos revistos da superfície da porta (sangue, avisos, chaves,
+  tinta, etc.) e localizações ambíguas. Usa
+  **Colloquial**/`construction-vocabulary`, mantendo as quebras de linha.
+- **Pedidos no imperativo plural:** *Por favor, avisar se avistarem o suspeito*
+  passa a *Por favor, avisem se avistarem o suspeito*. O infinitivo revisto de
+  pedido passa ao imperativo plural quando uma oração imediatamente seguinte
+  com *se/quando/assim que/logo que* identifica os mesmos interlocutores
+  implícitos no plural. Abrange verbos regulares e irregulares revistos,
+  complementos curtos revistos de destinatário, negação e clíticos pessoais.
+  Preservam-se condições singulares/ambíguas, sujeitos de terceira pessoa
+  explícitos na condição, condições impessoais/existenciais e instruções
+  comuns no infinitivo. Não exige inglês; mantém-se o verbo válido *avistar*,
+  sem o substituir obrigatoriamente por *ver*.
+  Usa **Colloquial**, **Pronouns** e `polite-infinitive-commands`.
+  Fonte: [Ciberdúvidas sobre «por favor», imperativo e infinitivo](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/por-favor--imperativo-formal/34520).
+- **Orações reportadas e pedidos reflexos:** contrações inglesas internas,
+  como *Doc says you're gonna be okay*, permitem *Os médicos disseram que
+  ficarás bem*. Distingue-se o sujeito que relata (*She said*) do interlocutor
+  (*you'll*), preservando sujeitos explícitos de terceira pessoa e relativos.
+  Os reflexos progressivos acompanham o sujeito: *estás a enganar-te*, não
+  *estás a enganar-se*.
+  Com confirmação inglesa de *Would/Do you mind …ing?*, *Se importa responder
+  algumas perguntas?* passa a *Importas-te de responder a algumas perguntas?*
+  (formal: *Importa-se de …*). Abrange formas finitas revistas, infinitivos
+  validados no dicionário, negação, etiquetas e quebras de linha.
+  Usa **Pronouns**/`dialogue-objects`; a concordância informal exige também
+  **YouToTu**/`address`. *Que engraçado* não determina, por si só, o tratamento.
+- **Destinatários formais no dativo:** com confirmação inglesa de *He lied
+  to you*, usa-se *Ele mentiu-lhe*, não *Ele mentiu para si*. Os verbos de
+  destinatário já revistos também tratam *a/para si* formal, respeitando a
+  colocação pronominal: *não lhe mentiu*, *mentir-lhe-á*, *escreveu-lhe*,
+  *telefonou-lhe*. O tratamento informal mantém *te*. Preservam-se *si*
+  sem confirmação, referência reflexa, ênfase, coordenação e destinatários
+  múltiplos ambíguos. Exige destinatário inglês alinhado e
+  **Pronouns**/`pronouns`; não substitui globalmente *para si*.
+- **Complemento direto não é dativo:** os sentidos pessoais revistos de
+  *respeitar, admirar, amar, odiar, apoiar, acompanhar, abraçar, cumprimentar,
+  elogiar, convidar, proteger, defender, conhecer* e *reconhecer* corrigem
+  *lhe/lhes* usado como complemento direto, com um único objeto inglês
+  alinhado que confirme a função. *Eu lhe respeito imensamente* passa a
+  *Eu respeito-o imensamente* formal ou *Eu respeito-te imensamente* informal.
+  O tratamento feminino explícito usa *a*; *him/her/them* mantém o objeto na
+  terceira pessoa (plural sem género marcado usa *os*). Sem prova do género,
+  *you* formal usa o masculino convencional, sem inferir a identidade.
+  Negação, subordinação, ênclise e mesóclise usam os mecanismos partilhados.
+  Preservam-se dativos possessivos (*admiro-lhe a coragem*), complementos
+  indiretos legítimos, destinatários ambíguos e exceções locais.
+  Usa **Pronouns**/`pronouns`; o objeto informal exige **YouToTu**/`address`.
+  Fonte: [Priberam: respeitar](https://dicionario.priberam.org/pt-pt/respeitar).
+- **Sujeitos coletivos e cumprimentos:** os atalhos de tratamento verificam
+  o sujeito através das quebras de linha antes de alterar perguntas,
+  *precisa/consegue/merece*, *sabe como* e ordens negativas.
+  *Toda a equipa / precisa de uma mascote* mantém *precisa* na terceira
+  pessoa: o verbo concorda com *equipa*, não com o complemento *mascote*.
+  Expressões revistas de *todo/toda + nome coletivo* recebem também artigo
+  definido (*toda equipa* → *toda a equipa*, *todo grupo* → *todo o grupo*),
+  com **Colloquial**/`collective-articles`. É uma preferência limitada de
+  redação em PT-PT, não uma reformulação de todos os quantificadores
+  universais. A pontuação de frase e os travessões de diálogo continuam
+  a permitir um novo interlocutor.
+  O válido *ei*, cumprimento ou chamamento, deixa de ser globalmente
+  substituído por *olha*, mesmo sem inglês; preserva-se *olha* existente.
+  Com inglês alinhado *Hey/Hi/Hello, Nome, how … you …?*, um cumprimento
+  nominal revisto pode usar *como vais/estás/andas/tens estado?*.
+  Exige **YouToTu**/`address`; preservam-se opções formais, títulos,
+  nomes diferentes, destinatários plurais e *como vai o trabalho?*.
+  O cumprimento é indício de familiaridade conversacional, não prova de
+  que todas as legendas seguintes devam usar *tu*, e nunca prevalece sobre
+  tratamento formal explícito. Mantêm-se as expressões locais ignoradas.
+  Fontes: [Ciberdúvidas: concordância com equipa](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/concordancia-a-equipa-da-empresa-y-o-nosso-colega-z/37613),
+  [todo e artigo](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/uso-do-artigo-definido-com-o-quantificador-todo/28407)
+  e [Priberam: ei](https://dicionario.priberam.org/pt-pt/ei).
+- **Destinatários omitidos em pedidos com dar:** um único pedido inglês
+  alinhado *give/grant me/us* permite recuperar *-me/-nos* omitido num
+  imperativo português limitado a segundos, minutos, um momento, tempo,
+  uma pausa, um favor, uma oportunidade, ajuda ou atenção.
+  *Rapazes, dêem um segundo, certo?* passa a
+  *Rapazes, deem-me um segundo, certo?* com grafia pós-acordo,
+  ou *dêem-me* com grafia pré-acordo. O plural *deem/dêem* é válido
+  para grupos informais e formais; não deve passar ao singular *dá*.
+  Preservam-se a conjugação singular/plural e as opções ortográficas;
+  a grafia *deem/dêem* passa a seguir a opção mesmo quando o dicionário
+  aceita ambas. Usa **Pronouns**/`give-request-recipient`,
+  independentemente do tratamento informal. Exige correspondência da
+  categoria do objeto e não inventa destinatário sem inglês nem substitui
+  clíticos existentes, destinatários explícitos, negação, subordinadas,
+  pedidos concorrentes ou expressões locais ignoradas.
+  Fonte: [Ciberdúvidas: imperativo de dar e clíticos](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/da-ma-da-mo/25033)
+  (o artigo usa a grafia pré-acordo *dêem*).
+- **Marcas conversacionais destacadas:** *sabe?*, *entende/percebe/compreende?*
+  e as formas revistas *viu/ouviu/entendeu/percebeu?* concordam com o
+  interlocutor informal estabelecido (*sabes?*, *percebes?*, *ouviste?*, etc.).
+  A prova pode estar na própria legenda ou na continuação imediatamente
+  anterior já convertida: *Ouve, isto nunca vai ficar mais fácil, / mas
+  temos de começar a caminhar, sabe?* termina em *sabes?*.
+  O sujeito *nós* continua a determinar *temos*; a expressão destacada
+  dirige-se a *tu*. Exige **YouToTu**, `address` e `discourse-tags`.
+  A prova anterior exige continuação de frase, intervalo até 1,5 segundos,
+  falantes/tratamento compatíveis e ausência de seleção parcial.
+  Se houver inglês alinhado, a expressão destacada *you know/understand/see…?*
+  tem de confirmar a função. Preservam-se perguntas literais, sujeitos
+  nominais, marcas inglesas plurais, opções/títulos formais, fronteiras
+  de diálogo e expressões locais ignoradas. A semelhança de sentido MiniLM,
+  por si só, não determina a pessoa gramatical nem garante aviso de
+  tratamento misto.
+  Fontes: [Ciberdúvidas: tratamento e concordância verbal](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/pronomes-pessoais-brasil/19843)
+  e [marcadores discursivos](https://ciberduvidas.iscte-iul.pt/pergunta.php?id=17970).
+- **Relativas de assunto e condicional confirmado pela referência:** com
+  antecedente explícito revisto (*algo, nada, uma coisa* ou uma lista
+  limitada de nomes de assunto), *sobre o que + falar* pode usar a
+  construção mais simples *de que*: *havia algo / sobre o que esperava
+  falar contigo* → *havia algo / de que esperava falar contigo*.
+  Uma continuação imediata verificada permite recuperar o antecedente sem
+  ativar a reformulação geral da frase (mesmo falante, intervalo até
+  1,5 segundos, sem fim de frase, fronteira de diálogo ou seleção parcial).
+  **Colloquial**/`topic-relatives` controla esta preferência de redação.
+  **SentenceContext**/`sentence-context` permite adicionalmente a conversão
+  e revisão MiniLM da frase completa entre legendas ligadas em segurança.
+  Não elimina *esperava*, não inventa
+  um infinitivo nem altera perguntas, relativas livres (*falou sobre o que
+  aconteceu*), outros verbos ou construções válidas com *sobre o qual*.
+  Um único *would* inglês alinhado, ou *'d + verbo de base revisto* não
+  ambíguo, permite corrigir futuro/condicional português validado no
+  dicionário, com sujeito pronominal explícito correspondente:
+  *ela falarei* → *ela falaria*, *eles farão* → *eles fariam*.
+  Usa `reference-conditional`, independentemente do tratamento informal.
+  Preserva a negação; não infere sujeitos, não transforma todos os futuros
+  em condicionais nem resolve modais concorrentes, leituras ambíguas de
+  *'d* como *had* ou mesóclises.
+  Sem prova suficiente, a pessoa errada no futuro/condicional gera apenas
+  aviso de revisão. A revisão gramatical verifica também a relativa
+  completa quando a regra automática de redação está desativada.
+  Fontes: [Ciberdúvidas: preposições nas relativas](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/ainda-a-diferenca-entre-que-e-o-qual/28803),
+  [Ciberdúvidas: complementos de falar](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/dizer--falar/7465)
+  e [Ciberdúvidas: condicional](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/condicional-simples-e-condicional-composto/38090).
+- **Sujeitos omitidos em perguntas e modo nas completivas:** perguntas
+  inglesas iniciadas por auxiliar (*Did/Have/Were/Can you…*) confirmam
+  o interlocutor omitido, tal como *You…*. No tratamento informal,
+  *Já viveu…?* passa a *Já viveste…?* e o pronominal revisto
+  *Já se envolveu…* passa a *Já te envolveste…*. Sem atrator, a colocação
+  existente produz *Envolveste-te…*. O passado reutiliza a conjugação
+  validada no dicionário; preservam-se o tratamento formal, sujeitos
+  explícitos diferentes, interlocutores plurais e sujeitos de relativas.
+  Usa **YouToTu**/`address`; *you* confirma o sujeito, não obriga a tratar
+  alguém por *tu*.
+  Formas presentes depois de *recear, temer, desejar* e de *duvidar + que*
+  afirmativo usam o presente do conjuntivo: *Receio que estás preso* →
+  *Receio que estejas preso*; formal *esteja*, terceira pessoa *ele esteja*.
+  Reutiliza-se o mecanismo de modo existente e passam-se clíticos
+  enclíticos para antes do verbo. Não se reformulam indiscriminadamente
+  subordinantes negadas, homógrafos nominais, passado/futuro ou sujeitos
+  por resolver. Usa `complement-subjunctive`, independentemente da opção
+  de tratamento; não se aplica a todas as orações com *que*.
+  Tanto *roubo de carro* como *roubo de carros* são possíveis; esta regra
+  não inventa o número de veículos roubados.
+  Fontes: [Ciberdúvidas: concordância no tratamento](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/pronomes-pessoais-brasil/19843),
+  [conjuntivo em completivas](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/o-conjuntivo-em-subordinadas-completivas/21317)
+  e [atratores de próclise](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/os-casos-especificos-da-proclise/10650).
+- **Expressões de elogio confirmadas pelo inglês:** com um único predicado
+  pessoal inglês e uma única tradução literal portuguesa revista,
+  *Sim, verdadeiro, sim* alinhado com *Yeah, he's the real deal, yeah*
+  passa a *Sim, ele é mesmo bom, sim*. Sujeitos explícitos
+  *ele/ela/eles/elas* mantêm género, número e presente/imperfeito.
+  *The genuine article* e *the real McCoy* usam
+  *autêntico/autêntica/autênticos/autênticas*; contrastes explícitos com
+  falsificações ou impostores também mantêm o sentido de autenticidade,
+  sem inventar competência. *Know one's stuff* corrige a tradução literal
+  *conhecer/saber as suas coisas* para *saber o que faz*, preservando pessoa,
+  tempo e ênfase: *Estes tipos conhecem mesmo suas coisas* →
+  *Estes tipos sabem mesmo o que fazem*. Protegem-se possessivos
+  discordantes, pertences, múltiplos candidatos, sujeitos pessoais
+  incompatíveis e sentidos literais ou diferentes. Não se retraduz texto
+  já natural nem se insere uma frase inglesa ausente; *the real deal*
+  relativo a informação não é tratado como elogio pessoal.
+  Exige **Vocabulary**, **Colloquial** e `english-praise-idioms`;
+  preservam-se expressões ignoradas e escolhas locais de vocabulário.
+  Fontes: Cambridge [the real deal](https://dictionary.cambridge.org/dictionary/english/real-deal),
+  [the genuine article](https://dictionary.cambridge.org/dictionary/english/genuine-article)
+  e [know your stuff](https://dictionary.cambridge.org/dictionary/learner-english/know-your-stuff).
+- **Pronomes reflexos, recíprocos e inerentes:** a colocação partilhada não
+  consiste numa substituição indiscriminada nem numa lista lexical exaustiva.
+  Abrange *me/te/se/nos/vos* existentes, incluindo citações e fragmentos em
+  minúsculas, com flexões regulares finitas validadas pelo dicionário para
+  além das pequenas tabelas de verbos. Incluem-se, por exemplo, *lavar-se,
+  pentear-se, barbear-se, deitar-se, levantar-se, sentar-se, afastar-se,
+  aproximar-se, preparar-se, apresentar-se, lembrar-se, esquecer-se,
+  queixar-se, arrepender-se, esforçar-se, atrever-se, resignar-se,
+  reconciliar-se, preocupar-se, interessar-se, importar-se, comportar-se,
+  concentrar-se, habituar-se, adaptar-se, recusar-se, dedicar-se, enganar-se,
+  magoar-se, proteger-se, defender-se, recolher-se* e *esconder-se*.
+  *"Nos conhecemos há muito tempo"* passa a *"Conhecemo-nos há muito tempo"*:
+  cai o *s* de *-mos* antes de *nos* enclítico. *Há muito tempo* é português
+  europeu correto; não se impõe o intensificador *imenso*.
+  Futuro e condicional usam mesóclise (*conhecer-nos-emos*); negação e
+  elementos atrativos mantêm próclise (*não nos conhecemos*, *disse que nos
+  conhecemos*). Sujeitos explícitos *eu/nós/vós* corrigem *quero vestir-se* →
+  *quero vestir-me*, *podemos esquecer-se* → *podemos esquecer-nos*.
+  Normalizam-se também pronomes já ligados ao verbo: *conhecemos-nos* →
+  *conhecemo-nos*, *não lava-se* → *não se lava*, *resignarei-me* →
+  *resignar-me-ei*. Comandos iniciais ambíguos com *só/apenas* mantêm a
+  colocação existente. Declarações com *se* inicial exigem radical pronominal
+  revisto e prova inglesa inequívoca do sujeito;
+  não se reinterpretam indiscriminadamente *se* condicional, *nos*
+  preposicional, passivas ou sentidos não reflexos.
+  Usa **Pronouns**/`pronouns`, sem inserir pronomes ausentes só por o verbo
+  constar de uma lista e sem exigir um modelo.
+  Fontes: [Ciberdúvidas: tipos de verbos pronominais](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/verbos-pronominais-pronomes-reflexos-pronomes-inerentes/37446),
+  [Conhecemo-nos](https://portuguesaletra.com/duvidas/conhecemo-nos-ou-conhecemos-nos/).
+- **Conteúdo do que se diz:** o uso brasileiro *falar algo/alguma coisa/nada/a
+  verdade* passa a *dizer*: *falou algo?* → *disse alguma coisa?*, com tratamento
+  informal *disseste alguma coisa?*. Preservam-se tempo, pessoa, tempos compostos
+  e clíticos de destinatário. A confirmação inglesa de *say/tell* permite também
+  perguntas sobre o conteúdo, discurso indireto e citações. Preservam-se línguas,
+  conversas com alguém, assuntos de conversa e *falamos* sem prova do tempo
+  verbal. Usa **Vocabulary**/`reviewed-verb-senses`, respeitando exceções locais;
+  não exige um modelo.
+  Fontes: [Falar/dizer/contar em português europeu](https://portuguesepedia.com/falar-dizer-contar/),
+  [Priberam: dizer](https://dicionario.priberam.org/pt-pt/dizer).
+- **Resultados sem erros:** o brasileirismo informal *gabaritar* passa a
+  *acertar em tudo*, mantendo tempo/pessoa: *Na verdade, gabaritei* →
+  *Na verdade, acertei em tudo*. Complementos de exame revistos recebem
+  preposição (*gabaritou o exame* → *acertou em tudo no exame*); com perguntas,
+  usa-se *acertou todas as perguntas*. Passivas de exames usam *resolvido sem
+  erros*. *O gabarito da prova* passa a *as soluções da prova*.
+  Preservam-se qualificações profissionais, moldes físicos, complementos
+  não resolvidos e exceções locais. *Nailed it* não prova, por si só, uma
+  classificação máxima: esta regra converte o verbo brasileiro *gabaritar*.
+  Usa **Vocabulary**/`reviewed-verb-senses`, sem exigir um modelo.
+  Fonte: [Priberam: gabaritar](https://dicionario.priberam.org/pt-pt/gabaritar).
+- **Relações amorosas:** o inglês alinhado *girlfriend/boyfriend* permite
+  *namorada/namorado*, em vez de *miúda/rapariga/rapaz*, abrangendo
+  *garota/garoto*, os sinónimos de jovens revistos e os plurais. Por exemplo,
+  *Por favor, minha garota. Ela precisa de ajuda.* passa a *Por favor, minha
+  namorada. Ela precisa de ajuda.* Sem inglês, não se infere uma relação.
+  Outras pessoas do mesmo género, números incompatíveis e múltiplos
+  referentes possíveis impedem a substituição automática.
+  Respeita exceções locais e **Vocabulary**/`verb-vocabulary`.
+  Fonte: [Priberam: namorada](https://dicionario.priberam.org/pt-pt/namorada).
+- **Diálogo revisto:** *coletiva/colectiva de imprensa* → *conferência de
+  imprensa*, incluindo plurais, sem exigir inglês; *press conference/presser*
+  também desambigua *coletiva* isolada. O inglês depreciativo *this/that broad*
+  permite *esta/essa tipa*, preservando títulos e propriedade expressos por
+  *dona*. Usa **Vocabulary**/`dialogue-vocabulary`.
+  Com confirmação inglesa, *duramente aprendido* passa a *aprendido a duras
+  penas*, mantendo género/número; a pergunta elíptica *Doing business here or
+  what?* permite *Vamos fazer negócio ou quê?*. Preços numéricos usam
+  *custa/custam* apenas com *will cost you* e um montante monetário no inglês;
+  preserva-se contexto explícito futuro/condicional na fala ou na anterior
+  portuguesa. Estas expressões também exigem **Colloquial**/`dialogue-idioms`.
+  Respeitam-se exceções locais.
+  *Remind you that* recupera *lembrar-te que* (formal *lembrar-lhe*); o inglês
+  *owe* permite *Deves isso a ela* → *Deves-lhe isso*, preservando contraste
+  explícito (*a ela, não a ele*). Usa **Pronouns**/`dialogue-objects`, mantendo
+  o tratamento configurado. Com *push/throw/kick you out*, mantém-se também
+  o complemento informal: *Vais deixar esta tipa pôr-te para fora?*, não
+  *pô-lo*. Uma chamada isolada (*Sra. Silva?*) já não torna
+  formal o diálogo anterior através de um vocativo recente dirigido a outro
+  nome sem título; a própria chamada e o diálogo formal seguinte mantêm o
+  registo. O primeiro nome não implica universalmente tratamento por *tu*.
+  Protegem-se ainda o condicional *se foi roubado*, artigos depois de futuros
+  (*Daremos a volta*), sujeitos nominais (*Como está o João?*) e a expressão
+  sem artigo *por minha causa*.
+  Fontes: [Infopédia: coletiva](https://www.infopedia.pt/dicionarios/lingua-portuguesa/coletiva),
+  [Priberam: dona](https://dicionario.priberam.org/pt-pt/dona),
+  [Priberam: tipa](https://dicionario.priberam.org/pt-pt/tipa),
+  [Cambridge: hard-earned](https://dictionary.cambridge.org/dictionary/english-portuguese/hard-earned),
+  [Ciberdúvidas: lembrar](https://ciberduvidas.iscte-iul.pt/pergunta.php?id=3657).
+- **Acompanhar uma explicação e manter o tratamento:** com confirmação inglesa
+  de *stay with me / follow me / bear with me* num contexto de raciocínio,
+  recupera-se o complemento omitido de *acompanhe*: *Sim, mas acompanhe,
+  porque esse é o pulo* → *Sim, mas acompanhe-me, porque este é o salto*.
+  As regras de tratamento existentes mantêm ou selecionam
+  *acompanha-me/acompanhe-me/acompanhem-me*, conforme o contexto;
+  esta regra não impõe um novo registo. O inglês *leap* passa a *salto*
+  nestas construções revistas de raciocínio, sem substituir todos os usos
+  de *pulo*. Saltos físicos, saltos de fé, complementos completos e ordens
+  negadas não recebem um *-me* inventado.
+  Usa **Colloquial**/`explanation-constructions`; a recuperação do complemento
+  exige também **Pronouns**, e a conversão de *pulo* exige **Vocabulary**.
+  Mantêm-se as exceções locais.
+  A etapa **YouToTu**/`address` mantém agora o destinatário revisto numa frase
+  repartida por legendas próximas: *E se você meteu na sua cabeça / que teria
+  sua vingança?* → *E se meteste na tua cabeça / que terias a tua vingança?*.
+  Abrange formas revistas de *meter na cabeça* e, com sujeito de segunda
+  pessoa explícito no inglês, predicados revistos de relato/pensamento.
+  Funciona com **SentenceContext** ativo ou inativo. Tratamento formal,
+  mudança de falante, travessões de diálogo, intervalos superiores a
+  1,5 segundos, frases anteriores completas, sujeitos ingleses explícitos
+  de terceira pessoa, sujeitos pospostos e *se* impessoal ambíguo impedem
+  esta herança de concordância. Sem inglês, não se presume o mesmo sujeito
+  em *você pensa / que teria…* quando permanece por resolver.
+  O MiniLM verifica semelhança de sentido, não corrige concordância gramatical.
+  Fontes: Priberam [acompanhar](https://dicionario.priberam.org/pt-pt/acompanhar),
+  [salto](https://dicionario.priberam.org/pt-pt/salto) e
+  [Ciberdúvidas sobre tu como sujeito e concordância verbal](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/null/34507).
+- **Reações hipotéticas:** *Eu também ficaria muito zangada se fosse ele*
+  → *Eu também ficaria muito zangada se fosse comigo*. As reações emocionais
+  revistas com *ficar/estar* no condicional podem apresentar a situação como
+  acontecendo a quem reage: *comigo, contigo, connosco,
+  com ele/ela/eles/elas/vocês*. Abrange condições anteriores ou posteriores,
+  sujeitos explícitos concordantes, formas condicionais inequívocas e sujeitos
+  omitidos de primeira pessoa com confirmação inglesa. Preservam-se predicados
+  de identidade, conselhos, mudança de sujeito na condição e pessoas ambíguas.
+  É uma reformulação estilística contextual: *se eu fosse ele* não é, por si,
+  incorreto em PT-PT. Usa **Colloquial**, **Pronouns** e `hypothetical-reactions`.
+  Independentemente desta preferência, protege-se *se + imperfeito do
+  conjuntivo* depois de um predicado contra a regra de ênclise com sujeito
+  nominal: *zangada se fosse* nunca deve passar a *zangada fosse-se*.
+  Esta proteção mantém-se com a reformulação estilística desativada.
+  Fontes: [Ciberdúvidas sobre construções hipotéticas legítimas](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/se-eu-fosse-tu-e-se-eu-fosse-a-ti/20017)
+  e [Priberam comigo](https://dicionario.priberam.org/pt-pt/comigo).
+- **Vocabulário de agitação:** *chacoalhar* passa a *abanar* no sentido físico
+  geral, *agitar* com líquidos/recipientes revistos, *sacudir* com roupa,
+  pó e movimentos corporais revistos, e *chocalhar* com objetos revistos
+  que produzem ruído (chaves, moedas, sinos, guizos, chocalhos e rolamentos).
+  Preserva-se o verbo PT-PT *chocalhar*, também válido para líquidos num
+  recipiente. Com confirmação inglesa dos sentidos de insulto, repreensão,
+  incómodo ou abalo emocional, usam-se *insultar*, *repreender*, *incomodar*
+  ou *abalar*, em vez de um verbo de agitação física. Os sujeitos revistos
+  de construções passivas também distinguem roupa de recipientes.
+  Abrange formas finitas (incluindo vós), infinitivos, gerúndios, particípios,
+  ênclise e mesóclise; *sacudir* inclui as formas irregulares revistas
+  *sacodes/sacode/sacodem*. *Chacoalhamos* usa normalmente a forma sem acento;
+  o passado inglês pode selecionar *abanámos/agitámos/chocalhámos*.
+  *Chacoalhão/chacoalhões* → *abanão/abanões*;
+  o nome em *uma chacoalhada* → *uma sacudidela*.
+  Usa **Vocabulary**/`shaking-vocabulary`; os nomes *chacoalhão/chacoalhões*
+  usam a lista de palavras. Mantêm-se as exceções e substituições locais.
+  Outras lacunas revistas usam a etapa conjugada existente `verb-vocabulary`:
+  *pentelhar* → *chatear*; *xeretar* → *bisbilhotar* apenas com complementos
+  revistos de coisas/gavetas/segredos/vida/assuntos/casos;
+  *futucar* → *remexer* apenas com gavetas/bolsas/malas/bolsos/coisas/armários
+  revistos. Não se aplica esta substituição contextual aos sentidos por
+  resolver de adulação, recordação, toque corporal, amarrotamento ou outros.
+  Esta revisão é limitada, não um levantamento de todos os verbos brasileiros
+  ainda em falta.
+  Fontes: Priberam [chacoalhar](https://dicionario.priberam.org/pt-pt/chacoalhar),
+  [chocalhar](https://dicionario.priberam.org/pt-pt/chocalhar),
+  [conjugação de sacudir](https://dicionario.priberam.org/pt-pt/conjugar/sacudir),
+  [pentelhar](https://dicionario.priberam.org/pt-pt/pentelhar),
+  [xeretar](https://dicionario.priberam.org/pt-pt/xeretar) e
+  [futucar](https://dicionario.priberam.org/pt-pt/futucar).
+- **Esperar por pessoas e desculpas à chegada:** os complementos pessoais
+  revistos usam *por*: *esperar o Jamie* → *esperar pelo Jamie*;
+  *esperar os meus amigos* → *esperar pelos meus amigos*. Abrange formas
+  regulares de *esperar*, nomes revistos de familiares/profissionais e nomes
+  próprios com maiúscula. Os nomes sem artigo usam a escolha guardada,
+  as listas revistas ou *por* com sinalização do nome por resolver; não se
+  adivinha o género de nomes desconhecidos. Preservam-se *espero que…*,
+  complementos inanimados e *esperar o Jamie chegar*.
+  Tanto *esperar alguém* como *esperar por alguém* são corretos em PT-PT;
+  trata-se de uma preferência neste sentido de espera, não de uma correção
+  gramatical universal. Usa **Colloquial**, **Pronouns** e `waiting-for-people`.
+  Uma breve desculpa à chegada pode passar a *desculpem/perdoem* quando
+  o inglês identifica nominalmente quem chega, um grupo próximo diz estar
+  à espera dessa pessoa e uma legenda intermédia pergunta por ela.
+  Esta inferência limitada exige inglês alinhado e acrescenta um aviso para
+  rever os destinatários; vocativos singulares e cenas distantes não
+  qualificam. Usa **Colloquial**, **Pronouns** e `arrival-group-apology`.
+  *Alguém* é gramaticalmente singular e não determina, por si só, destinatários
+  no plural. O MiniLM verifica semelhança de sentido, não a concordância com
+  os destinatários, e não é um corretor gramatical generativo.
+  Fonte: [Ciberdúvidas sobre esperar alguém / esperar por alguém](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/esperar-alguem-e-esperar-por-alguem/39183).
+- **Matrículas de veículos:** *placa/placas*, em contexto de identificação
+  automóvel, passa a *matrícula/matrículas*, além da antiga expressão fixa
+  *placa do carro*. Abrange complementos revistos de veículos, números,
+  matrículas clonadas/de fora, o inglês *license/licence/number/registration
+  plate*, *plates* com contexto automóvel, consultas policiais e *registration*.
+  Uma continuação curta pode aproveitar o contexto automóvel da legenda
+  anterior. Mantêm-se maiúsculas, número, formatação e quebras de linha.
+  Os sentidos técnicos, médicos, geológicos e de tabuleta/sinal mantêm
+  *placa*; deixam de se substituir indiscriminadamente *placa* e *sem placa*
+  sem contexto. A expressão explícita *placa de matrícula* continua a passar
+  a *chapa de matrícula*. Usa **Vocabulary**/`vehicle-plates`, respeitando as
+  escolhas e exceções locais.
+  Fontes: Priberam, [matrícula](https://dicionario.priberam.org/pt-pt/matr%C3%ADcula)
+  e [placa](https://dicionario.priberam.org/pt-pt/placa). *Placa* também está
+  dicionarizada no sentido automóvel; *matrícula* é a opção de saída PT-PT.
+- **Gíria de incómodo:** *um/uma/uns/umas pé(s) no saco* (também com hífen)
+  passa a *chato/chata/chatos/chatas* para pessoas, *uma chatice* com sujeitos
+  impessoais revistos e *um incómodo* quando não é possível determinar o
+  referente. Exemplo: *um pé no saco da polícia* → *um chato da polícia*.
+  Interpreta-se a expressão brasileira, não o inglês *dick*, que também pode
+  significar *detetive*. Não se acrescenta uma tradução inglesa indiscriminada.
+  *Encher/torrar (o) saco*, conjugado, passa a *chatear* com clíticos pessoais
+  revistos ou *meu/teu/nosso/vosso*, pedidos para parar ou confirmação inglesa
+  de incómodo: *Ele me encheu o saco* → *Ele chateou-me*;
+  *Para de torrar meu saco* → *Para de me chatear*.
+  Protegem-se conteúdos literais do saco, confirmação de enchimento/torrefação,
+  sentidos financeiros e a colocação não resolvida no futuro/condicional.
+  Mantêm-se *que saco* → *que seca*, *de saco cheio* → *farto* e
+  *puxa-saco* → *lambe-botas*.
+  Usa **Colloquial**, **Vocabulary** e `annoyance-slang`; a reescrita
+  verbal/com clíticos exige também **Pronouns**. As escolhas locais prevalecem.
+  Fontes: Priberam, [saco](https://dicionario.priberam.org/pt-pt/saco) e
+  [chatear](https://dicionario.priberam.org/pt-pt/chatear),
+  [sentido da expressão brasileira](https://pt.wiktionary.org/wiki/p%C3%A9_no_saco)
+  e [Collins dick](https://www.collinsdictionary.com/dictionary/english/dick).
+- **Clíticos habituais e apelidos familiares:** a regra existente da posição
+  habitual de *sempre* passa a reconhecer um clítico intercalado e verbos
+  revistos de apoio: *Sempre me apoiam* → *Apoiam-me sempre*; *porque sempre
+  me apoiam* → *porque me apoiam sempre*. A posição pré-verbal de *sempre*
+  com próclise também é gramatical: trata-se de uma normalização estilística.
+  Preservam-se a negação, as pausas e a colocação não resolvida dos clíticos
+  no futuro/condicional. Usa **Colloquial**, **Pronouns** e `natural-word-order`.
+  Nas construções com clítico e o verbo ambíguo *achar*, mantém-se *sempre*
+  antes do verbo, protegendo opiniões continuadas como *sempre te achei…*.
+  Um tópico familiar singular pode ser retomado pelos membros no plural na
+  legenda seguinte: *A minha família… Apoiam-me sempre.* Não se força o singular
+  nessa retoma; o sujeito direto mantém *A minha família apoia-me sempre*.
+  Os apelidos sem artigo, usados como sujeitos familiares plurais, recebem
+  *os/as*: *É como Reagan são criados* → *É como os Reagan são criados*.
+  A concordância verbal plural e a confirmação inglesa do apelido plural ou
+  da família permitem outros predicados. Sem inglês, a inferência limita-se
+  a um apelido desconhecido de uma palavra com *ser* no plural e
+  *criados/educados*. Preservam-se artigos existentes, nomes singulares,
+  nomes coordenados, nomes comuns e escolhas locais `Nome = none`.
+  Mantém-se a grafia do apelido, sem acrescentar automaticamente um *s*.
+  Usa **Pronouns**/`family-subjects`. Fontes:
+  [Ciberdúvidas sobre advérbios atratores de próclise](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/null/35696)
+  e [plural de apelidos](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/plural-de-apelidos-sobrenomes/32915).
+- **Tolices, frequência habitual e drogas:** *falar bobagens/tolices/disparates/
+  besteiras/asneiras* passa a usar *dizer*, conjugado, mantendo o equivalente
+  lexical revisto do nome (incluindo *falar abobrinha* → *dizer disparates*):
+  *ele sempre fala bobagens toda vez que fica doidão*
+  → *ele diz sempre tolices quando fica pedrado*. Preservam-se o tempo e a
+  pessoa; *falamos*, ambíguo, exige confirmação inglesa do tempo.
+  *Toda (a) vez que* passa normalmente a *sempre que*. Havendo um *sempre*
+  afirmativo na mesma oração, usa-se *quando*, evitando a repetição; em
+  orações negativas, *de cada vez que* preserva a frequência universal.
+  *Doidão/doidona/doidões/doidonas* em construções revistas de estado passa a
+  *pedrado/pedrada/pedrados/pedradas* apenas com confirmação inglesa do efeito
+  de drogas ou um complemento português direto que as identifique.
+  Preservam-se a excentricidade, a paixão e os sentidos literais de *high*.
+  Usa **Colloquial**/`spoken-idioms`; o vocabulário de fala e de intoxicação
+  exige também **Vocabulary**. A posição habitual de *sempre* continua em
+  `natural-word-order`. Respeitam-se as escolhas locais.
+  Fontes: Priberam, [pedrado](https://dicionario.priberam.org/pt-pt/pedrado) e
+  [tolice](https://dicionario.priberam.org/pt-pt/tolice), e
+  [Ciberdúvidas sobre orações temporais habituais](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/todas-as-vezes-que/13308).
+- **Promessas e segredo:** o inglês elíptico *Promise not to…?* identifica o
+  interlocutor; um pedido português sem sujeito explícito, *Promete…?* seguido
+  de infinitivo, também admite o informal *Prometes…?* sem referência.
+  Preservam-se outros sujeitos explícitos, referências contraditórias e o
+  tratamento formal. Com **Pronouns**, *rir* dependente de *prometer* usa a
+  construção pronominal idiomática, concordando com o sujeito:
+  *Prometes não rir?* → *Prometes não te rir?*,
+  *Prometo não rir* → *Prometo não me rir*. Não duplica clíticos existentes.
+  As formas ambíguas entre primeira e terceira pessoa exigem sujeito explícito
+  antes de se acrescentar um clítico.
+  *Rir* sem pronome continua válido noutros contextos
+  ([Priberam rir](https://dicionario.priberam.org/pt-pt/rir)); não se trata
+  de uma proibição geral. As formas revistas de *contar/dizer para ninguém*
+  usam *a ninguém*, sem retirar a negação. A concordância usa
+  **YouToTu**/`address`; os complementos usam
+  **Pronouns**/`construction-vocabulary`.
 - **Regência verbal:** no sentido de recordar, *o que/isso/isto/aquilo* e
   complementos de memória revistos (*nome, data, número, morada…*) recebem *de*
   e o pronome reflexo adequado: *Você lembra o que aconteceu?* → *Lembras-te do
@@ -1834,13 +2321,37 @@ local models (optional)** e use **Browse…** para o escolher:
   (*Está bem?* / *Is he okay?* mantém-se).
   O inglês *your* nunca força *teu*, pois é igual para *tu* e para o formal
   *o senhor* (*We need to talk to your husband* → *o seu marido*).
-- Também escolhe a palavra adequada para *garoto/garota*: o inglês
-  *boy/guy* → *rapaz*, *girl* → *rapariga*
-  (*I hear your boy is lead detective?* → *o seu rapaz*), enquanto
-  *kid/child/little* mantém *miúdo/miúda* (*coffee, kid?* → *miúdo*;
-  *little girl* → *miudinha/miúda*).
-  Sem referência, *meu/seu/teu/nosso garoto* (“my boy”) também passa a *rapaz*.
-  As suas entradas na lista local para estas palavras têm sempre prioridade.
+- O inglês explícito *boy(s)/girl(s)* seleciona *rapaz(es)/rapariga(s)* para
+  *menino/menina*, *garoto/garota*, *miúdo/miúda*, *moço/moça*, *moleque/moleca*
+  e *guri/guria*, mantendo o género, o número e as maiúsculas do original.
+  Esta escolha lexical também se aplica a *little boys/girls*; *little* ou
+  *children* noutra parte da legenda não anulam os substantivos explícitos.
+  Sem esses substantivos ingleses, mantém-se o comportamento anterior de
+  *garoto/garota*: *guy* pode selecionar *rapaz*, *kid/child* mantém *miúdo/miúda*,
+  e *meu/seu/teu/nosso garoto* pode passar a *rapaz* sem referência.
+  *Meninos/meninas* sem confirmação mantêm-se. As entradas locais/ignoradas têm
+  prioridade. Usa **Vocabulary** e `verb-vocabulary`.
+- O inglês figurado *rich in/with partners/friends/companions/colleagues/allies/family*
+  permite adaptar *ser rico de/em* essas pessoas para *ter sorte com*:
+  *que sou rico de parceiros* → *que tenho sorte com parceiros*. É uma
+  metáfora sobre apoio valioso, não riqueza financeira nem uma expressão fixa.
+  As formas suportadas de *ser* passam às formas correspondentes de *ter*,
+  preservando sujeitos, negação, qualificadores e formatação. Sem confirmação
+  inglesa não há reformulação; dinheiro, nutrientes e recursos não passam a
+  sorte. Usa **Vocabulary**, **Colloquial** e `reference-idioms`.
+  Ver os sentidos de [rico](https://dicionario.priberam.org/pt-pt/rico)
+  e [sorte](https://dicionario.priberam.org/pt-pt/sorte) no Priberam.
+- O inglês *life's rich pageant/tapestry* confirma a metáfora resignada sobre
+  as experiências da vida: expressões revistas como *Rica trama da vida*
+  passam a *O rico espetáculo da vida*. Os artigos definidos e as contrações
+  suportadas acompanham o nome masculino (*parte da rica trama da vida* →
+  *parte do rico espetáculo da vida*), sem substituir a oração envolvente
+  nem acrescentar uma afirmação. Preservam-se concursos literais, frases sem
+  confirmação, determinantes não suportados e alternativas já idiomáticas.
+  Usa **Vocabulary**, **Colloquial** e `reference-idioms`.
+  A [entrada idiomática de Cambridge](https://dictionary.cambridge.org/dictionary/english/be-all-part-of-life-s-rich-tapestry-pageant)
+  confirma o sentido de experiência difícil/desagradável; a formulação
+  portuguesa é uma adaptação, não uma tradução citada do dicionário.
 - Quando a legenda inglesa diz *this/these*, e não *that/those*,
   *isso/disso/nisso* e *esse/essa/nesse/dessa...* passam a *isto/disto/nisto*
   e *este/esta/neste/desta...* (*I got this one.* → *Eu cuido disto*;
@@ -1956,6 +2467,30 @@ seleção atual.
   revisão gramatical separada de todas as legendas; o MiniLM apenas
   assinala: não consegue escrever uma tradução nova.
   A legenda inglesa aparece junto da linha.
+  O [modelo MiniLM instalado](https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2)
+  transforma texto em vetores de 384 dimensões; não dispõe de uma
+  interface de correção/geração. Alterar limiares ou acrescentar contexto
+  não o transforma num corretor gramatical. Formas certas e erradas de
+  pessoa/tempo, ou variantes vocabulares PT-BR/PT-PT, podem manter sentido
+  semelhante. O avaliador separado Gervásio só escolhe as alternativas
+  predefinidas indicadas abaixo, não reformulações gramaticais arbitrárias.
+  Uma correção gramatical mais ampla baseada em modelos exigiria um
+  mecanismo separado e validado com modelo gramatical ou generativo,
+  não uma opção do MiniLM.
+
+  **Revisão suplementar da frase completa:** com o contexto de frase ativo,
+  as continuações ligadas em segurança (até três legendas e 1200 carateres)
+  recebem também uma comparação conjunta do sentido antes/depois.
+  Se todas as legendas tiverem inglês alinhado, compara-se também a frase
+  completa com esse inglês, usando os mesmos limiares de semelhança
+  0,70/0,45 e de descida 0,10/0,04.
+  O aviso identifica todas as legendas e aparece em cada uma; mantêm-se as
+  verificações individuais. Continuam a aplicar-se as proteções existentes
+  para mudanças de falante, fim de frase, intervalos longos, marcação,
+  tratamento contraditório e seleções parciais.
+  Estes valores não certificam escolhas entre *o que/o qual/de que* nem
+  distinguem *falarei/falaria* de forma fiável; as regras e a revisão
+  gramatical determinísticas tratam esses casos mesmo sem MiniLM.
 
   **Revisão suplementar sensível a expressões idiomáticas:** o ficheiro
   fornecido `american_british_english_expressions_pt_PT.xlsx`, com

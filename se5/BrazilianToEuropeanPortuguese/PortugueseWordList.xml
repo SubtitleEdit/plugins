@@ -368,9 +368,6 @@
   <Word br="bate-bocas" pt="discussões" det="m" g="f" />
   <Word br="confiável" pt="fiável" />
   <Word br="confiáveis" pt="fiáveis" />
-  <Word br="placa do carro" pt="matrícula do carro" />
-  <Word br="número da placa" pt="número da matrícula" />
-  <Word br="sem placa" pt="sem matrícula" />
   <Word br="contador" pt="contabilista" det="m" />
   <Word br="contadora" pt="contabilista" det="f" />
   <Word br="calça jeans" pt="calças de ganga" />
@@ -451,6 +448,9 @@
   <!-- ===================== Verbs (all forms generated) ===================== -->
   <Verb br="botar" pt="meter" notAfter="fogo|para\s+tocar|pra\s+tocar|os\s+pingos" noun="botas bote botes" />
   <Verb br="xingar" pt="insultar" />
+  <Verb br="pentelhar" pt="chatear" />
+  <Verb br="xeretar" pt="bisbilhotar" after="(?:(?:em|nas?|nos?|as?|os?)\s+)?(?:(?:minhas?|meus?|tuas?|teus?|suas?|seus?)\s+)?(?:coisas|gavetas?|segredos?|vida|vidas|assuntos|negócios|casos?)" />
+  <Verb br="futucar" pt="remexer" after="(?:nas?|nos?|as?|os?)\s+(?:(?:minhas?|meus|tuas?|teus|suas?|seus)\s+)?(?:gavetas?|bolsas?|malas?|bolsos|coisas|armários?)" />
   <Verb br="checar" pt="verificar" noun="cheque cheques" />
   <Verb br="deletar" pt="apagar" />
   <Verb br="entender" pt="perceber" skip="entendido entendida entendidos entendidas" />
@@ -1012,6 +1012,8 @@
   <Word br="xingado" pt="insultado" />
   <Word br="xingada" pt="insultada" />
   <Word br="xingaram" pt="insultaram" />
+  <Word br="chacoalhão" pt="abanão" />
+  <Word br="chacoalhões" pt="abanões" />
   <Word br="síndico" pt="encarregado do edifício" />
   <Word br="síndicos" pt="encarregados do edifício" />
   <Word br="síndica" pt="encarregada do edifício" />
@@ -1132,6 +1134,10 @@
   <Word br="checagem" pt="verificação" />
   <Word br="entrevista coletiva" pt="conferência de imprensa" />
   <Word br="entrevistas coletivas" pt="conferências de imprensa" />
+  <Word br="coletiva de imprensa" pt="conferência de imprensa" />
+  <Word br="coletivas de imprensa" pt="conferências de imprensa" />
+  <Word br="colectiva de imprensa" pt="conferência de imprensa" />
+  <Word br="colectivas de imprensa" pt="conferências de imprensa" />
   <Word br="enquete" pt="sondagem" />
   <Word br="enquetes" pt="sondagens" />
   <Word br="mídia" pt="comunicação social" />

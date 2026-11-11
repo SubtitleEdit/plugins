@@ -9,6 +9,9 @@ public sealed class ClauseAgreementAnalysisTests
     [InlineData("Certeza?", "Certeza", "NominalUse")]
     [InlineData("Ajuda financeira.", "Ajuda", "NominalUse")]
     [InlineData("Ela precisa de ajuda.", "precisa", "OtherSubject")]
+    [InlineData("Toda a equipa\nprecisa de uma mascote.", "precisa", "OtherSubject")]
+    [InlineData("Toda equipa\nprecisa de mascotes.", "precisa", "OtherSubject")]
+    [InlineData("Cada equipa\nconsegue sair.", "consegue", "OtherSubject")]
     [InlineData("Maria trabalha aqui.", "trabalha", "OtherSubject")]
     [InlineData("É necessário sair.", "É", "Impersonal")]
     [InlineData("A pessoa que tu achas que precisa de ajuda.", "precisa", "RelativeSubject")]
@@ -25,6 +28,7 @@ public sealed class ClauseAgreementAnalysisTests
 
     [Theory]
     [InlineData("Precisa de ajuda.", "Precisa")]
+    [InlineData("O quê, está a controlar-me?", "está")]
     [InlineData("Se não precisar de ajuda.", "precisar")]
     [InlineData("Tu sabes que precisa de ajuda.", "precisa")]
     [InlineData("Ela saiu. Precisa de ajuda.", "Precisa")]

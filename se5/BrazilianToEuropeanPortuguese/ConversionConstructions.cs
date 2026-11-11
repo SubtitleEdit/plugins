@@ -60,9 +60,59 @@ internal static class ConversionConstructions
     });
 
     private static readonly Regex HabitualAlways = new(
-        @"(?<head>(?:^|[.!?;:]\s+|\n|(?<![\p{L}\p{M}-])(?:porque|que|quando|enquanto|se|mas|e)\s+)" +
+        @"(?<head>(?:^|[.!?;:]\s+|\n|[\uE000-\uF8FF]\s*|(?<![\p{L}\p{M}-])(?:porque|que|quando|enquanto|se|mas|e)\s+)" +
         @"(?:(?:eu|tu|ele|ela|nós|vocês|eles|elas)\s+)?)" +
-        @"(?<adv>sempre)(?<space>\s+)(?<v>\p{L}+)" + After + @"(?!-)", Ci);
+        @"(?<adv>sempre)(?<space>\s+)(?<clitic>(?:me|te|se|nos|vos|lhe|lhes|o|a|os|as)\s+)?" +
+        @"(?<v>\p{L}+)" + After + @"(?!-)", Ci);
+
+    private static readonly Dictionary<string, string> PolitePluralCommands = new[]
+    {
+        "avisar", "informar", "comunicar", "telefonar", "ligar", "chamar", "contactar", "contatar",
+        "notificar", "alertar", "aguardar", "esperar", "comparecer", "procurar", "verificar", "confirmar",
+        "enviar", "responder", "entrar", "sair", "parar", "regressar", "voltar", "continuar",
+        "seguir", "entregar", "ajudar", "apoiar", "proteger", "trazer", "fazer", "dizer", "dar",
+        "ir", "ser", "estar", "ter", "vir", "ver", "pedir", "manter",
+    }.ToDictionary(verb => verb, verb => verb switch
+    {
+        "seguir" => "sigam", "trazer" => "tragam", "fazer" => "façam", "dizer" => "digam",
+        "dar" => "deem", "ir" => "vão", "ser" => "sejam", "estar" => "estejam", "ter" => "tenham",
+        "vir" => "venham", "ver" => "vejam", "pedir" => "peçam", "manter" => "mantenham", "sair" => "saiam",
+        "contatar" => "contactem", _ => Forms(verb)[26],
+    }, StringComparer.OrdinalIgnoreCase);
+    private static readonly Regex PoliteInfinitive = new(
+        Before + @"(?<please>por\s+favor)(?<gap>\s*,?\s+)(?<neg>não\s+)?" +
+        @"(?<verb>" + Alternatives(PolitePluralCommands.Keys) + @")" +
+        @"(?<clitic>-(?:me|te|se|nos|vos|lhe|lhes|o|a|os|as))?" + After, Ci);
+    private static readonly Regex PluralConditionalAddressee = new(
+        @"^\s+(?:(?:o|a|os|as|ao|à|aos|às)\s+(?:central|polícia|comando|equipa|autoridades|reforços|documentos|relatório)\s+)?" +
+        @"(?:se|quando|assim\s+que|logo\s+que)(?:\s+vocês)?\s+(?:(?:não|já|ainda|também)\s+){0,2}" +
+        @"(?<verb>[\p{L}\p{M}]+)\b", Ci);
+
+    public static string PoliteInfinitiveCommands(string text) => PoliteInfinitive.Replace(text, m =>
+    {
+        var after = m.Result("$'");
+        var conditional = PluralConditionalAddressee.Match(after);
+        if (!conditional.Success) return m.Value;
+        var conditionalVerb = conditional.Groups["verb"].Value.ToLowerInvariant();
+        if (Regex.IsMatch(conditionalVerb, @"^(?:houverem|choverem|nevarem|acontecerem|existirem|ocorrerem)$", Ci))
+            return m.Value;
+        var plural = Regex.IsMatch(conditionalVerb,
+            @"^(?:virem|forem|tiverem|estiverem|fizerem|disserem|derem|souberem|puderem|quiserem|trouxerem|mantiverem)$", Ci);
+        if (!plural && Regex.IsMatch(conditionalVerb, @"(?:arem|erem|irem)$", Ci))
+        {
+            var infinitive = conditionalVerb[..^2];
+            plural = PortugueseVerbs.IsKnownInfinitive(infinitive) || NaturaDictionary.Load(true).Check(infinitive);
+        }
+        if (!plural) return m.Value;
+        var verb = m.Groups["verb"].Value;
+        var target = CaseHelper.MatchCase(verb, PolitePluralCommands[verb]);
+        var clitic = m.Groups["clitic"].Value;
+        if (clitic.Length > 0)
+            target = m.Groups["neg"].Success
+                ? (CaseHelper.IsAllUpper(verb) ? clitic[1..].ToUpperInvariant() : clitic[1..].ToLowerInvariant()) + " " + target
+                : PortugueseVerbs.AttachEnclitic(target, clitic[1..]);
+        return m.Groups["please"].Value + m.Groups["gap"].Value + m.Groups["neg"].Value + target;
+    });
     private static readonly HashSet<string> HabitualVerbs = BuildHabitualVerbs();
 
     private static HashSet<string> BuildHabitualVerbs()
@@ -73,7 +123,7 @@ internal static class ConversionConstructions
             "saber", "perceber", "reconhecer", "descobrir", "notar", "encontrar", "chegar", "voltar",
             "falar", "dizer", "responder", "perguntar", "contar", "pensar", "achar", "acreditar",
             "trabalhar", "estudar", "comprar", "pagar", "comer", "beber", "ajudar", "esquecer",
-            "ganhar", "perder", "mentir", "ouvir", "ver", "ler", "fazer",
+            "ganhar", "perder", "mentir", "ouvir", "ver", "ler", "fazer", "apoiar", "defender", "proteger", "acompanhar",
         }.SelectMany(Forms).Where(form => (PortugueseVerbs.IsKnownVerbForm(form) || dictionary.Check(form)) &&
             !PortugueseVerbs.IsInfinitive(form) && !Regex.IsMatch(form, @"(?:ndo|[ai]d[oa]s?)$", Ci))
             .Concat(new[] { "sei", "sabes", "sabe", "sabemos", "sabem", "soube", "soubeste", "soubemos", "souberam",
@@ -92,7 +142,179 @@ internal static class ConversionConstructions
         @"poderia|poderias|poderíamos|poderiam|devo|deves|deve|devemos|devem|devia|devias|devíamos|deviam)" +
         @"(?=\s+\p{L}+(?:ar|er|ir|ôr)" + After + @")", Ci);
 
-    public static string NaturalWordOrder(string text, ReferenceHint? reference, PersonalNameArticles names)
+    private static readonly Dictionary<string, string> SayForms = BuildSayForms();
+    private static Dictionary<string, string> BuildSayForms()
+    {
+        var dizer = new[]
+        {
+            "dizer", "digo", "dizes", "diz", "dizemos", "dizem",
+            "disse", "disseste", "disse", "disseram",
+            "dizia", "dizias", "dizíamos", "diziam",
+            "direi", "dirás", "dirá", "diremos", "dirão",
+            "diria", "dirias", "diríamos", "diriam",
+            "diga", "digas", "digamos", "digam",
+            "dissesse", "dissesses", "disséssemos", "dissessem",
+            "dizeres", "dizermos", "dizerem",
+            "dizendo", "dito", "dita", "ditos", "ditas",
+            "dissera", "disseras", "disséramos", "dissemos",
+        };
+        var result = Forms("falar").Select((form, index) => (form, target: dizer[index]))
+            .GroupBy(pair => pair.form, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(group => group.Key, group => group.First().target, StringComparer.OrdinalIgnoreCase);
+        foreach (var (source, target) in new[]
+        {
+            ("falámos", "dissemos"), ("falais", "dizeis"), ("falastes", "dissestes"),
+            ("faláveis", "dizíeis"), ("falareis", "direis"), ("falaríeis", "diríeis"),
+            ("faleis", "digais"), ("falásseis", "dissésseis"), ("falardes", "dizerdes"),
+            ("faláreis", "disséreis"), ("falai", "dizei"),
+        })
+            result[source] = target;
+        return result;
+    }
+
+    private static string? SayForm(string verb, string before, string english)
+    {
+        var target = SayForms[verb];
+        if (verb.Equals("falamos", StringComparison.OrdinalIgnoreCase))
+        {
+            if (Regex.IsMatch(english, @"\bwe\s+(?:(?:always|just|only)\s+)?(?:said|talked|spoke)\b", Ci))
+                target = "dissemos";
+            else if (!Regex.IsMatch(english, @"\bwe\s+(?:(?:always|just|only)\s+)?(?:say|talk|speak)\b", Ci))
+                return null;
+        }
+        if (Regex.IsMatch(verb, @"^falar(?:es|mos|des|em)?$", Ci))
+        {
+            var conditional = Regex.IsMatch(before, @"\b(?:se|quando|assim\s+que|logo\s+que|sempre\s+que|toda\s+(?:a\s+)?vez\s+que)" +
+                @"\s+(?:(?:eu|tu|ele|ela|nós|vós|vocês|eles|elas|alguém|ninguém|todos|todas|" +
+                @"(?:(?:o|a|os|as|um|uma|uns|umas|meu|minha|teu|tua|seu|sua)\s+){1,2}[\p{L}\p{M}]+|" +
+                @"(?-i:\p{Lu}[\p{L}\p{M}]+(?:\s+\p{Lu}[\p{L}\p{M}]+){0,2}))\s+)?" +
+                Adverbs + @"(?:(?:me|te|lhe|lhes|nos|vos)\s+)?$", Ci);
+            if (conditional)
+                target = "disser" + verb[5..].ToLowerInvariant();
+            else if (Regex.IsMatch(before, @"\b(?:se|quando|assim\s+que|logo\s+que)\s+[^,;.!?]*$", Ci) &&
+                !Regex.IsMatch(before, @"\b(?:a|de|para|quiser(?:es|mos|em)?|puder(?:es|mos|em)?|vou|vais|vai|vamos|vão)\s+$", Ci))
+                return null;
+        }
+        return CaseHelper.MatchCase(verb, target);
+    }
+
+    private static readonly Regex ContentSpeechVerb = new(
+        @"(?<![\p{L}\p{M}\p{N}_])(?<![\p{L}\p{M}]-)(?<verb>" + Alternatives(SayForms.Keys) + @")" +
+        @"(?<clitic>-(?:me|te|lhe|lhes|nos|vos))?(?![\p{L}\p{M}\p{N}_-])" +
+        @"(?<recipient>\s+(?:a|para)\s+(?:mim|ti|si|ele|ela|eles|elas|nós|vós|você|vocês)" +
+        @"(?![\p{L}\p{M}\p{N}_-]))?" +
+        @"(?:(?<gap>\s+)(?<algo>algo)(?![\p{L}\p{M}\p{N}_-]))?", Ci);
+    private static readonly Regex SpeechContent = new(
+        @"^\s+(?<content>alguma\s+coisa|coisa\s+alguma|qualquer\s+coisa|nada|algo|tudo|isto|isso|aquilo|" +
+        @"(?:a\s+)?verdade|mentiras|(?:uma|a|as|muitas)\s+mentiras?|" +
+        @"(?:uma|duas|três|algumas|muitas|estas|essas)\s+(?:coisas?|palavras?))" +
+        @"(?![\p{L}\p{M}\p{N}_-])", Ci);
+    private static readonly Regex EnglishSay = new(@"\b(?:say|says|said|saying|tell|tells|told|telling)\b", Ci);
+    private static readonly Regex EnglishSpeechActivity = new(@"\b(?:talk(?:s|ed|ing)?|speak(?:s|ing)?|spoke|spoken)\b", Ci);
+    private static readonly Regex SpeechQuestionBefore = new(
+        @"(?<![\p{L}\p{M}])o\s+que\s+(?:é\s+que\s+)?(?:(?:eu|tu|você|ele|ela|nós|vós|vocês|eles|elas)\s+)?" +
+        @"(?:(?:me|te|lhe|nos|vos|lhes)\s+)?" +
+        @"(?:(?:estou|estás|está|estamos|estão|estava|estavas|estávamos|estavam)\s+(?:a\s+)?)?" +
+        Adverbs + "$", Ci);
+
+    private static string SpeechContentVocabulary(string text, string english, Func<string, bool>? isBlocked)
+    {
+        var matches = ContentSpeechVerb.Matches(text);
+        return ContentSpeechVerb.Replace(text, m =>
+        {
+            var verb = m.Groups["verb"].Value;
+            if (isBlocked?.Invoke("falar") == true || isBlocked?.Invoke(verb) == true) return m.Value;
+            var before = Regex.Match(m.Result("$`"), @"[^.!?;:]*$").Value;
+            if (Regex.IsMatch(verb, @"^falas?$", Ci) && PortugueseConverter.HasNominalDeterminerBefore(before))
+                return m.Value;
+            var after = m.Groups["gap"].Value + m.Groups["algo"].Value + m.Result("$'");
+            var content = SpeechContent.Match(after);
+            var question = SpeechQuestionBefore.Match(before);
+            var confirmed = matches.Count == 1 && EnglishSay.IsMatch(english) && !EnglishSpeechActivity.IsMatch(english);
+            var contentQuestion = question.Success &&
+                !Regex.IsMatch(before[..question.Index], @"\b(?:de|do|da|sobre|com|por|em|no|na)\s+$", Ci);
+            var reported = !Regex.IsMatch(before, @"\bsem\s+$", Ci) &&
+                Regex.IsMatch(after, @"^\s+(?:que|o\s+que)\b|^\s*[:,]?\s*[""“«]", Ci);
+            var addressed = m.Groups["recipient"].Success && Regex.IsMatch(after, @"^\s*[,.;!?]|^\s*$", Ci);
+            if (!content.Success && !(confirmed && (contentQuestion || reported || addressed))) return m.Value;
+            if (content.Success && isBlocked?.Invoke(content.Groups["content"].Value) == true) return m.Value;
+            var target = SayForm(verb, before, english);
+            if (target is null) return m.Value;
+            var clitic = m.Groups["clitic"].Value;
+            if (clitic.Length > 0)
+                target = PortugueseVerbs.AttachMesoclitic(target, clitic[1..]) ??
+                    PortugueseVerbs.AttachEnclitic(target, clitic[1..]);
+            return target + m.Groups["recipient"].Value + (m.Groups["algo"].Success
+                ? m.Groups["gap"].Value + CaseHelper.MatchCase(m.Groups["algo"].Value, "alguma coisa") : "");
+        });
+    }
+
+    private const string NonsenseModifiers = @"(?:(?:sempre|só|apenas|muit[oa]s|tant[oa]s|algum[ao]s|ess[ae]s|est[ae]s)\s+){0,2}";
+    private static readonly Regex SpokenNonsenseBefore = new(
+        DialogueBefore + @"(?:" + Alternatives(SayForms.Keys) + "|" +
+        PortugueseConverter.PronounRules.DizerVerbForms + @")\s+" + NonsenseModifiers + "$", Ci);
+    internal static bool KeepSpokenTolices(string before) => SpokenNonsenseBefore.IsMatch(before);
+    private static readonly Regex SayNonsense = new(
+        DialogueBefore + @"(?<verb>" + Alternatives(SayForms.Keys) + @")" +
+        @"(?<gap>\s+" + NonsenseModifiers + @")" +
+        @"(?<noun>bobagens|tolices|disparates|besteiras|asneiras)" + After, Ci);
+    private static readonly Regex EveryTime = new(
+        DialogueBefore + @"(?<phrase>toda\s+(?:a\s+)?vez\s+que)" + After, Ci);
+    private static readonly Regex IntoxicatedSlang = new(
+        DialogueBefore + @"(?<state>estou|estás|está|estamos|estão|estava|estavas|estávamos|estavam|estar|estiver|estiverem|" +
+        Alternatives(Forms("ficar").Concat(Forms("andar"))) + @")" +
+        @"(?<gap>\s+(?:(?:muito|mesmo|completamente|totalmente|bem|todo|toda|todos|todas)\s+){0,2})" +
+        @"(?<adj>doid[ãa]o|doidona|doidões|doidonas)" + After, Ci);
+    private static readonly Regex EnglishIntoxication = new(
+        @"\b(?:stoned|drugged)\b|\b(?:get|gets|got|getting|be|been|being|am|is|are|was|were|feel|feels|felt|" +
+        @"I'm|he's|she's|you're|we're|they're)\s+(?:(?:really|very|so|too|completely)\s+){0,2}high\b" +
+        @"(?!\s+(?:scores?|grades?|marks?|hopes?|expectations?|praise|school|heels?|up|above|blood|temperature|priority|risk|in)\b)" +
+        @"(?!\s+on\s+(?:life|love|adrenaline|the\s+list)\b)", Ci);
+    private static readonly Regex DrugIntoxicationComplement = new(
+        @"^\s+(?:de|com)\s+(?:(?:a|as|o|os|muita|muitas|muito|muitos)\s+)?" +
+        @"(?:drogas?|cocaína|heroína|canábis|cannabis|maconha|marijuana|erva|ganza|haxixe|ecstasy|mdma|" +
+        @"metanfetamina|cetamina|ketamina)\b", Ci);
+
+    public static string SpokenIdioms(string text, ReferenceHint? reference, bool vocabulary, Func<string, bool> isBlocked)
+    {
+        if (vocabulary)
+        {
+            text = SayNonsense.Replace(text, m =>
+            {
+                var verb = m.Groups["verb"].Value;
+                if (isBlocked("falar") || isBlocked(verb) ||
+                    new[] { "bobagens", "tolices", "disparates", "besteiras", "asneiras" }.Any(isBlocked)) return m.Value;
+                var before = Regex.Match(m.Result("$`"), @"[^.!?;]*$").Value;
+                var target = SayForm(verb, before, reference?.EnglishText ?? "");
+                return target is null ? m.Value : target + m.Groups["gap"].Value + m.Groups["noun"].Value;
+            });
+            text = IntoxicatedSlang.Replace(text, m =>
+            {
+                if (isBlocked(m.Groups["adj"].Value)) return m.Value;
+                var after = Regex.Match(m.Result("$'"), @"^[^.!?;]*").Value;
+                if (Regex.IsMatch(after, @"^\s+(?:por|de\s+(?:alegria|felicidade|amor|entusiasmo))\b", Ci) ||
+                    !EnglishIntoxication.IsMatch(reference?.EnglishText?.Replace('’', '\'') ?? "") &&
+                    !DrugIntoxicationComplement.IsMatch(after)) return m.Value;
+                var target = m.Groups["adj"].Value.ToLowerInvariant() switch
+                {
+                    "doidona" => "pedrada", "doidonas" => "pedradas", "doidões" => "pedrados", _ => "pedrado",
+                };
+                return m.Groups["state"].Value + m.Groups["gap"].Value +
+                    CaseHelper.MatchCase(m.Groups["adj"].Value, target);
+            });
+        }
+        return EveryTime.Replace(text, m =>
+        {
+            var before = Regex.Match(m.Result("$`"), @"[^.!?;]*$").Value;
+            var alreadyHabitual = Regex.IsMatch(before,
+                @"\bsempre\b(?!.*\b(?:que|se|quando|porque|enquanto|mas|e)\b)", Ci | RegexOptions.Singleline);
+            var negative = Regex.IsMatch(before, @"\b(?:não|nem|nunca|raramente)\b", Ci);
+            return CaseHelper.MatchCase(m.Value,
+                alreadyHabitual ? negative ? "de cada vez que" : "quando" : "sempre que");
+        });
+    }
+
+    public static string NaturalWordOrder(string text, ReferenceHint? reference, PersonalNameArticles names, bool pronouns)
     {
         text = EchoTopicQuestion.Replace(text, m =>
         {
@@ -113,10 +335,29 @@ internal static class ConversionConstructions
             text = ModalAlways.Replace(text, m => CaseHelper.MatchCase(m.Groups["always"].Value,
                 m.Groups["modal"].Value) + m.Groups["gap"].Value +
                 (CaseHelper.IsAllUpper(m.Groups["always"].Value) ? "SEMPRE" : "sempre"));
-        text = HabitualAlways.Replace(text, m => HabitualVerbs.Contains(m.Groups["v"].Value)
-            ? m.Groups["head"].Value + CaseHelper.MatchCase(m.Groups["adv"].Value, m.Groups["v"].Value) +
-              m.Groups["space"].Value + (CaseHelper.IsAllUpper(m.Groups["adv"].Value) ? "SEMPRE" : "sempre")
-            : m.Value);
+        text = HabitualAlways.Replace(text, m =>
+        {
+            var verb = m.Groups["v"].Value;
+            if (!HabitualVerbs.Contains(verb)) return m.Value;
+            var head = m.Groups["head"].Value;
+            var clitic = m.Groups["clitic"].Value.Trim();
+            var target = CaseHelper.MatchCase(m.Groups["adv"].Value, verb);
+            if (clitic.Length > 0)
+            {
+                if (!pronouns || PortugueseVerbs.IsFutureOrConditional(verb)) return m.Value;
+                if (Forms("achar").Contains(verb, StringComparer.OrdinalIgnoreCase))
+                    return m.Value;
+                var before = m.Result("$`") + head;
+                var attracts = PortugueseConverter.PronounRules.AfterSubordinateSubject(before) ||
+                    Regex.IsMatch(before, @"\b(?:que|quando|porque|enquanto|se)\s+$", Ci);
+                target = attracts
+                    ? CaseHelper.MatchCase(m.Groups["adv"].Value, clitic) + " " + verb.ToLowerInvariant()
+                    : PortugueseVerbs.AttachEnclitic(target, clitic);
+                if (CaseHelper.IsAllUpper(m.Value)) target = target.ToUpperInvariant();
+            }
+            return head + target + m.Groups["space"].Value +
+                (CaseHelper.IsAllUpper(m.Groups["adv"].Value) ? "SEMPRE" : "sempre");
+        });
         return RecoverableProgressiveSubject.Replace(text, m =>
             m.Groups["link"].Value + m.Groups["space"].Value + m.Groups["verb"].Value);
     }
@@ -382,6 +623,58 @@ internal static class ConversionConstructions
         });
     }
 
+    private const string SurnameToken = @"(?-i:\p{Lu}[\p{L}\p{M}'’-]+)";
+    private static readonly Regex FamilySurnameSubject = new(
+        @"(?<head>(?:^|[.!?;:]\s*|\n|[\uE000-\uF8FF]\s*|" +
+        Before + @"(?:que|como|quando|porque|se|embora|enquanto)\s+)[\s\uE000-\uF8FF-]*)" +
+        @"(?<name>" + SurnameToken + @"(?:\s+(?:(?:de|da|do|dos|das)\s+)?" + SurnameToken + @"){0,2}?)" +
+        @"(?<gap>\s+(?:(?:não|nunca|já|ainda|sempre|também|só|todos|todas)\s+){0,3})" +
+        @"(?<verb>têm|vêm|\p{L}+(?:am|em|ão))" + After, Ci);
+    private static readonly Regex PluralFamilyAuxiliary = new(
+        @"^(?:são|eram|foram|serão|seriam|sejam|fossem|estão|estavam|estiveram|estarão|estariam|estejam|estivessem|" +
+        @"têm|tinham|tiveram|terão|teriam|tenham|tivessem|vêm)$", Ci);
+    private static readonly Regex RaisedFamilyPredicate = new(
+        @"^\s+(?:(?:sempre|assim|bem|mal|todos|todas|muito)\s+){0,3}(?<part>criad[oa]s|educad[oa]s)" + After, Ci);
+
+    public static string FamilySurnameSubjects(string text, ReferenceHint? reference, PersonalNameArticles names) =>
+        FamilySurnameSubject.Replace(text, m =>
+        {
+            var name = m.Groups["name"].Value;
+            var first = name.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries)[0];
+            if (Regex.IsMatch(first, @"^(?:o|a|os|as|um|uma|uns|umas|eu|tu|ele|ela|nós|vós|vocês|eles|elas|" +
+                @"todos|todas|estes|estas|esses|essas|aqueles|aquelas|quem|quais|quantos|quantas)$", Ci) ||
+                names.TryGet(first, out var selected) && selected == "none") return m.Value;
+            var verb = m.Groups["verb"].Value;
+            var pluralVerb = PluralFamilyAuxiliary.IsMatch(verb) ||
+                Regex.IsMatch(verb, @"(?:am|em|ão)$", Ci) && PortugueseVerbs.IsKnownVerbForm(verb) &&
+                !PortugueseVerbs.IsInfinitive(verb);
+            if (!pluralVerb) return m.Value;
+            var english = reference?.EnglishText ?? "";
+            var escaped = Regex.Escape(Regex.Replace(name, @"\s+", " "));
+            var confirmed = Regex.IsMatch(english, @"(?<![\p{L}\p{M}])" + escaped +
+                @"(?:s|es)\b|(?<![\p{L}\p{M}])(?:the\s+" + escaped + @"\s+family|" +
+                escaped + @"\s+family)\b", Ci);
+            var predicate = m.Result("$'");
+            var raised = RaisedFamilyPredicate.Match(predicate);
+            if (!confirmed)
+            {
+                if (english.Length > 0 || !raised.Success ||
+                    !Regex.IsMatch(verb, @"^(?:são|eram|foram|serão|seriam|sejam|fossem)$", Ci) ||
+                    name.Contains(' ') || NaturaDictionary.Load(true).Check(name.ToLowerInvariant()))
+                    return m.Value;
+            }
+            var copula = Regex.IsMatch(verb, @"^(?:são|eram|foram|serão|seriam|sejam|fossem|" +
+                @"estão|estavam|estiveram|estarão|estariam|estejam|estivessem)$", Ci);
+            var feminine = copula && Regex.IsMatch(predicate,
+                @"^\s+(?:(?:sempre|assim|bem|mal|todas|muito|já|ainda)\s+){0,3}" +
+                @"(?:\p{L}+(?:adas|idas)|mortas|feitas|vistas|ditas|postas|abertas|mulheres|irmãs|filhas|meninas|raparigas)\b", Ci);
+            var article = feminine ? "as" : "os";
+            var initial = Regex.IsMatch(m.Groups["head"].Value, @"^(?:[\s\uE000-\uF8FF-]*|[.!?;:]\s*)$");
+            if (CaseHelper.IsAllUpper(name)) article = article.ToUpperInvariant();
+            else if (initial) article = CaseHelper.Capitalize(article);
+            return m.Groups["head"].Value + article + " " + name + m.Groups["gap"].Value + verb;
+        });
+
     private static string FamilyArticle(string noun, bool initial)
     {
         var feminine = Regex.IsMatch(noun, @"^(?:mãe|mamã|avó|tia|irmã)$", Ci);
@@ -447,6 +740,55 @@ internal static class ConversionConstructions
         });
     }
 
+    private static readonly Regex PlateNoun = new(DialogueBefore + @"placas?" + After, Ci);
+    private static readonly Regex VehicleContext = new(
+        @"\b(?:carros?|automóveis|automóvel|veículos?|caminh(?:ão|ões)|cami(?:ão|ões)|carrinhas?|carr(?:os?|inhas?)-patrulha|" +
+        @"motos?|motocicletas?|motociclos?|autocarros?|ônibus|sedans?|sedãs?|carruagens?|táxis?|reboques?|" +
+        @"SUV|BMW|Nissan|Ford|Toyota|Chevrolet|Honda|Mercedes|Volkswagen|Renault|Peugeot)\b", Ci);
+    private static readonly Regex PlateOtherSense = new(
+        @"^\s+(?:de\s+(?:(?:a|o|uma|um)\s+)?(?:rua|sinalizaç(?:ão|ões)|trânsito|pare|stop|aviso|publicidade|homenagem|" +
+        @"identificaç(?:ão|ões)\s+da\s+porta|metal|aço|alumínio|madeira|vidro|gesso|betão|concreto|rede|som|vídeo|video|" +
+        @"memória|circuito|Petri|cultura|induç(?:ão|ões)|gás|cozinha|parede|matrícula)|" +
+        @"tectónicas?|tectônicas?|bacterianas?|dentárias?|dentais|comemorativas?|publicitárias?|indicativas?|" +
+        @"gráficas?|mãe|solares?|fotovoltaicas?|vitrocerâmicas?)\b", Ci);
+    private static readonly Regex EnglishVehiclePlate = new(
+        @"\b(?:licen[cs]e|number|registration|vanity|temporary)\s*(?:-\s*)?plates?\b|" +
+        @"\b(?:plates?\s+(?:numbers?|came\s+back|we\s+could\s+ID)|(?:run|running|ran|check|checking|checked|" +
+        @"call\s+in|called\s+in|stolen|out-of-state|Jersey|Pennsylvania)\s+(?:(?:the|these|those|a|his|her)\s+)?plates?)\b|" +
+        @"\bregistration\b", Ci);
+    private static readonly Regex EnglishOtherPlate = new(
+        @"\b(?:(?:dinner|dining|food|ceramic|tectonic|dental|commemorative|memorial|circuit)\s+plates?|" +
+        @"(?:road|street|warning)\s+signs?|motherboards?|graphics\s+cards?|school\s+registration)\b", Ci);
+
+    public static string VehiclePlates(string text, string? previous, ReferenceHint? reference, Func<string, bool> isBlocked) =>
+        PlateNoun.Replace(text, m =>
+        {
+            if (isBlocked(m.Value) || isBlocked("placa") || isBlocked("placas") ||
+                new[] { "placa do carro", "número da placa", "sem placa" }.Any(isBlocked)) return m.Value;
+            var before = Regex.Match(m.Result("$`"), @"[^.!?;]*$").Value;
+            var after = Regex.Match(m.Result("$'"), @"^[^.!?;]*").Value;
+            if (PlateOtherSense.IsMatch(after) ||
+                Regex.IsMatch(before, @"\b(?:rua|parede|porta|prédio|edifício|dentes|dentista|computador|fogão)" +
+                    @"\b[^.!?;]{0,20}$", Ci)) return m.Value;
+            var english = reference?.EnglishText ?? "";
+            var confirmedEnglish = EnglishVehiclePlate.IsMatch(english) ||
+                Regex.IsMatch(english, @"\bplates?\b", Ci) && Regex.IsMatch(english,
+                    @"\b(?:car|vehicle|truck|van|sedan|SUV|motorcycle|bus|stolen|DMV)\b", Ci);
+            if (EnglishOtherPlate.IsMatch(english)) confirmedEnglish = false;
+            var vehicleAfter = Regex.IsMatch(after, @"^\s+(?:d[oa]s?|de)\s+(?:(?:um|uma|uns|umas)\s+)?", Ci) &&
+                VehicleContext.IsMatch(Regex.Match(after, @"^\s+(?:d[oa]s?|de)\s+(?:\p{L}+\s+){0,2}\p{L}+").Value);
+            var regional = Regex.IsMatch(after, @"^\s+(?:de\s+(?:fora|outro\s+estado)|estrangeiras?|clonadas?)\b", Ci);
+            var number = Regex.IsMatch(before, @"\bnúmeros?\s+d[ae]s?\s+$", Ci) &&
+                !EnglishOtherPlate.IsMatch(english);
+            var localVehicle = VehicleContext.IsMatch(before) || vehicleAfter;
+            var previousVehicle = Regex.IsMatch(text[..m.Index],
+                @"^[\s\uE000-\uF8FF-]*(?:(?:e|mas|com|sem|a|as|o|os|uma|umas|número|da|das|em|marca|modelo,?|semelhante)\s+)*$", Ci) &&
+                VehicleContext.IsMatch(previous ?? "");
+            if (!confirmedEnglish && !localVehicle && !regional && !number && !previousVehicle) return m.Value;
+            return CaseHelper.MatchCase(m.Value,
+                m.Value.EndsWith("s", StringComparison.OrdinalIgnoreCase) ? "matrículas" : "matrícula");
+        });
+
     public static string TravelStops(string text, ReferenceHint? reference) =>
         Regex.IsMatch(reference?.EnglishText ?? "", @"\b(?:(?:a|one|two|three|some|the|this|that|another|our)\s+" +
             @"(?:(?:little|small|short|brief|quick|last|next|more|bus|train|scheduled)\s+){0,3}|" +
@@ -460,6 +802,53 @@ internal static class ConversionConstructions
         @"^(?:(?:tenho|temos|há|são|e|quais\s+são)\s+)?(?:(?:o|a|os|as|um|uma|uns|umas|ess[ea]s?|est[ea]s?)\s+)?" +
         @"(?:(?:boas?|más?|últimas?|novas?)\s+)?(?:notícias|novidades|informações|detalhes|verdade|explicação)" +
         @"\s*[.!?…]?$", Ci);
+    private static readonly Regex GiveRequestReference = new(
+        @"(?:^|[.!?]\s+)[\s]*(?:(?:boys|girls|guys|kids|folks|everyone|gentlemen|ladies|sir|ma['’]am|" +
+        @"(?-i:[A-Z][a-z]+))\s*,\s*)?(?:please\s*,?\s*)?(?:give|grant)\s+(?<recipient>me|us)\s+" +
+        @"(?<object>(?:(?:a|one|two|three|a\s+few|some|another|your)\s+)" +
+        @"(?:(?:little|brief|short|quick|more|undivided|full)\s+){0,2}" +
+        @"(?:seconds?|minutes?|moments?|time|break|favou?r|chance|opportunity|hand|help|attention))" +
+        @"(?=\s*[,!.?…]|$)", Ci);
+    private static readonly Regex MissingGiveRecipient = new(
+        @"(?<head>(?:^|[.!?…]\s+|\n)[\s\uE000-\uF8FF–—-]*" +
+        @"(?:(?:rapazes|raparigas|miúdos|miúdas|pessoal|meninos|meninas|senhores|senhoras|" +
+        @"senhor|senhora|detetive|agente|doutor|doutora|(?-i:\p{Lu}[\p{Ll}\p{M}]+))" +
+        @"(?:\s+(?-i:\p{Lu}[\p{Ll}\p{M}]+))?\s*,\s*)?(?:por\s+favor\s*,?\s*)?)" +
+        @"(?<verb>dêem|deem|dai|dê|dá)(?<space>\s+)" +
+        @"(?<object>(?:um|uma|dois|duas|três|alguns|algumas|mais|o|a)\s+" +
+        @"(?:(?:pouco|bocado)\s+de\s+)?(?:(?:breve|pequeno|pequena|toda|total|vossa|sua)\s+){0,2}" +
+        @"(?:segundos?|minutos?|momentos?|tempo|pausa|descanso|folga|favor|hipótese|chance|oportunidade|mão|ajuda|atenção))" +
+        @"(?=\s*[,!.?…\uE000-\uF8FF]|$)", Ci);
+
+    public static string GiveRequestRecipients(string text, string? english)
+    {
+        if (string.IsNullOrWhiteSpace(english)) return text;
+        var requests = GiveRequestReference.Matches(english);
+        var candidates = MissingGiveRecipient.Matches(text);
+        if (requests.Count != 1 || candidates.Count != 1) return text;
+        var request = requests[0];
+        var candidate = candidates[0];
+        var category = Regex.Match(request.Groups["object"].Value,
+            @"(?:seconds?|minutes?|moments?|time|break|favou?r|chance|opportunity|hand|help|attention)$", Ci).Value.ToLowerInvariant();
+        var objectPattern = category switch
+        {
+            "second" or "seconds" => @"segundos?$",
+            "minute" or "minutes" => @"minutos?$",
+            "moment" or "moments" => @"momentos?$",
+            "time" => @"tempo$",
+            "break" => @"(?:pausa|descanso|folga)$",
+            "favor" or "favour" => @"favor$",
+            "chance" or "opportunity" => @"(?:hipótese|chance|oportunidade)$",
+            "hand" or "help" => @"(?:mão|ajuda)$",
+            _ => @"atenção$",
+        };
+        if (!Regex.IsMatch(candidate.Groups["object"].Value, objectPattern, Ci)) return text;
+        var verb = candidate.Groups["verb"];
+        var clitic = request.Groups["recipient"].Value.Equals("me", StringComparison.OrdinalIgnoreCase) ? "me" : "nos";
+        return text[..verb.Index] + PortugueseVerbs.AttachEnclitic(verb.Value, clitic) +
+            text[(verb.Index + verb.Length)..];
+    }
+
     private static readonly Regex GiveInformationReference = new(
         @"(?:^|[.!?]\s+)(?<request>gimme|give\s+(?:it\s+to\s+me|me))" +
         @"(?<explicit>\s+(?:the\s+)?(?:(?:good|bad)\s+)?(?:news|details|truth|information|explanation|update))?" +
@@ -785,6 +1174,37 @@ internal static class ConversionConstructions
         });
     }
 
+    private static readonly Regex WaitForPerson = new(
+        DialogueBefore + @"(?<verb>" + Alternatives(Forms("esperar")) + @")" +
+        @"(?<gap>\s+(?:(?:ainda|sempre|também|só|apenas|muito)\s+){0,2})" +
+        @"(?:(?<article>o|a|os|as)(?<space>\s+)" +
+        @"(?<person>(?:(?:meu|minha|teu|tua|seu|sua|nosso|nossa|meus|minhas|teus|tuas|seus|suas|nossos|nossas)\s+)?" +
+        @"(?:pai|mãe|pais|irmãos?|irmãs?|filhos?|filhas?|amigos?|amigas?|colegas?|polícias?|agentes?|médicos?|médicas?)|" +
+        @"(?-i:\p{Lu}[\p{L}\p{M}]+))|(?<person>(?-i:\p{Lu}[\p{L}\p{M}]+)))" + After, Ci);
+
+    public static string WaitingForPeople(string text, PersonalNameArticles names, Func<string, bool> isBlocked) => WaitForPerson.Replace(text, m =>
+    {
+        if (isBlocked("esperar") || isBlocked(m.Groups["verb"].Value)) return m.Value;
+        var after = m.Result("$'");
+        if (Regex.IsMatch(after, @"^\s+(?:\p{L}+(?:ar|er|ir|arem|erem|irem)|que)\b", Ci)) return m.Value;
+        var person = m.Groups["person"].Value;
+        if (!person.Contains(' ') && char.IsUpper(person[0]) &&
+            NaturaDictionary.Load(true).Check(person.ToLowerInvariant()) &&
+            !FemininePersonalNames.Contains(person) && !MasculinePersonalNames.Contains(person)) return m.Value;
+        if (!m.Groups["article"].Success)
+        {
+            var article = PersonalNameArticle(person, names);
+            var preposition = article == "o" ? "pelo" : article == "a" ? "pela" : "por";
+            return m.Groups["verb"].Value + m.Groups["gap"].Value +
+                (CaseHelper.IsAllUpper(m.Value) ? preposition.ToUpperInvariant() : preposition) + " " + person;
+        }
+        var prep = m.Groups["article"].Value.ToLowerInvariant() switch
+        { "a" => "pela", "os" => "pelos", "as" => "pelas", _ => "pelo" };
+        return m.Groups["verb"].Value + m.Groups["gap"].Value +
+            (CaseHelper.IsAllUpper(m.Value) ? prep.ToUpperInvariant() : CaseHelper.MatchCase(m.Groups["article"].Value, prep)) +
+            m.Groups["space"].Value + person;
+    });
+
     public static string WaitingComplements(string text, ReferenceHint? reference)
     {
         if (!Regex.IsMatch(reference?.EnglishText ?? "", @"\b(?:keep|kept|keeping)\s+you\s+waiting\b", Ci))
@@ -970,6 +1390,69 @@ internal static class ConversionConstructions
             .ToDictionary(group => group.Key, group => group.First().target, StringComparer.OrdinalIgnoreCase);
     }
 
+    private const string ExamObjectPattern =
+        @"(?<gap>\s+)(?<det>o|a|os|as|um|uma|uns|umas|este|esta|estes|estas|esse|essa|esses|essas|aquele|aquela)\s+" +
+        @"(?<exam>testes?|provas?|exames?|concursos?|vestibulares?|questionários?|avaliaç(?:ão|ões))";
+    private static readonly Regex PerfectScoreVerb = new(
+        DialogueBefore + @"(?<![\d_])(?<v>" + Alternatives(Forms("gabaritar").Concat(new[]
+        {
+            "gabaritais", "gabaritastes", "gabaritáveis", "gabaritareis", "gabaritaríeis",
+            "gabariteis", "gabaritásseis", "gabaritardes", "gabaritáreis", "gabaritai",
+        })) + @")" + After + @"(?![\d_])(?:(?:" + ExamObjectPattern +
+        @"|(?<gap>\s+)(?:todas\s+)?(?:as\s+)?(?<questions>perguntas|questões|respostas))" + After + @")?", Ci);
+    private static readonly Regex ExamKey = new(
+        DialogueBefore + @"(?<![\d_])(?<det>o|os|um|uns)(?<gap>\s+)(?<noun>gabaritos?)" + After +
+        @"(?=\s+(?:de|do|da|dos|das)\s+(?:(?:um|uma|uns|umas|este|esta|estes|estas)\s+)?(?:testes?|provas?|exames?|questionários?|questões)\b)", Ci);
+
+    private static string PerfectScores(string text, string english, Func<string, bool>? blocked)
+    {
+        text = PerfectScoreVerb.Replace(text, m =>
+        {
+            var verb = m.Groups["v"].Value;
+            if (blocked?.Invoke("gabaritar") == true || blocked?.Invoke(verb) == true ||
+                PortugueseConverter.HasNominalDeterminerBefore(m.Result("$`"))) return m.Value;
+            if (verb.Equals("gabarito", StringComparison.OrdinalIgnoreCase) &&
+                !Regex.IsMatch(m.Result("$`"), @"\beu\s+(?:(?:não|nunca|sempre|já|também|só)\s+){0,3}$", Ci))
+                return m.Value;
+            var after = m.Result("$'");
+            var exam = m.Groups["exam"];
+            var questions = m.Groups["questions"];
+            if (!exam.Success && !questions.Success &&
+                Regex.IsMatch(after, @"^\s+(?!(?:em|no|na|nos|nas|num|numa|sempre|nunca|também|hoje|ontem|amanhã|novamente|outra\s+vez)\b)\p{L}", Ci))
+                return m.Value;
+            if (Regex.IsMatch(english, @"\b(?:qualif(?:y|ies|ied|ying)|qualifications?|templates?|gauges?)\b", Ci))
+                return m.Value;
+            var ending = verb["gabarit".Length..];
+            var participle = Regex.IsMatch(ending, @"^ad[oa]s?$", Ci);
+            if (participle && !Regex.IsMatch(m.Result("$`"), @"\b(?:ter|tenho|tens|tem|temos|têm|tinha|tinham|tínhamos|" +
+                @"tive|teve|tivemos|tiveram|tiver|tiverem|tenha|tenham|havia|haviam|tivesse|tivessem)\s+$", Ci))
+                return Regex.IsMatch(m.Result("$`"), @"\b(?:testes?|provas?|exames?|questionários?|avaliaç(?:ão|ões))" +
+                    @"\s+(?:(?:foi|foram|está|estão|estava|estavam|tinha\s+sido|tem\s+sido)\s+)?$", Ci)
+                    ? CaseHelper.MatchCase(verb, "resolvid" + ending[2..] + " sem erros") : m.Value;
+            var result = "acert" + ending;
+            if (questions.Success)
+                result += m.Groups["gap"].Value + "todas as " + questions.Value;
+            else
+            {
+                result += " em tudo";
+                if (exam.Success)
+                {
+                    var det = m.Groups["det"].Value.ToLowerInvariant();
+                    result += m.Groups["gap"].Value + "n" + det + " " + exam.Value;
+                }
+            }
+            return CaseHelper.MatchCase(verb, result);
+        });
+        return ExamKey.Replace(text, m =>
+        {
+            var noun = m.Groups["noun"].Value;
+            if (blocked?.Invoke("gabarito") == true || blocked?.Invoke(noun) == true) return m.Value;
+            var det = m.Groups["det"].Value;
+            var target = (det.StartsWith("u", StringComparison.OrdinalIgnoreCase) ? "umas" : "as") + m.Groups["gap"].Value;
+            return CaseHelper.MatchCase(m.Value, target + "soluções");
+        });
+    }
+
     private static readonly Dictionary<string, string> WiretapForms = MapForms("grampear", "colocar");
     private static readonly Dictionary<string, string> InterceptForms = MapForms("grampear", "intercetar");
     private static readonly Regex InterceptConversation = new(
@@ -987,11 +1470,99 @@ internal static class ConversionConstructions
     private static readonly Dictionary<string, string> DozeForms = MapForms("cochilar", "dormitar");
     private static readonly Regex DozeVerb = new(Before + @"(?<v>" + FinitePattern("cochilar") + @")" + After, Ci);
 
+    private static readonly Dictionary<string, string> WidenForms = MapForms("lacear", "alargar");
+    private static readonly Dictionary<string, string> YieldForms = MapForms("lacear", "ceder");
+    private static readonly Dictionary<string, string> SoftenForms = MapForms("lacear", "amolecer");
+    private static readonly Regex LacearVerb = new(
+        DialogueBefore + @"(?<v>" + Alternatives(WidenForms.Keys.Append("laceá")) + @")" +
+        @"(?<cl>-(?:me|te|se|nos|vos|o|a|os|as|lo|la|los|las))?" + After, Ci);
+
+    private static string LacearVocabulary(string text, ReferenceHint? reference, Func<string, bool>? isBlocked) =>
+        LacearVerb.Replace(text, m =>
+        {
+            var verb = m.Groups["v"].Value;
+            if (isBlocked?.Invoke("lacear") == true || isBlocked?.Invoke(verb) == true) return m.Value;
+            var before = Regex.Match(m.Result("$`"), @"[^.!?;]*$").Value;
+            var after = Regex.Match(m.Result("$'"), @"^[^.!?;]*").Value;
+            var local = before + m.Value + after;
+            if (Regex.IsMatch(local, @"\b(?:laços?|fitas?|enfeites?|ornamentos?)\b", Ci) ||
+                Regex.IsMatch(reference?.EnglishText ?? "", @"\b(?:ribbons?|bows?|decorate|adorn)\b", Ci))
+                return m.Value;
+            var cliticInfinitive = verb.Equals("laceá", StringComparison.OrdinalIgnoreCase);
+            var key = cliticInfinitive ? "lacear" : verb;
+            var directObject = Regex.IsMatch(after,
+                @"^\s+(?:(?:um\s+pouco|mais|bem|ligeiramente)\s+)?(?:(?:o|a|os|as|um|uma|uns|umas|este|esta|estes|estas|esse|essa|esses|essas|" +
+                @"meus?|minhas?|seus?|suas?|teus?|tuas?|nossos?|nossas?)\s+\p{L}|(?:sapatos?|botas?|calças?|luvas?|cintos?|algemas?|couro|pele)\b)", Ci) ||
+                Regex.IsMatch(m.Groups["cl"].Value, @"^-(?:o|a|os|as|lo|la|los|las)$", Ci);
+            var material = Regex.IsMatch(local, @"\b(?:couro|pele|material)\b", Ci) &&
+                !Regex.IsMatch(local, @"\b(?:sapatos?|botas?|calças?|luvas?|algemas?|cintos?)\b", Ci);
+            var soften = material || Regex.IsMatch(reference?.EnglishText ?? "", @"\bsoften(?:s|ed|ing)?\b", Ci);
+            var target = (soften ? SoftenForms : directObject || m.Groups["cl"].Success || Regex.IsMatch(verb, @"ad[oa]s?$", Ci)
+                ? WidenForms : YieldForms)[key];
+            if (cliticInfinitive)
+                target = VerbConjugator.CliticInfinitive(soften ? "amolecer" : "alargar");
+            return CaseHelper.MatchCase(verb, target) + m.Groups["cl"].Value;
+        });
+
+    private static readonly Dictionary<string, string> PromisePersons = BuildPromisePersons();
+    private static Dictionary<string, string> BuildPromisePersons()
+    {
+        var forms = Forms("prometer");
+        // Same slots as VerbConjugator, through personal infinitives; ambiguous finite forms need an explicit subject.
+        var persons = new[]
+        {
+            "", "me", "te", "se", "nos", "se", "me", "te", "se", "se",
+            "", "te", "nos", "se", "me", "te", "se", "nos", "se",
+            "", "te", "nos", "se", "", "te", "nos", "se",
+            "", "te", "nos", "se", "te", "nos", "se",
+        };
+        return forms.Take(persons.Length).Select((form, i) => (form, person: persons[i]))
+            .GroupBy(item => item.form, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(group => group.Key,
+                group => group.Select(item => item.person).Distinct().Count() == 1 ? group.First().person : "",
+                StringComparer.OrdinalIgnoreCase);
+    }
+    private static readonly Regex PromiseLaugh = new(
+        Before + @"(?<v>" + Alternatives(PromisePersons.Keys) + @")(?<gap>\s+)(?<neg>não\s+|nunca\s+)?" +
+        @"(?:se\s+)?(?<inf>rir)(?:-se)?" + After + @"(?!-)", Ci);
+    private static readonly Regex TellNobody = new(
+        Before + @"(?<v>" + Alternatives(Forms("contar")) + "|" +
+        PortugueseConverter.PronounRules.DizerVerbForms + ")" +
+        @"(?<gap>\s+)(?<prep>para)(?=\s+ninguém\b)", Ci);
+    private static readonly Regex PromiseRequest = new(
+        @"(?<pre>^[\s""“«'\p{Co}-]*)(?<v>promete)(?=\s+(?:não\s+)?\p{L}+(?:ar|er|ir)\b[^.!?]*\?\s*[\p{Co}]*$)", Ci);
+
+    public static string PromiseQuestions(string text, ReferenceHint? reference) =>
+        reference != null && !reference.StartsWithSecondPersonSubject ? text :
+        PromiseRequest.Replace(text, m => m.Groups["pre"].Value + CaseHelper.MatchCase(m.Groups["v"].Value, "prometes"));
+
+    public static string PromiseComplements(string text)
+    {
+        text = PromiseLaugh.Replace(text, m =>
+        {
+            var clitic = PromisePersons[m.Groups["v"].Value];
+            var subject = Regex.Match(m.Result("$`"),
+                @"\b(?<subject>eu|tu|ele|ela|nós|vocês|eles|elas)\s+(?:(?:não|nunca|sempre|também|já|ainda|só|realmente)\s+){0,3}$", Ci);
+            if (subject.Success)
+                clitic = subject.Groups["subject"].Value.ToLowerInvariant() switch { "eu" => "me", "tu" => "te", "nós" => "nos", _ => "se" };
+            if (clitic.Length == 0) return m.Value;
+            if (CaseHelper.IsAllUpper(m.Groups["v"].Value)) clitic = clitic.ToUpperInvariant();
+            var infinitive = m.Groups["inf"].Value;
+            return m.Groups["v"].Value + m.Groups["gap"].Value +
+                (m.Groups["neg"].Success ? m.Groups["neg"].Value + clitic + " " + infinitive
+                    : infinitive + "-" + clitic);
+        });
+        return TellNobody.Replace(text, m => m.Groups["v"].Value + m.Groups["gap"].Value +
+            CaseHelper.MatchCase(m.Groups["prep"].Value, "a"));
+    }
+
     public static string ReviewedVerbSenses(string text, ReferenceHint? reference, Func<string, bool>? isBlocked = null)
     {
         bool Allowed(string infinitive, string form) =>
             isBlocked?.Invoke(infinitive) != true && isBlocked?.Invoke(form) != true;
         var english = reference?.EnglishText ?? "";
+        text = SpeechContentVocabulary(text, english, isBlocked);
+        text = PerfectScores(text, english, isBlocked);
         if (Regex.IsMatch(english, @"\b(?:chatter|wires|wiretap(?:ped|ping)?|intercept(?:ed|s|ing)?)\b", Ci))
             text = InterceptConversation.Replace(text, m => Allowed("grampear", m.Value)
                 ? CaseHelper.MatchCase(m.Value, InterceptForms[m.Value]) : m.Value);
@@ -1026,7 +1597,7 @@ internal static class ConversionConstructions
                 return CaseHelper.MatchCase(m.Value, StallForms[m.Value]) +
                     (CaseHelper.IsAllUpper(m.Value) ? " TEMPO" : " tempo");
             });
-        return text;
+        return LacearVocabulary(text, reference, isBlocked);
     }
 
     private static string Reflexive(string text, Match match, string verb, bool informal)
@@ -1217,6 +1788,74 @@ internal static class ConversionConstructions
         Before + @"(?<head>(?:(?<subject>eu|tu|ele|ela|nós|vocês|eles|elas)\s+)?" + Adverbs + @")" +
         @"(?<v>estou|estás|está|estamos|estão|estava|estavas|estávamos|estavam|estar|" + Alternatives(Forms("ficar")) + @")" +
         @"(?<space>\s+)de\s+saco\s+(?<adj>chei[oa]s?)" + After, Ci);
+    private static readonly Regex PainInTheNeck = new(
+        DialogueBefore + @"(?<det>um|uma|uns|umas)(?<gap>\s+)(?<phrase>p(?:é|és)(?:\s+|-)no(?:\s+|-)saco)" + After, Ci);
+    private static readonly Dictionary<string, string> AnnoyForms = MapForms("encher", "chatear")
+        .Concat(MapForms("torrar", "chatear")).ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.OrdinalIgnoreCase);
+    private static readonly Regex AnnoyingSack = new(
+        DialogueBefore + @"(?:(?<pre>me|te|nos|vos|lhe|lhes)\s+)?(?<verb>" + Alternatives(AnnoyForms.Keys) + @")" +
+        @"(?<post>-(?:me|te|nos|vos|lhe|lhes))?\s+(?:o\s+)?(?:(?<poss>meu|teu|nosso|vosso)\s+)?saco" +
+        After + @"(?!\s+(?:de|com)\b)", Ci);
+    private static readonly Regex AnnoyReference = new(
+        @"\b(?:annoy(?:s|ed|ing)?|bother(?:s|ed|ing)?|pester(?:s|ed|ing)?|nag(?:s|ged|ging)?)\b|" +
+        @"\b(?:pain\s+in\s+the\s+(?:ass|arse|neck|butt)|get(?:s|ting)?\s+on\s+\w+\s+nerves)\b", Ci);
+
+    public static string AnnoyanceSlang(string text, ReferenceHint? reference, bool pronouns, Func<string, bool> isBlocked)
+    {
+        text = PainInTheNeck.Replace(text, m =>
+        {
+            if (isBlocked("pé no saco") || isBlocked("pés no saco")) return m.Value;
+            var before = Regex.Match(m.Result("$`"), @"[^.!?;]*$").Value;
+            var after = Regex.Match(m.Result("$'"), @"^[^.!?;]*").Value;
+            if (Regex.IsMatch(before, @"\b(?:pôs|colocou|meteu|enfiou|enfiar|meter|pôr|colocar|com|tirou|tirar)\s+$", Ci) ||
+                Regex.IsMatch(after, @"^\s+(?:de\s+(?:dormir|papel|plástico|lixo|batatas)|com\s+)", Ci))
+                return m.Value;
+            var feminine = m.Groups["det"].Value.EndsWith("a", StringComparison.OrdinalIgnoreCase) ||
+                m.Groups["det"].Value.EndsWith("as", StringComparison.OrdinalIgnoreCase);
+            var plural = m.Groups["det"].Value.EndsWith("s", StringComparison.OrdinalIgnoreCase);
+            var thing = Regex.IsMatch(before,
+                @"\b(?:isso|isto|aquilo|tudo|o\s+(?:trabalho|trânsito|processo|filme)|a\s+(?:burocracia|papelada|espera))" +
+                @"\s+(?:é|era|foi|será|seria|parece|tornou-se)\s+$", Ci);
+            var person = feminine || Regex.IsMatch(before, @"\b(?:eu|tu|ele|ela|nós|vocês|eles|elas)" +
+                @"\s+(?:sou|és|é|somos|são|era|eras|éramos|eram|foi|fui|foram|parece|parecem)\s+$", Ci) ||
+                Regex.IsMatch(after, @"^\s+(?:da\s+polícia|do\s+(?:FBI|departamento)|que\s+(?:me|te|nos)\s+)", Ci) ||
+                Regex.IsMatch(reference?.EnglishText ?? "", @"\b(?:he|she|you|they|guy|woman|man|cop|NYPD|FBI)\b", Ci);
+            var noun = thing ? "chatice" : person ? feminine ? "chata" : "chato" : "incómodo";
+            if (plural) noun += "s";
+            var det = thing ? plural ? "umas" : "uma" : person ? m.Groups["det"].Value.ToLowerInvariant() : plural ? "uns" : "um";
+            return CaseHelper.MatchCase(m.Groups["det"].Value, det) + m.Groups["gap"].Value +
+                CaseHelper.MatchCase(m.Groups["phrase"].Value, noun);
+        });
+        if (!pronouns) return text;
+        return AnnoyingSack.Replace(text, m =>
+        {
+            var verb = m.Groups["verb"].Value;
+            var infinitive = verb.StartsWith("torr", StringComparison.OrdinalIgnoreCase) ? "torrar" : "encher";
+            if (isBlocked(infinitive) || isBlocked(verb) || isBlocked("encher o saco") || isBlocked("torrar o saco"))
+                return m.Value;
+            var before = Regex.Match(m.Result("$`"), @"[^.!?;]*$").Value;
+            var after = m.Result("$'");
+            if (PortugueseVerbs.IsFutureOrConditional(verb) ||
+                Regex.IsMatch(after, @"^\s+(?:até|cheio|vazio|azul|preto|branco)\b", Ci) ||
+                Regex.IsMatch(reference?.EnglishText ?? "", @"\b(?:fill(?:s|ed|ing)?|roast(?:s|ed|ing)?)\b[^.!?]*\b(?:bag|sack)\b|" +
+                    @"\b(?:money|profit|profits)\b", Ci)) return m.Value;
+            var hasClitic = m.Groups["pre"].Success || m.Groups["post"].Success;
+            if (hasClitic && m.Groups["poss"].Success) return m.Value;
+            var stopCommand = Regex.IsMatch(before, @"\b(?:para|pare|pares|parem|deixa|deixe|deixes|deixem)\s+de\s+$", Ci);
+            if (!hasClitic && !m.Groups["poss"].Success &&
+                !stopCommand && !AnnoyReference.IsMatch(reference?.EnglishText ?? "")) return m.Value;
+            var target = CaseHelper.MatchCase(verb, AnnoyForms[verb]);
+            if (m.Groups["pre"].Success) return m.Groups["pre"].Value + " " + target;
+            if (m.Groups["post"].Success) return PortugueseVerbs.AttachEnclitic(target, m.Groups["post"].Value[1..]);
+            if (m.Groups["poss"].Success)
+            {
+                var clitic = m.Groups["poss"].Value.ToLowerInvariant() switch
+                { "meu" => "me", "teu" => "te", "nosso" => "nos", _ => "vos" };
+                return clitic + " " + target;
+            }
+            return target;
+        });
+    }
     private static readonly Regex VerbalIntensifier = new(
         Before + @"(?<v>" + Alternatives(new[] { "falar", "trabalhar", "estudar", "correr" }.SelectMany(Forms)) + @")" +
         @"(?<space>\s+)(?:pra|para)\s+caramba" + After, Ci);
@@ -1237,12 +1876,57 @@ internal static class ConversionConstructions
         ["semana"] = "week", ["semanas"] = "weeks", ["mês"] = "month", ["meses"] = "months",
     };
     private static readonly Regex QuantifiedPoliceNoun = new(
-        Before + @"(?<quantity>(?:(?:muito|muitos|muitas|bem|ainda|cada\s+vez)\s+)?(?:mais|menos)|" +
+        Before + @"(?<quantity>(?:há|havia|houve|haverá|haveria|haja|houvesse|houver)(?:\s+(?:ainda|já|também|sempre|só|apenas))?|" +
+        @"(?:(?:muito|muitos|muitas|bem|ainda|cada\s+vez)\s+)?(?:mais|menos)|" +
         @"(?:alguns|algumas|vários|várias|muitos|muitas|poucos|poucas|tantos|tantas|quantos|quantas)|\d+)" +
         @"(?<gap>\s+)(?<noun>policiais)" + After, Ci);
 
-    public static string PoliceNouns(string text) => QuantifiedPoliceNoun.Replace(text, m =>
-        m.Groups["quantity"].Value + m.Groups["gap"].Value + CaseHelper.MatchCase(m.Groups["noun"].Value, "polícias"));
+    private static readonly Regex PrepositionalPoliceNoun = new(
+        Before + @"(?<prep>para|pra|com|sem|entre|perante|por|a|em)(?<gap>\s+)" +
+        @"(?<noun>policiais)" + After +
+        @"(?=\s*(?:[,.;:!?…\uE000-\uF8FF]|$)|\s+(?:e|ou|que|como|do|da|dos|das|" +
+        @"corruptos|corruptas|honestos|honestas|armados|armadas|fardados|fardadas|" +
+        @"uniformizados|uniformizadas|feridos|feridas|mortos|mortas|suficientes|" +
+        @"presentes|envolvidos|envolvidas|disfarçados|disfarçadas)\b)", Ci);
+
+    public static string PoliceNouns(string text)
+    {
+        text = QuantifiedPoliceNoun.Replace(text, m =>
+            m.Groups["quantity"].Value + m.Groups["gap"].Value + CaseHelper.MatchCase(m.Groups["noun"].Value, "polícias"));
+        return PrepositionalPoliceNoun.Replace(text, m =>
+        {
+            if (m.Groups["prep"].Value.Equals("a", StringComparison.OrdinalIgnoreCase) &&
+                Regex.IsMatch(text[..m.Index], @"\b(?:com|sem|para|pra|por|entre|perante|em)\s+$", Ci))
+                return m.Value;
+            return m.Groups["prep"].Value + m.Groups["gap"].Value + CaseHelper.MatchCase(m.Groups["noun"].Value, "polícias");
+        });
+    }
+
+    private static readonly Regex PossessiveDoorway = new(
+        Before + @"(?<prep>na|nas)(?<gap>\s+)(?<poss>minha|tua|sua|nossa|vossa|minhas|tuas|suas|nossas|vossas)" +
+        @"(?<space>\s+)(?<door>portas?)" + After, Ci);
+    private static readonly Regex AtDoorReference = new(
+        @"\bat\s+(?:(?:my|your|his|her|our|their|the)\s+)(?:front\s+|back\s+)?doors?\b", Ci);
+
+    public static string DoorwayLocation(string text, ReferenceHint? reference) =>
+        PossessiveDoorway.Replace(text, m =>
+        {
+            var before = Regex.Match(m.Result("$`"), @"[^.!?;]*$").Value;
+            var after = Regex.Match(m.Result("$'"), @"^[^.!?;]*").Value;
+            var literalSurface = Regex.IsMatch(before + after,
+                @"\b(?:marcas?|buracos?|riscos?|sangue|tinta|cartaz(?:es)?|avisos?|placas?|números?|fechaduras?|maçanetas?|chaves?|desenhos?|pintad[oa]s?|colad[oa]s?|escrit[oa]s?)\b", Ci);
+            if (literalSurface) return m.Value;
+            var presence = Regex.IsMatch(before,
+                @"\b(?:há|havia|houve|haverá|haveria|está|estão|estava|estavam|ficou|ficaram|espera|esperam|esperava|esperavam)" +
+                @"\s+(?:(?:um|uma|uns|umas|o|a|os|as|algum|alguma|alguns|algumas|mais|menos|dois|duas|três)\s+)?" +
+                @"(?:polícias?|policiais|agentes?|pessoas?|homens?|mulheres|mulher|rapazes|raparigas|visitas?|alguém|ninguém)\s+$", Ci) ||
+                Regex.IsMatch(before, @"\b(?:eu|tu|ele|ela|nós|vocês|eles|elas|alguém|ninguém|polícias|agentes|pessoas|homens|mulheres)" +
+                    @"\s+(?:estou|estás|está|estamos|estão|estava|estavas|estávamos|estavam|espera|esperam|esperava|esperavam)\s+$", Ci);
+            if (!presence && !AtDoorReference.IsMatch(reference?.EnglishText ?? "")) return m.Value;
+            return CaseHelper.MatchCase(m.Groups["prep"].Value,
+                m.Groups["prep"].Value.Equals("nas", StringComparison.OrdinalIgnoreCase) ? "às" : "à") +
+                m.Groups["gap"].Value + m.Groups["poss"].Value + m.Groups["space"].Value + m.Groups["door"].Value;
+        });
 
     private static readonly Regex SlowPeriod = new(
         Before + @"(?<noun>" + Alternatives(SlowPeriodReferences.Keys) + @")(?<gap>\s+)(?<adverb>devagar)" +
@@ -1487,6 +2171,14 @@ internal static class ConversionConstructions
         GroupApology.Replace(text, m => m.Groups["pre"].Value + CaseHelper.MatchCase(m.Groups["v"].Value,
             m.Groups["v"].Value.StartsWith("d", StringComparison.OrdinalIgnoreCase) ? "desculpem" : "perdoem"));
 
+    private static readonly Regex ArrivalApology = new(
+        @"(?<head>(?:^|\n)[\s\uE000-\uF8FF-]*(?:(?:ei|olá|oi|boa\s+noite|bom\s+dia|boa\s+tarde)[!,.]\s*)?)" +
+        @"(?<verb>desculpa|desculpe|perdoa|perdoe)(?<end>[!.\uE000-\uF8FF\s]*$)", Ci);
+    public static string ArrivalGroupApology(string text) => ArrivalApology.Replace(text, m =>
+        m.Groups["head"].Value + CaseHelper.MatchCase(m.Groups["verb"].Value,
+            m.Groups["verb"].Value.StartsWith("d", StringComparison.OrdinalIgnoreCase) ? "desculpem" : "perdoem") +
+        m.Groups["end"].Value);
+
     public static string CausativeYouPlural(string text)
     {
         if (text.IndexOf("vocês", StringComparison.OrdinalIgnoreCase) < 0) return text;
@@ -1508,8 +2200,58 @@ internal static class ConversionConstructions
         });
     }
 
+    private static readonly Dictionary<string, string> WealthToFortune = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["sou"] = "tenho", ["és"] = "tens", ["é"] = "tem", ["somos"] = "temos", ["são"] = "têm",
+        ["era"] = "tinha", ["eras"] = "tinhas", ["éramos"] = "tínhamos", ["eram"] = "tinham",
+        ["fui"] = "tive", ["foste"] = "tiveste", ["foi"] = "teve", ["fomos"] = "tivemos", ["foram"] = "tiveram",
+        ["serei"] = "terei", ["serás"] = "terás", ["será"] = "terá", ["seremos"] = "teremos", ["serão"] = "terão",
+        ["seria"] = "teria", ["serias"] = "terias", ["seríamos"] = "teríamos", ["seriam"] = "teriam",
+        ["seja"] = "tenha", ["sejas"] = "tenhas", ["sejamos"] = "tenhamos", ["sejam"] = "tenham",
+        ["fosse"] = "tivesse", ["fosses"] = "tivesses", ["fôssemos"] = "tivéssemos", ["fossem"] = "tivessem",
+        ["for"] = "tiver", ["fores"] = "tiveres", ["formos"] = "tivermos", ["forem"] = "tiverem",
+        ["ser"] = "ter", ["seres"] = "teres", ["sermos"] = "termos", ["serem"] = "terem", ["sendo"] = "tendo",
+    };
+    private static readonly Regex RichInPeople = new(
+        Before + @"(?<v>" + Alternatives(WealthToFortune.Keys) + @")(?<gap>\s+)ric[oa]s?\s+(?:de|em)\s+" +
+        @"(?<people>(?:(?:os|as|meus|minhas|teus|tuas|seus|suas|nossos|nossas|bons|boas|grandes|verdadeiros|verdadeiras)\s+){0,3}" +
+        @"(?:parceir[oa]s|amig[oa]s|companheir[oa]s|colegas|aliad[oa]s|família))" + After, Ci);
+    private static readonly Regex RichInPeopleReference = new(
+        @"\brich\s+(?:in|with)\s+(?:(?:my|your|his|her|our|their|good|great|close|true|loyal)\s+){0,3}" +
+        @"(?:partners|friends|companions|colleagues|allies|family)\b" +
+        @"(?!['’]|\s+(?:money|wealth|fortune|income|profits|assets)\b)", Ci);
+    private static readonly Regex LifePageantReference = new(
+        @"\blife['’]s\s+rich\s+(?:pageant|tapestry)\b", Ci);
+    private static readonly Regex LifePageant = new(
+        Before + @"(?<article>(?:o|a|do|da|no|na|ao|à|pelo|pela)\s+)?(?<phrase>ric[oa]\s+(?:trama|tapeçaria|desfile|cortejo|espetáculo)\s+da\s+vida)" +
+        After, Ci);
+
+    private static string LifePageantVocabulary(string text, ReferenceHint? reference)
+    {
+        if (!LifePageantReference.IsMatch(reference?.EnglishText ?? "")) return text;
+        return LifePageant.Replace(text, m =>
+        {
+            var phrase = m.Groups["phrase"].Value;
+            var before = m.Result("$`");
+            if (Regex.IsMatch(before, @"\b(?:um|uma|este|esta|esse|essa|aquele|aquela|todo|toda)\s+$", Ci))
+                return m.Value;
+            var article = m.Groups["article"].Value.Trim().ToLowerInvariant() switch
+            {
+                "do" or "da" => "do",
+                "no" or "na" => "no",
+                "ao" or "à" => "ao",
+                "pelo" or "pela" => "pelo",
+                _ => "o",
+            };
+            var target = article + " rico espetáculo da vida";
+            var original = m.Groups["article"].Success ? m.Value : phrase;
+            return CaseHelper.MatchCase(original, target);
+        });
+    }
+
     public static string Idioms(string text, ReferenceHint? reference)
     {
+        text = LifePageantVocabulary(text, reference);
         text = WrongAsAdverb(text);
         text = ScoreDrugsInText(text, reference);
         text = SlowPeriod.Replace(text, m =>
@@ -1529,6 +2271,10 @@ internal static class ConversionConstructions
         text = LetsGoExpression.Replace(text, m => m.Groups["head"].Value +
             CaseHelper.MatchCase(m.Groups["phrase"].Value, "vamos a isso"));
         var english = reference?.EnglishText;
+        if (RichInPeopleReference.IsMatch(english ?? ""))
+            text = RichInPeople.Replace(text, m => CaseHelper.MatchCase(m.Groups["v"].Value,
+                WealthToFortune[m.Groups["v"].Value]) + m.Groups["gap"].Value +
+                (CaseHelper.IsAllUpper(m.Value) ? "SORTE COM " : "sorte com ") + m.Groups["people"].Value);
         if (english != null)
         {
             var plain = ReferenceAligner.Clean(english).Replace('’', '\'');

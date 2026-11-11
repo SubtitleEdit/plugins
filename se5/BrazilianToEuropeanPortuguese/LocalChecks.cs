@@ -111,7 +111,8 @@ internal static class JudgeAlternatives
     }
 }
 
-internal sealed record CheckLine(int Index, string Original, string Converted, string? Previous, string? Reference);
+internal sealed record CheckLine(int Index, string Original, string Converted, string? Previous, string? Reference,
+    SentenceMeaning? MeaningSentence = null);
 
 internal sealed record CheckResult(string Text, string? Note);
 
@@ -177,6 +178,27 @@ internal static class LocalChecks
             return null;
         return $"MiniLM (possible English idiom): similarity {before:0.00} before the rules, {after:0.00} after " +
             $"to the possible reading “{reading}” - check the context; literal use is also possible.";
+    }
+
+    internal static async Task<string?> SentenceMeaningNoteAsync(SentenceMeaning sentence, string converted,
+        Func<string?, Task<float[]?>> embed)
+    {
+        var comparable = IsComparable(sentence.Original, sentence.Reference) && IsComparable(converted, sentence.Reference);
+        if (sentence.Original == converted && !comparable) return null;
+        var original = await embed(sentence.Original);
+        var final = sentence.Original == converted ? original : await embed(converted);
+        if (original == null || final == null) return null;
+        var similarity = ReferenceAligner.Dot(original, final);
+        var reference = comparable ? await embed(sentence.Reference) : null;
+        var before = reference == null ? (double?)null : ReferenceAligner.Dot(original, reference);
+        var after = reference == null ? (double?)null : ReferenceAligner.Dot(final, reference);
+        if (similarity >= MeaningThreshold && !(before < TranslationThreshold) && !(after < TranslationThreshold) &&
+            !(before - after >= (before >= FaithfulBaseline ? SuspiciousDrop : ReferenceDrop)))
+            return null;
+        return $"MiniLM (sentence context, cues {sentence.First + 1}-{sentence.Last + 1}): " +
+            $"original/converted similarity {similarity:0.00}" +
+            (reference == null ? "" : $"; English similarity {before:0.00} before the rules, {after:0.00} after") +
+            " - review the whole sentence. Meaning similarity does not validate relative pronouns or verb agreement.";
     }
 
     internal static async Task<(Dictionary<int, CheckResult> Results, string Summary)> RunAsync(IReadOnlyList<CheckLine> lines,
@@ -266,7 +288,9 @@ internal static class LocalChecks
         // Stage 1 (before the rules): is the Brazilian line itself faithful to the English? Stage 2 (after): did the rules keep it so?
         var referenced = lines.Where(l => IsComparable(l.Original, l.Reference) || IsComparable(texts[l.Index], l.Reference)).ToList();
         var idiomatic = lines.Where(l => IdiomHints.MeaningReference(l.Reference) != null).ToList();
-        if (changed.Count == 0 && referenced.Count == 0 && idiomatic.Count == 0) return (0, 0);
+        var sentences = lines.Where(l => l.MeaningSentence != null).GroupBy(l => l.MeaningSentence!)
+            .Where(g => g.Count() == g.Key.Last - g.Key.First + 1).ToList();
+        if (changed.Count == 0 && referenced.Count == 0 && idiomatic.Count == 0 && sentences.Count == 0) return (0, 0);
         await using var runtime = await EmbeddingRuntime.StartAsync(settings, progress, token);
         var cache = new Dictionary<string, float[]>(StringComparer.Ordinal);
         async Task<float[]?> Embed(string? text)
@@ -335,6 +359,18 @@ internal static class LocalChecks
                 if (flaggedLines.Add(line.Index)) translation++;
             }
             if (i % 50 == 0) progress.Report($"MiniLM: idiom check {i + 1}/{idiomatic.Count}...");
+        }
+        foreach (var sentence in sentences)
+        {
+            token.ThrowIfCancellationRequested();
+            var converted = string.Join(" ", sentence.OrderBy(l => l.Index).Select(l => texts[l.Index]));
+            var sentenceNote = await SentenceMeaningNoteAsync(sentence.Key, converted, Embed);
+            if (sentenceNote == null) continue;
+            foreach (var line in sentence)
+            {
+                note(line.Index, sentenceNote);
+                if (flaggedLines.Add(line.Index)) translation++;
+            }
         }
         return (flagged, translation);
     }

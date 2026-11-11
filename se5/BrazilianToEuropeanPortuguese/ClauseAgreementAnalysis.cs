@@ -25,7 +25,9 @@ internal sealed class ClauseAgreementAnalysis
     private static readonly HashSet<string> ClauseLinks = new(StringComparer.OrdinalIgnoreCase)
         { "que", "se", "quando", "porque", "embora", "enquanto", "caso", "mas" };
     private static readonly HashSet<string> Determiners = new(StringComparer.OrdinalIgnoreCase)
-        { "o", "a", "os", "as", "um", "uma", "uns", "umas", "este", "esta", "aquele", "aquela" };
+        { "o", "a", "os", "as", "um", "uma", "uns", "umas", "este", "esta", "estes", "estas",
+          "esse", "essa", "esses", "essas", "aquele", "aquela", "aqueles", "aquelas",
+          "todo", "toda", "todos", "todas", "cada", "qualquer", "algum", "alguma", "nenhum", "nenhuma" };
     private static readonly HashSet<string> Adverbs = new(StringComparer.OrdinalIgnoreCase)
         { "não", "nunca", "já", "ainda", "sempre", "só", "apenas", "também", "talvez", "bem", "então", "pois",
           "provavelmente", "certamente", "possivelmente", "realmente", "sim", "ora", "bom", "agora", "claro",
@@ -109,12 +111,19 @@ internal sealed class ClauseAgreementAnalysis
         {
             var word = _tokens[i].Text;
             if (word == "," || Adverbs.Contains(word) || AddresseeAdverb.IsMatch(word)) continue;
+            if (word.Equals("o", StringComparison.OrdinalIgnoreCase) && i + 2 < last &&
+                _tokens[i + 1].Text.Equals("quê", StringComparison.OrdinalIgnoreCase) && _tokens[i + 2].Text == ",")
+            {
+                i += 2;
+                continue;
+            }
             if (word.Equals("tu", StringComparison.OrdinalIgnoreCase) || word.Equals("você", StringComparison.OrdinalIgnoreCase))
                 return SubjectOwner.Addressee;
             if (Regex.IsMatch(word, @"^(?:eu|ele|ela|eles|elas|nós|vocês|isto|isso|aquilo|alguém|ninguém)$", Ci))
                 return SubjectOwner.Other;
             if (Determiners.Contains(word) && i + 1 < last &&
-                !PortugueseVerbs.IsKnownVerbForm(_tokens[i + 1].Text))
+                (!PortugueseVerbs.IsKnownVerbForm(_tokens[i + 1].Text) ||
+                 Determiners.Contains(_tokens[i + 1].Text)))
                 return SubjectOwner.Other;
             if (PortugueseVerbs.IsSecondPersonForm(word)) return SubjectOwner.Addressee;
             if (Candidates(word).HasFlag(VerbCandidate.ThirdPerson)) return SubjectOwner.Unknown;
@@ -183,6 +192,11 @@ internal sealed class ClauseAgreementAnalysis
         if (clause.Parent >= 0 && reference is not { RepeatedYouSubject: true })
         {
             var parent = _clauses[clause.Parent];
+            if (!clause.Conditional && _tokens[clause.First - 1].Text.Equals("que", StringComparison.OrdinalIgnoreCase) &&
+                parent.Last > parent.First &&
+                Regex.IsMatch(_tokens[parent.Last - 1].Text, @"^(?:alguém|ninguém|aquele|aquela|aqueles|aquelas)$", Ci) &&
+                EnglishRelativeSubject.IsMatch(reference?.EnglishText ?? ""))
+                return new(false, AgreementBlock.RelativeSubject, SubjectOwner.RelativeAntecedent, candidate);
             if (!clause.Conditional && _tokens[clause.First - 1].Text.Equals("que", StringComparison.OrdinalIgnoreCase) &&
                 parent.Last - parent.First >= 2 &&
                 Regex.IsMatch(_tokens[parent.Last - 2].Text, @"^(?:o|a|os|as|um|uma|uns|umas|do|da|dos|das|dum|duma)$", Ci) &&

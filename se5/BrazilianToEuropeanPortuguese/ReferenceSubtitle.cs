@@ -21,6 +21,10 @@ public sealed record ReferenceHint(bool SecondPerson, bool SecondPossessive, boo
     internal bool ConditionalYouSubject { get; init; }
     internal bool SelfActionQuestion { get; init; }
     internal bool SecondPersonWhatSubject { get; init; }
+    internal bool GroupArrivalApology { get; init; }
+    internal bool AddresseeContinuation { get; init; }
+    internal bool TopicRelativeContinuation { get; init; }
+    internal bool InformalTagContinuation { get; init; }
     internal string? EnglishText { get; init; }
 
     public static ReferenceHint? FromContext(IReadOnlyList<SrtBlock> source, int index, IReadOnlyList<string?>? english = null,
@@ -75,6 +79,9 @@ public sealed record ReferenceHint(bool SecondPerson, bool SecondPossessive, boo
 
     /// <summary>The English says "girl" (not "kid"): "garota" is "rapariga", not "miúda".</summary>
     public bool Girl { get; init; }
+
+    public bool ExplicitBoy { get; init; }
+    public bool ExplicitGirl { get; init; }
 
     /// <summary>The English says "kid/child/little": "miúdo" is right.</summary>
     public bool Kid { get; init; }
@@ -131,7 +138,13 @@ public sealed record ReferenceHint(bool SecondPerson, bool SecondPossessive, boo
     private static readonly Regex InitialYouSubject = new(
         @"^\s*(?:(?:no|yes)\s*[.,!]\s*)?" +
         @"(?:(?:well|so|then|but|and|now|hey|look|listen|okay|ok|all\s+right)\b[,!?;:]?\s*)?" +
-        @"(?:(?:maybe|perhaps|probably|surely|certainly|at\s+least)\s+){0,2}(?:you\b|you['’](?:re|ll|ve|d)\b|y['’]all\b)",
+        @"(?:(?:maybe|perhaps|probably|surely|certainly|at\s+least)\s+){0,2}" +
+        @"(?:(?:do|did|are|were|have|had|will|would|can|could|should|must)(?:n['’]t)?\s+)?" +
+        @"(?:you\b(?!\s+(?:and|or|all|both|guys|two|people)\b)|you['’](?:re|ll|ve|d)\b|y['’]all\b)",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    private static readonly Regex PromiseQuestion = new(
+        @"^\s*(?:(?:well|so|and|please)\s*[,!]?\s+)?(?:(?:do|will|would|can|could)\s+you\s+)?" +
+        @"promise\s+(?:not\s+to|to)\s+[^?!.]+\?\s*$",
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     private static readonly Regex InitialConditionalYouSubject = new(
         @"^\s*(?:(?:well|so|then|but|and|or)\b[,!?;:]?\s*)?" +
@@ -139,7 +152,7 @@ public sealed record ReferenceHint(bool SecondPerson, bool SecondPossessive, boo
         @"you(?=\s+(?!(?:and|or|all|both|guys)\b)\p{L})",
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     private static readonly Regex YouSubject = new(
-        @"(?<![\p{L}\p{M}])(?:you|y['’]all)\s+(?:(?:never|ever|always|already|just|really|still|only|also|actually)\s+){0,3}(?:" + SubjectVerbs + @"|\p{L}+(?:ed|ing))\b",
+        @"(?<![\p{L}\p{M}])(?:you['’](?:re|ll|ve|d)\b|(?:you|y['’]all)\s+(?:(?:never|ever|always|already|just|really|still|only|also|actually)\s+){0,3}(?:" + SubjectVerbs + @"|\p{L}+(?:ed|ing))\b)",
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     // "Why did you decide to help us?": the inverted "you" of a wh-question is the subject.
     private static readonly Regex InvertedYouSubject = new(
@@ -197,7 +210,9 @@ public sealed record ReferenceHint(bool SecondPerson, bool SecondPossessive, boo
 
         var subjectText = Regex.Replace(clean, @"^\s*you\s+know\s*,\s*", "",
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-        var startsWithSecondPersonSubject = InitialYouSubject.IsMatch(subjectText);
+        var promiseQuestion = PromiseQuestion.IsMatch(subjectText);
+        second |= promiseQuestion;
+        var startsWithSecondPersonSubject = InitialYouSubject.IsMatch(subjectText) || promiseQuestion;
         var secondPersonSubject = startsWithSecondPersonSubject || YouSubject.IsMatch(subjectText) || InvertedYouSubject.IsMatch(subjectText);
         return new ReferenceHint(second, secondOwn, third, thirdOwn)
         {
@@ -212,6 +227,8 @@ public sealed record ReferenceHint(bool SecondPerson, bool SecondPossessive, boo
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant),
             Boy = boy && !kid,
             Girl = girl && !kid,
+            ExplicitBoy = Regex.IsMatch(clean, @"\bboys?\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant),
+            ExplicitGirl = Regex.IsMatch(clean, @"\bgirls?\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant),
             Kid = kid,
             This = near && !far,
             SecondPersonSubject = secondPersonSubject,
@@ -284,6 +301,7 @@ internal static class DialogueRegister
                 var labelChange = speaker.Length > 0 && candidateSpeaker.Length > 0 && speaker != candidateSpeaker ||
                                   SpeakerOf(left.Text).Length > 0 && SpeakerOf(right.Text).Length > 0 && SpeakerOf(left.Text) != SpeakerOf(right.Text);
                 if (labelChange) break;
+                if (direction > 0 && StartsNewRecipient(source, candidate, english)) break;
                 if (Address(candidate)) return true;
                 if (candidateSpeaker.Length > 0) speaker = candidateSpeaker;
                 previous = candidate;
@@ -293,6 +311,31 @@ internal static class DialogueRegister
 
         bool Address(int i) => HasAddress(Plain(source[i].Text), PortugueseAddress) ||
                                english != null && HasAddress(Plain(english[i] ?? string.Empty), EnglishAddress);
+    }
+
+    private static bool StartsNewRecipient(IReadOnlyList<SrtBlock> source, int index, IReadOnlyList<string?>? english)
+    {
+        var summons = Regex.Match(Plain(source[index].Text),
+            @"^\s*(?:Sr|Sra|Srta|Dr|Dra|senhor|senhora|doutor|doutora)\.?\s+" +
+            @"(?<name>\p{Lu}[\p{L}\p{M}'’-]+)\s*\?\s*$");
+        if (!summons.Success) return false;
+        var previous = index;
+        for (var earlier = index - 1; earlier >= Math.Max(0, index - 12); earlier--)
+        {
+            if (source[previous].StartMs - source[earlier].EndMs > 5000 ||
+                source[index].StartMs - source[earlier].StartMs > 30000 ||
+                DifferentSpeaker(source[previous].Text, source[earlier].Text)) break;
+            var vocative = Regex.Match(Plain(source[earlier].Text),
+                @",\s*(?<name>\p{Lu}[\p{Ll}\p{M}'’-]+)\s*[.!?…]*\s*$");
+            if (vocative.Success && !vocative.Groups["name"].Value.Equals(summons.Groups["name"].Value,
+                    StringComparison.OrdinalIgnoreCase) &&
+                !PortugueseConverter.YouToTuRules.IsFormal(vocative.Value) &&
+                (english == null || Regex.IsMatch(Plain(english[earlier] ?? ""),
+                    @",\s*" + Regex.Escape(vocative.Groups["name"].Value) + @"\s*[.!?…]*\s*$")))
+                return true;
+            previous = earlier;
+        }
+        return false;
     }
 
     private static string Plain(string text) => Regex.Replace(text, @"<[^<>]*>|\{[^{}]*\}", " ");
@@ -688,6 +731,7 @@ public static class GrammarReview
     {
         var plain = Regex.Replace(text, @"<[^<>]*>|\{[^{}]*\}", " ");
         var notes = new List<string>();
+        notes.AddRange(RelativeAndModalGrammar.Review(plain));
         foreach (Match m in ExplicitSubject.Matches(plain))
         {
             var subject = m.Groups["subject"].Value;

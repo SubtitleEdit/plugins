@@ -59,6 +59,8 @@ internal static class PortugueseOrthography
         return Word.Replace(text, match =>
         {
             var word = match.Value;
+            if (word.Equals(postAgreement ? "dêem" : "deem", StringComparison.OrdinalIgnoreCase))
+                return CaseHelper.MatchCase(word, postAgreement ? "deem" : "dêem");
             if (dictionary.Check(word)) return word;
             var candidates = Stems
                 .Select(pair => (From: postAgreement ? pair.Before : pair.After, To: postAgreement ? pair.After : pair.Before))
