@@ -158,6 +158,35 @@ public sealed class GrammarChecksTests
         Assert.Equal("têm razão.", result.Texts[1]);
     }
 
+    [Theory]
+    [InlineData("Eles tem razão.", "Eles têm razão.")]
+    [InlineData("Eles\ntem razão.", "Eles\ntêm razão.")]
+    public async Task LanguageToolPhraseReplacementsPreserveWhitespaceAndRejectSubjectChanges(string before, string expected)
+    {
+        var result = await Run(new[] { Line(before) }, embed: SameMeaning, check: (text, _) =>
+            Task.FromResult<IReadOnlyList<GrammarMatch>>(text.Contains("tem", StringComparison.Ordinal)
+                ? new[] { new GrammarMatch(0, text.IndexOf("tem", StringComparison.Ordinal) + 3, "GENERAL_VERB_AGREEMENT_ERRORS",
+                    "Concordância.", new[] { "Eles têm", "Ele tem" }) } : Array.Empty<GrammarMatch>()));
+        Assert.Equal(expected, result.Texts[0]);
+    }
+
+    [Fact]
+    public async Task ActualPhraseReplacementMaySpanSafeCueBoundaryButOnlyVerbChanges()
+    {
+        var sentence = new SentenceMeaning(0, 1, "Eles tem razão.", "They are right.");
+        var lines = new[]
+        {
+            Line("Eles", "They") with { MeaningSentence = sentence },
+            new CheckLine(1, "tem razão.", "tem razão.", null, "are right.", sentence),
+        };
+        var result = await Run(lines, embed: SameMeaning, check: (text, _) =>
+            Task.FromResult<IReadOnlyList<GrammarMatch>>(text.Contains("tem", StringComparison.Ordinal)
+                ? new[] { new GrammarMatch(0, 8, "GENERAL_VERB_AGREEMENT_ERRORS", "Concordância.",
+                    new[] { "Eles têm", "Ele tem" }) } : Array.Empty<GrammarMatch>()));
+        Assert.Equal("Eles", result.Texts[0]);
+        Assert.Equal("têm razão.", result.Texts[1]);
+    }
+
     [Fact]
     public async Task LowSimilarityWithholdsCandidateBeforeGrammarRecheck()
     {
@@ -409,7 +438,7 @@ public sealed class GrammarChecksTests
             RequestType = PluginRequestType.Batch,
             Subtitle = new PluginSubtitle { SubRip = "1\n00:00:01,234 --> 00:00:03,456\nOlá, mundo.\n\n" },
             SettingsVersion = ConversionOptions.Version,
-            Settings = new ConversionOptions(GrammarCheck: true, GrammarServer: $"http://127.0.0.1:{port}/").ToJson(),
+            Settings = new ConversionOptions(GrammarCheck: true, GrammarServer: $"http://127.0.0.1:{port}/", GrammarExternalServer: true).ToJson(),
         };
         var result = await Task.Run(() => BatchMode.BuildBatchResponse(request, Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".xml"),
             new EmbeddingSettings(CheckMeaning: false)), limit.Token);
@@ -429,7 +458,7 @@ public sealed class GrammarChecksTests
             RequestType = PluginRequestType.Batch,
             Subtitle = new PluginSubtitle { SubRip = "1\n00:00:01,234 --> 00:00:03,456\nPegue o ônibus.\n\n" },
             SettingsVersion = ConversionOptions.Version,
-            Settings = new ConversionOptions(GrammarCheck: true, GrammarServer: "http://127.0.0.1:0/").ToJson(),
+            Settings = new ConversionOptions(GrammarCheck: true, GrammarServer: "http://127.0.0.1:0/", GrammarExternalServer: true).ToJson(),
         };
         var response = BatchMode.BuildBatchResponse(request, Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".xml"),
             new EmbeddingSettings(CheckMeaning: false));

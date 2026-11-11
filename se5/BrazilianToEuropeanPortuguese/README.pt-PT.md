@@ -6,10 +6,13 @@ Português europeu | [English](README.md)
 
 ## Alterações mais recentes
 
-- Verificação experimental com **LanguageTool pt-PT autoalojado, desativada por
+- Verificação experimental com **LanguageTool pt-PT local, desativada por
   predefinição**, com sugestões para revisão e correções de concordância muito
   delimitadas, protegidas pela referência inglesa e pelo MiniLM. Sem geração de
-  texto nem instalação automática de Java ou do LanguageTool.
+  texto. O verificador e o Java portátil são descarregados pelo próprio plugin,
+  sem instalar Java no sistema nem configurar um servidor manualmente.
+- O painel de referência/modelos locais fica **à direita do diálogo/disposição**,
+  com conteúdo deslocável para deixar espaço para a pré-visualização.
 - Uma janela **Contribute vocabulary / Local word list** com três separadores distintos.
 - CSV de contribuições para palavras e expressões, com exemplos e contexto opcionais;
   as sugestões não alteram as regras de conversão nem são enviadas automaticamente.
@@ -26,7 +29,7 @@ partir de folhas de cálculo, vestuário desportivo e expressões de residência
 confirmados pelo inglês, descrições físicas, filtros de resultados e o texto
 original em PT-BR visível nas linhas que contêm apenas avisos.
 
-A compilação experimental do repositório autónomo é a **1.8.0**. A base anterior
+A compilação experimental do repositório autónomo é a **1.8.1**. A base anterior
 ao LanguageTool está guardada em
 [v1.7.0](https://github.com/SMAP-git/BrazilianToEuropeanPortuguese/tree/v1.7.0).
 As versões oficiais dos
@@ -39,20 +42,40 @@ construções naturais de diálogo e a acentuação interrogativa. Acrescenta te
 de regressão destas interações, preservando os tempos das legendas e as opções
 de regras controladas pelo utilizador.
 
-### Verificação gramatical autoalojada (experimental e opcional)
+### Verificação gramatical local (experimental e opcional)
 
-No painel da referência inglesa e verificações adicionais, ative **LanguageTool
-pt-PT (self-hosted, off by default)**, introduza o endereço de um servidor que
-controle, por exemplo `http://127.0.0.1:8081/`, e escolha **Run checks**. As opções
-guardadas também se aplicam a **Batch convert**. O plugin não instala nem inicia
-Java ou o LanguageTool. Consulte o
-[guia oficial do servidor](https://dev.languagetool.org/http-server).
+O LanguageTool é o verificador gramatical e já inclui regras de **português
+europeu (`pt-PT`)**. Não precisa de escolher um modelo gramatical separado.
+No painel **Reference subtitle and local models**, agora à direita de
+**Dialogue context and subtitle layout**:
+
+1. Clique em **Download LanguageTool pt-PT (240 MB)**.
+2. Clique em **Download portable Java (40–50 MB)**.
+3. Ative **LanguageTool pt-PT (local grammar checker)** e escolha **Run checks**.
+
+As transferências são explícitas, de versões fixadas e verificadas por SHA-256.
+O LanguageTool **6.6** vem do sítio oficial (LGPL-2.1-ou-posterior); o Eclipse
+Temurin **JRE 21.0.13+9** vem dos lançamentos da Adoptium no GitHub (GPLv2 com
+Classpath Exception). As licenças permanecem nas distribuições extraídas.
+O Java é privado do plugin: não é instalado no sistema nem altera o `PATH`.
+No Windows ARM64, utiliza-se o JRE x64 por emulação; Linux/macOS têm pacotes
+nativos x64/ARM64. O ensaio real feito aqui abrange apenas Linux x64.
+
+Os componentes ficam na pasta de dados local
+`SubtitleEdit/BrazilianToEuropeanPortuguese/GrammarChecker`, dentro dos dados da
+aplicação no caso de Flatpak. Em contentores, deve persistir essa pasta de dados.
+O plugin inicia automaticamente o verificador numa porta privada de loopback,
+confirma a verificação pt-PT e termina o processo que iniciou no fim, também ao
+cancelar ou fechar a janela. Não é necessário terminal, porta fixa 8081,
+servidor Docker separado ou GPU. Depois das transferências, funciona sem rede.
 A distribuição local não inclui as regras de IA exclusivas da nuvem.
 
-Em Docker, `127.0.0.1` identifica o próprio contentor do Subtitle Edit. Para um
-servidor noutro contentor da mesma rede privada, pode usar o nome do serviço e
-a porta configurada, por exemplo `http://languagetool:8010/`. O plugin não cria
-contentores nem altera a rede.
+A opção **Use my own server instead (advanced)** revela o endereço para quem já
+tem um servidor próprio e dispensa o arranque local. Em Docker, `127.0.0.1`
+identifica o próprio contentor; outro serviço da rede privada pode usar,
+por exemplo, `http://languagetool:8010/`. O plugin não cria contentores nem altera
+a rede. Consulte o [guia oficial](https://dev.languagetool.org/http-server).
+As opções guardadas também se aplicam a **Batch convert**.
 
 A ordem de processamento é:
 
@@ -90,10 +113,10 @@ por espaços com o mesmo comprimento durante a consulta; grupos com estas
 proteções nunca são reescritos automaticamente. A opção pré-Acordo não é
 substituída por sugestões do LanguageTool.
 
-Só o português convertido e protegido é enviado ao servidor configurado.
-O inglês e o português original não são enviados ao LanguageTool. Utilize um
-servidor de confiança: autoalojado não significa necessariamente local neste
-computador. Não são suportados os serviços públicos do LanguageTool, credenciais
+Por predefinição, só o português convertido e protegido é enviado ao processo
+local de loopback. O inglês e o português original não são enviados ao
+LanguageTool. Se escolher explicitamente outro servidor, utilize um de
+confiança. Não são suportados os serviços públicos do LanguageTool, credenciais
 no endereço ou redirecionamentos HTTP. Proteja o servidor e a rede.
 
 Cada pedido tem um limite de 15 segundos e uma resposta de tamanho limitado.
@@ -102,9 +125,12 @@ inválidas, incompletas ou que não sejam pt-PT provocam um erro explícito.
 A pré-visualização mantém o resultado anterior e mostra o erro; o processamento
 em lote comunica a falha e conserva a saída das regras, sem aplicar resultados
 parciais das verificações opcionais. Em lote, as ocorrências são contadas; abra
-a pré-visualização para consultar os pormenores. Os testes usam respostas
-controladas, não um servidor real incluído: cobertura efetiva, falsos positivos
-e desempenho ainda precisam de avaliação com o seu servidor e as legendas.
+a pré-visualização para consultar os pormenores. Os testes de protocolo usam
+respostas controladas; o teste opcional `PTPT_TEST_GRAMMAR=1` instala e executa
+as distribuições reais fixadas, verifica diagnósticos pt-PT e confirma o fim do
+processo. A proteção de significado nesse teste usa vetores determinísticos,
+não inferência real do MiniLM. A cobertura alargada, os falsos positivos e o
+desempenho com legendas completas ainda precisam de avaliação.
 
 **Desfazer / voltar atrás:** desativar **LanguageTool pt-PT** limpa os resultados
 da pré-visualização e repõe o processamento existente. Desativar apenas

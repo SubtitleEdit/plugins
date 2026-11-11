@@ -4,9 +4,12 @@
 
 ## Latest changes
 
-- Experimental, **off-by-default self-hosted LanguageTool pt-PT checks**, with
+- Experimental, **off-by-default local LanguageTool pt-PT checks**, with
   review suggestions and a narrowly allowlisted, English/MiniLM-guarded agreement pass.
-  No generative model or automatic Java/LanguageTool installation is added.
+  Download the checker and its private portable Java from the plugin; no
+  generative model, system Java installation or manually configured server is needed.
+- Reference/local-model controls now sit **to the right of dialogue/layout**,
+  with scrollable contents so expanded settings do not consume the whole preview.
 - One **Contribute vocabulary / Local word list** window with three separate tabs.
 - Contribution CSVs for words and expressions, with optional examples and context;
   suggestions do not change conversion rules or upload automatically.
@@ -21,7 +24,7 @@ Earlier updates include reviewed workbook vocabulary and verb constructions,
 English-confirmed sportswear and shared-residence expressions, physical descriptions,
 finding filters, and original PT-BR text visible on warning-only rows.
 
-The experimental standalone source build is **1.8.0**. The pre-LanguageTool
+The experimental standalone source build is **1.8.1**. The pre-LanguageTool
 rollback baseline is [v1.7.0](https://github.com/SMAP-git/BrazilianToEuropeanPortuguese/tree/v1.7.0).
 Official Subtitle Edit package versions
 are assigned by the upstream release workflow and may differ.
@@ -31,20 +34,40 @@ objects and vocabulary senses, natural dialogue constructions and interrogative
 accentuation. It adds regression coverage for these interactions while preserving
 subtitle cue timings and user-controlled rule options.
 
-### Optional self-hosted grammar checking (experimental)
+### Optional local grammar checking (experimental)
 
-In the English reference / extra-checks panel, enable **LanguageTool pt-PT
-(self-hosted, off by default)** and enter the URL of a LanguageTool server you
-manage, for example `http://127.0.0.1:8081/`. Then choose **Run checks**. Saved
-settings also apply in **Batch convert**. Nothing is downloaded or started:
-LanguageTool and its Java runtime are managed separately. See the
-[official self-hosted server guide](https://dev.languagetool.org/http-server).
+LanguageTool is the grammar checker; its Portuguese rules include **European
+Portuguese (`pt-PT`)**. You do not need to choose or download a separate grammar
+model. In the **Reference subtitle and local models** panel, now to the right of
+**Dialogue context and subtitle layout**:
+
+1. Click **Download LanguageTool pt-PT (240 MB)**.
+2. Click **Download portable Java (40–50 MB)**.
+3. Enable **LanguageTool pt-PT (local grammar checker)** and choose **Run checks**.
+
+Both downloads are explicit, pinned and SHA-256 verified. LanguageTool **6.6**
+comes from its official download site (LGPL-2.1-or-later); the private Eclipse
+Temurin **JRE 21.0.13+9** comes from Adoptium's GitHub releases (GPLv2 with
+Classpath Exception). Licences remain in the extracted distributions. The Java
+download never installs system Java or changes `PATH`. Windows ARM64 uses the
+x64 JRE through Windows emulation; Linux/macOS have native x64/ARM64 packages.
+Only Linux x64 has been exercised with the real downloaded runtime here.
+
+The plugin stores them under its local application-data
+`SubtitleEdit/BrazilianToEuropeanPortuguese/GrammarChecker` folder. This is inside
+the app's data area in Flatpak; container installations should persist that data
+folder. It starts the checker on a private loopback port automatically for each
+run, verifies pt-PT grammar checking, and stops its owned process afterwards,
+including on cancellation or window closure. No separate terminal, fixed port
+8081, Docker service or GPU is required. After downloading, checking is offline.
 The local distribution does not include LanguageTool's cloud-only AI rules.
 
-For Docker, `127.0.0.1` means the Subtitle Edit container itself. A separate
-LanguageTool container can instead use its service name and configured port,
-for example `http://languagetool:8010/`, on a private shared network. The plugin
-does not create containers or modify network settings.
+The optional **Use my own server instead (advanced)** switch reveals the server
+URL for existing self-hosted installations and bypasses managed startup. In
+Docker, `127.0.0.1` means the Subtitle Edit container; a separate service can use,
+for example, `http://languagetool:8010/` on a private shared network. No containers
+or network settings are changed. See the
+[official server guide](https://dev.languagetool.org/http-server).
 
 The pipeline is:
 
@@ -81,9 +104,9 @@ and custom output vocabulary are masked with equal-length spaces for checking;
 masked groups are never automatically rewritten. Pre-1990 spelling settings
 are not overridden by LanguageTool suggestions.
 
-The plugin sends masked converted Portuguese only to the configured server;
-English and original Portuguese are not sent to LanguageTool. Use a server you
-trust: self-hosted does not necessarily mean it runs on this computer. Public
+The plugin sends masked converted Portuguese only to the owned loopback server
+by default; English and original Portuguese are not sent to LanguageTool.
+If you explicitly choose an external server, use one you trust. Public
 LanguageTool cloud endpoints, embedded credentials and HTTP redirects are not
 supported. Protect any remote server/network yourself.
 
@@ -92,9 +115,11 @@ are cached only for the current run. Invalid, non-pt-PT or incomplete responses
 fail explicitly. Preview keeps the preceding result and displays the failure;
 batch reports the failure and retains rule-only output, without applying
 partial optional-check results. Batch counts findings; open the preview to see
-their details. No real LanguageTool server is bundled with the tests: protocol
-and safety tests use controlled responses. Actual rule coverage, false-positive
-rates and speed depend on your server and still require corpus benchmarking.
+their details. Protocol and safety tests use controlled responses; the optional
+`PTPT_TEST_GRAMMAR=1` test installs and runs the actual pinned checker and Java,
+checks real pt-PT diagnostics, and verifies shutdown. Its candidate meaning gate
+uses deterministic vectors, not real MiniLM inference. Broader rule coverage,
+false-positive rates and subtitle-corpus speed still require benchmarking.
 
 **Undo / rollback:** disabling **LanguageTool pt-PT** clears its preview results
 and restores the existing conversion pipeline; untick **Allow tested agreement

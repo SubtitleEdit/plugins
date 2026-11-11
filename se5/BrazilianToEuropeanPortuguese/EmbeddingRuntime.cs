@@ -185,7 +185,7 @@ internal static class EmbeddingAssets
         return path;
     }
 
-    internal static void ExtractRuntime(string archive, string directory, CancellationToken token)
+    internal static void ExtractRuntime(string archive, string directory, CancellationToken token, bool allowInternalLinks = false)
     {
         long total = 0;
         int count = 0;
@@ -234,9 +234,10 @@ internal static class EmbeddingAssets
                 {
                     if (++count > 3000) throw new InvalidDataException("Too many runtime entries.");
                     var path = SafePath(directory, entry.Name);
-                    if (entry.LinkName != Path.GetFileName(entry.LinkName) || entry.LinkName.Contains('\\') ||
-                        entry.LinkName is "." or "..")
-                        throw new InvalidDataException("Only sibling library aliases are allowed.");
+                    if (entry.LinkName.Contains('\\') || entry.LinkName.Contains(':') || Path.IsPathRooted(entry.LinkName) ||
+                        entry.LinkName is "." or ".." ||
+                        !allowInternalLinks && entry.LinkName != Path.GetFileName(entry.LinkName))
+                        throw new InvalidDataException("Only safe internal archive aliases are allowed.");
                     links.Add(path, SafePath(directory, Path.Combine(Path.GetDirectoryName(entry.Name)!, entry.LinkName)));
                     continue;
                 }
@@ -245,7 +246,7 @@ internal static class EmbeddingAssets
                 Copy(entry.Name, entry.Length, entry.DataStream!);
             }
         }
-        // Library aliases (libggml.so.0 → libggml.so.0.27.0) become regular copies.
+        // Aliases become regular copies; their final target must be an extracted regular file.
         foreach (var link in links)
         {
             var target = link.Value;

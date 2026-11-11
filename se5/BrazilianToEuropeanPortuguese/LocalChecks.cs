@@ -231,7 +231,9 @@ internal static class LocalChecks
 
         if (options is { GrammarCheck: true } && options.RuleEnabled("languagetool"))
         {
-            using var client = new LanguageToolClient(options.GrammarServer);
+            await using var grammarRuntime = options.GrammarExternalServer ? null :
+                await GrammarRuntime.StartAsync(progress, token);
+            using var client = new LanguageToolClient(grammarRuntime?.Server ?? options.GrammarServer);
             EmbeddingRuntime? runtime = null;
             try
             {

@@ -38,10 +38,10 @@ internal static class GrammarChecks
             var english = group.Any(l => string.IsNullOrWhiteSpace(l.Reference))
                 ? null : string.Join(" ", group.Select(l => l.Reference));
             var allowed = matches.SelectMany(m => m.Replacements.Take(5).Select(r =>
-                (Match: m, Text: baseline[..m.Offset] + r + baseline[(m.Offset + m.Length)..])))
+                (Match: m, Text: Suggestion(baseline, m, r))))
                 .Where(c => masked == baseline && Eligible(baseline, c.Text, english, options) &&
                     !matches.Any(m => m != c.Match && Overlaps(m, c.Match)) &&
-                    WithinCue(parts, c.Match)).Distinct().ToArray();
+                    ChangedWithinCue(parts, baseline, c.Text)).Distinct().ToArray();
             string? accepted = null;
             GrammarMatch? acceptedMatch = null;
             var reason = !options.GrammarAutoFix ? "review only" :
@@ -137,12 +137,27 @@ internal static class GrammarChecks
     private static bool Overlaps(GrammarMatch a, GrammarMatch b) =>
         a.Offset < b.Offset + b.Length && b.Offset < a.Offset + a.Length;
 
-    private static bool WithinCue(string[] parts, GrammarMatch match)
+    internal static string Suggestion(string baseline, GrammarMatch match, string replacement)
     {
+        var original = baseline.Substring(match.Offset, match.Length);
+        var words = Regex.Matches(replacement, @"\S+").Select(m => m.Value).ToArray();
+        if (words.Length == Regex.Matches(original, @"\S+").Count)
+        {
+            var index = 0;
+            replacement = Regex.Replace(original, @"\S+", _ => words[index++]);
+        }
+        return baseline[..match.Offset] + replacement + baseline[(match.Offset + match.Length)..];
+    }
+
+    private static bool ChangedWithinCue(string[] parts, string before, string after)
+    {
+        if (before.Length != after.Length) return false;
+        var changed = Enumerable.Range(0, before.Length).Where(i => before[i] != after[i]).ToArray();
+        if (changed.Length == 0) return false;
         var start = 0;
         foreach (var part in parts)
         {
-            if (match.Offset >= start && match.Offset + match.Length <= start + part.Length) return true;
+            if (changed[0] >= start && changed[^1] < start + part.Length) return true;
             start += part.Length + 1;
         }
         return false;

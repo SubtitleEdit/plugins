@@ -485,6 +485,12 @@ public sealed class ReferenceTests(ITestOutputHelper output)
             });
             Assert.True(grammarWindow.FindControl<CheckBox>("GrammarCheck")!.IsChecked);
             Assert.False(grammarWindow.FindControl<CheckBox>("GrammarAutoFix")!.IsChecked);
+            Assert.False(grammarWindow.FindControl<CheckBox>("GrammarExternalServer")!.IsChecked);
+            Assert.False(grammarWindow.FindControl<TextBox>("GrammarServer")!.IsVisible);
+            Assert.NotNull(grammarWindow.FindControl<Button>("DownloadGrammarButton"));
+            Assert.NotNull(grammarWindow.FindControl<Button>("DownloadJavaButton"));
+            grammarWindow.FindControl<CheckBox>("GrammarExternalServer")!.IsChecked = true;
+            Assert.True(grammarWindow.FindControl<TextBox>("GrammarServer")!.IsVisible);
             Assert.Equal("http://languagetool:8010/", grammarWindow.FindControl<TextBox>("GrammarServer")!.Text);
             grammarWindow.ApplyCheckResults(new[] { new CheckLine(0, "Olá.", "Olá.", null, null) },
                 new Dictionary<int, CheckResult> { [0] = new("Olá.", "LanguageTool [TEST]: review only.") });
@@ -1014,6 +1020,25 @@ public sealed class ReferenceTests(ITestOutputHelper output)
                 Avalonia.Threading.Dispatcher.UIThread.RunJobs();
             }
             LayoutScreenshot();
+            var panels = screenshotWindow.FindControl<Grid>("ReviewLayoutPanels")!;
+            var layoutPanel = screenshotWindow.FindControl<Expander>("LayoutTools")!;
+            var referencePanel = screenshotWindow.FindControl<Expander>("ReferencePanel")!;
+            Assert.Same(panels, layoutPanel.Parent);
+            Assert.Same(panels, referencePanel.Parent);
+            Assert.Equal(1, Grid.GetColumn(layoutPanel));
+            Assert.Equal(2, Grid.GetColumn(referencePanel));
+            Assert.True(referencePanel.Bounds.X >= layoutPanel.Bounds.Right);
+            Assert.True(referencePanel.Bounds.Width > 200);
+            Assert.True(referencePanel.Bounds.Right <= panels.Bounds.Width + 0.1);
+            if (Environment.GetEnvironmentVariable("PTPT_UI_LAYOUT_CAPTURE") is { Length: > 0 } capture)
+            {
+                layoutPanel.IsExpanded = true;
+                LayoutScreenshot();
+                using var bitmap = new Avalonia.Media.Imaging.RenderTargetBitmap(
+                    new Avalonia.PixelSize((int)screenshotContent.Bounds.Width, (int)screenshotContent.Bounds.Height));
+                bitmap.Render(screenshotContent);
+                bitmap.Save(capture);
+            }
             var settingsHeight = settingsPanel.Bounds.Height;
             var reviewHeight = screenshotWindow.FindControl<Border>("ChangesBorder")!.Bounds.Height;
             toggleSettings.RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
@@ -1046,7 +1071,7 @@ public sealed class ReferenceTests(ITestOutputHelper output)
             });
             Assert.Contains("a tua foto", window.Proposals[0].ConvertedText);
             Assert.Contains("MiniLM is not installed", window.ReferenceStatusText);
-            Assert.Equal("Model: not downloaded\nllama-server: not downloaded\nGervásio: not downloaded", window.AssetStatusText);
+            Assert.Equal("Model: not downloaded\nllama-server: not downloaded\nGervásio: not downloaded\nLanguageTool pt-PT: not downloaded\nPortable Java: not downloaded", window.AssetStatusText);
             window.FindReferenceAutomatically().GetAwaiter().GetResult();
             Assert.Equal(4, window.Alignment!.Matched);
             Assert.Contains("a sua foto", window.Proposals[0].ConvertedText);

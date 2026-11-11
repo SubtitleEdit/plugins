@@ -64,6 +64,7 @@ public partial class MainWindow : Window
     private CheckBox _judgeCheck = null!;
     private CheckBox _grammarCheck = null!;
     private CheckBox _grammarAutoFix = null!;
+    private CheckBox _grammarExternalServer = null!;
     private TextBox _grammarServer = null!;
     private string _lastGrammarServer = "";
     private readonly List<CheckLine> _checkLines = new();
@@ -137,12 +138,14 @@ public partial class MainWindow : Window
         _askNameArticlesCheck.IsChecked == true,
         _grammarCheck.IsChecked == true,
         _grammarAutoFix.IsChecked == true,
-        _grammarServer.Text ?? "");
+        _grammarServer.Text ?? "",
+        _grammarExternalServer.IsChecked == true);
 
     private bool SettingsChanged => _nameArticles != _initialOptions.NameArticles ||
         (_askNameArticlesCheck.IsChecked == true) != _initialOptions.AskNameArticles ||
         Options.GrammarCheck != _initialOptions.GrammarCheck ||
         Options.GrammarAutoFix != _initialOptions.GrammarAutoFix ||
+        Options.GrammarExternalServer != _initialOptions.GrammarExternalServer ||
         Options.GrammarServer != _initialOptions.GrammarServer;
 
     private ConversionOptions SavedOptions => Options with { DisabledRules = _savedDisabledRules };
@@ -176,6 +179,8 @@ public partial class MainWindow : Window
         _grammarCheck.IsChecked = options.GrammarCheck;
         _grammarAutoFix.IsChecked = options.GrammarAutoFix;
         _grammarServer.Text = options.GrammarServer;
+        _grammarExternalServer.IsChecked = options.GrammarExternalServer;
+        _grammarServer.IsVisible = options.GrammarExternalServer;
         _lastGrammarServer = options.GrammarServer;
         _loadingOptions = false;
 
@@ -196,7 +201,12 @@ public partial class MainWindow : Window
         }
     }
 
-    private void OnGrammarSettingChanged(object? sender, RoutedEventArgs e) => OnOptionChanged(sender, e);
+    private void OnGrammarSettingChanged(object? sender, RoutedEventArgs e)
+    {
+        if (_grammarServer != null && _grammarExternalServer != null)
+            _grammarServer.IsVisible = _grammarExternalServer.IsChecked == true;
+        OnOptionChanged(sender, e);
+    }
 
     private void OnGrammarServerChanged(object? sender, TextChangedEventArgs e)
     {
@@ -210,6 +220,13 @@ public partial class MainWindow : Window
         OnOptionChanged(sender, e);
 
     private void OnLayoutChanged(object? sender, NumericUpDownValueChangedEventArgs e) => OnOptionChanged(sender, e);
+
+    private void OnWindowSizeChanged(object? sender, SizeChangedEventArgs e)
+    {
+        var height = Math.Clamp(e.NewSize.Height * 0.28, 140, 360);
+        foreach (var name in new[] { "LayoutContent", "ReferenceContent" })
+            if (this.FindControl<ScrollViewer>(name) is { } content) content.MaxHeight = height;
+    }
 
     private void OnToggleSettings(object? sender, RoutedEventArgs e)
     {
@@ -417,6 +434,7 @@ public partial class MainWindow : Window
         _judgeCheck = this.FindControl<CheckBox>("JudgeCheck")!;
         _grammarCheck = this.FindControl<CheckBox>("GrammarCheck")!;
         _grammarAutoFix = this.FindControl<CheckBox>("GrammarAutoFix")!;
+        _grammarExternalServer = this.FindControl<CheckBox>("GrammarExternalServer")!;
         _grammarServer = this.FindControl<TextBox>("GrammarServer")!;
         _addressChoice = this.FindControl<ComboBox>("AddressChoice")!;
         _sentenceContextCheck = this.FindControl<CheckBox>("SentenceContextCheck")!;
@@ -434,6 +452,7 @@ public partial class MainWindow : Window
             this.FindControl<Button>("DownloadJudgeButton")!, this.FindControl<Button>("RunChecksButton")!,
             _embeddingCheck, _vulkanCheck, _deviceChoice, _meaningCheck, _judgeCheck,
             _grammarCheck, _grammarAutoFix, _grammarServer,
+            _grammarExternalServer, this.FindControl<Button>("DownloadGrammarButton")!, this.FindControl<Button>("DownloadJavaButton")!,
             _askNameArticlesCheck, this.FindControl<Button>("EditNameArticlesButton")!,
             this.FindControl<Button>("ContributeVocabularyButton")!,
             this.FindControl<Button>("DisableRuleButton")!, this.FindControl<Button>("RestoreRulesButton")!,
@@ -902,6 +921,26 @@ public partial class MainWindow : Window
             return "llama-server downloaded and verified (SHA-256). Use List devices to pick the GPU.";
         });
 
+    private async void OnDownloadGrammar(object? sender, RoutedEventArgs e) =>
+        await DownloadGrammarAsset(false);
+
+    private async void OnDownloadJava(object? sender, RoutedEventArgs e) =>
+        await DownloadGrammarAsset(true);
+
+    private async Task DownloadGrammarAsset(bool java)
+    {
+        await RunReferenceJob(async (progress, token) =>
+        {
+            if (java) await GrammarAssets.DownloadJavaAsync(progress, token);
+            else await GrammarAssets.DownloadToolAsync(progress, token);
+            _referenceStatus.Text = GrammarAssets.IsInstalled()
+                ? "Local LanguageTool pt-PT is installed. Enable LanguageTool and choose Run checks; startup and shutdown are automatic."
+                : java ? "Portable Java installed and verified. Now download LanguageTool pt-PT."
+                : "LanguageTool installed and verified. Now download portable Java.";
+        });
+        UpdateAssetStatus();
+    }
+
     /// <summary>Downloads one asset; once both are installed, MiniLM is switched on and the reference re-aligned.</summary>
     private async Task DownloadAsset(Func<IProgress<string>, CancellationToken, Task<string>> download)
     {
@@ -930,7 +969,9 @@ public partial class MainWindow : Window
         var settings = EmbeddingAssets.WithInstalledFiles(_embeddingSettings);
         string Describe(string name, string path) => File.Exists(path) ? $"{name}: {path}" : $"{name}: not downloaded";
         _assetStatus.Text = Describe("Model", settings.ModelPath) + "\n" + Describe("llama-server", settings.RuntimePath) + "\n" +
-                            Describe("Gervásio", settings.JudgeModelPath);
+                            Describe("Gervásio", settings.JudgeModelPath) + "\n" +
+                            Describe("LanguageTool pt-PT", GrammarAssets.ToolJar()) + "\n" +
+                            Describe("Portable Java", GrammarAssets.JavaExecutable());
     }
 
     private async void OnDownloadJudge(object? sender, RoutedEventArgs e)
@@ -958,6 +999,7 @@ public partial class MainWindow : Window
         _closed = true;
         _referenceCancel?.Cancel();
         EmbeddingRuntime.KillAll();
+        GrammarRuntime.KillAll();
         base.OnClosed(e);
     }
 
@@ -971,7 +1013,7 @@ public partial class MainWindow : Window
     {
         try
         {
-            _ = LanguageToolClient.CheckUri(Options.GrammarServer);
+            if (Options.GrammarExternalServer) _ = LanguageToolClient.CheckUri(Options.GrammarServer);
         }
         catch (InvalidDataException ex)
         {

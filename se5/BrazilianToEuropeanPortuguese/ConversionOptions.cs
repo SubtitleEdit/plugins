@@ -29,7 +29,8 @@ public sealed record ConversionOptions(
     bool AskNameArticles = true,
     bool GrammarCheck = false,
     bool GrammarAutoFix = false,
-    string GrammarServer = "http://127.0.0.1:8081/")
+    string GrammarServer = "http://127.0.0.1:8081/",
+    bool GrammarExternalServer = false)
 {
     public const int Version = 1;
 
@@ -60,6 +61,7 @@ public sealed record ConversionOptions(
         grammarCheck = GrammarCheck,
         grammarAutoFix = GrammarAutoFix,
         grammarServer = GrammarServer,
+        grammarExternalServer = GrammarExternalServer,
     });
 
     public static ConversionOptions Load(PluginRequest request)
@@ -94,7 +96,8 @@ public sealed record ConversionOptions(
             !json.TryGetProperty("askNameArticles", out _) || ReadOptIn(json, "askNameArticles"),
             ReadOptIn(json, "grammarCheck"),
             ReadOptIn(json, "grammarAutoFix"),
-            ReadGrammarServer(json));
+            ReadGrammarServer(json),
+            ReadOptIn(json, "grammarExternalServer"));
     }
 
     public bool RuleEnabled(string id) => DisabledRules.Length == 0 || !DisabledRules.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)

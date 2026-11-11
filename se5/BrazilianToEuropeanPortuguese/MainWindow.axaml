@@ -8,6 +8,7 @@
         Title="Brazilian to European Portuguese"
         Width="1120" Height="760"
         MinWidth="1000" MinHeight="560"
+        SizeChanged="OnWindowSizeChanged"
         WindowStartupLocation="CenterScreen">
     <DockPanel Margin="20">
 
@@ -113,7 +114,26 @@
                   ToolTip.Tip="Ask once per unresolved name when a supported rule needs an article. Batch convert never asks."
                   Margin="0,0,0,8" />
 
-        <Grid DockPanel.Dock="Top" x:Name="ReviewLayoutPanels" ColumnDefinitions="340,*" Margin="0,0,0,8">
+        <WrapPanel Margin="0,0,0,8">
+            <TextBlock Text="Orthography:" VerticalAlignment="Center" Margin="0,0,8,0" />
+            <ComboBox x:Name="OrthographyChoice" SelectedIndex="0" Margin="0,0,12,0"
+                      SelectionChanged="OnOrthographyChanged">
+                <ComboBoxItem Content="Post-1990 agreement (AO90)" />
+                <ComboBoxItem Content="Pre-1990 agreement" />
+            </ComboBox>
+            <CheckBox x:Name="ValidateSpellingCheck" Content="Validate spelling"
+                      IsCheckedChanged="OnOptionChanged"
+                      ToolTip.Tip="Flag words not recognised by the selected Natura dictionary; never auto-correct them." />
+            <Button x:Name="DictionaryCheckButton" Content="Check dictionary updates"
+                    Click="OnCheckDictionary" Margin="8,0,8,0" />
+            <Button x:Name="DictionaryDownloadButton" Content="Re-download dictionary"
+                    Click="OnDownloadDictionary" />
+        </WrapPanel>
+        <ScrollViewer MaxHeight="80" Margin="0,0,0,8">
+            <TextBlock x:Name="DictionaryStatus" TextWrapping="Wrap" Opacity="0.75"
+                       Text="Natura dictionaries available offline (2025-10-01)." />
+        </ScrollViewer>
+        <Grid DockPanel.Dock="Top" x:Name="ReviewLayoutPanels" ColumnDefinitions="230,*,*" Margin="0,0,0,8">
         <Expander Grid.Column="0" x:Name="ReviewTools" Header="Review tools"
                   HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,0,12,0">
             <StackPanel Spacing="6">
@@ -128,8 +148,12 @@
                            TextWrapping="Wrap" Opacity="0.7" />
             </StackPanel>
         </Expander>
-        <Expander Grid.Column="1" x:Name="LayoutTools" Header="Dialogue context and subtitle layout"
-                  HorizontalAlignment="Stretch" VerticalAlignment="Top">
+        <Expander Grid.Column="1" x:Name="LayoutTools"
+                  HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,0,12,0">
+            <Expander.Header>
+                <TextBlock Text="Dialogue context and subtitle layout" TextWrapping="Wrap" />
+            </Expander.Header>
+            <ScrollViewer x:Name="LayoutContent" MaxHeight="220" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Spacing="6">
                 <WrapPanel>
                     <TextBlock Text="Address:" VerticalAlignment="Center" Margin="0,0,8,0" />
@@ -176,34 +200,16 @@
                 <TextBlock Text="Timings never change. An infeasible wrap is kept rather than forced; enable layout warnings to flag it."
                            TextWrapping="Wrap" Opacity="0.7" />
             </StackPanel>
+            </ScrollViewer>
         </Expander>
-        </Grid>
 
-        <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,8">
-            <TextBlock Text="Orthography:" VerticalAlignment="Center" Margin="0,0,8,0" />
-            <ComboBox x:Name="OrthographyChoice" SelectedIndex="0" Margin="0,0,12,0"
-                      SelectionChanged="OnOrthographyChanged">
-                <ComboBoxItem Content="Post-1990 agreement (AO90)" />
-                <ComboBoxItem Content="Pre-1990 agreement" />
-            </ComboBox>
-            <CheckBox x:Name="ValidateSpellingCheck" Content="Validate spelling"
-                      IsCheckedChanged="OnOptionChanged"
-                      ToolTip.Tip="Flag words not recognised by the selected Natura dictionary; never auto-correct them." />
-        </WrapPanel>
-        <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,8">
-            <Button x:Name="DictionaryCheckButton" Content="Check dictionary updates"
-                    Click="OnCheckDictionary" Margin="0,0,8,0" />
-            <Button x:Name="DictionaryDownloadButton" Content="Re-download dictionary"
-                    Click="OnDownloadDictionary" />
-        </WrapPanel>
-        <ScrollViewer DockPanel.Dock="Top" MaxHeight="80" Margin="0,0,0,8">
-            <TextBlock x:Name="DictionaryStatus" TextWrapping="Wrap" Opacity="0.75"
-                       Text="Natura dictionaries available offline (2025-10-01)." />
-        </ScrollViewer>
-
-        <Expander DockPanel.Dock="Top" x:Name="ReferencePanel" Header="Reference subtitle and local models (optional)"
-                  HorizontalAlignment="Stretch" Margin="0,0,0,8"
+        <Expander Grid.Column="2" x:Name="ReferencePanel"
+                  HorizontalAlignment="Stretch" VerticalAlignment="Top"
                   ToolTip.Tip="An English subtitle of the same episode, found automatically when it is named like the subtitle or video with .en/.eng/.english. It prevents wrong changes (his/her → keeps 'o seu/a sua') and marks you/your lines that kept você/seu for review; it never adds text.">
+            <Expander.Header>
+                <TextBlock Text="Reference subtitle and local models (optional)" TextWrapping="Wrap" />
+            </Expander.Header>
+            <ScrollViewer x:Name="ReferenceContent" MaxHeight="220" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Spacing="6">
                 <CheckBox x:Name="BatchReferenceCheck" IsVisible="False" IsChecked="True"
                           Content="Use the English subtitle next to each file"
@@ -232,15 +238,29 @@
                     <Button x:Name="ReferenceCancelButton" Content="Stop" Click="OnCancelReference" IsEnabled="False" Margin="0,0,8,4" />
                 </WrapPanel>
                 <TextBlock Text="Extra checks (local, after the rules)" FontWeight="SemiBold" Margin="0,4,0,0" />
-                <CheckBox x:Name="GrammarCheck" Content="LanguageTool pt-PT (self-hosted, off by default)"
+                <CheckBox x:Name="GrammarCheck"
+                          IsCheckedChanged="OnGrammarSettingChanged">
+                    <TextBlock Text="LanguageTool pt-PT (local grammar checker)" TextWrapping="Wrap" />
+                </CheckBox>
+                <WrapPanel>
+                    <Button x:Name="DownloadGrammarButton" Content="Download LanguageTool pt-PT (240 MB)"
+                            Click="OnDownloadGrammar" Margin="0,0,8,4"
+                            ToolTip.Tip="LanguageTool 6.6, LGPL-2.1-or-later; official archive, SHA-256 verified. Includes Portuguese grammar rules. Not a generative model." />
+                    <Button x:Name="DownloadJavaButton" Content="Download portable Java (40–50 MB)"
+                            Click="OnDownloadJava" Margin="0,0,8,4"
+                            ToolTip.Tip="Eclipse Temurin JRE 21.0.13+9, GPLv2 with Classpath Exception; pinned and SHA-256 verified. Plugin-private, no system installation." />
+                </WrapPanel>
+                <CheckBox x:Name="GrammarExternalServer" Content="Use my own server instead (advanced)"
                           IsCheckedChanged="OnGrammarSettingChanged" />
                 <TextBox x:Name="GrammarServer" Watermark="http://127.0.0.1:8081/"
                          TextChanged="OnGrammarServerChanged"
                          ToolTip.Tip="Your self-hosted server URL. Text is sent to this server only. No automatic installation, cloud API or redirects." />
-                <CheckBox x:Name="GrammarAutoFix" Content="Allow tested agreement fixes (requires English and MiniLM)"
+                <CheckBox x:Name="GrammarAutoFix"
                           IsCheckedChanged="OnGrammarSettingChanged"
-                          ToolTip.Tip="Off: suggestions only. On: only explicit ele/ela/eles/elas + tem/têm/vem/vêm, after English subject, meaning and grammar rechecks. Other findings remain review notes." />
-                <TextBlock Text="LanguageTool suggestions are review notes unless an allowlisted fix passes every safeguard. No text generation. Use Run checks after changing settings."
+                          ToolTip.Tip="Off: suggestions only. On: only explicit ele/ela/eles/elas + tem/têm/vem/vêm, after English subject, meaning and grammar rechecks. Other findings remain review notes.">
+                    <TextBlock Text="Allow tested agreement fixes (requires English and MiniLM)" TextWrapping="Wrap" />
+                </CheckBox>
+                <TextBlock Text="Download both components once; Run checks starts and stops the local checker automatically. CPU only; no text generation. Suggestions stay review-only unless all automatic-fix safeguards pass."
                            TextWrapping="Wrap" Opacity="0.7" />
                 <WrapPanel>
                     <CheckBox x:Name="MeaningCheck" Content="Flag meaning changes (MiniLM)" Margin="0,0,16,0"
@@ -260,7 +280,9 @@
                 <TextBlock x:Name="ReferenceStatus" TextWrapping="Wrap" Opacity="0.75"
                            Text="No reference. Pick the English subtitle of the same release to protect 'o seu/a sua' when the English says his/her/their." />
             </StackPanel>
+            </ScrollViewer>
         </Expander>
+        </Grid>
         </StackPanel>
 
         <TextBlock DockPanel.Dock="Top"
