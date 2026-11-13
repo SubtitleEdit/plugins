@@ -19,14 +19,21 @@ internal static class AttractedEnclisis
 
     // Only plain clitics: "-lo/-la/-no/-na" changed the verb form and are left alone.
     private static readonly Regex Enclitic = new(
-        @"(?:(?<![\p{L}\p{M}-])|(?<=^-)|(?<=\n-))(?<attr>" + Attractor + @")(?<gap>[ \t]+|[ \t]*\n[ \t]*)" +
-        @"(?<subj>" + Subject + @"(?:[ \t]+|[ \t]*\n[ \t]*))?" +
+        @"(?:(?<![\p{L}\p{M}-])|(?<=^-)|(?<=\n-))(?<attr>" + Attractor + @")(?<gap>[ \t]+|[ \t]*\r?\n[ \t]*)" +
+        @"(?<subj>" + Subject + @"(?:[ \t]+|[ \t]*\r?\n[ \t]*))?" +
         @"(?<adv>(?:(?:não|nunca|já|também|só|sempre|ainda)[ \t]+)*)" +
         @"(?<v>[\p{L}\p{M}]+)-(?<cl>me|te|se|lhe|lhes|nos|vos|o|a|os|as)(?![\p{L}\p{M}-])", Ci);
 
     public static string Apply(string s)
     {
         if (s.IndexOf('-') < 0) return s;
+        s = Regex.Replace(s,
+            @"(?<![\p{L}\p{M}-])(?<negative>não|nunca|jamais)(?<gap>\s+)(?<aux>vou|vais|vai|vamos|vão|ia|ias|íamos|iam)" +
+            @"(?:-(?<cl>me|te|se|nos|vos|lhe|lhes))?(?<space>\s+)(?<inf>[\p{L}\p{M}]+)" +
+            @"(?:-(?<cl>me|te|se|nos|vos|lhe|lhes))?(?![\p{L}\p{M}-])",
+            m => m.Groups["cl"].Captures.Count != 1 || !PortugueseConverter.TuImperative.IsInfinitive(m.Groups["inf"].Value) ? m.Value :
+                m.Groups["negative"].Value + m.Groups["gap"].Value + m.Groups["cl"].Value + " " +
+                m.Groups["aux"].Value + m.Groups["space"].Value + m.Groups["inf"].Value, Ci);
         return Enclitic.Replace(s, m =>
         {
             var verb = m.Groups["v"].Value;
@@ -36,7 +43,8 @@ internal static class AttractedEnclisis
             // After "se/quando/caso + subject" an infinitive-looking form is the future subjunctive: "se ele lembrar-se" → "se ele se lembrar".
             var futureSubjunctive = m.Groups["subj"].Success && PortugueseVerbs.IsInfinitive(lower) &&
                 m.Groups["attr"].Value.ToLowerInvariant() is "se" or "quando" or "caso" or "enquanto";
-            if (!(restrictive ? PortugueseVerbs.IsFiniteCliticForm(lower) : PortugueseVerbs.IsKnownVerbForm(lower)) && !futureSubjunctive || PortugueseVerbs.IsInfinitive(lower) && !futureSubjunctive ||
+            if (!(restrictive ? PortugueseVerbs.IsFiniteCliticForm(lower) :
+                    PortugueseVerbs.IsKnownVerbForm(lower) || PortugueseVerbs.IsPorFiniteForm(lower)) && !futureSubjunctive || PortugueseVerbs.IsInfinitive(lower) && !futureSubjunctive ||
                 lower.EndsWith("ndo", StringComparison.Ordinal) || PortugueseVerbs.IsFutureOrConditional(lower)) return m.Value;
             // "se" alone may itself be a clitic, but not before another clitic: "Se faz-te sentir" can only be "if" → "Se te faz sentir".
             if (attr == "se" && !m.Groups["subj"].Success &&

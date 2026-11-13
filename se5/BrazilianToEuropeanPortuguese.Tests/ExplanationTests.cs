@@ -45,7 +45,8 @@ public sealed class ExplanationTests
         var blocks = Scene();
         var result = SubtitleConversion.Convert(blocks, new ConversionOptions(SentenceContext: sentenceContext),
             english: new string?[] { "What if you got it in your head", "to seek revenge in kind?" });
-        Assert.Equal("E se meteste\nna tua cabeça", result[0].Text);
+        // Inalienable possession: "in your head" with a "you" subject drops the possessive ("na cabeça").
+        Assert.Equal("E se meteste\nna cabeça", result[0].Text);
         Assert.Equal("que terias a tua vingança?", result[1].Text);
         Assert.Contains(result[1].Rules, r => r.Id == "address");
         Assert.Equal(1195438, blocks[1].StartMs);

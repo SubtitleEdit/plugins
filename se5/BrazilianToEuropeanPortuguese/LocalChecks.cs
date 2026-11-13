@@ -165,7 +165,7 @@ internal static class LocalChecks
     internal static async Task<string?> IdiomMeaningNoteAsync(CheckLine line, string converted,
         Func<string?, Task<float[]?>> embed)
     {
-        var reading = IdiomHints.MeaningReference(line.Reference);
+        var reading = IdiomHints.MeaningReference(line.Reference, line.Original);
         if (reading == null) return null;
         var reference = await embed(reading);
         var original = await embed(line.Original);
@@ -317,7 +317,7 @@ internal static class LocalChecks
         var changed = lines.Where(l => l.Original != texts[l.Index]).ToList();
         // Stage 1 (before the rules): is the Brazilian line itself faithful to the English? Stage 2 (after): did the rules keep it so?
         var referenced = lines.Where(l => IsComparable(l.Original, l.Reference) || IsComparable(texts[l.Index], l.Reference)).ToList();
-        var idiomatic = lines.Where(l => IdiomHints.MeaningReference(l.Reference) != null).ToList();
+        var idiomatic = lines.Where(l => IdiomHints.MeaningReference(l.Reference, l.Original) != null).ToList();
         var sentences = lines.Where(l => l.MeaningSentence != null).GroupBy(l => l.MeaningSentence!)
             .Where(g => g.Count() == g.Key.Last - g.Key.First + 1).ToList();
         if (changed.Count == 0 && referenced.Count == 0 && idiomatic.Count == 0 && sentences.Count == 0) return (0, 0);

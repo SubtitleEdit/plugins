@@ -22,6 +22,102 @@
                                 after a determiner (a bota, o pulo) are treated as nouns and kept.
 -->
 <Words>
+  <!-- Transport/mechanics: qualified phrases avoid financial, anatomical and nautical false friends. -->
+  <Word br="cabos de chupeta" pt="cabos de arranque" />
+  <Word br="cabo de chupeta" pt="cabo de arranque" />
+  <Word br="motor de partida" pt="motor de arranque" />
+  <Word br="motores de partida" pt="motores de arranque" />
+  <Word br="caixa de câmbio" pt="caixa de velocidades" />
+  <Word br="caixas de câmbio" pt="caixas de velocidades" />
+  <Word br="câmbio automático" pt="caixa de velocidades automática" g="f" />
+  <Word br="câmbios automáticos" pt="caixas de velocidades automáticas" g="f" />
+  <Word br="câmbio manual" pt="caixa de velocidades manual" g="f" />
+  <Word br="câmbios manuais" pt="caixas de velocidades manuais" g="f" />
+  <Word br="alavanca de câmbio" pt="alavanca das mudanças" />
+  <Word br="alavancas de câmbio" pt="alavancas das mudanças" />
+  <Word br="óleo de câmbio" pt="óleo da caixa de velocidades" />
+  <Word br="óleos de câmbio" pt="óleos da caixa de velocidades" />
+  <Word br="fluido de freio" pt="líquido de travões" />
+  <Word br="fluido de freios" pt="líquido de travões" />
+  <Word br="fluidos de freio" pt="líquidos de travões" />
+  <Word br="freio de estacionamento" pt="travão de estacionamento" />
+  <Word br="freios de estacionamento" pt="travões de estacionamento" />
+  <Word br="freio de mão" pt="travão de mão" />
+  <Word br="freios de mão" pt="travões de mão" />
+  <Word br="pastilha de freio" pt="pastilha de travão" />
+  <Word br="pastilhas de freio" pt="pastilhas de travão" />
+  <Word br="disco de freio" pt="disco de travão" />
+  <Word br="discos de freio" pt="discos de travão" />
+  <Word br="pinça de freio" pt="pinça de travão" />
+  <Word br="pinças de freio" pt="pinças de travão" />
+  <Word br="lona de freio" pt="ferodo de travão" g="m" />
+  <Word br="lonas de freio" pt="ferodos de travão" g="m" />
+  <Word br="tubo de escapamento" pt="tubo de escape" />
+  <Word br="tubos de escapamento" pt="tubos de escape" />
+  <Word br="sistema de escapamento" pt="sistema de escape" />
+  <Word br="sistemas de escapamento" pt="sistemas de escape" />
+  <Word br="tanque de combustível" pt="depósito de combustível" />
+  <Word br="tanques de combustível" pt="depósitos de combustível" />
+  <Word br="tanque de gasolina" pt="depósito de gasolina" />
+  <Word br="tanques de gasolina" pt="depósitos de gasolina" />
+  <Word br="tanque de diesel" pt="depósito de gasóleo" />
+  <Word br="tanques de diesel" pt="depósitos de gasóleo" />
+  <Word br="virabrequim" pt="cambota" g="f" />
+  <Word br="virabrequins" pt="cambotas" g="f" />
+  <Word br="cabeçote do motor" pt="cabeça do motor" g="f" />
+  <Word br="cabeçotes do motor" pt="cabeças do motor" g="f" />
+  <Word br="junta do cabeçote" pt="junta da cabeça do motor" />
+  <Word br="juntas do cabeçote" pt="juntas da cabeça do motor" />
+  <Word br="árvore de comando de válvulas" pt="árvore de cames" />
+  <Word br="árvores de comando de válvulas" pt="árvores de cames" />
+  <Word br="correia dentada do motor" pt="correia de distribuição do motor" />
+  <Word br="correias dentadas do motor" pt="correias de distribuição do motor" />
+  <Word br="carroceria" pt="carroçaria" />
+  <Word br="carrocerias" pt="carroçarias" />
+  <Word br="para-brisa" pt="para-brisas" />
+  <Word br="para-choque" pt="para-choques" />
+  <Word br="para-lama" pt="guarda-lamas" />
+  <Word br="para-lamas" pt="guarda-lamas" />
+  <Word br="paralama" pt="guarda-lamas" />
+  <Word br="paralamas" pt="guarda-lamas" />
+  <Word br="limpador de para-brisa" pt="limpa-para-brisas" />
+  <Word br="limpadores de para-brisa" pt="limpa-para-brisas" />
+  <Word br="limpador de para-brisas" pt="limpa-para-brisas" />
+  <Word br="limpadores de para-brisas" pt="limpa-para-brisas" />
+  <Word br="farol de neblina" pt="farol de nevoeiro" />
+  <Word br="faróis de neblina" pt="faróis de nevoeiro" />
+  <Word br="luz de freio" pt="luz de travagem" />
+  <Word br="luzes de freio" pt="luzes de travagem" />
+  <Word br="luz de ré" pt="luz de marcha-atrás" />
+  <Word br="luzes de ré" pt="luzes de marcha-atrás" />
+  <Word br="pneu careca" pt="pneu liso" />
+  <Word br="pneus carecas" pt="pneus lisos" />
+  <Word br="calota da roda" pt="tampão da roda" g="m" />
+  <Word br="calotas das rodas" pt="tampões das rodas" g="m" />
+  <Word br="câmbio traseiro" pt="desviador traseiro" />
+  <Word br="câmbios traseiros" pt="desviadores traseiros" />
+  <Word br="câmbio dianteiro" pt="desviador dianteiro" />
+  <Word br="câmbios dianteiros" pt="desviadores dianteiros" />
+  <Word br="trocador de marchas" pt="manípulo de mudanças" />
+  <Word br="trocadores de marchas" pt="manípulos de mudanças" />
+  <Word br="conjunto de pedivela" pt="pedaleira" g="f" />
+  <Word br="conjuntos de pedivela" pt="pedaleiras" g="f" />
+  <Word br="movimento central da bicicleta" pt="eixo pedaleiro da bicicleta" />
+  <Word br="canote do selim" pt="espigão do selim" />
+  <Word br="canotes do selim" pt="espigões do selim" />
+  <Word br="motor de popa" pt="motor fora de borda" />
+  <Word br="motores de popa" pt="motores fora de borda" />
+  <Word br="motor de centro" pt="motor interior" />
+  <Word br="motores de centro" pt="motores interiores" />
+  <Word br="boreste" pt="estibordo" />
+  <Word br="colete salva-vidas" pt="colete de salvação" />
+  <Word br="coletes salva-vidas" pt="coletes de salvação" />
+  <Word br="boia salva-vidas" pt="boia de salvação" />
+  <Word br="boias salva-vidas" pt="boias de salvação" />
+  <Word br="bote inflável" pt="bote insuflável" />
+  <Word br="botes infláveis" pt="botes insufláveis" />
+  <Word br="lancha inflável" pt="lancha insuflável" />
+  <Word br="lanchas infláveis" pt="lanchas insufláveis" />
   <Word br="retrato falado" pt="retrato-robô" />
   <Word br="retratos falados" pt="retratos-robô" />
   <Word br="trabalho de meio período" pt="trabalho a tempo parcial" />
@@ -446,7 +542,7 @@
   <Word br="gerenciamento" pt="gestão" g="f" />
 
   <!-- ===================== Verbs (all forms generated) ===================== -->
-  <Verb br="botar" pt="meter" notAfter="fogo|para\s+tocar|pra\s+tocar|os\s+pingos" noun="botas bote botes" />
+  <Verb br="botar" pt="meter" notAfter="fogo|para\s+tocar|pra\s+tocar|os\s+pingos|infláve(?:l|is)|insufláve(?:l|is)" noun="botas bote botes" />
   <Verb br="xingar" pt="insultar" />
   <Verb br="pentelhar" pt="chatear" />
   <Verb br="xeretar" pt="bisbilhotar" after="(?:(?:em|nas?|nos?|as?|os?)\s+)?(?:(?:minhas?|meus?|tuas?|teus?|suas?|seus?)\s+)?(?:coisas|gavetas?|segredos?|vida|vidas|assuntos|negócios|casos?)" />
@@ -1042,6 +1138,24 @@
   <Word br="garis" pt="varredores" />
   <Word br="lixeira" pt="caixote do lixo" g="m" />
   <Word br="lixeiras" pt="caixotes do lixo" g="m" />
+  <Word br="trote de celular" pt="chamada de brincadeira" g="f" />
+  <Word br="trotes de celular" pt="chamadas de brincadeira" g="f" />
+  <Word br="trote por telefone" pt="chamada de brincadeira" g="f" />
+  <Word br="trotes por telefone" pt="chamadas de brincadeira" g="f" />
+  <Word br="trote telefônico" pt="chamada de brincadeira" g="f" />
+  <Word br="trotes telefônicos" pt="chamadas de brincadeira" g="f" />
+  <Word br="trote telefónico" pt="chamada de brincadeira" g="f" />
+  <Word br="trotes telefónicos" pt="chamadas de brincadeira" g="f" />
+  <Word br="ligação de trote" pt="chamada de brincadeira" />
+  <Word br="ligações de trote" pt="chamadas de brincadeira" />
+  <Word br="telefonema de trote" pt="chamada de brincadeira" g="f" />
+  <Word br="telefonemas de trote" pt="chamadas de brincadeira" g="f" />
+  <Word br="trote estudantil" pt="praxe académica" g="f" />
+  <Word br="trotes estudantis" pt="praxes académicas" g="f" />
+  <Word br="trote universitário" pt="praxe académica" g="f" />
+  <Word br="trotes universitários" pt="praxes académicas" g="f" />
+  <Word br="trote" pt="brincadeira" g="f" />
+  <Word br="trotes" pt="brincadeiras" g="f" />
   <Word br="pegadinha" pt="partida" />
   <Word br="pegadinhas" pt="partidas" />
   <Word br="puxa-saco" pt="lambe-botas" />

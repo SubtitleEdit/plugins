@@ -23,6 +23,7 @@ internal static class AutomaticGrammar
         ["autocarro"] = false, ["autocarros"] = false, ["comboio"] = false, ["comboios"] = false,
         ["telemóvel"] = false, ["telemóveis"] = false,
         ["ideia"] = true, ["ideias"] = true,
+        ["boca"] = true, ["bocas"] = true, ["acordo"] = false, ["acordos"] = false,
     };
     private static readonly string Nouns = string.Join("|", NounGender.Keys.OrderByDescending(n => n.Length).Select(Regex.Escape));
     private static readonly Regex OrdinalEvent = new(
@@ -41,6 +42,9 @@ internal static class AutomaticGrammar
         @"(?<![\p{L}\p{M}-])(?<v>vem|vêm|veio|vieram|vinha|vinham|venha|venham|vier|vierem|vir)\s+a\s+mente" + Boundary, Ci);
     private static readonly Regex TodoMassNoun = new(
         @"(?<![\p{L}\p{M}-])(?<todo>todo)\s+(?<noun>dinheiro|sentido|tempo)" + Boundary, Ci);
+    private static readonly Regex TodoArticleNoun = new(
+        @"(?<![\p{L}\p{M}-])(?<todo>tod[oa]s?)(?<gap>\s+)(?<article>o|a|os|as)(?<space>\s+)(?<noun>" +
+        Nouns + ")" + Boundary, Ci);
     private static readonly Regex Subject = new(
         @"(?<pre>^|[.!?;]\s+)(?<subject>nós|eles|elas)\s+(?<adv>(?:(?:não|já|sempre|nunca|também|ainda)\s+){0,2})" +
         @"(?<verb>\p{L}+)" + Boundary + @"(?!\s*[-:])", Ci);
@@ -93,6 +97,15 @@ internal static class AutomaticGrammar
     {
         if (options.Vocabulary)
         {
+            text = TodoArticleNoun.Replace(text, m =>
+            {
+                var noun = m.Groups["noun"].Value;
+                var feminine = NounGender[noun];
+                var plural = noun.EndsWith("s", StringComparison.OrdinalIgnoreCase);
+                return CaseHelper.MatchCase(m.Groups["todo"].Value, "tod" + (feminine ? "a" : "o") + (plural ? "s" : "")) +
+                    m.Groups["gap"].Value + AgreeDeterminer(m.Groups["article"].Value, feminine, plural) +
+                    m.Groups["space"].Value + noun;
+            });
             text = OrdinalEvent.Replace(text, m =>
             {
                 var noun = m.Groups["noun"].Value;

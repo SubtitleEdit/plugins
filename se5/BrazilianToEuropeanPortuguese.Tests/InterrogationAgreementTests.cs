@@ -59,6 +59,15 @@ public sealed class InterrogationAgreementTests
     [InlineData("Receio que ele não pode vir.", null, "Receio que ele não possa vir.")]
     [InlineData("RECEIO QUE ESTÁS PRESO.", null, "RECEIO QUE ESTEJAS PRESO.")]
     [InlineData("<i>Receio que estás preso.</i>", null, "<i>Receio que estejas preso.</i>")]
+    [InlineData("Espero que ambos precisam\nse conhecer de novo.", null, "Espero que ambos precisem\nde se conhecer de novo.")]
+    [InlineData("Espero que ambas precisam de ajuda.", null, "Espero que ambas precisem de ajuda.")]
+    [InlineData("Esperamos que eles podem vir.", null, "Esperamos que eles possam vir.")]
+    [InlineData("Espero que tu sabes.", null, "Espero que tu saibas.")]
+    [InlineData("Espero que a equipa chega cedo.", null, "Espero que a equipa chegue cedo.")]
+    [InlineData("Esperemos que todos estão bem.", null, "Esperemos que todos estejam bem.")]
+    [InlineData("Desejo que ambos ficam bem.", null, "Desejo que ambos fiquem bem.")]
+    [InlineData("Temo que ambas enganam-se.", null, "Temo que ambas se enganem.")]
+    [InlineData("ESPERO QUE AMBOS PRECISAM DE AJUDA.", null, "ESPERO QUE AMBOS PRECISEM DE AJUDA.")]
     public void ComplementMoodPreservesSubject(string source, string? english, string expected)
     {
         var converter = new PortugueseConverter();
@@ -76,6 +85,12 @@ public sealed class InterrogationAgreementTests
     [InlineData("Disse que ele está preso.")]
     [InlineData("Acho que ele está preso.")]
     [InlineData("Receio que estejas preso.")]
+    [InlineData("Espero que ambos precisem de ajuda.")]
+    [InlineData("Espero que ele precisava de ajuda.")]
+    [InlineData("Espero que sim.")]
+    [InlineData("Espero que não.")]
+    [InlineData("A espera que ele tem.")]
+    [InlineData("Ele espera o comboio.")]
     public void NonTargetsStayUnchanged(string source) =>
         Assert.Equal(source, new PortugueseConverter().Convert(source));
 
@@ -105,6 +120,11 @@ public sealed class InterrogationAgreementTests
     public void ComplementRuleCanBeDisabled() =>
         Assert.Equal("Receio que estás preso.", new PortugueseConverter(
             new ConversionOptions(DisabledRules: "complement-subjunctive")).Convert("Receio que estás preso."));
+
+    [Fact]
+    public void HopeComplementUsesTheSameRuleSwitch() =>
+        Assert.Equal("Espero que ambos precisam de ajuda.", new PortugueseConverter(
+            new ConversionOptions(DisabledRules: "complement-subjunctive")).Convert("Espero que ambos precisam de ajuda."));
 
     [Fact]
     public void IgnoredPhraseRemainsAuthoritative()
