@@ -24,6 +24,7 @@ internal static class TransportVocabulary
 
     internal static string Apply(string text, Func<string, bool> blocked) => JumpStart.Replace(text, m =>
     {
+        if (Regex.IsMatch(m.Value, @"\r?\n[ \t]*\r?\n|\r?\n[ \t]*[-–—]")) return m.Value;
         var verb = m.Groups["verb"].Value;
         var noun = m.Groups["noun"].Value;
         if (blocked("chupeta") || blocked("chucha") || blocked(noun) || blocked(verb) ||

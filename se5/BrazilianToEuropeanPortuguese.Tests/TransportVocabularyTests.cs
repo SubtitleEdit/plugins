@@ -73,6 +73,8 @@ public sealed class TransportVocabularyTests
     [InlineData("A corrente e a vela.", "A corrente e a vela.")]
     [InlineData("A bateria da banda.", "A bateria da banda.")]
     [InlineData("Uma bicicleta sem câmbio.", "Uma bicicleta sem câmbio.")]
+    [InlineData("Deu uma chupeta\n\nno carro.", "Deu uma chucha\n\nno carro.")]
+    [InlineData("- Deu uma chupeta\n- no carro.", "- Deu uma chucha\n- no carro.")]
     public void GenderAndUnqualifiedFalseFriendsAreProtected(string source, string expected) =>
         Assert.Equal(expected, new PortugueseConverter(new ConversionOptions(YouToTu: false)).Convert(source));
 

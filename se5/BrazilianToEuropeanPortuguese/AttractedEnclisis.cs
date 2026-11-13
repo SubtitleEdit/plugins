@@ -31,7 +31,8 @@ internal static class AttractedEnclisis
             @"(?<![\p{L}\p{M}-])(?<negative>não|nunca|jamais)(?<gap>\s+)(?<aux>vou|vais|vai|vamos|vão|ia|ias|íamos|iam)" +
             @"(?:-(?<cl>me|te|se|nos|vos|lhe|lhes))?(?<space>\s+)(?<inf>[\p{L}\p{M}]+)" +
             @"(?:-(?<cl>me|te|se|nos|vos|lhe|lhes))?(?![\p{L}\p{M}-])",
-            m => m.Groups["cl"].Captures.Count != 1 || !PortugueseConverter.TuImperative.IsInfinitive(m.Groups["inf"].Value) ? m.Value :
+            m => m.Groups["cl"].Captures.Count != 1 || !PortugueseConverter.TuImperative.IsInfinitive(m.Groups["inf"].Value) ||
+                 Regex.IsMatch(m.Value, @"\r?\n[ \t]*\r?\n|\r?\n[ \t]*[-–—]") ? m.Value :
                 m.Groups["negative"].Value + m.Groups["gap"].Value + m.Groups["cl"].Value + " " +
                 m.Groups["aux"].Value + m.Groups["space"].Value + m.Groups["inf"].Value, Ci);
         return Enclitic.Replace(s, m =>

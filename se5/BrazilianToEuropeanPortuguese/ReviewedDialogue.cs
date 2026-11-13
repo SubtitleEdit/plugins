@@ -40,7 +40,9 @@ internal static class ReviewedDialogue
         var map = new Dictionary<string, (string, Regex)>(StringComparer.OrdinalIgnoreCase);
         foreach (var (infinitive, english) in TellingVerbs)
         {
-            var regex = new Regex(@"\b" + english + @"\s+(?<obj>me|you|him|her|us|them)\b", Ci);
+            // Possessive "her" ("told her parents") is not the recipient: the pronoun must end the phrase or
+            // be followed by the content of the telling, not by a bare noun phrase.
+            var regex = new Regex(@"\b" + english + @"\s+(?<obj>me|you|him|us|them|her(?=\s*(?:[.!?,;:…]|$)|\s+(?:about|of|that|this|these|those|everything|nothing|something|anything|all|the|a|an|it|he|she|they|we|I|you|what|where|when|why|how|who|to|not|never|no|so|then|and|or|but|if|because|right|again|later|now|today|tonight|yesterday|tomorrow|once|twice|first|already|just|exactly|too)\b))\b", Ci);
             var forms = infinitive == "dizer" ? IrregularDizer
                 : VerbConjugator.TryConjugate(infinitive, out var conjugated)
                     ? conjugated.Where((_, index) => index is not (>= 34 and <= 38)).ToArray()
@@ -54,7 +56,7 @@ internal static class ReviewedDialogue
     }
 
     private static readonly Regex TellingRecipient = new(
-        Before + @"(?<!(?<![\p{L}\p{M}])(?:me|te|se|nos|vos|lhe|lhes)\s)(?<v>" +
+        Before + @"(?<!(?<![\p{L}\p{M}])(?:me|te|se|nos|vos|lhe|lhes)\s+)(?<v>" +
         string.Join("|", TellingForms.Keys.OrderByDescending(form => form.Length).Select(Regex.Escape)) +
         @")" + After + @"(?!-)" +
         @"(?=(?<sp>\s+)(?:sobre|disso|disto|daquilo|que|tudo|isso|isto|a\s+verdade|o\s+que)" + After + @")", Ci);
@@ -414,7 +416,7 @@ internal static class ReviewedDialogue
             text = Regex.Replace(text,
                 @"(?<head>^|[,;.!?]\s+|\bmas\s+)(?<only>(?:(?:só|apenas|somente)\s+)?)(?<verb>faz|fazia|há|havia)\s+" +
                 @"(?<duration>(?:um|uma|uns|umas|dois|duas|três|quatro|cinco|seis|sete|oito|nove|dez|alguns|algumas|poucos|poucas|\d+)\s+(?<unit>segundos?|minutos?|horas?|dias?|semanas?|mês|meses|anos?))" +
-                After + @"(?!\s+que\b)", m =>
+                After + @"(?!\s+que\b)(?=\s*(?:[.!?…;\uE000-\uF8FF]|$|\bdesde\b))", m =>
                 {
                     var plural = m.Groups["unit"].Value.EndsWith("s", StringComparison.OrdinalIgnoreCase) &&
                         !m.Groups["unit"].Value.Equals("mês", StringComparison.OrdinalIgnoreCase);

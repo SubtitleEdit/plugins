@@ -104,6 +104,9 @@ public sealed class CorpusConstructionTests
     [InlineData("Ele contou à esposa sobre isso.", "He told her about it.")]
     [InlineData("Ele me contou sobre isso.", "He told me about it.")]
     [InlineData("Ele falou com ela. Ela falava que era inocente.", "He spoke to her. She said she was innocent.")]
+    [InlineData("Ele contou sobre isso.", "He told her parents about it.")]
+    [InlineData("Ele nos\r\ncontou sobre isso.", "He told us about it.")]
+    [InlineData("Ele nos  contou sobre isso.", "He told us about it.")]
     [InlineData("- e contou\n- sobre isso.", "and told her about it.")]
     [InlineData("e contou\n\nsobre isso.", "and told her about it.")]
     public void TellingVerbsDoNotGuessRecipientsWithoutUnambiguousEvidence(string source, string? english)

@@ -67,6 +67,7 @@ public sealed class ReviewedEpisodeDialogueTests
     [InlineData("Todos os acordos não valem nada.", "All agreements are worthless.")]
     [InlineData("Só fica longe de mim.", "He just stays away from me.")]
     [InlineData("Ele fica falando assim.", "He keeps talking like that.")]
+    [InlineData("Há alguns anos, ele vivia aqui.", "It's been a few years since he lived here.")]
     public void OtherSensesAreNotReinterpreted(string source, string? english)
     {
         var converted = new PortugueseConverter().Convert(source, reference: ReferenceHint.FromText(english));
@@ -82,6 +83,8 @@ public sealed class ReviewedEpisodeDialogueTests
     [InlineData("Ela não vai esquecer-se.", "Ela não se vai esquecer.")]
     [InlineData("Nunca vamos encontrar-nos.", "Nunca nos vamos encontrar.")]
     [InlineData("Ela vai esquecer-se.", "Ela vai esquecer-se.")]
+    [InlineData("Não\n\nvai esquecer-se.", "Não\n\nvai esquecer-se.")]
+    [InlineData("- Não\n- vai esquecer-se.", "- Não\n- vai esquecer-se.")]
     public void NegativeIrPlacementIsConsistent(string source, string expected) =>
         Assert.Equal(expected, new PortugueseConverter().Convert(source));
 

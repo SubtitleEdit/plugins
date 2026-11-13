@@ -11,7 +11,7 @@ internal static class ContextualComplements
     private const string PlainSubject = @"(?:ele|ela|eles|elas|eu|tu|nós|vós|você|vocês)";
     private const string Subject = @"(?:" + PlainSubject +
         @"|(?:o|a|os|as|um|uma|uns|umas)\s+(?!que\b)" + Word +
-        @"(?:\s+(?!(?:que|não|nunca|já|também|se|me|te|nos|lhe|lhes|e|ou|mas)\b)" + Word + @"){0,5})";
+        @"(?:\s+(?!(?:que|não|nunca|já|também|se|me|te|nos|lhe|lhes|e|ou|mas|quando|como|onde|aonde|porque|enquanto|embora|caso|quem|cujo|cuja|cujos|cujas|com|sem|de|em|para|por|sobre|contra|até|desde|durante)\b)" + Word + @"){0,5})";
     private static readonly Regex MissingQue = new(
         @"(?<![\p{L}\p{M}-])(?<verb>parece|parecia|pareceu|parecerá|pareceria|pareça|parecesse)" +
         @"(?<dative>-(?:me|te|lhe|nos|vos|lhes))?(?<gap>\s+)", Ci);
@@ -119,6 +119,9 @@ internal static class ContextualComplements
                     Regex.IsMatch(w.Value, @"(?:ou|eu|iu|aram|eram|iram|ávamos|íamos|aste|este|iste|asse|esse|isse|ava)$", Ci);
             });
             if (finite == null) continue;
+            // The whole span from "parecer" to the finite verb must stay within one paragraph and speaker.
+            if (Regex.IsMatch(combined[m.Index..(tailStart + finite.Index + finite.Length)],
+                    @"\r?\n[ \t]*\r?\n|\r?\n[ \t]*[-–—]")) continue;
             var gap = m.Groups["gap"];
             text = text.Insert(gap.Index + gap.Length, CaseHelper.IsAllUpper(m.Value + tail.Value) ? "QUE " : "que ");
         }
