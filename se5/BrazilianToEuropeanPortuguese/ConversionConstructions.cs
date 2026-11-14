@@ -188,8 +188,8 @@ internal static class ConversionConstructions
 
     private static readonly Regex RedundantPossessive = new(
         Before + @"(?<prep>com|em|no|na|nos|nas)\s+(?:(?<art>o|a|os|as)\s+)?" +
-        @"(?<poss>" + PossessivePattern + @")\s+(?<n>" + Alternatives(BodyParts.Concat(PersonalEffects)) + @")" +
-        After + @"(?!-)", Ci);
+        @"(?<poss>seu|sua|seus|suas)\s+(?<n>" + Alternatives(BodyParts.Concat(PersonalEffects)) + @")" +
+        After + @"(?!-)(?=\s*(?:[.,!?…;:)»""”]|$|[\uE000-\uF8FF])|\s+(?:e|ou|mas|que|quando|se|para|por|com|em|no|na|de|do|da)(?![\p{L}\p{M}]))", Ci);
 
     private static readonly Regex ClauseSubjectPronoun = new(
         @"(?<![\p{L}\p{M}])(?:eu|tu|você|vocês|ele|ela|nós|eles|elas)(?![\p{L}\p{M}])", Ci);
@@ -318,19 +318,11 @@ internal static class ConversionConstructions
             if (blocked(m.Value) || blocked(infinitive) || blocked(m.Groups["v"].Value) || blocked(noun)) return m.Value;
             var poss = m.Groups["poss"].Value;
             var ownNoun = PossessorIsSubject(m.Result("$`") + m.Groups["trig"].Value, poss, persons);
-            if (ownNoun == null) return m.Value;
+            // The possessive only drops with the dative clitic ("pisou-me o rosto"); the subject's own
+            // body part keeps its possessive ("Toquei na minha cara").
+            if (ownNoun != false) return m.Value;
             var article = CaseHelper.MatchCase(poss, ArticleFor(poss));
             var verb = m.Groups["v"].Value;
-            if (ownNoun.Value)
-            {
-                // "Feri o meu braço" → "Feri o braço", "Toquei na minha cara" → "Toquei na cara".
-                var head = m.Groups["prep"].Success
-                    ? m.Groups["prep"].Value.Equals("em", StringComparison.OrdinalIgnoreCase)
-                        ? CaseHelper.MatchCase(m.Groups["prep"].Value, "n" + ArticleFor(poss))
-                        : m.Groups["prep"].Value
-                    : m.Groups["art"].Success ? m.Groups["art"].Value : article;
-                return m.Groups["trig"].Value + verb + " " + head + " " + noun;
-            }
 
             if (CliticFor(poss) is not { } clitic) return m.Value;
             clitic = CaseHelper.IsAllUpper(verb) ? clitic.ToUpperInvariant() : clitic;
@@ -343,25 +335,215 @@ internal static class ConversionConstructions
                 : PortugueseVerbs.AttachEnclitic(verb, clitic) + " " + complement;
         });
 
+        // "com a sua bota" next to "with his boot": the ambiguous "sua" becomes "dele/dela"
+        // ("com a bota dele"); "your" stays a possessive for the address rules ("na tua mala").
         return RedundantPossessive.Replace(text, m =>
         {
             if (Regex.IsMatch(m.Value, @"\r?\n[ \t]*\r?\n|\r?\n[ \t]*[-–—]")) return m.Value;
+            // After a blank line or another speaker the shared English hint may describe someone else.
+            if (Regex.IsMatch(m.Result("$`"), @"\r?\n[ \t]*\r?\n|\n[ \t]*[-–—]")) return m.Value;
             var noun = m.Groups["n"].Value;
             if (blocked(m.Value) || blocked(noun)) return m.Value;
+            // A contact verb before the preposition belongs to the dative rule or is genuinely ambiguous.
+            var verbBefore = Regex.Match(m.Result("$`"), @"([\p{L}\p{M}]+)\s+$").Groups[1].Value;
+            if (verbBefore.Length > 0 && ContactForms.ContainsKey(verbBefore)) return m.Value;
+            var category = EnglishSeuCategory(english);
+            var owner = category switch
+            {
+                "his" => "dele",
+                "her" when Regex.IsMatch(english, @"(?<![\p{L}\p{M}])her\s+\p{L}", Ci) => "dela",
+                "their" => ClauseSubject(m.Result("$`")) switch { "eles" => "deles", "elas" => "delas", _ => null },
+                _ => null,
+            };
+            if (owner == null) return m.Value;
             var poss = m.Groups["poss"].Value;
-            if (PossessorIsSubject(m.Result("$`"), poss, Person.None) != true) return m.Value;
             var prep = m.Groups["prep"].Value;
             var head = prep.Equals("em", StringComparison.OrdinalIgnoreCase)
                 ? CaseHelper.MatchCase(prep, "n" + ArticleFor(poss))
                 : prep.Equals("com", StringComparison.OrdinalIgnoreCase)
                     ? prep + " " + (m.Groups["art"].Success ? m.Groups["art"].Value : CaseHelper.MatchCase(poss, ArticleFor(poss)))
                     : prep;
-            return head + " " + noun;
+            // Plural nouns keep a singular owner: "as botas dele".
+            return head + " " + noun + " " + CaseHelper.MatchCase(poss, owner);
         });
     }
 
-    private static readonly Dictionary<string, string> RetortForms = MapForms("retrucar", "responder")
-        .Concat(MapForms("revidar", "responder"))
+    // ============================================= unnoticed escapes =============================================
+    // "algo passou por mim" next to "something got past me": Portugal says "algo me escapou", not literal passing.
+    private static readonly Dictionary<string, string> EscapeForms = BuildEscapeForms();
+
+    private static Dictionary<string, string> BuildEscapeForms()
+    {
+        var source = Forms("passar");
+        var target = Forms("escapar");
+        var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var slot in new[] { 0 }.Concat(Enumerable.Range(1, 30)).Concat(Enumerable.Range(39, 4)))
+            map[source[slot]] = target[slot];
+        return map;
+    }
+
+    private static readonly Regex OverlookedPassing = new(
+        DialogueBefore + @"(?<v>" + Alternatives(EscapeForms.Keys) + @")\s+por\s+" +
+        @"(?<p>mim|ti|si|você|vocês|ele|ela|nós|eles|elas)" + After + @"(?!-)", Ci);
+
+    private static readonly Regex EnglishGotPast = new(
+        @"\b(?:get|gets|got|gotten|slip|slips|slipped|sneak|sneaks|sneaked|snuck)\s+(?:right\s+)?past\s+" +
+        @"(?<obj>me|you|him|her|us|them)\b", Ci);
+
+    public static string OverlookedEscape(string text, ReferenceHint? reference, bool informal, Func<string, bool> blocked)
+    {
+        var english = ReferenceAligner.Clean(reference?.EnglishText ?? "");
+        var objects = EnglishGotPast.Matches(english)
+            .Select(m => m.Groups["obj"].Value.ToLowerInvariant()).Distinct(StringComparer.Ordinal).ToArray();
+        if (objects.Length != 1 || blocked("passar") || blocked("escapar")) return text;
+        return OverlookedPassing.Replace(text, m =>
+        {
+            if (Regex.IsMatch(m.Value, @"\r?\n[ \t]*\r?\n|\r?\n[ \t]*[-–—]") ||
+                blocked(m.Value) || blocked(m.Groups["v"].Value)) return m.Value;
+            var person = m.Groups["p"].Value.ToLowerInvariant();
+            var expected = person switch
+            {
+                "mim" => "me", "ti" or "você" or "si" or "vocês" => "you", "ele" => "him", "ela" => "her",
+                "nós" => "us", _ => "them",
+            };
+            if (objects[0] != expected) return m.Value;
+            var before = Regex.Match(m.Result("$`"), @"[^.!?;:…]*$").Value;
+            if (Regex.IsMatch(before, @"\b(?:não|nunca|jamais)\b", Ci) !=
+                Regex.IsMatch(english, @"\b(?:not|never)\b|n['’]t\b", Ci)) return m.Value;
+            var clitic = person switch
+            {
+                "mim" => "me", "ti" => "te", "você" or "si" => informal ? "te" : "lhe",
+                "ele" or "ela" => "lhe", "nós" => "nos", "vocês" => informal ? "vos" : "lhes", _ => "lhes",
+            };
+            var verb = m.Groups["v"].Value;
+            var target = CaseHelper.MatchCase(verb, EscapeForms[verb]);
+            if (CaseHelper.IsAllUpper(verb)) clitic = clitic.ToUpperInvariant();
+            // "que algo", "não", "algo/tudo/nada/ninguém/alguém" before the verb attract the pronoun.
+            var proclisis = Regex.IsMatch(before,
+                Before + @"(?:" + PortugueseConverter.YouToTuRules.ProclisisTriggers +
+                @"|nada|algo|se|quando|porque|como|onde|embora|enquanto|caso)\s+" +
+                @"(?:(?:algo|tudo|nada|alguém|ninguém|todos|isso|isto|aquilo|ele|ela|eles|elas)\s+)?$", Ci) ||
+                PortugueseConverter.PronounRules.HasObjectProclisisContext(before) ||
+                PortugueseConverter.PronounRules.AfterSubordinateSubject(before);
+            if (proclisis) return clitic + " " + target;
+            return (PortugueseVerbs.IsFutureOrConditional(verb)
+                ? PortugueseVerbs.AttachMesoclitic(target, clitic, requireTransitive: false)
+                : PortugueseVerbs.AttachEnclitic(target, clitic)) ?? m.Value;
+        });
+    }
+
+    // ============================================= echo-question commas =============================================
+    // "O que quer dizer nada?" next to "What do you mean, nothing?": the echoed word needs the comma back,
+    // otherwise the question reads as "what does nothing mean?".
+    private static readonly Regex EchoQuestion = new(
+        @"(?<head>(?<![\p{L}\p{M}-])(?:(?:o\s+)?que\s+(?:é\s+que\s+)?(?:(?:você|tu|vocês|o\s+senhor|a\s+senhora)\s+)?" +
+        @"(?:quer|queres|querem|queria|querias|queriam|quis|quiseste|quiseram)\s+dizer|como\s+assim)" + After + @")" +
+        @"(?<gap>\s+)(?<echo>[\p{L}\p{M}][\p{L}\p{M}'’-]*(?:\s+[\p{L}\p{M}'’-]+){0,5})(?=\s*[\uE000-\uF8FF]*\?)", Ci);
+
+    private static readonly Regex EnglishEchoComma = new(
+        @"\b(?:mean|meant)\s*,\s*[^.!?]{1,40}\?", Ci);
+
+    public static string EchoQuestionComma(string text, ReferenceHint? reference, Func<string, bool> blocked)
+    {
+        if (!EnglishEchoComma.IsMatch(ReferenceAligner.Clean(reference?.EnglishText ?? ""))) return text;
+        return EchoQuestion.Replace(text, m =>
+        {
+            if (Regex.IsMatch(m.Value, @"\r?\n[ \t]*\r?\n|\r?\n[ \t]*[-–—]") ||
+                blocked(m.Value) || blocked("dizer") && !m.Groups["head"].Value.StartsWith("como", StringComparison.OrdinalIgnoreCase) ||
+                blocked("como assim") && m.Groups["head"].Value.StartsWith("como", StringComparison.OrdinalIgnoreCase))
+                return m.Value;
+            // "dizer com isso", "dizer que…" and "dizer isso" are ordinary complements, not echoed words.
+            var first = Regex.Match(m.Groups["echo"].Value, @"^[\p{L}\p{M}'’-]+").Value;
+            if (first.ToLowerInvariant() is "com" or "que" or "isso" or "isto" or "aquilo") return m.Value;
+            return m.Groups["head"].Value + "," + m.Groups["gap"].Value + m.Groups["echo"].Value;
+        });
+    }
+
+    // ============================================= colloquial failures =============================================
+    // Brazilian "vacilar" means slipping up; Portugal says "falhar" (and "hesitar" for genuine hesitation).
+    // "dar mancada" and "pisar na bola" become "fazer asneira" with English evidence.
+    private static readonly Dictionary<string, (string Fail, string Hesitate)> VacillateForms = BuildVacillateForms();
+
+    private static Dictionary<string, (string, string)> BuildVacillateForms()
+    {
+        var source = Forms("vacilar");
+        var fail = Forms("falhar");
+        var hesitate = Forms("hesitar");
+        var map = new Dictionary<string, (string, string)>(StringComparer.OrdinalIgnoreCase);
+        foreach (var slot in new[] { 0 }.Concat(Enumerable.Range(1, 30)).Concat(Enumerable.Range(39, 4)))
+            map[source[slot]] = (fail[slot], hesitate[slot]);
+        return map;
+    }
+
+    private static readonly Regex VacillateVerb = new(
+        DialogueBefore + @"(?<v>" + Alternatives(VacillateForms.Keys) + @")" + After + @"(?!-)", Ci);
+    private static readonly Regex WithoutHesitation = new(
+        DialogueBefore + @"(?<sem>sem)(?<gap>\s+)vacilar" + After + @"(?!-)", Ci);
+    private static readonly Regex EnglishFailure = new(
+        @"\b(?:fail(?:s|ed|ing|ure)?|mess(?:ed|es)?\s+(?:it\s+|this\s+)?up|screw(?:ed|s)?\s+(?:it\s+|this\s+)?up|" +
+        @"blew\s+it|blow\s+it|slip(?:ped|s)?\s+up|dropp(?:ed|ing)\s+the\s+ball|drop\s+the\s+ball|" +
+        @"let\s+(?:you|him|her|them|us|me|everyone|everybody)\s+down)\b", Ci);
+    private static readonly Regex EnglishHesitation = new(
+        @"\b(?:hesitat(?:e|es|ed|ing|ion)|waver(?:s|ed|ing)?|falter(?:s|ed|ing)?|flinch(?:es|ed|ing)?)\b", Ci);
+
+    private static readonly Dictionary<string, string> GiveToMake = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["dou"] = "faço", ["dás"] = "fazes", ["dá"] = "faz", ["damos"] = "fazemos", ["dão"] = "fazem",
+        ["dei"] = "fiz", ["deste"] = "fizeste", ["deu"] = "fez", ["demos"] = "fizemos", ["deram"] = "fizeram",
+        ["dava"] = "fazia", ["davas"] = "fazias", ["dávamos"] = "fazíamos", ["davam"] = "faziam",
+        ["darei"] = "farei", ["darás"] = "farás", ["dará"] = "fará", ["daremos"] = "faremos", ["darão"] = "farão",
+        ["daria"] = "faria", ["darias"] = "farias", ["daríamos"] = "faríamos", ["dariam"] = "fariam",
+        ["dê"] = "faça", ["dês"] = "faças", ["deem"] = "façam", ["desse"] = "fizesse", ["desses"] = "fizesses",
+        ["déssemos"] = "fizéssemos", ["dessem"] = "fizessem", ["der"] = "fizer", ["dar"] = "fazer", ["dado"] = "feito",
+    };
+    private static readonly Dictionary<string, string> StepToMake = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["piso"] = "faço", ["pisas"] = "fazes", ["pisa"] = "faz", ["pisamos"] = "fazemos", ["pisam"] = "fazem",
+        ["pisei"] = "fiz", ["pisaste"] = "fizeste", ["pisou"] = "fez", ["pisámos"] = "fizemos", ["pisaram"] = "fizeram",
+        ["pisava"] = "fazia", ["pisavam"] = "faziam", ["pisar"] = "fazer",
+    };
+    private static readonly Regex GiveBlunder = new(
+        DialogueBefore + @"(?<v>" + Alternatives(GiveToMake.Keys) + @")(?<gap>\s+)(?<article>(?:uma\s+)?)mancada" +
+        After + @"(?!-)", Ci);
+    private static readonly Regex StepOnTheBall = new(
+        DialogueBefore + @"(?<v>" + Alternatives(StepToMake.Keys) + @")\s+na\s+bola" + After + @"(?!-)", Ci);
+
+    public static string FailureVocabulary(string text, ReferenceHint? reference, Func<string, bool> blocked)
+    {
+        if (!blocked("vacilar") && !blocked("hesitar"))
+            text = WithoutHesitation.Replace(text, m => Regex.IsMatch(m.Value, @"\r?\n[ \t]*\r?\n|\r?\n[ \t]*[-–—]")
+                ? m.Value : m.Groups["sem"].Value + m.Groups["gap"].Value +
+                    (CaseHelper.IsAllUpper(m.Value) ? "HESITAR" : "hesitar"));
+        var english = ReferenceAligner.Clean(reference?.EnglishText ?? "");
+        var failure = EnglishFailure.IsMatch(english);
+        var hesitation = EnglishHesitation.IsMatch(english);
+        if (failure == hesitation) return text;
+        if (!blocked("vacilar") && !blocked(failure ? "falhar" : "hesitar"))
+            text = VacillateVerb.Replace(text, m =>
+                blocked(m.Value) || blocked(m.Groups["v"].Value) ||
+                PortugueseConverter.HasNominalDeterminerBefore(m.Result("$`"))
+                    ? m.Value
+                    : CaseHelper.MatchCase(m.Groups["v"].Value,
+                        failure ? VacillateForms[m.Groups["v"].Value].Fail : VacillateForms[m.Groups["v"].Value].Hesitate));
+        if (!failure) return text;
+        if (!blocked("mancada") && !blocked("asneira") && !blocked("dar"))
+            text = GiveBlunder.Replace(text, m =>
+                Regex.IsMatch(m.Value, @"\r?\n[ \t]*\r?\n|\r?\n[ \t]*[-–—]") || blocked(m.Value) ||
+                PortugueseConverter.HasNominalDeterminerBefore(m.Result("$`"))
+                    ? m.Value
+                    : CaseHelper.MatchCase(m.Groups["v"].Value, GiveToMake[m.Groups["v"].Value]) +
+                      m.Groups["gap"].Value + m.Groups["article"].Value +
+                      (CaseHelper.IsAllUpper(m.Value) ? "ASNEIRA" : "asneira"));
+        if (!blocked("pisar") && !blocked("asneira") && !Regex.IsMatch(english, @"\bball\b", Ci))
+            text = StepOnTheBall.Replace(text, m =>
+                Regex.IsMatch(m.Value, @"\r?\n[ \t]*\r?\n|\r?\n[ \t]*[-–—]") || blocked(m.Value)
+                    ? m.Value
+                    : CaseHelper.MatchCase(m.Groups["v"].Value, StepToMake[m.Groups["v"].Value]) +
+                      (CaseHelper.IsAllUpper(m.Value) ? " ASNEIRA" : " asneira"));
+        return text;
+    }
+
+    private static readonly Dictionary<string, string> RetortForms = MapForms("retrucar", "responder")        .Concat(MapForms("revidar", "responder"))
         .ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.OrdinalIgnoreCase);
     private static readonly Regex RetortVerb = new(
         DialogueBefore + @"(?<v>" + Alternatives(RetortForms.Keys) + @")" + After + @"(?!-)", Ci);

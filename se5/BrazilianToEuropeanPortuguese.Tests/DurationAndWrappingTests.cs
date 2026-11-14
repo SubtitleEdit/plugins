@@ -122,12 +122,16 @@ public sealed class DurationAndWrappingTests
     [InlineData("Como divertisse você?", "Like I amuse you?", "Como se eu te divertisse?")]
     [InlineData("Como eu fosse um palhaço?", "Like I'm a clown?", "Como se eu fosse um palhaço?")]
     [InlineData("Como ele não visse você?", "Like he didn't see you?", "Como se ele não te visse?")]
-    [InlineData("Ele pisou no meu rosto com sua bota.", "He stepped on my face with his boot.", "Ele pisou-me o rosto com a bota.")]
-    [InlineData("Você tinha uma arma na sua mão.", "You did have a gun in your hand.", "Tinhas uma arma na mão.")]
+    [InlineData("Ele pisou no meu rosto com sua bota.", "He stepped on my face with his boot.", "Ele pisou-me o rosto com a bota dele.")]
+    [InlineData("Você tinha uma arma na sua mão.", "You did have a gun in your hand.", "Tinhas uma arma na tua mão.")]
     [InlineData("Ela bateu na minha cara.", null, "Ela bateu-me na cara.")]
-    [InlineData("Parti o meu braço.", null, "Parti o braço.")]
+    [InlineData("Sei que vacilei com você.", "I know I messed up with you.", "Sei que falhei contigo.")]
+    [InlineData("Ele deu uma mancada.", "He screwed up.", "Ele fez uma asneira.")]
     [InlineData("Não, mas não pensou", "No, but you didn't think...", "Não, mas não pensaste")]
     [InlineData("e contou sobre isso.", "and told her about it.", "e contou-lhe sobre isso.")]
+    [InlineData("Por que não acaba o que começou aqui?", "Why don't you finish what you started here?", "Porque não acabas o que começaste aqui?")]
+    [InlineData("Não é a primeira vez que algo passou por mim.", "It's not the first time something got past me.", "Não é a primeira vez que algo me escapou.")]
+    [InlineData("O que quer dizer nada?", "What do you mean, nothing?", "O que queres dizer, nada?")]
     public void RecentRulesWorkAcrossEveryWordBoundary(string text, string? english, string expected)
     {
     var converter = new PortugueseConverter();
@@ -176,7 +180,7 @@ public sealed class DurationAndWrappingTests
     [InlineData("Ele veio\nao esquadrão.", "He came by\nthe squad.", "Ele veio\nà esquadra.")]
     [InlineData("Então decidiu\nrevidar.", "So you decided to get\nback at him.", "Então decidiste\nvingar-te.")]
     [InlineData("Como divertisse\nvocê?", "Like I\namuse you?", "Como se eu\nte divertisse?")]
-    [InlineData("Ele pisou no meu\nrosto com sua bota.", "He stepped on my face\nwith his boot.", "Ele pisou-me\no rosto com a bota.")]
+    [InlineData("Ele pisou no meu\nrosto com sua bota.", "He stepped on my face\nwith his boot.", "Ele pisou-me\no rosto com a bota dele.")]
     public void ReferenceAndPortugueseMayBothWrap(string source, string english, string expected)
     {
     var converter = new PortugueseConverter();

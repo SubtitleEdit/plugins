@@ -6,18 +6,12 @@ namespace BrazilianToEuropeanPortuguese.Tests;
 public sealed class CorpusConstructionTests
 {
     [Theory]
-    [InlineData("Ele pisou no meu rosto\ncom sua bota.", "He stepped on my face\nwith his boot.", "Ele pisou-me o rosto\ncom a bota.")]
-    [InlineData("Ele pisou no meu rosto com sua bota.", "He stepped on my face with his boot.", "Ele pisou-me o rosto com a bota.")]
-    [InlineData("Você tinha uma arma na sua mão.", "You did have a gun in your hand.", "Tinhas uma arma na mão.")]
-    [InlineData("Ela bateu na minha cara.", null, "Ela bateu-me na cara.")]
-    [InlineData("Ele agarrou o meu braço.", null, "Ele agarrou-me o braço.")]
-    [InlineData("Parti o meu braço.", null, "Parti o braço.")]
-    [InlineData("Toquei na minha cara.", null, "Toquei na cara.")]
-    [InlineData("Ele não pisou no meu pé.", null, "Ele não me pisou o pé.")]
-    [InlineData("Eu pisei no seu pé.", "I stepped on your foot.", "Eu pisei-te o pé.")]
-    [InlineData("Ela pisava no meu pé.", "She was stepping on my foot.", "Ela pisava-me o pé.")]
-    [InlineData("Eles torceram o meu pulso.", null, "Eles torceram-me o pulso.")]
-    public void InalienablePossessionUsesDativeOrBareArticle(string source, string? english, string expected)
+    [InlineData("O que quer dizer nada?", "What do you mean,\nnothing?", "O que queres dizer, nada?")]
+    [InlineData("O que quer dizer nada?", "What do you mean, nothing?", "O que queres dizer, nada?")]
+    [InlineData("Como assim nada?", "What do you mean, nothing?", "Como assim, nada?")]
+    [InlineData("O que quer dizer ele saiu?", "What do you mean, he left?", "O que quer dizer, ele saiu?")]
+    [InlineData("O que você quis dizer demitida?", "What did you mean, fired?", "O que quiseste dizer, demitida?")]
+    public void EchoedQuestionWordsRecoverTheComma(string source, string english, string expected)
     {
         var converter = new PortugueseConverter();
         var reference = ReferenceHint.FromText(english);
@@ -26,16 +20,89 @@ public sealed class CorpusConstructionTests
     }
 
     [Theory]
-    [InlineData("Ele fugiu com a sua carteira.", "He ran off with your wallet.")]
+    [InlineData("O que quer dizer nada?", null)]
+    [InlineData("O que quer dizer nada?", "What do you mean nothing?")]
+    [InlineData("O que quer dizer isso?", "What do you mean, nothing?")]
+    [InlineData("O que quer dizer com isso?", "What do you mean, nothing?")]
+    [InlineData("O que quer dizer que ele saiu?", "What do you mean, he left?")]
+    [InlineData("- O que quer dizer\n- nada?", "What do you mean, nothing?")]
+    [InlineData("O que quer dizer\n\nnada?", "What do you mean, nothing?")]
+    public void OrdinaryMeaningQuestionsKeepTheirPunctuation(string source, string? english)
+    {
+        var converted = new PortugueseConverter().Convert(source, reference: ReferenceHint.FromText(english));
+        Assert.DoesNotContain("dizer,", converted, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("assim,", converted, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void EchoCommaRespectsOptionsAndLocalChoices()
+    {
+        const string source = "O que quer dizer nada?";
+        var reference = ReferenceHint.FromText("What do you mean, nothing?");
+        Assert.DoesNotContain("dizer,", new PortugueseConverter(new ConversionOptions(DisabledRules: "echo-question-comma"))
+            .Convert(source, reference: reference));
+        Assert.DoesNotContain("dizer,", new PortugueseConverter(new ConversionOptions(Colloquial: false))
+            .Convert(source, reference: reference));
+        var words = new PortugueseLocalWordList();
+        words.Ignored.Add("dizer");
+        Assert.DoesNotContain("dizer,", new PortugueseConverter(localWordList: words)
+            .Convert(source, reference: reference));
+    }
+
+    [Fact]
+    public void EchoCommaCueUsesAlignedReferenceAndPreservesSource()
+    {
+        var source = new[] { new SrtBlock { StartMs = 76289, EndMs = 77483, Text = "O que quer dizer nada?" } };
+        var english = new[] { new SrtBlock { StartMs = 76344, EndMs = 77478, Text = "What do you mean,\nnothing?" } };
+        var aligned = ReferenceAligner.AlignByTiming(source, english);
+        var converted = Assert.Single(SubtitleConversion.Convert(source, ConversionOptions.Default, english: aligned.Texts));
+        Assert.Equal("O que queres dizer, nada?", converted.Text);
+        Assert.Equal((76289, 77483, "O que quer dizer nada?"), (source[0].StartMs, source[0].EndMs, source[0].Text));
+    }
+
+    [Theory]
+    [InlineData("Ele pisou no meu rosto\ncom sua bota.", "He stepped on my face\nwith his boot.", "Ele pisou-me o rosto\ncom a bota dele.")]
+    [InlineData("Ele pisou no meu rosto com sua bota.", "He stepped on my face with his boot.", "Ele pisou-me o rosto com a bota dele.")]
+    [InlineData("Você tinha uma arma na sua mão.", "You did have a gun in your hand.", "Tinhas uma arma na tua mão.")]
+    [InlineData("Ela bateu na minha cara.", null, "Ela bateu-me na cara.")]
+    [InlineData("Ele agarrou o meu braço.", null, "Ele agarrou-me o braço.")]
+    [InlineData("Ele não pisou no meu pé.", null, "Ele não me pisou o pé.")]
+    [InlineData("Eu pisei no seu pé.", "I stepped on your foot.", "Eu pisei-te o pé.")]
+    [InlineData("Ela pisava no meu pé.", "She was stepping on my foot.", "Ela pisava-me o pé.")]
+    [InlineData("Eles torceram o meu pulso.", null, "Eles torceram-me o pulso.")]
+    [InlineData("Ele fugiu com a sua carteira.", "He ran off with his wallet.", "Ele fugiu com a carteira dele.")]
+    [InlineData("Ela guardou tudo na sua mala.", "She kept everything in her purse.", "Ela guardou tudo na mala dela.")]
+    public void InalienablePossessionUsesDativeOrOwnerPhrase(string source, string? english, string expected)
+    {
+        var converter = new PortugueseConverter();
+        var reference = ReferenceHint.FromText(english);
+        Assert.Equal(expected, converter.Convert(source, reference: reference));
+        Assert.Equal(expected, converter.Convert(expected, reference: reference));
+    }
+
+    [Theory]
     [InlineData("Ele tocou na minha vida.", null)]
     [InlineData("Ele bateu na minha porta.", null)]
     [InlineData("Pisava no meu pé.", null)]
     [InlineData("Ele pisou no seu pé.", null)]
     [InlineData("Ele pisou no seu pé.", "He stepped on your foot, and her foot too.")]
+    [InlineData("Parti o meu braço.", null)]
+    [InlineData("Toquei na minha cara.", null)]
     public void InalienablePossessionDoesNotGuessOwnersOrOtherSenses(string source, string? english)
     {
         var converter = new PortugueseConverter();
         Assert.Equal(converter.Convert(source), converter.Convert(source, reference: ReferenceHint.FromText(english)));
+    }
+
+    [Fact]
+    public void SecondPersonPossessivesSurviveAsTeu()
+    {
+        // "in your bag of tricks" keeps the possessive: "na tua mala mágica", never a bare "na mala mágica".
+        var source = new[] { new SrtBlock { StartMs = 2143061, EndMs = 2145890, Text = "Tem alguma solução\nna sua mala mágica para isso?" } };
+        var english = new[] { new SrtBlock { StartMs = 2143061, EndMs = 2145847, Text = "You got anything\nin your bag of tricks for this?" } };
+        var aligned = ReferenceAligner.AlignByTiming(source, english);
+        var converted = Assert.Single(SubtitleConversion.Convert(source, ConversionOptions.Default, english: aligned.Texts));
+        Assert.Contains("tua mala mágica", converted.Text.Replace("\n", " "));
     }
 
     [Fact]
@@ -75,8 +142,96 @@ public sealed class CorpusConstructionTests
         var english = new[] { new SrtBlock { StartMs = 274241, EndMs = 276977, Text = "He stepped on my face\nwith his boot." } };
         var aligned = ReferenceAligner.AlignByTiming(source, english);
         var converted = Assert.Single(SubtitleConversion.Convert(source, ConversionOptions.Default, english: aligned.Texts));
-        Assert.Equal("Ele pisou-me o rosto\ncom a bota.", converted.Text);
+        Assert.Equal("Ele pisou-me o rosto\ncom a bota dele.", converted.Text);
         Assert.Equal((274590, 276923, "Ele pisou no meu rosto\ncom sua bota."), (source[0].StartMs, source[0].EndMs, source[0].Text));
+    }
+
+    [Theory]
+    [InlineData("Por que não acaba\no que começou aqui?", "Why don't you finish\nwhat you started here?",
+        "Porque não acabas\no que começaste aqui?")]
+    [InlineData("Por que não acaba o que começou aqui?", "Why don't you finish what you started here?",
+        "Porque não acabas o que começaste aqui?")]
+    [InlineData("Por que não termina o que começou?", "Why don't you finish what you started?",
+        "Porque não terminas o que começaste?")]
+    public void WhQuestionsWithContractedNegativeAgreeInformally(string source, string english, string expected)
+    {
+        var converter = new PortugueseConverter();
+        var reference = ReferenceHint.FromText(english);
+        Assert.Equal(expected, converter.Convert(source, reference: reference));
+        Assert.Equal(expected, converter.Convert(expected, reference: reference));
+    }
+
+    [Theory]
+    [InlineData("Quando acaba o filme?", "When does the movie end?")]
+    [InlineData("Por que não acaba o filme?", "Why doesn't the movie end?")]
+    public void WhQuestionsAboutThingsKeepTheThirdPerson(string source, string? english)
+    {
+        var converter = new PortugueseConverter();
+        Assert.Equal(converter.Convert(source), converter.Convert(source, reference: ReferenceHint.FromText(english)));
+    }
+
+    [Theory]
+    [InlineData("Não é a primeira vez que\nalgo passou por mim. E dai?", "It's not the first time\nsomething got past me. So?",
+        "Não é a primeira vez que\nalgo me escapou. E dai?")]
+    [InlineData("Algo passou por mim.", "Something got past me.", "Algo me escapou.")]
+    [InlineData("Ele passou por mim.", "He got past me.", "Ele escapou-me.")]
+    [InlineData("Isso passou por nós.", "That slipped past us.", "Isso escapou-nos.")]
+    [InlineData("Nada passou por ela.", "Nothing got past her.", "Nada lhe escapou.")]
+    [InlineData("Isto vai passar por ti.", "This will get past you.", "Isto vai escapar-te.")]
+    public void UnnoticedEscapesReplaceLiteralPassing(string source, string english, string expected)
+    {
+        var converter = new PortugueseConverter();
+        var reference = ReferenceHint.FromText(english);
+        Assert.Equal(expected, converter.Convert(source, reference: reference));
+        Assert.Equal(expected, converter.Convert(expected, reference: reference));
+    }
+
+    [Theory]
+    [InlineData("Algo passou por mim.", null)]
+    [InlineData("Ela passou por mim na rua.", "She walked past me on the street.")]
+    [InlineData("Algo passou por mim.", "Something got past me and got past her.")]
+    [InlineData("Algo não passou por mim.", "Something got past me.")]
+    [InlineData("Algo passou por ela.", "Something got past me.")]
+    [InlineData("- Algo passou\n- por mim.", "Something got past me.")]
+    [InlineData("Algo passou\n\npor mim.", "Something got past me.")]
+    public void LiteralAndUnconfirmedPassingStaysUntouched(string source, string? english)
+    {
+        var converter = new PortugueseConverter();
+        Assert.Equal(converter.Convert(source), converter.Convert(source, reference: ReferenceHint.FromText(english)));
+    }
+
+    [Fact]
+    public void UnnoticedEscapesRespectOptionsFormalityAndLocalChoices()
+    {
+        const string source = "Algo passou por você.";
+        var reference = ReferenceHint.FromText("Something got past you.");
+        Assert.Equal("Algo te escapou.", new PortugueseConverter().Convert(source, reference: reference));
+        Assert.Equal("Algo lhe escapou.", new PortugueseConverter()
+            .Convert(source, reference: reference! with { FormalAddress = true }));
+        Assert.DoesNotContain("escap", new PortugueseConverter(new ConversionOptions(Vocabulary: false))
+            .Convert(source, reference: reference), StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("escap", new PortugueseConverter(new ConversionOptions(DisabledRules: "overlooked-escape"))
+            .Convert(source, reference: reference), StringComparison.OrdinalIgnoreCase);
+        var words = new PortugueseLocalWordList();
+        words.Ignored.Add("passar");
+        Assert.DoesNotContain("escap", new PortugueseConverter(localWordList: words)
+            .Convert(source, reference: reference), StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData(856096, 858191, "Por que não acaba\no que começou aqui?", 855934, 859137,
+        "Why don't\nyou finish\nwhat you started here?", "Porque não acabas\no que começaste aqui?")]
+    [InlineData(2319441, 2322061, "Não é a primeira vez que\nalgo passou por mim. E dai?", 2319951, 2321920,
+        "It's not the first time\nsomething got past me. So?", "Não é a primeira vez que\nalgo me escapou. E dai?")]
+    public void SpreadsheetCuesUseAlignedReferenceAndPreserveSource(long startMs, long endMs, string pt,
+        long enStartMs, long enEndMs, string en, string expected)
+    {
+        var source = new[] { new SrtBlock { StartMs = startMs, EndMs = endMs, Text = pt } };
+        var english = new[] { new SrtBlock { StartMs = enStartMs, EndMs = enEndMs, Text = en } };
+        var aligned = ReferenceAligner.AlignByTiming(source, english);
+        var converted = Assert.Single(SubtitleConversion.Convert(source, ConversionOptions.Default, english: aligned.Texts));
+        Assert.Equal(expected, converted.Text);
+        Assert.Equal((startMs, endMs, pt), (source[0].StartMs, source[0].EndMs, source[0].Text));
     }
 
     [Theory]
@@ -139,6 +294,63 @@ public sealed class CorpusConstructionTests
         var converted = Assert.Single(SubtitleConversion.Convert(source, ConversionOptions.Default, english: aligned.Texts));
         Assert.Equal("e contou-lhe sobre isso.", converted.Text);
         Assert.Equal((111580, 112736, "e contou sobre isso."), (source[0].StartMs, source[0].EndMs, source[0].Text));
+    }
+
+    [Theory]
+    [InlineData("Sei que vacilei com você.", "I know I messed up with you.", "Sei que falhei contigo.")]
+    [InlineData("Você vacilou.", "You screwed up.", "Falhaste.")]
+    [InlineData("Ele vacilou.", "He failed us.", "Ele falhou.")]
+    [InlineData("Ela vacilou por um momento.", "She hesitated for a moment.", "Ela hesitou por um momento.")]
+    [InlineData("Atirou sem vacilar.", null, "Atirou sem hesitar.")]
+    [InlineData("Ele deu uma mancada.", "He screwed up.", "Ele fez uma asneira.")]
+    [InlineData("Eu pisei na bola.", "I messed up.", "Eu fiz asneira.")]
+    public void ColloquialFailuresUseEuropeanVerbs(string source, string? english, string expected)
+    {
+        var converter = new PortugueseConverter();
+        var reference = ReferenceHint.FromText(english);
+        Assert.Equal(expected, converter.Convert(source, reference: reference));
+        Assert.Equal(expected, converter.Convert(expected, reference: reference));
+    }
+
+    [Theory]
+    [InlineData("Ele vacilou.", null)]
+    [InlineData("Ele vacilou.", "He hesitated and failed.")]
+    [InlineData("Ele pisou na bola.", "He stepped on the ball.")]
+    [InlineData("Ele pisou na bola.", null)]
+    [InlineData("A mancada dele.", "He screwed up.")]
+    [InlineData("O vacilo foi meu.", "The mistake was mine. I failed.")]
+    [InlineData("Ele deu uma\n\nmancada.", "He screwed up.")]
+    [InlineData("- Ele deu uma\n- mancada.", "He screwed up.")]
+    public void HesitationsAndOtherSensesAreNotRewritten(string source, string? english)
+    {
+        var converter = new PortugueseConverter();
+        Assert.Equal(converter.Convert(source), converter.Convert(source, reference: ReferenceHint.FromText(english)));
+    }
+
+    [Fact]
+    public void FailureVocabularyRespectsOptionsAndLocalChoices()
+    {
+        const string source = "Ele vacilou.";
+        var reference = ReferenceHint.FromText("He failed us.");
+        Assert.DoesNotContain("falhou", new PortugueseConverter(new ConversionOptions(DisabledRules: "failure-vocabulary"))
+            .Convert(source, reference: reference));
+        Assert.DoesNotContain("falhou", new PortugueseConverter(new ConversionOptions(Vocabulary: false))
+            .Convert(source, reference: reference));
+        var words = new PortugueseLocalWordList();
+        words.Ignored.Add("vacilar");
+        Assert.DoesNotContain("falhou", new PortugueseConverter(localWordList: words)
+            .Convert(source, reference: reference));
+    }
+
+    [Fact]
+    public void FailureCueUsesAlignedReferenceAndPreservesSource()
+    {
+        var source = new[] { new SrtBlock { StartMs = 1853000, EndMs = 1854404, Text = "Sei que vacilei com você." } };
+        var english = new[] { new SrtBlock { StartMs = 1852938, EndMs = 1854417, Text = "I know I messed up with you." } };
+        var aligned = ReferenceAligner.AlignByTiming(source, english);
+        var converted = Assert.Single(SubtitleConversion.Convert(source, ConversionOptions.Default, english: aligned.Texts));
+        Assert.Equal("Sei que falhei contigo.", converted.Text);
+        Assert.Equal((1853000, 1854404, "Sei que vacilei com você."), (source[0].StartMs, source[0].EndMs, source[0].Text));
     }
 
     [Theory]

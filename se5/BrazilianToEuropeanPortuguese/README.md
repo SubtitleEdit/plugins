@@ -186,16 +186,23 @@ subtitle cue timings and user-controlled rule options.
   respected. Ambiguous or absent references are not guessed. **Colloquial**
   and `hypothetical-comparison` control this reference-assisted correction.
   Source: [Ciberdúvidas: tense and mood after *como se*](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/tempo-e-modo-verbais-depois-de-como-se/36162).
-- Inalienable possession prefers the dative clitic or the bare article over the
-  possessive with body parts and personal effects: *Ele pisou no meu rosto com
-  a sua bota* → *Ele pisou-me o rosto com a bota*, *Feri o meu braço* → *Feri o
-  braço*, *uma arma na sua mão* → *uma arma na mão*. The possessive is dropped
-  only when the possessor is the clause subject; otherwise reviewed contact
-  verbs take the dative (*bateu na minha cara* → *bateu-me na cara*). *Seu/sua*
-  needs an unambiguous English *your/his/her/their*; conflicting owners, other
-  nouns and unknown subjects are untouched. **Pronoun placement** and
+- Inalienable possession uses the dative clitic with body parts and personal
+  effects when the possessor is not the subject: *Ele pisou no meu rosto* →
+  *Ele pisou-me o rosto*, *bateu na minha cara* → *bateu-me na cara*. The
+  possessive only drops together with the clitic (*-me/-te/-lhe*); the
+  subject's own possessive stays (*Toquei na minha cara*). A third-person
+  *seu/sua* confirmed by English *his/her* becomes the unambiguous owner
+  phrase: *com a sua bota* → *com a bota dele/dela* (gender from the English
+  pronoun or the Portuguese subject). Second-person possessives always stay
+  for the address rules (*na tua mala mágica*). **Pronoun placement** and
   `inalienable-possession` control it, and ordinary LF/CRLF wraps are
   supported. Source: [Ciberdúvidas: expressing inalienable possession](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/a-expressao-da-posse-inalienavel-em-portugues/16378).
+- Brazilian colloquial failures prefer European verbs with English evidence:
+  *vacilei* next to *I messed up* → *falhei*, hesitation (*she hesitated*)
+  gives *hesitou*, *sem vacilar* → *sem hesitar*, *deu uma mancada* →
+  *fez uma asneira* and *pisei na bola* → *fiz asneira*. Ambiguous or
+  missing references, literal balls and the noun senses stay untouched
+  (**Vocabulary** and `failure-vocabulary` control it).
 - A reference-confirmed *you* subject also reaches sentences that open with
   *Não,* or *Sim,* before a connective: *Não, mas não pensou* next to
   *No, but you didn't think…* → *Não, mas não pensaste*.
@@ -207,6 +214,25 @@ subtitle cue timings and user-controlled rule options.
   clitics or named recipients, ambiguous references, negation mismatches,
   noun homographs and speaker changes stay untouched; the `dialogue-objects`
   stage and **Pronoun placement** control it, with LF/CRLF wraps supported.
+- English *got/slipped past me* confirms the unnoticed sense of *passar por*:
+  *não é a primeira vez que algo passou por mim* → *…que algo me escapou*,
+  with person-matched clitics, proclisis after attractors such as *que* and
+  *algo*, and mesoclisis in the future. Literal walking past, mismatched or
+  plural-ambiguous references stay untouched (**Vocabulary**, **Pronoun
+  placement** and `overlooked-escape` control it).
+- Wh-questions with a contracted negative reference now agree informally:
+  *Por que não acaba o que começou aqui?* next to *Why don't you finish what
+  you started here?* → *Porque não acabas o que começaste aqui?* Questions
+  about things (*When does the movie end?*) keep the third person.
+- An English *What do you mean, …?* restores the comma before the echoed
+  word: *O que quer dizer nada?* → *O que queres dizer, nada?* (also *como
+  assim*). Without the comma the question would ask what "nothing" means.
+  Ordinary complements (*dizer com isso*, *dizer que…*), references without
+  the comma, speaker changes and blank lines stay untouched; **Colloquial**
+  and `echo-question-comma` control it, with LF/CRLF wraps supported.
+- Sentence-start detection and free relatives are CRLF-safe: a wrapped
+  `\r\n` no longer turns a mid-sentence clitic into a sentence-initial one,
+  and *por que* merged at the start of a cue re-wraps without an empty line.
 
 These are shared conversion rules, not LanguageTool auto-fixes. Meaning-dependent
 choices require the English reference; existing options, disabled stages,

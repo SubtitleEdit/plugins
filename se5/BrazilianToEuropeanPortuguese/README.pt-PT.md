@@ -197,17 +197,23 @@ de regras controladas pelo utilizador.
   quebras normais LF/CRLF. Não se adivinha com referência ausente ou ambígua.
   **Colloquial** e `hypothetical-comparison` controlam esta correção.
   Fonte: [Ciberdúvidas: tempo e modo depois de *como se*](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/tempo-e-modo-verbais-depois-de-como-se/36162).
-- A posse inalienável prefere o dativo de posse ou o artigo definido ao
-  possessivo com partes do corpo e objetos pessoais: *Ele pisou no meu rosto
-  com a sua bota* → *Ele pisou-me o rosto com a bota*, *Feri o meu braço* →
-  *Feri o braço*, *uma arma na sua mão* → *uma arma na mão*. O possessivo só
-  cai quando o possuidor é o sujeito da oração; caso contrário, os verbos de
-  contacto revistos usam o dativo (*bateu na minha cara* → *bateu-me na
-  cara*). *Seu/sua* exige um *your/his/her/their* inglês inequívoco;
-  possuidores em conflito, outros nomes e sujeitos desconhecidos ficam
-  intactos. **Pronoun placement** e `inalienable-possession` controlam a
-  regra, com suporte às quebras normais LF/CRLF.
+- A posse inalienável usa o dativo com partes do corpo e objetos pessoais
+  quando o possuidor não é o sujeito: *Ele pisou no meu rosto* → *Ele
+  pisou-me o rosto*, *bateu na minha cara* → *bateu-me na cara*. O possessivo
+  só cai com o clítico (*-me/-te/-lhe*); o possessivo do próprio sujeito
+  mantém-se (*Toquei na minha cara*). Um *seu/sua* de terceira pessoa
+  confirmado pelo inglês *his/her* passa ao possuidor inequívoco: *com a sua
+  bota* → *com a bota dele/dela* (género do pronome inglês ou do sujeito
+  português). Os possessivos de segunda pessoa ficam sempre para as regras de
+  tratamento (*na tua mala mágica*). **Pronoun placement** e
+  `inalienable-possession` controlam a regra, com suporte às quebras LF/CRLF.
   Fonte: [Ciberdúvidas: a expressão da posse inalienável](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/a-expressao-da-posse-inalienavel-em-portugues/16378).
+- As falhas coloquiais brasileiras preferem verbos europeus com evidência
+  inglesa: *vacilei* junto a *I messed up* → *falhei*, a hesitação (*she
+  hesitated*) dá *hesitou*, *sem vacilar* → *sem hesitar*, *deu uma mancada*
+  → *fez uma asneira* e *pisei na bola* → *fiz asneira*. Referências ambíguas
+  ou ausentes, bolas literais e os sentidos nominais ficam intactos
+  (**Vocabulary** e `failure-vocabulary` controlam a regra).
 - Um sujeito *you* confirmado pela referência também chega a frases iniciadas
   por *Não,* ou *Sim,* antes de uma conjunção: *Não, mas não pensou* junto a
   *No, but you didn't think…* → *Não, mas não pensaste*.
@@ -220,6 +226,27 @@ de regras controladas pelo utilizador.
   ambíguas, negações divergentes, homógrafos nominais e mudanças de falante
   ficam intactos; a etapa `dialogue-objects` e **Pronoun placement**
   controlam a regra, com suporte às quebras LF/CRLF.
+- *Got/slipped past me* em inglês confirma o sentido despercebido de *passar
+  por*: *não é a primeira vez que algo passou por mim* → *…que algo me
+  escapou*, com clíticos concordantes, próclise depois de atratores como
+  *que* e *algo*, e mesóclise no futuro. A passagem literal e as referências
+  divergentes ficam intactas (**Vocabulary**, **Pronoun placement** e
+  `overlooked-escape` controlam a regra).
+- As perguntas *wh* com negativa contraída na referência concordam no
+  tratamento informal: *Por que não acaba o que começou aqui?* junto a
+  *Why don't you finish what you started here?* → *Porque não acabas o que
+  começaste aqui?* As perguntas sobre coisas (*When does the movie end?*)
+  mantêm a terceira pessoa.
+- Um *What do you mean, …?* inglês repõe a vírgula antes da palavra ecoada:
+  *O que quer dizer nada?* → *O que queres dizer, nada?* (também *como
+  assim*). Sem a vírgula, a pergunta pediria o significado de "nada". Os
+  complementos normais (*dizer com isso*, *dizer que…*), as referências sem
+  vírgula, as mudanças de falante e as linhas em branco ficam intactos;
+  **Colloquial** e `echo-question-comma` controlam a regra, com suporte às
+  quebras LF/CRLF.
+- A deteção de início de frase e as relativas livres são seguras com CRLF:
+  uma quebra `\r\n` já não transforma um clítico interno em inicial, e um
+  *por que* fundido no início da legenda volta a quebrar sem linha vazia.
 
 São regras partilhadas da conversão, não correções automáticas do LanguageTool.
 As escolhas de sentido exigem referência inglesa; respeitam-se as opções,

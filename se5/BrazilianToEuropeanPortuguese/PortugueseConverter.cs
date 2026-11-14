@@ -784,6 +784,10 @@ public sealed class PortugueseConverter
             s = ConversionConstructions.HypotheticalComparison(s, reference, _blockedVocabularyVerbs.Contains);
         Track("hypothetical-comparison", "Reference-confirmed hypothetical comparisons with como se");
 
+        if (_options.Colloquial)
+            s = ConversionConstructions.EchoQuestionComma(s, reference, _blockedVocabularyVerbs.Contains);
+        Track("echo-question-comma", "Reference-confirmed commas before echoed question words");
+
         if (_options.Pronouns)
             s = ConversionConstructions.InalienablePossession(s, reference,
                 _options.YouToTu && _options.RuleEnabled("address") && (reference is { ForceInformal: true } ||
@@ -824,6 +828,15 @@ public sealed class PortugueseConverter
         if (_options.Vocabulary)
             s = ConversionConstructions.RetaliationVocabulary(s, reference, _options.Pronouns, _blockedVocabularyVerbs.Contains);
         Track("retaliation-vocabulary", "Reference-confirmed revenge and verbal replies");
+        if (_options.Vocabulary && _options.Pronouns)
+            s = ConversionConstructions.OverlookedEscape(s, reference,
+                _options.YouToTu && _options.RuleEnabled("address") && (reference is { ForceInformal: true } ||
+                    reference is not { FormalAddress: true } && !YouToTuRules.IsFormal(s)),
+                _blockedVocabularyVerbs.Contains);
+        Track("overlooked-escape", "Reference-confirmed unnoticed escapes instead of literal passing");
+        if (_options.Vocabulary)
+            s = ConversionConstructions.FailureVocabulary(s, reference, _blockedVocabularyVerbs.Contains);
+        Track("failure-vocabulary", "Reference-qualified slip-ups and hesitations instead of Brazilian vacilar");
 
         if (_options.Pronouns)
         {
@@ -2918,7 +2931,11 @@ public sealed class PortugueseConverter
         {
             var w = m.Groups["w"].Value;
             var result = CaseHelper.MatchCase(w, joined);
-            return w.Contains('\n') ? (w.Contains("\r\n") ? "\r\n" : "\n") + result : m.Groups["sp"].Value + result;
+            if (!w.Contains('\n')) return m.Groups["sp"].Value + result;
+            // At the start of the text the kept break would create an empty first line; drop it so the
+            // shared break restoration re-inserts it at the best position instead.
+            if (Regex.IsMatch(m.Result("$`"), @"^[\s""“«'‘\uE000-\uF8FF-]*$")) return result;
+            return (w.Contains("\r\n") ? "\r\n" : "\n") + result;
         }
 
         public static string Apply(string s, ReferenceHint? reference = null)
@@ -3324,7 +3341,7 @@ public sealed class PortugueseConverter
                             !PortugueseVerbs.IsKnownVerbForm(v.ToLowerInvariant()) || InfinitiveOnly(v) ||
                             m.Groups["cl"].Success && !PronominalVerb.IsMatch(v) ||
                             Regex.IsMatch(m.Result("$'"), @"^\s+(?:a\s+)?(?:acontec|pass|ocorr|rol|suced|hav|decorr)\p{L}*", Ci) ||
-                            Regex.IsMatch(m.Result("$'"), @"^\s+(?:o|a|os|as|um|uma|seu|sua|teu|tua|meu|minha)\s", Ci) && UnaccusativeVerb.IsMatch(v) ||
+                            Regex.IsMatch(m.Result("$'"), @"^\s+(?:o|a|os|as|um|uma|seu|sua|teu|tua|meu|minha)\s+(?!\s*que(?![\p{L}\p{M}]))", Ci) && UnaccusativeVerb.IsMatch(v) ||
                             !(analysis ??= new ClauseAgreementAnalysis(s)).Decide(m.Groups["v"].Index, reference).Allowed)
                             return m.Value;
                         var replaced = ReplaceReferenceSecondPersonVerb(m);
@@ -3544,7 +3561,7 @@ public sealed class PortugueseConverter
         private static readonly Regex EnglishThirdSubject = new(@"\b(?:he|she|they|it['’]s|it\s+(?:is|was|will|would|has|had|does|did))\b", Ci);
 
         private static readonly Regex EnglishWhYou = new(
-            @"\b(?:how|where|why|what|when)\s+(?:the\s+(?:hell|heck|fuck)\s+)?(?:did|do|were|are|have|had|will|would|can|could)\s+you\b", Ci);
+            @"\b(?:how|where|why|what|when)\s+(?:the\s+(?:hell|heck|fuck)\s+)?(?:did|do|were|are|have|had|will|would|can|could)(?:n['’]t)?\s+you\b", Ci);
 
         private static readonly Regex EnglishInnerConditionalYou = new(@"\S\s+(?:if|when|unless)\s+you\b", Ci);
         private static readonly Regex EnglishInnerConditionalOther = new(@"\b(?:if|when|unless)\s+(?:he|she|they|it|we|I)\b", Ci);
@@ -4532,7 +4549,7 @@ public sealed class PortugueseConverter
 
     internal static class PronounRules
     {
-        private const string Start = @"(?<pre>(?:^|[.!?…:;]\s+|(?<![\p{L}\p{N},][ \t]*)\n)(?:(?<![\p{L}\p{M}])[-–—]\s*)?(?:[\uE000-\uF8FF]\s*)*[""“«'‘]?\s*(?:(?:E|Mas|Então|Ah|Oh|Ok|Bem|Agora|Por favor),?\s+)?)";
+        private const string Start = @"(?<pre>(?:^|[.!?…:;]\s+|(?<![\p{L}\p{N},][ \t]*\r?)\n)(?:(?<![\p{L}\p{M}])[-–—]\s*)?(?:[\uE000-\uF8FF]\s*)*[""“«'‘]?\s*(?:(?:E|Mas|Então|Ah|Oh|Ok|Bem|Agora|Por favor),?\s+)?)";
         private const string AfterComma = @"(?<pre>,\s+(?:[\uE000-\uF8FF]\s*)*)";
 
         private static readonly HashSet<string> NotVerbs = new(StringComparer.OrdinalIgnoreCase)
@@ -5506,7 +5523,7 @@ public sealed class PortugueseConverter
 
         // Prefer enclisis for neutral temporal sequencing; focused/subordinate adverbs retain proclisis.
         private static readonly Regex AdverbClitic = new(
-            @"(?<pre>(?:(?:^|[.!?…:;]\s+|(?<![\p{L}\p{N},][ \t]*)\n)[ \t]*" +
+            @"(?<pre>(?:(?:^|[.!?…:;]\s+|(?<![\p{L}\p{N},][ \t]*\r?)\n)[ \t]*" +
             @"(?:[-–—]\s*)?(?:[\uE000-\uF8FF]\s*)*(?:(?:e|mas|então)\s+)?|" +
             NotWordBefore + @"(?:e|mas)\s+)(?:agora|hoje|aqui|ali|lá|ontem|depois|amanhã)(?:,\s*|\s+))" +
             @"(?<cl>me|te|se|nos|vos|lhe|lhes|o|a|os|as)\s+(?<v>\p{L}+)" + NotWordAfter + @"(?!-)", Ci);
