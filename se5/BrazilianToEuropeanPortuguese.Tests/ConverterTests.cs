@@ -171,7 +171,7 @@ public sealed class ConverterTests
     [InlineData("Vou contar-te uma parada.", "Vou contar-te uma coisa.")]
     [InlineData("Vou-te contar uma parada.", "Vou-te contar uma coisa.")]
     [InlineData("Mas vou contar uma parada.", "Mas vou contar uma coisa.")]
-    [InlineData("Não vou te contar uma parada.", "Não vou contar-te uma coisa.")]
+    [InlineData("Não vou te contar uma parada.", "Não te vou contar uma coisa.")]
     [InlineData("Contar-lhe uma parada.", "Contar-lhe uma coisa.")]
     public void TellThingComposesWithCliticPlacement(string source, string expected) => AssertConverts(source, expected);
 
@@ -708,7 +708,7 @@ public sealed class ConverterTests
     [InlineData("Um bar de topless.", "Um bar de topless.")]
     [InlineData("O policial Olivet está aqui para vê-lo.", "O agente Olivet está aqui para vê-lo.")]
     [InlineData("Sabia sobre isso?", "Sabia disto?")]
-    [InlineData("Mande entrar.", "Mando-o entrar.")]
+    [InlineData("Mande entrar.", "Manda entrar.")]
     [InlineData("Nossa foto de casamento?", "A nossa foto de casamento?")]
     [InlineData("E ocupando nossa cadeira muito brevemente.", "E ocupando a nossa cadeira muito brevemente.")]
     [InlineData("Nossa, que lindo!", "Caramba, que lindo!")]
@@ -859,7 +859,7 @@ public sealed class ConverterTests
     [InlineData("Já lhe mandei suas coisas.", "Já lhe mandei as suas coisas.")]
     [InlineData("Já lhes entreguei seus livros.", "Já lhes entreguei os seus livros.")]
     [InlineData("Preciso do seu contato.", "Preciso do teu contacto.")]
-    [InlineData("Você esqueceu suas coisas.", "Esqueceste as tuas coisas.")]
+    [InlineData("Você esqueceu suas coisas.", "Esqueceste-te das tuas coisas.")]
     public void CueLevelPossessiveContext(string br, string pt) => AssertConverts(br, pt);
 
     [Theory]
@@ -878,7 +878,14 @@ public sealed class ConverterTests
         const string text = "Já mandei suas roupas.";
         Assert.Equal("Já mandei as suas roupas.", Converter.Convert(text, "E me divorciando do cretino."));
         Assert.Equal("Já mandei as tuas roupas.", Converter.Convert(text));
-        Assert.Equal("Esqueceste as tuas coisas.", Converter.Convert("Você esqueceu suas coisas.", "E me divorciando do cretino."));
+        Assert.Equal("Esqueceste-te das tuas coisas.", Converter.Convert("Você esqueceu suas coisas.", "E me divorciando do cretino."));
+    }
+
+    [Fact]
+    public void ReferenceGuidedForgottenPossessiveUsesPronominalConstruction()
+    {
+        var result = Converter.Convert("Esqueceu seu café.", reference: ReferenceHint.FromText("You forgot your coffee."));
+        Assert.Equal("Esqueceste-te do teu café.", result);
     }
 
     [Theory]
@@ -1781,6 +1788,17 @@ public sealed class SlangTests
     [InlineData("Nós lembramos de tudo.", "Nós lembramo-nos de tudo.")]
     [InlineData("Ela não lembrava do rosto.", "Ela não se lembrava do rosto.")]
     [InlineData("Ele esqueceu da reunião.", "Ele esqueceu-se da reunião.")]
+    [InlineData("Você esqueceu seu café.", "Esqueceste-te do teu café.")]
+    [InlineData("Esqueci a chave.", "Esqueci-me da chave.")]
+    [InlineData("Esqueci os documentos.", "Esqueci-me dos documentos.")]
+    [InlineData("Esqueci isto.", "Esqueci-me disto.")]
+    [InlineData("Esqueci tudo.", "Esqueci-me de tudo.")]
+    [InlineData("Você tinha esquecido o nome.", "Tinhas-te esquecido do nome.")]
+    [InlineData("Nós tínhamos esquecido o nome.", "Nós tínhamo-nos esquecido do nome.")]
+    [InlineData("Ela teria esquecido o nome.", "Ela ter-se-ia esquecido do nome.")]
+    [InlineData("Eu não tinha esquecido o nome.", "Eu não me tinha esquecido do nome.")]
+    [InlineData("Não esquece o café.", "Não te esqueças do café.")]
+    [InlineData("Ele esquece o passado.", "Ele esquece-se do passado.")]
     [InlineData("Você esqueceu de mim?", "Esqueceste-te de mim?")]
     [InlineData("Não esquece de mim.", "Não te esqueças de mim.")]
     [InlineData("Não esqueça de ligar.", "Não te esqueças de ligar.")]
@@ -1791,7 +1809,8 @@ public sealed class SlangTests
     [InlineData("Na verdade, nem me\nlembro dessa conversa.", "Na verdade, nem me\nlembro dessa conversa.")]
     [InlineData("Não me lembro de nada.", "Não me lembro de nada.")]
     [InlineData("Isso lembra o meu pai.", "Isso lembra o meu pai.")]
-    [InlineData("Esqueci o nome dele.", "Esqueci o nome dele.")]
+    [InlineData("Esqueci o nome dele.", "Esqueci-me do nome dele.")]
+    [InlineData("Esquece o passado.", "Esquece o passado.")]
     [InlineData("Esquece isso.", "Esquece isso.")]
     [InlineData("Esquece!", "Esquece!")]
     [InlineData("Tudo o que lembro.", "Tudo o que me lembro.")]

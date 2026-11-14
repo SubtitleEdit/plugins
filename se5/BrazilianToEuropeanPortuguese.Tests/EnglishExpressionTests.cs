@@ -1,4 +1,5 @@
 using SubtitleEdit.Plugins.BrazilianToEuropeanPortuguese;
+using SubtitleEdit.Plugins.Shared;
 
 namespace BrazilianToEuropeanPortuguese.Tests;
 
@@ -6,6 +7,10 @@ public sealed class EnglishExpressionTests
 {
     public static TheoryData<string, string, string> ReviewedExpressions => new()
     {
+        { "He's fishing for information.", "trying to elicit information indirectly", "Ele está à pesca de informações." },
+        { "Trying to get me to take chump bait.", "fall for a provocation", "A tentar que eu morda o isco." },
+        { "A cup of joe to go.", "cup of coffee", "Uma chávena de café para levar." },
+        { "Something's not adding up.", "does not make sense", "Algo não bate certo." },
         { "I busted my hump.", "work extremely hard", "Dei cabo das costas." },
         { "Stop busting my chops.", "harass", "Para de me chatear." },
         { "It's a piece of cake.", "very easy task", "É canja." },
@@ -121,6 +126,11 @@ public sealed class EnglishExpressionTests
     [InlineData("I'm beaten.")]
     [InlineData("I'm beat up.")]
     [InlineData("You bet on the horse.")]
+    [InlineData("You're fishing.")]
+    [InlineData("We're fishing for trout.")]
+    [InlineData("The fish took the bait.")]
+    [InlineData("Joe's cup is empty.")]
+    [InlineData("Add up these numbers.")]
     public void AmbiguousOrUnrecognisedEnglishHasNoInventedMeaning(string? english) =>
         Assert.Null(IdiomHints.MeaningReference(english));
 
@@ -172,5 +182,120 @@ public sealed class EnglishExpressionTests
         var converter = new PortugueseConverter(options);
         Assert.Equal(converter.Convert("Estou quebrado."),
             converter.Convert("Estou quebrado.", null, ReferenceHint.FromText("I'm skint.")));
+    }
+
+    [Theory]
+    [InlineData("Está jogando verde.", "You're fishing.", "Estás à pesca.")]
+    [InlineData("Ele está jogando verde.", "He's fishing.", "Ele está à pesca.")]
+    [InlineData("Ela estava jogando um verde.", "She was fishing.", "Ela estava à pesca.")]
+    [InlineData("Nós estamos a jogar verde.", "We're fishing.", "Nós estamos à pesca.")]
+    [InlineData("Ele jogou verde.", "He fished for information.", "Ele pescou.")]
+    [InlineData("Ele joga um verde para colher maduro.", "He fishes for information.", "Ele pesca.")]
+    [InlineData("ESTÁ JOGANDO VERDE!", "YOU'RE FISHING!", "ESTÁS À PESCA!")]
+    [InlineData("<i>Está\njogando verde.</i>", "You're fishing.", "<i>Estás\nà pesca.</i>")]
+    [InlineData("Espero que ele pegue a isca.", "I hope he takes the bait.", "Espero que ele morda o isco.")]
+    [InlineData("Ele pegou na isca.", "He took the bait.", "Ele mordeu o isco.")]
+    [InlineData("Não peguei a isca.", "I didn't take chump bait.", "Não mordi o isco.")]
+    [InlineData("E não somos jogadores.\nTemos um vídeo seu", "And we ain't no fishermen. We got video of you",
+        "E não somos pescadores.\nTemos um vídeo teu")]
+    [InlineData("Uma xícara de Joe para viagem.", "A cup of joe to go.", "Uma chávena de café para levar.")]
+    [InlineData("Uma chávena\r\nde Joe.", "A cup of joe.", "Uma chávena\r\nde café.")]
+    [InlineData("Há algo que não soma.", "Something's not adding up.", "Há algo que não bate certo.")]
+    [InlineData("A história não somava.", "The story didn't add up.", "A história não batia certo.")]
+    public void ReferenceMetaphorsKeepTheirMeaning(string source, string english, string expected)
+    {
+        var converter = new PortugueseConverter();
+        var reference = ReferenceHint.FromText(english);
+        Assert.Equal(expected, converter.Convert(source, reference: reference));
+        Assert.Equal(expected, converter.Convert(expected, reference: reference));
+    }
+
+    [Theory]
+    [InlineData("Ele está jogando verde.", null)]
+    [InlineData("Ele está jogando verde.", "He is playing green.")]
+    [InlineData("Ele está jogando verde.", "He is fishing for trout in the river.")]
+    [InlineData("Ele joga verde claro.", "He's fishing.")]
+    [InlineData("Ele pegou a isca.", "He picked up the bait.")]
+    [InlineData("Ele pegou a isca.", "He took the bait off the hook.")]
+    [InlineData("Não somos jogadores.", null)]
+    [InlineData("Não somos jogadores.", "We aren't players.")]
+    [InlineData("Somos jogadores de futebol.", "We are fishermen.")]
+    [InlineData("Somos jogadores. Eles são jogadores.", "We are fishermen.")]
+    [InlineData("Somos jogadores.", "We're players, not fishermen.")]
+    [InlineData("A xícara de Joe está vazia.", "Joe's cup is empty.")]
+    [InlineData("Não soma dois e três.", "Add up two and three.")]
+    public void MetaphorsNeedBothLanguagesAndProtectLiteralComplements(string source, string? english)
+    {
+        var converter = new PortugueseConverter();
+        Assert.Equal(converter.Convert(source), converter.Convert(source, reference: ReferenceHint.FromText(english)));
+    }
+
+    [Fact]
+    public void FishingGlossRequiresPortugueseEvidenceAndKeepsContext()
+    {
+        Assert.Equal("You're trying to elicit information indirectly.",
+            IdiomHints.MeaningReference("You're fishing.", "Está jogando verde."));
+        Assert.Null(IdiomHints.MeaningReference("You're fishing.", "Está a pescar."));
+        Assert.Null(IdiomHints.MeaningReference("You're fishing in the river.", "Está jogando verde."));
+        Assert.Equal("Something does not make sense.", IdiomHints.MeaningReference("Something's not adding up."));
+        Assert.NotNull(IdiomHints.Note("Está a jogar verde.", "You're fishing."));
+        Assert.Null(IdiomHints.Note("Estás à pesca.", "You're fishing."));
+    }
+
+    [Fact]
+    public void ReferenceMetaphorsRespectOptionsAndLocalVocabulary()
+    {
+        const string source = "Ele está jogando verde.";
+        var reference = ReferenceHint.FromText("He's fishing.");
+        foreach (var options in new[] { new ConversionOptions(Vocabulary: false),
+            new ConversionOptions(Colloquial: false), new ConversionOptions(DisabledRules: "reference-idioms") })
+        {
+            var converter = new PortugueseConverter(options);
+            Assert.Equal(converter.Convert(source), converter.Convert(source, reference: reference));
+        }
+        foreach (var word in new[] { "jogar", "verde" })
+        {
+            var local = new PortugueseLocalWordList();
+            local.Ignored.Add(word);
+            var converter = new PortugueseConverter(localWordList: local);
+            Assert.Equal(converter.Convert(source), converter.Convert(source, reference: reference));
+        }
+        var custom = new PortugueseLocalWordList();
+        custom.Words.Add(("jogar", "brincar"));
+        var overridden = new PortugueseConverter(localWordList: custom);
+        Assert.Equal(overridden.Convert(source), overridden.Convert(source, reference: reference));
+        Assert.Equal("Está à pesca.", new PortugueseConverter(new ConversionOptions(YouToTu: false))
+            .Convert("Está jogando verde.", reference: ReferenceHint.FromText("You're fishing.")));
+        Assert.Equal("O senhor está à pesca.", new PortugueseConverter()
+            .Convert("O senhor está jogando verde.", reference: ReferenceHint.FromText("You're fishing.")));
+    }
+
+    [Fact]
+    public void FishingSequenceKeepsCueBoundariesTimesAndOriginals()
+    {
+        var blocks = new[]
+        {
+            new SrtBlock { StartMs = 1134014, EndMs = 1135676, Text = "Está jogando verde." },
+            new SrtBlock { StartMs = 1135678, EndMs = 1137105, Text = "Tentando que eu pegue\na isca," },
+            new SrtBlock { StartMs = 1137106, EndMs = 1138268, Text = "mas não sou tolo." },
+            new SrtBlock { StartMs = 1138270, EndMs = 1139815, Text = "E não somos jogadores.\nTemos um vídeo seu" },
+        };
+        var originals = blocks.Select(b => (b.Text, b.StartMs, b.EndMs)).ToArray();
+        var english = new[]
+        {
+            new SrtBlock { StartMs = 1133633, EndMs = 1135335, Text = "You're fishing." },
+            new SrtBlock { StartMs = 1135368, EndMs = 1136736, Text = "Trying to get me\nto take chump bait," },
+            new SrtBlock { StartMs = 1136769, EndMs = 1138238, Text = "but I ain't no dummy." },
+            new SrtBlock { StartMs = 1138271, EndMs = 1139772, Text = "And we ain't no fishermen.\nWe got video of you" },
+        };
+        var aligned = ReferenceAligner.AlignByTiming(blocks, english);
+        var converted = SubtitleConversion.Convert(blocks, ConversionOptions.Default, english: aligned.Texts).ToArray();
+        Assert.Equal(4, converted.Length);
+        Assert.Equal("Estás à pesca.", converted[0].Text);
+        Assert.Contains("morda\no isco,", converted[1].Text);
+        Assert.Equal("E não somos pescadores.\nTemos um vídeo teu", converted[3].Text);
+        Assert.Equal(originals, blocks.Select(b => (b.Text, b.StartMs, b.EndMs)).ToArray());
+        Assert.Contains(converted[0].Rules, rule => rule.Id == "reference-idioms");
+        Assert.Contains(converted[3].Rules, rule => rule.Id == "reference-idioms");
     }
 }

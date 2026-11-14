@@ -82,8 +82,12 @@
         </Grid>
 
         <StackPanel DockPanel.Dock="Top" x:Name="SettingsPanel">
-        <Grid x:Name="SettingsColumns" ColumnDefinitions="55*,45*" Margin="0,0,0,8">
-        <ScrollViewer Grid.Column="0" x:Name="ConversionSettingsContent" MaxHeight="400"
+        <Grid x:Name="SettingsColumns" Margin="0,0,0,8">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="55*" MaxWidth="902" />
+            <ColumnDefinition Width="45*" />
+        </Grid.ColumnDefinitions>
+        <ScrollViewer Grid.Column="0" x:Name="ConversionSettingsContent" MaxHeight="380"
                       Margin="0,0,12,0" HorizontalScrollBarVisibility="Disabled">
         <StackPanel>
         <TextBlock
@@ -185,7 +189,7 @@
                 </CheckBox>
                 <CheckBox x:Name="RewrapCheck" Content="Rewrap within each cue (optional)" IsCheckedChanged="OnOptionChanged"
                           ToolTip.Tip="Avoids dangling articles, clitics and auxiliary/infinitive breaks where possible. Tagged text and dialogue markers are not rewrapped." />
-                <WrapPanel>
+                <WrapPanel x:Name="LayoutNumericControls">
                     <StackPanel Orientation="Horizontal" Margin="0,0,12,6">
                         <TextBlock Text="Characters/line:" VerticalAlignment="Center" />
                         <NumericUpDown x:Name="LineLength" Minimum="20" Maximum="100" Value="43" Width="130" Margin="6,0,0,0"
@@ -223,7 +227,7 @@
             <Expander.Header>
                 <TextBlock Text="Reference subtitle and local models (optional)" TextWrapping="Wrap" />
             </Expander.Header>
-            <ScrollViewer x:Name="ReferenceContent" MaxHeight="350" HorizontalScrollBarVisibility="Disabled">
+            <ScrollViewer x:Name="ReferenceContent" MaxHeight="330" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Spacing="6">
                 <CheckBox x:Name="BatchReferenceCheck" IsVisible="False" IsChecked="True"
                           Content="Use the English subtitle next to each file"
