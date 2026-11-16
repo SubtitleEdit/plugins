@@ -6,6 +6,33 @@ Português europeu | [English](README.md)
 
 ## Alterações mais recentes
 
+- Expressões brasileiras confirmadas pela referência, protegendo sentidos
+  literais: *está jogando verde* → *está à pesca*, *pegou a isca* → *mordeu o
+  isco*, *não soma* → *não bate certo*, *uma xícara de Joe* → *uma chávena de café*.
+- Vocabulário de locais policiais com evidência inglesa: *esquadrão* e
+  *distrito policial* → *esquadra*, *sala do esquadrão* → *sala da esquadra*,
+  mantendo o adjetivo *policial* e os esquadrões militares.
+- As ações em curso confirmadas pelo inglês usam *estar a*: *Ele mente* junto a
+  *He's lying* → *Ele está a mentir*.
+- Vingança e respostas qualificadas pela referência: *revidar* → *vingar-se*
+  com o clítico concordante, ou *responder* nas réplicas verbais; *retrucar* →
+  *responder*.
+- Sentidos de partida: *trote* → *brincadeira*, *trote* telefónico → *chamada
+  de brincadeira*, *trote estudantil* → *praxe académica*, *passar um trote* →
+  *pregar uma partida*; o trote do cavalo fica intacto.
+- Esquecimento pronominal: *Esqueceu seu café* → *Esqueceste-te do teu café*,
+  com os complementos de *esquecer-se de*.
+- As comparações hipotéticas repõem *como se*; a posse inalienável, os
+  destinatários dos verbos de comunicação e as aberturas com *Não,* seguem a
+  referência inglesa (detalhes abaixo).
+- Referentes de chegada recentes em ordens de entrada e o *que* em falta antes
+  dos complementos finitos de *parecer*.
+- [Tabela de conversão de transportes e mecânica](TransportVocabulary.pt-PT.md):
+  95 entradas novas para automóveis, motociclos, bicicletas, motores e barcos,
+  incluindo plurais explícitos. *Dar uma chupeta no carro* passa a
+  *dar arranque com cabos ao carro* antes da substituição infantil;
+  *chupeta do bebé* continua a passar a *chucha do bebé*. As aceções financeiras,
+  anatómicas e náuticas ambíguas não são substituídas indiscriminadamente.
 - Verificação experimental com **LanguageTool pt-PT local, desativada por
   predefinição**, com sugestões para revisão e correções de concordância muito
   delimitadas, protegidas pela referência inglesa e pelo MiniLM. Sem geração de
@@ -29,7 +56,7 @@ partir de folhas de cálculo, vestuário desportivo e expressões de residência
 confirmados pelo inglês, descrições físicas, filtros de resultados e o texto
 original em PT-BR visível nas linhas que contêm apenas avisos.
 
-A compilação experimental do repositório autónomo é a **1.8.2**. A base anterior
+A compilação experimental do repositório autónomo é a **1.9.0**. A base anterior
 ao LanguageTool está guardada em
 [v1.7.0](https://github.com/SMAP-git/BrazilianToEuropeanPortuguese/tree/v1.7.0).
 As versões oficiais dos
@@ -41,6 +68,194 @@ os complementos e sentidos de vocabulário confirmados pela referência, as
 construções naturais de diálogo e a acentuação interrogativa. Acrescenta testes
 de regressão destas interações, preservando os tempos das legendas e as opções
 de regras controladas pelo utilizador.
+
+### Diálogo contextual e concordância
+
+- O tratamento formal passa a usar a mesma conversão validada de objetos
+  pessoais que o informal: *Vejo você no tribunal* → *Vejo-o no tribunal*
+  (formal) ou *Vejo-te no tribunal* (informal). Anteriormente, o ramo formal
+  terminava antes de converter o objeto direto *você*, mesmo quando a
+  conversão informal já funcionava. Os verbos transitivos suportados
+  partilham a ênclise, próclise, alterações fonéticas e mesóclise no
+  futuro/condicional. Protegem-se predicados, o enfático *você mesmo/a* e
+  sujeitos infinitivos incertos. Os sujeitos de ordens curtas, como
+  *Não, espera você!*, não são confundidos com objetos. As proteções
+  partilhadas mantêm a atração através de advérbios delimitados e da
+  coordenação de predicados subordinados (*que realmente o trouxe*,
+  *que … confia e o respeita*). A construção progressiva também aceita
+  um objeto já ligado ao gerúndio: *Acabei defendendo-o* →
+  *Acabei por defendê-lo*, sem a nova conversão bloquear a regra existente.
+  A omissão do sujeito formal também
+  preserva um sujeito infinitivo após verbo transitivo (*Esperei você pedir ajuda*).
+  Na ausência de género conhecido, usa-se o masculino *o*, conforme a
+  opção escolhida; um vocativo feminino explícito na mesma oração
+  (*Doutora, …* / *…, senhora*) seleciona *a*. Mulheres mencionadas como
+  sujeitos, noutras frases ou noutros turnos não determinam o género do interlocutor.
+  **Pronoun placement**, **Você → tu / address** e a etapa `address`
+  controlam a nova conversão formal. Respeitam-se o texto ignorado/local e
+  as quebras LF/CRLF. O modo automático mantém a inferência de tratamento
+  existente; os modos informal/formal explícitos prevalecem.
+  Ver [você e os pronomes oblíquos](https://ciberduvidas.iscte-iul.pt/pergunta.php?id=12156).
+- As formas finitas irregulares de *pôr* e dos derivados revistos (*opor,
+  dispor, expor, propor, compor, impor, repor*, etc.) passam a participar na
+  colocação pronominal partilhada, sem depender de conjugações regulares
+  inferidas: *O presidente da câmara interino se opõe ao plano* →
+  *O presidente da câmara interino opõe-se ao plano*. *Interino* continua
+  a concordar com *presidente*; não é necessário reordenar o cargo nem
+  substituir caracteres. A validação abrange presente, imperfeito, perfeito,
+  mais-que-perfeito e formas revistas do conjuntivo, mantendo as proteções
+  existentes do *se* condicional, das formas não finitas e dos futuros.
+  Mantém-se a atração negativa/subordinada (*não se opõe*, *que o presidente
+  da câmara interino se opõe*), incluindo sujeitos nominais compostos
+  delimitados e quebras LF/CRLF. Respeitam-se as opções de pronomes, o texto
+  ignorado e o vocabulário local. Estas formas não são acrescentadas às
+  inferências automáticas de concordância do sujeito.
+  Ver [próclise e ênclise](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/casos-de-proclise-e-enclise/30192)
+  e [conjugação de opor](https://www.infopedia.pt/dicionarios/verbos-portugueses/opor).
+- Nas interrogativas diretas enfáticas curtas, prefere-se a ordem verbo–sujeito:
+  *Como diabos ela saberia?* → *Como diabos saberia ela?*. A família delimitada
+  abrange *diabo(s), raio(s), caraças*, formas revistas de cognição e
+  futuros/condicionais validados, com sujeitos pronominais simples e objetos
+  proclíticos opcionais. Mantêm-se a inversão já existente, as interrogativas
+  indiretas, *é que*, o simples *Como ela o vê?* e os falantes separados.
+  **Colloquial constructions**, **Pronoun placement** e `natural-word-order`
+  controlam a alteração. As proteções partilhadas mantêm o sujeito e a atração
+  do clítico nas quebras LF/CRLF, incluindo antes do sujeito.
+  Ver [ordem verbal nas interrogativas diretas](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/o-verbo-na-interrogativa-direta/31627).
+- Num estado profissional recente confirmado pela referência, prefere-se o
+  imperfeito: *Dutton foi uma burocrata até 15 minutos atrás* → *Dutton era
+  uma burocrata até 15 minutos atrás*. É uma escolha delimitada de aspeto/estilo,
+  não uma substituição geral de *foi* por *era*. Exige-se *was/were …
+  until/till … ago* no inglês, uma profissão revista e *há/atrás* explícito
+  no português. Excluem-se serviços concluídos com duração, datas de calendário,
+  negação, acontecimentos e passivas. **Colloquial constructions** e
+  `natural-word-order` controlam a preferência.
+  Ver [perfeito e imperfeito nos estados](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/ser-e-estar-no-perfeito-e-no-imperfeito-indicativo/39169).
+- *Prioritizes targeting street crime* na referência permite *dá prioridade
+  ao combate aos crimes de rua* em vez do literal *prioriza visar ao crime
+  de rua*, mantendo as formas suportadas de tempo/pessoa. Não se invertem
+  os sentidos de *priorizar visar* e *visar priorizar*, nem se elimina a
+  preposição de usos arbitrários de *visar*: no sentido de objetivo, *a*
+  é opcional. **Vocabulary** e `dialogue-vocabulary` controlam esta
+  paráfrase de política confirmada pelo inglês.
+  Ver [regência de visar](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/sobre-a-regencia-do-verbo-visar/29507).
+- *See it that way*, confirmado pelo inglês, permite explicitar um objeto
+  neutro omitido nas formas finitas revistas de *ver + assim/dessa forma/desse
+  modo*: *ela não vê assim* → *ela não o vê assim*. *How / in what way … see
+  it* também permite *Como ela o vê?* ou *Como o vê ela?*, sem alterar a ordem
+  do sujeito. A negação e a interrogação usam próclise; as formas afirmativas
+  neutras usam ênclise/mesóclise. Explicita-se o objeto, sem considerar
+  agramatical toda a omissão de objeto na conversação. Exige-se uma única
+  ocorrência inglesa inequívoca de *see/sees/saw/seen it* e uma única
+  construção portuguesa elegível. Protegem-se a capacidade de visão,
+  objetos já expressos, outros pronomes ingleses e correspondências múltiplas.
+  **Pronoun placement** e `dialogue-objects` controlam a recuperação;
+  as proteções partilhadas do sujeito interrogativo mantêm a próclise nas
+  quebras LF/CRLF, mesmo sem referência.
+  Ver [pronominalização nas interrogativas](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/pronominalizacao-nas-frases-interrogativas/31094).
+- Os advérbios temporais/de sequência neutros abrangem todos os clíticos
+  simples, incluindo *e/mas depois*: *e depois as vende* → *e depois vende-as*,
+  *depois lhes contou* → *depois contou-lhes*. Os mecanismos de ligação
+  existentes tratam *vendem-nas*, *fê-lo* e o futuro *vendê-las-á*. Validam-se
+  formas verbais finitas e protegem-se ambiguidades delimitadas entre artigo
+  e nome. As quebras normais LF/CRLF não impedem a regra, que não exige inglês.
+  É controlada por **Pronoun placement** e pela etapa `pronouns`.
+  Trata-se de uma preferência de estilo neutro: *depois* focalizado pode
+  admitir próclise em PT-PT; *só depois*, orações subordinadas e atratores
+  intercalados não são normalizados por esta regra.
+  Ver [advérbios focalizados e topicalizados](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/null/35696).
+- As expressões de incómodo também reconhecem formas copulativas sem artigo:
+  *ele é pé no saco* → *ele é um chato*, com feminino/plural e proteção do
+  sentido literal de pé.
+- As ordens confirmadas pelo inglês distinguem *just stay* (*Simplesmente
+  fica*) de *keep doing* (*Continua a fazer*). A continuação da mesma oração
+  só usa *vais* quando a referência confirma o interlocutor; não se misturam falantes.
+- Com *you got a big mouth* na referência, evita-se o existencial *há*:
+  *Tem um bocão, e não se cala* → *Tens uma boca grande e não te calas*.
+  O tratamento formal mantém *tem / se cala*.
+- Um predicado insultuoso inglês, como *he was a prick*, pode selecionar
+  *idiota* para *safado*, sem reinterpretar sentidos sexuais nem picadas de agulha.
+- *A lot of damn / so many damn* permite omitir o literal *malditos/as* numa
+  construção de quantidade plural: *São muitas janelas*. Mantém-se *muitas*
+  (quantidade), sem substituir por *muito* (grau) nem *demasiadas* (excesso).
+- *Todas os acordos* → *Todos os acordos* corrige o género/número pelo nome.
+  *Não valem* → *são nulos* exige ainda *all deals/agreements are off* na
+  referência, sem afetar o sentido de valor financeiro.
+- O tempo decorrido confirmado pelo inglês prefere *passaram algumas horas*
+  a *faz algumas horas*, com concordância singular e tempos passados abrangidos.
+  É uma preferência de estilo: **fazer temporal é impessoal e fica no singular**;
+  *faz algumas horas* não constitui, por si só, um erro de concordância.
+  Esta preferência não altera horas de trabalho nem construções *faz… que*.
+- Com **Pronoun placement**, a negação com *ir* + infinitivo prefere a subida
+  do clítico: *não vai safar-se* → *não se vai safar*. Ambas as colocações
+  podem ser gramaticais; normaliza-se o estilo sem proibir a ênclise.
+- Em verbos revistos no imperfeito do conjuntivo, uma comparação inglesa com
+  *like/as if/as though* pode repor *se*: *como eu fosse um palhaço?* →
+  *como se eu fosse um palhaço?* Se a referência confirmar também o sujeito
+  omisso e o objeto, *como divertisse você?* → *como se eu te divertisse?*
+  Respeitam-se a concordância, a negação, o tratamento, as exclusões e as
+  quebras normais LF/CRLF. Não se adivinha com referência ausente ou ambígua.
+  **Colloquial** e `hypothetical-comparison` controlam esta correção.
+  Fonte: [Ciberdúvidas: tempo e modo depois de *como se*](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/tempo-e-modo-verbais-depois-de-como-se/36162).
+- A posse inalienável usa o dativo com partes do corpo e objetos pessoais
+  quando o possuidor não é o sujeito: *Ele pisou no meu rosto* → *Ele
+  pisou-me o rosto*, *bateu na minha cara* → *bateu-me na cara*. O possessivo
+  só cai com o clítico (*-me/-te/-lhe*); o possessivo do próprio sujeito
+  mantém-se (*Toquei na minha cara*). Um *seu/sua* de terceira pessoa
+  confirmado pelo inglês *his/her* passa ao possuidor inequívoco: *com a sua
+  bota* → *com a bota dele/dela* (género do pronome inglês ou do sujeito
+  português). Os possessivos de segunda pessoa ficam sempre para as regras de
+  tratamento (*na tua mala mágica*). **Pronoun placement** e
+  `inalienable-possession` controlam a regra, com suporte às quebras LF/CRLF.
+  Fonte: [Ciberdúvidas: a expressão da posse inalienável](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/a-expressao-da-posse-inalienavel-em-portugues/16378).
+- As falhas coloquiais brasileiras preferem verbos europeus com evidência
+  inglesa: *vacilei* junto a *I messed up* → *falhei*, a hesitação (*she
+  hesitated*) dá *hesitou*, *sem vacilar* → *sem hesitar*, *deu uma mancada*
+  → *fez uma asneira* e *pisei na bola* → *fiz asneira*. Referências ambíguas
+  ou ausentes, bolas literais e os sentidos nominais ficam intactos
+  (**Vocabulary** e `failure-vocabulary` controlam a regra).
+- Um sujeito *you* confirmado pela referência também chega a frases iniciadas
+  por *Não,* ou *Sim,* antes de uma conjunção: *Não, mas não pensou* junto a
+  *No, but you didn't think…* → *Não, mas não pensaste*.
+- Os verbos de comunicação recuperam o destinatário omitido quando o inglês o
+  nomeia: *e contou sobre isso* junto a *and told her about it* → *e
+  contou-lhe sobre isso*; *told me/you/us/them* dão *me/te/nos/lhes*, com
+  *lhe* no tratamento formal. Os verbos revistos incluem *contar, dizer,
+  falar, explicar, mostrar, perguntar, mentir, prometer, avisar* e
+  *escrever*. Clíticos existentes, destinatários explícitos, referências
+  ambíguas, negações divergentes, homógrafos nominais e mudanças de falante
+  ficam intactos; a etapa `dialogue-objects` e **Pronoun placement**
+  controlam a regra, com suporte às quebras LF/CRLF.
+- *Got/slipped past me* em inglês confirma o sentido despercebido de *passar
+  por*: *não é a primeira vez que algo passou por mim* → *…que algo me
+  escapou*, com clíticos concordantes, próclise depois de atratores como
+  *que* e *algo*, e mesóclise no futuro. A passagem literal e as referências
+  divergentes ficam intactas (**Vocabulary**, **Pronoun placement** e
+  `overlooked-escape` controlam a regra).
+- As perguntas *wh* com negativa contraída na referência concordam no
+  tratamento informal: *Por que não acaba o que começou aqui?* junto a
+  *Why don't you finish what you started here?* → *Porque não acabas o que
+  começaste aqui?* As perguntas sobre coisas (*When does the movie end?*)
+  mantêm a terceira pessoa.
+- Um *What do you mean, …?* inglês repõe a vírgula antes da palavra ecoada:
+  *O que quer dizer nada?* → *O que queres dizer, nada?* (também *como
+  assim*). Sem a vírgula, a pergunta pediria o significado de "nada". Os
+  complementos normais (*dizer com isso*, *dizer que…*), as referências sem
+  vírgula, as mudanças de falante e as linhas em branco ficam intactos;
+  **Colloquial** e `echo-question-comma` controlam a regra, com suporte às
+  quebras LF/CRLF.
+- A deteção de início de frase e as relativas livres são seguras com CRLF:
+  uma quebra `\r\n` já não transforma um clítico interno em inicial, e um
+  *por que* fundido no início da legenda volta a quebrar sem linha vazia.
+
+São regras partilhadas da conversão, não correções automáticas do LanguageTool.
+As escolhas de sentido exigem referência inglesa; respeitam-se as opções,
+etapas desativadas, exclusões e entradas personalizadas. As quebras normais
+LF/CRLF não impedem estas correções.
+
+Fontes: [fazer temporal](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/faz-dez-horas/30994),
+[colocação facultativa de clíticos](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/os-casos-especificos-da-proclise/10650),
+[auxiliares continuativos e infinitivo](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/null/38334).
 
 ### Advérbios restritivos com imperativos reflexivos
 
@@ -75,8 +290,18 @@ europeu (`pt-PT`)**. Não precisa de escolher um modelo gramatical separado.
 O painel **Reference subtitle and local models** fica abaixo dos botões superiores
 de opções, artigos de nomes e vocabulário, ao lado dos controlos de ortografia.
 O limite direito de **Dialogue context and subtitle layout** alinha com
-**Re-download dictionary**; o painel da referência expande ao lado. As colunas
+**Re-download dictionary**; em janelas largas, termina logo após as setas de
+**Warning CPS**, trazendo o botão do dicionário e o painel da referência para
+a esquerda. O painel da referência expande ao lado. As colunas
 têm deslocamento quando necessário para preservar espaço para rever legendas.
+
+A regra determinística `complement-subjunctive` também corrige o presente do
+indicativo após *esperar + que*: *Espero que ambos precisam de se conhecer de
+novo* → *Espero que ambos precisem de se conhecer de novo*. Abrange as formas
+do presente de *esperar*, *esperemos* e os sujeitos *ambos/ambas/todos/todas*,
+preservando os tempos anteriores e as frases já corretas. Não depende do
+LanguageTool nem do MiniLM. Ver
+[Ciberdúvidas: esperar e o conjuntivo](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/o-verbo-esperar-e-o-conjuntivo/29669).
 
 Para configurar a verificação:
 
@@ -195,6 +420,13 @@ adaptando a ortografia, o vocabulário e a gramática. Tal como o plugin *Americ
 British*, apresenta uma pré-visualização de cada legenda alterada, com uma caixa
 de seleção que permite rever e rejeitar alterações individuais antes de as aplicar.
 
+### Exemplo de processamento de um SRT
+
+![Pré-visualização do processamento de um SRT com texto original em PT-BR, correções editáveis em PT-PT, referência inglesa e avisos de revisão](srt-processing.png)
+
+Reveja as correções e os avisos individualmente antes de escolher **Apply**.
+Um aviso pede uma revisão; não comprova que uma correção esteja errada.
+
 Durante a revisão, use a seta imediatamente à esquerda de **Contribute vocabulary /
 Local word list** para recolher ou expandir a área das definições, incluindo os
 controlos da referência e dos modelos. Os botões de selecionar tudo/nada e de
@@ -220,6 +452,26 @@ as definições têm de permanecer acessíveis.
 predefinidos, em qualquer das ortografias. Tanto *vou contar-te* como *vou-te
 contar* são colocações válidas em português europeu; o conversor mantém o seu
 estilo de ênclise ao infinitivo e converte o nome informal com ambas as colocações.
+
+A etapa `natural-word-order`, em **Colloquial**, também prefere adjetivos
+descritivos depois de nomes de duração revistos: *muitas longas noites* →
+*muitas noites longas*. Ambas as posições podem ser gramaticais; trata-se de
+uma preferência neutra para legendas. Preserva-se a quantidade: *a lot of long
+nights* não significa *very long nights*. Usa-se *noites muito longas* quando
+*muito* já é explicitamente adverbial ou a referência confirma a intensidade,
+sem quantidade ou negação. Abrange períodos como dias, horas, semanas, meses e
+anos, e adjetivos revistos de duração, dificuldade, cansaço, tranquilidade e
+frio, com verificação da concordância.
+Fontes: [posição do adjetivo](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/anteposicao-do-adjetivo-e-anglicismo/36580)
+e [muito invariável e quantidade variável](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/muito-adv-muita-pron-indef/30962).
+
+Todas as etapas repõem as quebras consumidas antes de passar o texto à etapa
+seguinte, em vez de o fazer apenas no fim da conversão. Preservam-se os
+separadores capturados e as salvaguardas do contexto gramatical. Testam-se quebras
+LF/CRLF em todas as fronteiras entre palavras de famílias de regras
+representativas. Não se achatam mudanças de interlocutor, texto protegido ou
+limites entre legendas; a redistribuição opcional das linhas continua separada
+desta correção partilhada de preservação das quebras.
 
 A ordem das palavras que exprimem habitualidade é normalizada em **Colloquial**,
 na etapa `natural-word-order`: *porque você sempre sabe quando eu tô mentindo* →
@@ -1072,6 +1324,67 @@ acrescentar avisos de revisão:
   Fontes: Priberam, [pedrado](https://dicionario.priberam.org/pt-pt/pedrado) e
   [tolice](https://dicionario.priberam.org/pt-pt/tolice), e
   [Ciberdúvidas sobre orações temporais habituais](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/todas-as-vezes-que/13308).
+- **Brincadeiras e praxe:** *trote de celular* e *trote telefônico* passam a
+  *chamada de brincadeira*; *trote estudantil*, a *praxe académica*. *Trote*
+  isolado só passa a *brincadeira* com referência inglesa a uma partida;
+  *passar um trote* pode passar a *pregar uma partida*. Preservam-se a andadura
+  dos cavalos e os usos não confirmados, a concordância, as quebras LF/CRLF
+  normais e as escolhas locais. Controlam estas regras **Vocabulary** e
+  `word-list` e, para a ação, `prank-actions`. *Pegadinha* já corresponde a
+  *partida*. Fonte: [Priberam trote](https://dicionario.priberam.org/pt-pt/trote).
+- **Vingança e respostas verbais:** com referência inglesa alinhada que confirme
+  vingança, formas selecionadas de *revidar* sem complemento direto podem usar
+  *vingar-se*: *decidiste revidar* → *decidiste vingar-te*. Se a referência
+  confirmar uma resposta verbal, *revidar/retrucar* pode passar a *responder*.
+  São preferências de redação, não uma afirmação de que os verbos originais
+  sejam inválidos em Portugal. Preservam-se sentidos não confirmados, objetos
+  diretos na conversão de vingança e indícios contraditórios; aceitam-se quebras normais LF/CRLF.
+  **Vocabulary** e `retaliation-vocabulary` controlam ambas as preferências;
+  a vingança também exige **Pronouns**. Fontes: Priberam,
+  [revidar](https://dicionario.priberam.org/pt-pt/revidar),
+  [retrucar](https://dicionario.priberam.org/pt-pt/retrucar) e
+  [vingar-se](https://dicionario.priberam.org/pt-pt/vingar-se).
+- **Instalações policiais e ações em curso:** com referência inglesa alinhada
+  de um local, *ao/no esquadrão* e *sala do esquadrão* podem passar a
+  *à/na esquadra* e *sala da esquadra*. Preservam-se os sentidos militares e
+  de unidades qualificadas; *esquadrão* não é substituído indiscriminadamente.
+  A regra existente **Progressive** converte *está mentindo* em *está a
+  mentir*. Quando o inglês confirma o mesmo sujeito, tempo e polaridade,
+  `reference-progressive` também trata formas simples selecionadas, como
+  *ele mente* / *he's lying* → *ele está a mentir*. Preservam-se os sentidos
+  habituais e de estar deitado. São aceites quebras normais LF/CRLF e
+  respeitadas as escolhas locais. Os locais exigem **Vocabulary** e
+  `police-station`; as ações exigem **Progressive** e ambas as etapas
+  progressivas. Fontes: Infopédia, [esquadra](https://www.infopedia.pt/dicionarios/lingua-portuguesa/esquadra)
+  e [esquadrão](https://www.infopedia.pt/dicionarios/lingua-portuguesa/esquadr%C3%A3o),
+  [Collins squad room](https://www.collinsdictionary.com/dictionary/english/squad-room)
+  e [Ciberdúvidas sobre o progressivo](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/o-gerundio-e-a-perifrase-estar-a--infinitivo/34913).
+- **Metáforas de pesca e decalques ingleses:** com confirmação inglesa,
+  *estar jogando (um) verde* passa a *estar à pesca*; outras formas revistas
+  de *jogar verde* usam *pescar*, conjugado. *Pegar a/na isca* passa a
+  *morder o isco* perante *take (chump) bait*; *jogadores* só passa a
+  *pescadores* perante uma ocorrência inequívoca de *fishermen*.
+  Preserva-se assim o jogo pesca/isco/pescadores entre legendas separadas,
+  sem adivinhar o sentido a partir de uma linha vizinha.
+  *Xícara/chávena de Joe*, com *cup of joe*, passa a *chávena de café*
+  (*para viagem* → *para levar* quando *to go* confirma essa intenção);
+  *não soma/somava*, com *doesn't add up*, passa a *não bate/batia certo*.
+  As expressões podem atravessar quebras normais de linha, incluindo CRLF;
+  linhas vazias e mudanças de interlocutor não juntam expressões separadas.
+  Estas conversões exigem **Vocabulary** e **Colloquial**, usam
+  `reference-idioms`, mantêm o tempo e a pessoa e respeitam as escolhas
+  locais. Preservam-se complementos literais de pesca/isco, jogadores
+  desportivos, nomes próprios e aritmética sem confirmação idiomática.
+  Há sugestões de revisão e leituras semânticas inglesas para as expressões
+  confirmadas; *fishing* isolado só recebe a leitura de obtenção indireta
+  de informação se o original português contiver *jogar verde*. Não se
+  alteram os limiares do MiniLM. Se o MiniLM rejeitar uma referência
+  inglesa sobreposta, um par inequívoco *jogar verde* / *you're fishing*
+  é mantido; preservam-se os contextos literais e os pares ambíguos. Fontes:
+  [Infopédia pesca](https://www.infopedia.pt/dicionarios/lingua-portuguesa/pesca),
+  [Cambridge fish for](https://dictionary.cambridge.org/dictionary/english/fish-for),
+  [joe](https://dictionary.cambridge.org/us/dictionary/english/joe) e
+  [Merriam-Webster add up](https://www.merriam-webster.com/dictionary/add%20up).
 - **Promessas e segredo:** o inglês elíptico *Promise not to…?* identifica o
   interlocutor; um pedido português sem sujeito explícito, *Promete…?* seguido
   de infinitivo, também admite o informal *Prometes…?* sem referência.
@@ -1454,8 +1767,33 @@ início da legenda e depois de um gerúndio (*Nossa foto…* → *A nossa foto�
 *ocupando nossa cadeira* → *ocupando a nossa cadeira*; não se alteram
 exclamações como *Nossa, que lindo!*); *A policial Maria* → *A agente Maria*
 (também *O policial João* → *O agente João*); *sabia sobre isso* →
-*sabia disto*; o informal *Mande entrar.* → *Mando-o entrar.* (no tratamento
-formal, mantém-se *Mande-o entrar*); e *melhor policial / fosses policial /
+*sabia disto*. *Mande entrar.* mantém a pessoa do imperativo (informal
+*Manda entrar.*). Com uma chegada explícita na legenda imediatamente anterior,
+como *Ela está aqui.*, os comandos delimitados de *mandar/deixar* entrar, sair,
+subir, descer, passar e esperar recuperam o participante:
+formal *Mande-a entrar.*, informal *Manda-a entrar.*, plural *Mande-as entrar.*
+e negativo *Não a mande entrar.*. Não se inventa um objeto masculino sem indícios.
+A regra de pronomes `arrival-object` exige legendas adjacentes selecionadas,
+separadas por até cinco segundos; protege chegadas negadas, vários referentes,
+objetos expressos e referências inglesas contraditórias. Se houver inglês,
+exige um comando correspondente. A pré-visualização inclui um aviso para
+verificar o referente.
+Ver [Ciberdúvidas sobre o acusativo nas construções causativas](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/fazer-causativo-e-elevacao-do-objeto-a-sujeito/38859).
+
+A regra coloquial `parecer-complement` repõe *que* apenas antes de uma oração
+finita validada: *Parece ela chegou* → *Parece que ela chegou*. Abrange também
+*Bem, parece o Juiz* / *caiu de cabeça do telhado* em continuações selecionadas,
+do mesmo falante e separadas por até 1,5 segundos, mesmo sem contexto frásico.
+Protege a semelhança nominal (*parece a minha mãe*), as construções infinitivas
+e o *que* já presente; é conservadora perante formas nominais/verbais ambíguas.
+Ver [Ciberdúvidas sobre as completivas finitas de parecer](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/o-verbo-parecer-com-uma-oracao-subordinada-completiva-finita/34411).
+Ambas as regras preservam o número de linhas e respeitam regras desativadas
+e substituições locais. O MiniLM compara representações semânticas, não resolve
+deterministicamente a correferência gramatical; as verificações de tradução por
+legenda excluem atualmente texto português inalterado com menos de três palavras,
+pelo que *Mande entrar* não fica coberto de forma fiável por essa verificação.
+
+Também *melhor policial / fosses policial /
 disfarçado de policial* → *polícia*.
 *Policial* sem determinante, como pessoa envolvida (*envolvendo / baleado por /
 matou / atacou / contra policial*), passa a *um agente* / *agentes*.
@@ -1697,8 +2035,14 @@ o pronome reflexo que o PT-BR omite, de acordo com a pessoa:
 *Eu não me lembro*, *Ele esqueceu da reunião* → *Ele esqueceu-se da reunião*,
 *Todos lembramos do…* → *Todos nos lembramos do…*, *Não esqueça de ligar*
 → *Não se esqueça de ligar*. O tratamento formal (*Doutor/Comissário, lembra
-de mim?*) mantém *lembra-se*. Preserva-se o complemento direto
-(*Esqueci o nome dele*, *Isso lembra o meu pai*, *Esquece!*).
+de mim?*) mantém *lembra-se*. Quando *esquecer* significa não se lembrar ou deixar
+algo para trás, os complementos nominais diretos são normalizados para a construção
+pronominal: *Esqueci o nome dele* → *Esqueci-me do nome dele*, *Você esqueceu seu
+café* → *Esqueceste-te do teu café*. É uma preferência de formulação em PT-PT, não
+uma afirmação de que o uso transitivo *esquecer algo* esteja errado; a Infopédia
+regista ambos os usos ([entrada](https://www.infopedia.pt/dicionarios/lingua-portuguesa/esquecer)).
+Mantêm-se as ordens (*Esquece isso!*) e o sentido distinto de semelhança
+(*Isso lembra o meu pai*).
 Uma pergunta que começa por um nome (*Tiago, sabe onde…?*, *Querida, está bem?*)
 é tratada como dirigida a essa pessoa por *tu* (*sabes*, *estás*), exceto depois
 de um título (*Doutor, Senhor, Chefe…*).

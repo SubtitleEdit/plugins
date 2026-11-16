@@ -68,6 +68,20 @@ public sealed class LocalChecksTests(ITestOutputHelper output)
         Assert.Equal(new[] { "It's a very easy task.", line.Original, line.Converted }, seen);
     }
 
+    [Fact]
+    public async Task FishingMeaningUsesOriginalPortugueseToDisambiguateReference()
+    {
+        var seen = new List<string?>();
+        Task<float[]?> Embed(string? text)
+        {
+            seen.Add(text);
+            return Task.FromResult<float[]?>(new[] { 1f, 0f });
+        }
+        var line = new CheckLine(0, "Está jogando verde.", "Estás à pesca.", null, "You're fishing.");
+        Assert.Null(await LocalChecks.IdiomMeaningNoteAsync(line, line.Converted, Embed));
+        Assert.Equal(new[] { "You're trying to elicit information indirectly.", line.Original, line.Converted }, seen);
+    }
+
     [Theory]
     [InlineData(.8f, .8f, false)]
     [InlineData(.2f, .2f, true)]

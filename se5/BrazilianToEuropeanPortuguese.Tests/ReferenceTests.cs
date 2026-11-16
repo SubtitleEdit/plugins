@@ -346,6 +346,142 @@ public sealed class ReferenceTests(ITestOutputHelper output)
         Assert.Equal(1, alignment.Rejected);
     }
 
+    [Theory]
+    [InlineData("You're fishing.", "You're fishing.")]
+    [InlineData("You are fishing for information.", "You are fishing for information.")]
+    [InlineData("You're fishing for trout.", null)]
+    [InlineData("You're fishing in the river.", null)]
+    [InlineData("You're not fishing.", null)]
+    [InlineData("Sit down.", null)]
+    public void LowSimilarityFishingIdiomNeedsMatchingEnglishAndOverlap(string english, string? expected)
+    {
+        var source = new[] { Cue(1134014, 1135676, "Está jogando verde.") };
+        var reference = new[] { Cue(1133633, 1135335, english) };
+        var alignment = ReferenceAligner.AlignWithEmbeddings(source, reference,
+            new[] { Basis(0, 2) }, new[] { Basis(1, 2) });
+        Assert.Equal(expected, alignment.Texts[0]);
+        Assert.Equal(expected == null ? 1 : 0, alignment.Rejected);
+        if (expected != null)
+        {
+            var result = SubtitleConversion.Convert(source, ConversionOptions.Default, english: alignment.Texts);
+            Assert.Equal("Estás à pesca.", Assert.Single(result).Text);
+        }
+        reference[0] = Cue(1140000, 1141500, english);
+        Assert.Null(ReferenceAligner.AlignWithEmbeddings(source, reference,
+            new[] { Basis(0, 2) }, new[] { Basis(1, 2) }).Texts[0]);
+    }
+
+    [Fact]
+    public void LowSimilarityIdiomFallbackDoesNotRecoverAmbiguousReferences()
+    {
+        var source = new[] { Cue(1000, 3000, "Está jogando verde.") };
+        var reference = new[] { Cue(1000, 2000, "You're fishing."), Cue(2000, 3000, "He's fishing.") };
+        var result = ReferenceAligner.AlignByTiming(source, reference, pairSimilarity: (_, _) => 0);
+        Assert.Null(result.Texts[0]);
+        Assert.Equal(1, result.Rejected);
+    }
+
+    [Fact]
+    public void LowSimilarityIdiomFallbackDoesNotAttachNeighbouringDialogue()
+    {
+        var source = new[] { Cue(1000, 3000, "Está jogando verde.") };
+        var reference = new[] { Cue(1000, 2000, "You're fishing."), Cue(2000, 3000, "Sit down.") };
+        var result = ReferenceAligner.AlignByTiming(source, reference, pairSimilarity: (_, _) => 0);
+        Assert.Equal("You're fishing.", result.Texts[0]);
+    }
+
+    [OptInFact("PTPT_TEST_IDIOM_MODEL", "real MiniLM fishing alignment")]
+    public async Task RealMiniLmFishingPairAlignment()
+    {
+        var source = new[] { Cue(1134014, 1135676, "Está jogando verde.") };
+        var reference = new[] { Cue(1133633, 1135335, "You're fishing.") };
+        using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(3));
+        await using var runtime = await EmbeddingRuntime.StartAsync(RealSettings(false),
+            new Progress<string>(output.WriteLine), timeout.Token);
+        var pt = await runtime.EmbedAsync(source[0].Text, timeout.Token);
+        var en = await runtime.EmbedAsync(reference[0].Text, timeout.Token);
+        output.WriteLine($"Fishing pair similarity: {ReferenceAligner.Dot(pt, en):0.000} (floor {ReferenceAligner.PairSimilarityFloor:0.000}).");
+        var alignment = ReferenceAligner.AlignWithEmbeddings(source, reference, new[] { pt }, new[] { en });
+        Assert.Equal("You're fishing.", alignment.Texts[0]);
+        Assert.Equal("Estás à pesca.", Assert.Single(SubtitleConversion.Convert(source,
+            ConversionOptions.Default, english: alignment.Texts)).Text);
+    }
+
+    [OptInFact("PTPT_TEST_IDIOM_MODEL", "real MiniLM police and progressive alignment")]
+    public async Task RealMiniLmPoliceAndProgressiveAlignment()
+    {
+        var pairs = new[]
+        {
+            (Cue(1083239, 1084315, "Veio para acompanhá-lo\nà sala do esquadrão."),
+             Cue(1082149, 1084251, "Came down to escort you\nto the squad room."), "sala da esquadra"),
+            (Cue(1747969, 1749413, "Seu advogado\nveio ao esquadrão,"),
+             Cue(1747914, 1749381, "His lawyer\ncame by the squad,"), "à esquadra"),
+            (Cue(2039878, 2041771, "-Certo.\n-Não é verdade! Ele mente."),
+             Cue(2040106, 2041740, "Okay...\nThat's not true!\nHe's lying."), "está a mentir"),
+            (Cue(2047346, 2049166, "-Entende? Ele mente.\n-Ótimo. Então não terá problemas"),
+             Cue(2047346, 2049248, "Do you understand? He's lying.\nThat's great.\nSo you won't have any problems"), "está a mentir"),
+            (Cue(2049259, 2052020, "-em vir ao esquadrão.\n-Ele mente."),
+             Cue(2049281, 2051717, "coming down to the squad.\nCome on.\nHe's lying."), "está a mentir"),
+        };
+        using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(3));
+        await using var runtime = await EmbeddingRuntime.StartAsync(RealSettings(false),
+            new Progress<string>(output.WriteLine), timeout.Token);
+        foreach (var (source, reference, expected) in pairs)
+        {
+            var pt = await runtime.EmbedAsync(source.Text, timeout.Token);
+            var en = await runtime.EmbedAsync(reference.Text, timeout.Token);
+            output.WriteLine($"Pair similarity: {ReferenceAligner.Dot(pt, en):0.000} (floor {ReferenceAligner.PairSimilarityFloor:0.000}).");
+            var alignment = ReferenceAligner.AlignWithEmbeddings(new[] { source }, new[] { reference }, new[] { pt }, new[] { en });
+            Assert.NotNull(alignment.Texts[0]);
+            var converted = Assert.Single(SubtitleConversion.Convert(new[] { source }, ConversionOptions.Default, english: alignment.Texts));
+            Assert.Contains(expected, converted.Text.Replace("\n", " "));
+        }
+    }
+
+    [OptInFact("PTPT_TEST_IDIOM_MODEL", "real MiniLM hypothetical comparison alignment")]
+    public async Task RealMiniLmHypotheticalComparisonAlignment()
+    {
+        var source = new[]
+        {
+            Cue(2350362, 2352514, "Como eu fosse um palhaço?"),
+            Cue(2352514, 2355504, "Como divertisse você?"),
+        };
+        var english = new[]
+        {
+            Cue(2350081, 2352418, "Like I'm a clown?"),
+            Cue(2352451, 2355053, "Like I amuse you?"),
+        };
+        using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(3));
+        await using var runtime = await EmbeddingRuntime.StartAsync(RealSettings(false),
+            new Progress<string>(output.WriteLine), timeout.Token);
+        var pt = await runtime.EmbedCuesAsync(source.Select(c => c.Text).ToList(), new Progress<string>(_ => { }), "pt", timeout.Token);
+        var en = await runtime.EmbedCuesAsync(english.Select(c => c.Text).ToList(), new Progress<string>(_ => { }), "en", timeout.Token);
+        for (var i = 0; i < source.Length; i++)
+            output.WriteLine($"Comparison pair {i}: {ReferenceAligner.Dot(Assert.IsType<float[]>(pt[i]), Assert.IsType<float[]>(en[i])):0.000} (floor {ReferenceAligner.PairSimilarityFloor:0.000}).");
+        var alignment = ReferenceAligner.AlignWithEmbeddings(source, english, pt, en);
+        Assert.Equal(english.Select(c => c.Text), alignment.Texts);
+        var converted = SubtitleConversion.Convert(source, ConversionOptions.Default, english: alignment.Texts);
+        Assert.Equal("Como se eu fosse um palhaço?", converted[0].Text);
+        Assert.Equal("Como se eu te divertisse?", converted[1].Text);
+    }
+
+    [OptInFact("PTPT_TEST_IDIOM_MODEL", "real MiniLM revenge alignment")]
+    public async Task RealMiniLmRevengeAlignment()
+    {
+        var source = new[] { Cue(2186224, 2187985, "<i>Então decidiu revidar.</i>") };
+        var reference = new[] { Cue(2186452, 2187953, "DETECTIVE: So you decided\nto get back at him.") };
+        using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(3));
+        await using var runtime = await EmbeddingRuntime.StartAsync(RealSettings(false),
+            new Progress<string>(output.WriteLine), timeout.Token);
+        var pt = await runtime.EmbedAsync(source[0].Text, timeout.Token);
+        var en = await runtime.EmbedAsync(reference[0].Text, timeout.Token);
+        output.WriteLine($"Revenge pair similarity: {ReferenceAligner.Dot(pt, en):0.000} (floor {ReferenceAligner.PairSimilarityFloor:0.000}).");
+        var alignment = ReferenceAligner.AlignWithEmbeddings(source, reference, new[] { pt }, new[] { en });
+        Assert.NotNull(alignment.Texts[0]);
+        Assert.Equal("<i>Então decidiste vingar-te.</i>", Assert.Single(SubtitleConversion.Convert(source,
+            ConversionOptions.Default, english: alignment.Texts)).Text);
+    }
+
     private static float[] Basis(int index, int size)
     {
         var vector = new float[size];
@@ -1235,20 +1371,22 @@ public sealed class ReferenceTests(ITestOutputHelper output)
             styleWindow.FindControl<Expander>("ReviewTools")!.IsExpanded = true;
             styleWindow.FindControl<Expander>("LayoutTools")!.IsExpanded = true;
             styleWindow.FindControl<Expander>("ReferencePanel")!.IsExpanded = true;
+            styleWindow.Width = 2200;
             styleWindow.Show();
             Avalonia.Threading.Dispatcher.UIThread.RunJobs();
-            foreach (var width in new[] { styleWindow.MinWidth, 1120d, 1600d })
+            foreach (var width in new[] { 2200d, styleWindow.MinWidth, 1120d, 1600d })
             {
                 styleWindow.Width = width;
                 var content = Assert.IsAssignableFrom<Control>(styleWindow.Content);
+                var columns = styleWindow.FindControl<Grid>("SettingsColumns")!;
                 content.Measure(new Avalonia.Size(width - 40, 720));
                 content.Arrange(new Avalonia.Rect(0, 0, width - 40, 720));
                 Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+                styleWindow.UpdateLayout();
                 var reviewTools = styleWindow.FindControl<Expander>("ReviewTools")!;
                 var layoutTools = styleWindow.FindControl<Expander>("LayoutTools")!;
                 Assert.Same(reviewTools.Parent, layoutTools.Parent);
                 Assert.True(layoutTools.Bounds.Left >= reviewTools.Bounds.Right);
-                var columns = styleWindow.FindControl<Grid>("SettingsColumns")!;
                 var dictionary = styleWindow.FindControl<Button>("DictionaryDownloadButton")!;
                 var layoutPosition = layoutTools.TranslatePoint(default, columns)!.Value;
                 var dictionaryPosition = dictionary.TranslatePoint(default, columns)!.Value;
@@ -1256,7 +1394,16 @@ public sealed class ReferenceTests(ITestOutputHelper output)
                 var reference = styleWindow.FindControl<Expander>("ReferencePanel")!;
                 Assert.True(reference.Bounds.Left > layoutPosition.X + layoutTools.Bounds.Width);
                 Assert.True(reference.Bounds.Right <= columns.Bounds.Width + 0.1);
-                Assert.True(styleWindow.FindControl<Border>("ChangesBorder")!.Bounds.Height > 80);
+                if (width >= 2200)
+                {
+                    var cps = styleWindow.FindControl<NumericUpDown>("CharactersPerSecond")!;
+                    var cpsPosition = cps.TranslatePoint(default, columns)!.Value;
+                    var gap = layoutPosition.X + layoutTools.Bounds.Width - cpsPosition.X - cps.Bounds.Width;
+                    Assert.True(columns.Bounds.Width >= 2000);
+                    Assert.InRange(gap, 0, 40);
+                }
+                Assert.True(styleWindow.FindControl<Border>("ChangesBorder")!.Bounds.Height > 80,
+                    $"width={width}, review={styleWindow.FindControl<Border>("ChangesBorder")!.Bounds}, settings={columns.Bounds}");
                 foreach (var name in new[] { "LineLength", "MaxLines", "CharactersPerSecond" })
                 {
                     var numeric = styleWindow.FindControl<NumericUpDown>(name)!;

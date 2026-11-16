@@ -305,7 +305,6 @@ public sealed class ConstructionTests
 
     [Theory]
     [InlineData("Pode confiar em mim.")]
-    [InlineData("Esqueci o nome.")]
     [InlineData("Ele lembra o pai.")]
     [InlineData("Vira à esquerda.")]
     [InlineData("Ele virou a página.")]

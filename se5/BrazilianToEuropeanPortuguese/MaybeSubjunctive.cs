@@ -14,7 +14,7 @@ internal static class MaybeSubjunctive
     private const RegexOptions Ci = RegexOptions.IgnoreCase | RegexOptions.CultureInvariant;
 
     private const string ComplementVerb =
-        @"(?:(?<subj>eu|tu|ele|ela|nós|vós|eles|elas|você|vocês|" +
+        @"(?:(?<subj>eu|tu|ele|ela|nós|vós|eles|elas|você|vocês|ambos|ambas|todos|todas|" +
         @"(?:o|a|os|as)\s+(?:(?:meu|minha|meus|minhas|teu|tua|teus|tuas|seu|sua|seus|suas|nosso|nossa|nossos|nossas)\s+)?[\p{L}\p{M}]+|" +
         @"(?-i:\p{Lu}[\p{Ll}\p{M}]+))\s+)?" +
         @"(?<adv>(?:(?:não|nunca|já|ainda|também|só|mesmo|realmente)\s+){0,2}))" +
@@ -28,7 +28,8 @@ internal static class MaybeSubjunctive
     private static readonly Regex Complements = new(
         @"(?<pre>(?<![\p{L}\p{M}-])" +
         @"(?:receio|receias|receia|receamos|receais|receiam|temo|temes|teme|tememos|temeis|temem|" +
-        @"desejo|desejas|deseja|desejamos|desejais|desejam|duvido|duvidas|duvida|duvidamos|duvidais|duvidam)" +
+        @"desejo|desejas|deseja|desejamos|desejais|desejam|duvido|duvidas|duvida|duvidamos|duvidais|duvidam|" +
+        @"espero|esperas|espera|esperamos|esperais|esperam|esperemos)" +
         @"\s+que\s+" + ComplementVerb, Ci);
 
     // Present and imperfect indicative of irregular verbs → subjunctive.

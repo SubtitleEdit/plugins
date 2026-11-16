@@ -25,6 +25,8 @@ public sealed record ReferenceHint(bool SecondPerson, bool SecondPossessive, boo
     internal bool AddresseeContinuation { get; init; }
     internal bool TopicRelativeContinuation { get; init; }
     internal bool InformalTagContinuation { get; init; }
+    internal string? ComplementContinuation { get; init; }
+    internal string? ArrivalObject { get; init; }
     internal string? EnglishText { get; init; }
 
     public static ReferenceHint? FromContext(IReadOnlyList<SrtBlock> source, int index, IReadOnlyList<string?>? english = null,
@@ -479,8 +481,13 @@ public static class ReferenceAligner
             if (parts.Count == 0) continue;
             if (pairSimilarity != null && parts.Max(j => pairSimilarity(i, j)) < PairSimilarityFloor)
             {
-                rejected++;
-                continue;
+                var idiomParts = parts.Where(j => IdiomHints.IsFishingTranslation(source[i].Text, reference[j].Text)).ToList();
+                if (idiomParts.Count != 1)
+                {
+                    rejected++;
+                    continue;
+                }
+                parts = idiomParts;
             }
 
             texts[i] = string.Join("\n", parts.Select(j => Clean(reference[j].Text)));
@@ -822,6 +829,25 @@ public static class IdiomHints
 
     private const RegexOptions Ci = RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled;
     private const string Own = @"(?:my|your|his|her|our|their|its|one's)";
+    internal const string NotAddingUpEnglish =
+        @"\b(?<addSubject>something|it|this|that|(?:the\s+)?(?:story|explanation|alibi))" +
+        @"(?:\s+(?:just\s+)?(?:doesn't|does\s+not|didn't|did\s+not)\s+add\s+up|(?:'s|\s+is)\s+(?:just\s+)?not\s+adding\s+up)\b";
+    internal const string LiteralFishingEnglish = @"\b(?:trout|salmon|tuna|lake|river|rod|boat|ocean|sea|pond)\b";
+    private static readonly Regex FishingEnglish = new(@"\bfishing\b", Ci);
+    private static readonly Regex GreenPortuguese = new(
+        @"(?<![\p{L}\p{M}-])jog\p{L}*\s+(?:um\s+)?verde(?![\p{L}\p{M}-])", Ci);
+    private static readonly Regex BareFishingStatement = new(
+        @"(?:^|[.!?]\s*)(?:i'm|you're|he's|she's|we're|they're|" +
+        @"i\s+am|you\s+are|he\s+is|she\s+is|we\s+are|they\s+are)\s+" +
+        @"(?:just\s+)?fishing(?:\s+for\s+(?:information|answers|details|confessions|compliments))?" +
+        @"(?=\s*[,!.?…;:]|$)", Ci);
+
+    internal static bool IsFishingTranslation(string portuguese, string english)
+    {
+        var plainEnglish = ReferenceAligner.Clean(english).Replace('’', '\'');
+        return GreenPortuguese.IsMatch(ReferenceAligner.Clean(portuguese)) &&
+            BareFishingStatement.IsMatch(plainEnglish) && !Regex.IsMatch(plainEnglish, LiteralFishingEnglish, Ci);
+    }
 
     private static Idiom I(string english, string name, string ptPt, string expected, string? meaning = null) =>
         new(new Regex(@"\b(?:" + english + @")\b", Ci), name, ptPt,
@@ -829,6 +855,14 @@ public static class IdiomHints
 
     private static readonly Idiom[] Idioms =
     {
+        I(@"fishing\s+for\s+(?:information|answers|details|confessions|compliments)", "fishing for information",
+            "estar à pesca de informações", @"à\s+pesca|pesc\w*|obter|sacar|extrair", "trying to elicit information indirectly"),
+        I(@"(?:take|takes|taking|took|taken)\s+chump\s+bait", "take chump bait",
+            "morder o isco / cair no engodo", @"mord\w*\s+(?:o\s+isco|a\s+isca)|engodo|ca[ií]\w*\s+na\s+(?:armadilha|conversa)",
+            "fall for a provocation"),
+        I(@"cup\s+of\s+joe", "cup of joe", "chávena de café", @"café", "cup of coffee"),
+        I(NotAddingUpEnglish, "doesn't add up", "não bater certo / não fazer sentido",
+            @"bat\w*\s+certo|faz\w*\s+sentido|incoer\w*|inconsisten\w*", "${addSubject} does not make sense"),
         I(@"bust(?:s|ed|ing)?\s+" + Own + @"\s+(?:hump|ass|butt|back|tail)", "bust my hump",
             "dar cabo das costas / matar-se a trabalhar / fartar-se de trabalhar",
             @"cabo|mat\w*-(?:me|te|se|nos)|mat\w*\s+a\s+trabalhar|fart\w*|esfor[cç]\w*|suad\w*|suor", "work extremely hard"),
@@ -994,11 +1028,15 @@ public static class IdiomHints
             @"sozinh\w*|sós|conta\s+própria|só\b", "alone"),
     };
 
-    internal static string? MeaningReference(string? english)
+    internal static string? MeaningReference(string? english, string? portuguese = null)
     {
         if (string.IsNullOrWhiteSpace(english)) return null;
         var plain = ReferenceAligner.Clean(english).Replace('’', '\'');
         var result = plain;
+        // Bare "fishing" is ambiguous; the Brazilian idiom supplies the missing sense.
+        if (GreenPortuguese.IsMatch(ReferenceAligner.Clean(portuguese ?? "")) &&
+            !Regex.IsMatch(plain, @"\bfishing\s+for\b|" + LiteralFishingEnglish, Ci))
+            result = FishingEnglish.Replace(result, "trying to elicit information indirectly");
         foreach (var idiom in Idioms)
             if (idiom.Meaning != null)
                 result = idiom.English.Replace(result, idiom.Meaning);
@@ -1014,6 +1052,9 @@ public static class IdiomHints
             .Select(i => $"Hint: the English “{i.Name}” is an idiom - in PT-PT: {i.PtPt}.")
             .Distinct()
             .ToList();
+        if (GreenPortuguese.IsMatch(line) && FishingEnglish.IsMatch(plain) &&
+            !Regex.IsMatch(plain, LiteralFishingEnglish, Ci))
+            notes.Add("Hint: the English “fishing” corresponds to “jogar verde” - in PT-PT: estar à pesca.");
         return notes.Count == 0 ? null : string.Join("\n", notes);
     }
 }

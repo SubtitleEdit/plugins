@@ -15,6 +15,7 @@ public static class SubtitleConversion
         for (var i = 0; i < blocks.Count; i++)
         {
             var hint = Hint(blocks, i, english, options.Address, speakers);
+            hint = ContextualComplements.WithContext(blocks, i, hint, english, speakers, selected);
             if (i > 0 && Continues(blocks[i - 1], blocks[i]) &&
                 converter.HasInformalTagEvidence(result[i - 1].Text) &&
                 (speakers == null || string.IsNullOrWhiteSpace(speakers[i - 1]) || string.IsNullOrWhiteSpace(speakers[i]) ||
@@ -42,6 +43,10 @@ public static class SubtitleConversion
             if (rules.Any(r => r.Id == "arrival-group-apology"))
                 note = string.Join("\n", new[] { note,
                     "Address review: plural apology inferred from a named arrival and a nearby waiting group; verify the recipients." }
+                    .Where(n => n != null));
+            if (rules.Any(r => r.Id == "arrival-object"))
+                note = string.Join("\n", new[] { note,
+                    "Pronoun review: causee recovered from the immediately preceding arrival; verify the referent." }
                     .Where(n => n != null));
             result[i] = new CueConversion(text, hint, rules.Distinct().ToArray(), -1, note);
         }

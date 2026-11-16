@@ -82,7 +82,7 @@ internal static class PortugueseVerbs
         "aguentar", "atingir", "considerar", "contactar", "fichar", "honrar", "liberar", "livrar", "recusar", "surrar",
         "felicitar", "monitorar", "monitorizar", "parabenizar", "merecer", "constranger", "ferrar", "estudar", "stressar",
         "estressar", "espantar", "jogar", "confundir", "fritar", "aturar", "arrebentar", "preparar", "envergonhar",
-        "perturbar", "sustentar", "assombrar", "abraçar",
+        "perturbar", "sustentar", "assombrar", "abraçar", "divertir",
     };
 
     // Present-tense "tu" forms that are more often plural nouns ("as chamas", "as provas").
@@ -318,6 +318,8 @@ internal static class PortugueseVerbs
             }
 
             transitive.Add(stem + vowel + "sse");
+            transitive.Add(stem + vowel + "sses");
+            transitive.Add(stem + (vowel == "a" ? "á" : vowel == "e" ? "ê" : "í") + "ssemos");
             transitive.Add(stem + vowel + "ssem");
         }
 
@@ -488,6 +490,27 @@ internal static class PortugueseVerbs
 
     public static bool IsKnownVerbForm(string word) => AllForms.Contains(word.ToLowerInvariant());
 
+    private static readonly string[] PorPrefixes =
+        ["", "ante", "com", "contra", "de", "descom", "dis", "entre", "ex", "im", "inter", "justa", "o", "pos", "pre", "pressu", "pro", "re", "recom", "sobre", "super", "trans"];
+    private static readonly HashSet<string> PorFiniteForms = BuildPorFiniteForms();
+
+    private static HashSet<string> BuildPorFiniteForms()
+    {
+        var stems = new[]
+        {
+            "ponho", "pões", "põe", "pomos", "pondes", "põem",
+            "punha", "punhas", "púnhamos", "púnheis", "punham",
+            "pus", "puseste", "pôs", "pusemos", "pusestes", "puseram",
+            "pusera", "puseras", "puséramos", "puséreis",
+            "ponha", "ponhas", "ponhamos", "ponhais", "ponham",
+            "pusesse", "pusesses", "puséssemos", "pusésseis", "pusessem",
+        };
+        return new HashSet<string>(PorPrefixes.SelectMany(prefix => stems.Select(stem => prefix + stem)),
+            StringComparer.OrdinalIgnoreCase);
+    }
+
+    internal static bool IsPorFiniteForm(string word) => PorFiniteForms.Contains(word);
+
     private static readonly (string Ending, string InfinitiveEnding)[] FiniteEndings = new[]
     {
         ("ar", new[] { "ávamos", "ássemos", "áramos", "ámos", "amos", "avam", "aram", "ava", "avas", "aste", "asse", "asses", "assem", "ara", "aras", "ou", "ei", "em", "es", "am", "as", "a", "o", "e" }),
@@ -501,7 +524,7 @@ internal static class PortugueseVerbs
         var lower = word.ToLowerInvariant();
         if (lower.Length < 2 || !lower.All(char.IsLetter) || GuessStopWords.Contains(lower) || IsInfinitive(lower))
             return false;
-        if (IsKnownVerbForm(lower) || IsSecondPersonForm(lower)) return true;
+        if (IsKnownVerbForm(lower) || IsSecondPersonForm(lower) || IsPorFiniteForm(lower)) return true;
         if (Regex.IsMatch(lower, @"[ai]d[oa]s?$")) return false;
         if (TrySplitFuture(lower, out _, out _, requireTransitive: false)) return true;
         var dictionary = NaturaDictionary.Load(true);
@@ -572,7 +595,7 @@ internal static class PortugueseVerbs
     private static readonly HashSet<string> ExtraMesoclisisInfinitives = new(StringComparer.Ordinal)
     {
         "manter", "dizer", "contar", "informar", "pagar", "contactar", "telefonar", "devolver", "mandar", "enviar", "dar",
-        "levar", "buscar", "ensinar", "lembrar", "agradecer", "explicar", "mostrar", "arranjar", "apanhar", "seguir", "mentir",
+        "levar", "buscar", "ensinar", "lembrar", "agradecer", "explicar", "mostrar", "arranjar", "apanhar", "seguir", "mentir", "saber",
     };
 
     // Only real infinitives: "queriam" (imperfect of querer) must not split into "quer" + "iam".

@@ -75,7 +75,7 @@ public sealed class PersonalObjectTests
     {
         const string source = "Seu pai bateu você.";
         Assert.Equal("O seu pai bateu você.", new PortugueseConverter(new ConversionOptions(YouToTu: false)).Convert(source));
-        Assert.Equal("O seu pai bateu você.", new PortugueseConverter().Convert(source,
+        Assert.Equal("O seu pai bateu-o.", new PortugueseConverter().Convert(source,
             reference: ReferenceHint.FromText("Your dad beat you.")! with { FormalAddress = true }));
         var local = new PortugueseLocalWordList();
         local.Ignored.Add("bateu você");

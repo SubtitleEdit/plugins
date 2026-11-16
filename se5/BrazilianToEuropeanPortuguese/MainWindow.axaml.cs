@@ -234,7 +234,7 @@ public partial class MainWindow : Window
     {
         var height = Math.Clamp(e.NewSize.Height * 0.28, 140, 360);
         if (this.FindControl<ScrollViewer>("LayoutContent") is { } layout) layout.MaxHeight = height;
-        var settingsHeight = Math.Clamp(e.NewSize.Height * 0.5, 240, 480);
+        var settingsHeight = Math.Clamp(e.NewSize.Height * 0.47, 240, 480);
         if (this.FindControl<ScrollViewer>("ConversionSettingsContent") is { } settings) settings.MaxHeight = settingsHeight;
         if (this.FindControl<ScrollViewer>("ReferenceContent") is { } reference) reference.MaxHeight = settingsHeight - 50;
     }
